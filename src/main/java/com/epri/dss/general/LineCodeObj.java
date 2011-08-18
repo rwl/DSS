@@ -1,6 +1,6 @@
 package com.epri.dss.general;
 
-import com.epri.dss.shared.CMatrix;
+import com.epri.dss.shared.ComplexMatrix;
 
 /**
  * A general DSS object used by all circuits as a reference for obtaining line
@@ -30,17 +30,17 @@ public interface LineCodeObj extends DSSObject {
 
 	void setReduceByKron(boolean reduceByKron);
 
-	CMatrix getZ();
+	ComplexMatrix getZ();
 
-	void setZ(CMatrix z);
+	void setZ(ComplexMatrix z);
 
-	CMatrix getZinv();
+	ComplexMatrix getZinv();
 
-	void setZinv(CMatrix zinv);
+	void setZinv(ComplexMatrix zinv);
 
-	CMatrix getYC();
+	ComplexMatrix getYC();
 
-	void setYc(CMatrix yc);
+	void setYc(ComplexMatrix yc);
 
 	double getBaseFrequency();
 

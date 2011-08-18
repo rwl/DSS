@@ -9,7 +9,7 @@ import com.epri.dss.common.Circuit;
 import com.epri.dss.common.CktElement;
 import com.epri.dss.common.SolutionObj;
 import com.epri.dss.common.impl.DSSBus.NodeBus;
-import com.epri.dss.shared.CMatrix;
+import com.epri.dss.shared.ComplexMatrix;
 import org.apache.commons.math.complex.Complex;
 
 public class YMatrix {
@@ -183,12 +183,12 @@ public class YMatrix {
 
 	}
 
-	private static int addPrimitiveMatrix(CMatrix y, int yorder, int nodes, Complex mat) {
+	private static int addPrimitiveMatrix(ComplexMatrix y, int yorder, int nodes, Complex mat) {
 		// TODO Auto-generated method stub
 		return 0;
 	}
 
-	private static void resetSparseMatrix(CMatrix ysystem, int yMatrixSize) {
+	private static void resetSparseMatrix(ComplexMatrix ysystem, int yMatrixSize) {
 		// TODO Auto-generated method stub
 
 	}
@@ -198,7 +198,7 @@ public class YMatrix {
 	 */
 	public static String checkYMatrixforZeroes() {
 		Complex c = null;
-		CMatrix Y;
+		ComplexMatrix Y;
 		int sCol = 0;
 		long nIslands, iCount, iFirst;
 		List<Long> Cliques;
@@ -247,17 +247,17 @@ public class YMatrix {
 
 	// function calls return 0 to indicate failure, 1 for success
 
-	private static long findIslands(CMatrix y, int numNodes, Long pNodes) {
+	private static long findIslands(ComplexMatrix y, int numNodes, Long pNodes) {
 		// TODO Auto-generated method stub
 		return 0;
 	}
 
-	private static void getSingularCol(CMatrix y, long sCol) {
+	private static void getSingularCol(ComplexMatrix y, long sCol) {
 		// TODO Auto-generated method stub
 
 	}
 
-	private static void getMatrixElement(CMatrix y, int i, int i2, Complex c) {
+	private static void getMatrixElement(ComplexMatrix y, int i, int i2, Complex c) {
 		// TODO Auto-generated method stub
 
 	}
@@ -448,7 +448,7 @@ public class YMatrix {
 		return 0;
 	}
 
-	public static int solveSparseSet(CMatrix ysystem, Complex complex, Complex complex2) {
+	public static int solveSparseSet(ComplexMatrix ysystem, Complex complex, Complex complex2) {
 		// TODO Auto-generated method stub
 		return 0;
 	}
@@ -458,17 +458,17 @@ public class YMatrix {
 
 	}
 
-	public static void getRCond(CMatrix y, double dRes) {
+	public static void getRCond(ComplexMatrix y, double dRes) {
 		// TODO Auto-generated method stub
 
 	}
 
-	public static void getNNZ(CMatrix y, long iRes) {
+	public static void getNNZ(ComplexMatrix y, long iRes) {
 		// TODO Auto-generated method stub
 
 	}
 
-	public static void getSparseNNZ(CMatrix y, long iRes) {
+	public static void getSparseNNZ(ComplexMatrix y, long iRes) {
 		// TODO Auto-generated method stub
 
 	}

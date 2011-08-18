@@ -3,7 +3,7 @@ package com.epri.dss.conversion.impl;
 import java.io.PrintStream;
 
 import com.epri.dss.parser.impl.Parser;
-import com.epri.dss.shared.impl.CMatrixImpl;
+import com.epri.dss.shared.impl.ComplexMatrixImpl;
 import com.epri.dss.shared.impl.ComplexUtil;
 
 import org.apache.commons.math.complex.Complex;
@@ -14,7 +14,7 @@ import com.epri.dss.common.impl.DSSGlobals;
 import com.epri.dss.common.impl.Utilities;
 import com.epri.dss.conversion.VSource;
 import com.epri.dss.conversion.VSourceObj;
-import com.epri.dss.shared.CMatrix;
+import com.epri.dss.shared.ComplexMatrix;
 
 public class VSourceObjImpl extends PCElementImpl implements VSourceObj {
 
@@ -31,8 +31,8 @@ public class VSourceObjImpl extends PCElementImpl implements VSourceObj {
 	private int scanType;
 	private int sequenceType;
 
-	protected CMatrix Z;  // base frequency series Z matrix
-	protected CMatrix ZInv;
+	protected ComplexMatrix Z;  // base frequency series Z matrix
+	protected ComplexMatrix ZInv;
 	protected double VMag;
 
 	protected double kVBase;
@@ -91,8 +91,8 @@ public class VSourceObjImpl extends PCElementImpl implements VSourceObj {
 		if (ZInv != null) ZInv = null;
 
 		// for a source, nPhases = nCond, for now
-		Z    = new CMatrixImpl(nPhases);
-		ZInv = new CMatrixImpl(nPhases);
+		Z    = new ComplexMatrixImpl(nPhases);
+		ZInv = new ComplexMatrixImpl(nPhases);
 
 		if (nPhases == 1) {
 			factor = 1.0;
@@ -172,9 +172,9 @@ public class VSourceObjImpl extends PCElementImpl implements VSourceObj {
 		Zm = new Complex(Rm, Xm);
 
 		for (i = 0; i < nPhases; i++) {
-			Z.setElement(i, i, Zs);
+			Z.set(i, i, Zs);
 			for (j = 0; j < i - 1; j++)
-				Z.setElemSym(i, j, Zm);
+				Z.setSym(i, j, Zm);
 		}
 
 		switch (nPhases) {
@@ -203,9 +203,9 @@ public class VSourceObjImpl extends PCElementImpl implements VSourceObj {
 		// build only YPrim_Series
 		if (isYprimInvalid()) {
 			if (YPrimSeries != null) YPrimSeries = null;
-			YPrimSeries = new CMatrixImpl(YOrder);
+			YPrimSeries = new ComplexMatrixImpl(YOrder);
 			if (YPrim != null) YPrim = null;
-			YPrim = new CMatrixImpl(YOrder);
+			YPrim = new ComplexMatrixImpl(YOrder);
 		} else {
 			YPrimSeries.clear();
 			YPrim.clear();
@@ -217,9 +217,9 @@ public class VSourceObjImpl extends PCElementImpl implements VSourceObj {
 		/* Put in series RL adjusted for frequency */
 		for (i = 0; i < nPhases; i++) {
 			for (j = 0; j < nPhases; j++) {
-				value    = Z.getElement(i, j);
+				value    = Z.get(i, j);
 				value = new Complex(value.getReal(), value.getImaginary() * freqMultiplier);  /* Modify from base freq */
-				ZInv.setElement(i, j, value);
+				ZInv.set(i, j, value);
 			}
 		}
 
@@ -231,17 +231,17 @@ public class VSourceObjImpl extends PCElementImpl implements VSourceObj {
 					"Invalid impedance specified. Replaced with small resistance.", 325);
 			ZInv.clear();
 			for (i = 0; i < nPhases; i++)
-				ZInv.setElement(i, i, new Complex(1.0 / DSSGlobals.EPSILON, 0.0));
+				ZInv.set(i, i, new Complex(1.0 / DSSGlobals.EPSILON, 0.0));
 		}
 
 		// YPrim_Series.copyFrom(Zinv);
 
 		for (i = 0; i < nPhases; i++) {
 			for (j = 0; j < nPhases; j++) {
-				value = ZInv.getElement(i, j);
-				YPrimSeries.setElement(i, j, value);
-				YPrimSeries.setElement(i + nPhases, j + nPhases, value);
-				YPrimSeries.setElemSym(i + nPhases, j, value.negate());
+				value = ZInv.get(i, j);
+				YPrimSeries.set(i, j, value);
+				YPrimSeries.set(i + nPhases, j + nPhases, value);
+				YPrimSeries.setSym(i + nPhases, j, value.negate());
 			}
 		}
 
@@ -388,7 +388,7 @@ public class VSourceObjImpl extends PCElementImpl implements VSourceObj {
 			f.println("zMatrix=");
 			for (int i = 0; i < nPhases; i++) {
 				for (int j = 0; j < i; j++) {
-					c = Z.getElement(i, j);
+					c = Z.get(i, j);
 					f.printf("%.8g +j %.8g ", c.getReal(), c.getImaginary());
 				}
 				f.println();
@@ -467,19 +467,19 @@ public class VSourceObjImpl extends PCElementImpl implements VSourceObj {
 		super.makePosSequence();
 	}
 
-	public CMatrix getZ() {
+	public ComplexMatrix getZ() {
 		return Z;
 	}
 
-	public void setZ(CMatrix z) {
+	public void setZ(ComplexMatrix z) {
 		Z = z;
 	}
 
-	public CMatrix getZinv() {
+	public ComplexMatrix getZinv() {
 		return ZInv;
 	}
 
-	public void setZinv(CMatrix zinv) {
+	public void setZinv(ComplexMatrix zinv) {
 		ZInv = zinv;
 	}
 

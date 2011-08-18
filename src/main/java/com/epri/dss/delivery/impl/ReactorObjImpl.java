@@ -5,8 +5,8 @@ import java.io.PrintStream;
 import org.apache.commons.lang.mutable.MutableInt;
 
 import com.epri.dss.parser.impl.Parser;
-import com.epri.dss.shared.CMatrix;
-import com.epri.dss.shared.impl.CMatrixImpl;
+import com.epri.dss.shared.ComplexMatrix;
+import com.epri.dss.shared.impl.ComplexMatrixImpl;
 import com.epri.dss.shared.impl.ComplexUtil;
 
 import org.apache.commons.math.complex.Complex;
@@ -149,18 +149,18 @@ public class ReactorObjImpl extends PDElementImpl implements ReactorObj {
 		int i, j, idx;
 		double freqMultiplier;
 		Complex[] ZValues;
-		CMatrix YPrimTemp, ZMatrix;
+		ComplexMatrix YPrimTemp, ZMatrix;
 
 		// normally build only Yprim_Shunt, but if there are 2 terminals and
 		// bus1 != bus2
 
 		if (isYprimInvalid()) {  // reallocate YPrim if something has invalidated old allocation
 			if (YPrimShunt != null) YPrimShunt = null;
-			YPrimShunt = new CMatrixImpl(YOrder);
+			YPrimShunt = new ComplexMatrixImpl(YOrder);
 			if (YPrimSeries != null) YPrimSeries = null;
-			YPrimSeries = new CMatrixImpl(YOrder);
+			YPrimSeries = new ComplexMatrixImpl(YOrder);
 			if (YPrim != null) YPrim = null;
-			YPrim = new CMatrixImpl(YOrder);
+			YPrim = new ComplexMatrixImpl(YOrder);
 		} else {
 			YPrimSeries.clear(); // zero out YPrim
 			YPrimShunt.clear();  // zero out YPrim
@@ -192,18 +192,18 @@ public class ReactorObjImpl extends PDElementImpl implements ReactorObj {
 				value2 = value.multiply(2.0);
 				value = value.negate();
 				for (i = 0; i < nPhases; i++) {
-					YPrimTemp.setElement(i, i, value2);
+					YPrimTemp.set(i, i, value2);
 					for (j = 0; j < i - 1; j++) {  // TODO Check zero based indexing
-						YPrimTemp.setElemSym(i, j, value);
+						YPrimTemp.setSym(i, j, value);
 					}
 					// remainder of the matrix is all zero
 				}
 				break;
 			default:  // wye
 				for (i = 0; i < nPhases; i++) {
-					YPrimTemp.setElement(i, i, value);  // elements are only on the diagonals
-					YPrimTemp.setElement(i + nPhases, i + nPhases, value);
-					YPrimTemp.setElemSym(i, i + nPhases, value.negate());
+					YPrimTemp.set(i, i, value);  // elements are only on the diagonals
+					YPrimTemp.set(i + nPhases, i + nPhases, value);
+					YPrimTemp.setSym(i, i + nPhases, value.negate());
 				}
 				break;
 			}
@@ -220,18 +220,18 @@ public class ReactorObjImpl extends PDElementImpl implements ReactorObj {
 				value2 = value.multiply(2.0);
 				value = value.negate();
 				for (i = 0; i < nPhases; i++) {
-					YPrimTemp.setElement(i, i, value2);
+					YPrimTemp.set(i, i, value2);
 					for (j = 0; j < i - 1; j++) {  // TODO Check zero based indexing
-						YPrimTemp.setElemSym(i, j, value);
+						YPrimTemp.setSym(i, j, value);
 					}
 					// remainder of the matrix is all zero
 				}
 				break;
 			default:  // wye
 				for (i = 0; i < nPhases; i++) {
-					YPrimTemp.setElement(i, i, value);  // elements are only on the diagonals
-					YPrimTemp.setElement(i + nPhases, i + nPhases, value);
-					YPrimTemp.setElemSym(i, i + nPhases, value.negate());
+					YPrimTemp.set(i, i, value);  // elements are only on the diagonals
+					YPrimTemp.set(i + nPhases, i + nPhases, value);
+					YPrimTemp.setSym(i, i + nPhases, value.negate());
 				}
 				break;
 			}
@@ -246,13 +246,13 @@ public class ReactorObjImpl extends PDElementImpl implements ReactorObj {
 					for (j = 0; j < nPhases; j++) {
 						idx = (j - 1) * nPhases + i;  // TODO Check zero based indexing
 						value = new Complex(GMatrix[idx], BMatrix[idx] / freqMultiplier);
-						YPrimTemp.setElement(i, j, value);
-						YPrimTemp.setElement(i + nPhases, j + nPhases, value);
-						YPrimTemp.setElemSym(i, j + nPhases, value.negate());
+						YPrimTemp.set(i, j, value);
+						YPrimTemp.set(i + nPhases, j + nPhases, value);
+						YPrimTemp.setSym(i, j + nPhases, value.negate());
 					}
 				}
 			} else {  // for series r and x
-				ZMatrix = new CMatrixImpl(nPhases);
+				ZMatrix = new ComplexMatrixImpl(nPhases);
 				ZValues = ZMatrix.asArray();  // so we can populate array fast
 				nPhases = ZMatrix.order();
 				/* Put in series r & l */
@@ -267,14 +267,14 @@ public class ReactorObjImpl extends PDElementImpl implements ReactorObj {
 									"Invalid impedance specified. Replaced with tiny conductance.", 234);
 					ZMatrix.clear();
 					for (i = 0; i < nPhases; i++)
-						ZMatrix.setElement(i, i, new Complex(DSSGlobals.EPSILON, 0.0));
+						ZMatrix.set(i, i, new Complex(DSSGlobals.EPSILON, 0.0));
 
 					for (i = 0; i < nPhases; i++)
 						for (j = 0; j < nPhases; j++) {
-							value = ZMatrix.getElement(i, j);
-							YPrimTemp.setElement(i, j, value);
-							YPrimTemp.setElement(i + nPhases, j + nPhases, value);
-							YPrimTemp.setElemSym(i, j + nPhases, value.negate());
+							value = ZMatrix.get(i, j);
+							YPrimTemp.set(i, j, value);
+							YPrimTemp.set(i + nPhases, j + nPhases, value);
+							YPrimTemp.setSym(i, j + nPhases, value.negate());
 						}
 
 					ZMatrix = null;
@@ -287,10 +287,10 @@ public class ReactorObjImpl extends PDElementImpl implements ReactorObj {
 		if (isShunt()) {
 			if ((nPhases == 1) && (!DSSGlobals.activeCircuit.isPositiveSequence())) {  // assume a neutral or grounding reactor; leave diagonal in the circuit
 				for (i = 0; i < YOrder; i++)
-					YPrimSeries.setElement(i, i, YPrimShunt.getElement(i, i));
+					YPrimSeries.set(i, i, YPrimShunt.get(i, i));
 			} else {
 				for (i = 0; i < YOrder; i++)
-					YPrimSeries.setElement(i, i, YPrimShunt.getElement(i, i).multiply(1.0e-10));
+					YPrimSeries.set(i, i, YPrimShunt.get(i, i).multiply(1.0e-10));
 			}
 		}
 

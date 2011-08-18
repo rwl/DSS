@@ -3,7 +3,7 @@ package com.epri.dss.shared;
 import org.apache.commons.lang.mutable.MutableInt;
 import org.apache.commons.math.complex.Complex;
 
-public interface CMatrix {
+public interface ComplexMatrix {
 
 	int order();
 
@@ -12,19 +12,19 @@ public interface CMatrix {
 	/* Zero out matrix */
 	void clear();
 
-	void addFrom(CMatrix otherMatrix);
+	void addFrom(ComplexMatrix otherMatrix);
 
-	void copyFrom(CMatrix otherMatrix);
+	void copyFrom(ComplexMatrix otherMatrix);
 
-	void setElement(int i, int j, Complex Value);
+	void set(int i, int j, Complex Value);
 
-	void setElemSym(int i, int j, Complex Value);
+	void setSym(int i, int j, Complex Value);
 
-	void addElement(int i, int j, Complex Value);
+	void add(int i, int j, Complex Value);
 
-	void addElemSym(int i, int j, Complex Value);
+	void addSym(int i, int j, Complex Value);
 
-	Complex getElement(int i, int j);
+	Complex get(int i, int j);
 
 	int getErrorCode();
 
@@ -45,14 +45,14 @@ public interface CMatrix {
 	void zeroCol(int iCol);
 
 	/** Average of diagonal elements */
-	Complex avgDiagonal();
+	Complex avgDiag();
 
-	Complex avgOffDiagonal();
+	Complex avgOffDiag();
 
 	/** Multiply all elements by a constant */
-	void multByConst(double x);
+	void mult(double x);
 
 	/** Perform Kron reduction on last row/col and return new matrix */
-	CMatrix kron(int eliminationRow);
+	ComplexMatrix kron(int eliminationRow);
 
 }

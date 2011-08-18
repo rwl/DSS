@@ -9,7 +9,7 @@ import com.epri.dss.common.impl.ControlProblem;
 import com.epri.dss.common.impl.Esolv32Problem;
 import com.epri.dss.common.impl.SolverError;
 import com.epri.dss.general.DSSObject;
-import com.epri.dss.shared.CMatrix;
+import com.epri.dss.shared.ComplexMatrix;
 
 public interface SolutionObj extends DSSObject {
 
@@ -105,17 +105,17 @@ public interface SolutionObj extends DSSObject {
 
 	void setDblHour(double dblHour);
 
-	CMatrix getYSystem();
+	ComplexMatrix getYSystem();
 
-	void setYSystem(CMatrix ySystem);
+	void setYSystem(ComplexMatrix ySystem);
 
-	CMatrix getYSeries();
+	ComplexMatrix getYSeries();
 
-	void setYSeries(CMatrix ySeries);
+	void setYSeries(ComplexMatrix ySeries);
 
-	CMatrix getY();
+	ComplexMatrix getY();
 
-	void setY(CMatrix y);
+	void setY(ComplexMatrix y);
 
 	double getIntervalHrs();
 

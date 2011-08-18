@@ -4,38 +4,38 @@ import org.apache.commons.lang.mutable.MutableDouble;
 import org.apache.commons.lang.mutable.MutableInt;
 import org.apache.commons.math.complex.Complex;
 
-import com.epri.dss.shared.CMatrix;
+import com.epri.dss.shared.ComplexMatrix;
 
 public abstract class MathUtil {
 
 	/* Symmetrical component conversion matrices */
-	private static final CMatrix As2p = getAs2p(3);
-	private static final CMatrix Ap2s = getAp2s(3);
+	private static final ComplexMatrix As2p = getAs2p(3);
+	private static final ComplexMatrix Ap2s = getAp2s(3);
 //	private static final CMatrix ClarkeF = getClarkeF(3);
 //	private static final CMatrix ClarkeR = getClarkeR(3);
 
 //	private static final double SIN2PI3 = Math.sin(2.0 * Math.PI / 3.0);
 
-	private static CMatrix getAMatrix(int order) {
-		CMatrix Amat = new CMatrixImpl(order);
+	private static ComplexMatrix getAMatrix(int order) {
+		ComplexMatrix Amat = new ComplexMatrixImpl(order);
 
 		Complex a  = new Complex(-0.5, 0.866025403);
 		Complex aa = new Complex(-0.5,-0.866025403);
 
-		for (int i = 0; i < 3; i++) Amat.setElemSym(0, i, Complex.ONE);
-		Amat.setElement(1, 1, aa);
-		Amat.setElement(2, 2, aa);
-		Amat.setElemSym(1, 2, a);
+		for (int i = 0; i < 3; i++) Amat.setSym(0, i, Complex.ONE);
+		Amat.set(1, 1, aa);
+		Amat.set(2, 2, aa);
+		Amat.setSym(1, 2, a);
 
 		return Amat;
 	}
 
-	private static CMatrix getAs2p(int order) {
+	private static ComplexMatrix getAs2p(int order) {
 		return getAMatrix(order);
 	}
 
-	private static CMatrix getAp2s(int order) {
-		CMatrix Ap2s = getAMatrix(order);
+	private static ComplexMatrix getAp2s(int order) {
+		ComplexMatrix Ap2s = getAMatrix(order);
 		Ap2s.invert();
 		return Ap2s;
 	}

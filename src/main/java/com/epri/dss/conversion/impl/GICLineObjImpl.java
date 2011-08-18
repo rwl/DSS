@@ -9,8 +9,8 @@ import com.epri.dss.common.impl.Utilities;
 import com.epri.dss.conversion.GICLine;
 import com.epri.dss.conversion.GICLineObj;
 import com.epri.dss.parser.impl.Parser;
-import com.epri.dss.shared.CMatrix;
-import com.epri.dss.shared.impl.CMatrixImpl;
+import com.epri.dss.shared.ComplexMatrix;
+import com.epri.dss.shared.impl.ComplexMatrixImpl;
 import com.epri.dss.shared.impl.ComplexUtil;
 
 import org.apache.commons.math.complex.Complex;
@@ -27,8 +27,8 @@ public class GICLineObjImpl extends PCElementImpl implements GICLineObj {
     private int scanType;
     private int sequenceType;
 
-    protected CMatrix Z;  // base frequency series Z matrix
-    protected CMatrix ZInv;
+    protected ComplexMatrix Z;  // base frequency series Z matrix
+    protected ComplexMatrix ZInv;
 
 	public GICLineObjImpl(DSSClass parClass, String lineName) {
 		super(parClass);
@@ -69,8 +69,8 @@ public class GICLineObjImpl extends PCElementImpl implements GICLineObj {
 		if (ZInv != null) ZInv = null;
 
 		// for a source, nPhases = nCond, for now
-		Z    = new CMatrixImpl(nPhases);
-		ZInv = new CMatrixImpl(nPhases);
+		Z    = new ComplexMatrixImpl(nPhases);
+		ZInv = new ComplexMatrixImpl(nPhases);
 
 		/* Update property value array */
 		/* Don't change a specified value; only computed ones */
@@ -79,9 +79,9 @@ public class GICLineObjImpl extends PCElementImpl implements GICLineObj {
 		Zm = Complex.ZERO;
 
 		for (i = 0; i < nPhases; i++) {
-			Z.setElement(i, i, Zs);
+			Z.set(i, i, Zs);
 			for (j = 0; j < i-1; j++)
-				Z.setElemSym(i, j, Zm);
+				Z.setSym(i, j, Zm);
 		}
 
 		VMag = volts;
@@ -104,9 +104,9 @@ public class GICLineObjImpl extends PCElementImpl implements GICLineObj {
 		// build only YPrim_Series
 		if (isYprimInvalid()) {
 			if (YPrimSeries != null) YPrimSeries = null;
-			YPrimSeries = new CMatrixImpl(YOrder);
+			YPrimSeries = new ComplexMatrixImpl(YOrder);
 			if (YPrim != null) YPrim = null;
-			YPrim = new CMatrixImpl(YOrder);
+			YPrim = new ComplexMatrixImpl(YOrder);
 		} else {
 			YPrimSeries.clear();
 			YPrim.clear();
@@ -118,10 +118,10 @@ public class GICLineObjImpl extends PCElementImpl implements GICLineObj {
 		/* Put in series RL adjusted for frequency */
 		for (i = 0; i < nPhases; i++) {
 			for (j = 0; j < nPhases; j++) {
-				value    = Z.getElement(i, j);
+				value    = Z.get(i, j);
 				// modify from base freq
 				value = new Complex(value.getReal(), value.getImaginary() * freqMultiplier);
-				ZInv.setElement(i, j, value);
+				ZInv.set(i, j, value);
 			}
 		}
 
@@ -129,7 +129,7 @@ public class GICLineObjImpl extends PCElementImpl implements GICLineObj {
 
 			Xc = -1.0 / (DSSGlobals.TWO_PI * YPrimFreq * C * 1.0e-6);
 			for (i = 0; i < nPhases; i++)
-				ZInv.addElement(i, i, new Complex(0.0, Xc)) ;
+				ZInv.add(i, i, new Complex(0.0, Xc)) ;
 		}
 
 		ZInv.invert();  /* Invert in place */
@@ -140,17 +140,17 @@ public class GICLineObjImpl extends PCElementImpl implements GICLineObj {
 	                   "Invalid impedance specified. Replaced with small resistance.", 325);
 	        ZInv.clear();
 	        for (i = 0; i < nPhases; i++)
-				ZInv.setElement(i, i, new Complex(1.0 / DSSGlobals.EPSILON, 0.0));
+				ZInv.set(i, i, new Complex(1.0 / DSSGlobals.EPSILON, 0.0));
 		}
 
 		// YPrim_Series.CopyFrom(Zinv);
 
 		for (i = 0; i < nPhases; i++) {
 			for (j = 0; j < nPhases; j++) {
-				value = ZInv.getElement(i, j);
-				YPrimSeries.setElement(i, j, value);
-				YPrimSeries.setElement(i + nPhases, j + nPhases, value);
-				YPrimSeries.setElemSym(i + nPhases, j, value.negate());
+				value = ZInv.get(i, j);
+				YPrimSeries.set(i, j, value);
+				YPrimSeries.set(i + nPhases, j + nPhases, value);
+				YPrimSeries.setSym(i + nPhases, j, value.negate());
 			}
 		}
 
@@ -295,7 +295,7 @@ public class GICLineObjImpl extends PCElementImpl implements GICLineObj {
 			f.println("zMatrix=");
 			for (i = 0; i < nPhases; i++) {
 				for (j = 0; j < i; j++) {
-					c = Z.getElement(i, j);
+					c = Z.get(i, j);
 					f.printf("%.8g +j %.8g ", c.getReal(), c.getImaginary());
 				}
 				f.println();
@@ -352,19 +352,19 @@ public class GICLineObjImpl extends PCElementImpl implements GICLineObj {
 		super.makePosSequence();
 	}
 
-	public CMatrix getZ() {
+	public ComplexMatrix getZ() {
 		return Z;
 	}
 
-	public void setZ(CMatrix z) {
+	public void setZ(ComplexMatrix z) {
 		Z = z;
 	}
 
-	public CMatrix getZInv() {
+	public ComplexMatrix getZInv() {
 		return ZInv;
 	}
 
-	public void setZInv(CMatrix zinv) {
+	public void setZInv(ComplexMatrix zinv) {
 		ZInv = zinv;
 	}
 

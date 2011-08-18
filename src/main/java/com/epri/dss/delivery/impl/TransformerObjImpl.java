@@ -6,7 +6,7 @@ import java.io.PrintWriter;
 import org.apache.commons.lang.mutable.MutableInt;
 
 import com.epri.dss.parser.impl.Parser;
-import com.epri.dss.shared.impl.CMatrixImpl;
+import com.epri.dss.shared.impl.ComplexMatrixImpl;
 import com.epri.dss.shared.impl.ComplexUtil;
 
 import org.apache.commons.math.complex.Complex;
@@ -19,7 +19,7 @@ import com.epri.dss.delivery.Transformer;
 import com.epri.dss.delivery.TransformerObj;
 import com.epri.dss.delivery.Winding;
 import com.epri.dss.general.XfmrCodeObj;
-import com.epri.dss.shared.CMatrix;
+import com.epri.dss.shared.ComplexMatrix;
 
 public class TransformerObjImpl extends PDElementImpl implements TransformerObj {
 
@@ -36,11 +36,11 @@ public class TransformerObjImpl extends PDElementImpl implements TransformerObj 
 	protected double[] XSC;     // per unit SC measurements
 	protected double VABase;    // for impedances
 
-	protected CMatrix ZB;
-	protected CMatrix Y_1Volt;
-	protected CMatrix Y_Term;
-	protected CMatrix Y_1Volt_NL;   // no load Y's
-	protected CMatrix Y_Term_NL;
+	protected ComplexMatrix ZB;
+	protected ComplexMatrix Y_1Volt;
+	protected ComplexMatrix Y_Term;
+	protected ComplexMatrix Y_1Volt_NL;   // no load Y's
+	protected ComplexMatrix Y_Term_NL;
 
 	protected double Y_Terminal_FreqMult;
 
@@ -146,11 +146,11 @@ public class TransformerObjImpl extends PDElementImpl implements TransformerObj 
 			Y_Term = null;
 			Y_Term_NL = null;
 
-			ZB         = new CMatrixImpl(numWindings - 1);
-			Y_1Volt    = new CMatrixImpl(numWindings);
-			Y_1Volt_NL = new CMatrixImpl(numWindings);
-			Y_Term     = new CMatrixImpl(2 * numWindings);
-			Y_Term_NL  = new CMatrixImpl(2 * numWindings);
+			ZB         = new ComplexMatrixImpl(numWindings - 1);
+			Y_1Volt    = new ComplexMatrixImpl(numWindings);
+			Y_1Volt_NL = new ComplexMatrixImpl(numWindings);
+			Y_Term     = new ComplexMatrixImpl(2 * numWindings);
+			Y_Term_NL  = new ComplexMatrixImpl(2 * numWindings);
 		} else {
 			DSSGlobals.doSimpleMsg("Invalid number of windings: " + String.valueOf(n) + " for transformer " + getName(), 111);
 		}
@@ -376,9 +376,9 @@ public class TransformerObjImpl extends PDElementImpl implements TransformerObj 
 			if (YPrimShunt != null) YPrimShunt = null;
 			if (YPrim != null) YPrim = null;
 
-			YPrimSeries = new CMatrixImpl(YOrder);
-			YPrimShunt  = new CMatrixImpl(YOrder);
-			YPrim        = new CMatrixImpl(YOrder);
+			YPrimSeries = new ComplexMatrixImpl(YOrder);
+			YPrimShunt  = new ComplexMatrixImpl(YOrder);
+			YPrim        = new ComplexMatrixImpl(YOrder);
 		} else {
 			/* Same size as last time; just zero out to start over */
 			YPrimSeries.clear(); // zero out YPrim
@@ -472,12 +472,12 @@ public class TransformerObjImpl extends PDElementImpl implements TransformerObj 
 			f.println("ZB: (inverted)");
 			for (i = 0; i < numWindings - 1; i++) {
 				for (j = 0; j < i; j++)
-					f.print(ZB.getElement(i, j).getReal() + " ");
+					f.print(ZB.get(i, j).getReal() + " ");
 				f.println();
 			}
 			for (i = 0; i < numWindings - 1; i++) {
 				for (j = 0; j < i; j++)
-					f.print(ZB.getElement(i, j).getImaginary() + " ");
+					f.print(ZB.get(i, j).getImaginary() + " ");
 				f.println();
 			}
 
@@ -485,12 +485,12 @@ public class TransformerObjImpl extends PDElementImpl implements TransformerObj 
 			f.println("Y_OneVolt");
 			for (i = 0; i < numWindings; i++) {
 				for (j = 0; j < i; j++)
-					f.print(Y_1Volt.getElement(i, j).getReal() + " ");
+					f.print(Y_1Volt.get(i, j).getReal() + " ");
 					f.println();
 			}
 			for (i = 0; i < numWindings; i++) {
 				for (j = 0; j < i; j++)
-					f.print(Y_1Volt.getElement(i, j).getImaginary() + " ");
+					f.print(Y_1Volt.get(i, j).getImaginary() + " ");
 					f.println();
 			}
 
@@ -498,12 +498,12 @@ public class TransformerObjImpl extends PDElementImpl implements TransformerObj 
 			f.println("Y_Terminal");
 			for (i = 0; i < 2 * numWindings; i++) {
 				for (j = 0; j < i; j++)
-					f.print(Y_Term.getElement(i, j).getReal() + " ");
+					f.print(Y_Term.get(i, j).getReal() + " ");
 					f.println();
 			}
 			for (i = 0; i < 2 * numWindings; i++) {
 				for (j = 0; j < i; j++)
-					f.print(Y_Term.getElement(i, j).getImaginary() + " ");
+					f.print(Y_Term.get(i, j).getImaginary() + " ");
 					f.println();
 			}
 			f.println();
@@ -1014,19 +1014,19 @@ public class TransformerObjImpl extends PDElementImpl implements TransformerObj 
 					value = ComplexUtil.invert(new Complex(W.getRNeut(), W.getXNeut() * freqMultiplier));
 				}
 				j = i * nConds;
-				YPrimSeries.addElement(j, j, value);
+				YPrimSeries.add(j, j, value);
 			} else {
 				// bump up neutral admittance a bit in case neutral is floating
 				j = i * nConds;
 				if (ppmFloatFactor != 0.0) {
-					YPrimSeries.setElement(j, j, YPrimSeries.getElement(j, j).add( new Complex(0.0, W.getY_PPM()) ));
+					YPrimSeries.set(j, j, YPrimSeries.get(j, j).add( new Complex(0.0, W.getY_PPM()) ));
 					/* YPrim_Series.setElement(j, j, CmulReal_im(GetElement(j, j), ppm_FloatFactorPlusOne)); */
 				}
 			}
 		}
 	}
 
-	private void buildYPrimComponent(CMatrix YPrimComponent, CMatrix YTerminal) {
+	private void buildYPrimComponent(ComplexMatrix YPrimComponent, ComplexMatrix YTerminal) {
 		Complex value;
 
 		/* Now, put in Yprim matrix */
@@ -1034,10 +1034,10 @@ public class TransformerObjImpl extends PDElementImpl implements TransformerObj 
 		int nw2 = 2 * numWindings;
 		for (int i = 0; i < nw2; i++) {
 			for (int j = 0; j < i; j++) {
-				value = YTerminal.getElement(i, j);
+				value = YTerminal.get(i, j);
 				// this value goes in Yprim nPhases times
 				for (int k = 0; k < nPhases - 1; k++)
-					YPrimComponent.addElemSym(termRef[i + k * nw2], termRef[j + k * nw2], value);
+					YPrimComponent.addSym(termRef[i + k * nw2], termRef[j + k * nw2], value);
 			}
 		}
 	}
@@ -1050,7 +1050,7 @@ public class TransformerObjImpl extends PDElementImpl implements TransformerObj 
 		int i, j, k;
 		Complex[] a, cTempArray1, cTempArray2;
 		Complex cMinusOne;
-		CMatrix At;
+		ComplexMatrix At;
 
 
 		// construct ZBMatrix
@@ -1058,14 +1058,14 @@ public class TransformerObjImpl extends PDElementImpl implements TransformerObj 
 		ZBase = 1.0 / (VABase / nPhases);  // base ohms on 1.0 volt basis
 		for (i = 0; i < numWindings - 1; i++)
 			/* convert pu to ohms on one volt base as we go... */
-			ZB.setElement(i, i, new Complex((winding[0].getRpu() + winding[i + 1].getRNeut()), freqMult * XSC[i]).multiply(ZBase));
+			ZB.set(i, i, new Complex((winding[0].getRpu() + winding[i + 1].getRNeut()), freqMult * XSC[i]).multiply(ZBase));
 
 		// off diagonals
 		k = numWindings;
 		for (i = 0; i < numWindings - 1; i++) {
 			for (j = 0; j < numWindings - 1; j++)
-				ZB.setElemSym(i, j,
-					ZB.getElement(i, i).add(ZB.getElement(j, j)).subtract(
+				ZB.setSym(i, j,
+					ZB.get(i, i).add(ZB.get(j, j)).subtract(
 						new Complex((winding[i + 1].getRpu() + winding[j + 1].getRpu()), freqMult * XSC[k]).multiply(ZBase)).multiply(0.5) );
 			k += 1;
 		}
@@ -1086,7 +1086,7 @@ public class TransformerObjImpl extends PDElementImpl implements TransformerObj 
 					"Invalid impedance specified. Replaced with tiny conductance to ground.", 117);
 			ZB.clear();
 			for (i = 0; i < ZB.order(); i++)
-				ZB.setElement(i, i, new Complex(DSSGlobals.EPSILON, 0.0));
+				ZB.set(i, i, new Complex(DSSGlobals.EPSILON, 0.0));
 		}
 
 /* ******************************DEBUG****************************************************** */
@@ -1115,11 +1115,11 @@ public class TransformerObjImpl extends PDElementImpl implements TransformerObj 
 
 		a          = new Complex[numWindings * 2];
 		cMinusOne  = new Complex(-1.0, 0.0);
-		At         = new CMatrixImpl(numWindings);
+		At         = new ComplexMatrixImpl(numWindings);
 		for (i = 0; i < numWindings - 1; i++)
-			At.setElement(i + 1, i, Complex.ONE);
+			At.set(i + 1, i, Complex.ONE);
 		for (i = 0; i < numWindings - 1; i++)
-			At.setElement(1, i, cMinusOne);
+			At.set(1, i, cMinusOne);
 		cTempArray1[numWindings] = Complex.ZERO;
 		for (i = 0; i < numWindings; i++) {
 			if (i == 1) {
@@ -1136,7 +1136,7 @@ public class TransformerObjImpl extends PDElementImpl implements TransformerObj 
 			ZB.vMult(cTempArray1, a);  /* Zb.invert * A */
 			At.vMult(cTempArray2, cTempArray1);  /* AT * Result */
 			for (j = 0; j < numWindings; j++)
-				Y_1Volt.setElement(j, i, cTempArray2[j]);
+				Y_1Volt.set(j, i, cTempArray2[j]);
 		}
 
 
@@ -1144,7 +1144,7 @@ public class TransformerObjImpl extends PDElementImpl implements TransformerObj 
 		 * Add both resistive element representing core losses and a reactive element representing
 		 * magnetizing current.
 		 */
-		Y_1Volt_NL.addElement(1, 1, new Complex((pctNoLoadLoss / 100.0 / ZBase), -pctImag / 100.0 / ZBase));
+		Y_1Volt_NL.add(1, 1, new Complex((pctNoLoadLoss / 100.0 / ZBase), -pctImag / 100.0 / ZBase));
 
 /* ******************************DEBUG****************************************************** */
 //		if (false) {
@@ -1161,12 +1161,12 @@ public class TransformerObjImpl extends PDElementImpl implements TransformerObj 
 
 		Y_Term.clear();
 		Y_Term_NL.clear();
-		At = new CMatrixImpl(numWindings * 2);
+		At = new ComplexMatrixImpl(numWindings * 2);
 
 		for (i = 0; i < numWindings; i++)
-			At.setElement(2 * i - 1, i, new Complex(1.0 / (winding[i].getVBase() * winding[i].getPUTap()), 0.0));
+			At.set(2 * i - 1, i, new Complex(1.0 / (winding[i].getVBase() * winding[i].getPUTap()), 0.0));
 		for (i = 0; i < numWindings; i++)
-			At.setElement(2 * i,     i, new Complex(-1.0 / (winding[i].getVBase() * winding[i].getPUTap()), 0.0));
+			At.set(2 * i,     i, new Complex(-1.0 / (winding[i].getVBase() * winding[i].getPUTap()), 0.0));
 		for (i = 0; i < 2 * numWindings; i++)
 			cTempArray1[i] = Complex.ZERO;
 
@@ -1187,12 +1187,12 @@ public class TransformerObjImpl extends PDElementImpl implements TransformerObj 
 			Y_1Volt.vMult(cTempArray1, a);
 			At.vMult(cTempArray2, cTempArray1);  /* AT * Result */
 			for (j = 0; j < 2 * numWindings; j++)
-				Y_Term.setElement(j, i, cTempArray2[j]);
+				Y_Term.set(j, i, cTempArray2[j]);
 			/* No load part */
 			Y_1Volt_NL.vMult(cTempArray1, a);
 			At.vMult(cTempArray2, cTempArray1);  /* AT * Result */
 			for (j = 0; j < 2 * numWindings; j++)
-				Y_Term_NL.setElement(j, i, cTempArray2[j]);
+				Y_Term_NL.set(j, i, cTempArray2[j]);
 		}
 
 /* ******************************DEBUG****************************************************** */
@@ -1209,7 +1209,7 @@ public class TransformerObjImpl extends PDElementImpl implements TransformerObj 
 		if (ppmFloatFactor != 0.0) {
 			for (i = 0; i < numWindings; i++) {
 				j = 2 * i - 1;
-				Y_Term.setElement(j, j, Y_Term.getElement(j, j).add( new Complex(0.0, winding[i].getY_PPM()) ));
+				Y_Term.set(j, j, Y_Term.get(j, j).add( new Complex(0.0, winding[i].getY_PPM()) ));
 				/* SetElement(j, j, CmulReal_im(GetElement(j, j) , ppm_FloatFactorPlusOne));*/
 			}
 		}
@@ -1451,43 +1451,43 @@ public class TransformerObjImpl extends PDElementImpl implements TransformerObj 
 		VABase = base;
 	}
 
-	public CMatrix getZB() {
+	public ComplexMatrix getZB() {
 		return ZB;
 	}
 
-	public void setZB(CMatrix zb) {
+	public void setZB(ComplexMatrix zb) {
 		ZB = zb;
 	}
 
-	public CMatrix getY_1Volt() {
+	public ComplexMatrix getY_1Volt() {
 		return Y_1Volt;
 	}
 
-	public void setY_1Volt(CMatrix value) {
+	public void setY_1Volt(ComplexMatrix value) {
 		Y_1Volt = value;
 	}
 
-	public CMatrix getY_Term() {
+	public ComplexMatrix getY_Term() {
 		return Y_Term;
 	}
 
-	public void setY_Term(CMatrix value) {
+	public void setY_Term(ComplexMatrix value) {
 		Y_Term = value;
 	}
 
-	public CMatrix getY_1Volt_NL() {
+	public ComplexMatrix getY_1Volt_NL() {
 		return Y_1Volt_NL;
 	}
 
-	public void setY1VoltNL(CMatrix value) {
+	public void setY1VoltNL(ComplexMatrix value) {
 		Y_1Volt_NL = value;
 	}
 
-	public CMatrix getYTermNL() {
+	public ComplexMatrix getYTermNL() {
 		return Y_Term_NL;
 	}
 
-	public void setYTermNL(CMatrix value) {
+	public void setYTermNL(ComplexMatrix value) {
 		Y_Term_NL = value;
 	}
 

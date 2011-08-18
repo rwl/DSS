@@ -1396,9 +1396,9 @@ public class ExecHelper {
 				for (int i = 0; i < activeBus.getNumNodesThisBus(); i++) {
 					for (int j = 0; j < activeBus.getNumNodesThisBus(); j++) {
 						if (ZMatrix) {
-							Z = activeBus.getZsc().getElement(i, j);
+							Z = activeBus.getZsc().get(i, j);
 						} else {
-							Z = activeBus.getYsc().getElement(i, j);
+							Z = activeBus.getYsc().get(i, j);
 						}
 						DSSGlobals.globalResult = DSSGlobals.globalResult + String.format("%-.5g, %-.5g,   ", Z.getReal(), Z.getImaginary());
 					}

@@ -6,8 +6,8 @@ import com.epri.dss.common.DSSClass;
 import com.epri.dss.delivery.GICTransformer;
 import com.epri.dss.delivery.GICTransformerObj;
 import com.epri.dss.parser.impl.Parser;
-import com.epri.dss.shared.CMatrix;
-import com.epri.dss.shared.impl.CMatrixImpl;
+import com.epri.dss.shared.ComplexMatrix;
+import com.epri.dss.shared.impl.ComplexMatrixImpl;
 import org.apache.commons.math.complex.Complex;
 
 public class GICTransformerObjImpl extends PDElementImpl implements GICTransformerObj {
@@ -54,15 +54,15 @@ public class GICTransformerObjImpl extends PDElementImpl implements GICTransform
 		Complex value, value2;
 		int i;
 
-		CMatrix YPrimTemp;
+		ComplexMatrix YPrimTemp;
 
 		if (isYprimInvalid()) {  // reallocate YPrim if something has invalidated old allocation
 			if (YPrimSeries != null) YPrimSeries = null;
-			YPrimSeries = new CMatrixImpl(YOrder);
+			YPrimSeries = new ComplexMatrixImpl(YOrder);
 			if (YPrimShunt != null) YPrimShunt = null;
-			YPrimShunt = new CMatrixImpl(YOrder);
+			YPrimShunt = new ComplexMatrixImpl(YOrder);
 			if (YPrim != null) YPrim = null;
-			YPrim = new CMatrixImpl(YOrder);
+			YPrim = new ComplexMatrixImpl(YOrder);
 		} else {
 			YPrimSeries.clear();  // zero out YPrim
 			YPrimShunt.clear();   // zero out YPrim
@@ -87,9 +87,9 @@ public class GICTransformerObjImpl extends PDElementImpl implements GICTransform
 			value = new Complex(G1, 0.0);
 			value2 = value.negate();
 			for (i = 0; i < nPhases; i++) {
-				YPrimTemp.setElement(i, i, value);  // elements are only on the diagonals
-				YPrimTemp.setElement(i+nPhases, i+nPhases,value);
-				YPrimTemp.setElemSym(i, i+nPhases, value2);
+				YPrimTemp.set(i, i, value);  // elements are only on the diagonals
+				YPrimTemp.set(i+nPhases, i+nPhases,value);
+				YPrimTemp.setSym(i, i+nPhases, value2);
 			}
 			break;
 
@@ -99,17 +99,17 @@ public class GICTransformerObjImpl extends PDElementImpl implements GICTransform
 			value = new Complex(G1, 0.0);
 			value2 = value.negate();
 			for (i = 0; i < nPhases; i++) {
-				YPrimTemp.setElement(i, i, value);  // elements are only on the diagonals
-				YPrimTemp.setElement(i+nPhases, i+nPhases, value);
-				YPrimTemp.setElemSym(i, i+nPhases, value2);
+				YPrimTemp.set(i, i, value);  // elements are only on the diagonals
+				YPrimTemp.set(i+nPhases, i+nPhases, value);
+				YPrimTemp.setSym(i, i+nPhases, value2);
 			}
 			// terminals 3 and 4
 			value = new Complex(G2, 0.0);
 			value2 = value.negate();
 			for (i = 2*nPhases+1; i < 3*nPhases; i++) {
-				YPrimTemp.setElement(i, i, value);  // elements are only on the diagonals
-				YPrimTemp.setElement(i+nPhases, i+nPhases, value);
-				YPrimTemp.setElemSym(i, i+nPhases, value2);
+				YPrimTemp.set(i, i, value);  // elements are only on the diagonals
+				YPrimTemp.set(i+nPhases, i+nPhases, value);
+				YPrimTemp.setSym(i, i+nPhases, value2);
 			}
 			break;
 
@@ -119,17 +119,17 @@ public class GICTransformerObjImpl extends PDElementImpl implements GICTransform
 			value = new Complex(G1, 0.0);
 			value2 = value.negate();
 			for (i = 0; i < nPhases; i++) {
-				YPrimTemp.setElement(i, i, value);  // elements are only on the diagonals
-				YPrimTemp.setElement(i+nPhases, i+nPhases, value);
-				YPrimTemp.setElemSym(i, i+nPhases, value2);
+				YPrimTemp.set(i, i, value);  // elements are only on the diagonals
+				YPrimTemp.set(i+nPhases, i+nPhases, value);
+				YPrimTemp.setSym(i, i+nPhases, value2);
 			}
 			// terminals 3 and 4
 			value = new Complex(G2, 0.0);
 			value2 = value.negate();
 			for (i = 2*nPhases+1; i < 3*nPhases; i++) {
-				YPrimTemp.setElement(i, i, value);  // elements are only on the diagonals
-				YPrimTemp.setElement(i+nPhases, i+nPhases, value);
-				YPrimTemp.setElemSym(i, i+nPhases, value2);
+				YPrimTemp.set(i, i, value);  // elements are only on the diagonals
+				YPrimTemp.set(i+nPhases, i+nPhases, value);
+				YPrimTemp.setSym(i, i+nPhases, value2);
 			}
 			break;
 		}

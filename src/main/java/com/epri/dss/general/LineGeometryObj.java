@@ -2,7 +2,7 @@ package com.epri.dss.general;
 
 import com.epri.dss.general.impl.ConductorChoice;
 import com.epri.dss.general.impl.LineGeometryObjImpl.LineGeometryProblem;
-import com.epri.dss.shared.CMatrix;
+import com.epri.dss.shared.ComplexMatrix;
 
 /**
  * The LineGeometry object is a general DSS object used by all circuits
@@ -31,9 +31,9 @@ public interface LineGeometryObj extends DSSObject {
 
 	int getActiveCond();
 
-	CMatrix getYcMatrix(double f, double length, int units);
+	ComplexMatrix getYcMatrix(double f, double length, int units);
 
-	CMatrix getZMatrix(double f, double length, int units);
+	ComplexMatrix getZMatrix(double f, double length, int units);
 
 	double getRhoEarth();
 

@@ -8,7 +8,7 @@ import com.epri.dss.common.CktElement;
 import com.epri.dss.common.DSSClass;
 import com.epri.dss.common.SolutionObj;
 import com.epri.dss.general.impl.DSSObjectImpl;
-import com.epri.dss.shared.CMatrix;
+import com.epri.dss.shared.ComplexMatrix;
 
 public class DSSCktElement extends DSSObjectImpl implements CktElement {
 
@@ -30,9 +30,9 @@ public class DSSCktElement extends DSSObjectImpl implements CktElement {
 
 	protected int busIndex;
 
-	protected CMatrix YPrimSeries;
-	protected CMatrix YPrimShunt;
-	protected CMatrix YPrim;  // order will be nTerms * nCond
+	protected ComplexMatrix YPrimSeries;
+	protected ComplexMatrix YPrimShunt;
+	protected ComplexMatrix YPrim;  // order will be nTerms * nCond
 
 	/* Frequency at which YPrim has been computed */
 	protected double YPrimFreq;
@@ -271,7 +271,7 @@ public class DSSCktElement extends DSSObjectImpl implements CktElement {
 		return enabled;
 	}
 
-	public int getYPrim(CMatrix YMatrix, int opt) {
+	public int getYPrim(ComplexMatrix YMatrix, int opt) {
 		// FIXME Pass by reference
 		switch (opt) {
 		case DSSGlobals.ALL_YPRIM:
@@ -592,7 +592,7 @@ public class DSSCktElement extends DSSObjectImpl implements CktElement {
 		throw new UnsupportedOperationException();
 	}
 
-	private void doYprimCalcs(CMatrix YMatrix) {
+	private void doYprimCalcs(ComplexMatrix YMatrix) {
 		int i, j, k = 0, ii, jj, elimRow;
 		Complex Ynn, Yij, Yin, Ynj;
 		int[] rowEliminated = null;
@@ -610,25 +610,25 @@ public class DSSCktElement extends DSSObjectImpl implements CktElement {
 					}
 					// first do Kron reduction
 					elimRow = j + k;
-					Ynn = YMatrix.getElement(elimRow, elimRow);
+					Ynn = YMatrix.get(elimRow, elimRow);
 					if (Ynn.abs() == 0.0)
 						Ynn = new Complex(DSSGlobals.EPSILON, Ynn.getImaginary());
 					rowEliminated[elimRow] = 1;  // TODO Check zero based indexing.
 					for (ii = 0; ii < YOrder; ii++) {
 						if (rowEliminated[ii] == 0) {
-							Yin = YMatrix.getElement(ii, elimRow);
+							Yin = YMatrix.get(ii, elimRow);
 							for (jj = 0; jj < YOrder; jj++)
 								if (rowEliminated[jj] == 0) {
-									Yij = YMatrix.getElement(ii, jj);
-									Ynj = YMatrix.getElement(elimRow, jj);
-									YMatrix.setElemSym(ii, jj, Yij.subtract(Yin.multiply(Ynj).divide(Ynn)));
+									Yij = YMatrix.get(ii, jj);
+									Ynj = YMatrix.get(elimRow, jj);
+									YMatrix.setSym(ii, jj, Yij.subtract(Yin.multiply(Ynj).divide(Ynn)));
 								}
 						}
 					}
 					// now zero out row and column
 					YMatrix.zeroRow(elimRow);
 					YMatrix.zeroCol(elimRow);
-					YMatrix.setElement(elimRow, elimRow, new Complex(DSSGlobals.EPSILON, 0.0));  // in case node gets isolated
+					YMatrix.set(elimRow, elimRow, new Complex(DSSGlobals.EPSILON, 0.0));  // in case node gets isolated
 				}
 			}
 			k = k + nConds;

@@ -6,7 +6,7 @@ import com.epri.dss.general.LineSpacingObj;
 import com.epri.dss.general.impl.ConductorChoice;
 import org.apache.commons.math.complex.Complex;
 
-import com.epri.dss.shared.CMatrix;
+import com.epri.dss.shared.ComplexMatrix;
 
 public interface LineObj extends PDElement {
 
@@ -14,13 +14,13 @@ public interface LineObj extends PDElement {
 
 	void fetchCNCableList(String code);
 
-	CMatrix getZ();
+	ComplexMatrix getZ();
 
-	void setZ(CMatrix z);
+	void setZ(ComplexMatrix z);
 
-	CMatrix getYc();
+	ComplexMatrix getYc();
 
-	void setYc(CMatrix yc);
+	void setYc(ComplexMatrix yc);
 
 	double getR1();
 
@@ -175,9 +175,9 @@ public interface LineObj extends PDElement {
 
 	void setLineCodeSpecified(boolean lineCodeSpecified);
 
-	CMatrix getZInv();
+	ComplexMatrix getZInv();
 
-	void setZInv(CMatrix zinv);
+	void setZInv(ComplexMatrix zinv);
 
 	boolean isCapSpecified();
 

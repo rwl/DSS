@@ -1,16 +1,16 @@
 package com.epri.dss.conversion;
 
-import com.epri.dss.shared.CMatrix;
+import com.epri.dss.shared.ComplexMatrix;
 
 public interface EquivalentObj extends PCElement {
 
-	CMatrix getZ();
+	ComplexMatrix getZ();
 
-	void setZ(CMatrix z);
+	void setZ(ComplexMatrix z);
 
-	CMatrix getZinv();
+	ComplexMatrix getZinv();
 
-	void setZInv(CMatrix zinv);
+	void setZInv(ComplexMatrix zinv);
 
 	// Private method in OpenDSS
 	int doTerminalsDef(int n);

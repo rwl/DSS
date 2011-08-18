@@ -3,7 +3,7 @@ package com.epri.dss.conversion.impl;
 import java.io.PrintStream;
 
 import com.epri.dss.parser.impl.Parser;
-import com.epri.dss.shared.impl.CMatrixImpl;
+import com.epri.dss.shared.impl.ComplexMatrixImpl;
 import com.epri.dss.shared.impl.ComplexUtil;
 
 import org.apache.commons.math.complex.Complex;
@@ -18,7 +18,7 @@ import com.epri.dss.conversion.Load;
 import com.epri.dss.conversion.LoadObj;
 import com.epri.dss.general.LoadShapeObj;
 import com.epri.dss.general.GrowthShapeObj;
-import com.epri.dss.shared.CMatrix;
+import com.epri.dss.shared.ComplexMatrix;
 import com.epri.dss.shared.Dynamics;
 
 public class LoadObjImpl extends PCElementImpl implements LoadObj {
@@ -62,7 +62,7 @@ public class LoadObjImpl extends PCElementImpl implements LoadObj {
 	private Complex Yeq95;
 	private Complex Yneut;
 	/** To handle cases where one conductor of load is open */
-	private CMatrix YPrimOpenCond;
+	private ComplexMatrix YPrimOpenCond;
 	/** Fixed value of y for type 7 load */
 	private double YQFixed;
 	private double[] ZIPV;
@@ -551,7 +551,7 @@ public class LoadObjImpl extends PCElementImpl implements LoadObj {
 		setPFChanged(false);
 	}
 
-	private void calcYPrimMatrix(CMatrix YMatrix) {
+	private void calcYPrimMatrix(ComplexMatrix YMatrix) {
 		Complex Y, Yij;
 		int i, j;
 		double freqMultiplier;
@@ -565,26 +565,26 @@ public class LoadObjImpl extends PCElementImpl implements LoadObj {
 		switch (connection) {
 		case 0:  // wye
 			for (i = 0; i < nPhases; i++) {
-				YMatrix.setElement(i, i, Y);
-				YMatrix.addElement(nConds, nConds, Y);
-				YMatrix.setElemSym(i, nConds, Yij);
+				YMatrix.set(i, i, Y);
+				YMatrix.add(nConds, nConds, Y);
+				YMatrix.setSym(i, nConds, Yij);
 			}
-			YMatrix.addElement(nConds, nConds, Yneut);  // neutral
+			YMatrix.add(nConds, nConds, Yneut);  // neutral
 
 			/* If neutral is floating, make sure there is some small
 			 * connection to ground  by increasing the last diagonal slightly.
 			 */
 			if (RNeut < 0.0)
-				YMatrix.setElement(nConds, nConds, YMatrix.getElement(nConds, nConds).multiply(1.000001));
+				YMatrix.set(nConds, nConds, YMatrix.get(nConds, nConds).multiply(1.000001));
 			break;
 		case 1:  // delta or L-L
 			for (i = 0; i < nPhases; i++) {
 				j = i + 1;
 				if (j > nConds)
 					j = 0;  // wrap around for closed connections
-				YMatrix.addElement(i, i, Y);
-				YMatrix.addElement(j, j, Y);
-				YMatrix.addElemSym(i, j, Yij);  // get both off-diagonal elements
+				YMatrix.add(i, i, Y);
+				YMatrix.add(j, j, Y);
+				YMatrix.addSym(i, j, Yij);  // get both off-diagonal elements
 			}
 			break;
 		}
@@ -603,9 +603,9 @@ public class LoadObjImpl extends PCElementImpl implements LoadObj {
 			if (YPrimSeries != null) YPrimSeries = null;
 			if (YPrim != null) YPrim = null;
 
-			YPrimSeries = new CMatrixImpl(YOrder);
-			YPrimShunt  = new CMatrixImpl(YOrder);
-			YPrim        = new CMatrixImpl(YOrder);
+			YPrimSeries = new ComplexMatrixImpl(YOrder);
+			YPrimShunt  = new ComplexMatrixImpl(YOrder);
+			YPrim        = new ComplexMatrixImpl(YOrder);
 		} else {
 			YPrimShunt.clear();
 			YPrimSeries.clear();
@@ -626,7 +626,7 @@ public class LoadObjImpl extends PCElementImpl implements LoadObj {
 
 		// set YPrim_Series based on diagonals of YPrim_Shunt so that calcVoltages doesn't fail
 		for (int i = 0; i < YOrder; i++)
-			YPrimSeries.setElement(i, i, YPrimShunt.getElement(i, i).multiply(1.0e-10));
+			YPrimSeries.set(i, i, YPrimShunt.get(i, i).multiply(1.0e-10));
 
 		YPrim.copyFrom(YPrimShunt);
 
@@ -1056,13 +1056,13 @@ public class LoadObjImpl extends PCElementImpl implements LoadObj {
 
 				// only reallocate when necessary
 				if (YPrimOpenCond == null) {
-					YPrimOpenCond = new CMatrixImpl(YOrder);
+					YPrimOpenCond = new ComplexMatrixImpl(YOrder);
 				} else {
 					YPrimOpenCond.clear();
 				}
 				if (YPrimOpenCond.order() != YOrder) {
 					YPrimOpenCond = null;
-					YPrimOpenCond = new CMatrixImpl(YOrder);
+					YPrimOpenCond = new ComplexMatrixImpl(YOrder);
 				}
 				calcYPrimMatrix(YPrimOpenCond);
 
@@ -1075,7 +1075,7 @@ public class LoadObjImpl extends PCElementImpl implements LoadObj {
 						if (!terminals[i].getConductors()[j].isClosed()) {
 							YPrimOpenCond.zeroRow(j + k);
 							YPrimOpenCond.zeroCol(j + k);
-							YPrimOpenCond.setElement(j + k, j + k, new Complex(1.0e-12, 0.0));  // in case node gets isolated
+							YPrimOpenCond.set(j + k, j + k, new Complex(1.0e-12, 0.0));  // in case node gets isolated
 						}
 					}
 					k = k + nConds;
@@ -1919,11 +1919,11 @@ public class LoadObjImpl extends PCElementImpl implements LoadObj {
 		Yneut = value;
 	}
 
-	public CMatrix getYPrimOpenCond() {
+	public ComplexMatrix getYPrimOpenCond() {
 		return YPrimOpenCond;
 	}
 
-	public void setYPrimOpenCond(CMatrix value) {
+	public void setYPrimOpenCond(ComplexMatrix value) {
 		YPrimOpenCond = value;
 	}
 

@@ -22,11 +22,11 @@ import com.epri.dss.general.LineGeometryObj;
 import com.epri.dss.meter.EnergyMeter;
 import com.epri.dss.meter.EnergyMeterObj;
 import com.epri.dss.parser.impl.Parser;
-import com.epri.dss.shared.CMatrix;
+import com.epri.dss.shared.ComplexMatrix;
 import com.epri.dss.shared.CktTree;
 import com.epri.dss.shared.CktTreeNode;
 import com.epri.dss.shared.Polar;
-import com.epri.dss.shared.impl.CMatrixImpl;
+import com.epri.dss.shared.impl.ComplexMatrixImpl;
 import com.epri.dss.shared.impl.CktTreeImpl;
 import com.epri.dss.shared.impl.ComplexUtil;
 
@@ -1323,7 +1323,7 @@ public abstract class ShowResults {
 
 	public static void showFaultStudy(String fileName) {
 		int i, iBus, iphs;
-		CMatrix YFault, ZFault;
+		ComplexMatrix YFault, ZFault;
 		Complex[] VFault;  /* Big temp array */
 		FileWriter fw;
 		PrintWriter pw;
@@ -1382,14 +1382,14 @@ public abstract class ShowResults {
 			for (iBus = 0; iBus < ckt.getNumBuses(); iBus++) {
 				/* Bus Norton equivalent current, Isc has been previously computed */
 				bus = ckt.getBuses()[iBus];
-				ZFault = new CMatrixImpl(bus.getNumNodesThisBus());
+				ZFault = new ComplexMatrixImpl(bus.getNumNodesThisBus());
 				ZFault.copyFrom(bus.getZsc());
 
 				for (iphs = 0; iphs < bus.getNumNodesThisBus(); iphs++) {
-					IFault = bus.getVBus()[iphs].divide( bus.getZsc().getElement(iphs, iphs) );
+					IFault = bus.getVBus()[iphs].divide( bus.getZsc().get(iphs, iphs) );
 					pw.print(Utilities.pad( Utilities.encloseQuotes(ckt.getBusList().get(iBus)), maxBusNameLength + 2) + iphs + IFault.abs() + "   ");
 					for (i = 0; i < bus.getNumNodesThisBus(); i++) {
-						Vphs = bus.getVBus()[i].subtract( bus.getZsc().getElement(i, iphs).multiply(IFault) ).abs();
+						Vphs = bus.getVBus()[i].subtract( bus.getZsc().get(i, iphs).multiply(IFault) ).abs();
 						if (bus.getKVBase() > 0.0) {
 							Vphs = 0.001 * Vphs / bus.getKVBase();
 							pw.print(" " + Vphs);
@@ -1416,16 +1416,16 @@ public abstract class ShowResults {
 			for (iBus = 0; iBus < ckt.getNumBuses(); iBus++) {
 				/* Bus Norton equivalent current, Isc has been previously computed */
 				bus = ckt.getBuses()[iBus];
-				YFault = new CMatrixImpl(bus.getNumNodesThisBus());
+				YFault = new ComplexMatrixImpl(bus.getNumNodesThisBus());
 				VFault = new Complex[bus.getNumNodesThisBus()];
 
 				GFault = new Complex(10000.0, 0.0);
 
 				for (iphs = 0; iphs < bus.getNumNodesThisBus(); iphs++) {
 					YFault.copyFrom(bus.getYsc());
-					YFault.addElement(iphs, iphs, GFault);
-					YFault.addElement(iphs + 1, iphs + 1, GFault);
-					YFault.addElemSym(iphs, iphs + 1, GFault.negate());
+					YFault.add(iphs, iphs, GFault);
+					YFault.add(iphs + 1, iphs + 1, GFault);
+					YFault.addSym(iphs, iphs + 1, GFault.negate());
 
 					/* Solve for injection currents */
 					YFault.invert();
@@ -2516,7 +2516,7 @@ public abstract class ShowResults {
 		PrintWriter pw2;
 		int p;
 		LineGeometryObj pElem;
-		CMatrix Z, Yc;
+		ComplexMatrix Z, Yc;
 		int i, j;
 		double w;
 		Complex Zs, Zm,	Z1, Z0;
@@ -2574,7 +2574,7 @@ public abstract class ShowResults {
 				pw.println("R MATRIX, ohms per " + LineUnits.lineUnitsStr(units));
 				for (i = 0; i < Z.order(); i++) {
 					for (j = 0; j < i; j++)
-						pw.printf("%.6g, ", Z.getElement(i, j).getReal());
+						pw.printf("%.6g, ", Z.get(i, j).getReal());
 					pw.println();
 				}
 
@@ -2582,7 +2582,7 @@ public abstract class ShowResults {
 				pw.println("jX MATRIX, ohms per " + LineUnits.lineUnitsStr(units));
 				for (i = 0; i < Z.order(); i++) {
 					for (j = 0; j < i; j++)
-						pw.printf("%.6g, ", Z.getElement(i, j).getImaginary());
+						pw.printf("%.6g, ", Z.get(i, j).getImaginary());
 					pw.println();
 				}
 
@@ -2590,7 +2590,7 @@ public abstract class ShowResults {
 				pw.println("Susceptance (jB) MATRIX, S per " + LineUnits.lineUnitsStr(units));
 				for (i = 0; i < Yc.order(); i++) {
 					for (j = 0; j < i; j++)
-						pw.printf("%.6g, ", Yc.getElement(i, j).getImaginary());
+						pw.printf("%.6g, ", Yc.get(i, j).getImaginary());
 					pw.println();
 				}
 
@@ -2599,7 +2599,7 @@ public abstract class ShowResults {
 				pw.println("L MATRIX, mH per " + LineUnits.lineUnitsStr(units));
 				for (i = 0; i < Z.order(); i++) {
 					for (j = 0; j < i; j++)
-						pw.printf("%.6g, ", Z.getElement(i, j).getImaginary() / w);
+						pw.printf("%.6g, ", Z.get(i, j).getImaginary() / w);
 					pw.println();
 				}
 
@@ -2608,7 +2608,7 @@ public abstract class ShowResults {
 				pw.println("C MATRIX, nF per " + LineUnits.lineUnitsStr(units));
 				for (i = 0; i < Yc.order(); i++) {
 					for (j = 0; j < i; j++)
-						pw.printf("%.6g, ", Yc.getElement(i, j).getImaginary() / w);
+						pw.printf("%.6g, ", Yc.get(i, j).getImaginary() / w);
 					pw.println();
 				}
 
@@ -2624,7 +2624,7 @@ public abstract class ShowResults {
 				pw2.print("~ Rmatrix=[");
 				for (i = 0; i < Z.order(); i++) {
 					for (j = 0; j < i; j++)
-						pw2.printf("%.6g  ", Z.getElement(i, j).getReal());
+						pw2.printf("%.6g  ", Z.get(i, j).getReal());
 					if (i < Z.order()) pw2.print("|");
 				}
 				pw2.println("]");
@@ -2632,7 +2632,7 @@ public abstract class ShowResults {
 				pw2.print("~ Xmatrix=[");
 				for (i = 0; i < Z.order(); i++) {
 					for (j = 0; j < i; j++)
-						pw2.printf("%.6g  ", Z.getElement(i, j).getImaginary());
+						pw2.printf("%.6g  ", Z.get(i, j).getImaginary());
 					if (i < Z.order()) pw2.print("|");
 				}
 				pw2.println("]");
@@ -2641,7 +2641,7 @@ public abstract class ShowResults {
 				pw2.print("~ Cmatrix=[");
 				for (i = 0; i < Yc.order(); i++) {
 					for (j = 0; j < i; j++)
-						pw2.printf("%.6g  ", Yc.getElement(i, j).getImaginary() / w);
+						pw2.printf("%.6g  ", Yc.get(i, j).getImaginary() / w);
 					if (i < Yc.order()) pw2.print("|");
 				}
 				pw2.println("]");
@@ -2663,10 +2663,10 @@ public abstract class ShowResults {
 					pw.println("-------------------------------------------------------------------");
 					pw.println();
 					for (i = 0; i < 3; i++)
-						Zs = Zs.add( Z.getElement(i, i) );
+						Zs = Zs.add( Z.get(i, i) );
 					for (i = 0; i < 3; i++)
 						for (j = 0; j < i-1; j++)  // TODO Check zero based indexing
-							Zm = Zm.add( Z.getElement(i, j) );
+							Zm = Zm.add( Z.get(i, j) );
 
 					Z1 = ComplexUtil.divide(Zs.subtract(Zm), 3.0);
 					Z0 = ComplexUtil.divide(Zm.multiply(2.0).add(Zs), 3.0);
@@ -2681,16 +2681,16 @@ public abstract class ShowResults {
 					Ycm = Complex.ZERO;
 					for (i = 0; i < 3; i++)
 						for (j = 0; j < 3; j++)
-							Ycm = Ycm.add(Z.getElement(i, j));
+							Ycm = Ycm.add(Z.get(i, j));
 					Xcm = ComplexUtil.invert(Ycm).getImaginary();
 
 					w = freq * DSSGlobals.TWO_PI /1.e9;
 					/* Capacitance */
 					for (i = 0; i < 3; i++)
-						Cs = Cs + Yc.getElement(i, i).getImaginary();
+						Cs = Cs + Yc.get(i, i).getImaginary();
 					for (i = 0; i < 3; i++)
 						for (j = 0; j < i - 1; j++)
-							Cm = Cm + Yc.getElement(i, j).getImaginary();
+							Cm = Cm + Yc.get(i, j).getImaginary();
 
 					C1 = (Cs - Cm) / 3.0 / w;   // nF
 					C0 = (Cs + 2.0 * Cm) / 3.0 / w;
@@ -2699,7 +2699,7 @@ public abstract class ShowResults {
 					Ycm = Complex.ZERO;
 					for (i = 0; i < 3; i++)  // add up all elements of Z inverse
 						for (j = 0; j < 3; j++)
-							Ycm = Ycm.add(Yc.getElement(i, j));
+							Ycm = Ycm.add(Yc.get(i, j));
 					Ccm = Ycm.getImaginary() / w;
 
 					pw.println("C1, nF per " + LineUnits.lineUnitsStr(units) + String.format(" = %.6g", C1));
@@ -2793,7 +2793,7 @@ public abstract class ShowResults {
 	public static void showY(String fileName) {
 		FileWriter fw;
 		PrintWriter pw;
-		CMatrix hY;
+		ComplexMatrix hY;
 		long nnz, nBus;
 		long i, row, col;
 		double re, im;

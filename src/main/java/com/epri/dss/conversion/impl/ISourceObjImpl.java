@@ -3,7 +3,7 @@ package com.epri.dss.conversion.impl;
 import java.io.PrintStream;
 
 import com.epri.dss.parser.impl.Parser;
-import com.epri.dss.shared.impl.CMatrixImpl;
+import com.epri.dss.shared.impl.ComplexMatrixImpl;
 import com.epri.dss.shared.impl.ComplexUtil;
 
 import org.apache.commons.math.complex.Complex;
@@ -70,10 +70,10 @@ public class ISourceObjImpl extends PCElementImpl implements ISourceObj {
 		if (isYprimInvalid()) {
 			if (YPrimSeries != null)
 				YPrimSeries = null;
-			YPrimSeries = new CMatrixImpl(YOrder);
+			YPrimSeries = new ComplexMatrixImpl(YOrder);
 			if (YPrim != null)
 				YPrim = null;
-			YPrim = new CMatrixImpl(YOrder);
+			YPrim = new ComplexMatrixImpl(YOrder);
 		} else {
 			YPrimSeries.clear();
 			YPrim.clear();

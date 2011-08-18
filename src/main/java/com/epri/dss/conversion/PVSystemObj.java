@@ -5,7 +5,7 @@ import java.io.File;
 import com.epri.dss.general.LoadShapeObj;
 import com.epri.dss.general.TShapeObj;
 import com.epri.dss.general.XYCurveObj;
-import com.epri.dss.shared.CMatrix;
+import com.epri.dss.shared.ComplexMatrix;
 import org.apache.commons.math.complex.Complex;
 
 /**
@@ -343,9 +343,9 @@ public interface PVSystemObj extends PCElement {
 
 	void setVThevHarm(double vthevharm);
 
-	CMatrix getYPrimOpenCond();
+	ComplexMatrix getYPrimOpenCond();
 
-	void setYPrimOpenCond(CMatrix yPrimOpenCond);
+	void setYPrimOpenCond(ComplexMatrix yPrimOpenCond);
 
 	double getRThev();
 

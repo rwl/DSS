@@ -2,12 +2,12 @@ package com.epri.dss.shared.test;
 
 import org.apache.commons.math.complex.Complex;
 
-import com.epri.dss.shared.CMatrix;
-import com.epri.dss.shared.impl.CMatrixImpl;
+import com.epri.dss.shared.ComplexMatrix;
+import com.epri.dss.shared.impl.ComplexMatrixImpl;
 
 import junit.framework.TestCase;
 
-public class CMatrixTest extends TestCase {
+public class ComplexMatrixTest extends TestCase {
 
 	int n = 6;
 
@@ -23,7 +23,7 @@ public class CMatrixTest extends TestCase {
 	 * Test matrix instantiation.
 	 */
 	public void testCMatrixImpl() {
-		CMatrix cm = new CMatrixImpl(n);
+		ComplexMatrix cm = new ComplexMatrixImpl(n);
 		assertNotNull(cm);
 	}
 
@@ -31,7 +31,7 @@ public class CMatrixTest extends TestCase {
 	 * Test matrix order.
 	 */
 	public void testOrder() {
-		CMatrix cm = new CMatrixImpl(n);
+		ComplexMatrix cm = new ComplexMatrixImpl(n);
 		assertEquals(n, cm.order());
 	}
 
@@ -39,9 +39,9 @@ public class CMatrixTest extends TestCase {
 	 * Test getting matrix elements.
 	 */
 	public void testGetElement() {
-		CMatrix cm = new CMatrixImpl(n);
-		assertEquals(0, cm.getElement(0, 0).getReal());
-		assertEquals(0, cm.getElement(0, 0).getImaginary());
+		ComplexMatrix cm = new ComplexMatrixImpl(n);
+		assertEquals(0, cm.get(0, 0).getReal());
+		assertEquals(0, cm.get(0, 0).getImaginary());
 	}
 
 	/**
@@ -50,19 +50,19 @@ public class CMatrixTest extends TestCase {
 	public void testSetElement() {
 		int i, j;
 		double real, imag;
-		CMatrix cm = new CMatrixImpl(n);
+		ComplexMatrix cm = new ComplexMatrixImpl(n);
 
 		i = 0; j = 0;
 		real = 2; imag = 3;
-		cm.setElement(i, j, new Complex(real, imag));
-		assertEquals(real, cm.getElement(i, j).getReal());
-		assertEquals(imag, cm.getElement(i, j).getImaginary());
+		cm.set(i, j, new Complex(real, imag));
+		assertEquals(real, cm.get(i, j).getReal());
+		assertEquals(imag, cm.get(i, j).getImaginary());
 
 		i = 1; j = 2;
 		real = 3; imag = 4;
-		cm.setElement(i, j, new Complex(real, imag));
-		assertEquals(real, cm.getElement(i, j).getReal());
-		assertEquals(imag, cm.getElement(i, j).getImaginary());
+		cm.set(i, j, new Complex(real, imag));
+		assertEquals(real, cm.get(i, j).getReal());
+		assertEquals(imag, cm.get(i, j).getImaginary());
 	}
 
 	/**
@@ -71,15 +71,15 @@ public class CMatrixTest extends TestCase {
 	public void testSetElemSym() {
 		int i, j;
 		double real, imag;
-		CMatrix cm = new CMatrixImpl(n);
+		ComplexMatrix cm = new ComplexMatrixImpl(n);
 
 		i = 1; j = 3;
 		real = 2; imag = 5;
-		cm.setElemSym(i, j, new Complex(real, imag));
-		assertEquals(real, cm.getElement(i, j).getReal());
-		assertEquals(imag, cm.getElement(i, j).getImaginary());
-		assertEquals(real, cm.getElement(j, i).getReal());
-		assertEquals(imag, cm.getElement(j, i).getImaginary());
+		cm.setSym(i, j, new Complex(real, imag));
+		assertEquals(real, cm.get(i, j).getReal());
+		assertEquals(imag, cm.get(i, j).getImaginary());
+		assertEquals(real, cm.get(j, i).getReal());
+		assertEquals(imag, cm.get(j, i).getImaginary());
 	}
 
 	/**
@@ -88,17 +88,17 @@ public class CMatrixTest extends TestCase {
 	public void testAddElement() {
 		int i, j;
 		double real, imag;
-		CMatrix cm = new CMatrixImpl(n);
+		ComplexMatrix cm = new ComplexMatrixImpl(n);
 
 		i = 3; j = 2;
 		real = 2; imag = 3;
-		cm.addElement(i, j, new Complex(real, imag));
-		assertEquals(real, cm.getElement(i, j).getReal());
-		assertEquals(imag, cm.getElement(i, j).getImaginary());
+		cm.add(i, j, new Complex(real, imag));
+		assertEquals(real, cm.get(i, j).getReal());
+		assertEquals(imag, cm.get(i, j).getImaginary());
 
-		cm.addElement(i, j, new Complex(real, imag));
-		assertEquals(real + real, cm.getElement(i, j).getReal());
-		assertEquals(imag + imag, cm.getElement(i, j).getImaginary());
+		cm.add(i, j, new Complex(real, imag));
+		assertEquals(real + real, cm.get(i, j).getReal());
+		assertEquals(imag + imag, cm.get(i, j).getImaginary());
 	}
 
 	/**
@@ -107,21 +107,21 @@ public class CMatrixTest extends TestCase {
 	public void testAddElemSym() {
 		int i, j;
 		double real, imag;
-		CMatrix cm = new CMatrixImpl(n);
+		ComplexMatrix cm = new ComplexMatrixImpl(n);
 
 		i = 4; j = 1;
 		real = 1; imag = 3;
-		cm.addElemSym(i, j, new Complex(real, imag));
-		assertEquals(real, cm.getElement(i, j).getReal());
-		assertEquals(imag, cm.getElement(i, j).getImaginary());
-		assertEquals(real, cm.getElement(j, i).getReal());
-		assertEquals(imag, cm.getElement(j, i).getImaginary());
+		cm.addSym(i, j, new Complex(real, imag));
+		assertEquals(real, cm.get(i, j).getReal());
+		assertEquals(imag, cm.get(i, j).getImaginary());
+		assertEquals(real, cm.get(j, i).getReal());
+		assertEquals(imag, cm.get(j, i).getImaginary());
 
-		cm.addElemSym(i, j, new Complex(real, imag));
-		assertEquals(real + real, cm.getElement(i, j).getReal());
-		assertEquals(imag + imag, cm.getElement(i, j).getImaginary());
-		assertEquals(real + real, cm.getElement(j, i).getReal());
-		assertEquals(imag + imag, cm.getElement(j, i).getImaginary());
+		cm.addSym(i, j, new Complex(real, imag));
+		assertEquals(real + real, cm.get(i, j).getReal());
+		assertEquals(imag + imag, cm.get(i, j).getImaginary());
+		assertEquals(real + real, cm.get(j, i).getReal());
+		assertEquals(imag + imag, cm.get(j, i).getImaginary());
 	}
 
 	/**
@@ -130,18 +130,18 @@ public class CMatrixTest extends TestCase {
 	public void testClear() {
 		int i, j, i1, j1, i2, j2;
 		double real, imag;
-		CMatrix cm = new CMatrixImpl(n);
+		ComplexMatrix cm = new ComplexMatrixImpl(n);
 
 		i1 = 0; j1 = 0; i2 = 3; j2 = 5;
 		real = 2; imag = 3;
-		cm.setElement(i1, j1, new Complex(real, imag));
-		cm.setElemSym(i2, j2, new Complex(real, imag));
+		cm.set(i1, j1, new Complex(real, imag));
+		cm.setSym(i2, j2, new Complex(real, imag));
 
 		cm.clear();
 		for (i = 0; i < n; i++)
 			for (j = 0; j < n; j++) {
-				assertEquals(0, cm.getElement(i, j).getReal());
-				assertEquals(0, cm.getElement(i, j).getImaginary());
+				assertEquals(0, cm.get(i, j).getReal());
+				assertEquals(0, cm.get(i, j).getImaginary());
 			}
 	}
 
@@ -150,16 +150,16 @@ public class CMatrixTest extends TestCase {
 	 */
 	public void testCopyFrom() {
 		int i, j;
-		CMatrix cm1, cm2;
+		ComplexMatrix cm1, cm2;
 
 		cm1 = createTestMatrix();
-		cm2 = new CMatrixImpl(n);
+		cm2 = new ComplexMatrixImpl(n);
 		cm2.copyFrom(cm1);
 
 		for (i = 0; i < n; i++)
 			for (j = 0; j < n; j++) {
-				assertEquals(i, cm2.getElement(i, j).getReal());
-				assertEquals(j, cm2.getElement(i, j).getImaginary());
+				assertEquals(i, cm2.get(i, j).getReal());
+				assertEquals(j, cm2.get(i, j).getImaginary());
 			}
 	}
 
@@ -168,15 +168,15 @@ public class CMatrixTest extends TestCase {
 	 */
 	public void testAddFrom() {
 		int i, j;
-		CMatrix cm;
+		ComplexMatrix cm;
 
 		cm = createTestMatrix();
 		cm.addFrom(cm);
 
 		for (i = 0; i < n; i++)
 			for (j = 0; j < n; j++) {
-				assertEquals(i + i, cm.getElement(i, j).getReal());
-				assertEquals(j + j, cm.getElement(i, j).getImaginary());
+				assertEquals(i + i, cm.get(i, j).getReal());
+				assertEquals(j + j, cm.get(i, j).getImaginary());
 			}
 	}
 
@@ -186,7 +186,7 @@ public class CMatrixTest extends TestCase {
 	public void testAsArray() {
 		int i, j, k;
 		Complex[] array;
-		CMatrix cm;
+		ComplexMatrix cm;
 
 		cm = createTestMatrix();
 		array = cm.asArray();
@@ -205,14 +205,14 @@ public class CMatrixTest extends TestCase {
 	 */
 	public void testZeroRow() {
 		int iRow, j;
-		CMatrix cm;
+		ComplexMatrix cm;
 
 		iRow = 2;
 		cm = createTestMatrix();
 		cm.zeroRow(iRow);
 		for (j = 0; j < cm.order(); j++) {
-			assertEquals(0, cm.getElement(iRow, j).getReal());
-			assertEquals(0, cm.getElement(iRow, j).getImaginary());
+			assertEquals(0, cm.get(iRow, j).getReal());
+			assertEquals(0, cm.get(iRow, j).getImaginary());
 		}
 	}
 
@@ -221,14 +221,14 @@ public class CMatrixTest extends TestCase {
 	 */
 	public void testZeroCol() {
 		int i, jCol;
-		CMatrix cm;
+		ComplexMatrix cm;
 
 		jCol = 3;
 		cm = createTestMatrix();
 		cm.zeroCol(jCol);
 		for (i = 0; i < cm.order(); i++) {
-			assertEquals(0, cm.getElement(i, jCol).getReal());
-			assertEquals(0, cm.getElement(i, jCol).getImaginary());
+			assertEquals(0, cm.get(i, jCol).getReal());
+			assertEquals(0, cm.get(i, jCol).getImaginary());
 		}
 	}
 
@@ -238,7 +238,7 @@ public class CMatrixTest extends TestCase {
 	public void testAvgDiagonal() {
 		double expect;
 		Complex avg;
-		CMatrix cm;
+		ComplexMatrix cm;
 
 		expect = 0;
 		for (int i = 0; i < n; i++)
@@ -246,7 +246,7 @@ public class CMatrixTest extends TestCase {
 		expect = expect / n;
 
 		cm = createTestMatrix();
-		avg = cm.avgDiagonal();
+		avg = cm.avgDiag();
 
 		assertEquals(expect, avg.getReal());
 		assertEquals(expect, avg.getImaginary());
@@ -257,10 +257,10 @@ public class CMatrixTest extends TestCase {
 	 */
 	public void testAvgOffDiagonal() {
 		Complex avg;
-		CMatrix cm;
+		ComplexMatrix cm;
 
 		cm = createTestMatrix();
-		avg = cm.avgOffDiagonal();
+		avg = cm.avgOffDiag();
 	}
 
 	/**
@@ -315,13 +315,13 @@ public class CMatrixTest extends TestCase {
 	/**
 	 * @return an n x n test matrix
 	 */
-	private CMatrix createTestMatrix() {
+	private ComplexMatrix createTestMatrix() {
 		int i, j;
-		CMatrix cm = new CMatrixImpl(n);
+		ComplexMatrix cm = new ComplexMatrixImpl(n);
 
 		for (i = 0; i < n; i++)
 			for (j = 0; j < n; j++) {
-				cm.setElement(i, i, new Complex(i, j));
+				cm.set(i, i, new Complex(i, j));
 			}
 
 		return cm;

@@ -1,12 +1,12 @@
 package com.epri.dss.common.impl;
 
-import com.epri.dss.shared.impl.CMatrixImpl;
+import com.epri.dss.shared.impl.ComplexMatrixImpl;
 import org.apache.commons.math.complex.Complex;
 
 import com.epri.dss.common.Bus;
 import com.epri.dss.common.Circuit;
 import com.epri.dss.general.impl.NamedObjectImpl;
-import com.epri.dss.shared.CMatrix;
+import com.epri.dss.shared.ComplexMatrix;
 
 public class DSSBus extends NamedObjectImpl implements Bus {
 
@@ -22,7 +22,7 @@ public class DSSBus extends NamedObjectImpl implements Bus {
 	private int[] refNo;
 
 	protected Complex[] VBus, busCurrent;
-	protected CMatrix Zsc, Ysc;
+	protected ComplexMatrix Zsc, Ysc;
 
 	/* Coordinates */
 	protected double x, y;
@@ -118,8 +118,8 @@ public class DSSBus extends NamedObjectImpl implements Bus {
 
 	public void allocateBusQuantities() {
 		// have to perform a short circuit study to get this allocated
-		Ysc = new CMatrixImpl(numNodesThisBus);
-		Zsc = new CMatrixImpl(numNodesThisBus);
+		Ysc = new ComplexMatrixImpl(numNodesThisBus);
+		Zsc = new ComplexMatrixImpl(numNodesThisBus);
 		allocateBusVoltages();
 		allocateBusCurrents();
 	}
@@ -129,7 +129,7 @@ public class DSSBus extends NamedObjectImpl implements Bus {
 	 */
 	public Complex getZsc0() {
 		if (Zsc != null) {
-			return Zsc.avgDiagonal().add( Zsc.avgOffDiagonal().multiply(2.0) );
+			return Zsc.avgDiag().add( Zsc.avgOffDiag().multiply(2.0) );
 		} else {
 			return Complex.ZERO;
 		}
@@ -140,7 +140,7 @@ public class DSSBus extends NamedObjectImpl implements Bus {
 	 */
 	public Complex getZsc1() {
 		if (Zsc != null) {
-			return Zsc.avgDiagonal().subtract( Zsc.avgOffDiagonal() );
+			return Zsc.avgDiag().subtract( Zsc.avgOffDiag() );
 		} else {
 			return Complex.ZERO;
 		}
@@ -185,19 +185,19 @@ public class DSSBus extends NamedObjectImpl implements Bus {
 		busCurrent = buscurrent;
 	}
 
-	public CMatrix getZsc() {
+	public ComplexMatrix getZsc() {
 		return Zsc;
 	}
 
-	public void setZsc(CMatrix zsc) {
+	public void setZsc(ComplexMatrix zsc) {
 		Zsc = zsc;
 	}
 
-	public CMatrix getYsc() {
+	public ComplexMatrix getYsc() {
 		return Ysc;
 	}
 
-	public void setYsc(CMatrix ysc) {
+	public void setYsc(ComplexMatrix ysc) {
 		Ysc = ysc;
 	}
 

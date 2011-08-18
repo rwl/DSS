@@ -5,7 +5,7 @@ import com.epri.dss.common.impl.DSSGlobals;
 import com.epri.dss.conversion.GICLine;
 import com.epri.dss.conversion.GICLineObj;
 import com.epri.dss.parser.impl.Parser;
-import com.epri.dss.shared.impl.CMatrixImpl;
+import com.epri.dss.shared.impl.ComplexMatrixImpl;
 import com.epri.dss.shared.impl.CommandListImpl;
 
 public class GICLineImpl extends PCClassImpl implements GICLine {
@@ -233,8 +233,8 @@ public class GICLineImpl extends PCClassImpl implements GICLine {
 				if (agl.getZ() != null) agl.setZ(null);
 				if (agl.getZInv() != null) agl.setZInv(null);
 
-				agl.setZ( new CMatrixImpl(agl.getNPhases()) );
-				agl.setZInv( new CMatrixImpl(agl.getNPhases()) );
+				agl.setZ( new ComplexMatrixImpl(agl.getNPhases()) );
+				agl.setZInv( new ComplexMatrixImpl(agl.getNPhases()) );
 			}
 
 			agl.getZ().copyFrom(otherGICLine.getZ());

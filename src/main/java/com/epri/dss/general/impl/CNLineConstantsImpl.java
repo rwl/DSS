@@ -2,8 +2,8 @@ package com.epri.dss.general.impl;
 
 import com.epri.dss.general.CNLineConstants;
 import com.epri.dss.general.LineConstants;
-import com.epri.dss.shared.CMatrix;
-import com.epri.dss.shared.impl.CMatrixImpl;
+import com.epri.dss.shared.ComplexMatrix;
+import com.epri.dss.shared.impl.ComplexMatrixImpl;
 import org.apache.commons.math.complex.Complex;
 import com.epri.dss.shared.impl.LineUnits;
 import com.epri.dss.shared.impl.MathUtil;
@@ -36,7 +36,7 @@ public class CNLineConstantsImpl extends CableConstantsImpl implements CNLineCon
 		double Dij, YFactor;
 		int reducedSize;
 		int n, idxi, idxj;
-		CMatrix ZMat, ZTemp;
+		ComplexMatrix ZMat, ZTemp;
 		double resCN, radCN;
 		double gmrCN;
 		double denom, radIn, radOut;
@@ -58,7 +58,7 @@ public class CNLineConstantsImpl extends CableConstantsImpl implements CNLineCon
 
 		// add concentric neutrals to the end of conductor list; they are always reduced
 		n = getNumConds() + getNPhases();
-		ZMat = new CMatrixImpl(n);
+		ZMat = new ComplexMatrixImpl(n);
 
 		/* For less than 1 kHz use GMR to better match published data */
 		LFactor = new Complex(0.0, w * MU0 / LineConstants.TWO_PI);
@@ -77,7 +77,7 @@ public class CNLineConstantsImpl extends CableConstantsImpl implements CNLineCon
 			} else {
 				ZSpacing = LFactor.multiply( Math.log(1.0 / radius[i]) );
 			}
-			ZMat.setElement(i, i, Zi.add( ZSpacing.add(getZe(i, i)) ));
+			ZMat.set(i, i, Zi.add( ZSpacing.add(getZe(i, i)) ));
 		}
 
 		// CN self impedances
@@ -89,14 +89,14 @@ public class CNLineConstantsImpl extends CableConstantsImpl implements CNLineCon
 			ZSpacing = LFactor.multiply(Math.log(1.0 / gmrCN));
 			Zi = new Complex(resCN, 0.0);
 			idxi = i + getNumConds();
-			ZMat.setElement(idxi, idxi, Zi.add( ZSpacing.add(getZe(i, i)) ));
+			ZMat.set(idxi, idxi, Zi.add( ZSpacing.add(getZe(i, i)) ));
 		}
 
 		// mutual impedances - between CN cores and bare neutrals
 		for (i = 0; i < getNumConds(); i++) {
 			for (j = 0; j < i - 1; j++) {
 				Dij = Math.sqrt(MathUtil.sqr(X[i] - X[j]) + MathUtil.sqr(Y[i] - Y[j]));
-				ZMat.setElemSym(i, j, LFactor.multiply( Math.log(1.0 / Dij) ).add(getZe(i, j)));
+				ZMat.setSym(i, j, LFactor.multiply( Math.log(1.0 / Dij) ).add(getZe(i, j)));
 			}
 		}
 
@@ -106,7 +106,7 @@ public class CNLineConstantsImpl extends CableConstantsImpl implements CNLineCon
 			for (j = 0; j < i - 1; j++) {  // CN to other CN
 				idxj = j + getNumConds();
 				Dij = Math.sqrt(MathUtil.sqr(X[i] - X[j]) + MathUtil.sqr(Y[i] - Y[j]));
-				ZMat.setElemSym(idxi, idxj, LFactor.multiply( Math.log(1.0 / Dij) ).add(getZe(i, j)));
+				ZMat.setSym(idxi, idxj, LFactor.multiply( Math.log(1.0 / Dij) ).add(getZe(i, j)));
 			}
 			for (j = 0; j < getNumConds(); j++) {  // CN to cores and bare neutrals
 				idxj = j;
@@ -118,7 +118,7 @@ public class CNLineConstantsImpl extends CableConstantsImpl implements CNLineCon
 					Dij = Math.pow(Math.pow(Dij, kStrand[i]) - Math.pow(radCN, kStrand[i]),
 							1.0 / kStrand[i]);
 				}
-				ZMat.setElemSym(idxi, idxj, LFactor.multiply( Math.log(1.0 / Dij)).add(getZe(i, j)));
+				ZMat.setSym(idxi, idxj, LFactor.multiply( Math.log(1.0 / Dij)).add(getZe(i, j)));
 			}
 		}
 
@@ -138,7 +138,7 @@ public class CNLineConstantsImpl extends CableConstantsImpl implements CNLineCon
 		    radOut = 0.5 * diaIns[i];
 		    radIn = radOut - insLayer[i];
 		    denom = Math.log(radOut / radIn);
-			YcMatrix.setElement(i, i, new Complex(0.0, YFactor / denom));
+			YcMatrix.set(i, i, new Complex(0.0, YFactor / denom));
 		}
 
 		if (reducedSize > 0)

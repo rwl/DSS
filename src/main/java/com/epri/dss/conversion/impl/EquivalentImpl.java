@@ -5,7 +5,7 @@ import com.epri.dss.common.impl.DSSGlobals;
 import com.epri.dss.conversion.Equivalent;
 import com.epri.dss.conversion.EquivalentObj;
 import com.epri.dss.parser.impl.Parser;
-import com.epri.dss.shared.impl.CMatrixImpl;
+import com.epri.dss.shared.impl.ComplexMatrixImpl;
 import com.epri.dss.shared.impl.CommandListImpl;
 
 public class EquivalentImpl extends PCClassImpl implements Equivalent {
@@ -191,8 +191,8 @@ public class EquivalentImpl extends PCClassImpl implements Equivalent {
 				if (ae.getZinv() != null)
 					ae.setZInv(null);
 
-				ae.setZ(new CMatrixImpl(ae.getNPhases()));
-				ae.setZInv(new CMatrixImpl(ae.getNPhases()));
+				ae.setZ(new ComplexMatrixImpl(ae.getNPhases()));
+				ae.setZInv(new ComplexMatrixImpl(ae.getNPhases()));
 			}
 
 			ae.getZ().copyFrom(otherEquivalent.getZ());

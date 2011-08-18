@@ -10,8 +10,8 @@ import com.epri.dss.common.impl.Utilities;
 import com.epri.dss.conversion.Equivalent;
 import com.epri.dss.conversion.EquivalentObj;
 import com.epri.dss.parser.impl.Parser;
-import com.epri.dss.shared.CMatrix;
-import com.epri.dss.shared.impl.CMatrixImpl;
+import com.epri.dss.shared.ComplexMatrix;
+import com.epri.dss.shared.impl.ComplexMatrixImpl;
 import com.epri.dss.shared.impl.ComplexUtil;
 
 import org.apache.commons.math.complex.Complex;
@@ -30,8 +30,8 @@ public class EquivalentObjImpl extends PCElementImpl implements EquivalentObj {
 	private boolean needToDoRecalc;
 
 	// base frequency series Z matrix
-	protected CMatrix Z;
-	protected CMatrix ZInv;
+	protected ComplexMatrix Z;
+	protected ComplexMatrix ZInv;
 
 	public EquivalentObjImpl(DSSClassImpl parClass, String sourceName) {
 		super(parClass);
@@ -84,8 +84,8 @@ public class EquivalentObjImpl extends PCElementImpl implements EquivalentObj {
 		if (ZInv != null) ZInv = null;
 
 		// for a source, nPhases = nCond, for now
-		Z    = new CMatrixImpl(nPhases * nTerms);
-		ZInv = new CMatrixImpl(nPhases * nTerms);
+		Z    = new ComplexMatrixImpl(nPhases * nTerms);
+		ZInv = new ComplexMatrixImpl(nPhases * nTerms);
 
 		// build Z matrix for all phases
 		for (int i = 0; i < nTerms; i++)
@@ -100,10 +100,10 @@ public class EquivalentObjImpl extends PCElementImpl implements EquivalentObj {
 				for (int ii = 0; ii < nPhases; ii++) {
 					for (int jj = 0; jj < ii; jj++) {
 						if (ii == jj) {
-							Z.setElement(ii + iOffset, jj + jOffset, Zs);
+							Z.set(ii + iOffset, jj + jOffset, Zs);
 						} else {
-							Z.setElement(ii + iOffset, jj + jOffset, Zm);
-							Z.setElement(jj + iOffset, ii + jOffset, Zm);  // set other off-diagonal in this submatrix
+							Z.set(ii + iOffset, jj + jOffset, Zm);
+							Z.set(jj + iOffset, ii + jOffset, Zm);  // set other off-diagonal in this submatrix
 						}
 					}
 				}
@@ -139,9 +139,9 @@ public class EquivalentObjImpl extends PCElementImpl implements EquivalentObj {
 		// build only YPrim series
 		if (isYprimInvalid()) {
 			if (YPrimSeries != null) YPrimSeries = null;
-			YPrimSeries = new CMatrixImpl(YOrder);
+			YPrimSeries = new ComplexMatrixImpl(YOrder);
 			if (YPrim != null) YPrim = null;
-			YPrim = new CMatrixImpl(YOrder);
+			YPrim = new ComplexMatrixImpl(YOrder);
 		} else {
 			YPrimSeries.clear();
 			YPrim.clear();
@@ -156,10 +156,10 @@ public class EquivalentObjImpl extends PCElementImpl implements EquivalentObj {
 		/* Put in Series RL matrix adjusted for frequency */
 		for (i = 0; i < YOrder; i++) {
 			for (j = 0; j < YOrder; j++) {
-				value = Z.getElement(i, j);
+				value = Z.get(i, j);
 				/* Modify from base freq */
 				value = new Complex(value.getReal(), value.getImaginary() * freqMultiplier);
-				ZInv.setElement(i, j, value);
+				ZInv.set(i, j, value);
 			}
 		}
 
@@ -171,7 +171,7 @@ public class EquivalentObjImpl extends PCElementImpl implements EquivalentObj {
 					"Invalid impedance specified. Replaced with small resistance.", 803);
 			ZInv.clear();
 			for (i = 0; i < nPhases; i++)
-				ZInv.setElement(i, i, new Complex(1.0 / DSSGlobals.EPSILON, 0.0));
+				ZInv.set(i, i, new Complex(1.0 / DSSGlobals.EPSILON, 0.0));
 		}
 
 
@@ -283,7 +283,7 @@ public class EquivalentObjImpl extends PCElementImpl implements EquivalentObj {
 			f.println("zMatrix=");
 			for (i = 0; i < nPhases; i++) {
 				for (j = 0; j < i; j++) {
-					c = Z.getElement(i, j);
+					c = Z.get(i, j);
 					f.print(c.getReal() + " + j" + c.getImaginary());
 				}
 				f.println();
@@ -363,19 +363,19 @@ public class EquivalentObjImpl extends PCElementImpl implements EquivalentObj {
 		X0 = Utilities.resizeArray(X0, (int) Math.pow(nTerms, 2));
 	}
 
-	public CMatrix getZ() {
+	public ComplexMatrix getZ() {
 		return Z;
 	}
 
-	public void setZ(CMatrix z) {
+	public void setZ(ComplexMatrix z) {
 		Z = z;
 	}
 
-	public CMatrix getZinv() {
+	public ComplexMatrix getZinv() {
 		return ZInv;
 	}
 
-	public void setZInv(CMatrix zinv) {
+	public void setZInv(ComplexMatrix zinv) {
 		ZInv = zinv;
 	}
 

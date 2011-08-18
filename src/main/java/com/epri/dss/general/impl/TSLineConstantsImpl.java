@@ -1,8 +1,8 @@
 package com.epri.dss.general.impl;
 
 import com.epri.dss.general.TSLineConstants;
-import com.epri.dss.shared.CMatrix;
-import com.epri.dss.shared.impl.CMatrixImpl;
+import com.epri.dss.shared.ComplexMatrix;
+import com.epri.dss.shared.impl.ComplexMatrixImpl;
 import org.apache.commons.math.complex.Complex;
 import com.epri.dss.shared.impl.LineUnits;
 import com.epri.dss.shared.impl.MathUtil;
@@ -60,7 +60,7 @@ public class TSLineConstantsImpl extends CableConstantsImpl implements TSLineCon
 		double Dij, YFactor;
 		int reducedSize;
 		int n, idxi, idxj;
-		CMatrix ZMat, ZTemp;
+		ComplexMatrix ZMat, ZTemp;
 		double resTS, radTS;
 		double gmrTS;
 		double denom, radIn, radOut;
@@ -83,7 +83,7 @@ public class TSLineConstantsImpl extends CableConstantsImpl implements TSLineCon
 
 		// add concentric neutrals to the end of conductor list; they are always reduced
 		n = numConds + numPhases;
-		ZMat = new CMatrixImpl(n);
+		ZMat = new ComplexMatrixImpl(n);
 
 		/* For less than 1 kHz use GMR to better match published data */
 		LFactor = new Complex(0.0, w * MU0 / TWO_PI);
@@ -102,7 +102,7 @@ public class TSLineConstantsImpl extends CableConstantsImpl implements TSLineCon
 			} else {
 				ZSpacing = LFactor.multiply( Math.log(1.0 / radius[i]) );
 			}
-			ZMat.setElement(i, i, Zi.add( ZSpacing.add(getZe(i, i)) ));
+			ZMat.set(i, i, Zi.add( ZSpacing.add(getZe(i, i)) ));
 		}
 
 		// TS self impedances
@@ -112,14 +112,14 @@ public class TSLineConstantsImpl extends CableConstantsImpl implements TSLineCon
 			ZSpacing = LFactor.multiply( Math.log(1.0 / gmrTS) );
 			Zi = new Complex(resTS, 0.0);
 			idxi = i + numConds;
-			ZMat.setElement(idxi, idxi, Zi.add( ZSpacing.add(getZe(i, i)) ));
+			ZMat.set(idxi, idxi, Zi.add( ZSpacing.add(getZe(i, i)) ));
 		}
 
 		// mutual impedances - between TS cores and bare neutrals
 		for (i = 0; i < numConds; i++) {
 			for (j = 0; j < i; j++) {  // TODO Check zero based indexing
 				Dij = Math.sqrt(MathUtil.sqr(X[i] - X[j]) + MathUtil.sqr(Y[i] - Y[j]));
-				ZMat.setElemSym(i, j, LFactor.multiply( Math.log(1.0 / Dij)).add(getZe(i, j)));
+				ZMat.setSym(i, j, LFactor.multiply( Math.log(1.0 / Dij)).add(getZe(i, j)));
 			}
 		}
 
@@ -130,7 +130,7 @@ public class TSLineConstantsImpl extends CableConstantsImpl implements TSLineCon
 				// TS to other TS
 				idxj = j + numConds;
 				Dij = Math.sqrt(MathUtil.sqr(X[i] - X[j]) + MathUtil.sqr(Y[i] - Y[j]));
-				ZMat.setElemSym(idxi, idxj, LFactor.multiply( Math.log(1.0 / Dij) ).add(getZe(i, j)));
+				ZMat.setSym(idxi, idxj, LFactor.multiply( Math.log(1.0 / Dij) ).add(getZe(i, j)));
 			}
 			for (j = 0; j < numConds; j++) {
 				// CN to cores and bare neutrals
@@ -141,7 +141,7 @@ public class TSLineConstantsImpl extends CableConstantsImpl implements TSLineCon
 				} else {  // TS to another phase or bare neutral
 					Dij = Math.sqrt(MathUtil.sqr(X[i] - X[j]) + MathUtil.sqr(Y[i] - Y[j]));
 				}
-				ZMat.setElemSym(idxi, idxj, LFactor.multiply( Math.log(1.0 / Dij) ).add(getZe(i, j)));
+				ZMat.setSym(idxi, idxj, LFactor.multiply( Math.log(1.0 / Dij) ).add(getZe(i, j)));
 			}
 		}
 
@@ -161,7 +161,7 @@ public class TSLineConstantsImpl extends CableConstantsImpl implements TSLineCon
 		    radOut = 0.5 * diaIns[i];
 		    radIn  = radOut - insLayer[i];
 		    denom  = Math.log(radOut / radIn);
-			YcMatrix.setElement(i, i, new Complex(0.0, YFactor / denom));
+			YcMatrix.set(i, i, new Complex(0.0, YFactor / denom));
 		}
 
 		if (reducedSize > 0)

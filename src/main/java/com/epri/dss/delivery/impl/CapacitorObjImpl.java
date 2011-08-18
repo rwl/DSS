@@ -8,8 +8,8 @@ import com.epri.dss.common.impl.Utilities;
 import com.epri.dss.delivery.Capacitor;
 import com.epri.dss.delivery.CapacitorObj;
 import com.epri.dss.parser.impl.Parser;
-import com.epri.dss.shared.CMatrix;
-import com.epri.dss.shared.impl.CMatrixImpl;
+import com.epri.dss.shared.ComplexMatrix;
+import com.epri.dss.shared.impl.ComplexMatrixImpl;
 import com.epri.dss.shared.impl.ComplexUtil;
 
 import org.apache.commons.math.complex.Complex;
@@ -170,7 +170,7 @@ public class CapacitorObjImpl extends PDElementImpl implements CapacitorObj {
 	@Override
 	public void calcYPrim() {
 		int i;
-		CMatrix YPrimTemp, YPrimWork;
+		ComplexMatrix YPrimTemp, YPrimWork;
 
 		// normally build only Yprim_Shunt, but if there are 2 terminals and bus1 != bus2
 
@@ -178,13 +178,13 @@ public class CapacitorObjImpl extends PDElementImpl implements CapacitorObj {
 			// reallocate YPrim if something has invalidated old allocation
 			if (YPrimShunt != null)
 				YPrimShunt = null;
-			YPrimShunt = new CMatrixImpl(YOrder);
+			YPrimShunt = new ComplexMatrixImpl(YOrder);
 			if (YPrimSeries != null)
 				YPrimSeries = null;
-			YPrimSeries = new CMatrixImpl(YOrder);
+			YPrimSeries = new ComplexMatrixImpl(YOrder);
 			if (YPrim != null)
 				YPrim = null;
-			YPrim = new CMatrixImpl(YOrder);
+			YPrim = new ComplexMatrixImpl(YOrder);
 		} else {
 			YPrimSeries.clear(); // zero out YPrim
 			YPrimShunt.clear();  // zero out YPrim
@@ -197,7 +197,7 @@ public class CapacitorObjImpl extends PDElementImpl implements CapacitorObj {
 			YPrimTemp = YPrimSeries;
 		}
 
-		YPrimWork = new CMatrixImpl(YOrder);
+		YPrimWork = new ComplexMatrixImpl(YOrder);
 
 		for (i = 0; i < numSteps; i++)
 			if (states[i] == 1) {
@@ -210,7 +210,7 @@ public class CapacitorObjImpl extends PDElementImpl implements CapacitorObj {
 		// set YPrim_Series based on diagonals of YPrim_Shunt so that calcVoltages doesn't fail
 		if (isShunt())
 			for (i = 0; i < YOrder; i++)
-				YPrimSeries.setElement(i, i, YPrimShunt.getElement(i, i).multiply(1.0e-10));
+				YPrimSeries.set(i, i, YPrimShunt.get(i, i).multiply(1.0e-10));
 
 		YPrim.copyFrom(YPrimTemp);
 
@@ -465,7 +465,7 @@ public class CapacitorObjImpl extends PDElementImpl implements CapacitorObj {
 	/**
 	 * Call this routine only if step is energized.
 	 */
-	private void makeYprimWork(CMatrix YPrimWork, int iStep) {
+	private void makeYprimWork(ComplexMatrix YPrimWork, int iStep) {
 		Complex value, value2, Zl = null;
 		int i, j, ioffset;
 		double w, freqMultiple;
@@ -494,9 +494,9 @@ public class CapacitorObjImpl extends PDElementImpl implements CapacitorObj {
 				value2 = value.multiply(2.0);
 				value = value.negate();
 				for (i = 0; i < getNPhases(); i++) {
-					YPrimWork.setElement(i, i, value2);
+					YPrimWork.set(i, i, value2);
 					for (j = 0; j < i - 1; j++) {  // TODO Check zero based indexing
-						YPrimWork.setElemSym(i, j, value);
+						YPrimWork.setSym(i, j, value);
 					}
 					// remainder of the matrix is all zero
 				}
@@ -506,9 +506,9 @@ public class CapacitorObjImpl extends PDElementImpl implements CapacitorObj {
 					value = ComplexUtil.invert( Zl.add(ComplexUtil.invert( value )) ); // add in ZL
 				value2 = value.negate();
 				for (i = 0; i < getNPhases(); i++) {
-					YPrimWork.setElement(i, i, value);  // elements are only on the diagonals
-					YPrimWork.setElement(i + getNPhases(), i + getNPhases(), value);
-					YPrimWork.setElemSym(i, i + getNPhases(), value2);
+					YPrimWork.set(i, i, value);  // elements are only on the diagonals
+					YPrimWork.set(i + getNPhases(), i + getNPhases(), value);
+					YPrimWork.setSym(i, i + getNPhases(), value2);
 				}
 				break;
 			}
@@ -521,9 +521,9 @@ public class CapacitorObjImpl extends PDElementImpl implements CapacitorObj {
 				value2 = value.multiply(2.0);
 				value = value.negate();
 				for (i = 0; i < getNPhases(); i++) {
-					YPrimWork.setElement(i, i, value2);
+					YPrimWork.set(i, i, value2);
 					for (j = 0; j < i - 1; j++) {  // TODO Check zero based indexing
-						YPrimWork.setElemSym(i, j, value);
+						YPrimWork.setSym(i, j, value);
 					}
 					// remainder of the matrix is all zero
 				}
@@ -533,9 +533,9 @@ public class CapacitorObjImpl extends PDElementImpl implements CapacitorObj {
 					value = ComplexUtil.invert( Zl.add(ComplexUtil.invert( value )) );  // add in ZL
 				value2 = value.negate();
 				for (i = 0; i < getNPhases(); i++) {
-					YPrimWork.setElement(i, i, value);  // elements are only on the diagonals
-					YPrimWork.setElement(i + getNPhases(), i + getNPhases(), value);
-					YPrimWork.setElemSym(i, i + getNPhases(), value2);
+					YPrimWork.set(i, i, value);  // elements are only on the diagonals
+					YPrimWork.set(i + getNPhases(), i + getNPhases(), value);
+					YPrimWork.setSym(i, i + getNPhases(), value2);
 				}
 				break;
 			}
@@ -545,10 +545,10 @@ public class CapacitorObjImpl extends PDElementImpl implements CapacitorObj {
 				ioffset = (i - 1) * getNPhases();  // TODO Check zero based indexing
 				for (j = 0; j < getNPhases(); j++) {
 					value = new Complex(0.0, getCMatrix()[(ioffset + j)] * w);
-					YPrimWork.setElement(i, j, value);
-					YPrimWork.setElement(i + getNPhases(), j + getNPhases(), value);
+					YPrimWork.set(i, j, value);
+					YPrimWork.set(i + getNPhases(), j + getNPhases(), value);
 					value = value.negate();
-					YPrimWork.setElemSym(i, j + getNPhases(), value);
+					YPrimWork.setSym(i, j + getNPhases(), value);
 				}
 			}
 			break;
@@ -563,11 +563,11 @@ public class CapacitorObjImpl extends PDElementImpl implements CapacitorObj {
 				case 1:  // line-line
 					/* Add a little bit to each phase so it will invert */
 					for (i = 0; i < getNPhases(); i++)
-						YPrimWork.setElement(i, i, YPrimWork.getElement(i, i).multiply(1.000001));
+						YPrimWork.set(i, i, YPrimWork.get(i, i).multiply(1.000001));
 					YPrimWork.invert();
 					for (i = 0; i < getNPhases(); i++) {
-						value = Zl.add(YPrimWork.getElement(i, i));
-						YPrimWork.setElement(i, i, value);
+						value = Zl.add(YPrimWork.get(i, i));
+						YPrimWork.set(i, i, value);
 					}
 					YPrimWork.invert();
 					break;
@@ -582,11 +582,11 @@ public class CapacitorObjImpl extends PDElementImpl implements CapacitorObj {
 				case 1:  // line-line
 					/* Add a little bit to each phase so it will invert */
 					for (i = 0; i < getNPhases(); i++)
-						YPrimWork.setElement(i, i, YPrimWork.getElement(i, i).multiply(1.000001));
+						YPrimWork.set(i, i, YPrimWork.get(i, i).multiply(1.000001));
 					YPrimWork.invert();
 					for (i = 0; i < getNPhases(); i++) {
-						value = Zl.add(YPrimWork.getElement(i, i));
-						YPrimWork.setElement(i, i, value);
+						value = Zl.add(YPrimWork.get(i, i));
+						YPrimWork.set(i, i, value);
 					}
 					YPrimWork.invert();
 					break;
@@ -598,8 +598,8 @@ public class CapacitorObjImpl extends PDElementImpl implements CapacitorObj {
 			case 3:
 				YPrimWork.invert();
 				for (i = 0; i < getNPhases(); i++) {
-					value = Zl.add(YPrimWork.getElement(i, i));
-					YPrimWork.setElement(i, i, value);
+					value = Zl.add(YPrimWork.get(i, i));
+					YPrimWork.set(i, i, value);
 				}
 				YPrimWork.invert();
 				break;

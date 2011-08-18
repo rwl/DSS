@@ -9,9 +9,9 @@ import com.epri.dss.common.impl.Utilities;
 import com.epri.dss.delivery.Fault;
 import com.epri.dss.delivery.FaultObj;
 import com.epri.dss.parser.impl.Parser;
-import com.epri.dss.shared.CMatrix;
+import com.epri.dss.shared.ComplexMatrix;
 import com.epri.dss.shared.Dynamics;
-import com.epri.dss.shared.impl.CMatrixImpl;
+import com.epri.dss.shared.impl.ComplexMatrixImpl;
 import org.apache.commons.math.complex.Complex;
 import com.epri.dss.shared.impl.MathUtil;
 
@@ -107,18 +107,18 @@ public class FaultObjImpl extends PDElementImpl implements FaultObj {
 		Complex value, value2;
 		int i, j, ioffset;
 
-		CMatrix YPrimTemp;
+		ComplexMatrix YPrimTemp;
 
 		if (isYprimInvalid()) {  // reallocate YPrim if something has invalidated old allocation
 			if (YPrimSeries != null)
 				YPrimSeries = null;
-			YPrimSeries = new CMatrixImpl(YOrder);
+			YPrimSeries = new ComplexMatrixImpl(YOrder);
 			if (YPrimShunt != null)
 				YPrimShunt = null;
-			YPrimShunt = new CMatrixImpl(YOrder);
+			YPrimShunt = new ComplexMatrixImpl(YOrder);
 			if (YPrim != null)
 				YPrim = null;
-			YPrim = new CMatrixImpl(YOrder);
+			YPrim = new ComplexMatrixImpl(YOrder);
 		} else {
 			YPrimSeries.clear();  // zero out YPrim
 			YPrimShunt.clear();   // zero out YPrim
@@ -153,9 +153,9 @@ public class FaultObjImpl extends PDElementImpl implements FaultObj {
 			}
 			value2 = value.negate();
 			for (i = 0; i < nPhases; i++) {
-				YPrimTemp.setElement(i, i, value);  // elements are only on the diagonals
-				YPrimTemp.setElement(i + nPhases, i + nPhases, value);
-				YPrimTemp.setElemSym(i, i + nPhases, value2);
+				YPrimTemp.set(i, i, value);  // elements are only on the diagonals
+				YPrimTemp.set(i + nPhases, i + nPhases, value);
+				YPrimTemp.setSym(i, i + nPhases, value2);
 			}
 			break;
 		case 2:  // G matrix specified
@@ -167,10 +167,10 @@ public class FaultObjImpl extends PDElementImpl implements FaultObj {
 					} else {
 						value = Complex.ZERO;
 					}
-					YPrimTemp.setElement(i, j, value);
-					YPrimTemp.setElement(i + nPhases, j + nPhases, value);
+					YPrimTemp.set(i, j, value);
+					YPrimTemp.set(i + nPhases, j + nPhases, value);
 					value = value.negate();
-					YPrimTemp.setElemSym(i, j + nPhases, value);
+					YPrimTemp.setSym(i, j + nPhases, value);
 				}
 			}
 			break;

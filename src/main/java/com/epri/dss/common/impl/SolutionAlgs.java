@@ -700,7 +700,7 @@ public class SolutionAlgs {
 					throw new Esolv32Problem("Error solving system Y matrix in computeYsc. Problem with sparse matrix solver.");
 				/* Extract voltage vector = column of Zsc */
 				for (int j = 0; j < bus.getNumNodesThisBus(); j++)
-					bus.getZsc().setElement(j ,i, sol.getNodeV()[bus.getRef(j)]);
+					bus.getZsc().set(j ,i, sol.getNodeV()[bus.getRef(j)]);
 				sol.getCurrents()[ref1] = Complex.ZERO;
 			}
 		}

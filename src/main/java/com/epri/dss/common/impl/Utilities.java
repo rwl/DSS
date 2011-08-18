@@ -50,7 +50,7 @@ import com.epri.dss.executive.impl.DSSExecutive;
 import com.epri.dss.executive.impl.ExecCommands;
 import com.epri.dss.executive.impl.ExecOptions;
 import com.epri.dss.general.DSSObject;
-import com.epri.dss.shared.CMatrix;
+import com.epri.dss.shared.ComplexMatrix;
 import com.epri.dss.shared.Dynamics;
 import com.epri.dss.shared.HashList;
 
@@ -982,9 +982,9 @@ public class Utilities {
 		} else {
 			/* Get impedance from Z matrix */   /* Zs - Zm */
 			if (lineElement.getNPhases() > 1) {  // TODO Check zero based indexing
-				ZTest = lineElement.getZ().getElement(0, 0).subtract(lineElement.getZ().getElement(0, 1)).abs() * lineElement.getLen();
+				ZTest = lineElement.getZ().get(0, 0).subtract(lineElement.getZ().get(0, 1)).abs() * lineElement.getLen();
 			} else {
-				ZTest = lineElement.getZ().getElement(0, 0).abs() * lineElement.getLen();
+				ZTest = lineElement.getZ().get(0, 0).abs() * lineElement.getLen();
 			}
 		}
 
@@ -1337,7 +1337,7 @@ public class Utilities {
 		DSSGlobals.eventStrings.add(S);
 	}
 
-	public static void dumpComplexMatrix(PrintStream f, CMatrix aMatrix) {
+	public static void dumpComplexMatrix(PrintStream f, ComplexMatrix aMatrix) {
 		// TODO Convert to use MatrixMarket format
 		try {
 			if (aMatrix != null) {
@@ -1345,14 +1345,14 @@ public class Utilities {
 				for (int i = 0; i < aMatrix.order(); i++) {
 					f.print("! ");
 					for (int j = 0; j < i; j++)
-						f.printf("%.8f ", aMatrix.getElement(i, j).getReal());
+						f.printf("%.8f ", aMatrix.get(i, j).getReal());
 					f.println();
 				}
 				f.println("!(B Matrix) = ");
 				for (int i = 0; i < aMatrix.order(); i++) {
 					f.print("! ");
 					for (int j = 0; j < i; j++)
-						f.printf("%.8f ", aMatrix.getElement(i, j).getImaginary());
+						f.printf("%.8f ", aMatrix.get(i, j).getImaginary());
 					f.println();
 				}
 			}

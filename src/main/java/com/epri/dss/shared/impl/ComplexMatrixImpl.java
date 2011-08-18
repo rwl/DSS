@@ -3,16 +3,16 @@ package com.epri.dss.shared.impl;
 import org.apache.commons.lang.mutable.MutableInt;
 import org.apache.commons.math.complex.Complex;
 
-import com.epri.dss.shared.CMatrix;
+import com.epri.dss.shared.ComplexMatrix;
 
-public class CMatrixImpl implements CMatrix {
+public class ComplexMatrixImpl implements ComplexMatrix {
 
 	private int nOrder;
 	private Complex[] values;
 
 	protected int invertError;
 
-	public CMatrixImpl(int n) {
+	public ComplexMatrixImpl(int n) {
 		nOrder = n;
 		invertError = 0;
 		values = new Complex[n * n];
@@ -24,27 +24,27 @@ public class CMatrixImpl implements CMatrix {
 		return nOrder;
 	}
 
-	public void setElement(int i, int j, Complex value) {
+	public void set(int i, int j, Complex value) {
 		values[(j * nOrder + i)] = value;
 	}
 
-	public void setElemSym(int i, int j, Complex value) {
+	public void setSym(int i, int j, Complex value) {
 		values[j * nOrder + i] = value;
 		if (i != j)
 			values[i * nOrder + j] = value;  // ensure symmetry
 	}
 
-	public void addElement(int i, int j, Complex value) {
+	public void add(int i, int j, Complex value) {
 		values[j * nOrder + i] = values[j * nOrder + i].add(value);
 	}
 
-	public void addElemSym(int i, int j, Complex value) {
+	public void addSym(int i, int j, Complex value) {
 		values[j * nOrder + i] = values[j * nOrder + i].add(value);
 		if (i != j)
 			values[i * nOrder + j] = values[i * nOrder + j].add(value);  // ensure symmetry
 	}
 
-	public Complex getElement(int i, int j) {
+	public Complex get(int i, int j) {
 		return values[j * nOrder + i];
 	}
 
@@ -88,21 +88,21 @@ public class CMatrixImpl implements CMatrix {
 		}
 	}
 
-	public void addFrom(CMatrix otherMatrix) {
+	public void addFrom(ComplexMatrix otherMatrix) {
 		if (nOrder == otherMatrix.order()) {
 			for (int i = 0; i < nOrder; i++) {
 				for (int j = 0; j < nOrder; j++) {
-					addElement(i, j, otherMatrix.getElement(i, j));
+					add(i, j, otherMatrix.get(i, j));
 				}
 			}
 		}
 	}
 
-	public void copyFrom(CMatrix otherMatrix) {
+	public void copyFrom(ComplexMatrix otherMatrix) {
 		if (nOrder == otherMatrix.order()) {
 			for (int i = 0; i < nOrder; i++) {
 				for (int j = 0; j < nOrder; j++) {
-					setElement(i, j, otherMatrix.getElement(i, j));
+					set(i, j, otherMatrix.get(i, j));
 				}
 			}
 		}
@@ -151,7 +151,7 @@ public class CMatrixImpl implements CMatrix {
 	/**
 	 * Average of diagonal elements
 	 */
-	public Complex avgDiagonal() {
+	public Complex avgDiag() {
 		Complex result = Complex.ZERO;
 		for (int i = 0; i < nOrder; i++)
 			result = result.add(values[((i - 1) * nOrder + i)]);
@@ -165,7 +165,7 @@ public class CMatrixImpl implements CMatrix {
 	/**
 	 * Average the upper triangle off diagonals.
 	 */
-	public Complex avgOffDiagonal() {
+	public Complex avgOffDiag() {
 		Complex result = Complex.ZERO;
 		int nTimes = 0;
 		for (int i = 0; i < nOrder; i++) {
@@ -184,7 +184,7 @@ public class CMatrixImpl implements CMatrix {
 	/**
 	 * Multiply all elements by a constant
 	 */
-	public void multByConst(double x) {
+	public void mult(double x) {
 		for (int i = 0; i < nOrder * nOrder; i++)
 			values[i] = values[i].multiply(x);
 	}
@@ -271,13 +271,13 @@ public class CMatrixImpl implements CMatrix {
 	/**
 	 * Perform Kron reduction on last row/col and return new matrix
 	 */
-	public CMatrix kron(int eliminationRow) {
+	public ComplexMatrix kron(int eliminationRow) {
 		int ii, jj;
-		CMatrix result = null;   // null result means it failed
+		ComplexMatrix result = null;   // null result means it failed
 		if ((nOrder > 1) && (eliminationRow <= nOrder) && (eliminationRow > 0)) {
-			result = new CMatrixImpl(nOrder - 1);
+			result = new ComplexMatrixImpl(nOrder - 1);
 			int N = eliminationRow;
-			Complex NNElement = getElement(N, N);
+			Complex NNElement = get(N, N);
 
 			ii = 0;
 			for (int i = 0; i < nOrder; i++) {
@@ -287,8 +287,8 @@ public class CMatrixImpl implements CMatrix {
 					for (int j = 0; j < nOrder; j++) {
 						if (j != N) {
 							jj += 1;
-							result.setElement(ii, jj,
-									getElement(i, j).subtract( getElement(i, N).multiply(getElement(N, j)).divide(NNElement) )
+							result.set(ii, jj,
+									get(i, j).subtract( get(i, N).multiply(get(N, j)).divide(NNElement) )
 							);
 						}
 					}

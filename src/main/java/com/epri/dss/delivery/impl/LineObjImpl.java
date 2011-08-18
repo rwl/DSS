@@ -3,7 +3,7 @@ package com.epri.dss.delivery.impl;
 import java.io.PrintStream;
 
 import com.epri.dss.parser.impl.Parser;
-import com.epri.dss.shared.impl.CMatrixImpl;
+import com.epri.dss.shared.impl.ComplexMatrixImpl;
 
 import org.apache.commons.lang.mutable.MutableInt;
 import org.apache.commons.math.complex.Complex;
@@ -29,7 +29,7 @@ import com.epri.dss.general.WireDataObj;
 import com.epri.dss.general.impl.ConductorChoice;
 import com.epri.dss.general.impl.ConductorDataImpl;
 import com.epri.dss.general.impl.LineGeometryObjImpl;
-import com.epri.dss.shared.CMatrix;
+import com.epri.dss.shared.ComplexMatrix;
 
 public class LineObjImpl extends PDElementImpl implements LineObj {
 
@@ -46,11 +46,11 @@ public class LineObjImpl extends PDElementImpl implements LineObj {
 	private int earthModel;
 	private boolean capSpecified;  // to make sure user specifies C in some form
 
-	protected CMatrix ZInv;
+	protected ComplexMatrix ZInv;
 
 	/* Base frequency series Z matrix per unit length */
-	protected CMatrix Z;
-	protected CMatrix Yc;
+	protected ComplexMatrix Z;
+	protected ComplexMatrix Yc;
 
 	protected double R1;
 	protected double X1;
@@ -188,9 +188,9 @@ public class LineObjImpl extends PDElementImpl implements LineObj {
 
 				setNPhases(lc.getNPhases());
 				// for a line, nPhases = nCond, for now
-				Z    = new CMatrixImpl(nPhases);
-				ZInv = new CMatrixImpl(nPhases);
-				Yc   = new CMatrixImpl(nPhases);
+				Z    = new ComplexMatrixImpl(nPhases);
+				ZInv = new ComplexMatrixImpl(nPhases);
+				Yc   = new ComplexMatrixImpl(nPhases);
 			}
 
 			if (!symComponentsModel) {
@@ -223,9 +223,9 @@ public class LineObjImpl extends PDElementImpl implements LineObj {
 		if (Yc != null) Yc = null;
 
 		// for a line, nPhases = nCond, for now
-		Z    = new CMatrixImpl(getNPhases());
-		ZInv = new CMatrixImpl(getNPhases());
-		Yc   = new CMatrixImpl(getNPhases());
+		Z    = new ComplexMatrixImpl(getNPhases());
+		ZInv = new ComplexMatrixImpl(getNPhases());
+		Yc   = new ComplexMatrixImpl(getNPhases());
 
 		oneThird = 1.0 / 3.0;  // do this to get more precision in next few statements
 
@@ -270,11 +270,11 @@ public class LineObjImpl extends PDElementImpl implements LineObj {
 		Ym = new Complex(0.0, Yc0).subtract( new Complex(0.0, Yc1) ).multiply(oneThird);
 
 		for (int i = 0; i < getNPhases(); i++) {
-			Z.setElement(i, i, Zs);
-			Yc.setElement(i, i, Ys);
+			Z.set(i, i, Zs);
+			Yc.set(i, i, Ys);
 			for (int j = 0; j < i; j++) {  // TODO Check zero based indexing
-				Z.setElemSym(i, j, Zm);
-				Yc.setElemSym(i, j, Ym);
+				Z.setSym(i, j, Zm);
+				Yc.setSym(i, j, Ym);
 			}
 		}
 
@@ -358,17 +358,17 @@ public class LineObjImpl extends PDElementImpl implements LineObj {
 							"Invalid impedance specified. Replaced with tiny conductance.", 183);
 				ZInv.clear();
 				for (int i = 0; i < getNPhases(); i++) {
-					ZInv.setElement(i, i, new Complex(DSSGlobals.EPSILON, 0.0));
+					ZInv.set(i, i, new Complex(DSSGlobals.EPSILON, 0.0));
 				}
 			} else {
 				/* Now, put in Yprim_Series matrix */
 				for (int i = 0; i < getNPhases(); i++) {
 					for (int j = 0; j < getNPhases(); j++) {
-						value = ZInv.getElement(i, j);
-						YPrimSeries.setElement(i, j, value);
-						YPrimSeries.setElement(i + getNPhases(), j + getNPhases(), value);
+						value = ZInv.get(i, j);
+						YPrimSeries.set(i, j, value);
+						YPrimSeries.set(i + getNPhases(), j + getNPhases(), value);
 						value = value.negate();
-						YPrimSeries.setElemSym(i, j + getNPhases(), value);
+						YPrimSeries.setSym(i, j + getNPhases(), value);
 					}
 				}
 			}
@@ -380,7 +380,7 @@ public class LineObjImpl extends PDElementImpl implements LineObj {
 			// increase diagonal elements of both sides of line so that we will avoid isolated bus problem
 			// add equivalent of 10 kvar capacitive at 345 kV
 			for (int i = 0; i < YOrder; i++)
-				YPrimSeries.addElement(i, i, Line.CAP_EPSILON);
+				YPrimSeries.add(i, i, Line.CAP_EPSILON);
 		}
 
 		// now build the shunt admittances and add into YPrim
@@ -396,8 +396,8 @@ public class LineObjImpl extends PDElementImpl implements LineObj {
 				for (int i = 0; i < getNPhases(); i++) {
 					k += 1;  // assume matrix in col order (1,1  2,1  3,1 ...)
 					value = ComplexUtil.divide(YValues[k], 2.0);  // half at each end ...
-					YPrimShunt.addElement(i, j, value);
-					YPrimShunt.addElement(i + getNPhases(), j + getNPhases(), value);
+					YPrimShunt.add(i, j, value);
+					YPrimShunt.add(i + getNPhases(), j + getNPhases(), value);
 				}
 			}
 		} else {
@@ -407,8 +407,8 @@ public class LineObjImpl extends PDElementImpl implements LineObj {
 				for (int i = 0; i < getNPhases(); i++) {
 					k += 1;  // assume matrix in col order (1,1  2,1  3,1 ...)
 					value = new Complex(0.0, YValues[k].getImaginary() * lengthMultiplier * freqMultiplier / 2.0);
-					YPrimShunt.addElement( i, j, value);
-					YPrimShunt.addElement(i + getNPhases(), j + getNPhases(), value);
+					YPrimShunt.add( i, j, value);
+					YPrimShunt.add(i + getNPhases(), j + getNPhases(), value);
 				}
 			}
 		}
@@ -442,7 +442,7 @@ public class LineObjImpl extends PDElementImpl implements LineObj {
 		f.print("~ " + pc.getPropertyName()[11] + "=" + "\"");
 		for (int i = 0; i < getNPhases(); i++) {
 			for (int j = 0; j < getNPhases(); j++) {
-				f.print(Z.getElement(i, j).getReal() + " ");
+				f.print(Z.get(i, j).getReal() + " ");
 			}
 			f.print("|");
 		}
@@ -450,7 +450,7 @@ public class LineObjImpl extends PDElementImpl implements LineObj {
 		f.print("~ " + pc.getPropertyName()[12] + "=" + "\"");
 		for (int i = 0; i < getNPhases(); i++) {
 			for (int j = 0; j < getNPhases(); j++) {
-				f.print(Z.getElement(i, j).getImaginary() + " ");
+				f.print(Z.get(i, j).getImaginary() + " ");
 			}
 			f.print("|");
 		}
@@ -458,7 +458,7 @@ public class LineObjImpl extends PDElementImpl implements LineObj {
 		f.print("~ " + pc.getPropertyName()[13] + "=" + "\"");
 		for (int i = 0; i < getNPhases(); i++) {
 			for (int j = 0; j < getNPhases(); j++) {
-				f.print((Yc.getElement(i, j).getImaginary() / DSSGlobals.TWO_PI / baseFrequency * 1.e9) + " ");
+				f.print((Yc.get(i, j).getImaginary() / DSSGlobals.TWO_PI / baseFrequency * 1.e9) + " ");
 			}
 			f.print("|");
 		}
@@ -559,9 +559,9 @@ public class LineObjImpl extends PDElementImpl implements LineObj {
 				for (j = 0; j < i; j++) {
 					// report in per unit length in length units
 					if (geometrySpecified || spacingSpecified) {
-						result = result + String.format("%-.7g", Z.getElement(i, j).getReal() / len) + " ";
+						result = result + String.format("%-.7g", Z.get(i, j).getReal() / len) + " ";
 					} else {
-						result = result + String.format("%-.7g", Z.getElement(i, j).getReal() / unitsConvert) + " ";
+						result = result + String.format("%-.7g", Z.get(i, j).getReal() / unitsConvert) + " ";
 					}
 					if (i < getNConds())
 						result = result + "|";
@@ -573,9 +573,9 @@ public class LineObjImpl extends PDElementImpl implements LineObj {
 				for (j = 0; j < i; j++) {
 					// X matrix
 					if (geometrySpecified || spacingSpecified) {
-						result = result + String.format("%-.7g", Z.getElement(i, j).getImaginary() / len) + " ";
+						result = result + String.format("%-.7g", Z.get(i, j).getImaginary() / len) + " ";
 					} else {
-						result = result + String.format("%-.7g", Z.getElement(i, j).getImaginary() / unitsConvert) + " ";
+						result = result + String.format("%-.7g", Z.get(i, j).getImaginary() / unitsConvert) + " ";
 					}
 				}
 				if (i < nConds)
@@ -587,9 +587,9 @@ public class LineObjImpl extends PDElementImpl implements LineObj {
 			for (i = 0; i < nConds; i++) {
 				for (j = 0; j < i; j++) {
 					if (geometrySpecified || spacingSpecified) {
-						result = result + String.format("%-.7g", Yc.getElement(i, j).getImaginary() / factor / len) + " ";
+						result = result + String.format("%-.7g", Yc.get(i, j).getImaginary() / factor / len) + " ";
 					} else {
-						result = result + String.format("%-.7g", Yc.getElement(i, j).getImaginary() / factor / unitsConvert) + " ";
+						result = result + String.format("%-.7g", Yc.get(i, j).getImaginary() / factor / unitsConvert) + " ";
 					}
 				}
 				if (i < nConds)
@@ -726,12 +726,12 @@ public class LineObjImpl extends PDElementImpl implements LineObj {
 					// average the diagonal and off-dialgonal elements
 					ZS = Complex.ZERO;
 					for (i = 0; i < nPhases; i++)
-						ZS = ZS.add(Z.getElement(i, i));
+						ZS = ZS.add(Z.get(i, i));
 					ZS = ComplexUtil.divide(ZS, nPhases);
 					Zm = Complex.ZERO;
 					for (i = 0; i < nPhases - 1; i++) {  // TODO Check zero based indexing
 						for (j = i + 1; j < nPhases; j++) {
-							Zm = Zm.add(Z.getElement(i, j));
+							Zm = Zm.add(Z.get(i, j));
 						}
 					}
 					Zm = ComplexUtil.divide(Zm, nPhases * (nPhases - 1.0) / 2.0);
@@ -740,11 +740,11 @@ public class LineObjImpl extends PDElementImpl implements LineObj {
 					// do same for capacitances
 					Cs = 0.0;
 					for (i = 0; i < nPhases; i++)
-						Cs = Cs + Yc.getElement(i, i).getImaginary();
+						Cs = Cs + Yc.get(i, i).getImaginary();
 					Cm = 0.0;
 					for (i = 1; i < nPhases; i++) {  // TODO Check zero based indexing
 						for (j = i + 1; j < nPhases; j++) {
-							Cm = Cm + Yc.getElement(i, j).getImaginary();
+							Cm = Cm + Yc.get(i, j).getImaginary();
 						}
 					}
 					C1New = (Cs - Cm) / DSSGlobals.TWO_PI / baseFrequency/ (nPhases * (nPhases - 1.0) / 2.0) * 1.0e9; // nanofarads
@@ -924,14 +924,14 @@ public class LineObjImpl extends PDElementImpl implements LineObj {
 					s = "Rmatrix=[";
 					for (i = 0; i < 3; i++) {
 						for (j = 0; j < i; j++)
-							s = s + String.format(" %-g", Z.getElement(i, j).getReal());
+							s = s + String.format(" %-g", Z.get(i, j).getReal());
 						s = s + " | ";
 					}
 					s = s + "] Xmatrix=[";
 					/* X matrix */
 					for (i = 0; i < 3; i++) {
 						for (j = 0; j < i; j++)
-							s = s + String.format(" %-g", Z.getElement(i, j).getImaginary());
+							s = s + String.format(" %-g", Z.get(i, j).getImaginary());
 						s = s + " | ";
 					}
 					s = s + "]";
@@ -943,7 +943,7 @@ public class LineObjImpl extends PDElementImpl implements LineObj {
 					s = "Cmatrix=[";
 					for (i = 0; i < 3; i++) {
 						for (j = 0; j < i; j++)
-							s = s + String.format(" %-g", (Yc.getElement(i, j).getImaginary() / wnano));  // convert from mhos to nanofs
+							s = s + String.format(" %-g", (Yc.get(i, j).getImaginary() / wnano));  // convert from mhos to nanofs
 						s = s + " | ";
 					}
 					s = s + "] ";
@@ -1115,7 +1115,7 @@ public class LineObjImpl extends PDElementImpl implements LineObj {
 			Yc   = getLineGeometryObj().getYcMatrix(f, len, lengthUnits);
 			/* init Zinv */
 			if (Z != null) {
-				ZInv = new CMatrixImpl(Z.order());  // either no. phases or no. conductors
+				ZInv = new ComplexMatrixImpl(Z.order());  // either no. phases or no. conductors
 				ZInv.copyFrom(Z);
 			}
 
@@ -1154,7 +1154,7 @@ public class LineObjImpl extends PDElementImpl implements LineObj {
 		Z  = pGeo.getZMatrix(f, len, lengthUnits);
 		Yc = pGeo.getYcMatrix(f, len, lengthUnits);
 		if (Z != null) {
-			ZInv = new CMatrixImpl(Z.order());  // either no. phases or no. conductors
+			ZInv = new ComplexMatrixImpl(Z.order());  // either no. phases or no. conductors
 			ZInv.copyFrom(Z);
 		}
 		pGeo = null;
@@ -1192,9 +1192,9 @@ public class LineObjImpl extends PDElementImpl implements LineObj {
 			if (YPrimShunt != null) YPrimShunt = null;
 			if (YPrim != null) YPrim = null;
 
-			YPrimSeries = new CMatrixImpl(YOrder);
-			YPrimShunt  = new CMatrixImpl(YOrder);
-			YPrim        = new CMatrixImpl(YOrder);
+			YPrimSeries = new ComplexMatrixImpl(YOrder);
+			YPrimShunt  = new ComplexMatrixImpl(YOrder);
+			YPrim        = new ComplexMatrixImpl(YOrder);
 		} else {
 			YPrimSeries.clear();   // zero out YPrim_Series
 			YPrimShunt.clear();    // zero out YPrim_Shunt
@@ -1234,19 +1234,19 @@ public class LineObjImpl extends PDElementImpl implements LineObj {
 		setPropertyValue(Line.NumPropsThisClass + 4, String.format("%-g", getHrsToRepair()));
 	}
 
-	public CMatrix getZ() {
+	public ComplexMatrix getZ() {
 		return Z;
 	}
 
-	public void setZ(CMatrix z) {
+	public void setZ(ComplexMatrix z) {
 		Z = z;
 	}
 
-	public CMatrix getYc() {
+	public ComplexMatrix getYc() {
 		return Yc;
 	}
 
-	public void setYc(CMatrix yc) {
+	public void setYc(ComplexMatrix yc) {
 		Yc = yc;
 	}
 
@@ -1504,11 +1504,11 @@ public class LineObjImpl extends PDElementImpl implements LineObj {
 		lineCodeSpecified = value;
 	}
 
-	public CMatrix getZInv() {
+	public ComplexMatrix getZInv() {
 		return ZInv;
 	}
 
-	public void setZInv(CMatrix zinv) {
+	public void setZInv(ComplexMatrix zinv) {
 		ZInv = zinv;
 	}
 

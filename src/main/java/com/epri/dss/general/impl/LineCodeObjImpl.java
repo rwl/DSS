@@ -6,8 +6,8 @@ import com.epri.dss.common.DSSClass;
 import com.epri.dss.common.impl.DSSGlobals;
 import com.epri.dss.general.LineCode;
 import com.epri.dss.general.LineCodeObj;
-import com.epri.dss.shared.CMatrix;
-import com.epri.dss.shared.impl.CMatrixImpl;
+import com.epri.dss.shared.ComplexMatrix;
+import com.epri.dss.shared.impl.ComplexMatrixImpl;
 import org.apache.commons.math.complex.Complex;
 import com.epri.dss.shared.impl.LineUnits;
 
@@ -19,7 +19,7 @@ public class LineCodeObjImpl extends DSSObjectImpl implements LineCodeObj {
 
 	protected boolean SymComponentsModel, ReduceByKron;
 
-	protected CMatrix Z,  // base frequency series Z matrix
+	protected ComplexMatrix Z,  // base frequency series Z matrix
 		Zinv,
 		Yc;               // shunt capacitance matrix at base frequency
 
@@ -70,7 +70,7 @@ public class LineCodeObjImpl extends DSSObjectImpl implements LineCodeObj {
 		String Result = "[";
 		for (int i = 0; i < NPhases; i++) {
 			for (int j = 0; j < NPhases; j++)
-				Result = Result + String.format("%12.8f ", Z.getElement(i, j).getReal());
+				Result = Result + String.format("%12.8f ", Z.get(i, j).getReal());
 			if (i < NPhases)  // TODO Check zero based indexing
 				Result = Result + "|";
 		}
@@ -81,7 +81,7 @@ public class LineCodeObjImpl extends DSSObjectImpl implements LineCodeObj {
 		String Result = "[";
 		for (int i = 0; i < NPhases; i++) {
 			for (int j = 0; j < NPhases; j++)
-				Result = Result + String.format("%12.8f ", Z.getElement(i, j).getImaginary());
+				Result = Result + String.format("%12.8f ", Z.get(i, j).getImaginary());
 			if (i < NPhases)  // TODO Check zero based indexing
 				Result = Result + "|";
 		}
@@ -92,7 +92,7 @@ public class LineCodeObjImpl extends DSSObjectImpl implements LineCodeObj {
 		String Result = "[";
 		for (int i = 0; i < NPhases; i++) {
 			for (int j = 0; j < NPhases; j++)
-				Result = Result + String.format("%12.8f ", Yc.getElement(i, j).getImaginary() / DSSGlobals.TWO_PI / BaseFrequency * 1.e9);
+				Result = Result + String.format("%12.8f ", Yc.get(i, j).getImaginary() / DSSGlobals.TWO_PI / BaseFrequency * 1.e9);
 			if (i < NPhases)  // TODO Check zero based indexing
 				Result = Result + "|";
 		}
@@ -130,9 +130,9 @@ public class LineCodeObjImpl extends DSSObjectImpl implements LineCodeObj {
 			Yc = null;
 
 		// for a line, nPhases = nCond, for now
-		Z    = new CMatrixImpl(NPhases);
-		Zinv = new CMatrixImpl(NPhases);
-		Yc   = new CMatrixImpl(NPhases);
+		Z    = new ComplexMatrixImpl(NPhases);
+		Zinv = new ComplexMatrixImpl(NPhases);
+		Yc   = new ComplexMatrixImpl(NPhases);
 
 		OneThird = 1.0 / 3.0;  // do this to get more precision in next few statements
 
@@ -147,11 +147,11 @@ public class LineCodeObjImpl extends DSSObjectImpl implements LineCodeObj {
 		Ym = new Complex(0.0, Yc0).subtract(new Complex(0.0, Yc1)).multiply(OneThird);
 
 		for (i = 0; i < NPhases; i++) {
-			Z.setElement(i, i, Zs);
-			Yc.setElement(i, i, Ys);
+			Z.set(i, i, Zs);
+			Yc.set(i, i, Ys);
 			for (j = 0; j < i - 1; j++) {
-				Z.setElemSym(i, j, Zm);
-				Yc.setElemSym(i, j, Ym);
+				Z.setSym(i, j, Zm);
+				Yc.setSym(i, j, Ym);
 			}
 		}
 		Zinv.copyFrom(Z);
@@ -173,7 +173,7 @@ public class LineCodeObjImpl extends DSSObjectImpl implements LineCodeObj {
 		F.print("~ " + parentClass.getPropertyName()[9] + "=\"");
 		for (int i = 0; i < NPhases; i++) {
 			for (int j = 0; j < NPhases; j++)
-				F.print(Z.getElement(i, j).getReal() + " ");
+				F.print(Z.get(i, j).getReal() + " ");
 			F.print("|");
 		}
 		F.println("\"");
@@ -181,7 +181,7 @@ public class LineCodeObjImpl extends DSSObjectImpl implements LineCodeObj {
 		F.print("~ " + parentClass.getPropertyName()[10] + "=\"");
 		for (int i = 0; i < NPhases; i++) {
 			for (int j = 0; j < NPhases; j++)
-				F.print(Z.getElement(i, j).getImaginary() + " ");
+				F.print(Z.get(i, j).getImaginary() + " ");
 			F.print("|");
 		}
 		F.println("\"");
@@ -189,7 +189,7 @@ public class LineCodeObjImpl extends DSSObjectImpl implements LineCodeObj {
 		F.print("~ " + parentClass.getPropertyName()[11] + "=\"");
 		for (int i = 0; i < NPhases; i++) {
 			for (int j = 0; j < NPhases; j++)
-				F.print((Yc.getElement(i, j).getImaginary() / DSSGlobals.TWO_PI / BaseFrequency * 1.e9) + " ");
+				F.print((Yc.get(i, j).getImaginary() / DSSGlobals.TWO_PI / BaseFrequency * 1.e9) + " ");
 			F.print("|");
 		}
 		F.println("\"");
@@ -276,8 +276,8 @@ public class LineCodeObjImpl extends DSSObjectImpl implements LineCodeObj {
 		if (NeutralConductor == 0)  // TODO Check zero based indexing
 			return;   // Do Nothing
 
-		CMatrix NewZ = null;
-		CMatrix NewYc = null;
+		ComplexMatrix NewZ = null;
+		ComplexMatrix NewYc = null;
 
 		if (NPhases > 1) {
 			try {
@@ -338,27 +338,27 @@ public class LineCodeObjImpl extends DSSObjectImpl implements LineCodeObj {
 		ReduceByKron = reduceByKron;
 	}
 
-	public CMatrix getZ() {
+	public ComplexMatrix getZ() {
 		return Z;
 	}
 
-	public void setZ(CMatrix z) {
+	public void setZ(ComplexMatrix z) {
 		Z = z;
 	}
 
-	public CMatrix getZinv() {
+	public ComplexMatrix getZinv() {
 		return Zinv;
 	}
 
-	public void setZinv(CMatrix zinv) {
+	public void setZinv(ComplexMatrix zinv) {
 		Zinv = zinv;
 	}
 
-	public CMatrix getYC() {
+	public ComplexMatrix getYC() {
 		return Yc;
 	}
 
-	public void setYc(CMatrix Yc) {
+	public void setYc(ComplexMatrix Yc) {
 		this.Yc = Yc;
 	}
 

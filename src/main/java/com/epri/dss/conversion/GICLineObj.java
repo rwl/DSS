@@ -1,16 +1,16 @@
 package com.epri.dss.conversion;
 
-import com.epri.dss.shared.CMatrix;
+import com.epri.dss.shared.ComplexMatrix;
 
 public interface GICLineObj extends PCElement {
 
-	CMatrix getZ();
+	ComplexMatrix getZ();
 
-	void setZ(CMatrix z);
+	void setZ(ComplexMatrix z);
 
-	CMatrix getZInv();
+	ComplexMatrix getZInv();
 
-	void setZInv(CMatrix zinv);
+	void setZInv(ComplexMatrix zinv);
 
 	// FIXME: Private members in OpenDSS
 

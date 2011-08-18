@@ -7,7 +7,7 @@ import java.io.IOException;
 import java.io.PrintStream;
 
 import com.epri.dss.parser.impl.Parser;
-import com.epri.dss.shared.impl.CMatrixImpl;
+import com.epri.dss.shared.impl.ComplexMatrixImpl;
 import org.apache.commons.math.complex.Complex;
 
 import com.epri.dss.shared.impl.ComplexUtil;
@@ -23,7 +23,7 @@ import com.epri.dss.conversion.GenUserModel;
 import com.epri.dss.conversion.Generator;
 import com.epri.dss.conversion.GeneratorObj;
 import com.epri.dss.general.LoadShapeObj;
-import com.epri.dss.shared.CMatrix;
+import com.epri.dss.shared.ComplexMatrix;
 import com.epri.dss.shared.Dynamics;
 
 public class GeneratorObjImpl extends PCElementImpl implements GeneratorObj {
@@ -100,7 +100,7 @@ public class GeneratorObjImpl extends PCElementImpl implements GeneratorObj {
 	 * To handle cases where one conductor of load is open;
 	 * We revert to admittance for inj currents.
 	 */
-	private CMatrix YPrimOpenCond;
+	private ComplexMatrix YPrimOpenCond;
 	/** Fixed value of y for type 7 load. */
 	private double YQFixed;
 	private boolean shapeIsActual;
@@ -513,7 +513,7 @@ public class GeneratorObjImpl extends PCElementImpl implements GeneratorObj {
 		if (shaftModel.exists()) shaftModel.updateModel();
 	}
 
-	private void calcYPrimMatrix(CMatrix Ymatrix) {
+	private void calcYPrimMatrix(ComplexMatrix Ymatrix) {
 		Complex Y , Yij;
 		int i, j;
 		double freqMultiplier;
@@ -539,15 +539,15 @@ public class GeneratorObjImpl extends PCElementImpl implements GeneratorObj {
 			for (i = 0; i < nPhases; i++) {
 				switch (connection) {
 				case 0:
-					Ymatrix.setElement(i, i, Y);
-					Ymatrix.addElement(nConds, nConds, Y);
-					Ymatrix.setElemSym(i, nConds, Yij);
+					Ymatrix.set(i, i, Y);
+					Ymatrix.add(nConds, nConds, Y);
+					Ymatrix.setSym(i, nConds, Yij);
 					break;
 				case 1:  /* Delta connection */
-					Ymatrix.setElement(i, i, Y);
-					Ymatrix.addElement(i, i, Y);  // put it in again
+					Ymatrix.set(i, i, Y);
+					Ymatrix.add(i, i, Y);  // put it in again
 					for (j = 0; j < i - 1; j++) {  // TODO Check zero based indexing
-						Ymatrix.setElemSym(i, j, Yij);
+						Ymatrix.setSym(i, j, Yij);
 					}
 					break;
 				}
@@ -577,9 +577,9 @@ public class GeneratorObjImpl extends PCElementImpl implements GeneratorObj {
 			case 0:  // WYE
 				Yij = Y.negate();
 				for (i = 0; i < nPhases; i++) {
-					Ymatrix.setElement(i, i, Y);
-					Ymatrix.addElement(nConds, nConds, Y);
-					Ymatrix.setElemSym(i, nConds, Yij);
+					Ymatrix.set(i, i, Y);
+					Ymatrix.add(nConds, nConds, Y);
+					Ymatrix.setSym(i, nConds, Yij);
 				}
 				break;
 			case 1:  // delta or L-L
@@ -588,9 +588,9 @@ public class GeneratorObjImpl extends PCElementImpl implements GeneratorObj {
 				for (i = 0; i < nPhases; i++) {
 					j = i + 1;
 					if (j > nConds) j = 0;  // wrap around for closed connections
-					Ymatrix.addElement(i, i, Y);
-					Ymatrix.addElement(j, j, Y);
-					Ymatrix.addElemSym(i, j, Yij);
+					Ymatrix.add(i, i, Y);
+					Ymatrix.add(j, j, Y);
+					Ymatrix.addSym(i, j, Yij);
 				}
 				break;
 			}
@@ -604,11 +604,11 @@ public class GeneratorObjImpl extends PCElementImpl implements GeneratorObj {
 		// build a dummy Yprim series so that calcV does not fail
 		if (isYprimInvalid()) {
 			if (YPrimShunt != null) YPrimShunt = null;
-			YPrimShunt = new CMatrixImpl(YOrder);
+			YPrimShunt = new ComplexMatrixImpl(YOrder);
 			if (YPrimSeries != null) YPrimSeries = null;
-			YPrimSeries = new CMatrixImpl(YOrder);
+			YPrimSeries = new ComplexMatrixImpl(YOrder);
 			if (YPrim != null) YPrim = null;
-			YPrim = new CMatrixImpl(YOrder);
+			YPrim = new ComplexMatrixImpl(YOrder);
 		} else {
 			YPrimShunt.clear();
 			YPrimSeries.clear();
@@ -631,7 +631,7 @@ public class GeneratorObjImpl extends PCElementImpl implements GeneratorObj {
 
 		// set YPrim_Series based on diagonals of YPrim_shunt so that calcVoltages doesn't fail
 		for (int i = 0; i < YOrder; i++)
-			YPrimSeries.setElement(i, i, YPrimShunt.getElement(i, i).multiply(1.0e-10));
+			YPrimSeries.set(i, i, YPrimShunt.get(i, i).multiply(1.0e-10));
 
 		YPrim.copyFrom(YPrimShunt);
 
@@ -2566,11 +2566,11 @@ public class GeneratorObjImpl extends PCElementImpl implements GeneratorObj {
 		VThevMag = mag;
 	}
 
-	public CMatrix getYPrimOpenCond() {
+	public ComplexMatrix getYPrimOpenCond() {
 		return YPrimOpenCond;
 	}
 
-	public void setYPrimOpenCond(CMatrix value) {
+	public void setYPrimOpenCond(ComplexMatrix value) {
 		YPrimOpenCond = value;
 	}
 

@@ -5,7 +5,7 @@ import com.epri.dss.common.impl.DSSGlobals;
 import com.epri.dss.conversion.VSource;
 import com.epri.dss.conversion.VSourceObj;
 import com.epri.dss.parser.impl.Parser;
-import com.epri.dss.shared.impl.CMatrixImpl;
+import com.epri.dss.shared.impl.ComplexMatrixImpl;
 import com.epri.dss.shared.impl.CommandListImpl;
 
 public class VSourceImpl extends PCClassImpl implements VSource {
@@ -308,8 +308,8 @@ public class VSourceImpl extends PCClassImpl implements VSource {
 				if (avs.getZ() != null) avs.setZ(null);
 				if (avs.getZinv() != null) avs.setZinv(null);
 
-				avs.setZ( new CMatrixImpl(avs.getNPhases()) );
-				avs.setZinv( new CMatrixImpl(avs.getNPhases()) );
+				avs.setZ( new ComplexMatrixImpl(avs.getNPhases()) );
+				avs.setZinv( new ComplexMatrixImpl(avs.getNPhases()) );
 			}
 
 			avs.getZ().copyFrom(otherVSource.getZ());

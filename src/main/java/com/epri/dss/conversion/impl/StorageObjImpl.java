@@ -6,7 +6,7 @@ import java.io.FileWriter;
 import java.io.PrintStream;
 
 import com.epri.dss.parser.impl.Parser;
-import com.epri.dss.shared.impl.CMatrixImpl;
+import com.epri.dss.shared.impl.ComplexMatrixImpl;
 import com.epri.dss.shared.impl.ComplexUtil;
 
 import org.apache.commons.math.complex.Complex;
@@ -21,7 +21,7 @@ import com.epri.dss.conversion.Storage;
 import com.epri.dss.conversion.StorageObj;
 import com.epri.dss.conversion.StoreUserModel;
 import com.epri.dss.general.LoadShapeObj;
-import com.epri.dss.shared.CMatrix;
+import com.epri.dss.shared.ComplexMatrix;
 import com.epri.dss.shared.Dynamics;
 
 public class StorageObjImpl extends PCElementImpl implements StorageObj {
@@ -89,7 +89,7 @@ public class StorageObjImpl extends PCElementImpl implements StorageObj {
 	private double VMinPU;
 	/** Thevinen equivalent voltage mag and angle reference for harmonic model */
 	private double VThevhH;
-	private CMatrix YPrimOpenCond;
+	private ComplexMatrix YPrimOpenCond;
 	private double RThev;
 	private double XThev;
 
@@ -615,7 +615,7 @@ public class StorageObjImpl extends PCElementImpl implements StorageObj {
 			userModel.updateModel();
 	}
 
-	private void calcYPrimMatrix(CMatrix YMatrix) {
+	private void calcYPrimMatrix(ComplexMatrix YMatrix) {
 		Complex Y, Yij;
 		int i, j;
 		double freqMultiplier;
@@ -646,15 +646,15 @@ public class StorageObjImpl extends PCElementImpl implements StorageObj {
 			for (i = 0; i < nPhases; i++) {
 				switch (connection) {
 				case 0:
-					YMatrix.setElement(i, i, Y);
-					YMatrix.addElement(nConds, nConds, Y);
-					YMatrix.setElemSym(i, nConds, Yij);
+					YMatrix.set(i, i, Y);
+					YMatrix.add(nConds, nConds, Y);
+					YMatrix.setSym(i, nConds, Yij);
 					break;
 				case 1:  /* Delta connection */
-					YMatrix.setElement(i, i, Y);
-					YMatrix.addElement(i, i, Y);  // put it in again
+					YMatrix.set(i, i, Y);
+					YMatrix.add(i, i, Y);  // put it in again
 					for (j = 0; j < i - 1; j++)  // TODO Check zero based indexing
-						YMatrix.setElemSym(i, j, Yij);
+						YMatrix.setSym(i, j, Yij);
 					break;
 				}
 			}
@@ -680,9 +680,9 @@ public class StorageObjImpl extends PCElementImpl implements StorageObj {
 				// wye
 				Yij = Y.negate();
 				for (i = 0; i < nPhases; i++) {
-					YMatrix.setElement(i, i, Y);
-					YMatrix.addElement(nConds, nConds, Y);
-					YMatrix.setElemSym(i, nConds, Yij);
+					YMatrix.set(i, i, Y);
+					YMatrix.add(nConds, nConds, Y);
+					YMatrix.setSym(i, nConds, Yij);
 				}
 				break;
 
@@ -694,9 +694,9 @@ public class StorageObjImpl extends PCElementImpl implements StorageObj {
 					j = i + 1;
 					if (j >= nConds)
 						j = 0;  // wrap around for closed connections
-					YMatrix.addElement(i, i, Y);
-					YMatrix.addElement(j, j, Y);
-					YMatrix.addElemSym(i, j, Yij);
+					YMatrix.add(i, i, Y);
+					YMatrix.add(j, j, Y);
+					YMatrix.addSym(i, j, Yij);
 				}
 				break;
 			}
@@ -791,11 +791,11 @@ public class StorageObjImpl extends PCElementImpl implements StorageObj {
 		// build a dummy Yprim_Series so that calcV does not fail
 		if (isYprimInvalid()) {
 			if (YPrimShunt != null) YPrimShunt = null;
-			YPrimShunt = new CMatrixImpl(YOrder);
+			YPrimShunt = new ComplexMatrixImpl(YOrder);
 			if (YPrimSeries != null) YPrimSeries = null;
-			YPrimSeries = new CMatrixImpl(YOrder);
+			YPrimSeries = new ComplexMatrixImpl(YOrder);
 			if (YPrim != null) YPrim = null;
-			YPrim = new CMatrixImpl(YOrder);
+			YPrim = new ComplexMatrixImpl(YOrder);
 		} else {
 			YPrimShunt.clear();
 			YPrimSeries.clear();
@@ -807,7 +807,7 @@ public class StorageObjImpl extends PCElementImpl implements StorageObj {
 
 		// set YPrim_Series based on diagonals of YPrim_Shunt so that calcVoltages doesn't fail
 		for (int i = 0; i < YOrder; i++)
-			YPrimSeries.setElement(i, i, YPrimShunt.getElement(i, i).multiply(1.0e-10));
+			YPrimSeries.set(i, i, YPrimShunt.get(i, i).multiply(1.0e-10));
 
 		YPrim.copyFrom(YPrimShunt);
 
@@ -2137,11 +2137,11 @@ public class StorageObjImpl extends PCElementImpl implements StorageObj {
 		VThevhH = value;
 	}
 
-	public CMatrix getYPrimOpenCond() {
+	public ComplexMatrix getYPrimOpenCond() {
 		return YPrimOpenCond;
 	}
 
-	public void setYPrimOpenCond(CMatrix value) {
+	public void setYPrimOpenCond(ComplexMatrix value) {
 		YPrimOpenCond = value;
 	}
 

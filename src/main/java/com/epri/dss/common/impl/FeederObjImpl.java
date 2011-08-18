@@ -3,7 +3,7 @@ package com.epri.dss.common.impl;
 import java.io.PrintStream;
 import java.util.ArrayList;
 
-import com.epri.dss.shared.impl.CMatrixImpl;
+import com.epri.dss.shared.impl.ComplexMatrixImpl;
 import org.apache.commons.math.complex.Complex;
 
 import com.epri.dss.common.CktElement;
@@ -100,10 +100,10 @@ public class FeederObjImpl extends PCElementImpl implements FeederObj {
 		if (isYprimInvalid()) {
 			if (YPrimSeries != null)
 				YPrimSeries = null;
-			YPrimSeries = new CMatrixImpl(YOrder);
+			YPrimSeries = new ComplexMatrixImpl(YOrder);
 			if (YPrim != null)
 				YPrim = null;
-			YPrim = new CMatrixImpl(YOrder);
+			YPrim = new ComplexMatrixImpl(YOrder);
 		} else {
 			YPrimSeries.clear();
 			YPrim.clear();
