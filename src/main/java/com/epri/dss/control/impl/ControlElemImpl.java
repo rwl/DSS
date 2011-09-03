@@ -20,6 +20,7 @@ public class ControlElemImpl extends DSSCktElement implements ControlElem {
 	protected String monitorVariable;
 	protected int monitorVarIndex;
 	protected double timeDelay, dblTraceParameter;
+	protected boolean showEventLog;
 
 	public ControlElemImpl(DSSClass parClass) {
 		super(parClass);
@@ -29,6 +30,7 @@ public class ControlElemImpl extends DSSCktElement implements ControlElem {
 		monitorVariable = "";
 		monitorVarIndex = 0;
 		controlledElement = null;
+		showEventLog = true;
 	}
 
 	/**
@@ -129,6 +131,14 @@ public class ControlElemImpl extends DSSCktElement implements ControlElem {
 
 	public void setDblTraceParameter(double parameter) {
 		dblTraceParameter = parameter;
+	}
+
+	public boolean isShowEventLog() {
+		return showEventLog;
+	}
+
+	public void setShowEventLog(boolean showEventLog) {
+		this.showEventLog = showEventLog;
 	}
 
 }

@@ -324,7 +324,8 @@ public class RegControlObjImpl extends ControlElemImpl implements RegControlObj 
 					if (debugTrace)
 						regWriteTraceRecord(tapChangeToMake);
 					pElem.setPresentTap(tapWinding, pElem.getPresentTap(tapWinding) + tapChangeToMake);
-					Utilities.appendToEventLog("Regulator." + getControlledElement().getName(), String.format(" Changed %d taps to %-.6g.", lastChange, pElem.getPresentTap(tapWinding)));
+					if (showEventLog)
+						Utilities.appendToEventLog("Regulator." + getControlledElement().getName(), String.format(" Changed %d taps to %-.6g.", lastChange, pElem.getPresentTap(tapWinding)));
 					setPendingTapChange(0.0);  // reset to no change; program will determine if another needed
 					armed = false;
 
@@ -344,7 +345,8 @@ public class RegControlObjImpl extends ControlElemImpl implements RegControlObj 
 					if (debugTrace)
 						regWriteTraceRecord(tapChangeToMake);
 					pElem.setPresentTap(tapWinding, pElem.getPresentTap(tapWinding) + tapChangeToMake);
-					Utilities.appendToEventLog("Regulator." + getControlledElement().getName(), String.format(" Changed %d tap to %-.6g.", lastChange, pElem.getPresentTap(tapWinding)));
+					if (showEventLog)
+						Utilities.appendToEventLog("Regulator." + getControlledElement().getName(), String.format(" Changed %d tap to %-.6g.", lastChange, pElem.getPresentTap(tapWinding)));
 					if (debugTrace)
 						regWriteDebugRecord(String.format("--- Regulator.%s Changed %d tap to %-.6g.",
 								pElem.getControlElement().getName(), lastChange, pElem.getPresentTap(tapWinding)));
@@ -684,6 +686,7 @@ public class RegControlObjImpl extends ControlElemImpl implements RegControlObj 
 		propertyValue[22] = "100";
 		propertyValue[23] = "60";
 		propertyValue[24] = "No";
+		propertyValue[25] = "YES";
 
 		super.initPropertyValues(RegControl.NumPropsThisClass);
 	}

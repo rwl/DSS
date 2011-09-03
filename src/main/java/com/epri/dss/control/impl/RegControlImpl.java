@@ -62,6 +62,7 @@ public class RegControlImpl extends ControlClassImpl implements RegControl {
 		propertyName[22] = "revThreshold";
 		propertyName[23] = "revDelay";
 		propertyName[24] = "revNeutral";
+		propertyName[25] = "EventLog";
 
 		propertyHelp[0] = "Name of Transformer element to which the RegControl is connected. "+
 				"Do not specify the full object name; \"Transformer\" is assumed for "  +
@@ -112,7 +113,7 @@ public class RegControlImpl extends ControlClassImpl implements RegControl {
 		propertyHelp[22] = "kW reverse power threshold for reversing the direction of the regulator. Default is 100.0 kw.";
 		propertyHelp[23] = "Time Delay in seconds (s) for executing the reversing action once the threshold for reversing has been exceeded. Default is 60 s.";
 		propertyHelp[24] = "{Yes | No*} Default is no. Set this to Yes if you want the regulator to go to neutral in the reverse direction.";
-
+		propertyHelp[25] = "{Yes/True* | No/False} Default is YES for regulator control. Log control actions to Eventlog.";
 
 		activeProperty = RegControl.NumPropsThisClass - 1;
 		super.defineProperties();  // add defs of inherited properties to bottom of list
@@ -239,6 +240,8 @@ public class RegControlImpl extends ControlClassImpl implements RegControl {
 			case 24:
 				arc.setReverseNeutral(Utilities.interpretYesNo(param));
 				break;
+			case 25:
+				arc.setShowEventLog(Utilities.interpretYesNo(param));
 			default:
 				// inherited parameters
 				classEdit(activeRegControlObj, paramPointer - RegControl.NumPropsThisClass);
@@ -313,11 +316,12 @@ public class RegControlImpl extends ControlClassImpl implements RegControl {
 			arc.setTapWinding(otherRegControl.getTapWinding());
 			arc.setInverseTime(otherRegControl.isInverseTime());
 			arc.setTapLimitPerChange(otherRegControl.getTapLimitPerChange());
-	        arc.setTapLimitPerChange(otherRegControl.getTapLimitPerChange());
+			arc.setTapLimitPerChange(otherRegControl.getTapLimitPerChange());
 			arc.setKWRevPowerThreshold(otherRegControl.getKWRevPowerThreshold());
 			arc.setRevPowerThreshold(otherRegControl.getRevPowerThreshold());
 			arc.setRevDelay(otherRegControl.getRevDelay());
 			arc.setReverseNeutral(otherRegControl.isReverseNeutral());
+			arc.setShowEventLog(otherRegControl.isShowEventLog());
 			//arc.setDebugTrace(OtherRegControl.isDebugTrace();  always default to no
 
 			arc.setPTPhase(otherRegControl.getPTPhase());

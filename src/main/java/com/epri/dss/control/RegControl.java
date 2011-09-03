@@ -9,6 +9,6 @@ public interface RegControl extends ControlClass {
 	static final int ACTION_TAPCHANGE = 0;
 	static final int ACTION_REVERSE   = 1;
 
-	static final int NumPropsThisClass = 25;
+	static final int NumPropsThisClass = 26;
 
 }

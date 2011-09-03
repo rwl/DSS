@@ -55,4 +55,8 @@ public interface ControlElem extends CktElement {
 
 	void reset();
 
+	boolean isShowEventLog();
+
+	void setShowEventLog(boolean showEventLog);
+
 }

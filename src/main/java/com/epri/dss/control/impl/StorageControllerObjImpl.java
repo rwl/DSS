@@ -53,7 +53,6 @@ public class StorageControllerObjImpl extends ControlElemImpl implements Storage
 	private double pctFleetReserve;
 	private boolean fleetListChanged;
 	private boolean chargingAllowed;
-	private boolean showEventLog;
 	private boolean dispatchVars;
 	private boolean dischargeTriggeredByTime;
 	private boolean dischargeInhibited;
