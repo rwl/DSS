@@ -7,6 +7,7 @@ import java.util.List;
 
 import com.epri.dss.common.CktElement;
 import com.epri.dss.common.DSSClass;
+import com.epri.dss.common.impl.DSSClassDefs;
 import com.epri.dss.common.impl.DSSGlobals;
 import com.epri.dss.common.impl.Utilities;
 import com.epri.dss.control.VVControl;
@@ -22,33 +23,33 @@ public class VVControlObjImpl extends ControlElemImpl implements VVControlObj {
 	private static final int NONE = 0;
 	private static final int CHANGEVARLEVEL = 1;
 
-	private double vvc_Vmaxpu, vvc_Vminpu, kva_rating, kW_rating, kvar_fulloutput, pf,
-		delay, delayoff, kW_ramp_rate, kvar_ramp_rate, kW_limit,
+	private double vvc_VMaxPU, vvc_VMinPU, kVA_Rating, kW_Rating, kVAr_FullOutput, pf,
+		delay, delayOff, kW_RampRate, kVAr_RampRate, kW_Limit,
 		// kw limit at the monitored element
-		kvar_limit, // kvar limit at the monitored element
-		DeltaVTolerance, // tolerance of voltage change from one solution to the
+		kVAr_Limit, // kvar limit at the monitored element
+		deltaVTolerance, // tolerance of voltage change from one solution to the
 		// next for the voltage at the monitored element - in pu
-		TotalWeight,
+		totalWeight,
 		QOldDeliver,
-		Qdeliver,
+		QDeliver,
 		QNew,
-		VavgPuPrior,
-		VavgPu,
+		VAvgPuPrior,
+		VAvgPu,
 		presentHour;
-	private int ControlActionHandle;
-	private int ListSize;
-	private List<String> GeneratorNameList;
-	private PointerList GenPointerList;
-	private double[] Weights;
-	private int vvc_curve_size;
-	private XYCurveObj vvc_curve;
-	private int PendingChange;
-	private double deltaQ_factor;
+	private int controlActionHandle;
+	private int listSize;
+	private List<String> generatorNameList;
+	private PointerList genPointerList;
+	private double[] weights;
+	private int vvc_CurveSize;
+	private XYCurveObj vvc_Curve;
+	private int pendingChange;
+	private double deltaQFactor;
 
-	private CktElement MonitoredElement;
+	private CktElement monitoredElement;
 
 	private Complex[] cBuffer;
-	private int CondOffset;  // offset for monitored terminal
+	private int condOffset;  // offset for monitored terminal
 
 	public VVControlObjImpl(DSSClass parClass, final String VVCControlName) {
 		super(parClass);
@@ -63,81 +64,81 @@ public class VVControlObjImpl extends ControlElemImpl implements VVControlObj {
 		elementName = "";
 		setControlledElement(null);
 		elementTerminal = 1;
-		MonitoredElement = null;
-		GeneratorNameList = new ArrayList<String>();
-		Weights = null;
-		GenPointerList = new PointerListImpl(20);
+		monitoredElement = null;
+		generatorNameList = new ArrayList<String>();
+		weights = null;
+		genPointerList = new PointerListImpl(20);
 		// default size and increment
-		ListSize = 0;
-		vvc_Vmaxpu = 1.1;
-		vvc_Vminpu = 0.9;
-		kva_rating = 7.0;
-		kW_rating = 5.83;
-		kvar_fulloutput = 3.86;
+		listSize = 0;
+		vvc_VMaxPU = 1.1;
+		vvc_VMinPU = 0.9;
+		kVA_Rating = 7.0;
+		kW_Rating = 5.83;
+		kVAr_FullOutput = 3.86;
 		pf = 0.83;
 		delay = 0.0;
-		delayoff = 0.0;
-		kW_ramp_rate = -1.0;
-		kvar_ramp_rate = -1.0;
-		kW_limit = 10000;
-		kvar_limit = kW_limit / 2.0;
-		deltaQ_factor = 0.1;
-		DeltaVTolerance = 0.00001; // in per-unit
-		Qdeliver = 1.0;
+		delayOff = 0.0;
+		kW_RampRate = -1.0;
+		kVAr_RampRate = -1.0;
+		kW_Limit = 10000;
+		kVAr_Limit = kW_Limit / 2.0;
+		deltaQFactor = 0.1;
+		deltaVTolerance = 0.00001; // in per-unit
+		QDeliver = 1.0;
 		QOldDeliver = 0.0;
 		QNew = 0.0;
-		VavgPuPrior = 0.0;
-		VavgPu = 0.0;
+		VAvgPuPrior = 0.0;
+		VAvgPu = 0.0;
 		presentHour = -1.0;
-		TotalWeight = 1.0;
+		totalWeight = 1.0;
 		initPropertyValues(0);
 
-		vvc_curve = null;
-		vvc_curve_size = 0;
-		PendingChange = NONE;
+		vvc_Curve = null;
+		vvc_CurveSize = 0;
+		pendingChange = NONE;
 	}
 
 	@Override
 	public void recalcElementData() {
-		int DevIndex;
+		int devIndex;
 		String tempstring;
 
 		/* Check for existence of monitored element */
 
-		DevIndex = Utilities.getCktElementIndex(elementName);
-		if (DevIndex >= 0) {
-			MonitoredElement = DSSGlobals.activeCircuit.getCktElements().get(DevIndex);
-			if (elementTerminal > MonitoredElement.getNTerms()) {
+		devIndex = Utilities.getCktElementIndex(elementName);
+		if (devIndex >= 0) {
+			monitoredElement = DSSGlobals.activeCircuit.getCktElements().get(devIndex);
+			if (elementTerminal > monitoredElement.getNTerms()) {
 				DSSGlobals.doErrorMsg("VVCControl: \"" + getName() + "\"",
 						"Terminal no. \"" + String.format("%-d", elementTerminal)
 						+ "\" does not exist.", "Re-specify terminal no.", 371);
 			} else {
 				// sets name of i-th terminal's connected bus in VVCControl's buslist
-				setBus(0, MonitoredElement.getBus( elementTerminal ));
+				setBus(0, monitoredElement.getBus( elementTerminal ));
 			}
-			Utilities.resizeArray(cBuffer, MonitoredElement.getYorder());
-			CondOffset = (elementTerminal - 1) * MonitoredElement.getNConds();
+			Utilities.resizeArray(cBuffer, monitoredElement.getYorder());
+			condOffset = (elementTerminal - 1) * monitoredElement.getNConds();
 			// for speedy sampling
 		} else {
 			DSSGlobals.doSimpleMsg("Monitored Element in VVCControl." + getName() +
 					" does not exist:\"" + elementName + "\"", 372);
 		}
 
-		if (GenPointerList.size() == 0)
+		if (genPointerList.size() == 0)
 			makeGenList();
 
-		DevIndex = Utilities.getCktElementIndex("generator." + GeneratorNameList.get(0));
+		devIndex = Utilities.getCktElementIndex("generator." + generatorNameList.get(0));
 
-		if (DevIndex >= 0) {
+		if (devIndex >= 0) {
 			// right now we only support one controlled element (generator) per vvcontrol
 			// controlled element must already exist
-			setControlledElement(DSSGlobals.activeCircuit.getCktElements().get( DevIndex ));
+			setControlledElement(DSSGlobals.activeCircuit.getCktElements().get( devIndex ));
 			getControlledElement().setActiveTerminalIdx(1);  // make the 1 st terminal active
 			// get control synched up with capacitor
 		} else {
 			setControlledElement(null);  // element not found
 			DSSGlobals.doErrorMsg("VVControl: \"" + getName() + "\"",
-					"Controlled Element \"" + GeneratorNameList.get(0) + "\" Not Found.",
+					"Controlled Element \"" + generatorNameList.get(0) + "\" Not Found.",
 					" Element must be defined previously.", 361);
 		}
 	}
@@ -153,8 +154,8 @@ public class VVControlObjImpl extends ControlElemImpl implements VVControlObj {
 			setNConds( getNPhases() );
 		}
 
-		if (MonitoredElement != null) {
-			setBus(0, MonitoredElement.getBus( elementTerminal ));
+		if (monitoredElement != null) {
+			setBus(0, monitoredElement.getBus( elementTerminal ));
 			// allocate a buffer big enough to hold everything from the monitored element
 			//Utilities.resizeArray(cBuffer, MonitoredElement.getYorder());
 			//CondOffset = (elementTerminal - 1) * MonitoredElement.getNConds();  // for speedy sampling
@@ -190,45 +191,45 @@ public class VVControlObjImpl extends ControlElemImpl implements VVControlObj {
 	}
 
 	@Override
-	public void dumpProperties(PrintStream F, boolean Complete) {
-		super.dumpProperties(F, Complete);
+	public void dumpProperties(PrintStream f, boolean complete) {
+		super.dumpProperties(f, complete);
 
 		for (int i = 0; i < getParentClass().getNumProperties(); i++)
-			F.println("~ " + getParentClass().getPropertyName()[i] + "=" + getPropertyValue(i));
+			f.println("~ " + getParentClass().getPropertyName()[i] + "=" + getPropertyValue(i));
 
-		if (Complete)
-			F.println();
+		if (complete)
+			f.println();
 	}
 
 	/**
 	 * Do the action that is pending from last sample
 	 */
 	@Override
-	public void doPendingAction(final int Code, int ProxyHdl) {
+	public void doPendingAction(final int code, int proxyHdl) {
 		int i;
-		double DeltaQ, Qheadroom, Qdesiredpu, PNeeded, QNeeded, PPresentGenOutput,
-			QPresentGenOutput, PMonitoredElement, QMonitoredElement, Genkvar;
+		double deltaQ, QHeadroom, QDesiredPU, PNeeded, QNeeded, PPresentGenOutput,
+			QPresentGenOutput, PMonitoredElement, QMonitoredElement, GenKVAr;
 		Complex SMonitoredElement, SPresentGenOutput;
-		boolean GenkvarChanged;
-		GeneratorObj Gen;
+		boolean GenKVArChanged;
+		GeneratorObj gen;
 
-		Genkvar = 0.0;
+		GenKVAr = 0.0;
 		// we need P and/or we need Q
-		if (PendingChange == CHANGEVARLEVEL) {
+		if (pendingChange == CHANGEVARLEVEL) {
 
-			SMonitoredElement = MonitoredElement.getPower( ElementTerminal );  // S is in VA
+			SMonitoredElement = monitoredElement.getPower( ElementTerminal );  // S is in VA
 			// PMonitoredElement = SMonitoredElement.getReal();
 			QMonitoredElement = SMonitoredElement.getImaginary();
 
 			// PNeeded = kW_limit * 1000 - PMonitoredElement;
-			QNeeded = kvar_limit * 1000 - QMonitoredElement;
+			QNeeded = kVAr_Limit * 1000 - QMonitoredElement;
 			// if the generator list is not defined, go make one
-			if (GenPointerList.size() == 0)
+			if (genPointerList.size() == 0)
 				makeGenList();
 
 			getControlledElement().setActiveTerminalIdx(1);  // set active terminal of generator to terminal 1  TODO Check zero based indexing
 			if (QNeeded != 0.0) {
-				for (i = 0; i < ListSize; i++) {
+				for (i = 0; i < listSize; i++) {
 
 					SPresentGenOutput = getControlledElement().getPower(1);  // TODO Check zero based indexing
 					// S is in VA; we want terminal 1 of the generator
@@ -237,37 +238,37 @@ public class VVControlObjImpl extends ControlElemImpl implements VVControlObj {
 
 					// Q desired pu is the desired output based on the avg pu voltage on the
 					// monitored element
-					Qdesiredpu = vvc_curve.getYValue(VavgPu);  // Y value = var in pu
+					QDesiredPU = vvc_Curve.getYValue(VAvgPu);  // Y value = var in pu
 
 					// the var 'head-room' available on the inverter given its rating
 					// and present kW output
-					if (Math.abs(PPresentGenOutput) > kva_rating * 1000.0) {
-						Qheadroom = 0.0;
+					if (Math.abs(PPresentGenOutput) > kVA_Rating * 1000.0) {
+						QHeadroom = 0.0;
 					} else {
-						Qheadroom = Math.sqrt( Math.pow(kva_rating * 1000.0, 2) - Math.pow(PPresentGenOutput, 2) );
+						QHeadroom = Math.sqrt( Math.pow(kVA_Rating * 1000.0, 2) - Math.pow(PPresentGenOutput, 2) );
 					}
-					Qdeliver = Math.min(Math.abs(kvar_fulloutput * 1000.0), Math.abs(Qheadroom));
+					QDeliver = Math.min(Math.abs(kVAr_FullOutput * 1000.0), Math.abs(QHeadroom));
 
-					Qdeliver = Qdeliver * Qdesiredpu;
-					DeltaQ = Qdeliver - QOldDeliver;
+					QDeliver = QDeliver * QDesiredPU;
+					deltaQ = QDeliver - QOldDeliver;
 
 					// only allow a small movement from old delivered (prior gen Q)
 					// to the desired delivered Q
-					QNew = QOldDeliver + DeltaQ * deltaQ_factor;
+					QNew = QOldDeliver + deltaQ * deltaQFactor;
 
 					if (QNew != QPresentGenOutput) {
-						Gen = (GeneratorObj) GenPointerList.get(i);  // TODO implement generics
-						Genkvar = Math.signum(QNew) * Math.min( Math.abs(kvar_limit * 1000.0), Math.abs(QNew) ) / 1000.0;
-						if (Genkvar != Gen.getKVArBase())
-							Gen.setPresentKVAr(Genkvar);
+						gen = (GeneratorObj) genPointerList.get(i);  // TODO implement generics
+						GenKVAr = Math.signum(QNew) * Math.min( Math.abs(kVAr_Limit * 1000.0), Math.abs(QNew) ) / 1000.0;
+						if (GenKVAr != gen.getKVArBase())
+							gen.setPresentKVAr(GenKVAr);
 					}
 					Utilities.appendToEventLog("VoltVarControl." + getName(),
-							String.format("**Set var output level to**, kvar= %.5g", Genkvar));
+							String.format("**Set var output level to**, kvar= %.5g", GenKVAr));
 				}  // end for loop  (number of generators under this control)
 			}  // end if vars needed is not equal to zero
 
 			QOldDeliver = QNew;
-			VavgPuPrior = VavgPu;
+			VAvgPuPrior = VAvgPu;
 			DSSGlobals.activeCircuit.getSolution().setLoadsNeedUpdating(true);
 			// force recalc of power parms
 			setPendingChange(NONE);
@@ -283,46 +284,46 @@ public class VVControlObjImpl extends ControlElemImpl implements VVControlObj {
 	public void sample() {
 		int i;
 		Complex SMonitoredElement;
-		double basekV, Vavg, PNeeded, QNeeded, PMonitoredElement, QMonitoredElement;
+		double baseKV, VAvg, PNeeded, QNeeded, PMonitoredElement, QMonitoredElement;
 
 		// if list is not defined, go make one for all generators in circuit
-		if (GenPointerList.size() == 0)
+		if (genPointerList.size() == 0)
 			makeGenList();
 
-		if ((ListSize > 0) && (vvc_curve_size > 0)) {
+		if ((listSize > 0) && (vvc_CurveSize > 0)) {
 
 			//if (presentHour != DSSGlobals.activeCircuit.getSolution().getDblHour()) {
 			//	WriteDLLDebugFile(Self.Name+','+String.format("%-.5g',[ActiveCircuit.Solution.dblHour])+','+String.format("%-.5g',[QPresentGenOutput])+','+String.format("%-.5g',[Qdeliver])+','+String.format("%-.5g',[QNew])+','+String.format("%-.5g',[Gen.Presentkvar*1000.0])+','+String.format("%-.5g',[QoldDeliver])+','+String.format("%-.5g',[PPresentGenOutput])+','+String.format("%-.5g',[Vavgpu])+','+String.format("%-.5g',[Vavgpuprior]));
 			//	presentHour = ActiveCircuit.Solution.dblHour;
 			//}
 
-			MonitoredElement.computeVTerminal();
-			cBuffer = MonitoredElement.getVTerminal();
+			monitoredElement.computeVTerminal();
+			cBuffer = monitoredElement.getVTerminal();
 
 			// get the basekV for the monitored bus
-			basekV = DSSGlobals.activeCircuit.getBuses()[ terminals[elementTerminal].getBusRef() ].getKVBase();
-			Vavg = 0;
+			baseKV = DSSGlobals.activeCircuit.getBuses()[ terminals[elementTerminal].getBusRef() ].getKVBase();
+			VAvg = 0;
 
 			// calculate the average voltage
-			for (i = 0; i < MonitoredElement.getNPhases(); i++)
-				Vavg = Vavg + cBuffer[i].abs();
+			for (i = 0; i < monitoredElement.getNPhases(); i++)
+				VAvg = VAvg + cBuffer[i].abs();
 
 			// and convert to pu
-			VavgPu = (Vavg / MonitoredElement.getNPhases()) / (basekV * 1000.0);
+			VAvgPu = (VAvg / monitoredElement.getNPhases()) / (baseKV * 1000.0);
 
 			timeDelay = delay;
 			// and
 			// if (ActiveCircuit.Solution.ControlIteration < ActiveCircuit.Solution.MaxControlIterations) then
 			// begin
-			if ((Math.abs(VavgPu - VavgPuPrior) > DeltaVTolerance) || (Math.abs(Math.abs(Qdeliver) - Math.abs(QNew)) > 0.5)) {
+			if ((Math.abs(VAvgPu - VAvgPuPrior) > deltaVTolerance) || (Math.abs(Math.abs(QDeliver) - Math.abs(QNew)) > 0.5)) {
 				setPendingChange(CHANGEVARLEVEL);
 				// ActiveCircuit.Solution.LoadsNeedUpdating = TRUE; // Force recalc of power parms
-				ControlActionHandle = DSSGlobals.activeCircuit.getControlQueue().push(DSSGlobals.activeCircuit.getSolution().getIntHour(),
-						DSSGlobals.activeCircuit.getSolution().getDynaVars().t + timeDelay, PendingChange, 0, this);
+				controlActionHandle = DSSGlobals.activeCircuit.getControlQueue().push(DSSGlobals.activeCircuit.getSolution().getIntHour(),
+						DSSGlobals.activeCircuit.getSolution().getDynaVars().t + timeDelay, pendingChange, 0, this);
 				Utilities.appendToEventLog("VoltVarControl." + getName(), String.format
-						("**Ready to change var output**, Vavgpu= %.5g sec,", VavgPu));
+						("**Ready to change var output**, Vavgpu= %.5g sec,", VAvgPu));
 			} else {
-				DSSGlobals.activeCircuit.getControlQueue().delete( ControlActionHandle );
+				DSSGlobals.activeCircuit.getControlQueue().delete( controlActionHandle );
 				Utilities.appendToEventLog("VoltVarControl." + getName(), "**DONE**");
 			}
 		} else {
@@ -331,7 +332,7 @@ public class VVControlObjImpl extends ControlElemImpl implements VVControlObj {
 	}
 
 	@Override
-	public void initPropertyValues(int ArrayOffset) {
+	public void initPropertyValues(int arrayOffset) {
 
 		setPropertyValue(0, "");     // "element";
 		setPropertyValue(1, "1");    // "terminal";
@@ -361,51 +362,139 @@ public class VVControlObjImpl extends ControlElemImpl implements VVControlObj {
 
 		switch (index) {
 		case 0:
-			return MonitoredElement.getDisplayName();
+			return monitoredElement.getDisplayName();
 		case 1:
 			return String.format("%-d", elementTerminal);
 		case 2:
-			return String.format("%-.3g", vvc_Vmaxpu);
+			return String.format("%-.3g", vvc_VMaxPU);
 		case 3:
-			return String.format("%-.3g", vvc_Vminpu);
+			return String.format("%-.3g", vvc_VMinPU);
 		case 4:
-			return String.format("%-.3g", kva_rating);
+			return String.format("%-.3g", kVA_Rating);
 		case 5:
-			return String.format("%-.3g", kW_rating);
+			return String.format("%-.3g", kW_Rating);
 		case 6:
-			return String.format("%-.3g", kvar_fulloutput);
+			return String.format("%-.3g", kVAr_FullOutput);
 		case 7:
 			return String.format("%-.3g", pf);
 		case 8:
 			return String.format("%-.3g", delay);
 		case 9:
-			return String.format("%-.3g", delayoff);
+			return String.format("%-.3g", delayOff);
 		case 10:
-			return String.format("%-.3g", kW_ramp_rate);
+			return String.format("%-.3g", kW_RampRate);
 		case 11:
-			return String.format("%-.3g", kvar_ramp_rate);
+			return String.format("%-.3g", kVAr_RampRate);
 		case 12:
-			return String.format("%-.3g", kW_limit);
+			return String.format("%-.3g", kW_Limit);
 		case 13:
-			return String.format("%-.3g", kvar_limit);
+			return String.format("%-.3g", kVAr_Limit);
 		case 14:
 			return returnGensList();
 		case 15:
 			return returnWeightsList();
 		case 16:
-			return String.format("%-d", vvc_curve_size);
+			return String.format("%-d", vvc_CurveSize);
 		case 17:
 			return returnVVCurve();
 		case 18:
-			return String.format("%-.3g", deltaQ_factor);
+			return String.format("%-.3g", deltaQFactor);
 		default:
 			// take the generic handler
 			return super.getPropertyValue(index);
 		}
 	}
 
-	public void setPendingChange(final int Value) {
+	public boolean makeGenList() {
+		DSSClass genClass;
+		GeneratorObj gen;
+		int i;
 
+		boolean result = false;
+		genClass = DSSClassDefs.getDSSClass("generator");
+
+		if (listSize > 0) {
+			// name list is defined - use it
+			for (i = 0; i < listSize; i++) {
+				gen = (GeneratorObj) genClass.find( generatorNameList.get(i - 1) );
+				if ((gen != null) && gen.isEnabled())
+					genPointerList.add(gen);
+			}
+		} else {
+			/* Search through the entire circuit for enabled generators and add them to the list */
+			for (i = 0; i < genClass.getElementCount(); i++) {
+				gen = (GeneratorObj) genClass.getElementList().get(i);
+				if (gen.isEnabled())
+					genPointerList.add(gen);
+				generatorNameList.add(gen.getDisplayName());
+			}
+
+			/* Allocate uniform weights */
+			listSize = genPointerList.size();
+			Utilities.resizeArray(weights, listSize);
+			for (i = 0; i < listSize; i++)
+				weights[i] = 1.0;
+		}
+
+		// add up total weights
+		totalWeight = 0.0;
+		for (i = 0; i < listSize; i++)
+			totalWeight = totalWeight + weights[i];
+
+		if (genPointerList.size() > 0)
+			result = true;
+
+		return result;
+	}
+
+	public String returnGensList() {
+		String result;
+
+		if (listSize == 0) {
+			result = "";
+			return result;
+		}
+
+		result = "[" + generatorNameList.get(0);
+		for (int i = 0; i < listSize; i++)
+			result = result + ", " + generatorNameList.get(i);
+
+		result = result + "]";  // terminate the array
+
+		return result;
+	}
+
+	public String returnWeightsList() {
+		String result;
+
+		if (listSize == 0) {
+			result = "";
+			return result;
+		}
+
+		result = "[" + String.format("%-.6g", weights[0]);
+		for (int i = 1; i < listSize; i++)
+			result = result + String.format(", %-.6g", weights[i]);
+
+		result = result + "]";  // terminate the array
+
+		return result;
+	}
+
+	public String returnVVCurve() {
+		String result;
+
+		if (vvc_CurveSize == 0) {
+			result = "";
+			return result;
+		}
+
+		result = "[{" + String.format("%-.3g,", vvc_Curve.getXValue(0)) + String.format("%-.3g", vvc_Curve.getYValue(0)) + "},";
+		for (int i = 1; i < vvc_CurveSize; i++)
+			result = result + String.format("{ %-.3g,", vvc_Curve.getXValue(i)) + String.format("%-.3g", vvc_Curve.getYValue(i)) + "},";
+		result = result + "]";  // terminate the array
+
+		return result;
 	}
 
 	/**
@@ -413,65 +502,54 @@ public class VVControlObjImpl extends ControlElemImpl implements VVControlObj {
 	 */
 	@Override
 	public void reset() {
-
+		pendingChange = NONE;
 	}
 
-	public boolean makeGenList() {
-
-	}
-
-	public String returnGensList() {
-
-	}
-
-	public String returnWeightsList() {
-
-	}
-
-	public String returnVVCurve() {
-
+	public void setPendingChange(final int Value) {
+		pendingChange = Value;
+		setDblTraceParameter(Value);
 	}
 
 	// FIXME Private members in OpenDSS
 
 	public double getVvc_Vmaxpu() {
-		return vvc_Vmaxpu;
+		return vvc_VMaxPU;
 	}
 
 	public void setVvc_Vmaxpu(double vvc_Vmaxpu) {
-		this.vvc_Vmaxpu = vvc_Vmaxpu;
+		this.vvc_VMaxPU = vvc_Vmaxpu;
 	}
 
 	public double getVvc_Vminpu() {
-		return vvc_Vminpu;
+		return vvc_VMinPU;
 	}
 
 	public void setVvc_Vminpu(double vvc_Vminpu) {
-		this.vvc_Vminpu = vvc_Vminpu;
+		this.vvc_VMinPU = vvc_Vminpu;
 	}
 
 	public double getKva_rating() {
-		return kva_rating;
+		return kVA_Rating;
 	}
 
 	public void setKva_rating(double kva_rating) {
-		this.kva_rating = kva_rating;
+		this.kVA_Rating = kva_rating;
 	}
 
 	public double getkW_rating() {
-		return kW_rating;
+		return kW_Rating;
 	}
 
 	public void setkW_rating(double kW_rating) {
-		this.kW_rating = kW_rating;
+		this.kW_Rating = kW_rating;
 	}
 
 	public double getKvar_fulloutput() {
-		return kvar_fulloutput;
+		return kVAr_FullOutput;
 	}
 
 	public void setKvar_fulloutput(double kvar_fulloutput) {
-		this.kvar_fulloutput = kvar_fulloutput;
+		this.kVAr_FullOutput = kvar_fulloutput;
 	}
 
 	public double getPf() {
@@ -491,59 +569,59 @@ public class VVControlObjImpl extends ControlElemImpl implements VVControlObj {
 	}
 
 	public double getDelayoff() {
-		return delayoff;
+		return delayOff;
 	}
 
 	public void setDelayoff(double delayoff) {
-		this.delayoff = delayoff;
+		this.delayOff = delayoff;
 	}
 
 	public double getkW_ramp_rate() {
-		return kW_ramp_rate;
+		return kW_RampRate;
 	}
 
 	public void setkW_ramp_rate(double kW_ramp_rate) {
-		this.kW_ramp_rate = kW_ramp_rate;
+		this.kW_RampRate = kW_ramp_rate;
 	}
 
 	public double getKvar_ramp_rate() {
-		return kvar_ramp_rate;
+		return kVAr_RampRate;
 	}
 
 	public void setKvar_ramp_rate(double kvar_ramp_rate) {
-		this.kvar_ramp_rate = kvar_ramp_rate;
+		this.kVAr_RampRate = kvar_ramp_rate;
 	}
 
 	public double getkW_limit() {
-		return kW_limit;
+		return kW_Limit;
 	}
 
 	public void setkW_limit(double kW_limit) {
-		this.kW_limit = kW_limit;
+		this.kW_Limit = kW_limit;
 	}
 
 	public double getKvar_limit() {
-		return kvar_limit;
+		return kVAr_Limit;
 	}
 
 	public void setKvar_limit(double kvar_limit) {
-		this.kvar_limit = kvar_limit;
+		this.kVAr_Limit = kvar_limit;
 	}
 
 	public double getDeltaVTolerance() {
-		return DeltaVTolerance;
+		return deltaVTolerance;
 	}
 
 	public void setDeltaVTolerance(double deltaVTolerance) {
-		DeltaVTolerance = deltaVTolerance;
+		deltaVTolerance = deltaVTolerance;
 	}
 
 	public double getTotalWeight() {
-		return TotalWeight;
+		return totalWeight;
 	}
 
 	public void setTotalWeight(double totalWeight) {
-		TotalWeight = totalWeight;
+		totalWeight = totalWeight;
 	}
 
 	public double getQOldDeliver() {
@@ -555,11 +633,11 @@ public class VVControlObjImpl extends ControlElemImpl implements VVControlObj {
 	}
 
 	public double getQdeliver() {
-		return Qdeliver;
+		return QDeliver;
 	}
 
 	public void setQdeliver(double qdeliver) {
-		Qdeliver = qdeliver;
+		QDeliver = qdeliver;
 	}
 
 	public double getQNew() {
@@ -571,19 +649,19 @@ public class VVControlObjImpl extends ControlElemImpl implements VVControlObj {
 	}
 
 	public double getVavgPuPrior() {
-		return VavgPuPrior;
+		return VAvgPuPrior;
 	}
 
 	public void setVavgPuPrior(double vavgPuPrior) {
-		VavgPuPrior = vavgPuPrior;
+		VAvgPuPrior = vavgPuPrior;
 	}
 
 	public double getVavgPu() {
-		return VavgPu;
+		return VAvgPu;
 	}
 
 	public void setVavgPu(double vavgPu) {
-		VavgPu = vavgPu;
+		VAvgPu = vavgPu;
 	}
 
 	public double getPresentHour() {
@@ -595,87 +673,87 @@ public class VVControlObjImpl extends ControlElemImpl implements VVControlObj {
 	}
 
 	public int getControlActionHandle() {
-		return ControlActionHandle;
+		return controlActionHandle;
 	}
 
 	public void setControlActionHandle(int controlActionHandle) {
-		ControlActionHandle = controlActionHandle;
+		controlActionHandle = controlActionHandle;
 	}
 
 	public int getListSize() {
-		return ListSize;
+		return listSize;
 	}
 
 	public void setListSize(int listSize) {
-		ListSize = listSize;
+		listSize = listSize;
 	}
 
 	public List<String> getGeneratorNameList() {
-		return GeneratorNameList;
+		return generatorNameList;
 	}
 
 	public void setGeneratorNameList(List<String> generatorNameList) {
-		GeneratorNameList = generatorNameList;
+		generatorNameList = generatorNameList;
 	}
 
 	public PointerList getGenPointerList() {
-		return GenPointerList;
+		return genPointerList;
 	}
 
 	public void setGenPointerList(PointerList genPointerList) {
-		GenPointerList = genPointerList;
+		genPointerList = genPointerList;
 	}
 
 	public double[] getWeights() {
-		return Weights;
+		return weights;
 	}
 
 	public void setWeights(double[] weights) {
-		Weights = weights;
+		weights = weights;
 	}
 
 	public int getVvc_curve_size() {
-		return vvc_curve_size;
+		return vvc_CurveSize;
 	}
 
 	public void setVvc_curve_size(int vvc_curve_size) {
-		this.vvc_curve_size = vvc_curve_size;
+		this.vvc_CurveSize = vvc_curve_size;
 	}
 
 	public XYCurveObj getVvc_curve() {
-		return vvc_curve;
+		return vvc_Curve;
 	}
 
 	public void setVvc_curve(XYCurveObj vvc_curve) {
-		this.vvc_curve = vvc_curve;
+		this.vvc_Curve = vvc_curve;
 	}
 
 	public double getDeltaQ_factor() {
-		return deltaQ_factor;
+		return deltaQFactor;
 	}
 
 	public void setDeltaQ_factor(double deltaQ_factor) {
-		this.deltaQ_factor = deltaQ_factor;
+		this.deltaQFactor = deltaQ_factor;
 	}
 
 	public int getPendingChange() {
-		return PendingChange;
+		return pendingChange;
 	}
 
 	public CktElement getMonitoredElement() {
-		return MonitoredElement;
+		return monitoredElement;
 	}
 
 	public void setMonitoredElement(CktElement monitoredElement) {
-		MonitoredElement = monitoredElement;
+		monitoredElement = monitoredElement;
 	}
 
 	public int getCondOffset() {
-		return CondOffset;
+		return condOffset;
 	}
 
 	public void setCondOffset(int condOffset) {
-		CondOffset = condOffset;
+		condOffset = condOffset;
 	}
 
 }

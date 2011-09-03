@@ -5,7 +5,6 @@ import com.epri.dss.common.impl.DSSGlobals;
 import com.epri.dss.common.impl.Utilities;
 import com.epri.dss.control.GenDispatcher;
 import com.epri.dss.control.GenDispatcherObj;
-import com.epri.dss.general.XYCurveObj;
 import com.epri.dss.parser.impl.Parser;
 import com.epri.dss.shared.impl.CommandListImpl;
 
@@ -174,10 +173,6 @@ public class GenDispatcherImpl extends ControlClassImpl implements GenDispatcher
 		}
 
 		return result;
-	}
-
-	public XYCurveObj getVVCCurve(final String curveName) {
-
 	}
 
 }
