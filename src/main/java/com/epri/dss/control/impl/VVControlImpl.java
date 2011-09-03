@@ -3,9 +3,11 @@ package com.epri.dss.control.impl;
 import com.epri.dss.common.DSSClass;
 import com.epri.dss.common.impl.DSSClassDefs;
 import com.epri.dss.common.impl.DSSGlobals;
+import com.epri.dss.common.impl.Utilities;
 import com.epri.dss.control.VVControl;
 import com.epri.dss.control.VVControlObj;
 import com.epri.dss.general.XYCurveObj;
+import com.epri.dss.parser.impl.Parser;
 import com.epri.dss.shared.impl.CommandListImpl;
 
 public class VVControlImpl extends ControlClassImpl implements VVControl {
@@ -116,16 +118,161 @@ public class VVControlImpl extends ControlClassImpl implements VVControl {
 	@Override
 	public int newObject(String ObjName) {
 
+		DSSGlobals.activeCircuit.setActiveCktElement(new VVControlObjImpl(this, ObjName));
+		return addObjectToList(DSSGlobals.activeDSSObject);
+
 	}
 
 	@Override
 	public int edit() {
+		Parser parser = Parser.getInstance();
 
+		// continue parsing with contents of parser
+		activeVVCControlObj = (VVControlObj) elementList.getActive();
+		DSSGlobals.activeCircuit.setActiveCktElement(activeVVCControlObj);
+
+		int result = 0;
+
+		VVControlObj avc = activeVVCControlObj;
+
+		int paramPointer = 0;
+		String paramName = parser.getNextParam();
+		String param = parser.makeString();
+		while (param.length() > 0) {
+			if (paramName.length() == 0) {
+				paramPointer += 1;
+			} else {
+				paramPointer = commandList.getCommand(paramName);
+			}
+
+			if ((paramPointer >= 0) && (paramPointer <= numProperties))
+				avc.setPropertyValue(paramPointer, param);
+
+			switch (paramPointer) {
+			case -1:
+				DSSGlobals.doSimpleMsg("Unknown parameter \"" + paramName + "\" for Object \"" +
+						className + "." + avc.getName() + "\"", 364);
+				break;
+			case 0:
+				avc.setElementName(param.toLowerCase());
+				break;
+			case 1:
+				avc.setElementTerminal(parser.makeInteger());
+				break;
+			case 2:
+				avc.setVvc_Vmaxpu(parser.makeDouble());
+				break;
+			case 3:
+				avc.setVvc_Vminpu(parser.makeDouble());
+				break;
+			case 4:
+				avc.setKva_rating(parser.makeDouble());
+				break;
+			case 5:
+				avc.setkW_rating(parser.makeDouble());
+				break;
+			case 6:
+				avc.setKvar_fulloutput(parser.makeDouble());
+				break;
+			case 7:
+				avc.setPf(parser.makeDouble());
+				break;
+			case 8:
+				avc.setDelay(parser.makeDouble());
+				break;
+			case 9:
+				avc.setDelayoff(parser.makeDouble());
+				break;
+			case 10:
+				avc.setkW_ramp_rate(parser.makeDouble());
+				break;
+			case 11:
+				avc.setKvar_ramp_rate(parser.makeDouble());
+				break;
+			case 12:
+				avc.setkW_limit(parser.makeDouble());
+				break;
+			case 13:
+				avc.setKvar_limit(parser.makeDouble());
+				break;
+
+			case 14:
+				Utilities.interpretStringListArray(param, avc.getGeneratorNameList());
+				break;
+			case 15:
+				avc.setListSize(avc.getGeneratorNameList().size());
+				if (avc.getListSize() > 0) {
+					Utilities.resizeArray(avc.getWeights(), avc.getListSize());
+					Utilities.interpretDblArray(param, avc.getListSize(), avc.getWeights());
+				}
+				break;
+			case 16:
+				avc.setVvc_curve_size(parser.makeInteger());
+				break;
+			case 17:
+				avc.setVvc_curve(getVVCCurve(param));
+				break;
+			case 18:
+				avc.setDeltaQ_factor(parser.makeDouble());
+				break;
+			default:
+				// inherited parameters
+				classEdit(activeVVCControlObj, paramPointer - NumPropsThisClass);
+				break;
+			}
+
+			switch (paramPointer) {
+			case 14:
+				// re-alloc based on
+				avc.getGenPointerList().clear();  // clear this for resetting on first sample
+				avc.setListSize(avc.getGeneratorNameList().size());
+				Utilities.resizeArray(avc.getWeights(), avc.getListSize());
+				for (int i = 0; i < avc.getListSize(); i++)
+					avc.getWeights()[i] = 1.0;
+			case 17:
+				// re-set the number vvc_curve_size property to the number
+				// of points in the curve
+				if (avc.getVvc_curve().getNumPoints() != avc.getVvc_curve_size())
+					avc.setVvc_curve_size(avc.getVvc_curve().getNumPoints());
+			}
+
+
+			paramName = parser.getNextParam();
+			param = parser.makeString();
+		}
+
+		avc.recalcElementData();
+		return result;
 	}
 
 	@Override
-	protected int makeLike(String genDispatcherName) {
+	protected int makeLike(String VVCControlName) {
+		int result = 0;
 
+		/* See if we can find this VVCControl name in the present collection */
+		VVControlObj otherVVCControl = (VVControlObj) find(VVCControlName);
+		if (otherVVCControl != null) {
+			VVControlObj avc = activeVVCControlObj;
+
+			avc.setNPhases(otherVVCControl.getNPhases());
+			avc.setNConds(otherVVCControl.getNConds());  // force reallocation of terminal data
+
+			avc.setElementName(otherVVCControl.getElementName());
+			avc.setControlledElement(otherVVCControl.getControlElement());
+			// target circuit element
+			avc.setMonitoredElement(otherVVCControl.getMonitoredElement());
+			// monitored circuit element
+			avc.setElementTerminal(otherVVCControl.getElementTerminal());
+			avc.setCondOffset(otherVVCControl.getCondOffset());
+			avc.setDeltaVTolerance(otherVVCControl.getDeltaVTolerance());
+
+			for (int i = 0; i < avc.getParentClass().getNumProperties(); i++)
+				avc.setPropertyValue(i, otherVVCControl.getPropertyValue(i));
+		} else {
+			DSSGlobals.doSimpleMsg("Error in VVCControl makeLike: \"" + VVCControlName +
+			          "\" Not Found.", 370);
+		}
+		return result;
 	}
 
 }

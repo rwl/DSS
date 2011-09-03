@@ -13,7 +13,4 @@ public interface VVControl extends ControlClass {
 
 	int NumPropsThisClass = 19;
 
-	int NONE = 0;
-	int CHANGEVARLEVEL = 1;
-
 }
