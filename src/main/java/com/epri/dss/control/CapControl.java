@@ -6,6 +6,6 @@ public interface CapControl extends ControlClass {
 	static int MAXPHASE  = -2;
 	static int MINPHASE  = -3;
 
-	static int NumPropsThisClass = 16;
+	static int NumPropsThisClass = 18;
 
 }

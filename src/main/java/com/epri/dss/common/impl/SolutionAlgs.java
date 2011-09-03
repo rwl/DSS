@@ -99,7 +99,6 @@ public class SolutionAlgs {
 
 		try {
 			sol.setIntervalHrs(sol.getDynaVars().h / 3600.0);  // needed for energy meters
-			ckt.setDefaultDailyShapeObj((LoadShapeObj) DSSGlobals.loadShapeClass.find("default"));
 			if (!DSSGlobals.DIFilesAreOpen)
 				DSSGlobals.energyMeterClass.openAllDIFiles();  // append demand interval files, if desired
 
@@ -147,7 +146,6 @@ public class SolutionAlgs {
 			sol.setIntHour(0);
 			sol.setDblHour(0.0);
 			sol.setIntervalHrs(sol.getDynaVars().h / 3600.0);  // needed for energy meters and storage devices
-			ckt.setDefaultDailyShapeObj((LoadShapeObj) DSSGlobals.loadShapeClass.find("default"));
 			if (!DSSGlobals.DIFilesAreOpen)
 				DSSGlobals.energyMeterClass.openAllDIFiles();  // open demand interval files, if desired
 

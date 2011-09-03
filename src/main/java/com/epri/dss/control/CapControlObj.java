@@ -131,4 +131,16 @@ public interface CapControlObj extends ControlElem {
 
 	void setVMin(double vmin);
 
+	boolean isVOverrideBusSpecified();
+
+	void setVOverrideBusSpecified(boolean vOverrideBusSpecified);
+
+	String getVOverrideBusName();
+
+	void setVOverrideBusName(String vOverrideBusName);
+
+	int getVOverrideBusIndex();
+
+	void setVOverrideBusIndex(int vOverrideBusIndex);
+
 }

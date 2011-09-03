@@ -50,6 +50,8 @@ public class CapControlImpl extends ControlClassImpl implements CapControl {
 		propertyName[13] = "DeadTime";
 		propertyName[14] = "CTPhase";
 		propertyName[15] = "PTPhase";
+		propertyName[16] = "VBus";
+		propertyName[17] = "EventLog";
 
 		propertyHelp[0] = "Full object name of the circuit element, typically a line or transformer, "+
 				"to which the capacitor control's PT and/or CT are connected." +
@@ -95,6 +97,9 @@ public class CapControlImpl extends ControlClassImpl implements CapControl {
 		propertyHelp[15] = "Number of the phase being monitored for VOLTAGE control or one of {AVG | MAX | MIN} for all phases. Default=1. " +
 				"If delta or L-L connection, enter the first or the two phases being monitored [1-2, 2-3, 3-1]. " +
 				"Must be less than the number of phases. Does not apply to kvar control which uses all phases by default.";
+		propertyHelp[16] = "Name of bus to use for voltage override function. Default is bus at monitored terminal. " +
+				"Sometimes it is useful to monitor a bus in another location to emulate various DMS control algorithms.";
+		propertyHelp[17] = "{Yes/True* | No/False} Default is YES for CapControl. Log control actions to Eventlog.";
 
 		activeProperty = CapControl.NumPropsThisClass - 1;
 		super.defineProperties();  // add defs of inherited properties to bottom of list
@@ -222,6 +227,11 @@ public class CapControlImpl extends ControlClassImpl implements CapControl {
 					acc.setPTPhase( Math.max(1, parser.makeInteger()) );
 				}
 				break;
+			case 16:
+				acc.setVOverrideBusSpecified(true);
+				acc.setVOverrideBusName(param);
+			case 17:
+				acc.setShowEventLog( Utilities.interpretYesNo(param) );
 			default:
 				// inherited parameters
 				classEdit(activeCapControlObj, paramPointer - CapControl.NumPropsThisClass);
@@ -314,6 +324,12 @@ public class CapControlImpl extends ControlClassImpl implements CapControl {
 
 			acc.setCTPhase(otherCapControl.getCTPhase());
 			acc.setPTPhase(otherCapControl.getPTPhase());
+
+			acc.setVOverride(otherCapControl.isVOverride());
+			acc.setVOverrideBusSpecified(otherCapControl.isVOverrideBusSpecified());
+			acc.setVOverrideBusName(otherCapControl.getVOverrideBusName());
+
+		        acc.setShowEventLog(otherCapControl.isShowEventLog());
 
 			for (i = 0; i < acc.getParentClass().getNumProperties(); i++)
 				acc.setPropertyValue(i, otherCapControl.getPropertyValue(i));

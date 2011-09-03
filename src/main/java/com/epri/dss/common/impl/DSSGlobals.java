@@ -103,6 +103,7 @@ public class DSSGlobals {
 	public static boolean DLLFirstTime = true;
 	public static PrintStream DLLDebugFile;
 	public static String DSSIniFileName = "OpenDSSPanel.ini";
+	public static String programName = "OpenDSS";
 	// Registry   (See Executive)
 //	public static IniRegSave DSS_Registry = IniRegSave("\\Software\\OpenDSS");
 
@@ -177,6 +178,7 @@ public class DSSGlobals {
 	public static LineSpacing lineSpacingClass;
 	public static Storage storageClass;
 	public static PVSystem PVSystemClass;
+	public static VVControl VVControlClass;
 
 	public static List<String> eventStrings;
 	public static List<String> savedFileList;

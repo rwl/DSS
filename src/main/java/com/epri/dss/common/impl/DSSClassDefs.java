@@ -83,8 +83,7 @@ public class DSSClassDefs {
 	public static final int STORAGE_CONTROL  = 22 * 8;
 	public static final int SWT_CONTROL      = 23 * 8;
 	public static final int PVSYSTEM_ELEMENT = 24 * 8;
-	public static final int GIC_TRANSFORMER  = 25 * 8;  // special models for GIC studies
-	public static final int GIC_LINE         = 26 * 8;
+	public static final int VV_CONTROL       = 25 * 8;
 
 
 	private static int numIntrinsicClasses;
@@ -175,15 +174,15 @@ public class DSSClassDefs {
 		DSSGlobals.PVSystemClass = new PVSystemImpl();
 		DSSClassImpl.getDSSClasses().setNew( DSSGlobals.PVSystemClass );
 
+		DSSGlobals.VVControlClass = new VVControl();
+		DSSClassImpl.getDSSClasses().setNew ( DSSGlobals.VVControlClass );
+
 		DSSGlobals.monitorClass = new MonitorImpl();  // have to do this after Generator
 		DSSClassImpl.getDSSClasses().setNew( DSSGlobals.monitorClass );
 		DSSGlobals.energyMeterClass = new EnergyMeterImpl();  // have to do this after Generator
 		DSSClassImpl.getDSSClasses().setNew( DSSGlobals.energyMeterClass );
 		DSSGlobals.sensorClass = new SensorImpl();  // create state estimation sensors
 		DSSClassImpl.getDSSClasses().setNew( DSSGlobals.sensorClass );
-
-		DSSClassImpl.getDSSClasses().setNew( new GICTransformerImpl() );
-		DSSClassImpl.getDSSClasses().setNew( new GICLineImpl() );
 
 
 		/* Create classes for custom implementations */

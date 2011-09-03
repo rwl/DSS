@@ -6,6 +6,7 @@ import org.apache.commons.lang.mutable.MutableDouble;
 
 import org.apache.commons.math.complex.Complex;
 
+import com.epri.dss.common.Bus;
 import com.epri.dss.common.Circuit;
 import com.epri.dss.common.CktElement;
 import com.epri.dss.common.SolutionObj;
@@ -38,6 +39,9 @@ public class CapControlObjImpl extends ControlElemImpl implements CapControlObj 
 		LastOpenTime;
 
 	private boolean VOverride;
+	private boolean VOverrideBusSpecified;
+	private String VOverrideBusName;
+	private int VOverrideBusIndex;
 	private double VMax, VMin;
 
 	private String capacitorName;
@@ -80,6 +84,9 @@ public class CapControlObjImpl extends ControlElemImpl implements CapControlObj 
 		PFOffValue = 1.05;
 
 		VOverride = false;
+		VOverrideBusSpecified = false;
+		VOverrideBusName = "";
+
 		VMax      = 126;
 		VMin      = 115;
 
@@ -133,7 +140,7 @@ public class CapControlObjImpl extends ControlElemImpl implements CapControlObj 
 			}
 		} else {
 			setControlledElement(null);  // element not found
-			DSSGlobals.doErrorMsg("CapControl: \"" + getName() + "\"", "Capacitor Element \""+ capacitorName + "\" Not Found.",
+			DSSGlobals.doErrorMsg("CapControl." + getName() + ":", "Capacitor Element \""+ capacitorName + "\" Not Found.",
 					"Element must be defined previously.", 361);
 		}
 
@@ -158,6 +165,15 @@ public class CapControlObjImpl extends ControlElemImpl implements CapControlObj 
 			}
 		} else {
 			DSSGlobals.doSimpleMsg("Monitored Element in CapControl."+getName()+ " does not exist:\""+elementName+"\"", 363);
+		}
+
+		/* alternative override bus */
+		if (VOverrideBusSpecified) {
+			VOverrideBusIndex = ckt.getBusList().find(VOverrideBusName);
+			if (VOverrideBusIndex == -1) {
+				DSSGlobals.doSimpleMsg(String.format("CapControl.%s: Voltage override Bus \"%s\" not found. Did you wait until buses were defined? Reverting to default.", getName(), VOverrideBusName), 10361);
+				VOverrideBusSpecified = false;
+			}
 		}
 	}
 
@@ -187,6 +203,16 @@ public class CapControlObjImpl extends ControlElemImpl implements CapControlObj 
 	public void calcYPrim() {
 		// leave YPrims as null and they will be ignored
 	}
+
+
+	private void getBusVoltages(Bus pBus, Complex[] buff) {
+		int j;
+
+		if (pBus.getVBus() != null)  // uses nphases from CapControlObj
+			for (j = 0; j < nPhases; j++)
+				cBuffer[j] = DSSGlobals.activeCircuit.getSolution().getNodeV()[ pBus.getRef(j) ];  // TODO: Check cBuffer shouldn't be buff
+	}
+
 
 	/**
 	 * Get current to control on based on type of control specified.
@@ -259,7 +285,8 @@ public class CapControlObjImpl extends ControlElemImpl implements CapControlObj 
 				if (presentState == ControlAction.CLOSE) {
 					getControlledElement().setConductorClosed(0, false);  // open all phases of active terminal
 
-					Utilities.appendToEventLog("Capacitor." + getControlledElement().getName(), "**Opened**");
+					if (showEventLog)
+						Utilities.appendToEventLog("Capacitor." + getControlledElement().getName(), "**Opened**");
 					presentState = ControlAction.OPEN;
 
 					SolutionObj sol = DSSGlobals.activeCircuit.getSolution();
@@ -272,9 +299,11 @@ public class CapControlObjImpl extends ControlElemImpl implements CapControlObj 
 					if (!controlledCapacitor.subtractStep()) {
 						presentState = ControlAction.OPEN;
 						getControlledElement().setConductorClosed(0, false);  // open all phases of active terminal
-						Utilities.appendToEventLog("Capacitor." + getControlledElement().getName(), "**Opened**");
+						if (showEventLog)
+							Utilities.appendToEventLog("Capacitor." + getControlledElement().getName(), "**Opened**");
 					} else {
-						Utilities.appendToEventLog("Capacitor." + getControlledElement().getName(), "**Step Down**");
+						if (showEventLog)
+							Utilities.appendToEventLog("Capacitor." + getControlledElement().getName(), "**Step Down**");
 					}
 				break;
 			}
@@ -282,12 +311,14 @@ public class CapControlObjImpl extends ControlElemImpl implements CapControlObj 
 		case CLOSE:
 			if (presentState == ControlAction.OPEN) {
 				getControlledElement().setConductorClosed(0, true);  // close all phases of active terminal
-				Utilities.appendToEventLog("Capacitor." + getControlledElement().getName(), "**Closed**");
+				if (showEventLog)
+					Utilities.appendToEventLog("Capacitor." + getControlledElement().getName(), "**Closed**");
 				presentState = ControlAction.CLOSE;
 				controlledCapacitor.addStep();
 			} else {
 				if (controlledCapacitor.addStep())
-					Utilities.appendToEventLog("Capacitor." + getControlledElement().getName(), "**Step Up**");
+					if (showEventLog)
+						Utilities.appendToEventLog("Capacitor." + getControlledElement().getName(), "**Step Up**");
 			}
 			break;
 		default:
@@ -387,7 +418,11 @@ public class CapControlObjImpl extends ControlElemImpl implements CapControlObj 
 		if (VOverride) {
 			if (controlType != CapControlType.VOLTAGE) {  // don't bother for voltage control
 
-				monitoredElement.getTermVoltages(elementTerminal, cBuffer);
+				if (VOverrideBusSpecified) {
+					getBusVoltages(DSSGlobals.activeCircuit.getBuses()[VOverrideBusIndex], cBuffer);
+				} else {
+					monitoredElement.getTermVoltages(elementTerminal, cBuffer);
+				}
 
 				getControlVoltage(VTest);
 
@@ -396,12 +431,18 @@ public class CapControlObjImpl extends ControlElemImpl implements CapControlObj 
 					if (VTest.doubleValue() < VMin) {
 						setPendingChange(ControlAction.CLOSE);
 						shouldSwitch = true;
+						if (showEventLog)
+							Utilities.appendtoEventLog("Capacitor." + getControlledElement().getName(),
+									String.format("Low Voltage Override: %.8g V", VTest));
 					}
 					break;
 				case CLOSE:
 					if (VTest.doubleValue() > VMax) {
 						setPendingChange(ControlAction.OPEN);
 						shouldSwitch = true;
+						if (showEventLog)
+							Utilities.appendToEventLog("Capacitor." + getControlledElement().getName(),
+									String.format("High Voltage Override: %.8g V", VTest));
 					}
 					break;
 				}
@@ -644,13 +685,15 @@ public class CapControlObjImpl extends ControlElemImpl implements CapControlObj 
 			}
 			controlActionHandle = ckt.getControlQueue().push(sol.getIntHour(), sol.getDynaVars().t + timeDelay , pendingChange, 0, this);
 			armed = true;
-			Utilities.appendToEventLog("Capacitor." + getControlledElement().getName(), String.format("**Armed**, Delay= %.5g sec", timeDelay));
+			if (showEventLog)
+				Utilities.appendToEventLog("Capacitor." + getControlledElement().getName(), String.format("**Armed**, Delay= %.5g sec", timeDelay));
 		}
 
 		if (armed && (pendingChange == ControlAction.NONE)) {
 			ckt.getControlQueue().delete(controlActionHandle);
 			armed = false;
-			Utilities.appendToEventLog("Capacitor." + getControlledElement().getName(), "**Reset**");
+			if (showEventLog)
+				Utilities.appendToEventLog("Capacitor." + getControlledElement().getName(), "**Reset**");
 		}
 	}
 
@@ -719,6 +762,8 @@ public class CapControlObjImpl extends ControlElemImpl implements CapControlObj 
 		propertyValue[13] = "300";
 		propertyValue[14] = "1";
 		propertyValue[15] = "1";
+		propertyValue[16] = "";
+		propertyValue[17] = "YES";
 
 		super.initPropertyValues(CapControl.NumPropsThisClass);
 	}
@@ -940,6 +985,30 @@ public class CapControlObjImpl extends ControlElemImpl implements CapControlObj 
 
 	public void setVMin(double vmin) {
 		VMin = vmin;
+	}
+
+	public boolean isVOverrideBusSpecified() {
+		return VOverrideBusSpecified;
+	}
+
+	public void setVOverrideBusSpecified(boolean vOverrideBusSpecified) {
+		VOverrideBusSpecified = vOverrideBusSpecified;
+	}
+
+	public String getVOverrideBusName() {
+		return VOverrideBusName;
+	}
+
+	public void setVOverrideBusName(String vOverrideBusName) {
+		VOverrideBusName = vOverrideBusName;
+	}
+
+	public int getVOverrideBusIndex() {
+		return VOverrideBusIndex;
+	}
+
+	public void setVOverrideBusIndex(int vOverrideBusIndex) {
+		VOverrideBusIndex = vOverrideBusIndex;
 	}
 
 }

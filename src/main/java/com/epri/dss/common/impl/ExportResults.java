@@ -1,6 +1,7 @@
 package com.epri.dss.common.impl;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -2050,6 +2051,19 @@ public class ExportResults {
 			// TODO: handle exception
 		}
 
+	}
+
+	public static void exportEventLog(String fileNm) {
+		PrintWriter writer;
+		// export the present set of eventStrings
+		try {
+			writer = new PrintWriter(fileNm);
+			writer.println( DSSGlobals.eventStrings );
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		DSSGlobals.globalResult = fileNm;
 	}
 
 }
