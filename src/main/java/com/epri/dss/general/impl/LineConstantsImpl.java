@@ -372,7 +372,6 @@ public class LineConstantsImpl implements LineConstants {
 	public void Kron(int nOrder) {
 
 		ComplexMatrix ZTemp  = ZMatrix;
-		ComplexMatrix YcTemp = YcMatrix;
 		boolean firstTime = true;
 
 		if ((frequency >= 0.0) && (nOrder > 0) && (nOrder < numConds)) {
@@ -387,17 +386,20 @@ public class LineConstantsImpl implements LineConstants {
 			while (ZTemp.order() > nOrder) {
 
 				ZReduced = ZTemp.kron(ZTemp.order());  // eliminate last row
-				YcReduced = YcTemp.kron(ZTemp.order());
 
 				if (!firstTime) {
 					ZTemp = null;  // Ztemp points to intermediate matrix
-					YcTemp = null;
 				}
 				ZTemp  = ZReduced;
-				YcTemp = YcReduced;
 
 				firstTime = false;
 			}
+
+			/* Extract norder x norder portion of Yc matrx */
+			YcReduced = new ComplexMatrixImpl(nOrder);
+			for (int i = 0; i < nOrder; i++)
+				for (int j = 0; j < nOrder; j++)
+					YcReduced.set(i, j, YcMatrix.get(i, j));
 
 			/* Left with reduced matrix */
 		}

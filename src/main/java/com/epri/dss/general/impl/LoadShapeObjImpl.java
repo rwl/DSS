@@ -25,7 +25,7 @@ public class LoadShapeObjImpl extends DSSObjectImpl implements LoadShapeObj {
 	protected double[] hours;
 	protected double[] PMultipliers, QMultipliers;
 
-	protected double maxP, maxQ;
+	protected double maxP, maxQ, baseP, baseQ;
 
 	protected boolean useActual;
 
@@ -49,6 +49,8 @@ public class LoadShapeObjImpl extends DSSObjectImpl implements LoadShapeObj {
 		QMultipliers = null;
 		maxP         = 1.0;
 		maxQ         = 0.0;
+		baseP        = 0.0;
+		baseQ        = 0.0;
 		useActual    = false;
 		stdDevCalculated = false;  // calculate on demand
 
@@ -160,9 +162,12 @@ public class LoadShapeObjImpl extends DSSObjectImpl implements LoadShapeObj {
 	private void doNormalize(double[] multipliers) {
 		int i;
 		if (numPoints > 0) {
-			maxMult = Math.abs(multipliers[0]);  // TODO Check zero based indexing
-			for (i = 1; i < numPoints; i++)  // TODO Check zero based indexing
-				maxMult = Math.max(maxMult, Math.abs(multipliers[i]));
+			if (maxMult <= 0.0) {
+				maxMult = Math.abs(multipliers[0]);  // TODO Check zero based indexing
+				for (i = 1; i < numPoints; i++)  // TODO Check zero based indexing
+					maxMult = Math.max(maxMult, Math.abs(multipliers[i]));
+			}
+
 			if (maxMult == 0.0)
 				maxMult = 1.0;  // avoid divide by zero
 			for (i = 0; i < numPoints; i++)
@@ -175,8 +180,10 @@ public class LoadShapeObjImpl extends DSSObjectImpl implements LoadShapeObj {
 	 */
 	public void normalize() {
 		doNormalize(PMultipliers);
-		if (QMultipliers != null)
+		if (QMultipliers != null) {
+			maxMult = baseQ;
 			doNormalize(QMultipliers);
+		}
 		useActual = false;  // not likely that you would want to use the actual if you normalized it
 	}
 
@@ -327,6 +334,12 @@ public class LoadShapeObjImpl extends DSSObjectImpl implements LoadShapeObj {
 			break;
 		case 15:
 			result = String.format("%.8g", interval * 60.0);
+			break;
+		case 17:
+			result = String.format("%.8g", baseP);
+			break;
+		case 18:
+			result = String.format("%.8g", baseQ);
 			break;
 		default:
 			result = super.getPropertyValue(index);
@@ -488,6 +501,22 @@ public class LoadShapeObjImpl extends DSSObjectImpl implements LoadShapeObj {
 	// Private member in OpenDSS.
 	public void setArrayPropertyIndex(int i) {
 		arrayPropertyIndex = i;
+	}
+
+	public double getBaseP() {
+		return baseP;
+	}
+
+	public void setBaseP(double baseP) {
+		this.baseP = baseP;
+	}
+
+	public double getBaseQ() {
+		return baseQ;
+	}
+
+	public void setBaseQ(double baseQ) {
+		this.baseQ = baseQ;
 	}
 
 }

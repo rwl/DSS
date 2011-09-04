@@ -133,4 +133,12 @@ public interface LoadShapeObj extends DSSObject {
 
 	void setStdDevCalculated(boolean stdDevCalculated);
 
+	double getBaseP();
+
+	void setBaseP(double baseP);
+
+	double getBaseQ();
+
+	void setBaseQ(double baseQ);
+
 }

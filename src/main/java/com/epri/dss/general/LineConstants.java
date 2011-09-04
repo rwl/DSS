@@ -17,7 +17,7 @@ import org.apache.commons.math.complex.Complex;
  *     You only have to set R or GMR. The other will default. However, you should set
  *     both for better accuracy.
  *
- *     When you as for Zmatrix or YCmatrix you get the full matrix unless you have executed
+ *     When you ask for Zmatrix or YCmatrix you get the full matrix unless you have executed
  *     a Kron reduction or Reduce function. Reduce eleminates all non phases. If you
  *     want the full detailed model, DO NOT REDUCE!
  *

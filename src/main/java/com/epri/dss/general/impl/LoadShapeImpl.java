@@ -59,6 +59,8 @@ public class LoadShapeImpl extends DSSClassImpl implements LoadShape {
 		propertyName[13] = "Qmax";    // maxQ
 		propertyName[14] = "sinterval"; // interval in seconds
 		propertyName[15] = "minterval"; // interval in minutes
+		propertyName[16] = "Pbase";  // for normalization, use peak if 0
+		propertyName[17] = "Qbase";  // for normalization, use peak if 0
 
 		// define property help values
 		propertyHelp[0] = "Max number of points to expect in load shape vectors. This gets reset to the number of multiplier values found (in files only) if less than specified.";     // Number of points to expect
@@ -110,6 +112,8 @@ public class LoadShapeImpl extends DSSClassImpl implements LoadShape {
 				"Use this property to override the value automatically computed or to retrieve the value computed.";
 		propertyHelp[14] = "Specify fixed interval in SECONDS. Alternate way to specify Interval property.";
 		propertyHelp[15] = "Specify fixed interval in MINUTES. Alternate way to specify Interval property.";
+		propertyHelp[16] = "Base P value for normalization. Default is zero, meaning the peak will be used.";
+		propertyHelp[17] = "Base Q value for normalization. Default is zero, meaning the peak will be used.";
 
 
 		activeProperty = LoadShape.NumPropsThisClass - 1;
@@ -210,6 +214,12 @@ public class LoadShapeImpl extends DSSClassImpl implements LoadShape {
 				case 15:
 					als.setInterval(parser.makeDouble() / 60.0);    // convert minutes to hr
 					break;
+				case 16:
+					als.setBaseP(parser.makeDouble());
+					break;
+				case 17:
+					als.setBaseQ(parser.makeDouble());
+					break;
 				default:
 					// inherited parameters
 					classEdit(activeLoadShapeObj, paramPointer - LoadShape.NumPropsThisClass);
@@ -292,6 +302,8 @@ public class LoadShapeImpl extends DSSClassImpl implements LoadShape {
 			}
 			als.setMaxPandQ();
 			als.setUseActual(otherLoadShape.isUseActual());
+			als.setBaseP(otherLoadShape.getBaseP());
+			als.setBaseQ(otherLoadShape.getBaseQ());
 
 
 			/*als.setMaxP(OtherLoadShape.getMaxP());

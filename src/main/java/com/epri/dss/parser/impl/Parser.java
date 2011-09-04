@@ -654,8 +654,6 @@ public class Parser {
 		tokenBuffer = Value;
 	}
 
-	// FIXME private member in OpenDSS
-
 	public int getPosition() {
 		return position;
 	}
