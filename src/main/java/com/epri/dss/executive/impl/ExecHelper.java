@@ -10,6 +10,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.commons.lang.mutable.MutableInt;
 
@@ -174,36 +176,36 @@ public class ExecHelper {
 	 * batchedit type=xxxx name=pattern editstring
 	 */
 	public static int doBatchEditCmd() {
-		StringBuffer ObjType, Pattern;
-		PerlRegEx RegEx1;
+		StringBuffer objType = new StringBuffer();
+		StringBuffer pattern = new StringBuffer();
+		Pattern regEx1;
+		Matcher matcher;
 		DSSObject pObj;
-		int Params;
+		int params;
 
 		Parser parser = Parser.getInstance();
 
-		int Result = 0;
-		getObjClassAndName(ObjType, Pattern);
-		if (ObjType.toString().equalsIgnoreCase("circuit") {
+		int result = 0;
+		getObjClassAndName(objType, pattern);
+		if (objType.toString().equalsIgnoreCase("circuit")) {
 			// do nothing
 		} else {
-			DSSGlobals.lastClassReferenced = DSSGlobals.classNames.find(ObjType);
+			DSSGlobals.lastClassReferenced = DSSGlobals.classNames.find( objType.toString() );
 
 			switch (DSSGlobals.lastClassReferenced) {
 			case -1:
-				DSSGlobals.doSimpleMsg("BatchEdit command: Object Type \"" + ObjType + "\" not found."+ DSSGlobals.CRLF + parser.getCmdString(), 267);
-				return Result;
+				DSSGlobals.doSimpleMsg("BatchEdit command: Object Type \"" + objType + "\" not found."+ DSSGlobals.CRLF + parser.getCmdString(), 267);
+				return result;
 			default:
-				Params = parser.Position;
+				params = parser.getPosition();
 				DSSGlobals.activeDSSClass = DSSGlobals.DSSClassList.get( DSSGlobals.lastClassReferenced );
-				RegEx1 = new PerlRegEx();
-				RegEx1.Options = preCaseLess;
-				RegEx1.RegEx = UTF8String(Pattern);
+				regEx1 = Pattern.compile( pattern.toString(), Pattern.CASE_INSENSITIVE );
 				DSSGlobals.activeDSSClass.getFirst();
 				pObj = (DSSObject) DSSGlobals.activeDSSClass.getActiveObj();
 				while (pObj != null) {
-					RegEx1.Subject = UTF8String( pObj.getName() );
-					if (RegEx1.Match) {
-						parser.Position = Params;
+					matcher = regEx1.matcher( pObj.getName() );
+					if (matcher.find()) {
+						parser.setPosition(params);
 						DSSGlobals.activeDSSClass.edit();
 					}
 					DSSGlobals.activeDSSClass.getNext();
@@ -211,6 +213,7 @@ public class ExecHelper {
 				}
 			}
 		}
+		return result;
 	}
 
 	/**

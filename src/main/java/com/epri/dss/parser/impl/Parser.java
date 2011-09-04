@@ -653,4 +653,15 @@ public class Parser {
 	public void setToken(String Value) {
 		tokenBuffer = Value;
 	}
+
+	// FIXME private member in OpenDSS
+
+	public int getPosition() {
+		return position;
+	}
+
+	public void setPosition(int position) {
+		this.position = position;
+	}
+
 }

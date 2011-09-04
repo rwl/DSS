@@ -274,7 +274,7 @@ public class ExportOptions {
 		case 29: ExportResults.exportCDPSM(fileName, CIMProfileChoice.TOPOLOGY); break;
 		case 30: ExportResults.exportCDPSM(fileName, CIMProfileChoice.STATE_VARIABLES); break;
 		case 31: ExportResults.exportProfile(fileName, phasesToPlot); break;
-		case 32: ExportResults.exportEventLog(fileName);
+		case 32: ExportResults.exportEventLog(fileName); break;
 		default:
 			ExportResults.exportVoltages(fileName);
 			break;
