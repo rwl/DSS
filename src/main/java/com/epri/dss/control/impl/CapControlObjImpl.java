@@ -432,7 +432,7 @@ public class CapControlObjImpl extends ControlElemImpl implements CapControlObj 
 						setPendingChange(ControlAction.CLOSE);
 						shouldSwitch = true;
 						if (showEventLog)
-							Utilities.appendtoEventLog("Capacitor." + getControlledElement().getName(),
+							Utilities.appendToEventLog("Capacitor." + getControlledElement().getName(),
 									String.format("Low Voltage Override: %.8g V", VTest));
 					}
 					break;

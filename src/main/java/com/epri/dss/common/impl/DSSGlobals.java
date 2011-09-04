@@ -13,6 +13,7 @@ import org.apache.commons.math.complex.Complex;
 import com.epri.dss.common.Circuit;
 import com.epri.dss.common.DSSClass;
 import com.epri.dss.common.DSSForms;
+import com.epri.dss.control.VVControl;
 import com.epri.dss.conversion.PVSystem;
 import com.epri.dss.conversion.Storage;
 import com.epri.dss.executive.impl.DSSExecutive;
@@ -81,7 +82,7 @@ public class DSSGlobals {
 	public static final int FULLCARSON    = 2;
 	public static final int DERI          = 3;
 
-    /* Profile plot constants */
+/* Profile plot constants */
 	public static final int PROFILE3PH    = 9999;  // some big number > likely no. of phases
 	public static final int PROFILEALL    = 9998;
 	public static final int PROFILEALLPRI = 9997;
@@ -306,7 +307,7 @@ public class DSSGlobals {
 
 		// Put a \ on the end if not supplied. Allow a null specification.
 		if (DSSDataDirectory.length() > 0) {
-	    	currentDirectory = DSSDataDirectory;   // change to specified directory
+		currentDirectory = DSSDataDirectory;   // change to specified directory
 //			if (DSSDataDirectory.charAt(DSSDataDirectory.length()) != '\\') {
 //					DSSDataDirectory = DSSDataDirectory + "\\";
 //			}

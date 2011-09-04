@@ -5,6 +5,8 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.math.complex.Complex;
+
 import com.epri.dss.common.CktElement;
 import com.epri.dss.common.DSSClass;
 import com.epri.dss.common.impl.DSSClassDefs;
@@ -217,7 +219,7 @@ public class VVControlObjImpl extends ControlElemImpl implements VVControlObj {
 		// we need P and/or we need Q
 		if (pendingChange == CHANGEVARLEVEL) {
 
-			SMonitoredElement = monitoredElement.getPower( ElementTerminal );  // S is in VA
+			SMonitoredElement = monitoredElement.getPower( elementTerminal );  // S is in VA
 			// PMonitoredElement = SMonitoredElement.getReal();
 			QMonitoredElement = SMonitoredElement.getImaginary();
 

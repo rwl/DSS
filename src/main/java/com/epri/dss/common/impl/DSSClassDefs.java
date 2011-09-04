@@ -10,6 +10,7 @@ import com.epri.dss.control.impl.RegControlImpl;
 import com.epri.dss.control.impl.RelayImpl;
 import com.epri.dss.control.impl.StorageControllerImpl;
 import com.epri.dss.control.impl.SwtControlImpl;
+import com.epri.dss.control.impl.VVControlImpl;
 import com.epri.dss.conversion.impl.GICLineImpl;
 import com.epri.dss.conversion.impl.GeneratorImpl;
 import com.epri.dss.conversion.impl.ISourceImpl;
@@ -174,7 +175,7 @@ public class DSSClassDefs {
 		DSSGlobals.PVSystemClass = new PVSystemImpl();
 		DSSClassImpl.getDSSClasses().setNew( DSSGlobals.PVSystemClass );
 
-		DSSGlobals.VVControlClass = new VVControl();
+		DSSGlobals.VVControlClass = new VVControlImpl();
 		DSSClassImpl.getDSSClasses().setNew ( DSSGlobals.VVControlClass );
 
 		DSSGlobals.monitorClass = new MonitorImpl();  // have to do this after Generator

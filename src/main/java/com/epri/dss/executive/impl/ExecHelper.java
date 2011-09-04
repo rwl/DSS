@@ -171,6 +171,49 @@ public class ExecHelper {
 	}
 
 	/**
+	 * batchedit type=xxxx name=pattern editstring
+	 */
+	public static int doBatchEditCmd() {
+		StringBuffer ObjType, Pattern;
+		PerlRegEx RegEx1;
+		DSSObject pObj;
+		int Params;
+
+		Parser parser = Parser.getInstance();
+
+		int Result = 0;
+		getObjClassAndName(ObjType, Pattern);
+		if (ObjType.toString().equalsIgnoreCase("circuit") {
+			// do nothing
+		} else {
+			DSSGlobals.lastClassReferenced = DSSGlobals.classNames.find(ObjType);
+
+			switch (DSSGlobals.lastClassReferenced) {
+			case -1:
+				DSSGlobals.doSimpleMsg("BatchEdit command: Object Type \"" + ObjType + "\" not found."+ DSSGlobals.CRLF + parser.getCmdString(), 267);
+				return Result;
+			default:
+				Params = parser.Position;
+				DSSGlobals.activeDSSClass = DSSGlobals.DSSClassList.get( DSSGlobals.lastClassReferenced );
+				RegEx1 = new PerlRegEx();
+				RegEx1.Options = preCaseLess;
+				RegEx1.RegEx = UTF8String(Pattern);
+				DSSGlobals.activeDSSClass.getFirst();
+				pObj = (DSSObject) DSSGlobals.activeDSSClass.getActiveObj();
+				while (pObj != null) {
+					RegEx1.Subject = UTF8String( pObj.getName() );
+					if (RegEx1.Match) {
+						parser.Position = Params;
+						DSSGlobals.activeDSSClass.edit();
+					}
+					DSSGlobals.activeDSSClass.getNext();
+					pObj = (DSSObject) DSSGlobals.activeDSSClass.getActiveObj();
+				}
+			}
+		}
+	}
+
+	/**
 	 * This routine should be recursive.
 	 * So you can redirect input an arbitrary number of times.
 	 *
@@ -1453,8 +1496,9 @@ public class ExecHelper {
 		Circuit ckt = DSSGlobals.activeCircuit;
 
 		ckt.setLoadMultiplier(1.0);  // setter has side effects
-		ckt.getSolution().setMode(Dynamics.SNAPSHOT);
-		ckt.getSolution().solve();  // make guess based on present allocation factors
+		if (ckt.getSolution().getMode() != Dynamics.SNAPSHOT)
+			ckt.getSolution().setMode( Dynamics.SNAPSHOT );  // resets meters, etc. if not in snapshot mode
+		ckt.getSolution().solve();  /* Make guess based on present allocationfactors */
 
 		/* Allocation loop -- make maxAllocationIterations iterations */
 		for (int i = 0; i < DSSGlobals.maxAllocationIterations; i++) {
@@ -1680,8 +1724,10 @@ public class ExecHelper {
 	 *   BusName, x, y
 	 *
 	 * (x, y are real values)
+	 *
+	 * If swapXY is true, x and y values are swapped
 	 */
-	public static int doBusCoordsCmd() {
+	public static int doBusCoordsCmd(boolean swapXY) {
 		String busName, s;
 		int ib, result = 0;
 		File f;
@@ -1706,9 +1752,17 @@ public class ExecHelper {
 				if (ib > 0) {
 					Bus bus = DSSGlobals.activeCircuit.getBuses()[ib];
 					parser.getNextParam();
-					bus.setX(parser.makeDouble());
+					if (swapXY) {
+						bus.setY( parser.makeDouble() );
+					} else {
+						bus.setX( parser.makeDouble() );
+					}
 					parser.getNextParam();
-					bus.setY(parser.makeDouble());
+					if (swapXY) {
+						bus.setX( parser.makeDouble() );
+					} else {
+						bus.setY( parser.makeDouble() );
+					}
 					bus.setCoordDefined(true);
 				}
 			}  // ignore a bus that's not in the circuit

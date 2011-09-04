@@ -10,7 +10,7 @@ import com.epri.dss.shared.impl.CommandListImpl;
 
 public class ExecCommands {
 
-	public static final int NumExecCommands = 93;
+	public static final int NumExecCommands = 95;
 
 	private String[] execCommand = new String[NumExecCommands];
 	private String[] commandHelp = new String[NumExecCommands];
@@ -143,6 +143,8 @@ public class ExecCommands {
 		execCommand[90] = "SetBusXY";
 		execCommand[91] = "UpdateStorage";
 		execCommand[92] = "Obfuscate";
+		execCommand[93] = "LatLongCoords";
+		execCommand[94] = "BatchEdit";
 
 
 		commandHelp = new String[NumExecCommands];
@@ -333,7 +335,7 @@ public class ExecCommands {
 		commandHelp[54] = "Just like the Voltages command, except the voltages are in per unit if the kVbase at the bus is defined.";
 		commandHelp[55] = "Returns variable values for active element if PC element. Otherwise, returns null.";
 		commandHelp[56] = "Returns variable names for active element if PC element. Otherwise, returns null.";
-		commandHelp[57] = "Define x,y coordinates for buses.  Execute after Solve command performed so that bus lists are defined." +
+		commandHelp[57] = "Define x,y coordinates for buses.  Execute after Solve or MakeBusList command is executed so that bus lists are defined." +
 							"Reads coordinates from a CSV file with records of the form: busname, x, y."+CRLF+CRLF+
 							"Example: BusCoords [file=]xxxx.csv";
 		commandHelp[58] = "Updates the buslist using the currently enabled circuit elements.  (This happens automatically for Solve command.)";
@@ -405,18 +407,26 @@ public class ExecCommands {
 							"cvrtloadshapes type=dbl"+CRLF+CRLF+
 							"A DSS script for loading the loadshapes from the created files is produced and displayed in the default editor. ";
 		commandHelp[88] = "Global result is set to voltage difference, volts and degrees, (Node1 - Node2) between any two nodes. Syntax:" +CRLF+CRLF+
-                "   NodeDiff Node1=MyBus.1 Node2=MyOtherBus.1";
+		"   NodeDiff Node1=MyBus.1 Node2=MyOtherBus.1";
 		commandHelp[89] = "Generates a script to change the phase designation of all lines downstream from a start in line. Useful for such things as moving a single-phase " +
-                "lateral from one phase to another and keep the phase designation consistent for reporting functions that need it to be " +
-                "(not required for simply solving). "+CRLF+CRLF+
-                "StartLine=... PhaseDesignation=\"...\"  EditString=\"...\" ScriptFileName=... StopAtTransformers=Y/N/T/F" +CRLF+CRLF+
-                "Enclose the PhaseDesignation in quotes since it contains periods (dots)." + CRLF +
-                "You may add and optional EditString to edit any other line properties."+CRLF+CRLF+
-                "Rephase StartLine=Line.L100  PhaseDesignation=\".2\"  EditString=\"phases=1\" ScriptFile=Myphasechangefile.DSS  Stop=No";
+		"lateral from one phase to another and keep the phase designation consistent for reporting functions that need it to be " +
+		"(not required for simply solving). "+CRLF+CRLF+
+		"StartLine=... PhaseDesignation=\"...\"  EditString=\"...\" ScriptFileName=... StopAtTransformers=Y/N/T/F" +CRLF+CRLF+
+		"Enclose the PhaseDesignation in quotes since it contains periods (dots)." + CRLF +
+		"You may add and optional EditString to edit any other line properties."+CRLF+CRLF+
+		"Rephase StartLine=Line.L100  PhaseDesignation=\".2\"  EditString=\"phases=1\" ScriptFile=Myphasechangefile.DSS  Stop=No";
 		commandHelp[90] = "Bus=...  X=...  Y=... Set the X, Y coordinates for a single bus. Prerequisite: Bus must exist as a result of a Solve, CalcVoltageBases, or MakeBusList command.";
 		commandHelp[91] = "Update Storage elements based on present solution and time interval. ";
 		commandHelp[92] = "Change Bus and circuit element names to generic values to remove identifying names. Generally, " +
-                "you will follow this command immediately by a \"Save Circuit Dir=MyDirName\" command.";
+		"you will follow this command immediately by a \"Save Circuit Dir=MyDirName\" command.";
+		commandHelp[93] = "Define x,y coordinates for buses using Latitude and Longitude values (decimal numbers).  Similar to BusCoords command. " +
+				"Execute after Solve command or MakeBusList command is executed so that bus lists are defined." +
+				"Reads coordinates from a CSV file with records of the form: busname, Latitude, Longitude."+CRLF+CRLF+
+				"Example: LatLongCoords [file=]xxxx.csv" +CRLF+CRLF+
+				"Note: Longitude is mapped to x coordinate and Latitude is mapped to y coordinate.";
+		commandHelp[94] = "Batch edit objects in the same class. Example: BatchEdit Load..* duty=duty_shape" + CRLF +
+				"In place of the object name, supply a PERL regular expression. .* matches all names." + CRLF +
+				"The subsequent parameter string is applied to each object selected.";
 	}
 
 	public String getLastCmdLine() {
@@ -755,7 +765,7 @@ public class ExecCommands {
 				DSSGlobals.cmdResult = ExecHelper.doVarNamesCmd();
 				break;
 			case 57:
-				DSSGlobals.cmdResult = ExecHelper.doBusCoordsCmd();
+				DSSGlobals.cmdResult = ExecHelper.doBusCoordsCmd(false);
 				break;
 			case 58:
 				if (DSSGlobals.activeCircuit.isBusNameRedefined())
@@ -853,6 +863,10 @@ public class ExecCommands {
 			case 92:
 				Utilities.obfuscate();
 				break;
+			case 93:
+				DSSGlobals.cmdResult = ExecHelper.doBusCoordsCmd(true);  // swaps X and Y
+			case 94:
+				DSSGlobals.cmdResult = ExecHelper.doBatchEditCmd();
 			default:
 				// ignore excess parameters
 				break;

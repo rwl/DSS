@@ -11,7 +11,7 @@ import com.epri.dss.shared.impl.CommandListImpl;
 
 public class ExportOptions {
 
-	private static final int NumExportOptions = 32;
+	private static final int NumExportOptions = 33;
 
 	private String[] exportOption;
 	private String[] exportHelp;
@@ -75,6 +75,7 @@ public class ExportOptions {
 		exportOption[29] = "CDPSMTopo";
 		exportOption[30] = "CDPSMStateVar";
 		exportOption[31] = "Profile";
+		exportOption[32] = "EventLog";
 
 		exportHelp[ 0] = "(Default file = EXP_VOLTAGES.CSV) Voltages to ground by bus/node.";
 		exportHelp[ 1] = "(Default file = EXP_SEQVOLTAGES.CSV) Sequence voltages.";
@@ -110,8 +111,8 @@ public class ExportOptions {
 		exportHelp[29] = "(Default file = CDPSM_Topology.XML) (IEC 61968-13, CDPSM Topology profile)";
 		exportHelp[30] = "(Default file = CDPSM_StateVariables.XML) (IEC 61968-13, CDPSM State Variables profile)";
 		exportHelp[31] = "[Default file = EXP_Profile.CSV] Coordinates, color of each line section in Profile plot. Same options as Plot Profile Phases property." + DSSGlobals.CRLF + DSSGlobals.CRLF +
-        		"Example:  Export Profile Phases=All [optional file name]";
-
+			"Example:  Export Profile Phases=All [optional file name]";
+		exportHelp[32] = "(Default file = EXP_EVTLOG.CSV) All entries in the present event log.";
 	}
 
 	public int doExportCmd() {
@@ -221,6 +222,7 @@ public class ExportOptions {
 			case 29: fileName = "CDPSM_Topology.xml"; break;
 			case 30: fileName = "CDPSM_StateVariables.xml"; break;
 			case 31: fileName = "EXP_Profile.csv"; break;
+			case 32: fileName = "EXP_EVTLOG.csv"; break;
 			default:
 				fileName = "EXP_VOLTAGES.csv"; break;
 			}
@@ -272,6 +274,7 @@ public class ExportOptions {
 		case 29: ExportResults.exportCDPSM(fileName, CIMProfileChoice.TOPOLOGY); break;
 		case 30: ExportResults.exportCDPSM(fileName, CIMProfileChoice.STATE_VARIABLES); break;
 		case 31: ExportResults.exportProfile(fileName, phasesToPlot); break;
+		case 32: ExportResults.exportEventLog(fileName);
 		default:
 			ExportResults.exportVoltages(fileName);
 			break;
