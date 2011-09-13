@@ -1,4 +1,4 @@
-package com.epri.dss.parser;
+package com.epri.dss.parser.test;
 
 import com.epri.dss.parser.impl.Parser;
 
