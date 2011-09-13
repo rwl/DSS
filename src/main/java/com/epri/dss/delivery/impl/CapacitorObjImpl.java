@@ -8,8 +8,8 @@ import com.epri.dss.common.impl.Utilities;
 import com.epri.dss.delivery.Capacitor;
 import com.epri.dss.delivery.CapacitorObj;
 import com.epri.dss.parser.impl.Parser;
-import com.epri.dss.shared.ComplexMatrix;
-import com.epri.dss.shared.impl.ComplexMatrixImpl;
+import com.epri.dss.shared.CMatrix;
+import com.epri.dss.shared.impl.CMatrixImpl;
 import com.epri.dss.shared.impl.ComplexUtil;
 
 import org.apache.commons.math.complex.Complex;
@@ -170,7 +170,7 @@ public class CapacitorObjImpl extends PDElementImpl implements CapacitorObj {
 	@Override
 	public void calcYPrim() {
 		int i;
-		ComplexMatrix YPrimTemp, YPrimWork;
+		CMatrix YPrimTemp, YPrimWork;
 
 		// normally build only Yprim_Shunt, but if there are 2 terminals and bus1 != bus2
 
@@ -178,13 +178,13 @@ public class CapacitorObjImpl extends PDElementImpl implements CapacitorObj {
 			// reallocate YPrim if something has invalidated old allocation
 			if (YPrimShunt != null)
 				YPrimShunt = null;
-			YPrimShunt = new ComplexMatrixImpl(YOrder);
+			YPrimShunt = new CMatrixImpl(YOrder);
 			if (YPrimSeries != null)
 				YPrimSeries = null;
-			YPrimSeries = new ComplexMatrixImpl(YOrder);
+			YPrimSeries = new CMatrixImpl(YOrder);
 			if (YPrim != null)
 				YPrim = null;
-			YPrim = new ComplexMatrixImpl(YOrder);
+			YPrim = new CMatrixImpl(YOrder);
 		} else {
 			YPrimSeries.clear(); // zero out YPrim
 			YPrimShunt.clear();  // zero out YPrim
@@ -197,7 +197,7 @@ public class CapacitorObjImpl extends PDElementImpl implements CapacitorObj {
 			YPrimTemp = YPrimSeries;
 		}
 
-		YPrimWork = new ComplexMatrixImpl(YOrder);
+		YPrimWork = new CMatrixImpl(YOrder);
 
 		for (i = 0; i < numSteps; i++)
 			if (states[i] == 1) {
@@ -465,7 +465,7 @@ public class CapacitorObjImpl extends PDElementImpl implements CapacitorObj {
 	/**
 	 * Call this routine only if step is energized.
 	 */
-	private void makeYprimWork(ComplexMatrix YPrimWork, int iStep) {
+	private void makeYprimWork(CMatrix YPrimWork, int iStep) {
 		Complex value, value2, Zl = null;
 		int i, j, ioffset;
 		double w, freqMultiple;

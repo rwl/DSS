@@ -6,7 +6,7 @@ import java.io.PrintWriter;
 import org.apache.commons.lang.mutable.MutableInt;
 
 import com.epri.dss.parser.impl.Parser;
-import com.epri.dss.shared.impl.ComplexMatrixImpl;
+import com.epri.dss.shared.impl.CMatrixImpl;
 import com.epri.dss.shared.impl.ComplexUtil;
 
 import org.apache.commons.math.complex.Complex;
@@ -19,7 +19,7 @@ import com.epri.dss.delivery.Transformer;
 import com.epri.dss.delivery.TransformerObj;
 import com.epri.dss.delivery.Winding;
 import com.epri.dss.general.XfmrCodeObj;
-import com.epri.dss.shared.ComplexMatrix;
+import com.epri.dss.shared.CMatrix;
 
 public class TransformerObjImpl extends PDElementImpl implements TransformerObj {
 
@@ -36,11 +36,11 @@ public class TransformerObjImpl extends PDElementImpl implements TransformerObj 
 	protected double[] XSC;     // per unit SC measurements
 	protected double VABase;    // for impedances
 
-	protected ComplexMatrix ZB;
-	protected ComplexMatrix Y_1Volt;
-	protected ComplexMatrix Y_Term;
-	protected ComplexMatrix Y_1Volt_NL;   // no load Y's
-	protected ComplexMatrix Y_Term_NL;
+	protected CMatrix ZB;
+	protected CMatrix Y_1Volt;
+	protected CMatrix Y_Term;
+	protected CMatrix Y_1Volt_NL;   // no load Y's
+	protected CMatrix Y_Term_NL;
 
 	protected double Y_Terminal_FreqMult;
 
@@ -146,11 +146,11 @@ public class TransformerObjImpl extends PDElementImpl implements TransformerObj 
 			Y_Term = null;
 			Y_Term_NL = null;
 
-			ZB         = new ComplexMatrixImpl(numWindings - 1);
-			Y_1Volt    = new ComplexMatrixImpl(numWindings);
-			Y_1Volt_NL = new ComplexMatrixImpl(numWindings);
-			Y_Term     = new ComplexMatrixImpl(2 * numWindings);
-			Y_Term_NL  = new ComplexMatrixImpl(2 * numWindings);
+			ZB         = new CMatrixImpl(numWindings - 1);
+			Y_1Volt    = new CMatrixImpl(numWindings);
+			Y_1Volt_NL = new CMatrixImpl(numWindings);
+			Y_Term     = new CMatrixImpl(2 * numWindings);
+			Y_Term_NL  = new CMatrixImpl(2 * numWindings);
 		} else {
 			DSSGlobals.doSimpleMsg("Invalid number of windings: " + String.valueOf(n) + " for transformer " + getName(), 111);
 		}
@@ -376,9 +376,9 @@ public class TransformerObjImpl extends PDElementImpl implements TransformerObj 
 			if (YPrimShunt != null) YPrimShunt = null;
 			if (YPrim != null) YPrim = null;
 
-			YPrimSeries = new ComplexMatrixImpl(YOrder);
-			YPrimShunt  = new ComplexMatrixImpl(YOrder);
-			YPrim        = new ComplexMatrixImpl(YOrder);
+			YPrimSeries = new CMatrixImpl(YOrder);
+			YPrimShunt  = new CMatrixImpl(YOrder);
+			YPrim        = new CMatrixImpl(YOrder);
 		} else {
 			/* Same size as last time; just zero out to start over */
 			YPrimSeries.clear(); // zero out YPrim
@@ -1026,7 +1026,7 @@ public class TransformerObjImpl extends PDElementImpl implements TransformerObj 
 		}
 	}
 
-	private void buildYPrimComponent(ComplexMatrix YPrimComponent, ComplexMatrix YTerminal) {
+	private void buildYPrimComponent(CMatrix YPrimComponent, CMatrix YTerminal) {
 		Complex value;
 
 		/* Now, put in Yprim matrix */
@@ -1050,7 +1050,7 @@ public class TransformerObjImpl extends PDElementImpl implements TransformerObj 
 		int i, j, k;
 		Complex[] a, cTempArray1, cTempArray2;
 		Complex cMinusOne;
-		ComplexMatrix At;
+		CMatrix At;
 
 
 		// construct ZBMatrix
@@ -1115,7 +1115,7 @@ public class TransformerObjImpl extends PDElementImpl implements TransformerObj 
 
 		a          = new Complex[numWindings * 2];
 		cMinusOne  = new Complex(-1.0, 0.0);
-		At         = new ComplexMatrixImpl(numWindings);
+		At         = new CMatrixImpl(numWindings);
 		for (i = 0; i < numWindings - 1; i++)
 			At.set(i + 1, i, Complex.ONE);
 		for (i = 0; i < numWindings - 1; i++)
@@ -1161,7 +1161,7 @@ public class TransformerObjImpl extends PDElementImpl implements TransformerObj 
 
 		Y_Term.clear();
 		Y_Term_NL.clear();
-		At = new ComplexMatrixImpl(numWindings * 2);
+		At = new CMatrixImpl(numWindings * 2);
 
 		for (i = 0; i < numWindings; i++)
 			At.set(2 * i - 1, i, new Complex(1.0 / (winding[i].getVBase() * winding[i].getPUTap()), 0.0));
@@ -1451,43 +1451,43 @@ public class TransformerObjImpl extends PDElementImpl implements TransformerObj 
 		VABase = base;
 	}
 
-	public ComplexMatrix getZB() {
+	public CMatrix getZB() {
 		return ZB;
 	}
 
-	public void setZB(ComplexMatrix zb) {
+	public void setZB(CMatrix zb) {
 		ZB = zb;
 	}
 
-	public ComplexMatrix getY_1Volt() {
+	public CMatrix getY_1Volt() {
 		return Y_1Volt;
 	}
 
-	public void setY_1Volt(ComplexMatrix value) {
+	public void setY_1Volt(CMatrix value) {
 		Y_1Volt = value;
 	}
 
-	public ComplexMatrix getY_Term() {
+	public CMatrix getY_Term() {
 		return Y_Term;
 	}
 
-	public void setY_Term(ComplexMatrix value) {
+	public void setY_Term(CMatrix value) {
 		Y_Term = value;
 	}
 
-	public ComplexMatrix getY_1Volt_NL() {
+	public CMatrix getY_1Volt_NL() {
 		return Y_1Volt_NL;
 	}
 
-	public void setY1VoltNL(ComplexMatrix value) {
+	public void setY1VoltNL(CMatrix value) {
 		Y_1Volt_NL = value;
 	}
 
-	public ComplexMatrix getYTermNL() {
+	public CMatrix getYTermNL() {
 		return Y_Term_NL;
 	}
 
-	public void setYTermNL(ComplexMatrix value) {
+	public void setYTermNL(CMatrix value) {
 		Y_Term_NL = value;
 	}
 

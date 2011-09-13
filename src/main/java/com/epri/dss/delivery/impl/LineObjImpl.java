@@ -3,7 +3,7 @@ package com.epri.dss.delivery.impl;
 import java.io.PrintStream;
 
 import com.epri.dss.parser.impl.Parser;
-import com.epri.dss.shared.impl.ComplexMatrixImpl;
+import com.epri.dss.shared.impl.CMatrixImpl;
 
 import org.apache.commons.lang.mutable.MutableInt;
 import org.apache.commons.math.complex.Complex;
@@ -29,7 +29,7 @@ import com.epri.dss.general.WireDataObj;
 import com.epri.dss.general.impl.ConductorChoice;
 import com.epri.dss.general.impl.ConductorDataImpl;
 import com.epri.dss.general.impl.LineGeometryObjImpl;
-import com.epri.dss.shared.ComplexMatrix;
+import com.epri.dss.shared.CMatrix;
 
 public class LineObjImpl extends PDElementImpl implements LineObj {
 
@@ -46,11 +46,11 @@ public class LineObjImpl extends PDElementImpl implements LineObj {
 	private int earthModel;
 	private boolean capSpecified;  // to make sure user specifies C in some form
 
-	protected ComplexMatrix ZInv;
+	protected CMatrix ZInv;
 
 	/* Base frequency series Z matrix per unit length */
-	protected ComplexMatrix Z;
-	protected ComplexMatrix Yc;
+	protected CMatrix Z;
+	protected CMatrix Yc;
 
 	protected double R1;
 	protected double X1;
@@ -188,9 +188,9 @@ public class LineObjImpl extends PDElementImpl implements LineObj {
 
 				setNPhases(lc.getNPhases());
 				// for a line, nPhases = nCond, for now
-				Z    = new ComplexMatrixImpl(nPhases);
-				ZInv = new ComplexMatrixImpl(nPhases);
-				Yc   = new ComplexMatrixImpl(nPhases);
+				Z    = new CMatrixImpl(nPhases);
+				ZInv = new CMatrixImpl(nPhases);
+				Yc   = new CMatrixImpl(nPhases);
 			}
 
 			if (!symComponentsModel) {
@@ -223,9 +223,9 @@ public class LineObjImpl extends PDElementImpl implements LineObj {
 		if (Yc != null) Yc = null;
 
 		// for a line, nPhases = nCond, for now
-		Z    = new ComplexMatrixImpl(getNPhases());
-		ZInv = new ComplexMatrixImpl(getNPhases());
-		Yc   = new ComplexMatrixImpl(getNPhases());
+		Z    = new CMatrixImpl(getNPhases());
+		ZInv = new CMatrixImpl(getNPhases());
+		Yc   = new CMatrixImpl(getNPhases());
 
 		oneThird = 1.0 / 3.0;  // do this to get more precision in next few statements
 
@@ -1115,7 +1115,7 @@ public class LineObjImpl extends PDElementImpl implements LineObj {
 			Yc   = getLineGeometryObj().getYcMatrix(f, len, lengthUnits);
 			/* init Zinv */
 			if (Z != null) {
-				ZInv = new ComplexMatrixImpl(Z.order());  // either no. phases or no. conductors
+				ZInv = new CMatrixImpl(Z.order());  // either no. phases or no. conductors
 				ZInv.copyFrom(Z);
 			}
 
@@ -1154,7 +1154,7 @@ public class LineObjImpl extends PDElementImpl implements LineObj {
 		Z  = pGeo.getZMatrix(f, len, lengthUnits);
 		Yc = pGeo.getYcMatrix(f, len, lengthUnits);
 		if (Z != null) {
-			ZInv = new ComplexMatrixImpl(Z.order());  // either no. phases or no. conductors
+			ZInv = new CMatrixImpl(Z.order());  // either no. phases or no. conductors
 			ZInv.copyFrom(Z);
 		}
 		pGeo = null;
@@ -1192,9 +1192,9 @@ public class LineObjImpl extends PDElementImpl implements LineObj {
 			if (YPrimShunt != null) YPrimShunt = null;
 			if (YPrim != null) YPrim = null;
 
-			YPrimSeries = new ComplexMatrixImpl(YOrder);
-			YPrimShunt  = new ComplexMatrixImpl(YOrder);
-			YPrim        = new ComplexMatrixImpl(YOrder);
+			YPrimSeries = new CMatrixImpl(YOrder);
+			YPrimShunt  = new CMatrixImpl(YOrder);
+			YPrim        = new CMatrixImpl(YOrder);
 		} else {
 			YPrimSeries.clear();   // zero out YPrim_Series
 			YPrimShunt.clear();    // zero out YPrim_Shunt
@@ -1234,19 +1234,19 @@ public class LineObjImpl extends PDElementImpl implements LineObj {
 		setPropertyValue(Line.NumPropsThisClass + 4, String.format("%-g", getHrsToRepair()));
 	}
 
-	public ComplexMatrix getZ() {
+	public CMatrix getZ() {
 		return Z;
 	}
 
-	public void setZ(ComplexMatrix z) {
+	public void setZ(CMatrix z) {
 		Z = z;
 	}
 
-	public ComplexMatrix getYc() {
+	public CMatrix getYc() {
 		return Yc;
 	}
 
-	public void setYc(ComplexMatrix yc) {
+	public void setYc(CMatrix yc) {
 		Yc = yc;
 	}
 
@@ -1504,11 +1504,11 @@ public class LineObjImpl extends PDElementImpl implements LineObj {
 		lineCodeSpecified = value;
 	}
 
-	public ComplexMatrix getZInv() {
+	public CMatrix getZInv() {
 		return ZInv;
 	}
 
-	public void setZInv(ComplexMatrix zinv) {
+	public void setZInv(CMatrix zinv) {
 		ZInv = zinv;
 	}
 

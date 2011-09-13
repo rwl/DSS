@@ -1,6 +1,6 @@
 package com.epri.dss.delivery;
 
-import com.epri.dss.shared.ComplexMatrix;
+import com.epri.dss.shared.CMatrix;
 import org.apache.commons.math.complex.Complex;
 
 public interface TransformerObj extends PDElement {
@@ -128,25 +128,25 @@ public interface TransformerObj extends PDElement {
 
 	void setVABase(double vABase);
 
-	ComplexMatrix getZB();
+	CMatrix getZB();
 
-	void setZB(ComplexMatrix zB);
+	void setZB(CMatrix zB);
 
-	ComplexMatrix getY_1Volt();
+	CMatrix getY_1Volt();
 
-	void setY_1Volt(ComplexMatrix y_1Volt);
+	void setY_1Volt(CMatrix y_1Volt);
 
-	ComplexMatrix getY_Term();
+	CMatrix getY_Term();
 
-	void setY_Term(ComplexMatrix y_Term);
+	void setY_Term(CMatrix y_Term);
 
-	ComplexMatrix getY_1Volt_NL();
+	CMatrix getY_1Volt_NL();
 
-	void setY1VoltNL(ComplexMatrix y1VoltNL);
+	void setY1VoltNL(CMatrix y1VoltNL);
 
-	ComplexMatrix getYTermNL();
+	CMatrix getYTermNL();
 
-	void setYTermNL(ComplexMatrix yTermNL);
+	void setYTermNL(CMatrix yTermNL);
 
 	double getYTerminalFreqMult();
 

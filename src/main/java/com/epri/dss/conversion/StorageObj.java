@@ -3,7 +3,7 @@ package com.epri.dss.conversion;
 import java.io.File;
 
 import com.epri.dss.general.LoadShapeObj;
-import com.epri.dss.shared.ComplexMatrix;
+import com.epri.dss.shared.CMatrix;
 import org.apache.commons.math.complex.Complex;
 
 /**
@@ -340,9 +340,9 @@ public interface StorageObj extends PCElement {
 
 	void setVThevhH(double vThevhH);
 
-	ComplexMatrix getYPrimOpenCond();
+	CMatrix getYPrimOpenCond();
 
-	void setYPrimOpenCond(ComplexMatrix yPrimOpenCond);
+	void setYPrimOpenCond(CMatrix yPrimOpenCond);
 
 	double getRThev();
 

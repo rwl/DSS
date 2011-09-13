@@ -7,7 +7,7 @@ import com.epri.dss.common.impl.Utilities;
 import com.epri.dss.general.LineCode;
 import com.epri.dss.general.LineCodeObj;
 import com.epri.dss.parser.impl.Parser;
-import com.epri.dss.shared.impl.ComplexMatrixImpl;
+import com.epri.dss.shared.impl.CMatrixImpl;
 import com.epri.dss.shared.impl.CommandListImpl;
 
 import org.apache.commons.lang.mutable.MutableInt;
@@ -355,9 +355,9 @@ public class LineCodeImpl extends DSSClassImpl implements LineCode {
 				if (activeLineCodeObj.getYC() != null)
 					activeLineCodeObj.setYc(null);
 
-				activeLineCodeObj.setZ(new ComplexMatrixImpl(activeLineCodeObj.getNPhases()));
-				activeLineCodeObj.setZinv(new ComplexMatrixImpl(activeLineCodeObj.getNPhases()));
-				activeLineCodeObj.setYc(new ComplexMatrixImpl(activeLineCodeObj.getNPhases()));
+				activeLineCodeObj.setZ(new CMatrixImpl(activeLineCodeObj.getNPhases()));
+				activeLineCodeObj.setZinv(new CMatrixImpl(activeLineCodeObj.getNPhases()));
+				activeLineCodeObj.setYc(new CMatrixImpl(activeLineCodeObj.getNPhases()));
 			}
 
 			activeLineCodeObj.getZ().copyFrom(otherLineCode.getZ());

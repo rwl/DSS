@@ -22,10 +22,10 @@ import com.epri.dss.general.LineGeometryObj;
 import com.epri.dss.meter.EnergyMeter;
 import com.epri.dss.meter.EnergyMeterObj;
 import com.epri.dss.parser.impl.Parser;
-import com.epri.dss.shared.ComplexMatrix;
+import com.epri.dss.shared.CMatrix;
 import com.epri.dss.shared.CktTree;
 import com.epri.dss.shared.CktTreeNode;
-import com.epri.dss.shared.impl.ComplexMatrixImpl;
+import com.epri.dss.shared.impl.CMatrixImpl;
 import com.epri.dss.shared.impl.CktTreeImpl;
 import com.epri.dss.shared.impl.ComplexUtil;
 
@@ -1322,7 +1322,7 @@ public abstract class ShowResults {
 
 	public static void showFaultStudy(String fileName) {
 		int i, iBus, iphs;
-		ComplexMatrix YFault, ZFault;
+		CMatrix YFault, ZFault;
 		Complex[] VFault;  /* Big temp array */
 		FileWriter fw;
 		PrintWriter pw;
@@ -1381,7 +1381,7 @@ public abstract class ShowResults {
 			for (iBus = 0; iBus < ckt.getNumBuses(); iBus++) {
 				/* Bus Norton equivalent current, Isc has been previously computed */
 				bus = ckt.getBuses()[iBus];
-				ZFault = new ComplexMatrixImpl(bus.getNumNodesThisBus());
+				ZFault = new CMatrixImpl(bus.getNumNodesThisBus());
 				ZFault.copyFrom(bus.getZsc());
 
 				for (iphs = 0; iphs < bus.getNumNodesThisBus(); iphs++) {
@@ -1415,7 +1415,7 @@ public abstract class ShowResults {
 			for (iBus = 0; iBus < ckt.getNumBuses(); iBus++) {
 				/* Bus Norton equivalent current, Isc has been previously computed */
 				bus = ckt.getBuses()[iBus];
-				YFault = new ComplexMatrixImpl(bus.getNumNodesThisBus());
+				YFault = new CMatrixImpl(bus.getNumNodesThisBus());
 				VFault = new Complex[bus.getNumNodesThisBus()];
 
 				GFault = new Complex(10000.0, 0.0);
@@ -2515,7 +2515,7 @@ public abstract class ShowResults {
 		PrintWriter pw2;
 		int p;
 		LineGeometryObj pElem;
-		ComplexMatrix Z, Yc;
+		CMatrix Z, Yc;
 		int i, j;
 		double w;
 		Complex Zs, Zm,	Z1, Z0;
@@ -2792,7 +2792,7 @@ public abstract class ShowResults {
 	public static void showY(String fileName) {
 		FileWriter fw;
 		PrintWriter pw;
-		ComplexMatrix hY;
+		CMatrix hY;
 		long nnz, nBus;
 		long i, row, col;
 		double re, im;

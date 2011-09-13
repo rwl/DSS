@@ -1,16 +1,16 @@
 package com.epri.dss.conversion;
 
-import com.epri.dss.shared.ComplexMatrix;
+import com.epri.dss.shared.CMatrix;
 
 public interface VSourceObj extends PCElement {
 
-	ComplexMatrix getZ();
+	CMatrix getZ();
 
-	void setZ(ComplexMatrix z);
+	void setZ(CMatrix z);
 
-	ComplexMatrix getZinv();
+	CMatrix getZinv();
 
-	void setZinv(ComplexMatrix zinv);
+	void setZinv(CMatrix zinv);
 
 	double getVMag();
 

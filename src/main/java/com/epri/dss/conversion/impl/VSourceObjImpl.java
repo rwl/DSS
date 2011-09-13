@@ -3,7 +3,7 @@ package com.epri.dss.conversion.impl;
 import java.io.PrintStream;
 
 import com.epri.dss.parser.impl.Parser;
-import com.epri.dss.shared.impl.ComplexMatrixImpl;
+import com.epri.dss.shared.impl.CMatrixImpl;
 import com.epri.dss.shared.impl.ComplexUtil;
 
 import org.apache.commons.math.complex.Complex;
@@ -14,7 +14,7 @@ import com.epri.dss.common.impl.DSSGlobals;
 import com.epri.dss.common.impl.Utilities;
 import com.epri.dss.conversion.VSource;
 import com.epri.dss.conversion.VSourceObj;
-import com.epri.dss.shared.ComplexMatrix;
+import com.epri.dss.shared.CMatrix;
 
 public class VSourceObjImpl extends PCElementImpl implements VSourceObj {
 
@@ -31,8 +31,8 @@ public class VSourceObjImpl extends PCElementImpl implements VSourceObj {
 	private int scanType;
 	private int sequenceType;
 
-	protected ComplexMatrix Z;  // base frequency series Z matrix
-	protected ComplexMatrix ZInv;
+	protected CMatrix Z;  // base frequency series Z matrix
+	protected CMatrix ZInv;
 	protected double VMag;
 
 	protected double kVBase;
@@ -91,8 +91,8 @@ public class VSourceObjImpl extends PCElementImpl implements VSourceObj {
 		if (ZInv != null) ZInv = null;
 
 		// for a source, nPhases = nCond, for now
-		Z    = new ComplexMatrixImpl(nPhases);
-		ZInv = new ComplexMatrixImpl(nPhases);
+		Z    = new CMatrixImpl(nPhases);
+		ZInv = new CMatrixImpl(nPhases);
 
 		if (nPhases == 1) {
 			factor = 1.0;
@@ -203,9 +203,9 @@ public class VSourceObjImpl extends PCElementImpl implements VSourceObj {
 		// build only YPrim_Series
 		if (isYprimInvalid()) {
 			if (YPrimSeries != null) YPrimSeries = null;
-			YPrimSeries = new ComplexMatrixImpl(YOrder);
+			YPrimSeries = new CMatrixImpl(YOrder);
 			if (YPrim != null) YPrim = null;
-			YPrim = new ComplexMatrixImpl(YOrder);
+			YPrim = new CMatrixImpl(YOrder);
 		} else {
 			YPrimSeries.clear();
 			YPrim.clear();
@@ -467,19 +467,19 @@ public class VSourceObjImpl extends PCElementImpl implements VSourceObj {
 		super.makePosSequence();
 	}
 
-	public ComplexMatrix getZ() {
+	public CMatrix getZ() {
 		return Z;
 	}
 
-	public void setZ(ComplexMatrix z) {
+	public void setZ(CMatrix z) {
 		Z = z;
 	}
 
-	public ComplexMatrix getZinv() {
+	public CMatrix getZinv() {
 		return ZInv;
 	}
 
-	public void setZinv(ComplexMatrix zinv) {
+	public void setZinv(CMatrix zinv) {
 		ZInv = zinv;
 	}
 

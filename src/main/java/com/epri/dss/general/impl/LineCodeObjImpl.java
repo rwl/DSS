@@ -6,8 +6,8 @@ import com.epri.dss.common.DSSClass;
 import com.epri.dss.common.impl.DSSGlobals;
 import com.epri.dss.general.LineCode;
 import com.epri.dss.general.LineCodeObj;
-import com.epri.dss.shared.ComplexMatrix;
-import com.epri.dss.shared.impl.ComplexMatrixImpl;
+import com.epri.dss.shared.CMatrix;
+import com.epri.dss.shared.impl.CMatrixImpl;
 import org.apache.commons.math.complex.Complex;
 import com.epri.dss.shared.impl.LineUnits;
 
@@ -19,7 +19,7 @@ public class LineCodeObjImpl extends DSSObjectImpl implements LineCodeObj {
 
 	protected boolean SymComponentsModel, ReduceByKron;
 
-	protected ComplexMatrix Z,  // base frequency series Z matrix
+	protected CMatrix Z,  // base frequency series Z matrix
 		Zinv,
 		Yc;               // shunt capacitance matrix at base frequency
 
@@ -130,9 +130,9 @@ public class LineCodeObjImpl extends DSSObjectImpl implements LineCodeObj {
 			Yc = null;
 
 		// for a line, nPhases = nCond, for now
-		Z    = new ComplexMatrixImpl(NPhases);
-		Zinv = new ComplexMatrixImpl(NPhases);
-		Yc   = new ComplexMatrixImpl(NPhases);
+		Z    = new CMatrixImpl(NPhases);
+		Zinv = new CMatrixImpl(NPhases);
+		Yc   = new CMatrixImpl(NPhases);
 
 		OneThird = 1.0 / 3.0;  // do this to get more precision in next few statements
 
@@ -276,8 +276,8 @@ public class LineCodeObjImpl extends DSSObjectImpl implements LineCodeObj {
 		if (NeutralConductor == 0)  // TODO Check zero based indexing
 			return;   // Do Nothing
 
-		ComplexMatrix NewZ = null;
-		ComplexMatrix NewYc = null;
+		CMatrix NewZ = null;
+		CMatrix NewYc = null;
 
 		if (NPhases > 1) {
 			try {
@@ -338,27 +338,27 @@ public class LineCodeObjImpl extends DSSObjectImpl implements LineCodeObj {
 		ReduceByKron = reduceByKron;
 	}
 
-	public ComplexMatrix getZ() {
+	public CMatrix getZ() {
 		return Z;
 	}
 
-	public void setZ(ComplexMatrix z) {
+	public void setZ(CMatrix z) {
 		Z = z;
 	}
 
-	public ComplexMatrix getZinv() {
+	public CMatrix getZinv() {
 		return Zinv;
 	}
 
-	public void setZinv(ComplexMatrix zinv) {
+	public void setZinv(CMatrix zinv) {
 		Zinv = zinv;
 	}
 
-	public ComplexMatrix getYC() {
+	public CMatrix getYC() {
 		return Yc;
 	}
 
-	public void setYc(ComplexMatrix Yc) {
+	public void setYc(CMatrix Yc) {
 		this.Yc = Yc;
 	}
 

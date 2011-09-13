@@ -3,7 +3,7 @@ package com.epri.dss.shared;
 import org.apache.commons.lang.mutable.MutableInt;
 import org.apache.commons.math.complex.Complex;
 
-public interface ComplexMatrix {
+public interface CMatrix {
 
 	int order();
 
@@ -12,9 +12,9 @@ public interface ComplexMatrix {
 	/* Zero out matrix */
 	void clear();
 
-	void addFrom(ComplexMatrix otherMatrix);
+	void addFrom(CMatrix otherMatrix);
 
-	void copyFrom(ComplexMatrix otherMatrix);
+	void copyFrom(CMatrix otherMatrix);
 
 	void set(int i, int j, Complex Value);
 
@@ -53,6 +53,6 @@ public interface ComplexMatrix {
 	void mult(double x);
 
 	/** Perform Kron reduction on last row/col and return new matrix */
-	ComplexMatrix kron(int eliminationRow);
+	CMatrix kron(int eliminationRow);
 
 }

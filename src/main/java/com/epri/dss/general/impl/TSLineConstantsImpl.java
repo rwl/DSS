@@ -1,8 +1,8 @@
 package com.epri.dss.general.impl;
 
 import com.epri.dss.general.TSLineConstants;
-import com.epri.dss.shared.ComplexMatrix;
-import com.epri.dss.shared.impl.ComplexMatrixImpl;
+import com.epri.dss.shared.CMatrix;
+import com.epri.dss.shared.impl.CMatrixImpl;
 import org.apache.commons.math.complex.Complex;
 import com.epri.dss.shared.impl.LineUnits;
 import com.epri.dss.shared.impl.MathUtil;
@@ -60,7 +60,7 @@ public class TSLineConstantsImpl extends CableConstantsImpl implements TSLineCon
 		double Dij, YFactor;
 		int reducedSize;
 		int n, idxi, idxj;
-		ComplexMatrix ZMat, ZTemp;
+		CMatrix ZMat, ZTemp;
 		double resTS, radTS;
 		double gmrTS;
 		double denom, radIn, radOut;
@@ -83,7 +83,7 @@ public class TSLineConstantsImpl extends CableConstantsImpl implements TSLineCon
 
 		// add concentric neutrals to the end of conductor list; they are always reduced
 		n = numConds + numPhases;
-		ZMat = new ComplexMatrixImpl(n);
+		ZMat = new CMatrixImpl(n);
 
 		/* For less than 1 kHz use GMR to better match published data */
 		LFactor = new Complex(0.0, w * MU0 / TWO_PI);

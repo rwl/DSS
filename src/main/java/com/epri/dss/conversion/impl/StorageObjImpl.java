@@ -6,7 +6,7 @@ import java.io.FileWriter;
 import java.io.PrintStream;
 
 import com.epri.dss.parser.impl.Parser;
-import com.epri.dss.shared.impl.ComplexMatrixImpl;
+import com.epri.dss.shared.impl.CMatrixImpl;
 import com.epri.dss.shared.impl.ComplexUtil;
 
 import org.apache.commons.math.complex.Complex;
@@ -21,7 +21,7 @@ import com.epri.dss.conversion.Storage;
 import com.epri.dss.conversion.StorageObj;
 import com.epri.dss.conversion.StoreUserModel;
 import com.epri.dss.general.LoadShapeObj;
-import com.epri.dss.shared.ComplexMatrix;
+import com.epri.dss.shared.CMatrix;
 import com.epri.dss.shared.Dynamics;
 
 public class StorageObjImpl extends PCElementImpl implements StorageObj {
@@ -89,7 +89,7 @@ public class StorageObjImpl extends PCElementImpl implements StorageObj {
 	private double VMinPU;
 	/** Thevinen equivalent voltage mag and angle reference for harmonic model */
 	private double VThevhH;
-	private ComplexMatrix YPrimOpenCond;
+	private CMatrix YPrimOpenCond;
 	private double RThev;
 	private double XThev;
 
@@ -615,7 +615,7 @@ public class StorageObjImpl extends PCElementImpl implements StorageObj {
 			userModel.updateModel();
 	}
 
-	private void calcYPrimMatrix(ComplexMatrix YMatrix) {
+	private void calcYPrimMatrix(CMatrix YMatrix) {
 		Complex Y, Yij;
 		int i, j;
 		double freqMultiplier;
@@ -791,11 +791,11 @@ public class StorageObjImpl extends PCElementImpl implements StorageObj {
 		// build a dummy Yprim_Series so that calcV does not fail
 		if (isYprimInvalid()) {
 			if (YPrimShunt != null) YPrimShunt = null;
-			YPrimShunt = new ComplexMatrixImpl(YOrder);
+			YPrimShunt = new CMatrixImpl(YOrder);
 			if (YPrimSeries != null) YPrimSeries = null;
-			YPrimSeries = new ComplexMatrixImpl(YOrder);
+			YPrimSeries = new CMatrixImpl(YOrder);
 			if (YPrim != null) YPrim = null;
-			YPrim = new ComplexMatrixImpl(YOrder);
+			YPrim = new CMatrixImpl(YOrder);
 		} else {
 			YPrimShunt.clear();
 			YPrimSeries.clear();
@@ -2137,11 +2137,11 @@ public class StorageObjImpl extends PCElementImpl implements StorageObj {
 		VThevhH = value;
 	}
 
-	public ComplexMatrix getYPrimOpenCond() {
+	public CMatrix getYPrimOpenCond() {
 		return YPrimOpenCond;
 	}
 
-	public void setYPrimOpenCond(ComplexMatrix value) {
+	public void setYPrimOpenCond(CMatrix value) {
 		YPrimOpenCond = value;
 	}
 

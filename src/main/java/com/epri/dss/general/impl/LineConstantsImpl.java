@@ -2,8 +2,8 @@ package com.epri.dss.general.impl;
 
 import com.epri.dss.common.impl.DSSGlobals;
 import com.epri.dss.general.LineConstants;
-import com.epri.dss.shared.ComplexMatrix;
-import com.epri.dss.shared.impl.ComplexMatrixImpl;
+import com.epri.dss.shared.CMatrix;
+import com.epri.dss.shared.impl.CMatrixImpl;
 import org.apache.commons.math.complex.Complex;
 
 import com.epri.dss.shared.impl.ComplexUtil;
@@ -26,11 +26,11 @@ public class LineConstantsImpl implements LineConstants {
 	protected double[] GMR;  // m
 	protected double[] radius;
 
-	protected ComplexMatrix ZMatrix;   // in ohms/m
-	protected ComplexMatrix YcMatrix;  // siemens/m   --- jwC
+	protected CMatrix ZMatrix;   // in ohms/m
+	protected CMatrix YcMatrix;  // siemens/m   --- jwC
 
-	protected ComplexMatrix ZReduced;   // these two do not exist until Kron reduction
-	protected ComplexMatrix YcReduced;  // is executed
+	protected CMatrix ZReduced;   // these two do not exist until Kron reduction
+	protected CMatrix YcReduced;  // is executed
 
 	protected double frequency;  // frequency for which impedances are computed
 	protected double w;  // 2piF
@@ -57,8 +57,8 @@ public class LineConstantsImpl implements LineConstants {
 			Rdc[i] = -1.0;
 		}
 
-		ZMatrix = new ComplexMatrixImpl(numConds);
-		YcMatrix = new ComplexMatrixImpl(numConds);
+		ZMatrix = new CMatrixImpl(numConds);
+		YcMatrix = new CMatrixImpl(numConds);
 
 		setFrequency(-1.0);  // not computed
 		setRhoEarth(100.0);  // default value
@@ -220,10 +220,10 @@ public class LineConstantsImpl implements LineConstants {
 	 * Makes a new YCmatrix and correct for lengths and units as it copies.
 	 * Uses the reduced Zmatrix by default if it exists.
 	 */
-	public ComplexMatrix getYcMatrix(double f, double length, int units) {
+	public CMatrix getYcMatrix(double f, double length, int units) {
 		int newSize;
 		double unitLengthConversion;
-		ComplexMatrix Yc;
+		CMatrix Yc;
 		Complex[] YcValues;
 
 		if (YcReduced != null) {
@@ -233,7 +233,7 @@ public class LineConstantsImpl implements LineConstants {
 		}
 
 		newSize = Yc.order();
-		ComplexMatrix result = new ComplexMatrixImpl(newSize);
+		CMatrix result = new CMatrixImpl(newSize);
 
 		result.copyFrom(Yc);
 		YcValues = result.asArray();
@@ -337,10 +337,10 @@ public class LineConstantsImpl implements LineConstants {
 	 * Makes a new Zmatrix and correct for lengths and units as it copies.
 	 * Uses the reduced Zmatrix by default if it exists.
 	 */
-	public ComplexMatrix getZMatrix(double f, double length, int units) {
+	public CMatrix getZMatrix(double f, double length, int units) {
 		int newSize, i;
 		double unitLengthConversion;
-		ComplexMatrix Z;
+		CMatrix Z;
 		Complex[] ZValues;
 
 		if ((f != frequency) || rhoChanged)
@@ -353,7 +353,7 @@ public class LineConstantsImpl implements LineConstants {
 		}
 
 		newSize = Z.order();
-		ComplexMatrix result = new ComplexMatrixImpl(newSize);
+		CMatrix result = new CMatrixImpl(newSize);
 
 		result.copyFrom(Z);  // gets ohms/meter
 		ZValues = result.asArray();  // ptr to the values in the new copy
@@ -371,7 +371,7 @@ public class LineConstantsImpl implements LineConstants {
 	 */
 	public void Kron(int nOrder) {
 
-		ComplexMatrix ZTemp  = ZMatrix;
+		CMatrix ZTemp  = ZMatrix;
 		boolean firstTime = true;
 
 		if ((frequency >= 0.0) && (nOrder > 0) && (nOrder < numConds)) {
@@ -396,7 +396,7 @@ public class LineConstantsImpl implements LineConstants {
 			}
 
 			/* Extract norder x norder portion of Yc matrx */
-			YcReduced = new ComplexMatrixImpl(nOrder);
+			YcReduced = new CMatrixImpl(nOrder);
 			for (int i = 0; i < nOrder; i++)
 				for (int j = 0; j < nOrder; j++)
 					YcReduced.set(i, j, YcMatrix.get(i, j));

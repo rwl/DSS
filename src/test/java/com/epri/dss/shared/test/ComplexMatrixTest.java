@@ -2,19 +2,19 @@ package com.epri.dss.shared.test;
 
 import org.apache.commons.math.complex.Complex;
 
-import com.epri.dss.shared.ComplexMatrix;
-import com.epri.dss.shared.impl.ComplexMatrixImpl;
+import com.epri.dss.shared.CMatrix;
+import com.epri.dss.shared.impl.CMatrixImpl;
 
 import junit.framework.TestCase;
 
 public class ComplexMatrixTest extends TestCase {
 
 	int n = 6;
-	ComplexMatrix cm;
+	CMatrix cm;
 
 	protected void setUp() throws Exception {
 		int i, j;
-		cm = new ComplexMatrixImpl(n);
+		cm = new CMatrixImpl(n);
 
 		for (i = 0; i < n; i++)
 			for (j = 0; j < n; j++)
@@ -27,7 +27,7 @@ public class ComplexMatrixTest extends TestCase {
 	 * Test matrix instantiation.
 	 */
 	public void testCMatrixImpl() {
-		ComplexMatrix m = new ComplexMatrixImpl(n);
+		CMatrix m = new CMatrixImpl(n);
 		assertNotNull(m);
 	}
 
@@ -35,7 +35,7 @@ public class ComplexMatrixTest extends TestCase {
 	 * Test matrix order.
 	 */
 	public void testOrder() {
-		ComplexMatrix m = new ComplexMatrixImpl(n);
+		CMatrix m = new CMatrixImpl(n);
 		assertEquals(n, m.order());
 	}
 
@@ -43,7 +43,7 @@ public class ComplexMatrixTest extends TestCase {
 	 * Test getting matrix elements.
 	 */
 	public void testGetElement() {
-		ComplexMatrix m = new ComplexMatrixImpl(n);
+		CMatrix m = new CMatrixImpl(n);
 		assertEquals(0.0, m.get(0, 0).getReal());
 		assertEquals(0.0, m.get(0, 0).getImaginary());
 	}
@@ -54,7 +54,7 @@ public class ComplexMatrixTest extends TestCase {
 	public void testSetElement() {
 		int i, j;
 		double real, imag;
-		ComplexMatrix m = new ComplexMatrixImpl(n);
+		CMatrix m = new CMatrixImpl(n);
 
 		i = 0; j = 0;
 		real = 2; imag = 3;
@@ -75,7 +75,7 @@ public class ComplexMatrixTest extends TestCase {
 	public void testSetElemSym() {
 		int i, j;
 		double real, imag;
-		ComplexMatrix m = new ComplexMatrixImpl(n);
+		CMatrix m = new CMatrixImpl(n);
 
 		i = 1; j = 3;
 		real = 2; imag = 5;
@@ -92,7 +92,7 @@ public class ComplexMatrixTest extends TestCase {
 	public void testAddElement() {
 		int i, j;
 		double real, imag;
-		ComplexMatrix m = new ComplexMatrixImpl(n);
+		CMatrix m = new CMatrixImpl(n);
 
 		i = 3; j = 2;
 		real = 2; imag = 3;
@@ -111,7 +111,7 @@ public class ComplexMatrixTest extends TestCase {
 	public void testAddElemSym() {
 		int i, j;
 		double real, imag;
-		ComplexMatrix m = new ComplexMatrixImpl(n);
+		CMatrix m = new CMatrixImpl(n);
 
 		i = 4; j = 1;
 		real = 1; imag = 3;
@@ -134,7 +134,7 @@ public class ComplexMatrixTest extends TestCase {
 	public void testClear() {
 		int i, j, i1, j1, i2, j2;
 		double real, imag;
-		ComplexMatrix m = new ComplexMatrixImpl(n);
+		CMatrix m = new CMatrixImpl(n);
 
 		i1 = 0; j1 = 0; i2 = 3; j2 = 5;
 		real = 2; imag = 3;
@@ -154,9 +154,9 @@ public class ComplexMatrixTest extends TestCase {
 	 */
 	public void testCopyFrom() {
 		int i, j;
-		ComplexMatrix cm2;
+		CMatrix cm2;
 
-		cm2 = new ComplexMatrixImpl(n);
+		cm2 = new CMatrixImpl(n);
 		cm2.copyFrom(cm);
 
 		for (i = 0; i < n; i++)

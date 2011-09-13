@@ -7,7 +7,7 @@ import org.apache.commons.math.complex.Complex;
 import com.epri.dss.common.impl.DSSCktElement;
 import com.epri.dss.common.impl.PowerTerminal;
 import com.epri.dss.general.DSSObject;
-import com.epri.dss.shared.ComplexMatrix;
+import com.epri.dss.shared.CMatrix;
 
 public interface CktElement extends DSSObject {
 
@@ -116,7 +116,7 @@ public interface CktElement extends DSSObject {
 
 	int getHandle();
 
-	int getYPrim(ComplexMatrix Ymatrix, int Opt);
+	int getYPrim(CMatrix Ymatrix, int Opt);
 
 	Complex[] getYPrimValues(int Opt);
 

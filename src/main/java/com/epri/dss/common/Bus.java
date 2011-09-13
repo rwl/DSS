@@ -3,7 +3,7 @@ package com.epri.dss.common;
 import org.apache.commons.math.complex.Complex;
 
 import com.epri.dss.general.NamedObject;
-import com.epri.dss.shared.ComplexMatrix;
+import com.epri.dss.shared.CMatrix;
 
 public interface Bus extends NamedObject {
 
@@ -19,13 +19,13 @@ public interface Bus extends NamedObject {
 
 	void setBusCurrent(Complex[] busCurrent);
 
-	ComplexMatrix getZsc();
+	CMatrix getZsc();
 
-	void setZsc(ComplexMatrix zsc);
+	void setZsc(CMatrix zsc);
 
-	ComplexMatrix getYsc();
+	CMatrix getYsc();
 
-	void setYsc(ComplexMatrix ysc);
+	void setYsc(CMatrix ysc);
 
 	double getX();
 

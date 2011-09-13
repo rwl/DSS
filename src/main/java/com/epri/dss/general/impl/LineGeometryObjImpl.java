@@ -15,7 +15,7 @@ import com.epri.dss.general.LineGeometryObj;
 import com.epri.dss.general.LineSpacingObj;
 import com.epri.dss.general.TSDataObj;
 import com.epri.dss.general.TSLineConstants;
-import com.epri.dss.shared.ComplexMatrix;
+import com.epri.dss.shared.CMatrix;
 import com.epri.dss.shared.impl.LineUnits;
 
 public class LineGeometryObjImpl extends DSSObjectImpl implements LineGeometryObj {
@@ -175,8 +175,8 @@ public class LineGeometryObjImpl extends DSSObjectImpl implements LineGeometryOb
 		return lineData.getRhoEarth();
 	}
 
-	public ComplexMatrix getYcMatrix(double f, double length, int units) {
-		ComplexMatrix result = null;
+	public CMatrix getYcMatrix(double f, double length, int units) {
+		CMatrix result = null;
 		if (dataChanged) {
 			try {
 				updateLineGeometryData(f);
@@ -190,8 +190,8 @@ public class LineGeometryObjImpl extends DSSObjectImpl implements LineGeometryOb
 		return result;
 	}
 
-	public ComplexMatrix getZMatrix(double f, double length, int units) {
-		ComplexMatrix result = null;
+	public CMatrix getZMatrix(double f, double length, int units) {
+		CMatrix result = null;
 		if (dataChanged) {
 			try {
 				updateLineGeometryData(f);

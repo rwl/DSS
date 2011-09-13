@@ -50,7 +50,7 @@ import com.epri.dss.executive.impl.DSSExecutive;
 import com.epri.dss.executive.impl.ExecCommands;
 import com.epri.dss.executive.impl.ExecOptions;
 import com.epri.dss.general.DSSObject;
-import com.epri.dss.shared.ComplexMatrix;
+import com.epri.dss.shared.CMatrix;
 import com.epri.dss.shared.Dynamics;
 import com.epri.dss.shared.HashList;
 
@@ -1337,7 +1337,7 @@ public class Utilities {
 		DSSGlobals.eventStrings.add(S);
 	}
 
-	public static void dumpComplexMatrix(PrintStream f, ComplexMatrix aMatrix) {
+	public static void dumpComplexMatrix(PrintStream f, CMatrix aMatrix) {
 		// TODO Convert to use MatrixMarket format
 		try {
 			if (aMatrix != null) {

@@ -1,7 +1,7 @@
 package com.epri.dss.general;
 
 import com.epri.dss.common.impl.DSSGlobals;
-import com.epri.dss.shared.ComplexMatrix;
+import com.epri.dss.shared.CMatrix;
 import org.apache.commons.math.complex.Complex;
 
 /**
@@ -70,9 +70,9 @@ public interface LineConstants {
 	 * These two properties will auto recalc the impedance matrices if frequency is different.
 	 * Converts to desired units when executed; Returns pointer to working version.
 	 */
-	ComplexMatrix getZMatrix(double f, double length, int units);
+	CMatrix getZMatrix(double f, double length, int units);
 
-	ComplexMatrix getYcMatrix(double f, double length, int units);
+	CMatrix getYcMatrix(double f, double length, int units);
 
 	int getNPhases();
 

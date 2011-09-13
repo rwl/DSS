@@ -26,7 +26,7 @@ import com.epri.dss.conversion.LoadObj;
 import com.epri.dss.conversion.PCElement;
 import com.epri.dss.delivery.FaultObj;
 import com.epri.dss.general.impl.DSSObjectImpl;
-import com.epri.dss.shared.ComplexMatrix;
+import com.epri.dss.shared.CMatrix;
 import com.epri.dss.shared.Dynamics;
 
 public class SolutionObjImpl extends DSSObjectImpl implements SolutionObj {
@@ -58,11 +58,11 @@ public class SolutionObjImpl extends DSSObjectImpl implements SolutionObj {
 	protected int intHour;
 	protected double dblHour;
 	/* Main (system) Y matrix */
-	protected ComplexMatrix YSystem;
+	protected CMatrix YSystem;
 	/* Series Y matrix */
-	protected ComplexMatrix YSeries;
+	protected CMatrix YSeries;
 	/* Either Ysystem or Yseries */
-	protected ComplexMatrix Y;
+	protected CMatrix Y;
 	protected double intervalHrs;   // solution interval since last solution, hrs.
 	protected boolean isDynamicModel;
 	protected boolean isHarmonicModel;
@@ -1498,27 +1498,27 @@ public class SolutionObjImpl extends DSSObjectImpl implements SolutionObj {
 		this.dblHour = hour;
 	}
 
-	public ComplexMatrix getYSystem() {
+	public CMatrix getYSystem() {
 		return YSystem;
 	}
 
-	public void setYSystem(ComplexMatrix value) {
+	public void setYSystem(CMatrix value) {
 		YSystem = value;
 	}
 
-	public ComplexMatrix getYSeries() {
+	public CMatrix getYSeries() {
 		return YSeries;
 	}
 
-	public void setYSeries(ComplexMatrix value) {
+	public void setYSeries(CMatrix value) {
 		YSeries = value;
 	}
 
-	public ComplexMatrix getY() {
+	public CMatrix getY() {
 		return Y;
 	}
 
-	public void setY(ComplexMatrix y) {
+	public void setY(CMatrix y) {
 		Y = y;
 	}
 

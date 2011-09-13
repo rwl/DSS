@@ -2,7 +2,7 @@ package com.epri.dss.conversion;
 
 import java.io.PrintStream;
 
-import com.epri.dss.shared.ComplexMatrix;
+import com.epri.dss.shared.CMatrix;
 import org.apache.commons.math.complex.Complex;
 
 import com.epri.dss.general.GrowthShapeObj;
@@ -285,9 +285,9 @@ public interface LoadObj extends PCElement {
 
 	void setYneut(Complex yneut);
 
-	ComplexMatrix getYPrimOpenCond();
+	CMatrix getYPrimOpenCond();
 
-	void setYPrimOpenCond(ComplexMatrix YPrimOpenCond);
+	void setYPrimOpenCond(CMatrix YPrimOpenCond);
 
 	double getYQFixed();
 

@@ -2,8 +2,8 @@ package com.epri.dss.general.impl;
 
 import com.epri.dss.general.CNLineConstants;
 import com.epri.dss.general.LineConstants;
-import com.epri.dss.shared.ComplexMatrix;
-import com.epri.dss.shared.impl.ComplexMatrixImpl;
+import com.epri.dss.shared.CMatrix;
+import com.epri.dss.shared.impl.CMatrixImpl;
 import org.apache.commons.math.complex.Complex;
 import com.epri.dss.shared.impl.LineUnits;
 import com.epri.dss.shared.impl.MathUtil;
@@ -36,7 +36,7 @@ public class CNLineConstantsImpl extends CableConstantsImpl implements CNLineCon
 		double Dij, YFactor;
 		int reducedSize;
 		int n, idxi, idxj;
-		ComplexMatrix ZMat, ZTemp;
+		CMatrix ZMat, ZTemp;
 		double resCN, radCN;
 		double gmrCN;
 		double denom, radIn, radOut;
@@ -58,7 +58,7 @@ public class CNLineConstantsImpl extends CableConstantsImpl implements CNLineCon
 
 		// add concentric neutrals to the end of conductor list; they are always reduced
 		n = getNumConds() + getNPhases();
-		ZMat = new ComplexMatrixImpl(n);
+		ZMat = new CMatrixImpl(n);
 
 		/* For less than 1 kHz use GMR to better match published data */
 		LFactor = new Complex(0.0, w * MU0 / LineConstants.TWO_PI);

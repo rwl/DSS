@@ -5,8 +5,8 @@ import java.io.PrintStream;
 import org.apache.commons.lang.mutable.MutableInt;
 
 import com.epri.dss.parser.impl.Parser;
-import com.epri.dss.shared.ComplexMatrix;
-import com.epri.dss.shared.impl.ComplexMatrixImpl;
+import com.epri.dss.shared.CMatrix;
+import com.epri.dss.shared.impl.CMatrixImpl;
 import com.epri.dss.shared.impl.ComplexUtil;
 
 import org.apache.commons.math.complex.Complex;
@@ -149,18 +149,18 @@ public class ReactorObjImpl extends PDElementImpl implements ReactorObj {
 		int i, j, idx;
 		double freqMultiplier;
 		Complex[] ZValues;
-		ComplexMatrix YPrimTemp, ZMatrix;
+		CMatrix YPrimTemp, ZMatrix;
 
 		// normally build only Yprim_Shunt, but if there are 2 terminals and
 		// bus1 != bus2
 
 		if (isYprimInvalid()) {  // reallocate YPrim if something has invalidated old allocation
 			if (YPrimShunt != null) YPrimShunt = null;
-			YPrimShunt = new ComplexMatrixImpl(YOrder);
+			YPrimShunt = new CMatrixImpl(YOrder);
 			if (YPrimSeries != null) YPrimSeries = null;
-			YPrimSeries = new ComplexMatrixImpl(YOrder);
+			YPrimSeries = new CMatrixImpl(YOrder);
 			if (YPrim != null) YPrim = null;
-			YPrim = new ComplexMatrixImpl(YOrder);
+			YPrim = new CMatrixImpl(YOrder);
 		} else {
 			YPrimSeries.clear(); // zero out YPrim
 			YPrimShunt.clear();  // zero out YPrim
@@ -252,7 +252,7 @@ public class ReactorObjImpl extends PDElementImpl implements ReactorObj {
 					}
 				}
 			} else {  // for series r and x
-				ZMatrix = new ComplexMatrixImpl(nPhases);
+				ZMatrix = new CMatrixImpl(nPhases);
 				ZValues = ZMatrix.asArray();  // so we can populate array fast
 				nPhases = ZMatrix.order();
 				/* Put in series r & l */

@@ -1,12 +1,12 @@
 package com.epri.dss.common.impl;
 
-import com.epri.dss.shared.impl.ComplexMatrixImpl;
+import com.epri.dss.shared.impl.CMatrixImpl;
 import org.apache.commons.math.complex.Complex;
 
 import com.epri.dss.common.Bus;
 import com.epri.dss.common.Circuit;
 import com.epri.dss.general.impl.NamedObjectImpl;
-import com.epri.dss.shared.ComplexMatrix;
+import com.epri.dss.shared.CMatrix;
 
 public class DSSBus extends NamedObjectImpl implements Bus {
 
@@ -22,7 +22,7 @@ public class DSSBus extends NamedObjectImpl implements Bus {
 	private int[] refNo;
 
 	protected Complex[] VBus, busCurrent;
-	protected ComplexMatrix Zsc, Ysc;
+	protected CMatrix Zsc, Ysc;
 
 	/* Coordinates */
 	protected double x, y;
@@ -118,8 +118,8 @@ public class DSSBus extends NamedObjectImpl implements Bus {
 
 	public void allocateBusQuantities() {
 		// have to perform a short circuit study to get this allocated
-		Ysc = new ComplexMatrixImpl(numNodesThisBus);
-		Zsc = new ComplexMatrixImpl(numNodesThisBus);
+		Ysc = new CMatrixImpl(numNodesThisBus);
+		Zsc = new CMatrixImpl(numNodesThisBus);
 		allocateBusVoltages();
 		allocateBusCurrents();
 	}
@@ -185,19 +185,19 @@ public class DSSBus extends NamedObjectImpl implements Bus {
 		busCurrent = buscurrent;
 	}
 
-	public ComplexMatrix getZsc() {
+	public CMatrix getZsc() {
 		return Zsc;
 	}
 
-	public void setZsc(ComplexMatrix zsc) {
+	public void setZsc(CMatrix zsc) {
 		Zsc = zsc;
 	}
 
-	public ComplexMatrix getYsc() {
+	public CMatrix getYsc() {
 		return Ysc;
 	}
 
-	public void setYsc(ComplexMatrix ysc) {
+	public void setYsc(CMatrix ysc) {
 		Ysc = ysc;
 	}
 

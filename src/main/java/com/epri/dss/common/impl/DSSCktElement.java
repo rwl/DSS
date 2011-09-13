@@ -8,7 +8,7 @@ import com.epri.dss.common.CktElement;
 import com.epri.dss.common.DSSClass;
 import com.epri.dss.common.SolutionObj;
 import com.epri.dss.general.impl.DSSObjectImpl;
-import com.epri.dss.shared.ComplexMatrix;
+import com.epri.dss.shared.CMatrix;
 
 public class DSSCktElement extends DSSObjectImpl implements CktElement {
 
@@ -30,9 +30,9 @@ public class DSSCktElement extends DSSObjectImpl implements CktElement {
 
 	protected int busIndex;
 
-	protected ComplexMatrix YPrimSeries;
-	protected ComplexMatrix YPrimShunt;
-	protected ComplexMatrix YPrim;  // order will be nTerms * nCond
+	protected CMatrix YPrimSeries;
+	protected CMatrix YPrimShunt;
+	protected CMatrix YPrim;  // order will be nTerms * nCond
 
 	/* Frequency at which YPrim has been computed */
 	protected double YPrimFreq;
@@ -271,7 +271,7 @@ public class DSSCktElement extends DSSObjectImpl implements CktElement {
 		return enabled;
 	}
 
-	public int getYPrim(ComplexMatrix YMatrix, int opt) {
+	public int getYPrim(CMatrix YMatrix, int opt) {
 		// FIXME Pass by reference
 		switch (opt) {
 		case DSSGlobals.ALL_YPRIM:
@@ -592,7 +592,7 @@ public class DSSCktElement extends DSSObjectImpl implements CktElement {
 		throw new UnsupportedOperationException();
 	}
 
-	private void doYprimCalcs(ComplexMatrix YMatrix) {
+	private void doYprimCalcs(CMatrix YMatrix) {
 		int i, j, k = 0, ii, jj, elimRow;
 		Complex Ynn, Yij, Yin, Ynj;
 		int[] rowEliminated = null;

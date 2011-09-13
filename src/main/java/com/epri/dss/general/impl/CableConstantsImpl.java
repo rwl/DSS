@@ -1,8 +1,8 @@
 package com.epri.dss.general.impl;
 
 import com.epri.dss.general.CableConstants;
-import com.epri.dss.shared.ComplexMatrix;
-import com.epri.dss.shared.impl.ComplexMatrixImpl;
+import com.epri.dss.shared.CMatrix;
+import com.epri.dss.shared.impl.CMatrixImpl;
 import com.epri.dss.shared.impl.LineUnits;
 import com.epri.dss.shared.impl.MathUtil;
 
@@ -26,7 +26,7 @@ public class CableConstantsImpl extends LineConstantsImpl implements CableConsta
 	 */
 	@Override
 	public void Kron(int norder) {
-		ComplexMatrix ZTemp;
+		CMatrix ZTemp;
 		boolean firstTime;
 		int i, j;
 
@@ -42,7 +42,7 @@ public class CableConstantsImpl extends LineConstantsImpl implements CableConsta
 				firstTime = false;
 			}
 			// now copy part of FYCmatrix to FYCreduced
-			YcReduced = new ComplexMatrixImpl(norder);
+			YcReduced = new CMatrixImpl(norder);
 			for (i = 0; i < norder; i++)
 				for (j = 0; j < norder; j++)
 					YcReduced.set(i, j, YcMatrix.get(i, j));

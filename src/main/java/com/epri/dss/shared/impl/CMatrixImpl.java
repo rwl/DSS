@@ -3,16 +3,16 @@ package com.epri.dss.shared.impl;
 import org.apache.commons.lang.mutable.MutableInt;
 import org.apache.commons.math.complex.Complex;
 
-import com.epri.dss.shared.ComplexMatrix;
+import com.epri.dss.shared.CMatrix;
 
-public class ComplexMatrixImpl implements ComplexMatrix {
+public class CMatrixImpl implements CMatrix {
 
 	private int nOrder;
 	private Complex[] values;
 
 	protected int invertError;
 
-	public ComplexMatrixImpl(int n) {
+	public CMatrixImpl(int n) {
 		nOrder = n;
 		invertError = 0;
 		values = new Complex[n * n];
@@ -88,7 +88,7 @@ public class ComplexMatrixImpl implements ComplexMatrix {
 		}
 	}
 
-	public void addFrom(ComplexMatrix otherMatrix) {
+	public void addFrom(CMatrix otherMatrix) {
 		if (nOrder == otherMatrix.order()) {
 			for (int i = 0; i < nOrder; i++) {
 				for (int j = 0; j < nOrder; j++) {
@@ -98,7 +98,7 @@ public class ComplexMatrixImpl implements ComplexMatrix {
 		}
 	}
 
-	public void copyFrom(ComplexMatrix otherMatrix) {
+	public void copyFrom(CMatrix otherMatrix) {
 		if (nOrder == otherMatrix.order()) {
 			for (int i = 0; i < nOrder; i++) {
 				for (int j = 0; j < nOrder; j++) {
@@ -276,11 +276,11 @@ public class ComplexMatrixImpl implements ComplexMatrix {
 	/**
 	 * Perform Kron reduction on last row/col and return new matrix
 	 */
-	public ComplexMatrix kron(int eliminationRow) {
+	public CMatrix kron(int eliminationRow) {
 		int ii, jj;
-		ComplexMatrix result = null;   // null result on failure
+		CMatrix result = null;   // null result on failure
 		if ((nOrder > 1) && (eliminationRow < nOrder) && (eliminationRow >= 0)) {
-			result = new ComplexMatrixImpl(nOrder - 1);
+			result = new CMatrixImpl(nOrder - 1);
 			int N = eliminationRow;
 			Complex NNElement = get(N, N);
 

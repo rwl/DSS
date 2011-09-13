@@ -9,9 +9,9 @@ import com.epri.dss.common.impl.Utilities;
 import com.epri.dss.delivery.Fault;
 import com.epri.dss.delivery.FaultObj;
 import com.epri.dss.parser.impl.Parser;
-import com.epri.dss.shared.ComplexMatrix;
+import com.epri.dss.shared.CMatrix;
 import com.epri.dss.shared.Dynamics;
-import com.epri.dss.shared.impl.ComplexMatrixImpl;
+import com.epri.dss.shared.impl.CMatrixImpl;
 import org.apache.commons.math.complex.Complex;
 import com.epri.dss.shared.impl.MathUtil;
 
@@ -107,18 +107,18 @@ public class FaultObjImpl extends PDElementImpl implements FaultObj {
 		Complex value, value2;
 		int i, j, ioffset;
 
-		ComplexMatrix YPrimTemp;
+		CMatrix YPrimTemp;
 
 		if (isYprimInvalid()) {  // reallocate YPrim if something has invalidated old allocation
 			if (YPrimSeries != null)
 				YPrimSeries = null;
-			YPrimSeries = new ComplexMatrixImpl(YOrder);
+			YPrimSeries = new CMatrixImpl(YOrder);
 			if (YPrimShunt != null)
 				YPrimShunt = null;
-			YPrimShunt = new ComplexMatrixImpl(YOrder);
+			YPrimShunt = new CMatrixImpl(YOrder);
 			if (YPrim != null)
 				YPrim = null;
-			YPrim = new ComplexMatrixImpl(YOrder);
+			YPrim = new CMatrixImpl(YOrder);
 		} else {
 			YPrimSeries.clear();  // zero out YPrim
 			YPrimShunt.clear();   // zero out YPrim

@@ -3,7 +3,7 @@ package com.epri.dss.conversion.impl;
 import java.io.PrintStream;
 
 import com.epri.dss.parser.impl.Parser;
-import com.epri.dss.shared.impl.ComplexMatrixImpl;
+import com.epri.dss.shared.impl.CMatrixImpl;
 import com.epri.dss.shared.impl.ComplexUtil;
 
 import org.apache.commons.math.complex.Complex;
@@ -18,7 +18,7 @@ import com.epri.dss.conversion.Load;
 import com.epri.dss.conversion.LoadObj;
 import com.epri.dss.general.LoadShapeObj;
 import com.epri.dss.general.GrowthShapeObj;
-import com.epri.dss.shared.ComplexMatrix;
+import com.epri.dss.shared.CMatrix;
 import com.epri.dss.shared.Dynamics;
 
 public class LoadObjImpl extends PCElementImpl implements LoadObj {
@@ -62,7 +62,7 @@ public class LoadObjImpl extends PCElementImpl implements LoadObj {
 	private Complex Yeq95;
 	private Complex Yneut;
 	/** To handle cases where one conductor of load is open */
-	private ComplexMatrix YPrimOpenCond;
+	private CMatrix YPrimOpenCond;
 	/** Fixed value of y for type 7 load */
 	private double YQFixed;
 	private double[] ZIPV;
@@ -551,7 +551,7 @@ public class LoadObjImpl extends PCElementImpl implements LoadObj {
 		setPFChanged(false);
 	}
 
-	private void calcYPrimMatrix(ComplexMatrix YMatrix) {
+	private void calcYPrimMatrix(CMatrix YMatrix) {
 		Complex Y, Yij;
 		int i, j;
 		double freqMultiplier;
@@ -603,9 +603,9 @@ public class LoadObjImpl extends PCElementImpl implements LoadObj {
 			if (YPrimSeries != null) YPrimSeries = null;
 			if (YPrim != null) YPrim = null;
 
-			YPrimSeries = new ComplexMatrixImpl(YOrder);
-			YPrimShunt  = new ComplexMatrixImpl(YOrder);
-			YPrim        = new ComplexMatrixImpl(YOrder);
+			YPrimSeries = new CMatrixImpl(YOrder);
+			YPrimShunt  = new CMatrixImpl(YOrder);
+			YPrim        = new CMatrixImpl(YOrder);
 		} else {
 			YPrimShunt.clear();
 			YPrimSeries.clear();
@@ -1056,13 +1056,13 @@ public class LoadObjImpl extends PCElementImpl implements LoadObj {
 
 				// only reallocate when necessary
 				if (YPrimOpenCond == null) {
-					YPrimOpenCond = new ComplexMatrixImpl(YOrder);
+					YPrimOpenCond = new CMatrixImpl(YOrder);
 				} else {
 					YPrimOpenCond.clear();
 				}
 				if (YPrimOpenCond.order() != YOrder) {
 					YPrimOpenCond = null;
-					YPrimOpenCond = new ComplexMatrixImpl(YOrder);
+					YPrimOpenCond = new CMatrixImpl(YOrder);
 				}
 				calcYPrimMatrix(YPrimOpenCond);
 
@@ -1919,11 +1919,11 @@ public class LoadObjImpl extends PCElementImpl implements LoadObj {
 		Yneut = value;
 	}
 
-	public ComplexMatrix getYPrimOpenCond() {
+	public CMatrix getYPrimOpenCond() {
 		return YPrimOpenCond;
 	}
 
-	public void setYPrimOpenCond(ComplexMatrix value) {
+	public void setYPrimOpenCond(CMatrix value) {
 		YPrimOpenCond = value;
 	}
 

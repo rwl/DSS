@@ -26,8 +26,8 @@ import com.epri.dss.general.XfmrCode;
 import com.epri.dss.meter.EnergyMeter;
 import com.epri.dss.meter.EnergyMeterObj;
 import com.epri.dss.meter.SensorObj;
-import com.epri.dss.shared.ComplexMatrix;
-import com.epri.dss.shared.impl.ComplexMatrixImpl;
+import com.epri.dss.shared.CMatrix;
+import com.epri.dss.shared.impl.CMatrixImpl;
 import com.epri.dss.shared.impl.ComplexUtil;
 
 import org.apache.commons.math.complex.Complex;
@@ -776,7 +776,7 @@ public class ExportResults {
 
 	public static void exportFaultStudy(String fileName) {
 		int i, iBus, iphs;
-		ComplexMatrix YFault;
+		CMatrix YFault;
 		Complex[] VFault;  // big temp array
 		FileWriter f;
 		PrintWriter writer;
@@ -810,7 +810,7 @@ public class ExportResults {
 
 				/* Solve for fault injection currents */
 
-				YFault = new ComplexMatrixImpl(bus.getNumNodesThisBus());
+				YFault = new CMatrixImpl(bus.getNumNodesThisBus());
 				VFault = new Complex[bus.getNumNodesThisBus()];
 
 				/* Build YscTemp */
@@ -841,7 +841,7 @@ public class ExportResults {
 
 				/* Bus Norton equivalent current, Isc has been previously computed */
 
-				YFault = new ComplexMatrixImpl(bus.getNumNodesThisBus());
+				YFault = new CMatrixImpl(bus.getNumNodesThisBus());
 				VFault = new Complex[bus.getNumNodesThisBus()];
 
 				GFault = new Complex(10000.0, 0.0);
@@ -1538,7 +1538,7 @@ public class ExportResults {
 		FileWriter f;
 		PrintWriter writer;
 		long i, j, p;
-		ComplexMatrix Y;
+		CMatrix Y;
 		long nBus = 0, nnz = 0;
 		long[] colPtr, rowIdx;
 		Complex[] cVals;

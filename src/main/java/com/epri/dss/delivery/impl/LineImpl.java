@@ -8,7 +8,7 @@ import com.epri.dss.delivery.LineObj;
 import com.epri.dss.general.LineCode;
 import com.epri.dss.general.LineGeometry;
 import com.epri.dss.parser.impl.Parser;
-import com.epri.dss.shared.impl.ComplexMatrixImpl;
+import com.epri.dss.shared.impl.CMatrixImpl;
 import com.epri.dss.shared.impl.CommandListImpl;
 
 import org.apache.commons.lang.mutable.MutableInt;
@@ -535,9 +535,9 @@ public class LineImpl extends PDClassImpl implements Line {
 					al.setYc(null);
 
 				// for a line, nPhases = nCond, for now
-				al.setZ(new ComplexMatrixImpl(al.getNPhases()));
-				al.setZInv(new ComplexMatrixImpl(al.getNPhases()));
-				al.setYc(new ComplexMatrixImpl(al.getNPhases()));
+				al.setZ(new CMatrixImpl(al.getNPhases()));
+				al.setZInv(new CMatrixImpl(al.getNPhases()));
+				al.setYc(new CMatrixImpl(al.getNPhases()));
 			}
 
 			al.getZ().copyFrom(otherLine.getZ());
