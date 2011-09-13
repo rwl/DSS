@@ -8,8 +8,6 @@ public interface PointerList {
 
 	Object getActive();
 
-	void setNew(Object value);
-
 	void clear();
 
 	/** Returns index of item */
