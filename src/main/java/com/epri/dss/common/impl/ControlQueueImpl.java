@@ -34,7 +34,6 @@ public class ControlQueueImpl implements ControlQueue {
 	private int ctrlHandle;
 
 	public int push(int hour, double sec, ControlAction code, int proxyHdl, final ControlElem owner) {
-
 		return push(hour, sec, code.code(), proxyHdl, owner);
 	}
 
@@ -55,11 +54,12 @@ public class ControlQueueImpl implements ControlQueue {
 		/* Normalize the time */
 		hr = hour;
 		s  = sec;
-		if (s > 3600.0)
+		if (s > 3600.0) {
 			while (s >= 3600.0) {
 				hr = hr + 1;
 				s  = s - 3600.0;
 			}
+		}
 
 		timeRec.hour = hr;
 		timeRec.sec  = s;
@@ -69,7 +69,7 @@ public class ControlQueueImpl implements ControlQueue {
 
 		/* Insert the action in the list in order of time */
 		actionInserted = false;
-		for (int i = 0; i < actionList.size() - 1; i++) {  // TODO Check zero based indexing
+		for (int i = 0; i < actionList.size(); i++) {
 			if (thisActionTime <= timeRecToTime( ((ActionRecord) actionList.get(i)).actionTime )) {
 				actionList.add(i, pAction);
 				actionInserted = true;
@@ -108,9 +108,10 @@ public class ControlQueueImpl implements ControlQueue {
 	}
 
 	public void doAllActions() {
-		for (int i = 0; i < actionList.size() - 1; i++) {  // TODO Check zero based indexing
-			ActionRecord action = actionList.get(i);
-			action.controlElement.doPendingAction(action.actionCode, action.proxyHandle);  // TODO Check translation
+		ActionRecord action;
+		for (int i = 0; i < actionList.size(); i++) {
+			action = actionList.get(i);
+			action.controlElement.doPendingAction(action.actionCode, action.proxyHandle);
 		}
 		actionList.clear();
 	}
@@ -155,15 +156,16 @@ public class ControlQueueImpl implements ControlQueue {
 	 * Pop off next control action with an action time <= actionTime (sec).
 	 */
 	private ControlElem pop(TimeRec actionTime, MutableInt code, MutableInt proxyHdl, MutableInt hdl) {
+
 		ControlElem result = null;
 		ActionRecord action;
 
 		double t = timeRecToTime(actionTime);
 
-		for (int i = 0; i < actionList.size() - 1; i++) {  // TODO Check zero based indexing
+		for (int i = 0; i < actionList.size(); i++) {
 			action = actionList.get(i);
 			if (timeRecToTime(action.actionTime) <= t) {
-				result   = action.controlElement;
+				result = action.controlElement;
 				code.setValue(action.actionCode);
 				proxyHdl.setValue(action.proxyHandle);
 				hdl.setValue(action.actionHandle);
@@ -210,17 +212,17 @@ public class ControlQueueImpl implements ControlQueue {
 		boolean result = false;
 		if (actionList.size() > 0) {
 
-		t.hour = hour;
-		t.sec  = sec;
-		ControlElem pElem = pop(t, code, proxyHdl, hdl);
-		while (pElem != null) {
-			if (debugTrace)
-				writeTraceRecord(pElem.getName(), code.intValue(), pElem.getDblTraceParameter(),
-						String.format("Pop handle %d do action", hdl));
-			pElem.doPendingAction(code.intValue(), proxyHdl.intValue());
-			result = true;
-			pElem = pop(t, code, proxyHdl, hdl);
-		}
+			t.hour = hour;
+			t.sec  = sec;
+			ControlElem pElem = pop(t, code, proxyHdl, hdl);
+			while (pElem != null) {
+				if (debugTrace)
+					writeTraceRecord(pElem.getName(), code.intValue(), pElem.getDblTraceParameter(),
+							String.format("Pop handle %d do action", hdl));
+				pElem.doPendingAction(code.intValue(), proxyHdl.intValue());
+				result = true;
+				pElem = pop(t, code, proxyHdl, hdl);
+			}
 		}
 
 		return result;
@@ -241,8 +243,7 @@ public class ControlQueueImpl implements ControlQueue {
 				traceBuffer.newLine();
 				traceBuffer.close();
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				DSSGlobals.doSimpleMsg("Error initialising control queue trace: " + e.getMessage(), 0);
 			}
 		}
 	}
@@ -272,8 +273,7 @@ public class ControlQueueImpl implements ControlQueue {
 			}
 			fileBuffer.close();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			DSSGlobals.doSimpleMsg("Error writing control queue: " + e.getMessage(), 0);
 		} finally {
 			Utilities.fireOffEditor(fileName);
 		}
@@ -297,8 +297,7 @@ public class ControlQueueImpl implements ControlQueue {
 				traceBuffer.close();
 			}
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			DSSGlobals.doSimpleMsg("Error writing control queue trace: " + e.getMessage(), 0);
 		}
 	}
 
@@ -306,11 +305,12 @@ public class ControlQueueImpl implements ControlQueue {
 	 * Delete queue item by handle.
 	 */
 	public void delete(int hdl) {
-		for (int i = 0; i < actionList.size() - 1; i++)  // TODO Check zero based indexing
-			if (actionList.get(i).actionHandle == hdl) {
+		for (int i = 0; i < actionList.size(); i++) {
+ 			if (actionList.get(i).actionHandle == hdl) {
 				deleteFromQueue(i, false);
 				return;
 			}
+		}
 	}
 
 }

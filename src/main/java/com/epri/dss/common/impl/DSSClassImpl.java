@@ -66,33 +66,17 @@ public class DSSClassImpl implements DSSClass {
 		elementNamesOutOfSynch = false;
 	}
 
-	protected void finalize() throws Throwable {
-		// get rid of space occupied by strings
-		for (int i = 0; i < numProperties; i++) propertyName[i] = "";
-		for (int i = 0; i < numProperties; i++) propertyHelp[i] = "";
-
-		propertyName = new String[0];
-		propertyHelp = new String[0];
-		propertyIdxMap = new int[0];
-		revPropertyIdxMap = new int[0];
-		elementList = null;
-		elementNameList = null;
-		commandList = null;
-
-		super.finalize();
-	}
-
 	public int newObject(String ObjName) {
 		DSSGlobals.doErrorMsg(
 				"Reached base class of DSSClass for device \"" +ObjName+ "\"",
 				"N/A",
 				"Should be overridden.", 780);
-		return 0;
+		return -1;
 	}
 
-	public void setActiveElement(int Value) {
-		if ((Value > 0) && (Value <= elementList.size())) {
-			activeElement = Value;
+	public void setActiveElement(int value) {
+		if (value >= 0 && value < elementList.size()) {
+			activeElement = value;
 			DSSGlobals.activeDSSObject = (DSSObjectImpl) elementList.get(activeElement);
 
 			if (DSSGlobals.activeDSSObject instanceof DSSCktElement)
@@ -105,14 +89,14 @@ public class DSSClassImpl implements DSSClass {
 	}
 
 	/**
-	 * Uses global parser.
+	 * @return 1 on success, 0 on error
 	 */
 	public int edit() {
 		DSSGlobals.doSimpleMsg("DSSClass.edit() called. Should be overriden.", 781);
 		return 0;
 	}
 
-	public int init(int Handle) {
+	public int init(int handle) {
 		DSSGlobals.doSimpleMsg("DSSClass.init() called. Should be overriden.", 782);
 		return 0;
 	}
@@ -138,7 +122,7 @@ public class DSSClassImpl implements DSSClass {
 		if (elementNamesOutOfSynch)
 			resynchElementNameList();
 		int idx = elementNameList.find(ObjName);
-		if (idx > 0) {
+		if (idx >= 0) {
 			setActiveElement(idx);
 			DSSGlobals.activeDSSObject = (DSSObject) elementList.get(idx);
 			result = true;
@@ -155,7 +139,7 @@ public class DSSClassImpl implements DSSClass {
 			resynchElementNameList();
 
 		int idx = elementNameList.find(ObjName);
-		if (idx > 0) {
+		if (idx >= 0) {
 			setActiveElement(idx);
 			result = elementList.get(idx);
 		}
@@ -166,7 +150,7 @@ public class DSSClassImpl implements DSSClass {
 	 * Get address of active obj of this class.
 	 */
 	public Object getActiveObj() {
-		if (activeElement > 0) {
+		if (activeElement >= 0) {
 			return elementList.get(activeElement);
 		} else {
 			return null;
@@ -174,20 +158,20 @@ public class DSSClassImpl implements DSSClass {
 	}
 
 	public String getFirstPropertyName() {
-		activeProperty = 0;
+		activeProperty = -1;
 		return getNextPropertyName();
 	}
 
 	public String getNextPropertyName() {
 		String result;
 
-		if (activeProperty <= numProperties) {
+		activeProperty += 1;
+
+		if (activeProperty < numProperties) {
 			result = propertyName[activeProperty];
 		} else {
 			result = "";
 		}
-
-		activeProperty += 1;
 
 		return result;
 	}
@@ -196,7 +180,7 @@ public class DSSClassImpl implements DSSClass {
 	 * Find property value by string.
 	 */
 	public int propertyIndex(String prop) {
-		int result = 0;  // default result if not found
+		int result = -1;  // default result if not found
 		for (int i = 0; i < numProperties; i++) {
 			if (prop.equalsIgnoreCase(propertyName[i])) {
 				result = propertyIdxMap[i];
@@ -227,10 +211,9 @@ public class DSSClassImpl implements DSSClass {
 
 	protected int classEdit(final Object activeObj, int paramPointer) {
 		// continue parsing with contents of parser
-		if (paramPointer > 0) {
-//			DSSObject obj = (DSSObject) ActiveObj;
+		if (paramPointer >= 0) {
 			switch (paramPointer) {
-			case 1:
+			case 0:
 				makeLike(Parser.getInstance().makeString());  // like command
 				break;
 			}
@@ -238,19 +221,22 @@ public class DSSClassImpl implements DSSClass {
 		return 0;
 	}
 
+	/**
+	 * @return 1 on success, 0 on error
+	 */
 	protected int makeLike(String objName) {
 		DSSGlobals.doSimpleMsg("DSSClass.makeLike() called. Should be overriden.", 784);
 		return 0;
 	}
 
 	public int getFirst() {
-		int result = 0;
+		int result = -1;
 		if (elementList.size() == 0) {
-			result = 0;
+			result = -1;
 		} else {
 
-			setActiveElement(1);
-			DSSGlobals.activeDSSObject = (DSSObjectImpl) elementList.get(0);
+			setActiveElement(0);
+			DSSGlobals.activeDSSObject = (DSSObjectImpl) elementList.getFirst();
 			if (DSSGlobals.activeDSSObject instanceof DSSCktElement) {
 				DSSGlobals.activeCircuit.setActiveCktElement( (CktElement) DSSGlobals.activeDSSObject );
 				result = activeElement;
@@ -261,10 +247,12 @@ public class DSSClassImpl implements DSSClass {
 
 	public int getNext() {
 		int result = -1;
-		if (activeElement > elementList.size()) {
-			result = 0;
-		} else {
 
+		activeElement += 1;
+
+		if (activeElement >= elementList.size()) {
+			result = -1;
+		} else {
 			DSSGlobals.activeDSSObject = (DSSObject) elementList.getNext();
 
 			if (DSSGlobals.activeDSSObject instanceof DSSCktElement) {
@@ -272,7 +260,6 @@ public class DSSClassImpl implements DSSClass {
 				result = activeElement;
 			}
 		}
-		activeElement += 1;
 
 		return result;
 	}
@@ -304,8 +291,10 @@ public class DSSClassImpl implements DSSClass {
 		activeProperty = -1;  // initialize for addProperty
 
 		/* initialize propertyIdxMap to take care of legacy items */
-		for (int i = 0; i < numProperties; i++) propertyIdxMap[i] = i;
-		for (int i = 0; i < numProperties; i++) revPropertyIdxMap[i] = i;
+		for (int i = 0; i < numProperties; i++)
+			propertyIdxMap[i] = i;
+		for (int i = 0; i < numProperties; i++)
+			revPropertyIdxMap[i] = i;
 	}
 
 	public void reallocateElementNameList() {

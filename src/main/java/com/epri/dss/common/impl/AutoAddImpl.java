@@ -62,9 +62,8 @@ public class AutoAddImpl implements AutoAdd {
 
 	private static double sumSelectedRegisters(EnergyMeterObj mtr, int[] regs, int count) {
 		double result = 0.0;
-		for (int i = 0; i < count; i++) {
+		for (int i = 0; i < count; i++)
 			result += mtr.getRegisters()[regs[i]] * mtr.getTotalsMask()[regs[i]];
-		}
 		return result;
 	}
 
@@ -122,20 +121,22 @@ public class AutoAddImpl implements AutoAdd {
 				return;
 			} else {
 				/* Construct bus list from energy meters zone lists */
+
 				// include only buses in energy meter lists
 				// consider all meters
 				busListCreatedHere = true;
 				busList = new HashListImpl(DSSGlobals.activeCircuit.getNumBuses());
+
 				for (EnergyMeterObj pMeter : DSSGlobals.activeCircuit.getEnergyMeters()) {
 					if (pMeter.getBranchList() != null) {
 						PDElem = (PDElement) pMeter.getBranchList().getFirst();
 						while (PDElem != null) {  // add only unique bus names
 							for (int i = 0; i < PDElem.getNTerms(); i++) {
 								bName = Utilities.stripExtension(PDElem.getBus(i));
+
 								retval = busList.find(bName);
-								if (retval == -1) {  // TODO Check zero based indexing
+								if (retval == -1)
 									busList.add(bName);  // return value is index of bus
-								}
 							}
 							PDElem = (PDElement) pMeter.getBranchList().goForward();
 						}
@@ -148,12 +149,12 @@ public class AutoAddImpl implements AutoAdd {
 		busIdxListSize = busList.listSize();
 		busIdxList = Utilities.resizeArray(busIdxList, busIdxListSize);
 
-		for (int i = 0; i < busIdxListSize; i++) {
+		for (int i = 0; i < busIdxListSize; i++)
 			busIdxList[i] = DSSGlobals.activeCircuit.getBusList().find(busList.get(i));
-		}
 
 		if (busListCreatedHere)
 			busList = null;
+
 		busIdxListCreated = true;
 	}
 
@@ -167,7 +168,7 @@ public class AutoAddImpl implements AutoAdd {
 	public double getWeightedLosses() {
 		double result;
 
-		ComputekWLosses_EEN();
+		computekWLosses_EEN();
 
 		if (DSSGlobals.activeCircuit.getEnergyMeters().size() == 0) {
 			// no energymeters in circuit
@@ -179,7 +180,7 @@ public class AutoAddImpl implements AutoAdd {
 			Circuit ckt = DSSGlobals.activeCircuit;
 
 			puLossImprovement = (baseLosses - kWLosses) / genKW;
-			puEENImprovement = (baseEEN - kWEEN)/genKW;
+			puEENImprovement = (baseEEN - kWEEN) / genKW;
 			result = ckt.getLossWeight() * puLossImprovement + ckt.getUEWeight() * puEENImprovement;
 		}
 		return result;
@@ -238,6 +239,7 @@ public class AutoAddImpl implements AutoAdd {
 	 * @throws Esolv32Problem
 	 */
 	public int solve() throws SolverError, ControlProblem, Esolv32Problem {
+
 		double lossImproveFactor, maxLossImproveFactor;
 		int minLossBus, minBusPhases;
 		String testBus;
@@ -299,8 +301,7 @@ public class AutoAddImpl implements AutoAdd {
 			FLog.newLine();
 			FLog.close();  // close it now after clearing it out
 		} catch (IOException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
+			DSSGlobals.doSimpleMsg("Error writing AutoAdd log file: " + e1.getMessage(), 0);
 		}
 
 
@@ -348,7 +349,7 @@ public class AutoAddImpl implements AutoAdd {
 
 				busIndex = busIdxList[i];
 
-				if (busIndex > 0) {  // TODO Check zero based indexing
+				if (busIndex >= 0) {
 
 					testBus = ckt.getBusList().get(busIndex);
 					//DSSForms.progressFormCaption("Testing bus" + TestBus);
@@ -463,7 +464,7 @@ public class AutoAddImpl implements AutoAdd {
 				progressCount += 1;
 				/* Make sure test bus is actually in the circuit */
 				busIndex = busIdxList[i];
-				if (busIndex > 0) {
+				if (busIndex >= 0) {
 					testBus = ckt.getBusList().get(busIndex);
 					DSSGlobals.DSSForms.progressFormCaption("Testing bus " + testBus);
 					DSSGlobals.DSSForms.showPctProgress((100 * progressCount) / progressMax);
@@ -594,9 +595,9 @@ public class AutoAddImpl implements AutoAdd {
 			/* For buses with voltage != 0, add into aux current array */
 			for (int i = 0; i < phases; i++) {
 				nRef = ckt.getBuses()[busIndex].getRef(i);
-				if (nRef > 0) {
+				if (nRef >= 0) {
 					busV = sol.getNodeV()[nRef];
-					if ((busV.getReal() != 0.0) || (busV.getImaginary() != 0.0)) {
+					if (busV.getReal() != 0.0 || busV.getImaginary() != 0.0) {
 						/* Current into the system network */
 						switch (solveType) {
 						case Solution.NEWTONSOLVE:
@@ -613,16 +614,14 @@ public class AutoAddImpl implements AutoAdd {
 		}
 	}
 
-	private void ComputekWLosses_EEN() {
+	private void computekWLosses_EEN() {
 		Circuit ckt = DSSGlobals.activeCircuit;
 
 		if (ckt.getEnergyMeters().size() == 0) {
-
 			// no energymeters in circuit
 			// just go by total system losses
 			kWLosses = ckt.getLosses().getReal() * 0.001;
 			kWEEN = 0.0;
-
 		} else {  // sum losses in energy meters and add EEN
 			kWLosses = 0.0;
 			kWEEN = 0.0;
@@ -635,7 +634,7 @@ public class AutoAddImpl implements AutoAdd {
 	}
 
 	private void setBaseLosses() {
-		ComputekWLosses_EEN();
+		computekWLosses_EEN();
 		baseLosses = kWLosses;
 		baseEEN = kWEEN;
 	}

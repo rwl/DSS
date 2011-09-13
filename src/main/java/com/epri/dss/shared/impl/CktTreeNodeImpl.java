@@ -41,7 +41,7 @@ public class CktTreeNodeImpl implements CktTreeNode {
 		toBusList = null;
 		toBusPtr = 0;
 		childAdded = false;
-		// TEMc - initialize some topology variables, 10/2009
+
 		isDangling = true;
 		isLoopedHere = false;
 		isParallel = false;

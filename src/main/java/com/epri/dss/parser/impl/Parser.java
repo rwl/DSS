@@ -488,9 +488,9 @@ public class Parser {
 			} else {
 				try {
 					result = Integer.valueOf(tokenBuffer);  // try direct conversion to integer
-					code.setValue(1);
-				} catch (NumberFormatException e) {
 					code.setValue(0);
+				} catch (NumberFormatException e) {
+					code.setValue(1);  // index of the offending character
 				}
 			}
 
@@ -531,9 +531,9 @@ public class Parser {
 			} else {
 				try {
 					result = Double.valueOf(tokenBuffer);
-					code.setValue(1);
-				} catch (NumberFormatException e) {
 					code.setValue(0);
+				} catch (NumberFormatException e) {
+					code.setValue(1);  // index of the offending character
 				}
 			}
 

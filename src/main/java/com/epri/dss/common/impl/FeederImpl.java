@@ -35,17 +35,16 @@ public class FeederImpl extends PCClassImpl implements Feeder {
 		countProperties();   // get inherited property count
 		allocatePropertyArrays();
 
-// Can't think of any properties we want the user to be able to set
+		// no properties we want the user to be able to set
 
-		// Define Property names
-//		PropertyName[0] = "bus1";
+		// define property names
+		//propertyName[0] = "bus1";
 
 		// define Property help values
-//		PropertyHelp[0] = "Name of bus to which source is connected."+DSSGlobals.CRLF+"bus1=busname"+DSSGlobals.CRLF+"bus1=busname.1.2.3";
-
+		//propertyHelp[0] = "Name of bus to which source is connected."+DSSGlobals.CRLF+"bus1=busname"+DSSGlobals.CRLF+"bus1=busname.1.2.3";
 
 		activeProperty = NumPropsThisClass - 1;
-		super.defineProperties();  // Add defs of inherited properties to bottom of list
+		super.defineProperties();  // add defs of inherited properties to bottom of list
 	}
 
 	/**
@@ -63,7 +62,7 @@ public class FeederImpl extends PCClassImpl implements Feeder {
 
 		if (obj != null) {
 			ckt.setActiveCktElement((DSSCktElement) obj);
-			result = 0;
+			result = -1;
 		} else {
 			ckt.setActiveCktElement(new FeederObjImpl(this, objName));
 			result = addObjectToList(DSSGlobals.activeDSSObject);
@@ -82,7 +81,7 @@ public class FeederImpl extends PCClassImpl implements Feeder {
 
 		int result = 0;
 
-		int paramPointer = 0;
+		int paramPointer = -1;
 		String paramName = Parser.getInstance().getNextParam();
 		String param = Parser.getInstance().makeString();
 		while (param.length() > 0) {
@@ -92,20 +91,20 @@ public class FeederImpl extends PCClassImpl implements Feeder {
 				paramPointer = commandList.getCommand(paramName);
 			}
 
-			if ((paramPointer > 0) && (paramPointer <= numProperties))
+			if (paramPointer >= 0 && paramPointer < numProperties)
 				activeFeederObj.setPropertyValue(paramPointer, param);
 
-				switch (paramPointer) {
-				case 0:
-					DSSGlobals.doSimpleMsg("Unknown parameter \"" + paramName + "\" for object \"" + getName() +"."+ activeFeederObj.getName() + "\"", 630);
-					break;
-				default:
-					classEdit(activeFeederObj, paramPointer - NumPropsThisClass);
-					break;
-				}
+			switch (paramPointer) {
+			case -1:
+				DSSGlobals.doSimpleMsg("Unknown parameter \"" + paramName + "\" for object \"" + getName() +"."+ activeFeederObj.getName() + "\"", 630);
+				break;
+			default:
+				classEdit(activeFeederObj, paramPointer - NumPropsThisClass);
+				break;
+			}
 
-				paramName = Parser.getInstance().getNextParam();
-				param     = Parser.getInstance().makeString();
+			paramName = Parser.getInstance().getNextParam();
+			param     = Parser.getInstance().makeString();
 		}
 
 		activeFeederObj.recalcElementData();

@@ -116,7 +116,7 @@ public interface CktElement extends DSSObject {
 
 	int getHandle();
 
-	int getYPrim(CMatrix Ymatrix, int Opt);
+	CMatrix getYPrim(int Opt);
 
 	Complex[] getYPrimValues(int Opt);
 

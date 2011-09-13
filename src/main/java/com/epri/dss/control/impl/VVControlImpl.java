@@ -101,7 +101,7 @@ public class VVControlImpl extends ControlClassImpl implements VVControl {
 		propertyName[18] =
 		"deltaQ_factor.  The maximum change in per-unit from the prior var output to the var output indicated by the volt-var curve.";
 
-		activeProperty = NumPropsThisClass;
+		activeProperty = NumPropsThisClass - 1;
 		super.defineProperties();  // add defs of inherited properties to bottom of list
 	}
 

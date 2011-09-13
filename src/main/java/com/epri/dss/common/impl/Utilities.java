@@ -1317,7 +1317,8 @@ public class Utilities {
 		try {
 			DSSGlobals.eventStrings.clear();
 		} catch (Exception e) {
-			DSSGlobals.doSimpleMsg(String.format("Exception clearing event log: %s, @EventStrings=%p", e.getMessage(), DSSGlobals.eventStrings), 7151);
+//			DSSGlobals.doSimpleMsg(String.format("Exception clearing event log: %s, @EventStrings=%s", e.getMessage(), DSSGlobals.eventStrings.toString()), 7151);
+			DSSGlobals.doSimpleMsg(String.format("Exception clearing event log: %s", e.toString()), 7151);
 		}
 	}
 

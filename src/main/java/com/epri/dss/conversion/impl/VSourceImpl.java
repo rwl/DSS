@@ -128,7 +128,7 @@ public class VSourceImpl extends PCClassImpl implements VSource {
 		for (i = 0; i < avs.getNPhases(); i++)
 			s2 = s2 + ".0";  // append series of ".0"'s
 
-		avs.setBus(2, s2);  // default setting for bus2
+		avs.setBus(1, s2);  // default setting for bus2
 	}
 
 	@Override

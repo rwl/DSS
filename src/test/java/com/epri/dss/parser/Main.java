@@ -12,6 +12,8 @@ public class Main {
 
 		Executive ex = DSSExecutive.getInstance();
 
+		ex.createDefaultDSSItems();
+
 		String cmd = "Compile (/home/rwl/tmp/OpenDSS/Test/IEEE13_LineSpacing.dss)";
 
 		ex.setCommand(cmd);

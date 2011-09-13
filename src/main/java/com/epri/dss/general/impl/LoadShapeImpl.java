@@ -144,119 +144,119 @@ public class LoadShapeImpl extends DSSClassImpl implements LoadShape {
 				paramPointer += 1;
 			} else {
 				paramPointer = commandList.getCommand(paramName);
-
-				if ((paramPointer > 0) && (paramPointer <= numProperties))
-					als.setPropertyValue(paramPointer, param);
-
-				switch (paramPointer) {  // TODO Check zero based indexing
-				case -1:
-					DSSGlobals.doSimpleMsg("Unknown parameter \"" + paramName + "\" for object \"" + getName() +"."+ als.getName() + "\"", 610);
-					break;
-				case 0:
-					als.setNumPoints(parser.makeInteger());
-					break;
-				case 1:
-					als.setInterval(parser.makeDouble());
-					break;
-				case 2:
-					als.setPMultipliers( Utilities.resizeArray(als.getPMultipliers(), als.getNumPoints()) );
-					// allow possible resetting (to a lower value) of num points when specifying multipliers not Hours
-					als.setNumPoints( Utilities.interpretDblArray(param, als.getNumPoints(), als.getPMultipliers()) );   // parser.parseAsVector(Npts, Multipliers);
-					break;
-				case 3:
-					als.setHours( Utilities.resizeArray(als.getHours(), als.getNumPoints()) );
-					Utilities.interpretDblArray(param, als.getNumPoints(), als.getHours());   // parser.parseAsVector(Npts, Hours);
-					break;
-				case 4:
-					als.setMean(parser.makeDouble());
-					break;
-				case 5:
-					als.setStdDev(parser.makeDouble());
-					break;
-				case 6:
-					doCSVFile(param);
-					break;
-				case 7:
-					doSngFile(param);
-					break;
-				case 8:
-					doDblFile(param);
-					break;
-				case 9:
-					switch (param.toLowerCase().charAt(0)) {
-					case 'n':
-						als.normalize();
-						break;
-					case 'd':
-						als.saveToDblFile();
-						break;
-					case 's':
-						als.saveToSngFile();
-						break;
-					}
-					break;
-				case 10:
-					als.setQMultipliers( Utilities.resizeArray(als.getQMultipliers(), als.getNumPoints()) );
-					Utilities.interpretDblArray(param, als.getNumPoints(), als.getQMultipliers());  // parser.parseAsVector(Npts, Multipliers);
-					break;
-				case 11:
-					als.setUseActual(Utilities.interpretYesNo(param));
-					break;
-				case 12:
-					als.setMaxP(parser.makeDouble());
-					break;
-				case 13:
-					als.setMaxQ(parser.makeDouble());
-					break;
-				case 14:
-					als.setInterval(parser.makeDouble() / 3600.0);  // convert seconds to hr
-					break;
-				case 15:
-					als.setInterval(parser.makeDouble() / 60.0);    // convert minutes to hr
-					break;
-				case 16:
-					als.setBaseP(parser.makeDouble());
-					break;
-				case 17:
-					als.setBaseQ(parser.makeDouble());
-					break;
-				default:
-					// inherited parameters
-					classEdit(activeLoadShapeObj, paramPointer - LoadShape.NumPropsThisClass);
-					break;
-				}
-
-				switch (paramPointer) {
-				case 2:  // TODO Check zero based indexing
-					als.setStdDevCalculated(false);   // now calculated on demand
-					als.setArrayPropertyIndex(paramPointer);
-					als.setNumPoints(als.getNumPoints());  // keep properties in order for save command
-					break;
-				case 6:
-					als.setStdDevCalculated(false);
-					als.setArrayPropertyIndex(paramPointer);
-					als.setNumPoints(als.getNumPoints());
-					break;
-				case 7:
-					als.setStdDevCalculated(false);
-					als.setArrayPropertyIndex(paramPointer);
-					als.setNumPoints(als.getNumPoints());
-					break;
-				case 8:
-					als.setStdDevCalculated(false);
-					als.setArrayPropertyIndex(paramPointer);
-					als.setNumPoints(als.getNumPoints());
-					break;
-				case 10:
-					als.setStdDevCalculated(false);
-					als.setArrayPropertyIndex(paramPointer);
-					als.setNumPoints(als.getNumPoints());
-					break;
-				}
-
-				paramName = parser.getNextParam();
-				param = parser.makeString();
 			}
+
+			if ((paramPointer >= 0) && (paramPointer < numProperties))
+				als.setPropertyValue(paramPointer, param);
+
+			switch (paramPointer) {
+			case -1:
+				DSSGlobals.doSimpleMsg("Unknown parameter \"" + paramName + "\" for object \"" + getName() +"."+ als.getName() + "\"", 610);
+				break;
+			case 0:
+				als.setNumPoints(parser.makeInteger());
+				break;
+			case 1:
+				als.setInterval(parser.makeDouble());
+				break;
+			case 2:
+				als.setPMultipliers( Utilities.resizeArray(als.getPMultipliers(), als.getNumPoints()) );
+				// allow possible resetting (to a lower value) of num points when specifying multipliers not Hours
+				als.setNumPoints( Utilities.interpretDblArray(param, als.getNumPoints(), als.getPMultipliers()) );   // parser.parseAsVector(Npts, Multipliers);
+				break;
+			case 3:
+				als.setHours( Utilities.resizeArray(als.getHours(), als.getNumPoints()) );
+				Utilities.interpretDblArray(param, als.getNumPoints(), als.getHours());   // parser.parseAsVector(Npts, Hours);
+				break;
+			case 4:
+				als.setMean(parser.makeDouble());
+				break;
+			case 5:
+				als.setStdDev(parser.makeDouble());
+				break;
+			case 6:
+				doCSVFile(param);
+				break;
+			case 7:
+				doSngFile(param);
+				break;
+			case 8:
+				doDblFile(param);
+				break;
+			case 9:
+				switch (param.toLowerCase().charAt(0)) {
+				case 'n':
+					als.normalize();
+					break;
+				case 'd':
+					als.saveToDblFile();
+					break;
+				case 's':
+					als.saveToSngFile();
+					break;
+				}
+				break;
+			case 10:
+				als.setQMultipliers( Utilities.resizeArray(als.getQMultipliers(), als.getNumPoints()) );
+				Utilities.interpretDblArray(param, als.getNumPoints(), als.getQMultipliers());  // parser.parseAsVector(Npts, Multipliers);
+				break;
+			case 11:
+				als.setUseActual(Utilities.interpretYesNo(param));
+				break;
+			case 12:
+				als.setMaxP(parser.makeDouble());
+				break;
+			case 13:
+				als.setMaxQ(parser.makeDouble());
+				break;
+			case 14:
+				als.setInterval(parser.makeDouble() / 3600.0);  // convert seconds to hr
+				break;
+			case 15:
+				als.setInterval(parser.makeDouble() / 60.0);    // convert minutes to hr
+				break;
+			case 16:
+				als.setBaseP(parser.makeDouble());
+				break;
+			case 17:
+				als.setBaseQ(parser.makeDouble());
+				break;
+			default:
+				// inherited parameters
+				classEdit(activeLoadShapeObj, paramPointer - LoadShape.NumPropsThisClass);
+				break;
+			}
+
+			switch (paramPointer) {
+			case 2:  // TODO Check zero based indexing
+				als.setStdDevCalculated(false);   // now calculated on demand
+				als.setArrayPropertyIndex(paramPointer);
+				als.setNumPoints(als.getNumPoints());  // keep properties in order for save command
+				break;
+			case 6:
+				als.setStdDevCalculated(false);
+				als.setArrayPropertyIndex(paramPointer);
+				als.setNumPoints(als.getNumPoints());
+				break;
+			case 7:
+				als.setStdDevCalculated(false);
+				als.setArrayPropertyIndex(paramPointer);
+				als.setNumPoints(als.getNumPoints());
+				break;
+			case 8:
+				als.setStdDevCalculated(false);
+				als.setArrayPropertyIndex(paramPointer);
+				als.setNumPoints(als.getNumPoints());
+				break;
+			case 10:
+				als.setStdDevCalculated(false);
+				als.setArrayPropertyIndex(paramPointer);
+				als.setNumPoints(als.getNumPoints());
+				break;
+			}
+
+			paramName = parser.getNextParam();
+			param = parser.makeString();
 		}
 
 		if (als.getPMultipliers() != null)

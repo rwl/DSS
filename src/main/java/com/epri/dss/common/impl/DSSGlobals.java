@@ -82,7 +82,7 @@ public class DSSGlobals {
 	public static final int FULLCARSON    = 2;
 	public static final int DERI          = 3;
 
-/* Profile plot constants */
+	/* Profile plot constants */
 	public static final int PROFILE3PH    = 9999;  // some big number > likely no. of phases
 	public static final int PROFILEALL    = 9998;
 	public static final int PROFILEALLPRI = 9997;
@@ -281,9 +281,9 @@ public class DSSGlobals {
 
 		activeCircuit.setActiveBusIndex(activeCircuit.getBusList().find(busName));
 
-		if (activeCircuit.getActiveBusIndex() == 0) {
+		if (activeCircuit.getActiveBusIndex() == -1) {
 			result = 1;
-			appendGlobalResult("SetActiveBus: Bus " + busName + " not found.");
+			appendGlobalResult("setActiveBus: Bus " + busName + " not found.");
 		}
 
 		return result;
@@ -377,6 +377,11 @@ public class DSSGlobals {
 		}
 	}
 
+	public static String getDSSVersion() {
+		// TODO: Implement getDSSVersion()
+		return "Unknown.";
+	}
+
 	public static void readDSS_Registry() {
 		throw new UnsupportedOperationException();
 	}
@@ -387,11 +392,6 @@ public class DSSGlobals {
 
 	public static boolean isDSSDLL(String fname) {
 		throw new UnsupportedOperationException();
-	}
-
-	public static String getDSSVersion() {
-		// TODO: Implement GetDSSVersion()
-		return "Unknown.";
 	}
 
 }

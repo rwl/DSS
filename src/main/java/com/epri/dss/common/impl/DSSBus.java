@@ -64,10 +64,10 @@ public class DSSBus extends NamedObjectImpl implements Bus {
 		int result;
 
 		if (nodeNum == 0) {
-			result = 0;
+			result = -1;
 		} else {
 			result = find(nodeNum);
-			if (result == 0) {
+			if (result == -1) {
 				// add a node to the bus
 				addANode();
 				nodes[numNodesThisBus] = nodeNum;
@@ -75,7 +75,7 @@ public class DSSBus extends NamedObjectImpl implements Bus {
 				Circuit ckt = DSSGlobals.activeCircuit;
 
 				ckt.setNumNodes(ckt.getNumNodes() + 1);  // global node number for circuit
-				refNo[numNodesThisBus] = ckt.getNumNodes();
+				refNo[numNodesThisBus] = ckt.getNumNodes() - 1;
 				result = ckt.getNumNodes();  // return global node number
 			}
 		}
@@ -91,17 +91,17 @@ public class DSSBus extends NamedObjectImpl implements Bus {
 			if (nodes[i] == nodeNum)
 				return refNo[i];
 		}
-		return 0;
+		return -1;
 	}
 
 	/**
 	 * Returns reference num for node by node index.
 	 */
-	public int getRef(int nodeIndex) {  // FIXME Check zero based indexing
-		if ((nodeIndex > 0) && (nodeIndex <= numNodesThisBus)) {
+	public int getRef(int nodeIndex) {
+		if (nodeIndex >= 0 && nodeIndex < numNodesThisBus) {
 			return refNo[nodeIndex];
 		} else {
-			return 0;
+			return -1;
 		}
 	}
 
@@ -109,10 +109,10 @@ public class DSSBus extends NamedObjectImpl implements Bus {
 	 * Returns ith node number designation.
 	 */
 	public int getNum(int nodeIndex) {
-		if ((nodeIndex > 0) && (nodeIndex <= numNodesThisBus)) {
+		if (nodeIndex >= 0 && nodeIndex < numNodesThisBus) {
 			return nodes[nodeIndex];
 		} else {
-			return 0;
+			return -1;
 		}
 	}
 
@@ -154,7 +154,7 @@ public class DSSBus extends NamedObjectImpl implements Bus {
 			if (nodes[i] == nodeNum)
 				return i;
 		}
-		return 0;  // TODO Check zero based indexing
+		return -1;
 	}
 
 	public void allocateBusVoltages() {

@@ -76,15 +76,17 @@ public class CktTreeImpl implements CktTree {
 	}
 
 	public void addNewChild(DSSObject value, int busRef, int terminalNo) {
+		CktTreeNode tempNode;
+
 		if (presentBranch == null) {
 			setNew(value);
 		} else {
-			CktTreeNode TempNode = new CktTreeNodeImpl(presentBranch, value);
+			tempNode = new CktTreeNodeImpl(presentBranch, value);
 
-			TempNode.setFromBusReference(busRef);
-			TempNode.setFromTerminal(terminalNo);
+			tempNode.setFromBusReference(busRef);
+			tempNode.setFromTerminal(terminalNo);
 
-			presentBranch.addChild(TempNode);
+			presentBranch.addChild(tempNode);
 		}
 	}
 
@@ -98,9 +100,11 @@ public class CktTreeImpl implements CktTree {
 	}
 
 	private void pushAllChildren() {
+		CktTreeNode pChild;
+
 		if (presentBranch != null) {
 			// push all children of present node onto stack
-			CktTreeNode pChild = presentBranch.getFirstChild();
+			pChild = presentBranch.getFirstChild();
 			while (pChild != null) {
 				forwardStack.push((DSSObject) pChild);  // FIXME Implement generics
 				pChild = presentBranch.getNextChild();
@@ -195,7 +199,8 @@ public class CktTreeImpl implements CktTree {
 	public void setActive(DSSObject p) {
 		DSSObject temp = getFirst();
 		while (temp != null) {
-			if (presentBranch.getCktObject() == p) break;
+			if (presentBranch.getCktObject() == p)
+				break;
 			temp = goForward();
 		}
 		forwardStack.clear();
@@ -231,10 +236,10 @@ public class CktTreeImpl implements CktTree {
 	private static void getSourcesConnectedToBus(int busNum, CktTree branchList, boolean analyze) {
 		Circuit ckt = DSSGlobals.activeCircuit;
 
-		for (PCElement psrc : ckt.getSources()) {  // Sources are special PC elements
+		for (PCElement psrc : ckt.getSources()) {  // sources are special PC elements
 			if (psrc.isEnabled()) {
-				if (analyze || (!psrc.isChecked())) {
-					if (psrc.getTerminals()[0].getBusRef() == busNum) {  // ? Connected to this bus ?
+				if (analyze || !psrc.isChecked()) {
+					if (psrc.getTerminals()[0].getBusRef() == busNum) {  // ? connected to this bus ?
 						if (analyze) {
 							psrc.setIsolated(false);
 							branchList.getPresentBranch().setDangling(false);
@@ -276,15 +281,15 @@ public class CktTreeImpl implements CktTree {
 
 		for (i = 0; i < adjLst.size() - 1; i++) {
 			p = adjLst.get(i);
-			if (p.isEnabled() && (p != activeBranch)) {
-				if (analyze || (!p.isChecked())) {
+			if (p.isEnabled() && p != activeBranch) {
+				if (analyze || !p.isChecked()) {
 					if (!Utilities.isShuntElement(p) && Utilities.allTerminalsClosed(p)) {
 						for (j = 0; j < p.getNTerms(); j++) {
 							if (busNum == p.getTerminals()[j].getBusRef()) {
 								if (analyze) {
 									p.setIsolated(false);
 									branchList.getPresentBranch().setDangling(false);
-									if (p.isChecked() && (branchList.getLevel() > 0)) {
+									if (p.isChecked() && branchList.getLevel() > 0) {
 										branchList.getPresentBranch().setLoopedHere(true);
 										branchList.getPresentBranch().setLoopLineObj(p);
 										if (Utilities.isLineElement(p) && Utilities.isLineElement(activeBranch))
@@ -328,7 +333,7 @@ public class CktTreeImpl implements CktTree {
 	}
 
 	/**
-	 * Build a tree of connected elements beginning at StartElement.
+	 * Build a tree of connected elements beginning at startElement.
 	 * Analyze = true; will check for loops, isolated components, and parallel lines (takes longer)
 	 */
 	public static CktTree getIsolatedSubArea(CktElement startElement, boolean analyze) {

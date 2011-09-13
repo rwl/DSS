@@ -71,11 +71,11 @@ public class DSSCktElement extends DSSObjectImpl implements CktElement {
 		complexBuffer = null;
 
 		handle      = -1;
-		busIndex    = 0;
+		busIndex    = -1;
 		nTerms      = 0;
 		nConds      = 0;
 		nPhases     = 0;
-		objType  = 0;
+		objType     = 0;
 		YOrder      = 0;
 
 		YPrimInvalid   = true;
@@ -88,8 +88,8 @@ public class DSSCktElement extends DSSObjectImpl implements CktElement {
 		controlElement = null;  // init to no control on this element
 		hasControl     = false;
 
-		activeTerminalIdx   = 1;
-		lastTerminalChecked = 0;
+		activeTerminalIdx   = 0;
+		lastTerminalChecked = -1;
 
 		/* Indicates which solution ITemp is computed for */
 		ITerminalSolutionCount = -1;
@@ -111,7 +111,7 @@ public class DSSCktElement extends DSSObjectImpl implements CktElement {
 	}
 
 	public void setActiveTerminalIdx(int value) {
-		if ((value > 0) && (value <= nTerms)) {
+		if (value >= 0 && value < nTerms) {
 			activeTerminalIdx = value;
 			activeTerminal = terminals[value] ;
 		}
@@ -131,7 +131,7 @@ public class DSSCktElement extends DSSObjectImpl implements CktElement {
 	 */
 	public boolean getConductorClosed(int index) {
 		boolean result;
-		if (index == 0) {
+		if (index == -1) {
 			result = true;
 			for (int i = 0; i < nPhases; i++) {
 				if (!terminals[activeTerminalIdx].getConductors()[i].isClosed()) {
@@ -140,7 +140,7 @@ public class DSSCktElement extends DSSObjectImpl implements CktElement {
 				}
 			}
 		} else {
-			if ((index > 0) && (index <= nConds)) {
+			if (index >= 0 && index < nConds) {
 				result = terminals[activeTerminalIdx].getConductors()[index].isClosed();
 			} else {
 				result = false;
@@ -150,13 +150,13 @@ public class DSSCktElement extends DSSObjectImpl implements CktElement {
 	}
 
 	public void setConductorClosed(int index, boolean value) {
-		if (index == 0) {  // do all conductors
+		if (index == -1) {  // do all conductors
 			for (int i = 0; i < nPhases; i++)
 				terminals[activeTerminalIdx].getConductors()[i].setClosed(value);
 			DSSGlobals.activeCircuit.getSolution().setSystemYChanged(true);  // force Y matrix rebuild
 			YPrimInvalid = true;
 		} else {
-			if ((index > 0) && (index <= nConds)) {
+			if (index > 0 && index <= nConds) {
 				terminals[activeTerminalIdx].getConductors()[index].setClosed(value);
 				DSSGlobals.activeCircuit.getSolution().setSystemYChanged(true);
 				YPrimInvalid = true;
@@ -192,6 +192,7 @@ public class DSSCktElement extends DSSObjectImpl implements CktElement {
 	}
 
 	public void setNTerms(int value) {
+		int i;
 		String[] newBusNames;
 
 		// check for an almost certain programming error
@@ -203,16 +204,16 @@ public class DSSCktElement extends DSSObjectImpl implements CktElement {
 
 		// if value is same as present value, no reallocation necessary;
 		// if either nTerms or nConds has changed then reallocate
-		if ((value != nTerms) || (value * nConds != YOrder)) {
+		if (value != nTerms || value * nConds != YOrder) {
 
-			/* Sanity Check */
+			/* Sanity check */
 			if (nConds > 101) {
 				DSSGlobals.doSimpleMsg(String.format("Warning: Number of conductors is very large (%d) for circuit element: \"%s.%s." +
 						"Possible error in specifying the number of phases for element.",
 						nConds, parentClass.getName(), getName()), 750);
 			}
 
-			/* ReAllocate bus names */
+			/* Reallocate bus names */
 			// because they are strings, we have to do it differently
 
 			if (value < nTerms) {
@@ -221,17 +222,17 @@ public class DSSCktElement extends DSSObjectImpl implements CktElement {
 				if (busNames == null) {
 					// first allocation
 					busNames = new String[value];  // fill with zeros or strings will crash
-					for (int i = 0; i < value; i++)
+					for (i = 0; i < value; i++)
 						busNames[i] = getName()+'_'+String.valueOf(i);  // make up a bus name to stick in
 					// this is so devices like transformers which may be defined on multiple commands
 					// will have something in the busNames array
 				} else {
 					newBusNames = new String[value];  // make some new space
-					for (int i = 0; i < nTerms; i++)
+					for (i = 0; i < nTerms; i++)
 						newBusNames[i] = busNames[i];  // copy old into new
-					for (int i = 0; i < nTerms; i++)
+					for (i = 0; i < nTerms; i++)
 						busNames[i] = "";  // decrement usage counts by setting to empty string
-					for (int i = 0; i < nTerms + 1; i++)
+					for (i = 0; i < nTerms + 1; i++)
 						newBusNames[i] = getName()+'_'+String.valueOf(i);  // make up a bus name to stick in
 					busNames = newBusNames;
 				}
@@ -239,7 +240,7 @@ public class DSSCktElement extends DSSObjectImpl implements CktElement {
 
 			/* Reallocate terminals if nConds or nTerms changed */
 			if (terminals != null)
-				for (int i = 0; i < nTerms; i++)
+				for (i = 0; i < nTerms; i++)
 					terminals[i] = null;  // clean up old storage
 
 			terminals = Utilities.resizeArray(terminals, value);
@@ -250,7 +251,7 @@ public class DSSCktElement extends DSSObjectImpl implements CktElement {
 			ITerminal = Utilities.resizeArray(ITerminal, YOrder);
 			complexBuffer = Utilities.resizeArray(complexBuffer, YOrder);  // used by both PD and PC elements
 
-			for (int i = 0; i < value; i++)
+			for (i = 0; i < value; i++)
 				terminals[i] = new PowerTerminal(nConds);
 		}
 	}
@@ -271,8 +272,9 @@ public class DSSCktElement extends DSSObjectImpl implements CktElement {
 		return enabled;
 	}
 
-	public int getYPrim(CMatrix YMatrix, int opt) {
-		// FIXME Pass by reference
+	public CMatrix getYPrim(int opt) {
+		CMatrix YMatrix = null;
+
 		switch (opt) {
 		case DSSGlobals.ALL_YPRIM:
 			YMatrix = YPrim;
@@ -284,7 +286,8 @@ public class DSSCktElement extends DSSObjectImpl implements CktElement {
 			YMatrix = YPrimShunt;
 			break;
 		}
-		return 0;
+
+		return YMatrix;
 	}
 
 	/**
@@ -324,7 +327,7 @@ public class DSSCktElement extends DSSObjectImpl implements CktElement {
 	 * Returns injection currents
 	 */
 	public void getInjCurrents(Complex[] curr) {
-		DSSGlobals.doErrorMsg("Something is Wrong. Got to base CktElement GetInjCurrents for object:"+DSSGlobals.CRLF+getDSSClassName()+"."+getName(), "****",
+		DSSGlobals.doErrorMsg("Something is wrong. Got to base CktElement getInjCurrents for object:"+DSSGlobals.CRLF+getDSSClassName()+"."+getName(), "****",
 				"Should not be able to get here. Probable programming error.", 752);
 	}
 
@@ -359,11 +362,11 @@ public class DSSCktElement extends DSSObjectImpl implements CktElement {
 	public void setNodeRef(int iTerm, int[] nodeRefArray) {
 		int size, size2;
 
-		// allocate nodeRef and move new values into it.
+		// allocate nodeRef and move new values into it
 		size = YOrder;
 		size2 = nConds;  // size for one terminal
 		nodeRef = Utilities.resizeArray(nodeRef, size);  // doesn't do anything if already properly allocated
-		System.arraycopy(nodeRefArray[0], 0, nodeRef[(iTerm - 1) * nConds + 1], 0, size2);
+		System.arraycopy(nodeRefArray[0], 0, nodeRef[iTerm * nConds], 0, size2);
 		System.arraycopy(nodeRefArray[0], 0, terminals[iTerm].termNodeRef[0], 0, size2);  // copy in terminal as well
 
 		// allocate temp array used to hold voltages and currents for calcs
@@ -371,13 +374,14 @@ public class DSSCktElement extends DSSObjectImpl implements CktElement {
 		ITerminal = Utilities.resizeArray(ITerminal, YOrder);
 		complexBuffer = Utilities.resizeArray(complexBuffer, YOrder);
 	}
+
 	public void setNodeRef(int iTerm, int nodeRefArray) {
 		setNodeRef(iTerm, new int[] {nodeRefArray});
 	}
 
 	public String getFirstBus() {
 		if (nTerms > 0) {
-			busIndex = 0;  // TODO Check zero based indexing
+			busIndex = 0;
 			return busNames[busIndex];
 		} else {
 			return "";
@@ -388,7 +392,7 @@ public class DSSCktElement extends DSSObjectImpl implements CktElement {
 		String result = "";
 		if (nTerms > 0) {
 			busIndex += 1;
-			if (busIndex <= nTerms) {
+			if (busIndex < nTerms) {
 				result = busNames[busIndex];
 			} else {
 				busIndex = nTerms;
@@ -401,7 +405,7 @@ public class DSSCktElement extends DSSObjectImpl implements CktElement {
 	 * Get bus name by index.
 	 */
 	public String getBus(int i) {
-		if (i <= nTerms) {
+		if (i < nTerms) {
 			return busNames[i];
 		} else {
 			return "";
@@ -412,7 +416,7 @@ public class DSSCktElement extends DSSObjectImpl implements CktElement {
 	 * Set bus name by index.
 	 */
 	public void setBus(int i, String s) {
-		if (i <= nTerms) {
+		if (i < nTerms) {
 			busNames[i] = s.toLowerCase();
 			// set global flag to signal circuit to rebuild bus defs
 			DSSGlobals.activeCircuit.setBusNameRedefined(true);
@@ -430,16 +434,16 @@ public class DSSCktElement extends DSSObjectImpl implements CktElement {
 	}
 
 	public void recalcElementData() {
-		DSSGlobals.doSimpleMsg("Virtual proc recalcElementData in base CktElement class called for device = \"" + getName() +"\"", 754);
+		DSSGlobals.doSimpleMsg("recalcElementData in base CktElement class called for device = \"" + getName() +"\"", 754);
 	}
 
 	public void calcYPrim() {
 		if (YPrimSeries != null)
-			doYprimCalcs(YPrimSeries);
+			doYPrimCalcs(YPrimSeries);
 		if (YPrimShunt != null)
-			doYprimCalcs(YPrimShunt);
+			doYPrimCalcs(YPrimShunt);
 		if (YPrim != null)
-			doYprimCalcs(YPrim);
+			doYPrimCalcs(YPrim);
 	}
 
 	/**
@@ -459,9 +463,8 @@ public class DSSCktElement extends DSSObjectImpl implements CktElement {
 	public double maxTerminalOneIMag() {
 		double result = 0.0;
 		if (enabled)
-			for (int i = 0; i < nPhases; i++) {
+			for (int i = 0; i < nPhases; i++)
 				result = Math.max(result, Math.pow(ITerminal[i].getReal(), 2) + Math.pow(ITerminal[i].getImaginary(), 2));
-			}
 		return Math.sqrt(result);  // just do the sqrt once and save a little time
 	}
 
@@ -471,19 +474,20 @@ public class DSSCktElement extends DSSObjectImpl implements CktElement {
 	public Complex getPower(int idxTerm) {
 		Complex cPower = Complex.ZERO;
 		int i, k, n;
+		SolutionObj sol;
 
 		activeTerminalIdx = idxTerm;
 
 		if (enabled)
-		computeITerminal();
+			computeITerminal();
 
 		// sum complex power going into phase conductors of active terminal
-		SolutionObj sol = DSSGlobals.activeCircuit.getSolution();
-		k = (idxTerm - 1) * nConds;
+		sol = DSSGlobals.activeCircuit.getSolution();
+		k = idxTerm * nConds;
 		for (i = 0; i < nConds; i++) {  // 11-7-08 changed from nPhases - was not accounting for all conductors
 			n = activeTerminal.getTermNodeRef()[i];  // don't bother for grounded node
-			if (n > 0)
-				cPower = cPower.add( sol.getNodeV()[n].multiply(ITerminal[k + i].conjugate()) );
+			if (n >= 0)
+				cPower = cPower.add( sol.getNodeV()[n].multiply( ITerminal[k + i].conjugate() ) );
 		}
 
 		/* If this is a positive sequence circuit, then we need to multiply by 3 to get the 3-phase power */
@@ -500,16 +504,17 @@ public class DSSCktElement extends DSSObjectImpl implements CktElement {
 	public Complex getLosses() {
 		Complex cLoss = Complex.ZERO;
 		int k, n;
+		SolutionObj sol;
 
 		if (enabled) {
 			computeITerminal();
 
 			// sum complex power going into all conductors of all terminals
-			SolutionObj sol = DSSGlobals.activeCircuit.getSolution();
+			sol = DSSGlobals.activeCircuit.getSolution();
 
 			for (k = 0; k < YOrder; k++) {
 				n = nodeRef[k];
-				if (n > 0)
+				if (n >= 0)
 					if (DSSGlobals.activeCircuit.isPositiveSequence()) {
 						cLoss = cLoss.add( sol.getNodeV()[n].multiply(ITerminal[k].conjugate()).multiply(3.0) );
 					} else {
@@ -527,26 +532,26 @@ public class DSSCktElement extends DSSObjectImpl implements CktElement {
 	 */
 	public void getPhasePower(Complex[] powerBuffer) {
 		int i, n;
+		SolutionObj sol;
 
 		if (enabled) {
 			computeITerminal();
 
-			SolutionObj sol = DSSGlobals.activeCircuit.getSolution();
+			sol = DSSGlobals.activeCircuit.getSolution();
 
 			for (i = 0; i < YOrder; i++) {
 				n = nodeRef[i];  // increment through terminals
-				if (n > 0) {
+				if (n >= 0) {
 					if (DSSGlobals.activeCircuit.isPositiveSequence()) {
-						powerBuffer[i] = sol.getNodeV()[n].multiply(ITerminal[i].conjugate()).multiply(3.0);
+						powerBuffer[i] = sol.getNodeV()[n].multiply( ITerminal[i].conjugate() ).multiply(3.0);
 					} else {
-						powerBuffer[i] = sol.getNodeV()[n].multiply(ITerminal[i].conjugate());
+						powerBuffer[i] = sol.getNodeV()[n].multiply( ITerminal[i].conjugate() );
 					}
 				}
 			}
 		} else {
-			for (i = 0; i < YOrder; i++) {
+			for (i = 0; i < YOrder; i++)
 				powerBuffer[i] = Complex.ZERO;
-			}
 		}
 	}
 
@@ -556,34 +561,35 @@ public class DSSCktElement extends DSSObjectImpl implements CktElement {
 	 *
 	 * Neutral conductors are ignored by this routine.
 	 */
-	public void getPhaseLosses(int numPhases, Complex[] LossBuffer) {
+	public void getPhaseLosses(int numPhases, Complex[] lossBuffer) {
 		int i, j, k, n;
 		Complex cLoss;
+		SolutionObj sol;
 
 		numPhases = nPhases;
 		if (enabled) {
 			computeITerminal();
 
-			SolutionObj sol = DSSGlobals.activeCircuit.getSolution();
+			sol = DSSGlobals.activeCircuit.getSolution();
 
 			for (i = 0; i < numPhases; i++) {
 				cLoss = Complex.ZERO;
 				for (j = 0; j < nTerms; j++) {
-					k = (j - 1) * nConds + i;
+					k = j * nConds + i;
 					n = nodeRef[k];  // increment through terminals
-					if (n > 0) {
+					if (n >= 0) {
 						if (DSSGlobals.activeCircuit.isPositiveSequence()) {
-							cLoss = cLoss.add( sol.getNodeV()[n].multiply(ITerminal[k].conjugate()).multiply(3.0) );
+							cLoss = cLoss.add( sol.getNodeV()[n].multiply( ITerminal[k].conjugate() ).multiply(3.0) );
 						} else {
-							cLoss = cLoss.add( sol.getNodeV()[n].multiply(ITerminal[k].conjugate()) );
+							cLoss = cLoss.add( sol.getNodeV()[n].multiply( ITerminal[k].conjugate() ) );
 						}
 					}
 				}
-				LossBuffer[i] = cLoss;
+				lossBuffer[i] = cLoss;
 			}
 		} else {
 			for (i = 0; i < numPhases; i++)
-				LossBuffer[i] = Complex.ZERO;
+				lossBuffer[i] = Complex.ZERO;
 		}
 	}
 
@@ -592,7 +598,7 @@ public class DSSCktElement extends DSSObjectImpl implements CktElement {
 		throw new UnsupportedOperationException();
 	}
 
-	private void doYprimCalcs(CMatrix YMatrix) {
+	private void doYPrimCalcs(CMatrix YMatrix) {
 		int i, j, k = 0, ii, jj, elimRow;
 		Complex Ynn, Yij, Yin, Ynj;
 		int[] rowEliminated = null;
@@ -613,7 +619,7 @@ public class DSSCktElement extends DSSObjectImpl implements CktElement {
 					Ynn = YMatrix.get(elimRow, elimRow);
 					if (Ynn.abs() == 0.0)
 						Ynn = new Complex(DSSGlobals.EPSILON, Ynn.getImaginary());
-					rowEliminated[elimRow] = 1;  // TODO Check zero based indexing.
+					rowEliminated[elimRow] = 1;
 					for (ii = 0; ii < YOrder; ii++) {
 						if (rowEliminated[ii] == 0) {
 							Yin = YMatrix.get(ii, elimRow);
@@ -621,7 +627,7 @@ public class DSSCktElement extends DSSObjectImpl implements CktElement {
 								if (rowEliminated[jj] == 0) {
 									Yij = YMatrix.get(ii, jj);
 									Ynj = YMatrix.get(elimRow, jj);
-									YMatrix.setSym(ii, jj, Yij.subtract(Yin.multiply(Ynj).divide(Ynn)));
+									YMatrix.setSym(ii, jj, Yij.subtract( Yin.multiply(Ynj).divide(Ynn) ));
 								}
 						}
 					}
@@ -649,7 +655,7 @@ public class DSSCktElement extends DSSObjectImpl implements CktElement {
 			SolutionObj sol = DSSGlobals.activeCircuit.getSolution();
 
 			for (int i = 0; i < YOrder; i++)
-				sol.getCurrents()[nodeRef[i]] = sol.getCurrents()[nodeRef[i]].add(ITerminal[i]);  // NodeRef=0 is OK
+				sol.getCurrents()[nodeRef[i]] = sol.getCurrents()[nodeRef[i]].add(ITerminal[i]);
 		}
 	}
 
@@ -659,20 +665,23 @@ public class DSSCktElement extends DSSObjectImpl implements CktElement {
 	 * Fills VBuffer array which must be adequately allocated by calling routine.
 	 */
 	public void getTermVoltages(int iTerm, Complex[] VBuffer) {
+		int i;
+		SolutionObj sol;
+
 		try {
 			int ncond = nConds;
 
 			/* Return zero if terminal number improperly specified */
-			if ((iTerm < 0) || (iTerm > nTerms)) {  // TODO Check zero based indexing
-				for (int i = 0; i < ncond; i++)
+			if (iTerm <= 0 || iTerm >= nTerms) {
+				for (i = 0; i < ncond; i++)
 					VBuffer[i] = Complex.ZERO;
 				return;
 			}
 
-			SolutionObj sol = DSSGlobals.activeCircuit.getSolution();
+			sol = DSSGlobals.activeCircuit.getSolution();
 
-			for (int i = 0; i < ncond; i++)
-				VBuffer[i] = sol.getNodeV()[terminals[iTerm].getTermNodeRef()[i]];
+			for (i = 0; i < ncond; i++)
+				VBuffer[i] = sol.getNodeV()[ terminals[iTerm].getTermNodeRef()[i] ];
 		} catch (Exception e) {
 			DSSGlobals.doSimpleMsg("Error filling voltage buffer in getTermVoltages for circuit element:"+getDSSClassName()+"."+getName()+DSSGlobals.CRLF+
 					"Probable cause: Invalid definition of element."+DSSGlobals.CRLF+
@@ -680,9 +689,10 @@ public class DSSCktElement extends DSSObjectImpl implements CktElement {
 		}
 	}
 
-	public void initPropertyValues(int arrayOffset) {  // TODO Check zero based indexing
-		propertyValue[arrayOffset + 1] = String.format("%g", baseFrequency);  // base freq
-		propertyValue[arrayOffset + 2] = "true";  // enabled
+	public void initPropertyValues(int arrayOffset) {
+		setPropertyValue(arrayOffset + 1, String.format("%g", baseFrequency));  // base freq
+		setPropertyValue(arrayOffset + 2, "true");  // enabled
+
 		enabledProperty = arrayOffset + 2;  // keep track of this
 
 		super.initPropertyValues(arrayOffset + 2);
@@ -690,7 +700,7 @@ public class DSSCktElement extends DSSObjectImpl implements CktElement {
 
 	public String getPropertyValue(int index) {
 		String result;
-		if (index == enabledProperty) {
+		if (index == enabledProperty - 1) {
 			if (enabled) {
 				result = "true";
 			} else {
@@ -720,13 +730,17 @@ public class DSSCktElement extends DSSObjectImpl implements CktElement {
 	private boolean isGroundBus(String s) {
 		boolean result = true;
 		int i = s.indexOf(".1");
-		if (i >= 0) result = false;
+		if (i >= 0)
+			result = false;
 		i = s.indexOf(".2");
-		if (i >= 0) result = false;
+		if (i >= 0)
+			result = false;
 		i = s.indexOf(".3");
-		if (i >= 0) result = false;
+		if (i >= 0)
+			result = false;
 		i = s.indexOf('.');
-		if (i == -1) result = false;
+		if (i == -1)
+			result = false;
 		return result;
 	}
 

@@ -147,7 +147,7 @@ public class ExecHelper {
 			handle = addObject(objClass.toString(), objName.toString());
 		}
 
-		if (handle == 0) result = 1;
+		if (handle == -1) result = 1;
 
 		return result;
 	}
@@ -920,7 +920,7 @@ public class ExecHelper {
 		switch (DSSGlobals.lastClassReferenced) {
 		case -1:
 			DSSGlobals.doSimpleMsg("New command: Object type \"" + objType + "\" not found." + DSSGlobals.CRLF + parser.getCmdString(), 263);
-			handle = 0;
+			handle = -1;
 			return handle;
 		default:
 			// intrinsic and user defined models
@@ -970,7 +970,7 @@ public class ExecHelper {
 
 			// activeDSSObject now points to the object just added
 			// if a circuit element, activeCktElement in activeCircuit is also set
-			if (handle > 0) DSSGlobals.activeDSSObject.setClassIndex(handle);
+			if (handle >= 0) DSSGlobals.activeDSSObject.setClassIndex(handle);
 
 			// process remaining instructions on the command line
 			DSSGlobals.activeDSSClass.edit();

@@ -186,7 +186,7 @@ public class VSourceObjImpl extends PCElementImpl implements VSourceObj {
 			break;
 		}
 
-		setSpectrumObj((com.epri.dss.general.SpectrumObj) DSSGlobals.spectrumClass.find(getSpectrum()));
+		setSpectrumObj( (com.epri.dss.general.SpectrumObj) DSSGlobals.spectrumClass.find(getSpectrum()) );
 		if (getSpectrumObj() == null)
 			DSSGlobals.doSimpleMsg("Spectrum object \"" + getSpectrum() + "\" for device VSource."+getName()+" not found.", 324);
 

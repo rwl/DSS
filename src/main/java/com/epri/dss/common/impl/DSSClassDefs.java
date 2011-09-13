@@ -199,7 +199,6 @@ public class DSSClassDefs {
 		String traceName = "";
 		String successFree = "";
 
-
 		try {
 			successFree = "First Object";
 			for (int i = 0; i < DSSGlobals.DSSObjs.size(); i++) {

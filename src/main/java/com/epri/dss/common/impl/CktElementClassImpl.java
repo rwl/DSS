@@ -16,13 +16,13 @@ public class CktElementClassImpl extends DSSClassImpl implements
 
 	protected int classEdit(Object activeCktElemObj, int paramPointer) {
 		// continue parsing with contents of parser
-		if (paramPointer >= 0) {  // TODO Check zero based indexing
+		if (paramPointer >= 0) {
 			CktElement cktElem = (CktElement) activeCktElemObj;
 			switch (paramPointer) {
 			case 0:
 				cktElem.setBaseFrequency(Parser.getInstance().makeDouble());
 				break;
-			case 2:
+			case 1:
 				cktElem.setEnabled(Utilities.interpretYesNo(Parser.getInstance().makeString()));
 				break;
 			default:
@@ -53,10 +53,10 @@ public class CktElementClassImpl extends DSSClassImpl implements
 	 * Define the properties for the base power delivery element class.
 	 */
 	protected void defineProperties() {
-		propertyName[activeProperty + 1] = "basefreq";  // TODO Check zero based indexing
+		propertyName[activeProperty + 1] = "basefreq";
 		propertyName[activeProperty + 2] = "enabled";
 
-		propertyHelp[activeProperty + 1] = "Base Frequency for ratings.";
+		propertyHelp[activeProperty + 1] = "Base frequency for ratings.";
 		propertyHelp[activeProperty + 2] = "{Yes|No or True|False} Indicates whether this element is enabled.";
 
 		activeProperty = activeProperty + numCktElemClassProps;

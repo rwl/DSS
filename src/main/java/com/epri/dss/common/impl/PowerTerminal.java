@@ -22,7 +22,7 @@ public class PowerTerminal implements Terminal {
 		conductors = new Conductor[numCond];
 		for (int i = 0; i < numCond; i++)
 			conductors[i] = new ConductorImpl();
-		activeConductor = 0;  // TODO Check zero based indexing
+		activeConductor = 0;
 	}
 
 	public int getBusRef() {
@@ -58,11 +58,12 @@ public class PowerTerminal implements Terminal {
 	}
 
 	public void setActiveConductor(int value) {
-		if ((value >= 0) & (value < numCond))  // TODO Check zero based indexing
+		if (value >= 0 & value < numCond)
 			activeConductor = value;
 	}
 
 	public int getActiveConductor() {
 		return activeConductor;
 	}
+
 }
