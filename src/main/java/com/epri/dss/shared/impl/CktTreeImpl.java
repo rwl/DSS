@@ -2,6 +2,7 @@ package com.epri.dss.shared.impl;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Stack;
 
 import com.epri.dss.common.Circuit;
 import com.epri.dss.common.CktElement;
@@ -12,7 +13,6 @@ import com.epri.dss.delivery.PDElement;
 import com.epri.dss.general.DSSObject;
 import com.epri.dss.shared.CktTree;
 import com.epri.dss.shared.CktTreeNode;
-import com.epri.dss.shared.PStack;
 import com.epri.dss.shared.PointerList;
 
 public class CktTreeImpl implements CktTree {
@@ -53,7 +53,7 @@ public class CktTreeImpl implements CktTree {
 	}
 
 	private CktTreeNode firstNode;
-	private PStack forwardStack;
+	private Stack<Object> forwardStack;
 
 	protected CktTreeNode presentBranch;
 	protected ZoneEndsList zoneEndsList;
@@ -63,7 +63,7 @@ public class CktTreeImpl implements CktTree {
 		firstNode = null;
 		presentBranch = null;
 		zoneEndsList = new ZoneEndsList();
-		forwardStack = new PStackImpl(20);
+		forwardStack = new Stack<Object>();
 	}
 
 	/**

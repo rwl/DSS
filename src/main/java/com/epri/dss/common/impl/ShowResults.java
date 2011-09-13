@@ -25,7 +25,6 @@ import com.epri.dss.parser.impl.Parser;
 import com.epri.dss.shared.ComplexMatrix;
 import com.epri.dss.shared.CktTree;
 import com.epri.dss.shared.CktTreeNode;
-import com.epri.dss.shared.Polar;
 import com.epri.dss.shared.impl.ComplexMatrixImpl;
 import com.epri.dss.shared.impl.CktTreeImpl;
 import com.epri.dss.shared.impl.ComplexUtil;
@@ -402,7 +401,7 @@ public abstract class ShowResults {
 		Complex[] cBuffer;
 		String fromBus;
 		Complex CTotal;
-		Polar residPolar;
+		double[] residPolar;
 
 		nCond = pElem.getNConds();
 		nTerm = pElem.getNTerms();
@@ -423,7 +422,7 @@ public abstract class ShowResults {
 			}
 			if (showResidual && (pElem.getNPhases() > 1)) {
 				residPolar = ComplexUtil.complexToPolarDeg(CTotal.negate());
-				pw.printf("%s Resid    %13.5g /_ %6.1f", fromBus, residPolar.getMag(), residPolar.getAng());
+				pw.printf("%s Resid    %13.5g /_ %6.1f", fromBus, residPolar[0], residPolar[1]);
 				pw.println();
 			}
 			if (j < nTerm) pw.println("------------");  // TODO Check zero based indexing

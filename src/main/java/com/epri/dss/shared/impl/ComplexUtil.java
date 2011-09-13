@@ -3,8 +3,6 @@ package com.epri.dss.shared.impl;
 import org.apache.commons.math.complex.Complex;
 import org.apache.commons.math.complex.ComplexUtils;
 
-import com.epri.dss.shared.Polar;
-
 public class ComplexUtil {
 
 	private ComplexUtil() {
@@ -48,8 +46,8 @@ public class ComplexUtil {
 		return new double[] {c.getReal(), c.getImaginary()};
 	}
 
-	public static Polar complexToPolarDeg(Complex a) {
-		return new PolarImpl(a.abs(), degArg(a));
+	public static double[] complexToPolarDeg(Complex a) {
+		return new double[] {a.abs(), degArg(a)};
 	}
 
 }
