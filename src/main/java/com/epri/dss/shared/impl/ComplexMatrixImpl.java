@@ -68,7 +68,7 @@ public class ComplexMatrixImpl implements ComplexMatrix {
 		for (int i = 0; i < nOrder; i++) {
 			sum = Complex.ZERO;
 			for (int j = 0; j < nOrder; j++)
-				sum = sum.add( values[((j - 1) * nOrder + 1)].multiply(x[j]) );
+				sum = sum.add( values[j * nOrder + i].multiply( x[j] ) );
 			b[i] = sum;
 		}
 	}
@@ -83,7 +83,7 @@ public class ComplexMatrixImpl implements ComplexMatrix {
 		for (int i = 0; i < nOrder; i++) {
 			sum = Complex.ZERO;
 			for (int j = 0; j < nOrder; j++)
-				sum = sum.add( values[((j - 1) * nOrder + 1)].multiply(x[j]) );
+				sum = sum.add( values[j * nOrder + i].multiply( x[j] ) );
 			b[i] = b[i].add(sum);
 		}
 	}
@@ -115,9 +115,9 @@ public class ComplexMatrixImpl implements ComplexMatrix {
 		int rowstart;
 		Complex sum = Complex.ZERO;
 
-		for (int j = col1; j < col2; j++) {
+		for (int j = col1; j <= col2; j++) {
 			rowstart = j * nOrder;
-			for (int i = rowstart + row1; i < rowstart + row2; i++) {
+			for (int i = rowstart + row1; i <= rowstart + row2; i++) {
 				sum = sum.add(values[i]);
 			}
 		}
@@ -143,7 +143,7 @@ public class ComplexMatrixImpl implements ComplexMatrix {
 	}
 
 	public void zeroCol(int iCol) {
-		for (int i = (iCol - 1) * nOrder; i < iCol * nOrder; i++) {
+		for (int i = iCol * nOrder; i < (iCol + 1) * nOrder; i++) {
 			values[i] = Complex.ZERO;
 		}
 	}
@@ -154,7 +154,7 @@ public class ComplexMatrixImpl implements ComplexMatrix {
 	public Complex avgDiag() {
 		Complex result = Complex.ZERO;
 		for (int i = 0; i < nOrder; i++)
-			result = result.add(values[((i - 1) * nOrder + i)]);
+			result = result.add(values[i * nOrder + i]);
 
 		if (nOrder > 0)
 			result = ComplexUtil.divide(result, nOrder);
@@ -171,7 +171,7 @@ public class ComplexMatrixImpl implements ComplexMatrix {
 		for (int i = 0; i < nOrder; i++) {
 			for (int j = i+1; j < nOrder; j++) {
 				nTimes += 1;
-				result = result.add(values[((j - 1) * nOrder + i)]);
+				result = result.add(values[j * nOrder + i]);
 			}
 		}
 
@@ -189,11 +189,11 @@ public class ComplexMatrixImpl implements ComplexMatrix {
 			values[i] = values[i].multiply(x);
 	}
 
-	private static int index(int i, int j, int L) {
-		return (j - 1) * L + i;
-	}
+	/**
+	 * Inverts the matrix
+	 */
 	public void invert() {
-		int j, k, L, LL, m, i;
+		int j, K, L, LL, m, i;
 		int[] LT;
 		double RMY;
 		Complex T1;
@@ -205,67 +205,72 @@ public class ComplexMatrixImpl implements ComplexMatrix {
 		A = values;  /* Assign pointer to something we can use */
 
 		/* Allocate LT */
-//        LT = null;
-		LT = new int[L];
-//		if (LT == null) {  // FIXME: Handle out of memory
-//			invertError = 1;
-//			return;
-//		}
+		try {
+			LT = new int[L];
+		} catch (OutOfMemoryError e) {
+			invertError = 1;
+			return;
+		}
 
 		/* Zero LT */
-//		for (j = 0; j < L; j++)
-//			LT[j] = 0;
+		for (j = 0; j < L; j++)
+			LT[j] = 0;
 
 		T1 = Complex.ZERO;
-		k = 1; // TODO: Check zero indexing.
+		K = 0;
 
 		/* M Loop */
 		for (m = 0; m < L; m++) {
 			for (LL = 0; LL < L; LL++) {
-				if (LT[LL] != 0) {  // TODO: Check zero indexing.
-					RMY = A[index(LL, LL, L)].abs() - T1.abs();  // Will this work??
+				if (LT[LL] != 1) {
+					RMY = A[ index(LL, LL) ].abs() - T1.abs();  // Will this work??
 					if (RMY > 0) {
-						T1 = A[index(LL, LL, L)];
-						k = LL;
+						T1 = A[ index(LL, LL) ];
+						K = LL;
 					}
 				}
 			}
-		}
 
-		/* Error check. If RMY ends up zero, matrix is non-inversible */
-		RMY = T1.abs();
-		if (RMY == 0.0) {
-			invertError = 2;
-			return;
-		}
+			/* Error check. If RMY ends up zero, matrix is non-inversible */
+			RMY = T1.abs();
+			if (RMY == 0.0) {
+				invertError = 2;
+				return;
+			}
 
-		T1 = Complex.ZERO;
-		LT[k] = 1; // TODO: Check zero indexing.
-		for (i = 0; i < L; i++) {
-			if (i != k) {
-				for (j = 0; j < L; j++) {
-					if (j != k) {
-						A[index(i, j, L)] =
-							A[index(i, j, L)].subtract( A[index(i, k, L)].multiply(A[index(k, j, L)]).divide(A[index(k, k, L)]) );
+			T1 = Complex.ZERO;
+			LT[K] = 1;
+			for (i = 0; i < L; i++) {
+				if (i != K) {
+					for (j = 0; j < L; j++) {
+						if (j != K) {
+							A[ index(i, j) ] =
+								A[ index(i, j) ].subtract( A[index(i, K)].multiply( A[ index(K, j) ] ).divide( A[ index(K, K) ] ) );
+						}
 					}
 				}
 			}
-		}
 
-		// Invert and negate k, k element
-		A[index(k, k, L)] = Complex.ONE.divide(A[index(k, k, L)]).negate();
+			// Invert and negate k, k element
+			A[ index(K, K) ] = Complex.ONE.divide( A[ index(K, K) ] ).negate();
 
-		for (i = 0; i < L; i++) {
-			if (i != k) {
-				A[index(i, k, L)] = A[index(i, k, L)].multiply(A[index(k, k, L)]);
-				A[index(k, i, L)] = A[index(k, i, L)].multiply(A[index(k, k, L)]);
+			for (i = 0; i < L; i++) {
+				if (i != K) {
+					A[ index(i, K) ] = A[ index(i, K) ].multiply( A[ index(K, K) ] );
+					A[ index(K, i) ] = A[ index(K, i) ].multiply( A[ index(K, K) ] );
+				}
 			}
 		}  // M loop
 
 		for (j = 0; j < L; j++)
-			for (k = 0; k < L; k++)
-				A[index(j, k, L)] = A[index(j, k, L)].negate();
+			for (K = 0; K < L; K++)
+				A[ index(j, K) ] = A[ index(j, K) ].negate();
 
+		LT = null;
+	}
+
+	private int index(int i, int j) {
+		return j * nOrder + i;
 	}
 
 	/**
@@ -273,25 +278,23 @@ public class ComplexMatrixImpl implements ComplexMatrix {
 	 */
 	public ComplexMatrix kron(int eliminationRow) {
 		int ii, jj;
-		ComplexMatrix result = null;   // null result means it failed
-		if ((nOrder > 1) && (eliminationRow <= nOrder) && (eliminationRow > 0)) {
+		ComplexMatrix result = null;   // null result on failure
+		if ((nOrder > 1) && (eliminationRow < nOrder) && (eliminationRow >= 0)) {
 			result = new ComplexMatrixImpl(nOrder - 1);
 			int N = eliminationRow;
 			Complex NNElement = get(N, N);
 
 			ii = 0;
 			for (int i = 0; i < nOrder; i++) {
-				if (i != N) {
-					ii += 1;
+				if (i != N) {  // skip elimination row
 					jj = 0;
 					for (int j = 0; j < nOrder; j++) {
 						if (j != N) {
+							result.set(ii, jj, get(i, j).subtract( get(i, N).multiply( get(N, j) ).divide(NNElement) ));
 							jj += 1;
-							result.set(ii, jj,
-									get(i, j).subtract( get(i, N).multiply(get(N, j)).divide(NNElement) )
-							);
 						}
 					}
+					ii += 1;
 				}
 			}
 		}

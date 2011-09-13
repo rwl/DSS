@@ -190,9 +190,6 @@ public class ComplexMatrixTest extends TestCase {
 
 		array = cm.asArray();
 
-		for (Complex c : array)
-			System.out.printf("%.2f +j%.2f\n", c.getReal(), c.getImaginary());
-
 		k = 0;
 		for (i = 0; i < n; i++)
 			for (j = 0; j < n; j++) {
@@ -240,7 +237,7 @@ public class ComplexMatrixTest extends TestCase {
 
 		expect = 0;
 		for (int i = 0; i < n; i++)
-			expect += n;
+			expect += i;
 		expect = expect / n;
 
 		avg = cm.avgDiag();
@@ -254,12 +251,12 @@ public class ComplexMatrixTest extends TestCase {
 	 */
 	public void testAvgOffDiagonal() {
 		Complex avg;
-		double delta = 1e-09;
+		double delta = 1e-04;
 
 		avg = cm.avgOffDiag();
 
-		assertEquals(1.1428571428571428, avg.getReal(), delta);
-		assertEquals(3.5, avg.getImaginary(), delta);
+		assertEquals(1.3333, avg.getReal(), delta);
+		assertEquals(3.6666, avg.getImaginary(), delta);
 	}
 
 	/**
@@ -275,7 +272,7 @@ public class ComplexMatrixTest extends TestCase {
 		for (i = 0; i < n; i++)
 			for (j = 0; j < n; j++) {
 				assertEquals(i * constant, cm.get(i, j).getReal(), delta);
-				assertEquals(i * constant, cm.get(i, j).getImaginary(), delta);
+				assertEquals(j * constant, cm.get(i, j).getImaginary(), delta);
 			}
 	}
 
@@ -335,7 +332,7 @@ public class ComplexMatrixTest extends TestCase {
 			b[i] = new Complex(real, imag);
 		}
 
-		cm.vMult(b, x);
+		cm.vMultAccum(b, x);
 
 		assertEquals(-55. + real, b[0].getReal(), delta);
 		assertEquals( 55. + imag, b[0].getImaginary(), delta);
@@ -358,9 +355,9 @@ public class ComplexMatrixTest extends TestCase {
 		double delta = 1e-09;
 
 		// avoid singularity
-		cm.setSym(2, 2, new Complex(6, 9));
-		cm.setSym(3, 3, new Complex(2, 4));
-		cm.setSym(1, 2, new Complex(2, 4));
+		cm.set(2, 2, new Complex(6, 9));
+		cm.set(3, 3, new Complex(2, 4));
+		cm.set(1, 2, new Complex(2, 4));
 
 		cm.invert();
 
@@ -382,8 +379,12 @@ public class ComplexMatrixTest extends TestCase {
 	/**
 	 * Test Kron reduction.
 	 */
-//	public void testKron() {
-//		fail("Not yet implemented");
-//	}
+	public void testKron() {
+		int eRow = 3;
+
+		cm.kron(eRow);
+
+		fail("Not yet implemented");
+	}
 
 }

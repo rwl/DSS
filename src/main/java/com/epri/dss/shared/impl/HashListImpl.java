@@ -169,7 +169,7 @@ public class HashListImpl implements HashList {
 	public int findAbbrev(String s) {
 		String test1, test2;
 
-		int result = 0;
+		int result = -1;
 		if (s.length() > 0) {
 			test1 = s.toLowerCase();
 			for (int i = 0; i < numElements; i++) {
@@ -203,21 +203,23 @@ public class HashListImpl implements HashList {
 		SubList[] newListArray;
 		int hashNum;
 		String s;
-//		int OldNumLists;
+		//int oldNumLists;
 
 		if (newSize > numElementsAllocated) {
 
-//			OldNumLists = NumLists;
+			//oldNumLists = numLists;
 
 			newStringArray = new String[newSize];
-			newNumLists = (int) Math.sqrt(newSize);
+			newNumLists = (int) Math.round( Math.sqrt(newSize) );
 			elementsPerList = newSize / newNumLists + 1;
-			if (newNumLists < 1) newNumLists = 1;  // make sure at least one list
-			newListArray = new SubList[newNumLists];
-			for (int i = 0; i < numLists; i++) {  // TODO: Check zero indexing.
+			if (newNumLists < 1)
+				newNumLists = 1;  // make sure at least one list
+			newListArray = new SubList[ newNumLists ];
+			for (int i = 0; i < newNumLists; i++) {
+				newListArray[i] = new SubList();
 				/* Allocate initial sublists */
-				newListArray[i].str = new String[elementsPerList];
-				newListArray[i].idx = new int[elementsPerList];
+				newListArray[i].str = new String[ elementsPerList ];
+				newListArray[i].idx = new int[ elementsPerList ];
 				newListArray[i].nAllocated = elementsPerList;
 				newListArray[i].nElem = 0;
 			}
@@ -226,17 +228,16 @@ public class HashListImpl implements HashList {
 
 			/* Add elements from old hash list to new hash list */
 
-			for (int i = 0; i < numElements; i++) {  // TODO: Check zero indexing
+			for (int i = 0; i < numElements; i++) {
 				s = stringArray[i];
 				hashNum = hash(s);
-				newListArray[hashNum].nElem += 1;
-				if (newListArray[hashNum].nElem > newListArray[hashNum].nAllocated) {
-					resizeSubList(newListArray[hashNum]);
-				}
+				newListArray[ hashNum ].nElem += 1;
+				if (newListArray[hashNum].nElem > newListArray[ hashNum ].nAllocated)
+					resizeSubList(newListArray[ hashNum ]);
 
-				newListArray[hashNum].str[newListArray[hashNum].nElem] = s;
-				newStringArray[numElements] = newListArray[hashNum].str[newListArray[hashNum].nElem];
-				newListArray[hashNum].idx[newListArray[hashNum].nElem] = i;
+				newListArray[ hashNum ].str[ newListArray[ hashNum ].nElem - 1 ] = s;
+				newStringArray[ numElements - 1 ] = newListArray[ hashNum ].str[newListArray[ hashNum ].nElem - 1];
+				newListArray[ hashNum ].idx[newListArray[ hashNum ].nElem - 1] = i;
 			}
 
 			/* Assign new string and list pointers */
