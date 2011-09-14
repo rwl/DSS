@@ -807,7 +807,7 @@ public class DSSCircuit extends NamedObjectImpl implements Circuit {
 		//Globals.getFeederClass().setSaved(true);
 
 		// Define voltage sources first
-		success = Utilities.writeVsourceClassFile(DSSClassDefs.getDSSClass("vsource"), true);
+		success = Utilities.writeVSourceClassFile(DSSClassDefs.getDSSClass("vsource"), true);
 		// write library files so that they will be available to lines, loads, etc
 		/* Use default filename=classname */
 		if (success) success = Utilities.writeClassFile(DSSClassDefs.getDSSClass("wiredata"), "", false);

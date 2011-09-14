@@ -62,6 +62,7 @@ public class Utilities {
 			" ................................................."; // 50 dots
 
 	private Utilities() {
+
 	}
 
 	public static String expandFileName(String child) {
@@ -81,13 +82,7 @@ public class Utilities {
 	}
 
 	public static String extractFileDir(String path) {
-		try {
-			return new File(path).getParentFile().getCanonicalPath();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return path;
+		return new File(path).getParentFile().getAbsolutePath();
 	}
 
 	/* Copy the contents of an array to an array of a new size. */
@@ -245,7 +240,7 @@ public class Utilities {
 	 * Strips off everything up to a period.
 	 */
 	public static String stripExtension(String s) {
-		int dotpos = s.indexOf('.');  // TODO Check zero based indexing
+		int dotpos = s.indexOf('.');
 		if (dotpos == -1)
 			dotpos = s.length();
 		return s.substring(0, dotpos);
@@ -255,7 +250,7 @@ public class Utilities {
 	 * Returns everything past the first period.
 	 */
 	public static String stripClassName(String s) {
-		return s.substring(s.indexOf('.'));
+		return s.substring(s.indexOf('.') + 1);
 	}
 
 	public static void fireOffEditor(String fileName) {
@@ -587,7 +582,6 @@ public class Utilities {
 		BufferedInputStream bis = null;
 		DataInputStream dis = null;
 
-
 		DSSGlobals.auxParser.setCmdString(s);
 		String parmName = DSSGlobals.auxParser.getNextParam();
 		String param = DSSGlobals.auxParser.makeString();
@@ -646,7 +640,6 @@ public class Utilities {
 		char ch;
 		String s2;
 		double result;
-
 
 		/* Try to convert and see if we get an error */
 		try {
@@ -915,16 +908,13 @@ public class Utilities {
 	}
 
 	public static int[] parseIntArray(int[] iarray, MutableInt count, String s) {
-		@SuppressWarnings("unused")
-		String paramName;
 		String param = " ";
-
 
 		// parse the line once to get the count of tokens on string, S
 		DSSGlobals.auxParser.setCmdString(s);
 		count.setValue(0);
 		while (param.length() > 0) {
-			paramName = DSSGlobals.auxParser.getNextParam();
+			DSSGlobals.auxParser.getNextParam();
 			param     = DSSGlobals.auxParser.makeString();
 			if (param.length() > 0)
 				count.increment();
@@ -936,7 +926,7 @@ public class Utilities {
 		// Parse again for real
 		DSSGlobals.auxParser.setCmdString(s);
 		for (int i = 0; i < count.intValue(); i++) {
-			paramName = DSSGlobals.auxParser.getNextParam();
+			DSSGlobals.auxParser.getNextParam();
 			iarray[i] = DSSGlobals.auxParser.makeInteger();
 		}
 
@@ -946,11 +936,9 @@ public class Utilities {
 	public static boolean isShuntElement(CktElement elem) {
 		switch (elem.getDSSObjType() & DSSClassDefs.CLASSMASK) {
 		case DSSClassDefs.CAP_ELEMENT:
-			CapacitorObj cElem = (CapacitorObj) elem;
-			return cElem.isShunt();
+			return ((CapacitorObj) elem).isShunt();
 		case DSSClassDefs.REACTOR_ELEMENT:
-			ReactorObj rElem = (ReactorObj) elem;
-			return rElem.isShunt();
+			return ((ReactorObj) elem).isShunt();
 		default:
 			return false;
 		}
@@ -978,10 +966,10 @@ public class Utilities {
 
 		/* Get positive sequence or equivalent from matrix */
 		if (lineElement.isSymComponentsModel()) {
-			ZTest = (new Complex(lineElement.getR1(), lineElement.getX1())).abs() * lineElement.getLen();
+			ZTest = new Complex(lineElement.getR1(), lineElement.getX1()).abs() * lineElement.getLen();
 		} else {
 			/* Get impedance from Z matrix */   /* Zs - Zm */
-			if (lineElement.getNPhases() > 1) {  // TODO Check zero based indexing
+			if (lineElement.getNPhases() > 1) {
 				ZTest = lineElement.getZ().get(0, 0).subtract(lineElement.getZ().get(0, 1)).abs() * lineElement.getLen();
 			} else {
 				ZTest = lineElement.getZ().get(0, 0).abs() * lineElement.getLen();
@@ -1005,18 +993,18 @@ public class Utilities {
 		StringBuffer devClassName = new StringBuffer();
 		StringBuffer devName = new StringBuffer();
 
-		int result = 0;  // default return value
+		int result = -1;  // default return value
 		parseObjectClassandName(fullObjName, devClassName, devName);
 		devClassIndex = DSSGlobals.classNames.find(devClassName.toString());
 		if (devClassIndex == -1)
 			devClassIndex = DSSGlobals.lastClassReferenced;
 
-		// Since there could be devices of the same name of different classes,
+		// since there could be devices of the same name of different classes,
 		// loop until we find one of the correct class
 		Circuit ckt = DSSGlobals.activeCircuit;
 		devIndex = ckt.getDeviceList().find(devName.toString());
 		while (devIndex > -1) {
-			if ((ckt.getDeviceRef()[devIndex]).cktElementClass == devClassIndex)  // we got a match
+			if (ckt.getDeviceRef()[devIndex].cktElementClass == devClassIndex)  // we got a match
 				return devIndex;
 			devIndex = ckt.getDeviceList().findNext();
 		}
@@ -1038,7 +1026,6 @@ public class Utilities {
 
 	public static void dumpAllocationFactors(String fileName) {
 		PrintWriter pw;
-
 
 		try {
 			fileName = DSSGlobals.DSSDataDirectory + "AllocationFactors.txt";
@@ -1066,7 +1053,6 @@ public class Utilities {
 	public static void dumpAllDSSCommands(String fileName) {
 		PrintWriter pw;
 
-
 		try {
 			fileName = DSSGlobals.DSSDataDirectory + "AllocationFactors.txt";
 			FileWriter fw = new FileWriter(fileName);
@@ -1078,15 +1064,13 @@ public class Utilities {
 
 		// dump executive commands
 		pw.println("[execcommands]");
-		for (int i = 0; i < ExecCommands.NumExecCommands; i++) {
+		for (int i = 0; i < ExecCommands.NumExecCommands; i++)
 			pw.println(i +" + \"" + ExecCommands.getInstance().getExecCommand(i) + "\" \"" + ExecCommands.getInstance().getCommandHelp(i) + "\"");
-		}
 
 		// dump executive options
 		pw.println("[execoptions]");
-		for (int i = 0; i < ExecOptions.NumExecOptions; i++) {
+		for (int i = 0; i < ExecOptions.NumExecOptions; i++)
 			pw.println(i + ", \"" + ExecOptions.getInstance().getExecOption(i) + "\", \"" + ExecOptions.getInstance().getOptionHelp(i) + "\"");
-		}
 
 		// dump all present DSSClasses
 		for (DSSClass pClass : DSSGlobals.DSSClassList) {
@@ -1106,8 +1090,8 @@ public class Utilities {
 
 		Circuit ckt = DSSGlobals.activeCircuit;
 
-		int count = 1;
-		double testKV = ckt.getLegalVoltageBases()[0];
+		int count = 0;
+		double testKV = ckt.getLegalVoltageBases()[count];
 		double result = testKV;
 		double minDiff = 1.e50;  // big number
 
@@ -1127,7 +1111,6 @@ public class Utilities {
 	public static boolean savePresentVoltages() {
 		PrintWriter pw;
 		double dNumNodes;
-
 
 		try {
 			FileWriter fw = new FileWriter(DSSGlobals.DSSDataDirectory + DSSGlobals.circuitName_ + "SavedVoltages.dbl");
@@ -1165,7 +1148,7 @@ public class Utilities {
 	 * Intialize load and generator base values for harmonics analysis.
 	 */
 	public static boolean initializeForHarmonics() {
-		if (savePresentVoltages()) {  // Zap voltage vector to disk
+		if (savePresentVoltages()) {  // zap voltage vector to disk
 			for (PCElement pcElem : DSSGlobals.activeCircuit.getPCElements())
 				pcElem.initHarmonics();
 			return true;
@@ -1214,7 +1197,7 @@ public class Utilities {
 	}
 
 	public static int getNodeNum(int nodeRef) {
-		if (nodeRef == 0) {  // TODO Check zero based indexing
+		if (nodeRef == -1) {
 			return 0;
 		} else {
 			return DSSGlobals.activeCircuit.getMapNodeToBus()[nodeRef].nodeNum;
@@ -1232,7 +1215,7 @@ public class Utilities {
 		return phasor.multiply( ComplexUtils.polar2Complex(1.0, h * angleRad) );
 	}
 
-	private static double pFSign(Complex S) {
+	private static double pfSign(Complex S) {
 		return S.getReal() * S.getImaginary() < 0.0 ? -1.0 : 1.0;
 	}
 
@@ -1246,7 +1229,7 @@ public class Utilities {
 		for (int i = 0; i < n; i++) {
 			mag = buffer[i].abs();
 			if (mag > 0.0) {
-				PF = pFSign(buffer[i]) * Math.abs(buffer[i].getReal()) / mag;
+				PF = pfSign(buffer[i]) * Math.abs(buffer[i].getReal()) / mag;
 				if (PF < 0.0)
 					PF = 2.0 - Math.abs(PF);
 			} else {
@@ -1287,7 +1270,7 @@ public class Utilities {
 	}
 
 	public static double powerFactor(Complex S) {
-		if ((S.getReal() != 0.0) && (S.getImaginary() != 0.0)) {
+		if (S.getReal() != 0.0 && S.getImaginary() != 0.0) {
 			return sign(S.getReal() * S.getImaginary()) * Math.abs(S.getReal()) / S.abs();
 		} else {
 			return 1.0;
@@ -1317,8 +1300,7 @@ public class Utilities {
 		try {
 			DSSGlobals.eventStrings.clear();
 		} catch (Exception e) {
-//			DSSGlobals.doSimpleMsg(String.format("Exception clearing event log: %s, @EventStrings=%s", e.getMessage(), DSSGlobals.eventStrings.toString()), 7151);
-			DSSGlobals.doSimpleMsg(String.format("Exception clearing event log: %s", e.toString()), 7151);
+			DSSGlobals.doSimpleMsg(String.format("Exception clearing event log: %s, @EventStrings=%s", e.getMessage(), DSSGlobals.eventStrings.toString()), 7151);
 		}
 	}
 
@@ -1370,7 +1352,7 @@ public class Utilities {
 		boolean result = false;
 		for (int i = 0; i < thisElement.getNTerms(); i++) {
 			result = false;
-			thisElement.setActiveTerminalIdx(i);  // TODO Check zero based indexing
+			thisElement.setActiveTerminalIdx(i);
 			for (int j = 0; j < thisElement.getNPhases(); j++)
 				if (thisElement.getConductorClosed(j)) {
 					result = true;
@@ -1383,15 +1365,14 @@ public class Utilities {
 	}
 
 	/**
-	 * Special Function to write the Vsource class and change the DSS command
+	 * Special Function to write the VSource class and change the DSS command
 	 * of the first Source so that there is no problem with duplication when
 	 * the circuit is subsequently created.
 	 */
-	public static boolean writeVsourceClassFile(DSSClass cls, boolean isCktElement) {
+	public static boolean writeVSourceClassFile(DSSClass cls, boolean isCktElement) {
 		PrintWriter pw;
 		String clsName;
 		CktElement elem;
-
 
 		boolean result = true;
 		if (cls.getElementCount() == 0)
@@ -1403,9 +1384,9 @@ public class Utilities {
 			pw = new PrintWriter(fw);
 
 			DSSGlobals.savedFileList.add(clsName + ".dss");
-			cls.getFirst();  // Sets ActiveDSSObject
+			cls.getFirst();  // sets activeDSSObject
 			writeActiveDSSObject(pw, "Edit");  // write first Vsource out as an edit
-			while (cls.getNext() >= 0) {  // TODO Check zero based indexing
+			while (cls.getNext() >= 0) {
 				// skip cktElements that have been checked before and written out by
 				// something else
 				elem = (CktElement) DSSGlobals.activeDSSObject;
@@ -1425,11 +1406,11 @@ public class Utilities {
 	}
 
 	public static boolean writeClassFile(DSSClass cls, String fileName, boolean isCktElement) {
+		FileWriter fw;
 		PrintWriter pw;
 		String clsName;
 		int nRecords;
 		CktElement elem;
-
 
 		boolean result = true;
 
@@ -1441,14 +1422,14 @@ public class Utilities {
 			if (fileName.length() == 0)
 				fileName = clsName + ".dss";  // default file name
 
-			FileWriter FW = new FileWriter(fileName);
-			pw = new PrintWriter(FW);
+			fw = new FileWriter(fileName);
+			pw = new PrintWriter(fw);
 
 			nRecords = 0;
 
 			cls.getFirst();  // sets activeDSSObject
 
-			while (cls.getNext() >= 0) {  // TODO Check zero based indexing
+			while (cls.getNext() >= 0) {
 				// skip cktElements that have been checked before and written out by
 				// something else
 				if (isCktElement) {
@@ -1497,7 +1478,7 @@ public class Utilities {
 
 		DSSGlobals.activeDSSObject.saveWrite(pw);
 
-		// Handle disabled circuit elements; modified to allow applets to save disabled elements 12-28-06
+		// handle disabled circuit elements; modified to allow applets to save disabled elements 12-28-06
 		if ((DSSGlobals.activeDSSObject.getDSSObjType() & DSSClassDefs.CLASSMASK) != DSSClassDefs.DSS_OBJECT) {
 			CktElement elem = (CktElement) DSSGlobals.activeDSSObject;
 			if (!elem.isEnabled())
@@ -1515,7 +1496,7 @@ public class Utilities {
 	}
 
 	private static String extractComment(String s) {
-		return s.substring(s.indexOf('!'));
+		return s.substring(s.indexOf('!') + 1);
 	}
 
 	public static boolean rewriteAlignedFile(String fileName) {
@@ -1562,7 +1543,7 @@ public class Utilities {
 
 		saveDelims = DSSGlobals.auxParser.getDelimChars();
 		DSSGlobals.auxParser.setDelimChars(",");
-		arraySize   = 10;
+		arraySize = 10;
 		fieldLength = new int[arraySize];
 
 		try {
@@ -1574,7 +1555,7 @@ public class Utilities {
 					DSSGlobals.auxParser.getNextParam();
 					field = DSSGlobals.auxParser.makeString();
 					fieldLen = field.length();
-					if (field.indexOf(' ') >= 0)  // TODO Check zero based indexing
+					if (field.indexOf(' ') >= 0)
 						fieldLen = fieldLen + 2;
 					if (fieldLen > 0) {
 						fieldNum += 1;
@@ -1598,16 +1579,16 @@ public class Utilities {
 				while (fieldLen > 0) {
 					DSSGlobals.auxParser.getNextParam();
 					field = DSSGlobals.auxParser.makeString();
-					if (field.indexOf(' ') >= 0)  // TODO Check zero based indexing
+					if (field.indexOf(' ') >= 0)
 						field = "\"" + field + "\"";  // add quotes if a space in field
 					fieldLen = field.length();
 					if (fieldLen > 0) {
 						fieldNum += 1;
-						pw.write( pad(field, fieldLength[fieldNum] + 1) );  // TODO Check zero based indexing
+						pw.write( pad(field, fieldLength[fieldNum] + 1) );
 					}
 				}
 
-				if (line.indexOf('!') > 0)
+				if (line.indexOf('!') >= 0)
 					pw.write(extractComment(line));
 
 				pw.println();
@@ -1648,7 +1629,7 @@ public class Utilities {
 	 */
 	public static boolean checkParallel(CktElement line1, CktElement line2) {
 
-		if (line1.getTerminals()[0].busRef == line2.getTerminals()[0].busRef)  // TODO Check zero based indexing
+		if (line1.getTerminals()[0].busRef == line2.getTerminals()[0].busRef)
 			if (line1.getTerminals()[1].busRef == line2.getTerminals()[1].busRef)
 				return true;
 
@@ -1669,7 +1650,7 @@ public class Utilities {
 			if (ckt.getBuses()[i].getKVBase() > 0.0)
 				for (int j = 0; j < ckt.getBuses()[i].getNumNodesThisBus(); j++) {
 					nRef = ckt.getBuses()[i].getRef(j);
-					if (nRef > 0)
+					if (nRef >= 0)
 						result = Math.max(result, ckt.getSolution().getNodeV()[nRef].abs() / ckt.getBuses()[i].getKVBase());
 				}
 		}
@@ -1691,15 +1672,15 @@ public class Utilities {
 			if (bus.getKVBase() > 0.0)
 				for (int j = 0; j < bus.getNumNodesThisBus(); j++) {
 					nRef = bus.getRef(j);
-					if (nRef > 0) {
+					if (nRef >= 0) {
 						VMagPU = ckt.getSolution().getNodeV()[nRef].abs() / bus.getKVBase();
 						if (ignoreNeutrals) {
 							if (VMagPU > 100.0) {  // 0.1 pu
-								result   = Math.min(result, VMagPU);  // only check buses greater than 10%
+								result = Math.min(result, VMagPU);  // only check buses greater than 10%
 								minFound = true;
 							}
 						} else {
-							result   = Math.min(result, VMagPU);
+							result = Math.min(result, VMagPU);
 							minFound = true;
 						}
 					}
@@ -1720,7 +1701,7 @@ public class Utilities {
 		Complex result = Complex.ZERO;
 
 		for (CktElement pElem : ckt.getSources())
-			result = result.add(pElem.getPower(0).negate());
+			result = result.add( pElem.getPower(0).negate() );
 
 		return result;
 	}
@@ -1777,8 +1758,6 @@ public class Utilities {
 		double kWEach = kW / loadCount;  // median sized generator
 		if (ckt.isPositiveSequence())
 			kWEach = kWEach / 3.0;
-
-//		randomize;
 
 		/* Place random sizes on load buses so that total is approximately what was spec'd */
 		for (int i = 0; i < count; i++) {
@@ -1907,7 +1886,7 @@ public class Utilities {
 			pw.println("! Created with distribute command:");
 			pw.println(String.format("! Distribute kW=%-.6g PF=%-.6g How=%s Skip=%d  file=%s", kW, PF, how, skip, fname));
 			pw.println();
-			//F.println("Set allowduplicates=yes");
+			//pw.println("set allowduplicates=yes");
 			if (how.length() == 0)
 				how = "P";
 			switch (how.toUpperCase().charAt(0)) {
@@ -1968,14 +1947,14 @@ public class Utilities {
 		// do nothing for now
 	}
 
-	public static String getDSSArray_Real(int n, double[] dbls) {
+	public static String getDSSArray(int n, double[] dbls) {
 		String result = "(";
 		for (int i = 0; i < n; i++)
 			result = result + String.format(" %-.5g", dbls[i]);
 		return result + ")";
 	}
 
-	public static String getDSSArray_Integer(int n, int[] ints) {
+	public static String getDSSArray(int n, int[] ints) {
 		String result = "(";
 		for (int i = 0; i < n; i++)
 			result = result + String.format(" %-.d", ints[i]);
@@ -2015,8 +1994,8 @@ public class Utilities {
 
 		int result = startNode;
 		int iBusIdx = ckt.getBusList().find(sBusName);
-		if (iBusIdx >= 0)  // TODO Check zero based indexing
-			while (ckt.getBuses()[iBusIdx].findIdx(result) != -1)  // TODO Check zero based indexing
+		if (iBusIdx >= 0)
+			while (ckt.getBuses()[iBusIdx].findIdx(result) != -1)
 				result += 1;
 		ckt.getBuses()[iBusIdx].add(result);  // add it to the list so next call will be unique
 		return result;
@@ -2109,8 +2088,8 @@ public class Utilities {
 					/* When we're done with that, we'll send the edit string */
 					if (editStr.length() > 0) {
 						s = s + "  " + editStr;
-						//Parser.getInstance().setCmdString(EditStr);
-						//pPDelem.edit();   // Uses Parser
+						//Parser.getInstance().setCmdString(editStr);
+						//pPDelem.edit();   // uses parser
 					}
 
 					pw.println(s);
@@ -2119,7 +2098,7 @@ public class Utilities {
 					pShuntObject = (CktElement) pMeter.getBranchList().getFirstObject();
 					while (pShuntObject != null) {
 						/* 1st terminal only */
-						i = 0;  // TODO Check zero based indexing
+						i = 0;
 						s = "edit " + pShuntObject.getParentClass().getName() + "." + pShuntObject.getName();
 						s = s + String.format(" Bus%d=%s%s", i, stripExtension(pShuntObject.getBus(i)), phaseString);
 						if (editStr.length() > 0)
@@ -2185,9 +2164,9 @@ public class Utilities {
 	 */
 	public static int iMaxAbsdblArrayValue(int npts, double[] dbls) {
 		if (npts == 0)
-			return -1;  // TODO Check zero based indexing
+			return -1;
 
-		int result = 0;  // TODO Check zero based indexing
+		int result = 0;
 		double maxValue = Math.abs(dbls[0]);
 		for (int i = 1; i < npts; i++)
 			if (Math.abs(dbls[i]) > maxValue) {
@@ -2316,18 +2295,18 @@ public class Utilities {
 	}
 
 	public static Color interpretColor(String s) {
-		return null;
+		throw new UnsupportedOperationException();
 	}
 
-	public static String MakeNewCktElemName(final String oldName) {
+	public static String makeNewCktElemName(final String oldName) {
 		DSSGlobals.setObject(oldName);  // set object active
 		DSSObject obj = DSSGlobals.activeDSSObject;
-	    return String.format("%s.%s%d", obj.getParentClass().getName(),
-	    		obj.getParentClass().getName().substring(0, 3),
-	    		obj.getClassIndex());
+		return String.format("%s.%s%d", obj.getParentClass().getName(),
+				obj.getParentClass().getName().substring(0, 3),
+				obj.getClassIndex());
 	}
 
-	private static void RenameCktElem(CktElement pElem) {
+	private static void renameCktElem(CktElement pElem) {
 		pElem.setName( String.format("%s%d",
 				pElem.getParentClass().getName().substring(0, 3),
 				pElem.getClassIndex()) );
@@ -2365,23 +2344,23 @@ public class Utilities {
 
 		Circuit ckt = DSSGlobals.activeCircuit;
 
-	    tempBusList = new HashListImpl(ckt.getBusList().listSize());
+		tempBusList = new HashListImpl(ckt.getBusList().listSize());
 
-	    /* Rename Buses */
-	    for (i = 0; i < ckt.getBusList().listSize(); i++)
+		/* Rename Buses */
+		for (i = 0; i < ckt.getBusList().listSize(); i++)
 			tempBusList.add(String.format("B_%d", i));
 
-	    ckt.setBusList(null);
-	    ckt.setBusList(tempBusList);  // Reassign
+		ckt.setBusList(null);
+		ckt.setBusList(tempBusList);  // reassign
 
-	    /* Rename the bus names in each circuit element before renaming the
-	     * elements */
-	    for (CktElement pCktElem : ckt.getCktElements()) {
-	    	baseClass = (pCktElem.getDSSObjType() & DSSClassDefs.BASECLASSMASK);
-	    	if ((baseClass == DSSClassDefs.PC_ELEMENT) ||
-	    			(baseClass == DSSClassDefs.PD_ELEMENT)) {
-	    		s = "";
-	    		for (i = 0; i < pCktElem.getNTerms(); i++) {
+		/* Rename the bus names in each circuit element before renaming the
+		 * elements */
+		for (CktElement pCktElem : ckt.getCktElements()) {
+			baseClass = (pCktElem.getDSSObjType() & DSSClassDefs.BASECLASSMASK);
+			if ((baseClass == DSSClassDefs.PC_ELEMENT) ||
+					(baseClass == DSSClassDefs.PD_ELEMENT)) {
+				s = "";
+				for (i = 0; i < pCktElem.getNTerms(); i++) {
 					oldBusName = pCktElem.getBus(i);
 					dotpos     = oldBusName.indexOf('.');
 					if (dotpos == -1) {
@@ -2392,7 +2371,7 @@ public class Utilities {
 					}
 					bref  = pCktElem.getTerminals()[i].busRef;
 					newBusName = String.format("B_%d%s", bref, nodes);
-					// Check for Transformer because that will be an exception
+					// check for transformer because that will be an exception
 					switch (pCktElem.getDSSObjType() & DSSClassDefs.CLASSMASK) {
 					case DSSClassDefs.XFMR_ELEMENT:
 						s = s + String.format("Wdg=%d Bus=%s ", i, newBusName);
@@ -2401,28 +2380,28 @@ public class Utilities {
 						s = s + String.format("Bus%d=%s ", i, newBusName);
 						break;
 					}
-	    		}
+				}
 				parser.setCmdString(s);
 				pCktElem.edit();
-	    	}
-	    }
+			}
+		}
 
-	    /* Rename the circuit elements to generic values */
-	    /* Have to catch the control elements and edit some of their
-	     * parameters */
+		/* Rename the circuit elements to generic values */
+		/* Have to catch the control elements and edit some of their
+		 * parameters */
 
-	    /* First, make scripts to change the monitored element names in the
-	     * controls to what they will be */
-	    controlUpDateStrings = new ArrayList<String>();
-	    controlUpDatePtrs    = new ArrayList<CktElement>();
+		/* First, make scripts to change the monitored element names in the
+		 * controls to what they will be */
+		controlUpDateStrings = new ArrayList<String>();
+		controlUpDatePtrs    = new ArrayList<CktElement>();
 
-	    for (CktElement pCktElem : ckt.getCktElements()) {
-	    	switch (pCktElem.getDSSObjType() & DSSClassDefs.CLASSMASK) {
+		for (CktElement pCktElem : ckt.getCktElements()) {
+			switch (pCktElem.getDSSObjType() & DSSClassDefs.CLASSMASK) {
 			case DSSClassDefs.CAP_CONTROL:
 				s = String.format("Element=%s ",
-						MakeNewCktElemName(pCktElem.getPropertyValue(0)));
+						makeNewCktElemName(pCktElem.getPropertyValue(0)));
 				controlUpDateStrings.add (s + String.format("Capacitor=%s ",
-						MakeNewCktElemName("capacitor." + pCktElem.getPropertyValue(2)).substring(10, 99)));
+						makeNewCktElemName("capacitor." + pCktElem.getPropertyValue(2)).substring(10, 99)));
 				controlUpDatePtrs.add(pCktElem);
 				break;
 			case DSSClassDefs.REG_CONTROL:
@@ -2430,82 +2409,82 @@ public class Utilities {
 				break;
 			case DSSClassDefs.RELAY_CONTROL:
 				s = String.format("MonitoredObj=%s ",
-						MakeNewCktElemName(pCktElem.getPropertyValue(0)));
+						makeNewCktElemName(pCktElem.getPropertyValue(0)));
 				controlUpDateStrings.add ( s + String.format("SwitchedObj=%s ",
-						MakeNewCktElemName(pCktElem.getPropertyValue(2))));
+						makeNewCktElemName(pCktElem.getPropertyValue(2))));
 				controlUpDatePtrs.add(pCktElem);
 				break;
 			case DSSClassDefs.RECLOSER_CONTROL:
 				s = String.format("MonitoredObj=%s ",
-						MakeNewCktElemName(pCktElem.getPropertyValue(0)));
+						makeNewCktElemName(pCktElem.getPropertyValue(0)));
 				controlUpDateStrings.add ( s + String.format("SwitchedObj=%s ",
-						MakeNewCktElemName(pCktElem.getPropertyValue(2))));
+						makeNewCktElemName(pCktElem.getPropertyValue(2))));
 				controlUpDatePtrs.add(pCktElem);
 				break;
 			case DSSClassDefs.FUSE_CONTROL:
 				s = String.format("MonitoredObj=%s ",
-						MakeNewCktElemName(pCktElem.getPropertyValue(0)));
+						makeNewCktElemName(pCktElem.getPropertyValue(0)));
 				controlUpDateStrings.add ( s + String.format("SwitchedObj=%s ",
-						MakeNewCktElemName(pCktElem.getPropertyValue(2))));
+						makeNewCktElemName(pCktElem.getPropertyValue(2))));
 				controlUpDatePtrs.add(pCktElem);
 				break;
 			case DSSClassDefs.GEN_CONTROL:
 				controlUpDateStrings.add (String.format("Element=%s ",
-						MakeNewCktElemName(pCktElem.getPropertyValue(0))));
+						makeNewCktElemName(pCktElem.getPropertyValue(0))));
 				controlUpDatePtrs.add(pCktElem);
 				break;
 			case DSSClassDefs.STORAGE_CONTROL:
 				controlUpDateStrings.add (String.format("Element=%s ",
-						MakeNewCktElemName(pCktElem.getPropertyValue(0))));
+						makeNewCktElemName(pCktElem.getPropertyValue(0))));
 				controlUpDatePtrs.add(pCktElem);
 				break;
 			case DSSClassDefs.SWT_CONTROL:
 				controlUpDateStrings.add (String.format("SwitchedObj=%s ",
-						MakeNewCktElemName(pCktElem.getPropertyValue(0))));
+						makeNewCktElemName(pCktElem.getPropertyValue(0))));
 				controlUpDatePtrs.add(pCktElem);
 				break;
-	    	}
-	    }
+			}
+		}
 
-	    for (CktElement pCktElem : ckt.getCktElements())
+		for (CktElement pCktElem : ckt.getCktElements())
 			pCktElem.setChecked(false);  // initialize to not checked
 
-	    devListSize = ckt.getDeviceList().listSize();
-	    ckt.setDeviceList(null);
-	    ckt.setDeviceList( new HashListImpl(devListSize) );
+		devListSize = ckt.getDeviceList().listSize();
+		ckt.setDeviceList(null);
+		ckt.setDeviceList( new HashListImpl(devListSize) );
 
-	    for (CktElement pCktElem : ckt.getCktElements()) {
+		for (CktElement pCktElem : ckt.getCktElements()) {
 			if (!pCktElem.isChecked()) {
 				elemClass = (pCktElem.getDSSObjType() & DSSClassDefs.CLASSMASK);
-	            RenameCktElem(pCktElem);
-	            switch (elemClass) {
+				renameCktElem(pCktElem);
+				switch (elemClass) {
 				case DSSClassDefs.XFMR_ELEMENT:
 					if (pCktElem.hasControl()) {
 						pCtrlElem = pCktElem.getControlElement();
-	                    if (pCtrlElem != null) {
-	                    	parser.setCmdString(String.format("Transformer=%s",
-	                    			pCktElem.getName()));
-	                    	pCtrlElem.edit();
-	                    }
+						if (pCtrlElem != null) {
+							parser.setCmdString(String.format("Transformer=%s",
+									pCktElem.getName()));
+							pCtrlElem.edit();
+						}
 					}
 					break;
-	            default:
-	    			break;
-	            }
+				default:
+					break;
+				}
 			}
-	    }
+		}
 
 
-	    /* Run the control update scripts now that everything is renamed */
-	    CktElement pCktElem;
-	    for (i = 0; i < controlUpDatePtrs.size() - 1; i++) {
+		/* Run the control update scripts now that everything is renamed */
+		CktElement pCktElem;
+		for (i = 0; i < controlUpDatePtrs.size() - 1; i++) {
 			pCktElem         = controlUpDatePtrs.get(i);
 			parser.setCmdString( controlUpDateStrings.get(i) );
 			pCktElem.edit();
-	    }
+		}
 
-	    controlUpDateStrings = null;
-	    controlUpDatePtrs = null;
+		controlUpDateStrings = null;
+		controlUpDatePtrs = null;
 	}
 
 }

@@ -620,27 +620,27 @@ public class CapacitorObjImpl extends PDElementImpl implements CapacitorObj {
 			result = getBus(1);  // TODO: Check zero based indexing
 			break;
 		case 3:
-			result = Utilities.getDSSArray_Real(getNumSteps(), getKVArRating());
+			result = Utilities.getDSSArray(getNumSteps(), getKVArRating());
 			break;
 		case 7:
 			temp = new double[getNumSteps()];
 			for (int i = 0; i < getNumSteps(); i++) {
 				temp[i] = getC()[i] * 1.0e6;  // to microfarads
 			}
-			result = Utilities.getDSSArray_Real(getNumSteps(), temp);
+			result = Utilities.getDSSArray(getNumSteps(), temp);
 			temp = null;  // throw away temp storage
 			break;
 		case 8:
-			result = Utilities.getDSSArray_Real(getNumSteps(), getR());
+			result = Utilities.getDSSArray(getNumSteps(), getR());
 			break;
 		case 10:
-			result = Utilities.getDSSArray_Real(getNumSteps(), getXL());
+			result = Utilities.getDSSArray(getNumSteps(), getXL());
 			break;
 		case 11:
-			result = Utilities.getDSSArray_Real(getNumSteps(), getHarm());
+			result = Utilities.getDSSArray(getNumSteps(), getHarm());
 			break;
 		case 12:
-			result = Utilities.getDSSArray_Integer(getNumSteps(), getStates());
+			result = Utilities.getDSSArray(getNumSteps(), getStates());
 			break;
 		default:
 			result = super.getPropertyValue(index);
