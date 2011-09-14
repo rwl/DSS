@@ -137,7 +137,7 @@ public class RegControlImpl extends ControlClassImpl implements RegControl {
 
 		RegControlObj arc = activeRegControlObj;
 
-		int paramPointer = 0;
+		int paramPointer = -1;
 		String paramName = parser.getNextParam();
 		String param = parser.makeString();
 		while (param.length() > 0) {
@@ -147,7 +147,7 @@ public class RegControlImpl extends ControlClassImpl implements RegControl {
 				paramPointer = commandList.getCommand(paramName);
 			}
 
-			if ((paramPointer >= 0) && (paramPointer < numProperties))
+			if (paramPointer >= 0 && (paramPointer < numProperties))
 				arc.setPropertyValue(paramPointer, param);
 
 			switch (paramPointer) {
@@ -269,7 +269,7 @@ public class RegControlImpl extends ControlClassImpl implements RegControl {
 					}
 				}
 				break;
-			case 23:
+			case 22:
 				arc.setRevPowerThreshold(arc.getKWRevPowerThreshold() * 1000.0);
 				break;
 			}

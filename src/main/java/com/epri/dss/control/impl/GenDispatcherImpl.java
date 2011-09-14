@@ -28,7 +28,7 @@ public class GenDispatcherImpl extends ControlClassImpl implements GenDispatcher
 
 	protected void defineProperties() {
 
-		this.numProperties = GenDispatcher.NumPropsThisClass;
+		numProperties = GenDispatcher.NumPropsThisClass;
 		countProperties();  // get inherited property count
 		allocatePropertyArrays();
 
@@ -77,7 +77,7 @@ public class GenDispatcherImpl extends ControlClassImpl implements GenDispatcher
 
 		GenDispatcherObj agd = activeGenDispatcherObj;
 
-		int paramPointer = 0;
+		int paramPointer = -1;
 		String paramName = parser.getNextParam();
 		String param = parser.makeString();
 		while (param.length() > 0) {
@@ -87,7 +87,7 @@ public class GenDispatcherImpl extends ControlClassImpl implements GenDispatcher
 				paramPointer = commandList.getCommand(paramName);
 			}
 
-			if ((paramPointer >= 0) && (paramPointer <= numProperties))
+			if (paramPointer >= 0 && paramPointer < numProperties)
 				agd.setPropertyValue(paramPointer, param);
 
 			switch (paramPointer) {
@@ -121,7 +121,7 @@ public class GenDispatcherImpl extends ControlClassImpl implements GenDispatcher
 				}
 				break;
 			default:
-				// Inherited parameters
+				// inherited parameters
 				classEdit(activeGenDispatcherObj, paramPointer - GenDispatcher.NumPropsThisClass);
 				break;
 			}

@@ -76,7 +76,7 @@ public class GenDispatcherObjImpl extends ControlElemImpl implements GenDispatch
 						"Re-specify terminal no.", 371);
 			} else {
 				// sets name of i-th terminal's connected bus in GenDispatcher's buslist
-				setBus(1, monitoredElement.getBus(elementTerminal));
+				setBus(0, monitoredElement.getBus(elementTerminal));
 			}
 		} else {
 			DSSGlobals.doSimpleMsg("Monitored Element in GenDispatcher."+getName()+" does not exist:\""+elementName+"\"", 372);
@@ -91,7 +91,7 @@ public class GenDispatcherObjImpl extends ControlElemImpl implements GenDispatch
 		if (monitoredElement != null) {
 			setNPhases(getControlledElement().getNPhases());
 			setNConds(nPhases);
-			setBus(1, monitoredElement.getBus(elementTerminal));
+			setBus(0, monitoredElement.getBus(elementTerminal));
 		}
 		super.makePosSequence();
 	}
@@ -176,7 +176,7 @@ public class GenDispatcherObjImpl extends ControlElemImpl implements GenDispatch
 			}
 
 			if (Math.abs(QDiff) > halfKWBand) {  // redispatch generators
-				// QDiff is kvar needed to get back into band
+				// QDiff is kVAr needed to get back into band
 				for (i = 0; i < listSize; i++) {
 					gen = genPointerList.get(i);
 					// compute new dispatch value for this generator ...
@@ -202,15 +202,15 @@ public class GenDispatcherObjImpl extends ControlElemImpl implements GenDispatch
 	@Override
 	public void initPropertyValues(int arrayOffset) {
 
-		propertyValue[0] = "";  // "element";
-		propertyValue[1] = "1";  // "terminal";
-		propertyValue[2] = "8000";
-		propertyValue[3] = "100";
-		propertyValue[4] = "0";
-		propertyValue[5] = "";
-		propertyValue[6] = "";
+		setPropertyValue(0, "");  // "element";
+		setPropertyValue(1, "1");  // "terminal";
+		setPropertyValue(2, "8000");
+		setPropertyValue(3, "100");
+		setPropertyValue(4, "0");
+		setPropertyValue(5, "");
+		setPropertyValue(6, "");
 
-		super.initPropertyValues(GenDispatcher.NumPropsThisClass);	// TODO Check zero based indexing
+		super.initPropertyValues(GenDispatcher.NumPropsThisClass - 1);
 	}
 
 	public boolean makeGenList() {

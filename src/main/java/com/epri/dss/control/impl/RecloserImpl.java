@@ -135,7 +135,7 @@ public class RecloserImpl extends ControlClassImpl implements Recloser {
 
 		RecloserObj ar = activeRecloserObj;
 
-		int paramPointer = 0;
+		int paramPointer = -1;
 		String paramName = parser.getNextParam();
 		String param = parser.makeString();
 		while (param.length() > 0) {
@@ -145,7 +145,7 @@ public class RecloserImpl extends ControlClassImpl implements Recloser {
 				paramPointer = commandList.getCommand(paramName);
 			}
 
-			if ((paramPointer >= 0) && (paramPointer <= numProperties))
+			if (paramPointer >= 0 && paramPointer < numProperties)
 				ar.setPropertyValue(paramPointer, param);
 
 			switch (paramPointer) {
@@ -226,10 +226,10 @@ public class RecloserImpl extends ControlClassImpl implements Recloser {
 
 			switch (paramPointer) {
 			/* Default the controlled element to the monitored element */
-			case 1:
+			case 0:
 				ar.setElementName(ar.getMonitoredElementName());
 				break;
-			case 2:
+			case 1:
 				ar.setElementTerminal(ar.getMonitoredElementTerminal());
 				break;
 			}

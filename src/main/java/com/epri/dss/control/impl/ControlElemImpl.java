@@ -37,18 +37,18 @@ public class ControlElemImpl extends DSSCktElement implements ControlElem {
 	 * Do the action that is pending from last sample.
 	 */
 	public void doPendingAction(int code, int proxyHdl) {
-		DSSGlobals.doSimpleMsg("Programming Error: Reached base class for doPendingAction."+DSSGlobals.CRLF+"Device: "+getDSSClassName()+"."+getName(), 460);
+		DSSGlobals.doSimpleMsg("Programming error: Reached base class for doPendingAction."+DSSGlobals.CRLF+"Device: "+getDSSClassName()+"."+getName(), 460);
 	}
 
 	public void reset() {
-		DSSGlobals.doSimpleMsg("Programming Error: Reached base class for reset."+DSSGlobals.CRLF+"Device: "+getDSSClassName()+"."+getName(), 461);
+		DSSGlobals.doSimpleMsg("Programming error: Reached base class for reset."+DSSGlobals.CRLF+"Device: "+getDSSClassName()+"."+getName(), 461);
 	}
 
 	/**
 	 * Sample control quantities and set action times in control queue.
 	 */
 	public void sample() {
-		DSSGlobals.doSimpleMsg("Programming Error: Reached base class for sample."+DSSGlobals.CRLF+"Device: "+getDSSClassName()+"."+getName(), 462);
+		DSSGlobals.doSimpleMsg("Programming error: Reached base class for sample."+DSSGlobals.CRLF+"Device: "+getDSSClassName()+"."+getName(), 462);
 	}
 
 	public void setControlledElement(CktElement value) {

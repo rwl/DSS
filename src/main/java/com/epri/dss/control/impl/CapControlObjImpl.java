@@ -125,15 +125,15 @@ public class CapControlObjImpl extends ControlElemImpl implements CapControlObj 
 			controlledCapacitor = getCapacitor();
 			setNPhases( getControlledElement().getNPhases() );  // force number of phases to be same
 			setNConds(nPhases);
-			getControlledElement().setActiveTerminalIdx(0);  // make the 1st terminal active   TODO Check zero based indexing
-			// Get control synched up with capacitor
+			getControlledElement().setActiveTerminalIdx(0);  // make the 1st terminal active
+			// get control synched up with capacitor
 
 			if (controlledCapacitor.availableSteps() == controlledCapacitor.getNumSteps()) {
-				getControlledElement().setConductorClosed(0, false);  // TODO Check zero based indexing
+				getControlledElement().setConductorClosed(-1, false);  // -1 sets all conductors
 			} else {
-				getControlledElement().setConductorClosed(0, true);  // TODO Check zero based indexing
+				getControlledElement().setConductorClosed(-1, true);  // -1 sets all conductors
 			}
-			if (getControlledElement().getConductorClosed(0)) {  // check state of phases of active terminal
+			if (getControlledElement().getConductorClosed(-1)) {  // check state of phases of active terminal
 				presentState = ControlAction.CLOSE;
 			} else {
 				presentState = ControlAction.OPEN;
@@ -151,17 +151,17 @@ public class CapControlObjImpl extends ControlElemImpl implements CapControlObj 
 		devIndex = Utilities.getCktElementIndex(elementName);
 		if (devIndex >= 0) {
 			monitoredElement = ckt.getCktElements().get(devIndex);
-			if (elementTerminal > monitoredElement.getNTerms() - 1) {  // TODO Check zero based indexing
+			if (elementTerminal >= monitoredElement.getNTerms()) {
 				DSSGlobals.doErrorMsg("CapControl: \"" + getName() + "\"",
 						"Terminal no. \"" +"\" does not exist.", "Re-specify terminal no.", 362);
 			} else {
-				// sets name of i-th terminal's connected bus in CapControl's buslist
-				setBus(1, monitoredElement.getBus(elementTerminal));  // TODO Check zero based indexing
+				// sets name of i-th terminal's connected bus in CapControl's bus list
+				setBus(0, monitoredElement.getBus(elementTerminal));
 
 				// allocate a buffer big enough to hold everything from the monitored element
 				cBuffer = Utilities.resizeArray(cBuffer, monitoredElement.getYorder());
 
-				condOffset = (elementTerminal - 1) * monitoredElement.getNConds();  // for speedy sampling
+				condOffset = elementTerminal * monitoredElement.getNConds();  // for speedy sampling
 			}
 		} else {
 			DSSGlobals.doSimpleMsg("Monitored Element in CapControl."+getName()+ " does not exist:\""+elementName+"\"", 363);
@@ -189,12 +189,12 @@ public class CapControlObjImpl extends ControlElemImpl implements CapControlObj 
 		}
 
 		if (monitoredElement != null) {
-			setBus(1, monitoredElement.getBus(elementTerminal));
+			setBus(0, monitoredElement.getBus(elementTerminal));
 
 			// allocate a buffer big enough to hold everything from the monitored element
 			cBuffer = Utilities.resizeArray(cBuffer, monitoredElement.getYorder());
 
-			condOffset = (elementTerminal - 1) * monitoredElement.getNConds();  // for speedy sampling
+			condOffset = elementTerminal * monitoredElement.getNConds();  // for speedy sampling
 		}
 		super.makePosSequence();
 	}
@@ -208,43 +208,45 @@ public class CapControlObjImpl extends ControlElemImpl implements CapControlObj 
 	private void getBusVoltages(Bus pBus, Complex[] buff) {
 		int j;
 
-		if (pBus.getVBus() != null)  // uses nphases from CapControlObj
+		if (pBus.getVBus() != null)  // uses nPhases from CapControlObj
 			for (j = 0; j < nPhases; j++)
-				cBuffer[j] = DSSGlobals.activeCircuit.getSolution().getNodeV()[ pBus.getRef(j) ];  // TODO: Check cBuffer shouldn't be buff
+				buff[j] = DSSGlobals.activeCircuit.getSolution().getNodeV()[ pBus.getRef(j) ];
 	}
 
 
 	/**
 	 * Get current to control on based on type of control specified.
 	 */
-	private void getControlCurrent(MutableDouble controlCurrent) {
-		// FIXME: return double
+	private double getControlCurrent() {
 		int i;
+		double controlCurrent;
 
 		switch (CTPhase) {
 		case CapControl.AVGPHASES:
-			controlCurrent.setValue(0.0);  // get avg of all phases
+			controlCurrent = 0.0;  // get avg of all phases
 			for (i = (1 + condOffset); i < (nPhases + condOffset); i++)  // TODO Check zero based indexing
-				controlCurrent.add(cBuffer[i].abs());
-			controlCurrent.setValue(controlCurrent.doubleValue() / nPhases / CTRatio);
+				controlCurrent += cBuffer[i].abs();
+			controlCurrent = controlCurrent / nPhases / CTRatio;
 			break;
 		case CapControl.MAXPHASE:
-			controlCurrent.setValue(0.0);  // get max of all phases
+			controlCurrent = 0.0;  // get max of all phases
 			for (i = (1 + condOffset); i < (nPhases + condOffset); i++)
-				controlCurrent.setValue(Math.max(controlCurrent.doubleValue(), cBuffer[i].abs()));
-			controlCurrent.setValue(controlCurrent.doubleValue() / CTRatio);
+				controlCurrent = Math.max(controlCurrent, cBuffer[i].abs());
+			controlCurrent = controlCurrent / CTRatio;
 			break;
 		case CapControl.MINPHASE:
-			controlCurrent.setValue(1.0e50);  // get min of all phases
+			controlCurrent = 1.0e50;  // get min of all phases
 			for (i = (1 + condOffset); i < (nPhases + condOffset); i++)
-				controlCurrent.setValue(Math.min(controlCurrent.doubleValue(), cBuffer[i].abs()));
-			controlCurrent.setValue(controlCurrent.doubleValue() / CTRatio);
+				controlCurrent = Math.min(controlCurrent, cBuffer[i].abs());
+			controlCurrent = controlCurrent / CTRatio;
 			break;
 		default:
 			/* Just use one phase because that's what most controls do. */
-			controlCurrent.setValue(cBuffer[CTPhase].abs() / CTRatio);  // monitored phase only
+			controlCurrent = cBuffer[CTPhase].abs() / CTRatio;  // monitored phase only
 			break;
 		}
+
+		return controlCurrent;
 	}
 
 	@Override
@@ -276,7 +278,7 @@ public class CapControlObjImpl extends ControlElemImpl implements CapControlObj 
 	@Override
 	public void doPendingAction(int code, int proxyHdl) {
 
-		getControlledElement().setActiveTerminalIdx(0);  // set active terminal of capacitor to terminal 1  TODO Check zero based indexing
+		getControlledElement().setActiveTerminalIdx(0);  // set active terminal of capacitor to terminal 1
 
 		switch (pendingChange) {
 		case OPEN:
@@ -327,41 +329,34 @@ public class CapControlObjImpl extends ControlElemImpl implements CapControlObj 
 		}
 
 		shouldSwitch = false;
-		armed        = false;  // reset control
+		armed = false;  // reset control
 	}
 
-
-	private int nextDeltaPhase(int iphs) {
-		int result = iphs + 1;
-		if (result >= nPhases)
-			result = 0;
-		return result;
-	}
 	/**
 	 * Get Voltage used for voltage control based on specified options.
 	 */
-	private void getControlVoltage(MutableDouble controlVoltage) {
-		// FIXME: return double
+	private double getControlVoltage() {
 		int i;
+		double controlVoltage;
 
 		switch (PTPhase) {
 		case CapControl.AVGPHASES:
-			controlVoltage.setValue(0.0);
+			controlVoltage = 0.0;
 			for (i = 0; i < monitoredElement.getNPhases(); i++)
-				controlVoltage.add(cBuffer[i].abs());
-			controlVoltage.setValue(controlVoltage.doubleValue() / monitoredElement.getNPhases() / PTRatio);
+				controlVoltage += cBuffer[i].abs();
+			controlVoltage = controlVoltage / monitoredElement.getNPhases() / PTRatio;
 			break;
 		case CapControl.MAXPHASE:
-			controlVoltage.setValue(0.0);
+			controlVoltage = 0.0;
 			for (i = 0; i < monitoredElement.getNPhases(); i++)
-				controlVoltage.setValue(Math.max(controlVoltage.doubleValue(), cBuffer[i].abs()));
-			controlVoltage.setValue(controlVoltage.doubleValue() / PTRatio);
+				controlVoltage = Math.max(controlVoltage, cBuffer[i].abs());
+			controlVoltage = controlVoltage / PTRatio;
 			break;
 		case CapControl.MINPHASE:
-			controlVoltage.setValue(1.0e50);
+			controlVoltage = 1.0e50;
 			for (i = 0; i < monitoredElement.getNPhases(); i++)
-				controlVoltage.setValue(Math.min(controlVoltage.doubleValue(), cBuffer[i].abs()));
-			controlVoltage.setValue(controlVoltage.doubleValue() / PTRatio);
+				controlVoltage = Math.min(controlVoltage, cBuffer[i].abs());
+			controlVoltage = controlVoltage / PTRatio;
 			break;
 		default:
 			/* Just use one phase because that's what most controls do. */
@@ -369,18 +364,30 @@ public class CapControlObjImpl extends ControlElemImpl implements CapControlObj 
 			CapacitorObj pElem = (CapacitorObj) getControlledElement();
 			switch (pElem.getConnection()) {
 			case 1:
-				controlVoltage.setValue( cBuffer[PTPhase].subtract( cBuffer[nextDeltaPhase(PTPhase)] ).abs() / PTRatio );  // delta
+				controlVoltage = cBuffer[PTPhase].subtract( cBuffer[nextDeltaPhase(PTPhase)] ).abs() / PTRatio;  // delta
 				break;
 			default:
-				controlVoltage.setValue( cBuffer[PTPhase].abs() / PTRatio );  // wye - default
+				controlVoltage = cBuffer[PTPhase].abs() / PTRatio;  // wye - default
 				break;
 			}
 			break;
 		}
+
+		return controlVoltage;
+	}
+
+	private int nextDeltaPhase(int iphs) {
+		int result = iphs + 1;
+		if (result >= nPhases)
+			result = 0;
+		return result;
 	}
 
 
-	private static double PF1to2(Complex S) {  // return PF in range of 1 to 2
+	/**
+	 * @return PF in range of 1 to 2
+	 */
+	private static double pf1to2(Complex S) {
 		double result;
 		double Sabs = S.abs();
 
@@ -400,14 +407,11 @@ public class CapControlObjImpl extends ControlElemImpl implements CapControlObj 
 	 */
 	@Override
 	public void sample() {
-		double normalizedTime, Q;
-		MutableDouble VTest = new MutableDouble();
-		MutableDouble currTest = new MutableDouble();
 		Complex S;
-		double PF;
+		double normalizedTime, Q, PF, currTest, VTest;
 
 		getControlledElement().setActiveTerminalIdx(0);
-		if (getControlledElement().getConductorClosed(0)) {  // check state of phases of active terminal
+		if (getControlledElement().getConductorClosed(-1)) {  // check state of phases of active terminal
 			presentState = ControlAction.CLOSE;
 		} else {
 			presentState = ControlAction.OPEN;
@@ -424,11 +428,11 @@ public class CapControlObjImpl extends ControlElemImpl implements CapControlObj 
 					monitoredElement.getTermVoltages(elementTerminal, cBuffer);
 				}
 
-				getControlVoltage(VTest);
+				VTest = getControlVoltage();
 
 				switch (presentState) {
 				case OPEN:
-					if (VTest.doubleValue() < VMin) {
+					if (VTest < VMin) {
 						setPendingChange(ControlAction.CLOSE);
 						shouldSwitch = true;
 						if (showEventLog)
@@ -437,7 +441,7 @@ public class CapControlObjImpl extends ControlElemImpl implements CapControlObj 
 					}
 					break;
 				case CLOSE:
-					if (VTest.doubleValue() > VMax) {
+					if (VTest > VMax) {
 						setPendingChange(ControlAction.OPEN);
 						shouldSwitch = true;
 						if (showEventLog)
@@ -452,16 +456,16 @@ public class CapControlObjImpl extends ControlElemImpl implements CapControlObj 
 
 		if (!shouldSwitch) {  // else skip other control evaluations
 			switch (controlType) {
-			case CURRENT:  /* Current */
+			case CURRENT:
 
 				// check largest current of all phases of monitored element
 				monitoredElement.getCurrents(cBuffer);
 
-				getControlCurrent(currTest);
+				currTest = getControlCurrent();
 
 				switch (presentState) {
 				case OPEN:
-					if (currTest.doubleValue() > onValue) {
+					if (currTest > onValue) {
 						setPendingChange(ControlAction.CLOSE);
 						shouldSwitch = true;
 					} else {
@@ -470,11 +474,11 @@ public class CapControlObjImpl extends ControlElemImpl implements CapControlObj 
 					}
 					break;
 				case CLOSE:
-					if (currTest.doubleValue() < offValue) {
+					if (currTest < offValue) {
 						setPendingChange(ControlAction.OPEN);
 						shouldSwitch = true;
 					} else if (controlledCapacitor.availableSteps() > 0) {
-						if (currTest.doubleValue() > onValue) {
+						if (currTest > onValue) {
 							setPendingChange(ControlAction.CLOSE);
 							shouldSwitch = true;
 						}
@@ -484,14 +488,14 @@ public class CapControlObjImpl extends ControlElemImpl implements CapControlObj 
 					break;
 				}
 				break;
-			case VOLTAGE:  /* Voltage */
+			case VOLTAGE:
 				monitoredElement.getTermVoltages(elementTerminal, cBuffer);
 
-				getControlVoltage(VTest);
+				VTest = getControlVoltage();
 
 				switch (presentState) {
 				case OPEN:
-					if (VTest.doubleValue() < onValue) {
+					if (VTest < onValue) {
 						setPendingChange(ControlAction.CLOSE);
 						shouldSwitch = true;
 					} else {
@@ -500,11 +504,11 @@ public class CapControlObjImpl extends ControlElemImpl implements CapControlObj 
 					}
 					break;
 				case CLOSE:
-					if (VTest.doubleValue() > offValue) {
+					if (VTest > offValue) {
 						setPendingChange(ControlAction.OPEN);
 						shouldSwitch = true;
 					} else if (controlledCapacitor.availableSteps() > 0) {
-						if (VTest.doubleValue() < onValue) {
+						if (VTest < onValue) {
 							setPendingChange(ControlAction.CLOSE);
 							shouldSwitch = true;
 						}
@@ -515,7 +519,7 @@ public class CapControlObjImpl extends ControlElemImpl implements CapControlObj 
 					break;
 				}
 				break;
-			case KVAR:  /* kvar */
+			case KVAR:
 				//MonitoredElement.ActiveTerminalIdx = ElementTerminal;
 				S = monitoredElement.getPower(elementTerminal);
 				Q = S.getImaginary() * 0.001;  // kvar
@@ -577,14 +581,14 @@ public class CapControlObjImpl extends ControlElemImpl implements CapControlObj 
 					break;
 				}
 				break;
-			case TIME:  /* time */
+			case TIME:
 				SolutionObj sol = DSSGlobals.activeCircuit.getSolution();
 				normalizedTime = normalizeToTOD(sol.getIntHour(), sol.getDynaVars().t);
 
 				switch (presentState) {
 				case OPEN:
 					if (offValue > onValue) {
-						if ((normalizedTime >= onValue) && (normalizedTime < offValue)) {
+						if (normalizedTime >= onValue && normalizedTime < offValue) {
 							setPendingChange(ControlAction.CLOSE);
 							shouldSwitch  = true;
 						} else {
@@ -592,7 +596,7 @@ public class CapControlObjImpl extends ControlElemImpl implements CapControlObj 
 							setPendingChange(ControlAction.NONE);
 						}
 					} else {  // OFF time is next day
-						if ((normalizedTime >= onValue) && (normalizedTime < 24.0)) {
+						if (normalizedTime >= onValue && normalizedTime < 24.0) {
 							setPendingChange(ControlAction.CLOSE);
 							shouldSwitch  = true;
 						} else {
@@ -603,11 +607,11 @@ public class CapControlObjImpl extends ControlElemImpl implements CapControlObj 
 					break;
 				case CLOSE:
 					if (offValue > onValue) {
-						if (normalizedTime  >= offValue) {
+						if (normalizedTime >= offValue) {
 							setPendingChange(ControlAction.OPEN);
 							shouldSwitch = true;
 						} else if (controlledCapacitor.availableSteps() > 0) {
-							if ((normalizedTime >= onValue) && (normalizedTime < offValue)) {
+							if (normalizedTime >= onValue && normalizedTime < offValue) {
 								setPendingChange(ControlAction.CLOSE);  // we can go some more
 								shouldSwitch = true;
 							}
@@ -616,11 +620,11 @@ public class CapControlObjImpl extends ControlElemImpl implements CapControlObj 
 							setPendingChange(ControlAction.NONE);
 						}
 					} else {  // off time is next day
-						if ((normalizedTime >= offValue) && (normalizedTime < onValue)) {
+						if (normalizedTime >= offValue && normalizedTime < onValue) {
 							setPendingChange(ControlAction.OPEN);
 							shouldSwitch = true;
 						} else if (controlledCapacitor.availableSteps() > 0) {
-							if ((normalizedTime >= onValue) && (normalizedTime < 24.0)) {
+							if (normalizedTime >= onValue && normalizedTime < 24.0) {
 								setPendingChange(ControlAction.CLOSE);  // we can go some more
 								shouldSwitch = true;
 							}
@@ -632,20 +636,21 @@ public class CapControlObjImpl extends ControlElemImpl implements CapControlObj 
 					break;
 				}
 
-			case PF:  /* PF */
+			case PF:
 				//MonitoredElement.ActiveTerminalIdx = ElementTerminal;
 				S = monitoredElement.getPower(elementTerminal);
-				PF = PF1to2(S);  // TODO Check zero based indexing
+				PF = pf1to2(S);
 
 				/* PF is in range of 0 .. 2; leading is 1..2 */
 				/* When turning on make sure there is at least half the kvar of the bank */
 
 				switch (presentState) {
 				case OPEN:
-					if ((PF < PFOnValue) && (S.getImaginary() * 0.001 > controlledCapacitor.getTotalKVAr() * 0.5)) {  // make sure we don't go too far leading
+					if (PF < PFOnValue && (S.getImaginary() * 0.001 > controlledCapacitor.getTotalKVAr() * 0.5)) {  // make sure we don't go too far leading
 						setPendingChange(ControlAction.CLOSE);
 						shouldSwitch = true;
-					} else {  // reset
+					} else {
+						// reset
 						setPendingChange(ControlAction.NONE);
 					}
 					break;
@@ -654,7 +659,7 @@ public class CapControlObjImpl extends ControlElemImpl implements CapControlObj 
 						setPendingChange(ControlAction.OPEN);
 						shouldSwitch = true;
 					} else if (controlledCapacitor.availableSteps() > 0) {
-						if ((PF < PFOnValue) && (S.getImaginary() * 0.001 > controlledCapacitor.getTotalKVAr() / controlledCapacitor.getNumSteps() * 0.5)) {
+						if (PF < PFOnValue && (S.getImaginary() * 0.001 > controlledCapacitor.getTotalKVAr() / controlledCapacitor.getNumSteps() * 0.5)) {
 							setPendingChange(ControlAction.CLOSE);  // we can go some more
 							shouldSwitch = true;
 						}
@@ -689,7 +694,7 @@ public class CapControlObjImpl extends ControlElemImpl implements CapControlObj 
 				Utilities.appendToEventLog("Capacitor." + getControlledElement().getName(), String.format("**Armed**, Delay= %.5g sec", timeDelay));
 		}
 
-		if (armed && (pendingChange == ControlAction.NONE)) {
+		if (armed && pendingChange == ControlAction.NONE) {
 			ckt.getControlQueue().delete(controlActionHandle);
 			armed = false;
 			if (showEventLog)
@@ -707,6 +712,7 @@ public class CapControlObjImpl extends ControlElemImpl implements CapControlObj 
 	 */
 	private double normalizeToTOD(int h, double sec) {
 		int hourOfDay;
+		double result;
 
 		if (h > 24) {
 			hourOfDay = (h - ((h - 1) / 24) * 24);  // creates numbers 1-24
@@ -714,11 +720,11 @@ public class CapControlObjImpl extends ControlElemImpl implements CapControlObj 
 			hourOfDay = h;
 		}
 
-		double result = hourOfDay + sec / 3600.0;
+		result = hourOfDay + sec / 3600.0;
 
 		// if the TOD is at least slightly greater than 24:00 wrap around to 0:00
 		if (result - 24.0 > DSSGlobals.EPSILON)
-			result = result - 24.0;  // Wrap around
+			result = result - 24.0;  // wrap around
 
 		return result;
 	}
@@ -732,10 +738,10 @@ public class CapControlObjImpl extends ControlElemImpl implements CapControlObj 
 		getControlledElement().setActiveTerminalIdx(0);
 		switch (initialState) {
 		case OPEN:
-			getControlledElement().setConductorClosed(0, false);  // open all phases of active terminal
+			getControlledElement().setConductorClosed(-1, false);  // open all phases of active terminal
 			break;
 		case CLOSE:
-			getControlledElement().setConductorClosed(0, true);   // close all phases of active terminal
+			getControlledElement().setConductorClosed(-1, true);   // close all phases of active terminal
 			break;
 		}
 		shouldSwitch = false;
@@ -746,26 +752,26 @@ public class CapControlObjImpl extends ControlElemImpl implements CapControlObj 
 	@Override
 	public void initPropertyValues(int arrayOffset) {
 
-		propertyValue[0]  = "";   // "element";
-		propertyValue[1]  = "1";  // "terminal";
-		propertyValue[2]  = "";
-		propertyValue[3]  = "current";
-		propertyValue[4]  = "60";
-		propertyValue[5]  = "60";
-		propertyValue[6]  = "300";
-		propertyValue[7]  = "200";
-		propertyValue[8]  = "15";
-		propertyValue[9]  = "NO";
-		propertyValue[10] = "126";
-		propertyValue[11] = "115";
-		propertyValue[12] = "15";
-		propertyValue[13] = "300";
-		propertyValue[14] = "1";
-		propertyValue[15] = "1";
-		propertyValue[16] = "";
-		propertyValue[17] = "YES";
+		setPropertyValue(0, "");   // "element";
+		setPropertyValue(1, "1");  // "terminal";
+		setPropertyValue(2, "");
+		setPropertyValue(3, "current");
+		setPropertyValue(4, "60");
+		setPropertyValue(5, "60");
+		setPropertyValue(6, "300");
+		setPropertyValue(7, "200");
+		setPropertyValue(8, "15");
+		setPropertyValue(9, "NO");
+		setPropertyValue(10, "126");
+		setPropertyValue(11, "115");
+		setPropertyValue(12, "15");
+		setPropertyValue(13, "300");
+		setPropertyValue(14, "1");
+		setPropertyValue(15, "1");
+		setPropertyValue(16, "");
+		setPropertyValue(17, "YES");
 
-		super.initPropertyValues(CapControl.NumPropsThisClass);
+		super.initPropertyValues(CapControl.NumPropsThisClass - 1);
 	}
 
 	public void setPendingChange(ControlAction value) {

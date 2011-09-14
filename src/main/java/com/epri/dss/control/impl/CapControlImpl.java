@@ -124,7 +124,7 @@ public class CapControlImpl extends ControlClassImpl implements CapControl {
 
 		CapControlObj acc = activeCapControlObj;
 
-		int paramPointer = 0;
+		int paramPointer = -1;
 		String paramName = parser.getNextParam();
 		String param = parser.makeString();
 		while (param.length() > 0) {
@@ -134,7 +134,7 @@ public class CapControlImpl extends ControlClassImpl implements CapControl {
 				paramPointer = commandList.getCommand(paramName);
 			}
 
-			if ((paramPointer >= 0) && (paramPointer <= numProperties))
+			if ((paramPointer >= 0) && (paramPointer < numProperties))
 				acc.setPropertyValue(paramPointer, param);
 
 			switch (paramPointer) {

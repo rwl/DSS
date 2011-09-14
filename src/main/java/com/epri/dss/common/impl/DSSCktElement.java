@@ -131,7 +131,7 @@ public class DSSCktElement extends DSSObjectImpl implements CktElement {
 	 */
 	public boolean getConductorClosed(int index) {
 		boolean result;
-		if (index == -1) {
+		if (index == -1) {  // all phases
 			result = true;
 			for (int i = 0; i < nPhases; i++) {
 				if (!terminals[activeTerminalIdx].getConductors()[i].isClosed()) {
@@ -156,7 +156,7 @@ public class DSSCktElement extends DSSObjectImpl implements CktElement {
 			DSSGlobals.activeCircuit.getSolution().setSystemYChanged(true);  // force Y matrix rebuild
 			YPrimInvalid = true;
 		} else {
-			if (index > 0 && index <= nConds) {
+			if (index >= 0 && index < nConds) {
 				terminals[activeTerminalIdx].getConductors()[index].setClosed(value);
 				DSSGlobals.activeCircuit.getSolution().setSystemYChanged(true);
 				YPrimInvalid = true;

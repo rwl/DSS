@@ -59,41 +59,39 @@ public class RecloserObjImpl extends ControlElemImpl implements RecloserObj {
 		nConds = 3;
 		setNTerms(1);   // this forces allocation of terminals and conductors in base class
 
-		elementName       = "";
+		elementName = "";
 		setControlledElement(null);
-		elementTerminal   = 1;
+		elementTerminal = 0;
 
 		monitoredElementName = "";
 		monitoredElementTerminal = 1;
 		monitoredElement = null;
 
-		phaseFast      = RecloserImpl.getTCC_Curve("a");
-		phaseDelayed   = RecloserImpl.getTCC_Curve("d");
-		groundFast     = null;
-		groundDelayed  = null;
+		phaseFast     = RecloserImpl.getTCC_Curve("a");
+		phaseDelayed  = RecloserImpl.getTCC_Curve("d");
+		groundFast    = null;
+		groundDelayed = null;
 
-		phaseTrip      = 1.0;
-		groundTrip     = 1.0;
-		phaseInst      = 0.0;
-		groundInst     = 0.0;
+		phaseTrip     = 1.0;
+		groundTrip    = 1.0;
+		phaseInst     = 0.0;
+		groundInst    = 0.0;
 
-		TDGrDelayed    = 1.0;
-		TDPhDelayed    = 1.0;
-		TDGrFast       = 1.0;
-		TDPhFast       = 1.0;
+		TDGrDelayed   = 1.0;
+		TDPhDelayed   = 1.0;
+		TDGrFast      = 1.0;
+		TDPhFast      = 1.0;
 
-		resetTime      = 15.0;
-		numReclose     = 3;
-		numFast	    = 1;
+		resetTime     = 15.0;
+		numReclose    = 3;
+		numFast	      = 1;
 
 		recloseIntervals = new double[4];  // fixed allocation of 4
 		recloseIntervals[0] = 0.5;
 		recloseIntervals[1] = 2.0;
 		recloseIntervals[2] = 2.0;
 
-
 		presentState  = ControlAction.CLOSE;
-
 
 		operationCount = 1;
 		lockedOut      = false;
@@ -101,7 +99,6 @@ public class RecloserObjImpl extends ControlElemImpl implements RecloserObj {
 		armedForClose  = false;
 		groundTarget   = false;
 		phaseTarget    = false;
-
 
 		cBuffer = null;
 
@@ -121,16 +118,16 @@ public class RecloserObjImpl extends ControlElemImpl implements RecloserObj {
 		if (devIndex >= 0) {
 			monitoredElement = ckt.getCktElements().get(devIndex);
 			setNPhases(monitoredElement.getNPhases());  // force number of phases to be same
-			if (monitoredElementTerminal > monitoredElement.getNTerms()) {
+			if (monitoredElementTerminal >= monitoredElement.getNTerms()) {
 				DSSGlobals.doErrorMsg("Recloser: \"" + getName() + "\"",
 						"Terminal no. \"" +"\" does not exist.",
 						"Re-specify terminal no.", 392);
 			} else {
 				// sets name of i-th terminal's connected bus in Recloser's bus list
-				setBus(1, monitoredElement.getBus(monitoredElementTerminal));
+				setBus(0, monitoredElement.getBus(monitoredElementTerminal));
 				// allocate a buffer big enough to hold everything from the monitored element
 				cBuffer = Utilities.resizeArray(cBuffer, monitoredElement.getYorder());
-				condOffset = (monitoredElementTerminal - 1) * monitoredElement.getNConds();  // for speedy sampling
+				condOffset = monitoredElementTerminal * monitoredElement.getNConds();  // for speedy sampling
 			}
 		}
 
@@ -142,7 +139,7 @@ public class RecloserObjImpl extends ControlElemImpl implements RecloserObj {
 			setControlledElement( ckt.getCktElements().get(devIndex) );
 
 			getControlledElement().setActiveTerminalIdx(elementTerminal);  // make the 1st terminal active
-			if (getControlledElement().getConductorClosed(0)) {  // check state of phases of active terminal
+			if (getControlledElement().getConductorClosed(-1)) {  // check state of phases of active terminal
 				presentState = ControlAction.CLOSE;
 				lockedOut = false;
 				operationCount = 1;
@@ -168,10 +165,10 @@ public class RecloserObjImpl extends ControlElemImpl implements RecloserObj {
 		if (monitoredElement != null) {
 			setNPhases( monitoredElement.getNPhases() );
 			setNConds(nPhases);
-			setBus(1, monitoredElement.getBus(elementTerminal));
+			setBus(0, monitoredElement.getBus(elementTerminal));
 			// allocate a buffer big enough to hold everything from the monitored element
 			cBuffer = Utilities.resizeArray(cBuffer, monitoredElement.getYorder());
-			condOffset = (elementTerminal - 1) * monitoredElement.getNConds();  // for speedy sampling
+			condOffset = elementTerminal * monitoredElement.getNConds();  // for speedy sampling
 		}
 		super.makePosSequence();
 	}
@@ -205,7 +202,7 @@ public class RecloserObjImpl extends ControlElemImpl implements RecloserObj {
 			switch (presentState) {
 			case CLOSE:
 				if (armedForOpen) {  // ignore if we became disarmed in meantime
-					getControlledElement().setConductorClosed(0, false);  // open all phases of active terminal
+					getControlledElement().setConductorClosed(-1, false);  // open all phases of active terminal
 					if (operationCount > numReclose) {
 						lockedOut = true;
 						Utilities.appendToEventLog("Recloser."+getName(), "Opened, Locked Out");
@@ -229,9 +226,9 @@ public class RecloserObjImpl extends ControlElemImpl implements RecloserObj {
 			switch (presentState) {
 			case OPEN:
 				if (armedForClose && !lockedOut) {
-					getControlledElement().setConductorClosed(0, true);  // close all phases of active terminal
+					getControlledElement().setConductorClosed(-1, true);  // close all phases of active terminal
 					operationCount += 1;
-					Utilities.appendToEventLog("Recloser."+getName(), "Closed");
+					Utilities.appendToEventLog("Recloser." + getName(), "Closed");
 					armedForClose = false;
 				}
 				break;
@@ -254,17 +251,17 @@ public class RecloserObjImpl extends ControlElemImpl implements RecloserObj {
 			getControlledElement().setActiveTerminalIdx(elementTerminal);  // set active terminal
 			switch (action.toLowerCase().charAt(0)) {
 			case 'o':
-				getControlledElement().setConductorClosed(0, false);  // open all phases of active terminal
+				getControlledElement().setConductorClosed(-1, false);  // open all phases of active terminal
 				lockedOut = true;
 				operationCount = numReclose + 1;
 				break;
 			case 't':
-				getControlledElement().setConductorClosed(0, false);  // open all phases of active terminal
+				getControlledElement().setConductorClosed(-1, false);  // open all phases of active terminal
 				lockedOut = true;
 				operationCount = numReclose + 1;
 				break;
 			case 'c':
-				getControlledElement().setConductorClosed(0, true);   // close all phases of active terminal
+				getControlledElement().setConductorClosed(-1, true);   // close all phases of active terminal
 				lockedOut = false;
 				operationCount = 1;
 				break;
@@ -280,6 +277,7 @@ public class RecloserObjImpl extends ControlElemImpl implements RecloserObj {
 		int i;
 		double CMag;
 		Complex CSum;
+		Circuit ckt;
 
 		TCC_CurveObj groundCurve, phaseCurve;
 		double groundTime, phaseTime, tripTime, timeTest;
@@ -287,7 +285,7 @@ public class RecloserObjImpl extends ControlElemImpl implements RecloserObj {
 
 		getControlledElement().setActiveTerminalIdx(elementTerminal);
 
-		if (getControlledElement().getConductorClosed(0)) {  // check state of phases of active terminal
+		if (getControlledElement().getConductorClosed(-1)) {  // check state of phases of active terminal
 			presentState = ControlAction.CLOSE;
 		} else {
 			presentState = ControlAction.OPEN;
@@ -316,10 +314,10 @@ public class RecloserObjImpl extends ControlElemImpl implements RecloserObj {
 			/* Check ground trip, if any */
 			if (groundCurve != null) {
 				CSum = Complex.ZERO;
-				for (i = (1 + condOffset); i < (nPhases + condOffset); i++)
+				for (i = condOffset; i < nPhases + condOffset; i++)
 					CSum = CSum.add(cBuffer[i]);
 				CMag = CSum.abs();
-				if ((groundInst > 0.0) && (CMag >= groundInst) && (operationCount == 1)) {
+				if (groundInst > 0.0 && CMag >= groundInst && operationCount == 1) {
 					groundTime = 0.01 + delayTime;  // inst trip on first operation
 				} else {
 					groundTime = TDGround * groundCurve.getTCCTime(CMag / groundTrip);
@@ -331,15 +329,15 @@ public class RecloserObjImpl extends ControlElemImpl implements RecloserObj {
 				groundTarget = true;
 			}
 
-			// if GroundTime > 0 then we have a ground trip
+			// if groundTime > 0 then we have a ground trip
 
 			/* Check phase trip, if any */
 
 			if (phaseCurve != null) {
-				for (i = (1 + condOffset); i < (nPhases + condOffset); i++) {
+				for (i = condOffset; i < nPhases + condOffset; i++) {
 					CMag =  cBuffer[i].abs();
 
-					if ((phaseInst > 0.0) && (CMag >= phaseInst) && (operationCount == 1)) {
+					if (phaseInst > 0.0 && CMag >= phaseInst && operationCount == 1) {
 						phaseTime = 0.01 + delayTime;  // inst trip on first operation
 						break;  /* no sense checking other phases */
 					} else {
@@ -367,7 +365,7 @@ public class RecloserObjImpl extends ControlElemImpl implements RecloserObj {
 
 			if (tripTime > 0.0) {
 				if (!armedForOpen) {
-					Circuit ckt = DSSGlobals.activeCircuit;
+					ckt = DSSGlobals.activeCircuit;
 					// then arm for an open operation
 					ckt.getControlQueue().push(ckt.getSolution().getIntHour(), ckt.getSolution().getDynaVars().t + tripTime + delayTime, ControlAction.OPEN, 0, this);
 					if (operationCount <= numReclose)
@@ -377,7 +375,7 @@ public class RecloserObjImpl extends ControlElemImpl implements RecloserObj {
 				}
 			} else {
 				if (armedForOpen) {
-					Circuit ckt = DSSGlobals.activeCircuit;
+					ckt = DSSGlobals.activeCircuit;
 					// if current dropped below pickup, disarm trip and set for reset.
 					ckt.getControlQueue().push(ckt.getSolution().getIntHour(), ckt.getSolution().getDynaVars().t + resetTime, ControlAction.CTRL_RESET, 0, this);
 					armedForOpen = false;
@@ -433,37 +431,37 @@ public class RecloserObjImpl extends ControlElemImpl implements RecloserObj {
 
 		if (getControlledElement() != null) {
 			getControlledElement().setActiveTerminalIdx(elementTerminal);  // set active terminal
-			getControlledElement().setConductorClosed(0, true);            // close all phases of active terminal
+			getControlledElement().setConductorClosed(-1, true);            // close all phases of active terminal
 		}
 	}
 
 	@Override
 	public void initPropertyValues(int arrayOffset) {
 
-		propertyValue[0]  = "";   // "element";
-		propertyValue[1]  = "1";  // "terminal";
-		propertyValue[2]  = "";
-		propertyValue[3]  = "1";  // "terminal";
-		propertyValue[4]  = String.valueOf(numFast);
-		propertyValue[5]  = "";
-		propertyValue[6]  = "";
-		propertyValue[7]  = "";
-		propertyValue[8]  = "";
-		propertyValue[9]  = "1.0";
-		propertyValue[10] = "1.0";
-		propertyValue[11] = "0";
-		propertyValue[12] = "0";
-		propertyValue[13] = "15";
-		propertyValue[14] = "4";
-		propertyValue[15] = "(0.5, 2.0, 2.0)";
-		propertyValue[16] = "0.0";
-		propertyValue[17] = "";
-		propertyValue[18] = "1.0";
-		propertyValue[19] = "1.0";
-		propertyValue[20] = "1.0";
-		propertyValue[21] = "1.0";
+		setPropertyValue(0, "");   // "element";
+		setPropertyValue(1, "1");  // "terminal";
+		setPropertyValue(2, "");
+		setPropertyValue(3, "1");  // "terminal";
+		setPropertyValue(4, String.valueOf(numFast));
+		setPropertyValue(5, "");
+		setPropertyValue(6, "");
+		setPropertyValue(7, "");
+		setPropertyValue(8, "");
+		setPropertyValue(9, "1.0");
+		setPropertyValue(10, "1.0");
+		setPropertyValue(11, "0");
+		setPropertyValue(12, "0");
+		setPropertyValue(13, "15");
+		setPropertyValue(14, "4");
+		setPropertyValue(15, "(0.5, 2.0, 2.0)");
+		setPropertyValue(16, "0.0");
+		setPropertyValue(17, "");
+		setPropertyValue(18, "1.0");
+		setPropertyValue(19, "1.0");
+		setPropertyValue(20, "1.0");
+		setPropertyValue(21, "1.0");
 
-		super.initPropertyValues(Recloser.NumPropsThisClass);
+		super.initPropertyValues(Recloser.NumPropsThisClass - 1);
 	}
 
 	// FIXME Private members in Open DSS
