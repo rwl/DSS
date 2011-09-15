@@ -42,19 +42,18 @@ public class FaultObjImpl extends PDElementImpl implements FaultObj {
 		nConds = 1;
 		setNTerms(2);   // force allocation of terminals and conductors
 
-		setBus(2, (getBus(0) + ".0"));  // default to grounded   TODO Check zero based indexing
+		setBus(1, (getBus(0) + ".0"));  // default to grounded
 		setShunt(true);
 
-		GMatrix       = null;
-		G             = 10000.0;
-		specType      = 1;  // G 2=Gmatrix
+		GMatrix  = null;
+		G        = 10000.0;
+		specType = 1;  // G 2=Gmatrix
 
-		minAmps       = 5.0;
-		isTemporary   = false;
-		cleared       = false;
-		isOn         = true;
-		onTime       = 0.0;  // always enabled at the start of a solution
-
+		minAmps     = 5.0;
+		isTemporary = false;
+		cleared     = false;
+		isOn        = true;
+		onTime      = 0.0;  // always enabled at the start of a solution
 
 		randomMult = 1;
 
@@ -97,7 +96,7 @@ public class FaultObjImpl extends PDElementImpl implements FaultObj {
 		}
 
 		// give the multiplier some skew to approximate more uniform/Gaussian current distributions
-		// RandomMult = cube(RandomMult);   removed 12/7/04
+		// randomMult = cube(randomMult);   removed 12/7/04
 
 		setYPrimInvalid(true);  // force rebuilding of matrix
 	}
@@ -110,14 +109,8 @@ public class FaultObjImpl extends PDElementImpl implements FaultObj {
 		CMatrix YPrimTemp;
 
 		if (isYprimInvalid()) {  // reallocate YPrim if something has invalidated old allocation
-			if (YPrimSeries != null)
-				YPrimSeries = null;
 			YPrimSeries = new CMatrixImpl(YOrder);
-			if (YPrimShunt != null)
-				YPrimShunt = null;
 			YPrimShunt = new CMatrixImpl(YOrder);
-			if (YPrim != null)
-				YPrim = null;
 			YPrim = new CMatrixImpl(YOrder);
 		} else {
 			YPrimSeries.clear();  // zero out YPrim
@@ -160,10 +153,10 @@ public class FaultObjImpl extends PDElementImpl implements FaultObj {
 			break;
 		case 2:  // G matrix specified
 			for (i = 0; i < nPhases; i++) {
-				ioffset = (i - 1) * nPhases;
+				ioffset = i * nPhases;
 				for (j = 0; j < nPhases; j++) {
 					if (isOn) {
-						value = new Complex(GMatrix[(ioffset + j)] / randomMult, 0.0);
+						value = new Complex(GMatrix[ioffset + j] / randomMult, 0.0);
 					} else {
 						value = Complex.ZERO;
 					}
@@ -200,7 +193,7 @@ public class FaultObjImpl extends PDElementImpl implements FaultObj {
 			f.print("~ " + pc.getPropertyName()[5] + "= (");
 			for (i = 0; i < nPhases; i++) {
 				for (j = 0; j < i; j++)
-					f.print(GMatrix[(i - 1) * nPhases + j] + " ");
+					f.print(GMatrix[i * nPhases + j] + " ");
 				if (i != nPhases)
 					f.print("|");
 			}
@@ -230,7 +223,7 @@ public class FaultObjImpl extends PDElementImpl implements FaultObj {
 		case DSSGlobals.EVENTDRIVEN:
 			if (!isOn) {
 				/* Turn it on unless it has been previously cleared */
-				if ((Utilities.presentTimeInSec() > onTime) && !cleared) {
+				if (Utilities.presentTimeInSec() > onTime && !cleared) {
 					isOn = true;
 					setYPrimInvalid(true);
 					Utilities.appendToEventLog("Fault." + getName(), "**APPLIED**");
@@ -248,7 +241,7 @@ public class FaultObjImpl extends PDElementImpl implements FaultObj {
 		case DSSGlobals.TIMEDRIVEN:  // identical to event driven case.
 			if (!isOn) {
 				/* Turn it on unless it has been previously cleared */
-				if ((Utilities.presentTimeInSec() > onTime) && !cleared) {
+				if (Utilities.presentTimeInSec() > onTime && !cleared) {
 					isOn = true;
 					setYPrimInvalid(true);
 					Utilities.appendToEventLog("Fault." + getName(), "**APPLIED**");
@@ -281,24 +274,24 @@ public class FaultObjImpl extends PDElementImpl implements FaultObj {
 	@Override
 	public void initPropertyValues(int ArrayOffset) {
 
-		propertyValue[0] = getBus(0);
-		propertyValue[1] = getBus(1);
-		propertyValue[2] = "1";
-		propertyValue[3] = "0.0001";
-		propertyValue[4] = "0";
-		propertyValue[5] = "";
-		propertyValue[6] = "0.0";
-		propertyValue[7] = "no";
-		propertyValue[8] = "5.0";
+		setPropertyValue(0, getBus(0));
+		setPropertyValue(1, getBus(1));
+		setPropertyValue(2, "1");
+		setPropertyValue(3, "0.0001");
+		setPropertyValue(4, "0");
+		setPropertyValue(5, "");
+		setPropertyValue(6, "0.0");
+		setPropertyValue(7, "no");
+		setPropertyValue(8, "5.0");
 
-		super.initPropertyValues(Fault.NumPropsThisClass);
+		super.initPropertyValues(Fault.NumPropsThisClass - 1);
 
 		// override inherited properties
-		propertyValue[Fault.NumPropsThisClass + 1] = "0";  // normAmps   TODO Check zero based indexing
-		propertyValue[Fault.NumPropsThisClass + 2] = "0";  // emergAmps
-		propertyValue[Fault.NumPropsThisClass + 3] = "0";  // faultRate
-		propertyValue[Fault.NumPropsThisClass + 4] = "0";  // pctPerm
-		propertyValue[Fault.NumPropsThisClass + 5] = "0";  // hrsToRepair
+		setPropertyValue(Fault.NumPropsThisClass + 0, "0");  // normAmps
+		setPropertyValue(Fault.NumPropsThisClass + 1, "0");  // emergAmps
+		setPropertyValue(Fault.NumPropsThisClass + 2, "0");  // faultRate
+		setPropertyValue(Fault.NumPropsThisClass + 3, "0");  // pctPerm
+		setPropertyValue(Fault.NumPropsThisClass + 4, "0");  // hrsToRepair
 	}
 
 	@Override
@@ -311,12 +304,11 @@ public class FaultObjImpl extends PDElementImpl implements FaultObj {
 			if (GMatrix != null) {
 				for (int i = 0; i < nPhases; i++) {
 					for (int j = 0; j < i; j++)
-						result = result + String.format("%-g", GMatrix[(i - 1) * nPhases + j]) + " ";
-				if (i < nPhases)
-					result = result + "|";
+						result = result + String.format("%-g", GMatrix[i * nPhases + j]) + " ";
+					if (i < nPhases - 1)
+						result = result + "|";
 				}
 			}
-
 			result = result + ")";
 			break;
 		default:

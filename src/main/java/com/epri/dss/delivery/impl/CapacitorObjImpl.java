@@ -61,7 +61,7 @@ public class CapacitorObjImpl extends PDElementImpl implements CapacitorObj {
 		states = null;
 
 		setNumSteps(1);  // initial allocation for the arrays, too
-		lastStepInService = numSteps;
+		lastStepInService = numSteps - 1;
 
 		Utilities.initDblArray(numSteps, R, 0.0);
 		Utilities.initDblArray(numSteps, XL, 0.0);
@@ -74,8 +74,8 @@ public class CapacitorObjImpl extends PDElementImpl implements CapacitorObj {
 		Utilities.initDblArray(numSteps, C,
 				1.0 / (DSSGlobals.TWO_PI * baseFrequency * Math.pow(kVRating, 2) * 1000.0 / kVArRating[0]));
 
-		connection = 0;   // 0 or 1 for wye (default) or delta, respectively
-		specType = 1; // 1=kvar, 2=Cuf, 3=Cmatrix
+		connection = 0;  // 0 or 1 for wye (default) or delta, respectively
+		specType = 1;  // 1=kvar, 2=Cuf, 3=Cmatrix
 
 		normAmps = kVArRating[0] * DSSGlobals.SQRT3 / kVRating * 1.35;  // 135%
 		emergAmps = getNormAmps() * 1.8 / 1.35;  // 180%
@@ -147,7 +147,7 @@ public class CapacitorObjImpl extends PDElementImpl implements CapacitorObj {
 				totalKVAr = totalKVAr + w * C[i] * Math.pow(phaseKV, 2) / 1000.0;
 			break;
 		case 3:  // Cmatrix
-			// Nothing to do
+			// nothing to do
 			break;
 		}
 
@@ -176,14 +176,8 @@ public class CapacitorObjImpl extends PDElementImpl implements CapacitorObj {
 
 		if (isYprimInvalid()) {
 			// reallocate YPrim if something has invalidated old allocation
-			if (YPrimShunt != null)
-				YPrimShunt = null;
 			YPrimShunt = new CMatrixImpl(YOrder);
-			if (YPrimSeries != null)
-				YPrimSeries = null;
 			YPrimSeries = new CMatrixImpl(YOrder);
-			if (YPrim != null)
-				YPrim = null;
 			YPrim = new CMatrixImpl(YOrder);
 		} else {
 			YPrimSeries.clear(); // zero out YPrim
@@ -241,10 +235,8 @@ public class CapacitorObjImpl extends PDElementImpl implements CapacitorObj {
 		if (getCMatrix() != null) {
 			f.print(parentClass.getPropertyName()[6] + "= (");
 			for (int i = 0; i < getNPhases(); i++) {
-				for (int j = 0; j < i; j++) {
-					// TODO: Check zero based indexing
-					f.print((getCMatrix()[(i - 1) * getNPhases() + j] * 1.0e6) + " ");
-				}
+				for (int j = 0; j < i; j++)
+					f.print((getCMatrix()[i * getNPhases() + j] * 1.0e6) + " ");
 				if (i != getNPhases())
 					f.print("|");
 			}
@@ -258,7 +250,7 @@ public class CapacitorObjImpl extends PDElementImpl implements CapacitorObj {
 		f.println("~ " + parentClass.getPropertyName()[11] + "=" + getNumSteps());
 		f.println("~ " + parentClass.getPropertyName()[12] + "=" + getPropertyValue(12));
 
-		for (int i = Capacitor.NumPropsThisClass + 1; i < parentClass.getNumProperties(); i++) {  // TODO: Check zero based indexing
+		for (int i = Capacitor.NumPropsThisClass; i < parentClass.getNumProperties(); i++) {
 			f.println("~ " + parentClass.getPropertyName()[i] + "=" + getPropertyValue(i));
 		}
 
@@ -269,28 +261,28 @@ public class CapacitorObjImpl extends PDElementImpl implements CapacitorObj {
 
 	@Override
 	public void initPropertyValues(int arrayOffset) {
-		propertyValue[0] = getBus(0);  // TODO: Check zero based indexing
-		propertyValue[1] = getBus(1);  // TODO: Check zero based indexing
-		propertyValue[2] = "3";
-		propertyValue[3] = "1200";
-		propertyValue[4] = "12.47";
-		propertyValue[5] = "wye";
-		propertyValue[6] = "";
-		propertyValue[7] = "";
-		propertyValue[8] = "0";
-		propertyValue[9] = "0";
-		propertyValue[10] = "0";
-		propertyValue[11] = "1";
-		propertyValue[12] = "1";  // states
+		setPropertyValue(0, getBus(0));
+		setPropertyValue(1, getBus(1));
+		setPropertyValue(2, "3");
+		setPropertyValue(3, "1200");
+		setPropertyValue(4, "12.47");
+		setPropertyValue(5, "wye");
+		setPropertyValue(6, "");
+		setPropertyValue(7, "");
+		setPropertyValue(8, "0");
+		setPropertyValue(9, "0");
+		setPropertyValue(10, "0");
+		setPropertyValue(11, "1");
+		setPropertyValue(12, "1");  // states
 
-		super.initPropertyValues(Capacitor.NumPropsThisClass);
+		super.initPropertyValues(Capacitor.NumPropsThisClass - 1);
 
 		// override inherited properties
-		propertyValue[Capacitor.NumPropsThisClass + 1] = Utilities.strReal(getNormAmps(), 0);  // TODO: Check zero based indexing
-		propertyValue[Capacitor.NumPropsThisClass + 2] = Utilities.strReal(getEmergAmps(), 0);
-		propertyValue[Capacitor.NumPropsThisClass + 3] = Utilities.strReal(getFaultRate(), 0);
-		propertyValue[Capacitor.NumPropsThisClass + 4] = Utilities.strReal(getPctPerm(), 0);
-		propertyValue[Capacitor.NumPropsThisClass + 5] = Utilities.strReal(getHrsToRepair(), 0);
+		setPropertyValue(Capacitor.NumPropsThisClass + 0, Utilities.strReal(getNormAmps(), 0));
+		setPropertyValue(Capacitor.NumPropsThisClass + 1, Utilities.strReal(getEmergAmps(), 0));
+		setPropertyValue(Capacitor.NumPropsThisClass + 2, Utilities.strReal(getFaultRate(), 0));
+		setPropertyValue(Capacitor.NumPropsThisClass + 3, Utilities.strReal(getPctPerm(), 0));
+		setPropertyValue(Capacitor.NumPropsThisClass + 4, Utilities.strReal(getHrsToRepair(), 0));
 		clearPropSeqArray();
 	}
 
@@ -304,13 +296,13 @@ public class CapacitorObjImpl extends PDElementImpl implements CapacitorObj {
 			switch (getSpecType()) {
 			case 1:  // kvar
 
-				if ((getNPhases() > 1) || (getConnection() != 0)) {
+				if (getNPhases() > 1 || getConnection() != 0) {
 					phaseKV = getKVRating() / DSSGlobals.SQRT3;
 				} else {
 					phaseKV = getKVRating();
 				}
 
-				s = "Phases=1 " + String.format(" kV=%-.5g kvar=(", phaseKV);
+				s = "phases=1 " + String.format(" kV=%-.5g kvar=(", phaseKV);
 
 				for (i = 0; i < getNumSteps(); i++) {
 					kVArPerPhase = getKVArRating()[i] / getNPhases();
@@ -322,20 +314,20 @@ public class CapacitorObjImpl extends PDElementImpl implements CapacitorObj {
 				break;
 				/* Leave R as specified */
 			case 2:
-				s = "Phases=1 ";
+				s = "phases=1 ";
 				break;
 			case 3:  // C matrix
-				s = "Phases=1 ";
+				s = "phases=1 ";
 				// r1
 				Cs = 0.0;  // avg self
 				for (i = 0; i < getNPhases(); i++)
-					Cs = Cs + getCMatrix()[(i - 1) * getNPhases() + i];  // TODO: Check zero based indexing
+					Cs = Cs + getCMatrix()[i * getNPhases() + i];
 				Cs = Cs / getNPhases();
 
 				Cm = 0.0;  // avg mutual
 				for (i = 1; i < getNPhases(); i++)
 					for (j = i; j < getNPhases(); j++)
-						Cm = Cm + getCMatrix()[(i - 1) * getNPhases() + j];
+						Cm = Cm + getCMatrix()[i * getNPhases() + j];
 				Cm = Cm / (getNPhases() * (getNPhases() - 1.0) / 2.0);
 
 				s = s + String.format(" Cuf=%-.5g", (Cs - Cm));
@@ -371,12 +363,12 @@ public class CapacitorObjImpl extends PDElementImpl implements CapacitorObj {
 
 		/* Reallocate all arrays associated with steps */
 
-		if ((getNumSteps() != value) && (value > 0)) {
+		if (getNumSteps() != value && value > 0) {
 			RStep = 0.0;
 			XLStep = 0.0;
 			if (getNumSteps() == 1) {
 				/* Save total values to be divided up */
-				setTotalKVAr(getKVArRating()[0]);
+				setTotalKVAr( getKVArRating()[0] );
 				RStep = getR()[0] * value;
 				XLStep = getXL()[0] * value;
 			}
@@ -432,7 +424,7 @@ public class CapacitorObjImpl extends PDElementImpl implements CapacitorObj {
 				}
 
 				for (i = 0; i < value; i++)
-					getStates()[i] = 1;  // turn them all ON
+					getStates()[i] = 1;  // turn them all on
 				setLastStepInService(value);
 				for (i = 1; i < value; i++)
 					getHarm()[i] = getHarm()[0];  // tune them all the same as first
@@ -445,7 +437,6 @@ public class CapacitorObjImpl extends PDElementImpl implements CapacitorObj {
 	// FIXME Private member in OpenDSS
 	public void processHarmonicSpec(String param) {
 		Utilities.interpretDblArray(param, getNumSteps(), getHarm());
-
 		setDoHarmonicRecalc(true);
 	}
 
@@ -453,9 +444,9 @@ public class CapacitorObjImpl extends PDElementImpl implements CapacitorObj {
 	public void processStatesSpec(String param) {
 		Utilities.interpretIntArray(param, getNumSteps(), getStates());
 
-		lastStepInService = 0;
+		lastStepInService = -1;
 
-		for (int i = getNumSteps(); i < 0; i--)  // TODO Check zero based indexing
+		for (int i = getNumSteps() - 1; i < 0; i--)
 			if (getStates()[i] == 1) {
 				lastStepInService = i;
 				break;
@@ -471,7 +462,7 @@ public class CapacitorObjImpl extends PDElementImpl implements CapacitorObj {
 		double w, freqMultiple;
 		boolean hasZl;
 
-		setYPrimFreq(DSSGlobals.activeCircuit.getSolution().getFrequency());
+		setYPrimFreq( DSSGlobals.activeCircuit.getSolution().getFrequency() );
 		freqMultiple = getYPrimFreq() / getBaseFrequency();
 		w = DSSGlobals.TWO_PI * getYPrimFreq();
 
@@ -495,9 +486,8 @@ public class CapacitorObjImpl extends PDElementImpl implements CapacitorObj {
 				value = value.negate();
 				for (i = 0; i < getNPhases(); i++) {
 					YPrimWork.set(i, i, value2);
-					for (j = 0; j < i - 1; j++) {  // TODO Check zero based indexing
+					for (j = 0; j < i; j++)
 						YPrimWork.setSym(i, j, value);
-					}
 					// remainder of the matrix is all zero
 				}
 				break;
@@ -522,9 +512,8 @@ public class CapacitorObjImpl extends PDElementImpl implements CapacitorObj {
 				value = value.negate();
 				for (i = 0; i < getNPhases(); i++) {
 					YPrimWork.set(i, i, value2);
-					for (j = 0; j < i - 1; j++) {  // TODO Check zero based indexing
+					for (j = 0; j < i; j++)
 						YPrimWork.setSym(i, j, value);
-					}
 					// remainder of the matrix is all zero
 				}
 				break;
@@ -542,9 +531,9 @@ public class CapacitorObjImpl extends PDElementImpl implements CapacitorObj {
 			break;
 		case 3:  // C matrix specified
 			for (i = 0; i < getNPhases(); i++) {
-				ioffset = (i - 1) * getNPhases();  // TODO Check zero based indexing
+				ioffset = i * getNPhases();
 				for (j = 0; j < getNPhases(); j++) {
-					value = new Complex(0.0, getCMatrix()[(ioffset + j)] * w);
+					value = new Complex(0.0, getCMatrix()[ioffset + j] * w);
 					YPrimWork.set(i, j, value);
 					YPrimWork.set(i + getNPhases(), j + getNPhases(), value);
 					value = value.negate();
@@ -614,19 +603,18 @@ public class CapacitorObjImpl extends PDElementImpl implements CapacitorObj {
 		String result = "";
 		switch (index) {  // special cases
 		case 0:
-			result = getBus(0);  // TODO: Check zero based indexing
+			result = getBus(0);
 			break;
 		case 1:
-			result = getBus(1);  // TODO: Check zero based indexing
+			result = getBus(1);
 			break;
 		case 3:
 			result = Utilities.getDSSArray(getNumSteps(), getKVArRating());
 			break;
 		case 7:
 			temp = new double[getNumSteps()];
-			for (int i = 0; i < getNumSteps(); i++) {
+			for (int i = 0; i < getNumSteps(); i++)
 				temp[i] = getC()[i] * 1.0e6;  // to microfarads
-			}
 			result = Utilities.getDSSArray(getNumSteps(), temp);
 			temp = null;  // throw away temp storage
 			break;
@@ -652,22 +640,22 @@ public class CapacitorObjImpl extends PDElementImpl implements CapacitorObj {
 	public boolean addStep() {
 		// start with last step in service and see if we can add more; if not return false.
 
-		if (lastStepInService == getNumCustomers()) {
+		if (lastStepInService == getNumCustomers() - 1) {
 			return false;
 		} else {
 			lastStepInService += 1;
-			getStates()[lastStepInService] = 1;  // TODO Check zero based indexing
+			getStates()[lastStepInService] = 1;
 			return true;
 		}
 	}
 
 	public boolean subtractStep() {
-		if (lastStepInService == 0) {  // TODO Check zero based indexing
+		if (lastStepInService == -1) {
 			return false;
 		} else {
-			getStates()[lastStepInService] = 0;  // TODO Check zero based indexing
+			getStates()[lastStepInService] = 0;
 			lastStepInService -= 1;
-			if (lastStepInService == 0) {
+			if (lastStepInService == -1) {
 				return false;
 			} else {
 				return true;  // signify bank open

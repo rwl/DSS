@@ -422,7 +422,7 @@ public class Parser {
 	}
 
 	private int _elementIndex(int ii, int jj, int expectedOrder) {
-		return (jj - 1) * expectedOrder + ii;  // TODO Check zero based indexing
+		return jj* expectedOrder + ii;
 	}
 
 	public int parseAsSymMatrix(int expectedOrder, double[] matrixBuffer) {

@@ -33,7 +33,6 @@ public class FaultImpl extends PDClassImpl implements Fault {
 		countProperties();  // get inherited property count
 		allocatePropertyArrays();
 
-
 		// define property names
 		propertyName[0] = "bus1";
 		propertyName[1] = "bus2";
@@ -73,7 +72,6 @@ public class FaultImpl extends PDClassImpl implements Fault {
 
 	@Override
 	public int newObject(String objName) {
-
 		DSSGlobals.activeCircuit.setActiveCktElement(new FaultObjImpl(this, objName));
 		return addObjectToList(DSSGlobals.activeDSSObject);
 	}
@@ -84,7 +82,7 @@ public class FaultImpl extends PDClassImpl implements Fault {
 		double[] matBuffer = new double[af.getNPhases() * af.getNPhases()];
 		int orderFound = Parser.getInstance().parseAsSymMatrix(af.getNPhases(), matBuffer);
 
-		if (orderFound > 0) {  // parse was successful  TODO Check zero based indexing
+		if (orderFound > 0) {  // parse was successful
 			/* X */
 			af.setGMatrix( Utilities.resizeArray(af.getGMatrix(), af.getNPhases() * af.getNPhases()) );
 			for (int j = 0; j < af.getNPhases() * af.getNPhases(); j++)
@@ -102,7 +100,7 @@ public class FaultImpl extends PDClassImpl implements Fault {
 
 		FaultObj af = activeFaultObj;
 
-		af.setBus(1, s);  // TODO Check zero based indexing
+		af.setBus(0, s);
 
 		// default bus2 to zero node of bus1. (wye grounded connection)
 
@@ -111,12 +109,12 @@ public class FaultImpl extends PDClassImpl implements Fault {
 		if (dotpos >= 0) {
 			s2 = s.substring(0, dotpos);  // copy up to dot
 		} else {
-			s2 = s.substring(s.length());
+			s2 = s.substring(0, s.length());
 		}
 
 		s2 = s2 + ".0.0.0";  // set default for up to 3 phases
 
-		af.setBus(2, s2);  // TODO Check zero based indexing
+		af.setBus(1, s2);
 		af.setShunt(true);
 	}
 
@@ -131,7 +129,7 @@ public class FaultImpl extends PDClassImpl implements Fault {
 
 		FaultObj af = activeFaultObj;
 
-		int paramPointer = 0;
+		int paramPointer = -1;
 		String paramName = parser.getNextParam();
 		String param = parser.makeString();
 		while (param.length() > 0) {
@@ -141,7 +139,7 @@ public class FaultImpl extends PDClassImpl implements Fault {
 				paramPointer = commandList.getCommand(paramName);
 			}
 
-			if ((paramPointer >= 0) && (paramPointer <= numProperties))
+			if (paramPointer >= 0 && paramPointer < numProperties)
 				af.setPropertyValue(paramPointer, param);
 
 			switch (paramPointer) {
@@ -152,7 +150,7 @@ public class FaultImpl extends PDClassImpl implements Fault {
 				fltSetBus1(param);
 				break;
 			case 1:
-				af.setBus(2, param);  // TODO Check zero based indexing
+				af.setBus(1, param);
 				break;
 			case 2:
 				//NumPhases = parser.makeInteger();  // see below
@@ -189,7 +187,7 @@ public class FaultImpl extends PDClassImpl implements Fault {
 			// some specials ...
 			switch (paramPointer) {
 			case 0:
-				af.setPropertyValue(1, af.getBus(1));  // bus2 gets modified if bus1 is   TODO Check zero based indexing
+				af.setPropertyValue(1, af.getBus(1));  // bus2 gets modified if bus1 is
 				break;
 			case 1:
 				if (!Utilities.stripExtension(af.getBus(0)).equalsIgnoreCase( Utilities.stripExtension(af.getBus(1)) ))
@@ -262,7 +260,6 @@ public class FaultImpl extends PDClassImpl implements Fault {
 			af.setCleared(otherFault.isCleared());
 			af.setOn(otherFault.isOn());
 			af.setOnTime(otherFault.getOnTime());
-
 
 			if (otherFault.getGMatrix() == null) {
 				af.setGMatrix(null);

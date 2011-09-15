@@ -34,7 +34,6 @@ public class CapacitorImpl extends PDClassImpl implements Capacitor {
 		countProperties();  // get inherited property count
 		allocatePropertyArrays();
 
-
 		// define property names
 		propertyName[0] = "bus1";
 		propertyName[1] = "bus2";
@@ -82,7 +81,6 @@ public class CapacitorImpl extends PDClassImpl implements Capacitor {
 
 	@Override
 	public int newObject(String objName) {
-
 		DSSGlobals.activeCircuit.setActiveCktElement(new CapacitorObjImpl(this, objName));
 		return addObjectToList(DSSGlobals.activeDSSObject);
 	}
@@ -186,7 +184,7 @@ public class CapacitorImpl extends PDClassImpl implements Capacitor {
 
 		CapacitorObj aco = activeCapacitorObj;
 
-		int paramPointer = 0;
+		int paramPointer = -1;
 		String paramName = parser.getNextParam();
 		String param = parser.makeString();
 		while (param.length() > 0) {
@@ -196,50 +194,50 @@ public class CapacitorImpl extends PDClassImpl implements Capacitor {
 				paramPointer = commandList.getCommand(paramName);
 			}
 
-			if ((paramPointer > 0) && (paramPointer <= numProperties))  // TODO Check zero based indexing
+			if (paramPointer >= 0 && paramPointer < numProperties)
 				aco.setPropertyValue(paramPointer, param);
 
 			switch (paramPointer) {
-			case 0:
+			case -1:
 				DSSGlobals.doSimpleMsg("Unknown parameter \""+paramName+"\" for object \"Capacitor."+aco.getName()+"\"", 450);
 				break;
-			case 1:
+			case 0:
 				capSetBus1(param);
 				break;
-			case 2:
+			case 1:
 				aco.setBus(1, param);
 				break;
-			case 3:
+			case 2:
 				//aco.setNumPhases(parser.makeInteger());  // see below
 				break;
-			case 4:
+			case 3:
 				Utilities.interpretDblArray(param, aco.getNumSteps(), aco.getKVArRating());
 				break;
-			case 5:
+			case 4:
 				aco.setKVARating(parser.makeDouble());
 				break;
-			case 6:
+			case 5:
 				interpretConnection(param);
 				break;
-			case 7:
+			case 6:
 				doCmatrix();
 				break;
-			case 8:
+			case 7:
 				Utilities.interpretDblArray(param, aco.getNumSteps(), aco.getC());
 				break;
-			case 9:
+			case 8:
 				Utilities.interpretDblArray(param, aco.getNumSteps(), aco.getR());
 				break;
-			case 10:
+			case 9:
 				Utilities.interpretDblArray(param, aco.getNumSteps(), aco.getXL());
 				break;
-			case 11:
+			case 10:
 				aco.processHarmonicSpec(param);
 				break;
-			case 12:
+			case 11:
 				aco.setNumSteps(parser.makeInteger());
 				break;
-			case 13:
+			case 12:
 				aco.processStatesSpec(param);
 				break;
 			default:
