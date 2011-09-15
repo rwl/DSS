@@ -302,7 +302,7 @@ public class VSourceImpl extends PCClassImpl implements VSource {
 				avs.setNPhases(otherVSource.getNPhases());
 				avs.setNConds(avs.getNPhases());  // forces reallocation of terminal stuff
 
-				avs.setYorder(avs.getNConds() * avs.getNTerms());
+				avs.setYOrder(avs.getNConds() * avs.getNTerms());
 				avs.setYPrimInvalid(true);
 
 				if (avs.getZ() != null) avs.setZ(null);

@@ -154,36 +154,35 @@ public class GeneratorObjImpl extends PCElementImpl implements GeneratorObj {
 		PFNominal = 0.88;
 		//Rneut     = 0.0;
 		//Xneut     = 0.0;
-		yearlyShape    = "";
-		yearlyShapeObj = null;     // if YearlyShapeObj = null then the load alway stays nominal * global multipliers
-		dailyDispShape = "";
+		yearlyShape       = "";
+		yearlyShapeObj    = null;  // if YearlyShapeObj = null then the load alway stays nominal * global multipliers
+		dailyDispShape    = "";
 		dailyDispShapeObj = null;  // if DaillyShapeObj = null then the load alway stays nominal * global multipliers
 		dutyShape         = "";
 		dutyShapeObj      = null;  // if DutyShapeObj = null then the load alway stays nominal * global multipliers
-		connection        = 0;     // Wye (star)
-		genModel          = 1;  /* Typical fixed kW negative load */
+		connection        = 0;     // wye (star)
+		genModel          = 1;     /* Typical fixed kW negative load */
 		genClass          = 1;
 		lastYear          = 0;
 		lastGrowthFactor  = 1.0;
 
 		dQdVSaved = 0.0;  // initialize this here; allows generators to be turned off and on
 
-
 		generatorSolutionCount     = -1;  // for keep track of the present solution in injcurrent calcs
 		openGeneratorSolutionCount = -1;
 		YPrimOpenCond              = null;
 
-		genVars.kVGeneratorBase  = 12.47;
-		Vpu              = 1.0;
-		VTarget          = 1000.0 * Vpu * genVars.kVGeneratorBase / DSSGlobals.SQRT3;  /* Line-to-Neutral target */
-		VBase            = 7200.0;
-		VMinPU           = 0.90;
-		VMaxPU           = 1.10;
-		VBase95          = VMinPU * VBase;
-		VBase105         = VMaxPU * VBase;
-		YOrder           = nTerms * nConds;
-		randomMult       = 1.0 ;
-		fixed            = false;
+		genVars.kVGeneratorBase = 12.47;
+		Vpu        = 1.0;
+		VTarget    = 1000.0 * Vpu * genVars.kVGeneratorBase / DSSGlobals.SQRT3;  /* Line-to-Neutral target */
+		VBase      = 7200.0;
+		VMinPU     = 0.90;
+		VMaxPU     = 1.10;
+		VBase95    = VMinPU * VBase;
+		VBase105   = VMaxPU * VBase;
+		YOrder     = nTerms * nConds;
+		randomMult = 1.0;
+		fixed      = false;
 
 		/* Machine rating stuff */
 		genVars.kVARating  = kWBase * 1.2;
@@ -191,18 +190,18 @@ public class GeneratorObjImpl extends PCElementImpl implements GeneratorObj {
 
 		//GenVars.Vd = 7200.0;
 
-		genVars.puXd       = 1.0;
-		genVars.puXdp      = 0.28;
-		genVars.puXdpp     = 0.20;
-		genVars.Xd         = genVars.puXd * Math.pow(genVars.kVGeneratorBase, 2) * 1000.0 / genVars.kVARating;
-		genVars.Xdp        = genVars.puXdp * Math.pow(genVars.kVGeneratorBase, 2) * 1000.0 / genVars.kVARating;
-		genVars.Xdpp       = genVars.puXdpp * Math.pow(genVars.kVGeneratorBase, 2) * 1000.0 / genVars.kVARating;
-		genVars.HMass      = 1.0;  // W-sec/VA rating
-		genVars.theta      = 0.0;
-		genVars.w0         = DSSGlobals.TWO_PI * getBaseFrequency();
-		genVars.speed      = 0.0;
-		genVars.dSpeed     = 0.0;
-		genVars.D          = 1.0;
+		genVars.puXd   = 1.0;
+		genVars.puXdp  = 0.28;
+		genVars.puXdpp = 0.20;
+		genVars.Xd     = genVars.puXd * Math.pow(genVars.kVGeneratorBase, 2) * 1000.0 / genVars.kVARating;
+		genVars.Xdp    = genVars.puXdp * Math.pow(genVars.kVGeneratorBase, 2) * 1000.0 / genVars.kVARating;
+		genVars.Xdpp   = genVars.puXdpp * Math.pow(genVars.kVGeneratorBase, 2) * 1000.0 / genVars.kVARating;
+		genVars.HMass  = 1.0;  // W-sec/VA rating
+		genVars.theta  = 0.0;
+		genVars.w0     = DSSGlobals.TWO_PI * getBaseFrequency();
+		genVars.speed  = 0.0;
+		genVars.dSpeed = 0.0;
+		genVars.D      = 1.0;
 
 		userModel  = new GenUserModelImpl(genVars) ;
 		shaftModel = new GenUserModelImpl(genVars);
@@ -218,7 +217,7 @@ public class GeneratorObjImpl extends PCElementImpl implements GeneratorObj {
 
 		PVFactor      = 0.1;
 		debugTrace    = false;
-		forcedON     = false;
+		forcedON      = false;
 		genSwitchOpen = false;
 		shapeIsActual = false;
 
@@ -396,7 +395,6 @@ public class GeneratorObjImpl extends PCElementImpl implements GeneratorObj {
 					genVars.PNominalPerPhase = 1000.0 * kWBase * factor * shapeFactor.getReal() / nPhases;
 				}
 
-
 				if (genModel == 3) {
 					/* Just make sure present value is reasonable. */
 					if (genVars.QNominalPerPhase > varMax) {
@@ -458,9 +456,9 @@ public class GeneratorObjImpl extends PCElementImpl implements GeneratorObj {
 		varMax  = 1000.0 * kVArMax  / nPhases;
 
 		/* Populate data structures used for interchange with user-written models. */
-		genVars.Xd    = genVars.puXd   * 1000.0 * Math.pow(genVars.kVGeneratorBase, 2) / genVars.kVARating;
-		genVars.Xdp   = genVars.puXdp  * 1000.0 * Math.pow(genVars.kVGeneratorBase, 2) / genVars.kVARating;
-		genVars.Xdpp  = genVars.puXdpp * 1000.0 * Math.pow(genVars.kVGeneratorBase, 2) / genVars.kVARating;
+		genVars.Xd   = genVars.puXd   * 1000.0 * Math.pow(genVars.kVGeneratorBase, 2) / genVars.kVARating;
+		genVars.Xdp  = genVars.puXdp  * 1000.0 * Math.pow(genVars.kVGeneratorBase, 2) / genVars.kVARating;
+		genVars.Xdpp = genVars.puXdpp * 1000.0 * Math.pow(genVars.kVGeneratorBase, 2) / genVars.kVARating;
 		genVars.conn = connection;
 		genVars.numPhases = nPhases;
 		genVars.numConductors = nConds;
@@ -503,7 +501,7 @@ public class GeneratorObjImpl extends PCElementImpl implements GeneratorObj {
 
 		// initialize to zero - defaults to PQ generator
 		// solution object will reset after circuit modifications
-		dQdV      = dQdVSaved;         // for Model = 3
+		dQdV = dQdVSaved;                      // for model = 3
 		deltaQMax = (varMax - varMin) * 0.10;  // limit to 10% of range
 
 		setInjCurrent( Utilities.resizeArray(getInjCurrent(), YOrder) );
@@ -546,7 +544,7 @@ public class GeneratorObjImpl extends PCElementImpl implements GeneratorObj {
 				case 1:  /* Delta connection */
 					Ymatrix.set(i, i, Y);
 					Ymatrix.add(i, i, Y);  // put it in again
-					for (j = 0; j < i - 1; j++) {  // TODO Check zero based indexing
+					for (j = 0; j < i; j++) {
 						Ymatrix.setSym(i, j, Yij);
 					}
 					break;
@@ -574,7 +572,7 @@ public class GeneratorObjImpl extends PCElementImpl implements GeneratorObj {
 			Y = new Complex(Y.getReal(), Y.getImaginary() / freqMultiplier);
 
 			switch (connection) {
-			case 0:  // WYE
+			case 0:  // wye
 				Yij = Y.negate();
 				for (i = 0; i < nPhases; i++) {
 					Ymatrix.set(i, i, Y);
@@ -583,11 +581,12 @@ public class GeneratorObjImpl extends PCElementImpl implements GeneratorObj {
 				}
 				break;
 			case 1:  // delta or L-L
-				Y    = ComplexUtil.divide(Y, 3.0);  // convert to delta impedance
-				Yij  = Y.negate();
+				Y = ComplexUtil.divide(Y, 3.0);  // convert to delta impedance
+				Yij = Y.negate();
 				for (i = 0; i < nPhases; i++) {
 					j = i + 1;
-					if (j > nConds) j = 0;  // wrap around for closed connections
+					if (j >= nConds)
+						j = 0;  // wrap around for closed connections
 					Ymatrix.add(i, i, Y);
 					Ymatrix.add(j, j, Y);
 					Ymatrix.addSym(i, j, Yij);
@@ -603,11 +602,8 @@ public class GeneratorObjImpl extends PCElementImpl implements GeneratorObj {
 		// build only shunt Yprim
 		// build a dummy Yprim series so that calcV does not fail
 		if (isYprimInvalid()) {
-			if (YPrimShunt != null) YPrimShunt = null;
 			YPrimShunt = new CMatrixImpl(YOrder);
-			if (YPrimSeries != null) YPrimSeries = null;
 			YPrimSeries = new CMatrixImpl(YOrder);
-			if (YPrim != null) YPrim = null;
 			YPrim = new CMatrixImpl(YOrder);
 		} else {
 			YPrimShunt.clear();
@@ -620,13 +616,11 @@ public class GeneratorObjImpl extends PCElementImpl implements GeneratorObj {
 			// 12-7-99 we'll start with Yeq in system matrix
 			setNominalGeneration();
 			calcYPrimMatrix(YPrimShunt);
-
 		} else {
 
 			// admittance model wanted
 			setNominalGeneration();
 			calcYPrimMatrix(YPrimShunt);
-
 		}
 
 		// set YPrim_Series based on diagonals of YPrim_shunt so that calcVoltages doesn't fail
@@ -644,7 +638,7 @@ public class GeneratorObjImpl extends PCElementImpl implements GeneratorObj {
 	 *
 	 * Reverse of similar routine in load (complex negates are switched).
 	 */
-	private void stickCurrInTerminalArray(Complex[] termArray, Complex curr, int i) {
+	private void putCurrInTerminalArray(Complex[] termArray, Complex curr, int i) {
 		switch (connection) {
 		case 0:  // wye
 			termArray[i] = termArray[i].add(curr);
@@ -653,7 +647,8 @@ public class GeneratorObjImpl extends PCElementImpl implements GeneratorObj {
 		case 1:  // delta
 			termArray[i] = termArray[i].add(curr);
 			int j = i + 1;
-			if (j > nConds) j = 0;
+			if (j >= nConds)
+				j = 0;
 			termArray[j] = termArray[j].add(curr.negate());
 			break;
 		}
@@ -766,10 +761,9 @@ public class GeneratorObjImpl extends PCElementImpl implements GeneratorObj {
 		}
 		*/
 
-
 		calcVTerminalPhase();  // get actual voltage across each phase of the load
 		for (i = 0; i < nPhases; i++) {
-			V    = VTerminal[i];
+			V = VTerminal[i];
 			VMag = V.abs();
 
 			switch (connection) {
@@ -794,9 +788,9 @@ public class GeneratorObjImpl extends PCElementImpl implements GeneratorObj {
 				break;
 			}
 
-			stickCurrInTerminalArray(getITerminal(), curr.negate(), i);  // put into terminal array taking into account connection
+			putCurrInTerminalArray(getITerminal(), curr.negate(), i);  // put into terminal array taking into account connection
 			setITerminalUpdated(true);
-			stickCurrInTerminalArray(getInjCurrent(), curr, i);  // put into terminal array taking into account connection
+			putCurrInTerminalArray(getInjCurrent(), curr, i);  // put into terminal array taking into account connection
 		}
 	}
 
@@ -816,9 +810,9 @@ public class GeneratorObjImpl extends PCElementImpl implements GeneratorObj {
 
 		for (i = 0; i < nPhases; i++) {
 			curr = Yeq2.multiply(VTerminal[i]);   // Yeq is always line to neutral
-			stickCurrInTerminalArray(getITerminal(), curr.negate(), i);  // put into terminal array taking into account connection
+			putCurrInTerminalArray(getITerminal(), curr.negate(), i);  // put into terminal array taking into account connection
 			setITerminalUpdated(true);
-			stickCurrInTerminalArray(getInjCurrent(), curr, i);  // put into terminal array taking into account connection
+			putCurrInTerminalArray(getInjCurrent(), curr, i);  // put into terminal array taking into account connection
 		}
 	}
 
@@ -847,7 +841,7 @@ public class GeneratorObjImpl extends PCElementImpl implements GeneratorObj {
 
 		// 12-9-99 added empirical 0.7 factor to improve iteration
 		// 12-17-99 changed to 0.1 because first guess was consistently too high
-		dQ =  PVFactor * dQdV * (VTarget - VAvg);   // vTarget is L-N
+		dQ = PVFactor * dQdV * (VTarget - VAvg);  // vTarget is L-N
 		if (Math.abs(dQ) > deltaQMax)
 			if (dQ < 0.0) {
 				dQ = -deltaQMax;
@@ -868,9 +862,9 @@ public class GeneratorObjImpl extends PCElementImpl implements GeneratorObj {
 		// presumably the var source will take care of the voltage problems
 		for (i = 0; i < nPhases; i++) {
 			curr = new Complex(genVars.PNominalPerPhase, genVars.QNominalPerPhase).divide(VTerminal[i]).conjugate();
-			stickCurrInTerminalArray(getITerminal(), curr.negate(), i);  // put into terminal array taking into account connection
+			putCurrInTerminalArray(getITerminal(), curr.negate(), i);  // put into terminal array taking into account connection
 			setITerminalUpdated(true);
-			stickCurrInTerminalArray(getInjCurrent(), curr, i);  // put into terminal array taking into account connection
+			putCurrInTerminalArray(getInjCurrent(), curr, i);  // put into terminal array taking into account connection
 		}
 	}
 
@@ -884,11 +878,11 @@ public class GeneratorObjImpl extends PCElementImpl implements GeneratorObj {
 		double VMag;
 
 		calcYPrimContribution(getInjCurrent());  // init injCurrent array
-		calcVTerminalPhase(); // get actual voltage across each phase of the load
+		calcVTerminalPhase();  // get actual voltage across each phase of the load
 		zeroITerminal();
 
 		for (i = 0; i < nPhases; i++) {
-			V    = VTerminal[i];
+			V = VTerminal[i];
 			VMag = V.abs();
 
 			switch (connection) {
@@ -912,9 +906,9 @@ public class GeneratorObjImpl extends PCElementImpl implements GeneratorObj {
 				}
 				break;
 			}
-			stickCurrInTerminalArray(getITerminal(), curr.negate(), i);  // put into terminal array taking into account connection
+			putCurrInTerminalArray(getITerminal(), curr.negate(), i);  // put into terminal array taking into account connection
 			setITerminalUpdated(true);
-			stickCurrInTerminalArray(getInjCurrent(), curr, i);  // put into terminal array taking into account connection
+			putCurrInTerminalArray(getInjCurrent(), curr, i);  // put into terminal array taking into account connection
 		}
 	}
 
@@ -932,7 +926,7 @@ public class GeneratorObjImpl extends PCElementImpl implements GeneratorObj {
 		zeroITerminal();
 
 		for (i = 0; i < nPhases; i++) {
-			V    = VTerminal[i];
+			V = VTerminal[i];
 			VMag = V.abs();
 
 			switch (connection) {
@@ -959,9 +953,9 @@ public class GeneratorObjImpl extends PCElementImpl implements GeneratorObj {
 				break;
 			}
 
-			stickCurrInTerminalArray(getITerminal(), curr.negate(), i);  // put into terminal array taking into account connection
+			putCurrInTerminalArray(getITerminal(), curr.negate(), i);  // put into terminal array taking into account connection
 			setITerminalUpdated(true);
-			stickCurrInTerminalArray(getInjCurrent(), curr, i);  // put into terminal array taking into account connection
+			putCurrInTerminalArray(getInjCurrent(), curr, i);  // put into terminal array taking into account connection
 		}
 	}
 
@@ -999,12 +993,12 @@ public class GeneratorObjImpl extends PCElementImpl implements GeneratorObj {
 		zeroITerminal();
 
 		for (i = 0; i < nPhases; i++) {
-			V    = VTerminal[i];
+			V = VTerminal[i];
 			VMag = V.abs();
 
 			switch (connection) {
 			case 0:
-				if ((VMag <= VBase95) || (VMag > VBase105)) {  // limit the current magnitude when voltage drops outside normal range
+				if (VMag <= VBase95 || VMag > VBase105) {  // limit the current magnitude when voltage drops outside normal range
 					curr = currentLimit.divide( ComplexUtil.divide(V, VMag) ).conjugate();  // current limit expression
 				} else {
 					curr = new Complex(genVars.PNominalPerPhase, genVars.QNominalPerPhase).divide(V).conjugate();  // above vMinPU, constant PQ
@@ -1012,7 +1006,7 @@ public class GeneratorObjImpl extends PCElementImpl implements GeneratorObj {
 				break;
 			case 1:
 				VMagLN = VMag / DSSGlobals.SQRT3;
-				if ((VMagLN <= VBase95) || (VMagLN > VBase105)) {  // limit the current magnitude when voltage drops outside normal range
+				if (VMagLN <= VBase95 || VMagLN > VBase105) {  // limit the current magnitude when voltage drops outside normal range
 					curr = currentLimit.divide( ComplexUtil.divide(V, VMag) ).conjugate();  // Current limit expression
 				} else {
 					curr = new Complex(genVars.PNominalPerPhase, genVars.QNominalPerPhase).divide(V).conjugate();  // above vMinPU, constant PQ
@@ -1020,9 +1014,9 @@ public class GeneratorObjImpl extends PCElementImpl implements GeneratorObj {
 				break;
 			}
 
-			stickCurrInTerminalArray(getITerminal(), curr.negate(), i);  // put into terminal array taking into account connection
+			putCurrInTerminalArray(getITerminal(), curr.negate(), i);  // put into terminal array taking into account connection
 			setITerminalUpdated(true);
-			stickCurrInTerminalArray(getInjCurrent(), curr, i);  // put into terminal array taking into account connection
+			putCurrInTerminalArray(getInjCurrent(), curr, i);  // put into terminal array taking into account connection
 		}
 	}
 
@@ -1037,7 +1031,7 @@ public class GeneratorObjImpl extends PCElementImpl implements GeneratorObj {
 		calcYPrimContribution(getInjCurrent());  // init injCurrent array
 
 		/* Inj = -Itotal (in) - Yprim * Vtemp */
-		if ((genModel == 6) && userModel.exists()) {  // auto selects model
+		if (genModel == 6 && userModel.exists()) {  // auto selects model
 			/* We have total currents in Itemp */
 			userModel.calc(VTerminal, ITerminal);  // returns terminal currents in iTerminal
 		} else {
@@ -1057,10 +1051,10 @@ public class GeneratorObjImpl extends PCElementImpl implements GeneratorObj {
 				calcVThevDyn();  // update for latest phase angle
 
 				// positive sequence contribution to iTerminal
-				I012[0] = V012[0].subtract(VThev).divide(new Complex(0.0, genVars.Xdp));
-				I012[1] = V012[1].divide(new Complex(0.0, genVars.Xdpp));
+				I012[1] = V012[1].subtract(VThev).divide(new Complex(0.0, genVars.Xdp));
+				I012[2] = V012[2].divide(new Complex(0.0, genVars.Xdpp));
 				if (connection == 1) {
-					I012[0] = Complex.ZERO;  // TODO Check zero based indexing
+					I012[0] = Complex.ZERO;
 				} else {
 					I012[0] = V012[0].divide(new Complex(0.0, genVars.Xdpp));
 				}
@@ -1084,7 +1078,7 @@ public class GeneratorObjImpl extends PCElementImpl implements GeneratorObj {
 			getInjCurrent()[i] = getInjCurrent()[i].add( getITerminal()[i].negate() );
 
 		/* Take Care of any shaft model calcs */
-		if ((genModel == 6) && shaftModel.exists()) {  // auto selects model
+		if (genModel == 6 && shaftModel.exists()) {  // auto selects model
 			// compute mech power to shaft
 			shaftModel.calc(getVTerminal(), getITerminal());  // returns pshaft at least
 		}
@@ -1117,7 +1111,7 @@ public class GeneratorObjImpl extends PCElementImpl implements GeneratorObj {
 		if (connection == 0)
 			cBuffer[nConds] = getVTerminal()[nConds];  // assume no neutral injection voltage
 
-		/* Inj currents = Yprim (E) */
+		/* Inj currents = Yprim(E) */
 		YPrim.vMult(getInjCurrent(), cBuffer);
 	}
 
@@ -1135,7 +1129,8 @@ public class GeneratorObjImpl extends PCElementImpl implements GeneratorObj {
 		case 1:
 			for (i = 0; i < nPhases; i++) {
 				j = i + 1;
-				if (j > nConds) j = 0;
+				if (j >= nConds)
+					j = 0;
 				getVTerminal()[i] = sol.vDiff(nodeRef[i], nodeRef[j]);
 			}
 			break;
@@ -1165,7 +1160,7 @@ public class GeneratorObjImpl extends PCElementImpl implements GeneratorObj {
 		setITerminalUpdated(false);
 		if (sol.isDynamicModel()) {
 			doDynamicMode();
-		} else if (sol.isHarmonicModel() && (sol.getFrequency() != ckt.getFundamental())) {
+		} else if (sol.isHarmonicModel() && sol.getFrequency() != ckt.getFundamental()) {
 			doHarmonicMode();
 		} else {
 			// compute currents and put into injTemp array
@@ -1281,7 +1276,8 @@ public class GeneratorObjImpl extends PCElementImpl implements GeneratorObj {
 
 		super.getTerminalCurrents(curr);
 
-		if (debugTrace) writeTraceRecord("TotalCurrent");
+		if (debugTrace)
+			writeTraceRecord("TotalCurrent");
 	}
 
 	@Override
@@ -1293,7 +1289,8 @@ public class GeneratorObjImpl extends PCElementImpl implements GeneratorObj {
 
 		calcInjCurrentArray();  // difference between currents in YPrim and total terminal current
 
-		if (debugTrace) writeTraceRecord("Injection");
+		if (debugTrace)
+			writeTraceRecord("Injection");
 
 		// add into system injection current array
 
@@ -1310,8 +1307,7 @@ public class GeneratorObjImpl extends PCElementImpl implements GeneratorObj {
 		calcInjCurrentArray();  // difference between currents in YPrim and total current
 
 		try {
-			// copy into buffer array
-			for (int i = 0; i < YOrder; i++)
+			for (int i = 0; i < YOrder; i++)  // copy into buffer array
 				curr[i] = getInjCurrent()[i];
 		} catch (Exception e) {
 			DSSGlobals.doErrorMsg("Generator Object: \"" + getName() + "\" in getInjCurrents method.",
@@ -1369,10 +1365,10 @@ public class GeneratorObjImpl extends PCElementImpl implements GeneratorObj {
 				 * Don't need to for gen off and normal integration.
 				 */
 				if (ckt.isPositiveSequence()) {
-					S    = S.multiply(3.0);
+					S = S.multiply(3.0);
 					SMag = 3.0 * SMag;
 				}
-				integrate            (regKWh,   S.getReal(), ckt.getSolution().getIntervalHrs());   // accumulate the power
+				integrate            (regKWh, S.getReal(), ckt.getSolution().getIntervalHrs());   // accumulate the power
 				integrate            (regKVArh, S.getImaginary(), ckt.getSolution().getIntervalHrs());
 				setDragHandRegister  (regMaxKW, Math.abs(S.getReal()));
 				setDragHandRegister  (regMaxKVA, SMag);
@@ -1484,13 +1480,11 @@ public class GeneratorObjImpl extends PCElementImpl implements GeneratorObj {
 		setYPrimInvalid(true);  // force rebuild of YPrims
 		genFundamental = sol.getFrequency();  // whatever the frequency is when we enter here.
 
-
 		Yeq = ComplexUtil.invert(new Complex(0.0, genVars.Xdpp));  // used for current calcs; always L-N
 
 		/* Compute reference Thevinen voltage from phase 1 current */
 
 		if (genOn) {
-
 			computeITerminal();  // get present value of current
 
 			switch (connection) {
@@ -1514,44 +1508,44 @@ public class GeneratorObjImpl extends PCElementImpl implements GeneratorObj {
 	@Override
 	public void initPropertyValues(int arrayOffset) {
 
-		propertyValue[0]      = "3";        // phases;
-		propertyValue[1]      = getBus(0);  // bus1
-		propertyValue[2]      = "12.47";
-		propertyValue[3]      = "100";
-		propertyValue[4]      = ".80";
-		propertyValue[5]      = "1";
-		propertyValue[6]      = "";
-		propertyValue[7]      = "";
-		propertyValue[8]      = "";
-		propertyValue[9]      = "Default";
-		propertyValue[10]     = "0.0";
-		propertyValue[11]     = "wye";
-		propertyValue[12]     = "60";
-		propertyValue[13]     = "0";  // "rneut"; // if entered -, assume open
-		propertyValue[14]     = "0";  // "xneut";
-		propertyValue[15]     = "variable"; //"status"  fixed or variable
-		propertyValue[16]     = "1"; //"class"
-		propertyValue[17]     = "1.0";
-		propertyValue[18]     = Utilities.strReal(kVArMax, 3);
-		propertyValue[19]     = Utilities.strReal(kVArMin, 3);
-		propertyValue[20]     = "0.1";
-		propertyValue[21]     = "no";
-		propertyValue[22]     = "0.90";
-		propertyValue[23]     = "1.10";
-		propertyValue[24]     = "No";
-		propertyValue[25]     = String.format("%-g", genVars.kVARating);
-		propertyValue[26]     = String.format("%-g", genVars.kVARating * 0.001);
-		propertyValue[27]     = String.format("%-g", genVars.puXd);
-		propertyValue[28]     = String.format("%-g", genVars.puXdp);
-		propertyValue[29]     = String.format("%-g", genVars.puXdpp);
-		propertyValue[30]     = String.format("%-g", genVars.HMass);
-		propertyValue[31]     = String.format("%-g", genVars.Dpu);
-		propertyValue[32]     = "";
-		propertyValue[33]     = "";
-		propertyValue[34]     = "";
-		propertyValue[35]     = "";
+		setPropertyValue(0, "3");        // phases;
+		setPropertyValue(1, getBus(0));  // bus1
+		setPropertyValue(2, "12.47");
+		setPropertyValue(3, "100");
+		setPropertyValue(4, ".80");
+		setPropertyValue(5, "1");
+		setPropertyValue(6, "");
+		setPropertyValue(7, "");
+		setPropertyValue(8, "");
+		setPropertyValue(9, "Default");
+		setPropertyValue(10, "0.0");
+		setPropertyValue(11, "wye");
+		setPropertyValue(12, "60");
+		setPropertyValue(13, "0");  // "rneut"; // if entered -, assume open
+		setPropertyValue(14, "0");  // "xneut";
+		setPropertyValue(15, "variable"); //"status"  fixed or variable
+		setPropertyValue(16, "1"); //"class"
+		setPropertyValue(17, "1.0");
+		setPropertyValue(18, Utilities.strReal(kVArMax, 3));
+		setPropertyValue(19, Utilities.strReal(kVArMin, 3));
+		setPropertyValue(20, "0.1");
+		setPropertyValue(21, "no");
+		setPropertyValue(22, "0.90");
+		setPropertyValue(23, "1.10");
+		setPropertyValue(24, "No");
+		setPropertyValue(25, String.format("%-g", genVars.kVARating));
+		setPropertyValue(26, String.format("%-g", genVars.kVARating * 0.001));
+		setPropertyValue(27, String.format("%-g", genVars.puXd));
+		setPropertyValue(28, String.format("%-g", genVars.puXdp));
+		setPropertyValue(29, String.format("%-g", genVars.puXdpp));
+		setPropertyValue(30, String.format("%-g", genVars.HMass));
+		setPropertyValue(31, String.format("%-g", genVars.Dpu));
+		setPropertyValue(32, "");
+		setPropertyValue(33, "");
+		setPropertyValue(34, "");
+		setPropertyValue(35, "");
 
-		super.initPropertyValues(Generator.NumPropsThisClass);
+		super.initPropertyValues(Generator.NumPropsThisClass - 1);
 	}
 
 	/**
@@ -1563,8 +1557,8 @@ public class GeneratorObjImpl extends PCElementImpl implements GeneratorObj {
 		//Complex VNeut;
 		Complex Edp = null;
 		int i;
-		Complex[] V012 = new Complex[2];  // TODO Check zero based indexing
-		Complex[] I012 = new Complex[2];
+		Complex[] V012 = new Complex[3];
+		Complex[] I012 = new Complex[3];
 		Complex[] Vabc = new Complex[3];
 
 		setYPrimInvalid(true);  // force rebuild of YPrims
@@ -1580,7 +1574,7 @@ public class GeneratorObjImpl extends PCElementImpl implements GeneratorObj {
 
 			switch (nPhases) {
 			case 1:
-				Edp      = sol.getNodeV()[nodeRef[0]].subtract( sol.getNodeV()[nodeRef[1]] ).subtract( getITerminal()[0].multiply(new Complex(0.0, genVars.Xdp)) );
+				Edp = sol.getNodeV()[nodeRef[0]].subtract( sol.getNodeV()[nodeRef[1]] ).subtract( getITerminal()[0].multiply(new Complex(0.0, genVars.Xdp)) );
 				VThevMag = Edp.abs();
 
 				break;
@@ -1592,7 +1586,7 @@ public class GeneratorObjImpl extends PCElementImpl implements GeneratorObj {
 				for (i = 0; i < nPhases; i++)
 					Vabc[i] = sol.getNodeV()[nodeRef[i]];  // wye voltage
 				MathUtil.phase2SymComp(Vabc, V012);
-				Edp      = V012[0].subtract( I012[0].multiply(new Complex(0.0, genVars.Xdp)) );  // pos sequence
+				Edp      = V012[1].subtract( I012[1].multiply(new Complex(0.0, genVars.Xdp)) );  // pos sequence
 				VThevMag = Edp.abs();
 				break;
 			default:
@@ -1605,16 +1599,16 @@ public class GeneratorObjImpl extends PCElementImpl implements GeneratorObj {
 			// shaft variables
 			// theta is angle on Vthev[1] relative to system reference
 			//Theta  = Vthev[0].getArgument();  // assume source at 0
-			genVars.theta  = Edp.getArgument() ;
+			genVars.theta = Edp.getArgument() ;
 			genVars.dTheta = 0.0;
-			genVars.w0     = DSSGlobals.TWO_PI * sol.getFrequency();
+			genVars.w0 = DSSGlobals.TWO_PI * sol.getFrequency();
 			// recalc mMass and D in case the frequency has changed
-			genVars.MMass = 2.0 * genVars.HMass * genVars.kVARating * 1000.0 / genVars.w0;   // M = W-sec
+			genVars.MMass = 2.0 * genVars.HMass * genVars.kVARating * 1000.0 / genVars.w0;  // M = W-sec
 			genVars.D = genVars.Dpu * genVars.kVARating * 1000.0 / genVars.w0;
 
 			genVars.PShaft = -getPower(0).getReal();  // initialize pShaft to present power output
 
-			genVars.speed  = 0.0;  // relative to synch speed
+			genVars.speed = 0.0;  // relative to synch speed
 			genVars.dSpeed = 0.0;
 
 			// init user-written models
@@ -1627,7 +1621,7 @@ public class GeneratorObjImpl extends PCElementImpl implements GeneratorObj {
 			}
 
 		} else {
-			VThev  = Complex.ZERO;
+			VThev = Complex.ZERO;
 			genVars.theta  = 0.0;
 			genVars.dTheta = 0.0;
 			genVars.w0     = 0;
@@ -1657,7 +1651,7 @@ public class GeneratorObjImpl extends PCElementImpl implements GeneratorObj {
 		tracePower = MathUtil.terminalPowerIn(VTerminal, ITerminal, nPhases);
 		genVars.dSpeed = (genVars.PShaft + tracePower.getReal() - genVars.D * genVars.speed) / genVars.MMass;
 		//GenVars.dSpeed = (GenVars.Torque + terminalPowerIn(Vtemp, Itemp, nPhases).getReal() / GenVars.Speed) / (GenVars.Mmass);
-		genVars.dTheta  = genVars.speed;
+		genVars.dTheta = genVars.speed;
 
 		// trapezoidal method
 		genVars.speed = genVars.speedHistory + 0.5 * sol.getDynaVars().h * genVars.dSpeed;
@@ -1666,18 +1660,18 @@ public class GeneratorObjImpl extends PCElementImpl implements GeneratorObj {
 		// write dynamics trace record
 		if (debugTrace) {
 			try {
-				FileWriter TraceStream = new FileWriter(traceFile, true);
-				BufferedWriter TraceBuffer = new BufferedWriter(TraceStream);
-				TraceBuffer.write(String.format("t=%-.5g ", sol.getDynaVars().t));
-				TraceBuffer.write(String.format(" Flag=%d ", sol.getDynaVars().iterationFlag));
-				TraceBuffer.write(String.format(" Speed=%-.5g ", genVars.speed));
-				TraceBuffer.write(String.format(" dSpeed=%-.5g ", genVars.dSpeed));
-				TraceBuffer.write(String.format(" Pshaft=%-.5g ", genVars.PShaft));
-				TraceBuffer.write(String.format(" P=%-.5g Q= %-.5g", tracePower.getReal(), tracePower.getImaginary()));
-				TraceBuffer.write(String.format(" M=%-.5g ", genVars.MMass));
-				TraceBuffer.newLine();
-				TraceBuffer.close();
-				TraceStream.close();
+				FileWriter fw = new FileWriter(traceFile, true);
+				BufferedWriter bw = new BufferedWriter(fw);
+				bw.write(String.format("t=%-.5g ", sol.getDynaVars().t));
+				bw.write(String.format(" Flag=%d ", sol.getDynaVars().iterationFlag));
+				bw.write(String.format(" Speed=%-.5g ", genVars.speed));
+				bw.write(String.format(" dSpeed=%-.5g ", genVars.dSpeed));
+				bw.write(String.format(" Pshaft=%-.5g ", genVars.PShaft));
+				bw.write(String.format(" P=%-.5g Q= %-.5g", tracePower.getReal(), tracePower.getImaginary()));
+				bw.write(String.format(" M=%-.5g ", genVars.MMass));
+				bw.newLine();
+				bw.close();
+				fw.close();
 			} catch (IOException e) {
 				// TODO: handle exception
 			}
@@ -1699,7 +1693,8 @@ public class GeneratorObjImpl extends PCElementImpl implements GeneratorObj {
 		n = 0;
 		double result = -9999.99;  // error return value
 
-		if (i < 0) return result;
+		if (i < 0)
+			return result;
 
 		switch (i) {
 		case 0:
@@ -1723,15 +1718,15 @@ public class GeneratorObjImpl extends PCElementImpl implements GeneratorObj {
 		default:
 			if (userModel.exists()) {
 				n = userModel.numVars();
-				k = (i - NumGenVariables);
-				if (k <= n)
+				k = i - (NumGenVariables - 1);
+				if (k < n)
 					return userModel.getVariable(k);
 			}
 
 			/* If we get here, must be in the shaft model if anywhere */
 			if (shaftModel.exists()) {
-				k = i - (NumGenVariables + n);
-				if (k > 0)
+				k = i - (NumGenVariables - 1 + n);
+				if (k >= 0)
 					return shaftModel.getVariable(k);
 			}
 			break;
@@ -1745,7 +1740,9 @@ public class GeneratorObjImpl extends PCElementImpl implements GeneratorObj {
 		int n, k;
 
 		n = 0;
-		if (i < 0) return;
+		if (i < 0)
+			return;
+
 		switch (i) {
 		case 0:
 			genVars.speed = (value - genVars.w0) * DSSGlobals.TWO_PI;
@@ -1768,8 +1765,8 @@ public class GeneratorObjImpl extends PCElementImpl implements GeneratorObj {
 		default:
 			if (userModel.exists()) {
 				n = userModel.numVars();
-				k = (i - NumGenVariables) ;
-				if (k <= n) {
+				k = i - (NumGenVariables - 1) ;
+				if (k < n) {
 					userModel.setVariable(k, value);
 					return;
 				}
@@ -1777,7 +1774,7 @@ public class GeneratorObjImpl extends PCElementImpl implements GeneratorObj {
 
 			// if we get here, must be in the shaft model
 			if (shaftModel.exists()) {
-				k = (i - (NumGenVariables + n)) ;
+				k = i - (NumGenVariables - 1 + n);
 				if (k > 0)
 					shaftModel.setVariable(k, value);
 			}
@@ -1795,11 +1792,11 @@ public class GeneratorObjImpl extends PCElementImpl implements GeneratorObj {
 
 		if (userModel.exists()) {
 			n = userModel.numVars();
-			userModel.getAllVars(states[NumGenVariables + 1]);
+			userModel.getAllVars(states[NumGenVariables]);
 		}
 
 		if (shaftModel.exists())
-			shaftModel.getAllVars(states[NumGenVariables + 1 + n]);
+			shaftModel.getAllVars(states[NumGenVariables + n]);
 	}
 
 	@Override
@@ -1822,7 +1819,9 @@ public class GeneratorObjImpl extends PCElementImpl implements GeneratorObj {
 		String result = "";
 
 		n = 0;
-		if (i < 0) return result;
+		if (i < 0)
+			return result;
+
 		switch (i) {
 		case 0:
 			result = "Frequency";
@@ -1846,8 +1845,8 @@ public class GeneratorObjImpl extends PCElementImpl implements GeneratorObj {
 			if (userModel.exists()) {
 				pName = 0;
 				n = userModel.numVars();
-				i2 = i - NumGenVariables;
-				if (i2 <= n) {
+				i2 = i - (NumGenVariables - 1);
+				if (i2 < n) {
 					userModel.getVarName(i2, pName, buffSize);
 					return String.valueOf(pName);
 				}
@@ -1855,7 +1854,7 @@ public class GeneratorObjImpl extends PCElementImpl implements GeneratorObj {
 
 			if (shaftModel.exists()) {
 				pName = 0;
-				i2 = i - NumGenVariables - n;
+				i2 = i - (NumGenVariables - 1) - n;
 				if (i2 >= 0)
 					userModel.getVarName(i2, pName, buffSize);
 				result = String.valueOf(pName);
@@ -1929,7 +1928,7 @@ public class GeneratorObjImpl extends PCElementImpl implements GeneratorObj {
 		s = "Phases=1 conn=wye";
 
 		// make sure voltage is line-neutral
-		if ((nPhases > 1) || (connection != 0)) {
+		if (nPhases > 1 || connection != 0) {
 			V =  genVars.kVGeneratorBase / DSSGlobals.SQRT3;
 		} else {
 			V =  genVars.kVGeneratorBase;
@@ -1940,7 +1939,7 @@ public class GeneratorObjImpl extends PCElementImpl implements GeneratorObj {
 		// divide the load by no. phases
 		if (nPhases > 1) {
 			s = s + String.format(" kW=%-.5g  PF=%-.5g", kWBase / nPhases, PFNominal);
-			if ((prpSequence[18] != 0) || (prpSequence[19] != 0))
+			if (prpSequence[18] != 0 || prpSequence[19] != 0)
 				s = s + String.format(" maxkvar=%-.5g  minkvar=%-.5g", kVArMax / nPhases, kVArMin / nPhases);
 			if (prpSequence[25] > 0)
 				s = s + String.format(" kva=%-.5g  ", genVars.kVARating / nPhases);
@@ -2000,11 +1999,11 @@ public class GeneratorObjImpl extends PCElementImpl implements GeneratorObj {
 			setPowerFactor(1.0);
 		}
 
-		if ((kWBase * kVArBase) < 0.0)
+		if (kWBase * kVArBase < 0.0)
 			setPowerFactor(-PFNominal);
 
-		kVArMax  = 2.0 * kVArBase;
-		kVArMin  = -kVArMax;
+		kVArMax = 2.0 * kVArBase;
+		kVArMin = -kVArMax;
 	}
 
 	public void setPresentKW(double value) {

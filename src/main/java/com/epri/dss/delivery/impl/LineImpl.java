@@ -360,7 +360,7 @@ public class LineImpl extends PDClassImpl implements Line {
 					if (!al.isGeometrySpecified() && al.isSymComponentsModel()) {  // ignore change of nPhases if geometry used
 						al.setNPhases(parser.makeInteger());
 						al.setNConds(al.getNPhases());  // force reallocation of terminal info
-						al.setYorder(al.getNTerms() * al.getNConds());
+						al.setYOrder(al.getNTerms() * al.getNConds());
 						/*al.setYprimInvalid(true);*/  // now set below
 						al.recalcElementData();  // reallocate Z, etc.
 					} else {
@@ -524,7 +524,7 @@ public class LineImpl extends PDClassImpl implements Line {
 				al.setNPhases(otherLine.getNPhases());
 				al.setNConds(al.getNPhases());  // force reallocation of terminals and conductors
 
-				al.setYorder(al.getNConds() * al.getNTerms());
+				al.setYOrder(al.getNConds() * al.getNTerms());
 				al.setYPrimInvalid(true);
 
 				if (al.getZ() != null)

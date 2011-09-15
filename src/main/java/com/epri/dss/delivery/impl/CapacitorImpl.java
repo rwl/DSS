@@ -262,7 +262,7 @@ public class CapacitorImpl extends PDClassImpl implements Capacitor {
 				if (aco.getNPhases() != parser.makeInteger()) {
 					aco.setNPhases(parser.makeInteger());
 					aco.setNConds(aco.getNPhases());  // force reallocation of terminal info
-					aco.setYorder(aco.getNTerms() * aco.getNConds());
+					aco.setYOrder(aco.getNTerms() * aco.getNConds());
 				}
 				break;
 			case 3:
@@ -334,7 +334,7 @@ public class CapacitorImpl extends PDClassImpl implements Capacitor {
 				aco.setNPhases(otherCapacitor.getNPhases());
 				aco.setNConds(aco.getNPhases());  // force reallocation of terminals and conductors
 
-				aco.setYorder(aco.getNConds() * aco.getNTerms());
+				aco.setYOrder(aco.getNConds() * aco.getNTerms());
 				aco.setYPrimInvalid(true);
 			}
 

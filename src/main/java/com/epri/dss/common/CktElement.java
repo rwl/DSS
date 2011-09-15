@@ -17,7 +17,7 @@ public interface CktElement extends DSSObject {
 
 	int getYorder();
 
-	void setYorder(int yorder);
+	void setYOrder(int yorder);
 
 	int getLastTerminalChecked();
 

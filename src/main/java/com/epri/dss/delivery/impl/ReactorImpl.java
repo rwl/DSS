@@ -250,7 +250,7 @@ public class ReactorImpl extends PDClassImpl implements Reactor {
 				if (ar.getNPhases() != parser.makeInteger()) {
 					ar.setNPhases(parser.makeInteger());
 					ar.setNConds(ar.getNPhases());  // force reallocation of terminal info
-					ar.setYorder(ar.getNTerms() * ar.getNConds());
+					ar.setYOrder(ar.getNTerms() * ar.getNConds());
 				}
 				break;
 			case 3:
@@ -297,7 +297,7 @@ public class ReactorImpl extends PDClassImpl implements Reactor {
 				ar.setNPhases(otherReactor.getNPhases());
 				ar.setNConds(ar.getNPhases());  // force reallocation of terminals and conductors
 
-				ar.setYorder(ar.getNConds() * ar.getNTerms());
+				ar.setYOrder(ar.getNConds() * ar.getNTerms());
 				ar.setYPrimInvalid(true);
 			}
 

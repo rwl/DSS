@@ -288,7 +288,7 @@ public class StorageImpl extends PCClassImpl implements Storage {
 		as.setVBase95(as.getVMinPU() * as.getVBase());
 		as.setVBase105(as.getVMaxPU() * as.getVBase());
 
-		as.setYorder(as.getNConds() * as.getNTerms());
+		as.setYOrder(as.getNConds() * as.getNTerms());
 		as.setYPrimInvalid(true);
 	}
 
@@ -547,7 +547,7 @@ public class StorageImpl extends PCClassImpl implements Storage {
 			if (as.getNPhases() != otherStorageObj.getNPhases()) {
 				as.setNPhases(otherStorageObj.getNPhases());
 				as.setNConds(as.getNPhases());  // forces reallocation of terminal stuff
-				as.setYorder(as.getNConds() * as.getNTerms());
+				as.setYOrder(as.getNConds() * as.getNTerms());
 				as.setYPrimInvalid(true);
 			}
 

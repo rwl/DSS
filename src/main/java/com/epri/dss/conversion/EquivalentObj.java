@@ -21,9 +21,9 @@ public interface EquivalentObj extends PCElement {
 
 	// FIXME Private members in OpenDSS
 
-	double getKVBase();
+	double getKvBase();
 
-	void setKVBase(double kVBase);
+	void setKvBase(double kVBase);
 
 	double getVMag();
 

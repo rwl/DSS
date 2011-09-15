@@ -61,16 +61,15 @@ public class EquivalentImpl extends PCClassImpl implements Equivalent {
 		propertyHelp[9] = "Zero-sequence resistance matrix, lower triangle.";
 		propertyHelp[10] = "Zero-sequence reactance matrix, lower triangle.";
 
-		activeProperty = Equivalent.NumPropsThisClass;
+		activeProperty = Equivalent.NumPropsThisClass - 1;
 		super.defineProperties();  // add defs of inherited properties to bottom of list
 
 		// override help string
-		propertyHelp[Equivalent.NumPropsThisClass + 1] = "Name of harmonic spectrum for this source.  Default is \"defaultvsource\", which is defined when the DSS starts.";
+		propertyHelp[Equivalent.NumPropsThisClass] = "Name of harmonic spectrum for this source.  Default is \"defaultvsource\", which is defined when the DSS starts.";
 	}
 
 	@Override
 	public int newObject(String objName) {
-
 		DSSGlobals.activeCircuit.setActiveCktElement(new EquivalentObjImpl(this, objName));
 		return addObjectToList(DSSGlobals.activeDSSObject);
 	}
@@ -87,7 +86,7 @@ public class EquivalentImpl extends PCClassImpl implements Equivalent {
 
 		EquivalentObj ae = activeEquivalentObj;
 
-		int paramPointer = 0;
+		int paramPointer = -1;
 		String paramName = parser.getNextParam();
 		String param     = parser.makeString();
 		while (param.length() > 0) {
@@ -97,7 +96,7 @@ public class EquivalentImpl extends PCClassImpl implements Equivalent {
 				paramPointer = commandList.getCommand(paramName);
 			}
 
-			if ((paramPointer >= 0) && (paramPointer < numProperties))
+			if (paramPointer >= 0 && paramPointer < numProperties)
 				ae.setPropertyValue(paramPointer, param);
 
 			switch (paramPointer) {
@@ -111,7 +110,7 @@ public class EquivalentImpl extends PCClassImpl implements Equivalent {
 				interpretAllBuses(param);
 				break;
 			case 2:
-				ae.setKVBase(parser.makeDouble());  // basekv
+				ae.setKvBase(parser.makeDouble());  // basekv
 				break;
 			case 3:
 				ae.setPerUnit(parser.makeDouble());  // pu
@@ -173,7 +172,7 @@ public class EquivalentImpl extends PCClassImpl implements Equivalent {
 				ae.setNPhases(otherEquivalent.getNPhases());
 				ae.setNConds(ae.getNPhases());  // forces reallocation of terminal stuff
 
-				ae.setYorder(ae.getNConds() * ae.getNTerms());
+				ae.setYOrder(ae.getNConds() * ae.getNTerms());
 				ae.setYPrimInvalid(true);
 
 				for (i = 0; i < ae.getNTerms(); i++)
@@ -198,7 +197,7 @@ public class EquivalentImpl extends PCClassImpl implements Equivalent {
 			ae.getZ().copyFrom(otherEquivalent.getZ());
 			// ae.getZinv().copyFrom(OtherLine.getZinv());
 			ae.setVMag(otherEquivalent.getVMag());
-			ae.setKVBase(otherEquivalent.getKVBase());
+			ae.setKvBase(otherEquivalent.getKvBase());
 			ae.setPerUnit(otherEquivalent.getPerUnit());
 			ae.setAngle(otherEquivalent.getAngle());
 			ae.setEquivFrequency(otherEquivalent.getEquivFrequency());
@@ -235,7 +234,7 @@ public class EquivalentImpl extends PCClassImpl implements Equivalent {
 			DSSGlobals.auxParser.getNextParam();  // ignore any parameter name  not expecting any
 			busName = DSSGlobals.auxParser.makeString();
 			if (busName.length() > 0)
-				ae.setBus(i, busName);  // TODO Check zero based indexing
+				ae.setBus(i, busName);
 		}
 	}
 

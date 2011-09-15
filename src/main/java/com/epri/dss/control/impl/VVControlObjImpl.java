@@ -27,8 +27,8 @@ public class VVControlObjImpl extends ControlElemImpl implements VVControlObj {
 
 	private double vvc_VMaxPU, vvc_VMinPU, kVA_Rating, kW_Rating, kVAr_FullOutput, pf,
 		delay, delayOff, kW_RampRate, kVAr_RampRate, kW_Limit,
-		// kw limit at the monitored element
-		kVAr_Limit, // kvar limit at the monitored element
+		// kW limit at the monitored element
+		kVAr_Limit, // kVAr limit at the monitored element
 		deltaVTolerance, // tolerance of voltage change from one solution to the
 		// next for the voltage at the monitored element - in pu
 		totalWeight,
@@ -65,7 +65,7 @@ public class VVControlObjImpl extends ControlElemImpl implements VVControlObj {
 
 		elementName = "";
 		setControlledElement(null);
-		elementTerminal = 1;
+		elementTerminal = 0;
 		monitoredElement = null;
 		generatorNameList = new ArrayList<String>();
 		weights = null;
@@ -103,7 +103,6 @@ public class VVControlObjImpl extends ControlElemImpl implements VVControlObj {
 	@Override
 	public void recalcElementData() {
 		int devIndex;
-		String tempstring;
 
 		/* Check for existence of monitored element */
 
@@ -135,7 +134,7 @@ public class VVControlObjImpl extends ControlElemImpl implements VVControlObj {
 			// right now we only support one controlled element (generator) per vvcontrol
 			// controlled element must already exist
 			setControlledElement(DSSGlobals.activeCircuit.getCktElements().get( devIndex ));
-			getControlledElement().setActiveTerminalIdx(1);  // make the 1 st terminal active
+			getControlledElement().setActiveTerminalIdx(0);  // make the 1 st terminal active
 			// get control synched up with capacitor
 		} else {
 			setControlledElement(null);  // element not found
@@ -210,12 +209,12 @@ public class VVControlObjImpl extends ControlElemImpl implements VVControlObj {
 	public void doPendingAction(final int code, int proxyHdl) {
 		int i;
 		double deltaQ, QHeadroom, QDesiredPU, PNeeded, QNeeded, PPresentGenOutput,
-			QPresentGenOutput, PMonitoredElement, QMonitoredElement, GenKVAr;
+			QPresentGenOutput, PMonitoredElement, QMonitoredElement, genKVAr;
 		Complex SMonitoredElement, SPresentGenOutput;
-		boolean GenKVArChanged;
+		boolean genKVArChanged;
 		GeneratorObj gen;
 
-		GenKVAr = 0.0;
+		genKVAr = 0.0;
 		// we need P and/or we need Q
 		if (pendingChange == CHANGEVARLEVEL) {
 
@@ -260,12 +259,12 @@ public class VVControlObjImpl extends ControlElemImpl implements VVControlObj {
 
 					if (QNew != QPresentGenOutput) {
 						gen = (GeneratorObj) genPointerList.get(i);  // TODO implement generics
-						GenKVAr = Math.signum(QNew) * Math.min( Math.abs(kVAr_Limit * 1000.0), Math.abs(QNew) ) / 1000.0;
-						if (GenKVAr != gen.getKVArBase())
-							gen.setPresentKVAr(GenKVAr);
+						genKVAr = Math.signum(QNew) * Math.min( Math.abs(kVAr_Limit * 1000.0), Math.abs(QNew) ) / 1000.0;
+						if (genKVAr != gen.getKVArBase())
+							gen.setPresentKVAr(genKVAr);
 					}
 					Utilities.appendToEventLog("VoltVarControl." + getName(),
-							String.format("**Set var output level to**, kvar= %.5g", GenKVAr));
+							String.format("**Set var output level to**, kvar= %.5g", genKVAr));
 				}  // end for loop  (number of generators under this control)
 			}  // end if vars needed is not equal to zero
 
@@ -292,7 +291,7 @@ public class VVControlObjImpl extends ControlElemImpl implements VVControlObj {
 		if (genPointerList.size() == 0)
 			makeGenList();
 
-		if ((listSize > 0) && (vvc_CurveSize > 0)) {
+		if (listSize > 0 && vvc_CurveSize > 0) {
 
 			//if (presentHour != DSSGlobals.activeCircuit.getSolution().getDblHour()) {
 			//	WriteDLLDebugFile(Self.Name+','+String.format("%-.5g',[ActiveCircuit.Solution.dblHour])+','+String.format("%-.5g',[QPresentGenOutput])+','+String.format("%-.5g',[Qdeliver])+','+String.format("%-.5g',[QNew])+','+String.format("%-.5g',[Gen.Presentkvar*1000.0])+','+String.format("%-.5g',[QoldDeliver])+','+String.format("%-.5g',[PPresentGenOutput])+','+String.format("%-.5g',[Vavgpu])+','+String.format("%-.5g',[Vavgpuprior]));
@@ -356,7 +355,7 @@ public class VVControlObjImpl extends ControlElemImpl implements VVControlObj {
 		setPropertyValue(17, "none");  // volt-var curve
 		setPropertyValue(18, "0.1");   // deltaQ_factor
 
-		super.initPropertyValues(VVControl.NumPropsThisClass);
+		super.initPropertyValues(VVControl.NumPropsThisClass - 1);
 	}
 
 	@Override

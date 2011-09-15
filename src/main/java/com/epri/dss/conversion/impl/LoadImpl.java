@@ -272,7 +272,7 @@ public class LoadImpl extends PCClassImpl implements Load {
 		al.setVBase95(al.getVMinPU() * al.getVBase());
 		al.setVBase105(al.getVMaxPU() * al.getVBase());
 
-		al.setYorder(al.getNConds() * al.getNTerms());
+		al.setYOrder(al.getNConds() * al.getNTerms());
 		al.setYPrimInvalid(true);
 	}
 
@@ -500,7 +500,7 @@ public class LoadImpl extends PCClassImpl implements Load {
 			if (al.getNPhases() != otherLoad.getNPhases()) {
 				al.setNPhases(otherLoad.getNPhases());
 				al.setNConds(al.getNPhases());  // forces reallocation of terminal stuff
-				al.setYorder(al.getNConds() * al.getNTerms());
+				al.setYOrder(al.getNConds() * al.getNTerms());
 				al.setYPrimInvalid(true);
 			}
 

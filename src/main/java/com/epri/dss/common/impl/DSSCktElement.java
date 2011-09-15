@@ -783,7 +783,7 @@ public class DSSCktElement extends DSSObjectImpl implements CktElement {
 		return YOrder;
 	}
 
-	public void setYorder(int order) {
+	public void setYOrder(int order) {
 		YOrder = order;
 	}
 

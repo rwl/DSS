@@ -189,7 +189,7 @@ public class ISourceImpl extends PCClassImpl implements ISource {
 				ais.setNPhases(otherISource.getNPhases());
 				ais.setNConds(ais.getNPhases());  // forces reallocation of terminal stuff
 
-				ais.setYorder(ais.getNConds() * ais.getNTerms());
+				ais.setYOrder(ais.getNConds() * ais.getNTerms());
 				ais.setYPrimInvalid(true);
 			}
 

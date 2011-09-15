@@ -442,7 +442,7 @@ public class TransformerImpl extends PDClassImpl implements Transformer {
 			break;
 		}
 
-		at.setYorder(at.getNConds() * at.getNTerms());
+		at.setYOrder(at.getNConds() * at.getNTerms());
 		at.setYPrimInvalid(true);
 	}
 
@@ -582,7 +582,7 @@ public class TransformerImpl extends PDClassImpl implements Transformer {
 			at.setNumWindings(otherTransf.getNumWindings());
 			at.setNConds(at.getNPhases() + 1);  // forces reallocation of terminals and conductors
 
-			at.setYorder(at.getNConds() * at.getNTerms());
+			at.setYOrder(at.getNConds() * at.getNTerms());
 			at.setYPrimInvalid(true);
 
 			for (i = 0; i < at.getNumWindings(); i++) {

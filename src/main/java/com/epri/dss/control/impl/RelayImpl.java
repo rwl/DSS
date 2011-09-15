@@ -143,7 +143,7 @@ public class RelayImpl extends ControlClassImpl implements Relay {
 
 		RelayObj ar = activeRelayObj;
 
-		int paramPointer = 0;
+		int paramPointer = -1;
 		String paramName = parser.getNextParam();
 		String param = parser.makeString();
 		while (param.length() > 0) {
@@ -153,7 +153,7 @@ public class RelayImpl extends ControlClassImpl implements Relay {
 				paramPointer = commandList.getCommand(paramName);
 			}
 
-			if ((paramPointer >= 0) && (paramPointer <= numProperties)) {
+			if (paramPointer >= 0 && paramPointer < numProperties) {
 				ar.setPropertyValue(propertyIdxMap[paramPointer], param);
 			} else {
 				DSSGlobals.doSimpleMsg("Unknown parameter \""+paramName+"\" for relay \""+ar.getName()+"\"", 381);

@@ -124,7 +124,7 @@ public class FeederImpl extends PCClassImpl implements Feeder {
 				activeFeederObj.setNPhases(otherFeeder.getNPhases());
 				activeFeederObj.setNConds(activeFeederObj.getNPhases());  // forces reallocation of terminal stuff
 
-				activeFeederObj.setYorder(activeFeederObj.getNConds() * activeFeederObj.getNTerms());
+				activeFeederObj.setYOrder(activeFeederObj.getNConds() * activeFeederObj.getNTerms());
 				activeFeederObj.setYPrimInvalid(true);
 			}
 

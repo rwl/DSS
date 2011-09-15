@@ -52,10 +52,10 @@ public class EquivalentObjImpl extends PCElementImpl implements EquivalentObj {
 
 		reallocRX();
 
-		R1[0]   = 1.65;
-		X1[0]   = 6.6;
-		R0[0]   = 1.9;
-		X0[0]   = 5.7;
+		R1[0] = 1.65;
+		X1[0] = 6.6;
+		R0[0] = 1.9;
+		X0[0] = 5.7;
 
 		kVBase = 115.0;
 		perUnit = 1.0;
@@ -71,7 +71,7 @@ public class EquivalentObjImpl extends PCElementImpl implements EquivalentObj {
 	}
 
 	private int idx(int a, int b) {
-		return (b - 1) * nTerms + a;
+		return b * nTerms + a;
 	}
 
 	@Override
@@ -79,9 +79,6 @@ public class EquivalentObjImpl extends PCElementImpl implements EquivalentObj {
 		Complex Zs, Zm;
 //		int i, j, ii, jj;
 		int iOffset, jOffset, indx;
-
-		if (Z != null) Z = null;
-		if (ZInv != null) ZInv = null;
 
 		// for a source, nPhases = nCond, for now
 		Z    = new CMatrixImpl(nPhases * nTerms);
@@ -94,8 +91,8 @@ public class EquivalentObjImpl extends PCElementImpl implements EquivalentObj {
 				Zs = ComplexUtil.divide(new Complex(2.0 * R1[indx] + R0[indx], 2.0 * X1[indx] + X0[indx] ), 3.0);
 				Zm = ComplexUtil.divide(new Complex(R0[indx] - R1[indx], X0[indx] - X1[indx]), 3.0);
 
-				iOffset = (i - 1) * nPhases;
-				jOffset = (j - 1) * nPhases;
+				iOffset = i * nPhases;
+				jOffset = j * nPhases;
 
 				for (int ii = 0; ii < nPhases; ii++) {
 					for (int jj = 0; jj < ii; jj++) {
@@ -135,12 +132,9 @@ public class EquivalentObjImpl extends PCElementImpl implements EquivalentObj {
 		int i, j;
 		double freqMultiplier;
 
-
 		// build only YPrim series
 		if (isYprimInvalid()) {
-			if (YPrimSeries != null) YPrimSeries = null;
 			YPrimSeries = new CMatrixImpl(YOrder);
-			if (YPrim != null) YPrim = null;
 			YPrim = new CMatrixImpl(YOrder);
 		} else {
 			YPrimSeries.clear();
@@ -174,7 +168,6 @@ public class EquivalentObjImpl extends PCElementImpl implements EquivalentObj {
 				ZInv.set(i, i, new Complex(1.0 / DSSGlobals.EPSILON, 0.0));
 		}
 
-
 		YPrimSeries.copyFrom(ZInv);
 
 		YPrim.copyFrom(YPrimSeries);
@@ -190,7 +183,7 @@ public class EquivalentObjImpl extends PCElementImpl implements EquivalentObj {
 		int i;
 		Complex VHarm;
 		double equivHarm;
-
+		SolutionObj sol;
 
 		try {
 			/* This formulation will theoretically handle voltage sources of any number
@@ -206,10 +199,10 @@ public class EquivalentObjImpl extends PCElementImpl implements EquivalentObj {
 				break;
 			}
 
-			SolutionObj sol = DSSGlobals.activeCircuit.getSolution();
+			sol = DSSGlobals.activeCircuit.getSolution();
 
 			if (sol.isHarmonicModel()) {
-				equivHarm = sol.getFrequency() / equivFrequency ;
+				equivHarm = sol.getFrequency() / equivFrequency;
 				VHarm = getSpectrumObj().getMult(equivHarm).multiply(VMag);  // base voltage for this harmonic
 				VHarm = Utilities.rotatePhasorDeg(VHarm, equivHarm, angle);  // rotate for phase 1 shift
 				for (i = 0; i < nPhases; i++) {
@@ -219,7 +212,7 @@ public class EquivalentObjImpl extends PCElementImpl implements EquivalentObj {
 				}
 			} else {
 				for (i = 0; i < nPhases; i++)
-					VTerminal[i] = ComplexUtil.polarDeg2Complex(VMag, (360.0 + angle - (i - 1) * 360.0 / nPhases));
+					VTerminal[i] = ComplexUtil.polarDeg2Complex(VMag, (360.0 + angle - i * 360.0 / nPhases));
 			}
 
 		} catch (Exception e) {
@@ -238,9 +231,10 @@ public class EquivalentObjImpl extends PCElementImpl implements EquivalentObj {
 	@Override
 	public void getCurrents(Complex[] curr) {
 		int i;
+		SolutionObj sol;
 
 		try {
-			SolutionObj sol = DSSGlobals.activeCircuit.getSolution();
+			sol = DSSGlobals.activeCircuit.getSolution();
 			for (i = 0; i < YOrder; i++)
 				VTerminal[i] = sol.getNodeV()[nodeRef[i]];
 
@@ -250,9 +244,10 @@ public class EquivalentObjImpl extends PCElementImpl implements EquivalentObj {
 			// add together with Yprim currents
 			for (i = 0; i < YOrder; i++)
 				curr[i] = curr[i].subtract(complexBuffer[i]);
+
 		} catch (Exception e) {
 			DSSGlobals.doErrorMsg(("GetCurrents for element: " + getName() + "."), e.getMessage(),
-			"Inadequate storage allotted for circuit element.", 805);
+					"Inadequate storage allotted for circuit element.", 805);
 		}
 	}
 
@@ -294,19 +289,19 @@ public class EquivalentObjImpl extends PCElementImpl implements EquivalentObj {
 	@Override
 	public void initPropertyValues(int arrayOffset) {
 
-		propertyValue[0]  = "1";
-		propertyValue[1]  = getBus(0);
-		propertyValue[2]  = "115";
-		propertyValue[3]  = "1";
-		propertyValue[4]  = "0";
-		propertyValue[5]  = "60";
-		propertyValue[6]  = "3";
-		propertyValue[7]  = "1.65";
-		propertyValue[8]  = "6.6";
-		propertyValue[9]  = "1.9";
-		propertyValue[10] = "5.7";
+		setPropertyValue(0, "1");
+		setPropertyValue(1, getBus(0));
+		setPropertyValue(2, "115");
+		setPropertyValue(3, "1");
+		setPropertyValue(4, "0");
+		setPropertyValue(5, "60");
+		setPropertyValue(6, "3");
+		setPropertyValue(7, "1.65");
+		setPropertyValue(8, "6.6");
+		setPropertyValue(9, "1.9");
+		setPropertyValue(10, "5.7");
 
-		super.initPropertyValues(Equivalent.NumPropsThisClass);
+		super.initPropertyValues(Equivalent.NumPropsThisClass - 1);
 	}
 
 	@Override
@@ -381,11 +376,11 @@ public class EquivalentObjImpl extends PCElementImpl implements EquivalentObj {
 
 	// FIXME Private members in OpenDSS
 
-	public double getKVBase() {
+	public double getKvBase() {
 		return kVBase;
 	}
 
-	public void setKVBase(double base) {
+	public void setKvBase(double base) {
 		this.kVBase = base;
 	}
 

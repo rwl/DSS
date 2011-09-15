@@ -144,19 +144,17 @@ public class GeneratorImpl extends PCClassImpl implements Generator {
 		addProperty("debugtrace", 21,  "{Yes | No }  Default is no.  Turn this on to capture the progress of the generator model " +
 							"for each iteration.  Creates a separate file for each generator named \"GEN_name.CSV\"." );
 
-
 		activeProperty = NumPropsThisClass - 1;
 		super.defineProperties();  // add defs of inherited properties to bottom of list
 
 		// override default help string
 		propertyHelp[Generator.NumPropsThisClass] = "Name of harmonic voltage or current spectrum for this generator. " +
-							"Voltage behind Xd' for machine - default. Current injection for inverter. " +
-							"Default value is \"default\", which is defined when the DSS starts.";
+				"Voltage behind Xd' for machine - default. Current injection for inverter. " +
+				"Default value is \"default\", which is defined when the DSS starts.";
 	}
 
 	@Override
 	public int newObject(String objName) {
-
 		DSSGlobals.activeCircuit.setActiveCktElement(new GeneratorObjImpl(this, objName));
 		return addObjectToList(DSSGlobals.activeDSSObject);
 	}
@@ -233,7 +231,7 @@ public class GeneratorImpl extends PCClassImpl implements Generator {
 		ag.setVBase95(ag.getVMinPU() * ag.getVBase());
 		ag.setVBase105(ag.getVMaxPU() * ag.getVBase());
 
-		ag.setYorder(ag.getNConds() * ag.getNTerms());
+		ag.setYOrder(ag.getNConds() * ag.getNTerms());
 		ag.setYPrimInvalid(true);
 	}
 
@@ -259,7 +257,7 @@ public class GeneratorImpl extends PCClassImpl implements Generator {
 		int result = 0;
 		GeneratorObj ag = activeGeneratorObj;
 
-		int paramPointer = 0;
+		int paramPointer = -1;
 		String paramName = parser.getNextParam();
 		String param = parser.makeString();
 		while (param.length() > 0) {
@@ -269,7 +267,7 @@ public class GeneratorImpl extends PCClassImpl implements Generator {
 				paramPointer = commandList.getCommand(paramName);
 			}
 
-			if ((paramPointer >= 0) && (paramPointer <= numProperties)) {
+			if (paramPointer >= 0 && paramPointer < numProperties) {
 				ag.setPropertyValue(propertyIdxMap[paramPointer], param);
 			} else {
 				DSSGlobals.doSimpleMsg("Unknown parameter \""+paramName+"\" for generator \""+ag.getName()+"\"", 560);
@@ -438,24 +436,24 @@ public class GeneratorImpl extends PCClassImpl implements Generator {
 				case 21:
 					if (ag.isDebugTrace()) {
 						try {
-							File TraceFile = new File(DSSGlobals.DSSDataDirectory + "GEN_"+ag.getName()+".csv");
-							FileWriter TraceStream = new FileWriter(TraceFile, false);
-							BufferedWriter TraceBuffer = new BufferedWriter(TraceStream);
+							File f = new File(DSSGlobals.DSSDataDirectory + "GEN_"+ag.getName()+".csv");
+							FileWriter fw = new FileWriter(f, false);
+							BufferedWriter bw = new BufferedWriter(fw);
 
-							TraceBuffer.write("t, Iteration, LoadMultiplier, Mode, LoadModel, GenModel, dQdV, Avg_Vpu, Vdiff, MQnominalperphase, MPnominalperphase, CurrentType");
+							bw.write("t, Iteration, LoadMultiplier, Mode, LoadModel, GenModel, dQdV, Avg_Vpu, Vdiff, MQnominalperphase, MPnominalperphase, CurrentType");
 
 							for (int i = 0; i < ag.getNPhases(); i++)
-								TraceBuffer.write(", |Iinj" + String.valueOf(i) + "|");
+								bw.write(", |Iinj" + String.valueOf(i) + "|");
 							for (int i = 0; i < ag.getNPhases(); i++)
-								TraceBuffer.write(", |Iterm" + String.valueOf(i) + "|");
+								bw.write(", |Iterm" + String.valueOf(i) + "|");
 							for (int i = 0; i < ag.getNPhases(); i++)
-								TraceBuffer.write(", |Vterm" + String.valueOf(i) + "|");
+								bw.write(", |Vterm" + String.valueOf(i) + "|");
 
-							TraceBuffer.write(",Vthev, Theta");
-							TraceBuffer.newLine();
+							bw.write(",Vthev, Theta");
+							bw.newLine();
 
-							TraceBuffer.close();
-							TraceStream.close();
+							bw.close();
+							fw.close();
 						} catch (Exception e) {
 							// TODO: handle exception
 						}
@@ -494,7 +492,7 @@ public class GeneratorImpl extends PCClassImpl implements Generator {
 				ag.setNPhases(otherGenerator.getNPhases());
 				ag.setNConds(ag.getNPhases());  // forces reallocation of terminal stuff
 
-				ag.setYorder(ag.getNConds() * ag.getNTerms());
+				ag.setYOrder(ag.getNConds() * ag.getNTerms());
 				ag.setYPrimInvalid(true);
 			}
 

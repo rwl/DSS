@@ -249,7 +249,7 @@ public class FaultImpl extends PDClassImpl implements Fault {
 				af.setNPhases(otherFault.getNPhases());
 				af.setNConds(af.getNPhases());  // force reallocation of terminals and conductors
 
-				af.setYorder(af.getNConds() * af.getNTerms());
+				af.setYOrder(af.getNConds() * af.getNTerms());
 				af.setYPrimInvalid(true);
 			}
 

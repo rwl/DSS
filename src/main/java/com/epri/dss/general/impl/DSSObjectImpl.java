@@ -115,7 +115,7 @@ public class DSSObjectImpl extends NamedObjectImpl implements DSSObject {
 		int smallest = 9999999; // some big number
 		int result = 0;
 
-		if (idx > 0)
+		if (idx >= 0)
 			idx = prpSequence[idx];
 
 		for (int i = 0; i < parentClass.getNumProperties(); i++)

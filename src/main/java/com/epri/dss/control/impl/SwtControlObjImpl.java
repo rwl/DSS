@@ -27,7 +27,7 @@ public class SwtControlObjImpl extends ControlElemImpl implements SwtControlObj 
 
 		elementName   = "";
 		setControlledElement(null);
-		elementTerminal = 1;
+		elementTerminal = 0;
 		presentState  = ControlAction.CLOSE;
 		locked        = false;
 		timeDelay     = 120.0;
@@ -55,7 +55,7 @@ public class SwtControlObjImpl extends ControlElemImpl implements SwtControlObj 
 				}
 			}
 			// attach controller bus to the switch bus - no space allocated for monitored variables
-			setBus (1, getControlledElement().getBus(elementTerminal));
+			setBus(0, getControlledElement().getBus(elementTerminal));
 		} else {
 			setControlledElement(null);  // element not found
 			DSSGlobals.doErrorMsg("SwtControl: \"" + getName() + "\"", "CktElement Element \""+ elementName + "\" not found.",
@@ -71,7 +71,7 @@ public class SwtControlObjImpl extends ControlElemImpl implements SwtControlObj 
 		if (getControlledElement() != null) {
 			setNPhases( getControlledElement().getNPhases() );
 			setNConds(nPhases);
-			setBus(1, getControlledElement().getBus(elementTerminal));
+			setBus(0, getControlledElement().getBus(elementTerminal));
 		}
 		super.makePosSequence();
 	}
@@ -100,12 +100,12 @@ public class SwtControlObjImpl extends ControlElemImpl implements SwtControlObj 
 	public void doPendingAction(int code, int proxyHdl) {
 		if (!locked) {
 			getControlledElement().setActiveTerminalIdx(elementTerminal);
-			if ((code == ControlAction.OPEN.code()) && (presentState == ControlAction.CLOSE)) {
-				getControlledElement().setConductorClosed(0, false);  // open all phases of active terminal
+			if (code == ControlAction.OPEN.code() && presentState == ControlAction.CLOSE) {
+				getControlledElement().setConductorClosed(-1, false);  // open all phases of active terminal
 				Utilities.appendToEventLog("SwtControl."+getName(), "Opened");
 			}
-			if ((code == ControlAction.CLOSE.code()) && (presentState == ControlAction.OPEN)) {
-				getControlledElement().setConductorClosed(0, true);  // close all phases of active terminal
+			if (code == ControlAction.CLOSE.code() && presentState == ControlAction.OPEN) {
+				getControlledElement().setConductorClosed(-1, true);  // close all phases of active terminal
 				Utilities.appendToEventLog("SwtControl."+getName(), "Closed");
 			}
 		}
@@ -127,10 +127,10 @@ public class SwtControlObjImpl extends ControlElemImpl implements SwtControlObj 
 				getControlledElement().setActiveTerminalIdx(elementTerminal);
 				switch (presentState) {
 				case OPEN:
-					getControlledElement().setConductorClosed(0, false);
+					getControlledElement().setConductorClosed(-1, false);
 					break;
 				case CLOSE:
-					getControlledElement().setConductorClosed(0, true);
+					getControlledElement().setConductorClosed(-1, true);
 					break;
 				}
 			}
@@ -143,7 +143,7 @@ public class SwtControlObjImpl extends ControlElemImpl implements SwtControlObj 
 	@Override
 	public void sample() {
 		getControlledElement().setActiveTerminalIdx(elementTerminal);
-		if (getControlledElement().getConductorClosed(0)) {  // check state of phases of active terminal
+		if (getControlledElement().getConductorClosed(-1)) {  // check state of phases of active terminal
 			presentState = ControlAction.CLOSE;
 		} else {
 			presentState = ControlAction.OPEN;
@@ -173,7 +173,7 @@ public class SwtControlObjImpl extends ControlElemImpl implements SwtControlObj 
 		locked       = false;
 		if (getControlledElement() != null) {
 			getControlledElement().setActiveTerminalIdx(elementTerminal);  // set active terminal
-			getControlledElement().setConductorClosed(0, true);  // close all phases of active terminal
+			getControlledElement().setConductorClosed(-1, true);  // close all phases of active terminal
 		}
 	}
 
@@ -184,7 +184,7 @@ public class SwtControlObjImpl extends ControlElemImpl implements SwtControlObj 
 		setPropertyValue(2, "c");
 		setPropertyValue(3, "n");
 		setPropertyValue(4, "120.0");
-		super.initPropertyValues(SwtControl.NumPropsThisClass);
+		super.initPropertyValues(SwtControl.NumPropsThisClass - 1);
 	}
 
 	public ControlAction getPresentState() {

@@ -34,37 +34,37 @@ public class StorageControllerImpl extends ControlClassImpl implements StorageCo
 		allocatePropertyArrays();
 
 		// define property names
-		propertyName[StorageController.ELEMENT]                = "Element";
-		propertyName[StorageController.TERMINAL]               = "Terminal";
+		propertyName[StorageController.ELEMENT]                 = "Element";
+		propertyName[StorageController.TERMINAL]                = "Terminal";
 		propertyName[StorageController.KW_TARGET]               = "kWTarget";
 		propertyName[StorageController.KW_BAND]                 = "%kWBand";
 		propertyName[StorageController.PF_TARGET]               = "PFTarget";
 		propertyName[StorageController.PF_BAND]                 = "PFBand";
 		propertyName[StorageController.ELEMENT_LIST]            = "ElementList";
-		propertyName[StorageController.WEIGHTS]                = "Weights";
+		propertyName[StorageController.WEIGHTS]                 = "Weights";
 		propertyName[StorageController.MODE_DISCHARGE]          = "ModeDischarge";
 		propertyName[StorageController.MODE_CHARGE]             = "ModeCharge";
-		propertyName[StorageController.TIME_DISCHARGE_TRIGGER]   = "TimeDischargeTrigger";
-		propertyName[StorageController.TIME_CHARGE_TRIGGER]      = "TimeChargeTrigger";
+		propertyName[StorageController.TIME_DISCHARGE_TRIGGER]  = "TimeDischargeTrigger";
+		propertyName[StorageController.TIME_CHARGE_TRIGGER]     = "TimeChargeTrigger";
 		propertyName[StorageController.RATE_KW]                 = "%RatekW";
 		propertyName[StorageController.RATE_KVAR]               = "%Ratekvar";
 		propertyName[StorageController.RATE_CHARGE]             = "%RateCharge";
-		propertyName[StorageController.RESERVE]                = "%Reserve";
+		propertyName[StorageController.RESERVE]                 = "%Reserve";
 		propertyName[StorageController.KWH_TOTAL]               = "kWhTotal";
 		propertyName[StorageController.KW_TOTAL]                = "kWTotal";
 		propertyName[StorageController.KWH_ACTUAL]              = "kWhActual";
 		propertyName[StorageController.KW_ACTUAL]               = "kWActual";
 		propertyName[StorageController.KW_NEED]                 = "kWneed";
-		propertyName[StorageController.PARTICIPATION]          = "%Participation";
-		propertyName[StorageController.YEARLY]                 = "Yearly";
-		propertyName[StorageController.DAILY]                  = "Daily";
-		propertyName[StorageController.DUTY]                   = "Duty";
-		propertyName[StorageController.EVENTLOG]               = "EventLog";
+		propertyName[StorageController.PARTICIPATION]           = "%Participation";
+		propertyName[StorageController.YEARLY]                  = "Yearly";
+		propertyName[StorageController.DAILY]                   = "Daily";
+		propertyName[StorageController.DUTY]                    = "Duty";
+		propertyName[StorageController.EVENTLOG]                = "EventLog";
 		propertyName[StorageController.VAR_DISPATCH]            = "VarDispatch";
 		propertyName[StorageController.INHIBIT_TIME]            = "InhibitTime";
-		propertyName[StorageController.T_UP_RAMP]                = "Tup";
+		propertyName[StorageController.T_UP_RAMP]               = "Tup";
 		propertyName[StorageController.T_FLAT]                  = "TFlat";
-		propertyName[StorageController.T_DN_RAMP]                = "Tdn";
+		propertyName[StorageController.T_DN_RAMP]               = "Tdn";
 		propertyName[StorageController.KW_THRESHOLD]            = "kWThreshold";
 
 
@@ -185,7 +185,7 @@ public class StorageControllerImpl extends ControlClassImpl implements StorageCo
 
 		StorageControllerObj asc = activeStorageControllerObj;
 
-		int paramPointer = 0;
+		int paramPointer = -1;
 		String paramName = parser.getNextParam();
 		String param = parser.makeString();
 		while (param.length() > 0) {
@@ -195,7 +195,7 @@ public class StorageControllerImpl extends ControlClassImpl implements StorageCo
 				paramPointer = commandList.getCommand(paramName);
 			}
 
-			if ((paramPointer >= 0) && (paramPointer < numProperties))
+			if (paramPointer >= 0 && paramPointer < numProperties)
 				asc.setPropertyValue(paramPointer, param);
 
 			switch (paramPointer) {
