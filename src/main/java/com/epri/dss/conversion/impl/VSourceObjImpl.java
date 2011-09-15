@@ -87,9 +87,6 @@ public class VSourceObjImpl extends PCElementImpl implements VSourceObj {
 		double factor;
 		double Rs, Xs, Rm, Xm;
 
-		if (Z != null) Z = null;
-		if (ZInv != null) ZInv = null;
-
 		// for a source, nPhases = nCond, for now
 		Z    = new CMatrixImpl(nPhases);
 		ZInv = new CMatrixImpl(nPhases);
@@ -129,12 +126,12 @@ public class VSourceObjImpl extends PCElementImpl implements VSourceObj {
 		case 2:  // Isc
 			MVAsc3 = DSSGlobals.SQRT3 * kVBase * Isc3 / 1000.0;
 			MVAsc1 = factor * kVBase * Isc1 / 1000.0;
-			X1   = Math.pow(kVBase, 2) / MVAsc3 / Math.sqrt(1.0 + 1.0 / Math.pow(X1R1, 2));
-			Xs   = Math.pow(kVBase, 2) / MVAsc1 / Math.sqrt(1.0 + 1.0 / Math.pow(X0R0, 2));  // approx
-			R1   = X1 / X1R1;
-			Xm   = Xs - X1;
-			X0   = (Xs + 2.0 * Xm);
-			R0   = X0 / X0R0;
+			X1 = Math.pow(kVBase, 2) / MVAsc3 / Math.sqrt(1.0 + 1.0 / Math.pow(X1R1, 2));
+			Xs = Math.pow(kVBase, 2) / MVAsc1 / Math.sqrt(1.0 + 1.0 / Math.pow(X0R0, 2));  // approx
+			R1 = X1 / X1R1;
+			Xm = Xs - X1;
+			X0 = (Xs + 2.0 * Xm);
+			R0 = X0 / X0R0;
 
 			if (nPhases == 1) {
 				Rs = Xs / X0R0;
@@ -202,9 +199,7 @@ public class VSourceObjImpl extends PCElementImpl implements VSourceObj {
 
 		// build only YPrim_Series
 		if (isYprimInvalid()) {
-			if (YPrimSeries != null) YPrimSeries = null;
 			YPrimSeries = new CMatrixImpl(YOrder);
-			if (YPrim != null) YPrim = null;
 			YPrim = new CMatrixImpl(YOrder);
 		} else {
 			YPrimSeries.clear();
@@ -217,7 +212,7 @@ public class VSourceObjImpl extends PCElementImpl implements VSourceObj {
 		/* Put in series RL adjusted for frequency */
 		for (i = 0; i < nPhases; i++) {
 			for (j = 0; j < nPhases; j++) {
-				value    = Z.get(i, j);
+				value = Z.get(i, j);
 				value = new Complex(value.getReal(), value.getImaginary() * freqMultiplier);  /* Modify from base freq */
 				ZInv.set(i, j, value);
 			}
@@ -258,7 +253,6 @@ public class VSourceObjImpl extends PCElementImpl implements VSourceObj {
 		int i;
 		Complex VHarm;
 		double srcHarmonic;
-
 
 		try {
 			/* This formulation will theoretically handle voltage sources of any
@@ -400,27 +394,27 @@ public class VSourceObjImpl extends PCElementImpl implements VSourceObj {
 	public void initPropertyValues(int arrayOffset) {
 
 		/* PropertyValue allocated in DSSObject constructor */
-		propertyValue[1]  = getBus(0);
-		propertyValue[2]  = "115";
-		propertyValue[3]  = "1";
-		propertyValue[4]  = "0";
-		propertyValue[5]  = String.format("%d", Math.round(DSSGlobals.defaultBaseFreq));
-		propertyValue[6]  = "3";
-		propertyValue[7]  = "2000";
-		propertyValue[8]  = "2100";
-		propertyValue[9]  = "4";
-		propertyValue[10] = "3";
-		propertyValue[11] = "10000";
-		propertyValue[12] = "10500";
-		propertyValue[13] = "1.65";
-		propertyValue[14] = "6.6";
-		propertyValue[15] = "1.9";
-		propertyValue[16] = "5.7";
-		propertyValue[17] = "Pos";
-		propertyValue[18] = "Pos";
-		propertyValue[19] = getBus(0);
+		setPropertyValue(0, getBus(0));
+		setPropertyValue(1, "115");
+		setPropertyValue(2, "1");
+		setPropertyValue(3, "0");
+		setPropertyValue(4, String.format("%d", Math.round(DSSGlobals.defaultBaseFreq)));
+		setPropertyValue(5, "3");
+		setPropertyValue(6, "2000");
+		setPropertyValue(7, "2100");
+		setPropertyValue(8, "4");
+		setPropertyValue(9, "3");
+		setPropertyValue(10, "10000");
+		setPropertyValue(11, "10500");
+		setPropertyValue(12, "1.65");
+		setPropertyValue(13, "6.6");
+		setPropertyValue(14, "1.9");
+		setPropertyValue(15, "5.7");
+		setPropertyValue(16, "Pos");
+		setPropertyValue(17, "Pos");
+		setPropertyValue(18, getBus(1));
 
-		super.initPropertyValues(VSource.NumPropsThisClass);
+		super.initPropertyValues(VSource.NumPropsThisClass - 1);
 	}
 
 	@Override

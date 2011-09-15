@@ -321,9 +321,9 @@ public class StorageImpl extends PCClassImpl implements Storage {
 
 		StorageObj as = activeStorageObj;
 
-		int paramPointer = 0;
-		String paramName    = parser.getNextParam();  // parse next property off the command line
-		String param        = parser.makeString();    // put the string value of the property value in local memory for faster access
+		int paramPointer = -1;
+		String paramName = parser.getNextParam();  // parse next property off the command line
+		String param = parser.makeString();        // put the string value of the property value in local memory for faster access
 		while (param.length() > 0) {
 
 			if (paramName.length() == 0) {
@@ -332,7 +332,7 @@ public class StorageImpl extends PCClassImpl implements Storage {
 				paramPointer = commandList.getCommand(paramName);  // look up the name in the list for this class
 			}
 
-			if ((paramPointer >= 0) && (paramPointer <= numProperties)) {
+			if (paramPointer >= 0 && paramPointer < numProperties) {
 				as.setPropertyValue(propertyIdxMap[paramPointer], param);  // update the string value of the property
 			} else {
 				DSSGlobals.doSimpleMsg("Unknown parameter \""+paramName+"\" for Storage \""+as.getName()+"\"", 560);
@@ -348,7 +348,7 @@ public class StorageImpl extends PCClassImpl implements Storage {
 					as.setNPhases(parser.makeInteger());  // num phases
 					break;
 				case 1:
-					as.setBus(1, param);  // TODO Check zero based indexing
+					as.setBus(0, param);
 					break;
 				case KV:
 					as.setPresentKV(parser.makeDouble());
@@ -524,7 +524,7 @@ public class StorageImpl extends PCClassImpl implements Storage {
 			}
 
 			paramName = parser.getNextParam();
-			param     = parser.makeString();
+			param = parser.makeString();
 		}
 
 		as.recalcElementData();
@@ -616,10 +616,9 @@ public class StorageImpl extends PCClassImpl implements Storage {
 
 	@Override
 	public int init(int handle) {
-
 		StorageObj pElem;
 
-		if (handle == 0) {  // init all
+		if (handle == -1) {  // init all
 			for (int i = 0; i < elementList.size(); i++) {
 				pElem = (StorageObj) elementList.get(i);
 				pElem.randomize(0);

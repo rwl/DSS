@@ -39,7 +39,7 @@ public class ISourceImpl extends PCClassImpl implements ISource {
 		propertyName[3] = "frequency";
 		propertyName[4] = "phases";
 		propertyName[5] = "scantype";
-	    propertyName[6] = "sequence";
+		propertyName[6] = "sequence";
 
 		// define property help values
 		propertyHelp[0] = "Name of bus to which source is connected."+DSSGlobals.CRLF+"bus1=busname"+DSSGlobals.CRLF+"bus1=busname.1.2.3";
@@ -51,20 +51,19 @@ public class ISourceImpl extends PCClassImpl implements ISource {
 		propertyHelp[4] = "Number of phases.  Defaults to 3. For 3 or less, phase shift is 120 degrees.";
 		propertyHelp[5] = "{pos*| zero | none} Maintain specified sequence for harmonic solution. Default is positive sequence. "+
 				"Otherwise, angle between phases rotates with harmonic.";
-	    propertyHelp[6] = "{pos*| neg | zero} Set the phase angles for the specified symmetrical component sequence for non-harmonic solution modes. "+
-                 "Default is positive sequence.";
+		propertyHelp[6] = "{pos*| neg | zero} Set the phase angles for the specified symmetrical component sequence for non-harmonic solution modes. "+
+				"Default is positive sequence.";
 
 
-		activeProperty = ISource.NumPropsThisClass - 1;  // TODO Check zero based indexing
+		activeProperty = ISource.NumPropsThisClass - 1;
 		super.defineProperties();  // add defs of inherited properties to bottom of list
 
 		// override help string
-		propertyHelp[ISource.NumPropsThisClass - 1] = "Harmonic spectrum assumed for this source.  Default is \"default\".";  // TODO Check zero based indexing
+		propertyHelp[ISource.NumPropsThisClass] = "Harmonic spectrum assumed for this source.  Default is \"default\".";
 	}
 
 	@Override
 	public int newObject(String objName) {
-
 		DSSGlobals.activeCircuit.setActiveCktElement(new ISourceObjImpl(this, objName));
 		return addObjectToList(DSSGlobals.activeDSSObject);
 	}
@@ -81,9 +80,9 @@ public class ISourceImpl extends PCClassImpl implements ISource {
 
 		ISourceObj ais  = activeISourceObj;
 
-		int paramPointer = 0;
+		int paramPointer = -1;
 		String paramName = parser.getNextParam();
-		String param     = parser.makeString();
+		String param = parser.makeString();
 		while (param.length() > 0) {
 			if (paramName.length() == 0) {
 				paramPointer += 1;
@@ -91,7 +90,7 @@ public class ISourceImpl extends PCClassImpl implements ISource {
 				paramPointer = commandList.getCommand(paramName);
 			}
 
-			if ((paramPointer >= 0) && (paramPointer < numProperties))
+			if (paramPointer >= 0 && paramPointer < numProperties)
 				ais.setPropertyValue(paramPointer, param);
 
 			switch (paramPointer) {
@@ -99,7 +98,7 @@ public class ISourceImpl extends PCClassImpl implements ISource {
 				DSSGlobals.doSimpleMsg("Unknown parameter \"" + paramName + "\" for object \"" + getName() +"."+ ais.getName() + "\"", 330);
 				break;
 			case 0:
-				ais.setBus(1, param);  // TODO Check zero based indexing
+				ais.setBus(0, param);
 				break;
 			case 1:
 				ais.setAmps(parser.makeDouble());

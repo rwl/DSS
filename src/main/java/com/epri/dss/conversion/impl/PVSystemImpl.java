@@ -24,7 +24,7 @@ public class PVSystemImpl extends PCClassImpl implements PVSystem {
 	public PVSystemImpl() {
 		super();
 		className = "PVSystem";
-		classType = classType + DSSClassDefs.PVSYSTEM_ELEMENT;  // In both PCelement and PVSystem element list
+		classType = classType + DSSClassDefs.PVSYSTEM_ELEMENT;  // in both PCElement and PVSystem element list
 
 		activeElement = -1;
 
@@ -284,9 +284,9 @@ public class PVSystemImpl extends PCClassImpl implements PVSystem {
 
 		PVSystemObj apv = activePVSystemObj;
 
-		int paramPointer = 0;
-		String paramName    = parser.getNextParam();  // parse next property off the command line
-		String param        = parser.makeString();    // put the string value of the property value in local memory for faster access
+		int paramPointer = -1;
+		String paramName = parser.getNextParam();  // parse next property off the command line
+		String param = parser.makeString();    // put the string value of the property value in local memory for faster access
 		while (param.length() > 0) {
 			if (paramName.length() == 0) {
 				paramPointer += 1;  // if it is not a named property, assume the next property
@@ -294,7 +294,7 @@ public class PVSystemImpl extends PCClassImpl implements PVSystem {
 				paramPointer = commandList.getCommand(paramName);  // look up the name in the list for this class
 			}
 
-			if ((paramPointer >= 0) && (paramPointer < numProperties)) {
+			if (paramPointer >= 0 && paramPointer < numProperties) {
 				apv.setPropertyValue(propertyIdxMap[paramPointer], param);  // update the string value of the property
 			} else {
 				DSSGlobals.doSimpleMsg("Unknown parameter \""+paramName+"\" for PVSystem \""+apv.getName()+"\"", 560);
@@ -310,7 +310,7 @@ public class PVSystemImpl extends PCClassImpl implements PVSystem {
 					apv.setNPhases(parser.makeInteger());  // num phases
 					break;
 				case 1:
-					apv.setBus(1, param);  // TODO Check zero based indexing
+					apv.setBus(0, param);
 					break;
 				case KV:
 					apv.setPresentKV(parser.makeDouble());
@@ -462,7 +462,7 @@ public class PVSystemImpl extends PCClassImpl implements PVSystem {
 				}
 			}
 			paramName = parser.getNextParam();
-			param     = parser.makeString();
+			param = parser.makeString();
 		}
 
 		apv.recalcElementData();
@@ -567,7 +567,7 @@ public class PVSystemImpl extends PCClassImpl implements PVSystem {
 
 	public void resetRegistersAll() {
 		int idx = getFirst();
-		while (idx > 0) {
+		while (idx >= 0) {
 			((PVSystemObj) getActiveObj()).resetRegisters();
 			idx = getNext();
 		}

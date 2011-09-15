@@ -186,7 +186,7 @@ public class LoadImpl extends PCClassImpl implements Load {
 		activeProperty = NumPropsThisClass - 1;
 		super.defineProperties();  // add defs of inherited properties to bottom of list
 
-		propertyHelp[NumPropsThisClass - 1] = "Name of harmonic current spectrum for this load.  Default is \"defaultload\", which is defined when the DSS starts.";
+		propertyHelp[NumPropsThisClass] = "Name of harmonic current spectrum for this load.  Default is \"defaultload\", which is defined when the DSS starts.";
 	}
 
 	@Override
@@ -288,7 +288,7 @@ public class LoadImpl extends PCClassImpl implements Load {
 
 		LoadObj al = activeLoadObj;
 
-		int paramPointer = 0;
+		int paramPointer = -1;
 		String paramName = parser.getNextParam();
 		String param = parser.makeString();
 		while (param.length() > 0) {
@@ -298,7 +298,7 @@ public class LoadImpl extends PCClassImpl implements Load {
 				paramPointer = commandList.getCommand(paramName);
 			}
 
-			if ((paramPointer > 0) && (paramPointer <= numProperties))
+			if (paramPointer >= 0 && paramPointer < numProperties)
 				al.setPropertyValue(paramPointer, param);
 
 			switch (paramPointer) {
@@ -468,11 +468,11 @@ public class LoadImpl extends PCClassImpl implements Load {
 			case 11:
 				al.setLoadSpecType(1);  // kW, kvar
 				break;
-		/*** see set_xfkva, etc           21, 22: LoadSpectype = 3;  // XFKVA*AllocationFactor, PF  */
+			/*** see set_xfkva, etc           21, 22: LoadSpectype = 3;  // XFKVA*AllocationFactor, PF  */
 			case 22:
 				al.setLoadSpecType(2);  // kVA, PF
 				break;
-		/*** see set_kwh, etc           28..30: LoadSpecType = 4;  // kWh, days, cfactor, PF */
+			/*** see set_kwh, etc           28..30: LoadSpecType = 4;  // kWh, days, cfactor, PF */
 			case 30:
 				al.setCVRShapeObj((LoadShapeObj) DSSGlobals.loadShapeClass.find(al.getCVRShape()));
 				break;

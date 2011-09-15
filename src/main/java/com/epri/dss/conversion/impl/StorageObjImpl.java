@@ -137,35 +137,35 @@ public class StorageObjImpl extends PCElementImpl implements StorageObj {
 		YOrder = 0;  // to trigger an initial allocation
 		setNTerms(1);     // forces allocations
 
-		yearlyShape       = "";
-		yearlyShapeObj    = null;  // if yearlyShapeObj = null then the load always stays nominal * global multipliers
-		dailyShape        = "";
-		dailyShapeObj     = null;  // if dailyShapeObj = null then the load always stays nominal * global multipliers
-		dutyShape         = "";
-		dutyShapeObj      = null;  // if dutyShapeObj = null then the load always stays nominal * global multipliers
-		connection        = 0;     // Wye (star)
-		voltageModel      = 1;  /* Typical fixed kW negative load */
-		storageClass      = 1;
+		yearlyShape    = "";
+		yearlyShapeObj = null;  // if yearlyShapeObj = null then the load always stays nominal * global multipliers
+		dailyShape     = "";
+		dailyShapeObj  = null;  // if dailyShapeObj = null then the load always stays nominal * global multipliers
+		dutyShape      = "";
+		dutyShapeObj   = null;  // if dutyShapeObj = null then the load always stays nominal * global multipliers
+		connection     = 0;     // Wye (star)
+		voltageModel   = 1;  /* Typical fixed kW negative load */
+		storageClass   = 1;
 
 		storageSolutionCount     = -1;  // for keep track of the present solution in injCurrent calcs
 		openStorageSolutionCount = -1;
 		YPrimOpenCond            = null;
 
-		kVStorageBase    = 12.47;
-		VBase            = 7200.0;
-		VMinPU           = 0.90;
-		VMaxPU           = 1.10;
-		VBase95          = VMinPU * VBase;
-		VBase105         = VMaxPU * VBase;
-		YOrder           = nTerms * nConds;
-		randomMult       = 1.0 ;
+		kVStorageBase = 12.47;
+		VBase         = 7200.0;
+		VMinPU        = 0.90;
+		VMaxPU        = 1.10;
+		VBase95       = VMinPU * VBase;
+		VBase105      = VMaxPU * VBase;
+		YOrder        = nTerms * nConds;
+		randomMult    = 1.0 ;
 
 		/* Output rating stuff */
-		kWOut       = 25.0;
-		kVArOut     = 0.0;
-		PFNominal    = 1.0;
-		kWRating     = 25.0;
-		kVARating    = kWRating *1.0;
+		kWOut     = 25.0;
+		kVArOut   = 0.0;
+		PFNominal = 1.0;
+		kWRating  = 25.0;
+		kVARating = kWRating *1.0;
 
 		state        = Storage.IDLING;  // idling and fully charged
 		stateChanged = true;  // force building of YPrim
@@ -186,11 +186,11 @@ public class StorageObjImpl extends PCElementImpl implements StorageObj {
 		pctKVArOut       = 100.0;
 		pctKWIn          = 100.0;
 
-		chargeTime       = 2.0;  // 2 AM
+		chargeTime = 2.0;  // 2 AM
 
-		kVANotSet  = true;  // flag to set the default value for kVA
+		kVANotSet = true;  // flag to set the default value for kVA
 
-		userModel  = new StoreUserModelImpl();
+		userModel = new StoreUserModelImpl();
 
 		regKWh    = 1;
 		regKVArh  = 2;
@@ -225,49 +225,49 @@ public class StorageObjImpl extends PCElementImpl implements StorageObj {
 	@Override
 	public void initPropertyValues(int arrayOffset) {
 
-		propertyValue[0] = "3";         // "phases";
-		propertyValue[1] = getBus(0);   // "bus1";
+		setPropertyValue(0, "3");         // "phases";
+		setPropertyValue(1, getBus(0));   // "bus1";
 
-		propertyValue[Storage.KV]      = String.format("%-g", kVStorageBase);
-		propertyValue[Storage.KW]      = String.format("%-g", kWOut);
-		propertyValue[Storage.PF]      = String.format("%-g", PFNominal);
-		propertyValue[Storage.MODEL]     = "1";
-		propertyValue[Storage.YEARLY]    = "";
-		propertyValue[Storage.DAILY]     = "";
-		propertyValue[Storage.DUTY]      = "";
-		propertyValue[Storage.DISP_MODE]  = "Default";
-		propertyValue[Storage.IDLE_KVAR]  = "0";
-		propertyValue[Storage.CONNECTION]= "wye";
-		propertyValue[Storage.KVAR]      = String.format("%-g", getPresentKVAr());
+		setPropertyValue(Storage.KV, String.format("%-g", kVStorageBase));
+		setPropertyValue(Storage.KW, String.format("%-g", kWOut));
+		setPropertyValue(Storage.PF, String.format("%-g", PFNominal));
+		setPropertyValue(Storage.MODEL, "1");
+		setPropertyValue(Storage.YEARLY, "");
+		setPropertyValue(Storage.DAILY, "");
+		setPropertyValue(Storage.DUTY, "");
+		setPropertyValue(Storage.DISP_MODE, "Default");
+		setPropertyValue(Storage.IDLE_KVAR, "0");
+		setPropertyValue(Storage.CONNECTION, "wye");
+		setPropertyValue(Storage.KVAR, String.format("%-g", getPresentKVAr()));
 
-		propertyValue[Storage.PCTR]      = String.format("%-g", pctR);
-		propertyValue[Storage.PCTX]      = String.format("%-g", pctX);
+		setPropertyValue(Storage.PCTR, String.format("%-g", pctR));
+		setPropertyValue(Storage.PCTX, String.format("%-g", pctX));
 
-		propertyValue[Storage.IDLE_KW]    = "1";       // percent
-		propertyValue[Storage.CLASS]     = "1"; //"class"
-		propertyValue[Storage.DISP_OUT_TRIG] = "0";   // 0 - no trigger level
-		propertyValue[Storage.DISP_IN_TRIG] = "0";
-		propertyValue[Storage.CHARGE_EFF] = "90";
-		propertyValue[Storage.DISCHARGE_EFF] = "90";
-		propertyValue[Storage.PCT_KW_OUT]  = "100";
-		propertyValue[Storage.PCT_KW_IN]   = "100";
+		setPropertyValue(Storage.IDLE_KW, "1");  // percent
+		setPropertyValue(Storage.CLASS, "1");    // "class"
+		setPropertyValue(Storage.DISP_OUT_TRIG, "0");  // 0 - no trigger level
+		setPropertyValue(Storage.DISP_IN_TRIG, "0");
+		setPropertyValue(Storage.CHARGE_EFF, "90");
+		setPropertyValue(Storage.DISCHARGE_EFF, "90");
+		setPropertyValue(Storage.PCT_KW_OUT, "100");
+		setPropertyValue(Storage.PCT_KW_IN, "100");
 
-		propertyValue[Storage.VMIN_PU]    = "0.90";
-		propertyValue[Storage.VMAX_PU]    = "1.10";
-		propertyValue[Storage.STATE]     = "IDLING";
-		propertyValue[Storage.KVA]       = String.format("%-g", kVARating);
-		propertyValue[Storage.KW_RATED]   = String.format("%-g", kWRating);
-		propertyValue[Storage.KWH_RATED]  = String.format("%-g", kWhRating);
-		propertyValue[Storage.KWH_STORED] = String.format("%-g", kWhStored);
-		propertyValue[Storage.PCT_STORED] = String.format("%-g", kWhStored / kWhRating * 100.0);
-		propertyValue[Storage.PCT_RESERVE]= String.format("%-g", pctReserve);
-		propertyValue[Storage.CHARGE_TIME]= String.format("%-g", chargeTime);
+		setPropertyValue(Storage.VMIN_PU, "0.90");
+		setPropertyValue(Storage.VMAX_PU, "1.10");
+		setPropertyValue(Storage.STATE, "IDLING");
+		setPropertyValue(Storage.KVA, String.format("%-g", kVARating));
+		setPropertyValue(Storage.KW_RATED, String.format("%-g", kWRating));
+		setPropertyValue(Storage.KWH_RATED, String.format("%-g", kWhRating));
+		setPropertyValue(Storage.KWH_STORED, String.format("%-g", kWhStored));
+		setPropertyValue(Storage.PCT_STORED, String.format("%-g", kWhStored / kWhRating * 100.0));
+		setPropertyValue(Storage.PCT_RESERVE, String.format("%-g", pctReserve));
+		setPropertyValue(Storage.CHARGE_TIME, String.format("%-g", chargeTime));
 
-		propertyValue[Storage.USER_MODEL] = "";  // UserModel
-		propertyValue[Storage.USER_DATA]  = "";  // UserData
-		propertyValue[Storage.DEBUG_TRACE]= "NO";
+		setPropertyValue(Storage.USER_MODEL, "");  // UserModel
+		setPropertyValue(Storage.USER_DATA, "");  // UserData
+		setPropertyValue(Storage.DEBUG_TRACE, "NO");
 
-		super.initPropertyValues(Storage.NumPropsThisClass);
+		super.initPropertyValues(Storage.NumPropsThisClass - 1);
 	}
 
 	private String returnDispMode(int imode) {
@@ -556,7 +556,6 @@ public class StorageObjImpl extends PCElementImpl implements StorageObj {
 				}
 			}
 			/* When we leave here, all the Yeq's are in L-N values */
-
 		}
 
 		// if storage element state changes, force re-calc of Y matrix
@@ -647,13 +646,13 @@ public class StorageObjImpl extends PCElementImpl implements StorageObj {
 				switch (connection) {
 				case 0:
 					YMatrix.set(i, i, Y);
-					YMatrix.add(nConds, nConds, Y);
-					YMatrix.setSym(i, nConds, Yij);
+					YMatrix.add(nConds - 1, nConds - 1, Y);
+					YMatrix.setSym(i, nConds - 1, Yij);
 					break;
 				case 1:  /* Delta connection */
 					YMatrix.set(i, i, Y);
 					YMatrix.add(i, i, Y);  // put it in again
-					for (j = 0; j < i - 1; j++)  // TODO Check zero based indexing
+					for (j = 0; j < i; j++)
 						YMatrix.setSym(i, j, Yij);
 					break;
 				}
@@ -681,8 +680,8 @@ public class StorageObjImpl extends PCElementImpl implements StorageObj {
 				Yij = Y.negate();
 				for (i = 0; i < nPhases; i++) {
 					YMatrix.set(i, i, Y);
-					YMatrix.add(nConds, nConds, Y);
-					YMatrix.setSym(i, nConds, Yij);
+					YMatrix.add(nConds - 1, nConds - 1, Y);
+					YMatrix.setSym(i, nConds - 1, Yij);
 				}
 				break;
 
@@ -709,6 +708,7 @@ public class StorageObjImpl extends PCElementImpl implements StorageObj {
 	 */
 	private double normalizeToTOD(int h, double sec) {
 		int hourOfDay;
+		double result;
 
 		if (h > 23) {
 			hourOfDay = (h - (h / 24) * 24);
@@ -716,12 +716,12 @@ public class StorageObjImpl extends PCElementImpl implements StorageObj {
 			hourOfDay = h;
 		}
 
-		double Result = hourOfDay + sec / 3600.0;
+		result = hourOfDay + sec / 3600.0;
 
-		if (Result > 24.0)
-			Result = Result - 24.0;  // wrap around
+		if (result > 24.0)
+			result = result - 24.0;  // wrap around
 
-		return Result;
+		return result;
 	}
 
 	/**
@@ -735,9 +735,9 @@ public class StorageObjImpl extends PCElementImpl implements StorageObj {
 		if (dispatchMode == Storage.FOLLOW) {
 
 			// set charge and discharge modes based on sign of load shape
-			if ((level > 0.0) && (kWhStored > kWhReserve)) {
+			if (level > 0.0 && kWhStored > kWhReserve) {
 				setState(Storage.DISCHARGING);
-			} else if ((level < 0.0) && (kWhStored < kWhRating)) {
+			} else if (level < 0.0 && kWhStored < kWhRating) {
 				setState(Storage.CHARGING);
 			} else {
 				setState(Storage.IDLING);
@@ -745,18 +745,19 @@ public class StorageObjImpl extends PCElementImpl implements StorageObj {
 		} else {
 			// all other dispatch modes, just compare to trigger value
 
-			if ((chargeTrigger == 0.0) && (dischargeTrigger == 0.0)) return;
+			if (chargeTrigger == 0.0 && dischargeTrigger == 0.0)
+				return;
 
 			// first see If we want to turn off charging or discharging state
 			switch (getState()) {
 			case Storage.CHARGING:
 				if (chargeTrigger != 0.0)
-					if ((chargeTrigger < level) || (kWhStored >= kWhRating))
+					if (chargeTrigger < level || kWhStored >= kWhRating)
 						setState(Storage.IDLING);
 				break;
 			case Storage.DISCHARGING:
 				if (dischargeTrigger != 0.0)
-					if ((dischargeTrigger > level) || (kWhStored <= kWhReserve))
+					if (dischargeTrigger > level || kWhStored <= kWhReserve)
 						setState(Storage.IDLING);
 				break;
 			}
@@ -764,9 +765,9 @@ public class StorageObjImpl extends PCElementImpl implements StorageObj {
 			// now check to see if we want to turn on the opposite state
 			switch (getState()) {
 			case Storage.IDLING:
-				if ((dischargeTrigger != 0.0) && (dischargeTrigger < level) && (kWhStored > kWhReserve)) {
+				if (dischargeTrigger != 0.0 && dischargeTrigger < level && kWhStored > kWhReserve) {
 					setState(Storage.DISCHARGING);
-				} else if ((chargeTrigger != 0.0) && (chargeTrigger > level) && (kWhStored < kWhRating)) {
+				} else if (chargeTrigger != 0.0 && chargeTrigger > level && kWhStored < kWhRating) {
 					setState(Storage.CHARGING);
 				}
 
@@ -790,11 +791,8 @@ public class StorageObjImpl extends PCElementImpl implements StorageObj {
 		// build only shunt Yprim
 		// build a dummy Yprim_Series so that calcV does not fail
 		if (isYprimInvalid()) {
-			if (YPrimShunt != null) YPrimShunt = null;
 			YPrimShunt = new CMatrixImpl(YOrder);
-			if (YPrimSeries != null) YPrimSeries = null;
 			YPrimSeries = new CMatrixImpl(YOrder);
-			if (YPrim != null) YPrim = null;
 			YPrim = new CMatrixImpl(YOrder);
 		} else {
 			YPrimShunt.clear();
@@ -824,7 +822,7 @@ public class StorageObjImpl extends PCElementImpl implements StorageObj {
 		switch (connection) {
 		case 0:  // wye
 			termArray[i] = termArray[i].add(curr);
-			termArray[nConds] = termArray[nConds].add(curr.negate());  // neutral
+			termArray[nConds - 1] = termArray[nConds - 1].add(curr.negate());  // neutral
 			break;
 		case 1:  // delta
 			termArray[i] = termArray[i].add(curr);
@@ -887,7 +885,7 @@ public class StorageObjImpl extends PCElementImpl implements StorageObj {
 		calcVTerminalPhase();  // get actual voltage across each phase of the load
 
 		for (int i = 0; i < nPhases; i++) {
-			V    = VTerminal[i];
+			V = VTerminal[i];
 			VMag = V.abs();
 
 			switch (connection) {
@@ -954,7 +952,7 @@ public class StorageObjImpl extends PCElementImpl implements StorageObj {
 		if (userModel.exists()) {  // check automatically selects the user model if true
 			userModel.calc(VTerminal, ITerminal);
 			setITerminalUpdated(true);
-//			SolutionObj sol = DSSGlobals.activeCircuit.getSolution();
+			//SolutionObj sol = DSSGlobals.activeCircuit.getSolution();
 			// negate currents from user model for power flow storage element model
 			for (int i = 0; i < nConds; i++)
 				getInjCurrent()[i] = getInjCurrent()[i].add( ITerminal[i].negate() );
@@ -1003,7 +1001,7 @@ public class StorageObjImpl extends PCElementImpl implements StorageObj {
 
 		/* Handle wye connection */
 		if (connection == 0)
-			cBuffer[nConds] = VTerminal[nConds];  // assume no neutral injection voltage
+			cBuffer[nConds - 1] = VTerminal[nConds - 1];  // assume no neutral injection voltage
 
 		/* Inj currents = Yprim (E) */
 		YPrim.vMult(getInjCurrent(), cBuffer);
@@ -1017,7 +1015,7 @@ public class StorageObjImpl extends PCElementImpl implements StorageObj {
 		switch (connection) {
 		case 0:
 			for (i = 0; i < nPhases; i++)
-				VTerminal[i] = sol.vDiff(nodeRef[i], nodeRef[nConds]);
+				VTerminal[i] = sol.vDiff(nodeRef[i], nodeRef[nConds - 1]);
 			break;
 
 		case 1:
@@ -1189,14 +1187,14 @@ public class StorageObjImpl extends PCElementImpl implements StorageObj {
 				hourValue = 0.0;
 			}
 
-			if ((state == Storage.DISCHARGING) || ckt.isTrapezoidalIntegration()) {
+			if (state == Storage.DISCHARGING || ckt.isTrapezoidalIntegration()) {
 				/* Make sure we always integrate for Trapezoidal case.
 				 * Don't need to for gen off and normal integration.
 				 */
 				SolutionObj sol = ckt.getSolution();
 
 				if (ckt.isPositiveSequence()) {
-					S    = S.multiply(3.0);
+					S = S.multiply(3.0);
 					SMag = 3.0 * SMag;
 				}
 				integrate            (regKWh,   S.getReal(), sol.getIntervalHrs());   // accumulate the power
@@ -1307,7 +1305,7 @@ public class StorageObjImpl extends PCElementImpl implements StorageObj {
 
 			switch (connection) {
 			case 0:  /* wye - neutral is explicit */
-				Va = sol.getNodeV()[nodeRef[0]].subtract( sol.getNodeV()[nodeRef[nConds]] );
+				Va = sol.getNodeV()[nodeRef[0]].subtract( sol.getNodeV()[nodeRef[nConds - 1]] );
 				break;
 			case 1:  /* delta -- assume neutral is at zero */
 				Va = sol.getNodeV()[nodeRef[0]];
@@ -1375,7 +1373,7 @@ public class StorageObjImpl extends PCElementImpl implements StorageObj {
 		default:
 			if (userModel.exists()) {
 				n = userModel.numVars();
-				k = (i - Storage.NumStorageVariables);
+				k = (i - Storage.NumStorageVariables);  // TODO Check zero based indexing
 				if (k <= n)
 					return userModel.getVariable(k);
 			}
@@ -1413,7 +1411,7 @@ public class StorageObjImpl extends PCElementImpl implements StorageObj {
 		default:
 			if (userModel.exists()) {
 				n = userModel.numVars();
-				k = (i - Storage.NumStorageVariables) ;
+				k = (i - Storage.NumStorageVariables);  // TODO Check zero based indexing
 				if (k <= n) {
 					userModel.setVariable(k, value);
 					return;
@@ -1429,7 +1427,7 @@ public class StorageObjImpl extends PCElementImpl implements StorageObj {
 			states[i] = getVariable(i);
 
 		if (userModel.exists())
-			userModel.getAllVars(states[Storage.NumStorageVariables]);
+			userModel.getAllVars(states[Storage.NumStorageVariables - 1]);
 	}
 
 	@Override
@@ -1468,7 +1466,7 @@ public class StorageObjImpl extends PCElementImpl implements StorageObj {
 			if (userModel.exists()) {
 				pName = 0;
 				n = userModel.numVars();
-				i2 = i - Storage.NumStorageVariables;
+				i2 = i - Storage.NumStorageVariables;  // TODO Check zero based indexing
 				if (i2 <= n) {
 					userModel.getVarName(i2, pName, buffSize);
 					return String.valueOf(pName);
@@ -1490,7 +1488,7 @@ public class StorageObjImpl extends PCElementImpl implements StorageObj {
 		s = "phases=1 conn=wye";
 
 		// make sure voltage is line-neutral
-		if ((nPhases > 1) || (connection != 0)) {
+		if (nPhases > 1 || connection != 0) {
 			V = kVStorageBase / DSSGlobals.SQRT3;
 		} else {
 			V = kVStorageBase;
@@ -1584,7 +1582,8 @@ public class StorageObjImpl extends PCElementImpl implements StorageObj {
 
 	// FIXME Private method in OpenDSS
 	public void syncUpPowerQuantities() {
-		if (kVANotSet) kVARating = kWRating;
+		if (kVANotSet)
+			kVARating = kWRating;
 		kVArOut = 0.0;
 		// keep kVAr nominal up to date with kW and PF
 		if (PFNominal != 0.0) {

@@ -51,7 +51,7 @@ public class VSourceImpl extends PCClassImpl implements VSource {
 		propertyName[14] = "R0";
 		propertyName[15] = "X0";
 		propertyName[16] = "ScanType";
-	    propertyName[17] = "Sequence";
+		propertyName[17] = "Sequence";
 		propertyName[18]  = "bus2";
 
 		// define property help values
@@ -96,7 +96,7 @@ public class VSourceImpl extends PCClassImpl implements VSource {
 		super.defineProperties();  // add defs of inherited properties to bottom of list
 
 		// override help string
-		propertyHelp[VSource.NumPropsThisClass - 1] = "Name of harmonic spectrum for this source.  Default is \"defaultvsource\", which is defined when the DSS starts.";
+		propertyHelp[VSource.NumPropsThisClass] = "Name of harmonic spectrum for this source.  Default is \"defaultvsource\", which is defined when the DSS starts.";
 	}
 
 	@Override
@@ -114,7 +114,7 @@ public class VSourceImpl extends PCClassImpl implements VSource {
 
 		VSourceObj avs = activeVSourceObj;
 
-		avs.setBus(1, s);  // TODO Check zero based indexing
+		avs.setBus(0, s);
 
 		// default bus2 to zero node of bus1. (Grounded-Y connection)
 
@@ -144,9 +144,9 @@ public class VSourceImpl extends PCClassImpl implements VSource {
 
 		VSourceObj avs = activeVSourceObj;
 
-		int paramPointer = 0;
+		int paramPointer = -1;
 		String paramName = parser.getNextParam();
-		String param     = parser.makeString();
+		String param = parser.makeString();
 		while (param.length() > 0) {
 			if (paramName.length() == 0) {
 				paramPointer += 1;
@@ -154,7 +154,7 @@ public class VSourceImpl extends PCClassImpl implements VSource {
 				paramPointer = commandList.getCommand(paramName);
 			}
 
-			if ((paramPointer >= 0) && (paramPointer < numProperties))
+			if (paramPointer >= 0 && paramPointer < numProperties)
 				avs.setPropertyValue(paramPointer, param);
 
 			switch (paramPointer) {
@@ -243,7 +243,7 @@ public class VSourceImpl extends PCClassImpl implements VSource {
 				}
 				break;
 			case 18:
-				avs.setBus(2, param);  // TODO Check zero based indexing
+				avs.setBus(1, param);
 				break;
 			default:
 				classEdit(activeVSourceObj, paramPointer - VSource.NumPropsThisClass);
@@ -279,7 +279,7 @@ public class VSourceImpl extends PCClassImpl implements VSource {
 			}
 
 			paramName = parser.getNextParam();
-			param     = parser.makeString();
+			param = parser.makeString();
 		}
 
 		avs.recalcElementData();
@@ -304,9 +304,6 @@ public class VSourceImpl extends PCClassImpl implements VSource {
 
 				avs.setYOrder(avs.getNConds() * avs.getNTerms());
 				avs.setYPrimInvalid(true);
-
-				if (avs.getZ() != null) avs.setZ(null);
-				if (avs.getZinv() != null) avs.setZinv(null);
 
 				avs.setZ( new CMatrixImpl(avs.getNPhases()) );
 				avs.setZinv( new CMatrixImpl(avs.getNPhases()) );

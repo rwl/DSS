@@ -139,7 +139,7 @@ public class LoadObjImpl extends PCElementImpl implements LoadObj {
 		objType = parClass.getDSSClassType();
 
 		setNPhases(3);
-		nConds = 4;  // defaults to wye so it has a 4th conductor
+		nConds        = 4;  // defaults to wye so it has a 4th conductor
 		YOrder        = 0;  // to trigger an initial allocation
 		setNTerms(1);  // forces allocations
 		kWBase        = 10.0;
@@ -161,7 +161,7 @@ public class LoadObjImpl extends PCElementImpl implements LoadObj {
 		CVRshape       = "";
 		CVRShapeObj    = null;
 		connection     = 0;  // wye (star)
-		loadModel      = 1;  // changed from 2 RCD (easiest to solve)
+		loadModel      = 1;  // changed from 2 (easiest to solve)
 		loadClass      = 1;
 		numCustomers   = 1;
 		lastYear       = 0;
@@ -388,7 +388,7 @@ public class LoadObjImpl extends PCElementImpl implements LoadObj {
 					calcDutyMult(sol.getDblHour());
 					break;
 				default:
-					shapeFactor = Complex.ONE;  // default to 1 + j1 if not known
+					shapeFactor = new Complex(1, 1);  // default to 1 + j1 if not known
 					break;
 				}
 				break;
@@ -566,21 +566,21 @@ public class LoadObjImpl extends PCElementImpl implements LoadObj {
 		case 0:  // wye
 			for (i = 0; i < nPhases; i++) {
 				YMatrix.set(i, i, Y);
-				YMatrix.add(nConds, nConds, Y);
-				YMatrix.setSym(i, nConds, Yij);
+				YMatrix.add(nConds - 1, nConds - 1, Y);
+				YMatrix.setSym(i, nConds - 1, Yij);
 			}
-			YMatrix.add(nConds, nConds, Yneut);  // neutral
+			YMatrix.add(nConds - 1, nConds - 1, Yneut);  // neutral
 
 			/* If neutral is floating, make sure there is some small
 			 * connection to ground  by increasing the last diagonal slightly.
 			 */
 			if (RNeut < 0.0)
-				YMatrix.set(nConds, nConds, YMatrix.get(nConds, nConds).multiply(1.000001));
+				YMatrix.set(nConds - 1, nConds - 1, YMatrix.get(nConds - 1, nConds - 1).multiply(1.000001));
 			break;
 		case 1:  // delta or L-L
 			for (i = 0; i < nPhases; i++) {
 				j = i + 1;
-				if (j > nConds)
+				if (j >= nConds)
 					j = 0;  // wrap around for closed connections
 				YMatrix.add(i, i, Y);
 				YMatrix.add(j, j, Y);
@@ -599,13 +599,9 @@ public class LoadObjImpl extends PCElementImpl implements LoadObj {
 		// build only YPrim shunt for a load then copy to YPrim
 		// build a dummy Yprim series so that calcV does not fail
 		if (isYprimInvalid()) {
-			if (YPrimShunt != null) YPrimShunt = null;
-			if (YPrimSeries != null) YPrimSeries = null;
-			if (YPrim != null) YPrim = null;
-
 			YPrimSeries = new CMatrixImpl(YOrder);
 			YPrimShunt  = new CMatrixImpl(YOrder);
-			YPrim        = new CMatrixImpl(YOrder);
+			YPrim       = new CMatrixImpl(YOrder);
 		} else {
 			YPrimShunt.clear();
 			YPrimSeries.clear();
@@ -637,16 +633,16 @@ public class LoadObjImpl extends PCElementImpl implements LoadObj {
 	/**
 	 * Put the current into the proper location according to connection.
 	 */
-	private void stickCurrInTerminalArray(Complex[] termArray, Complex curr, int i) {
+	private void putCurrInTerminalArray(Complex[] termArray, Complex curr, int i) {
 		switch (connection) {
 		case 0:  // wye
 			termArray[i] = termArray[i].add(curr.negate());
-			termArray[nConds] = termArray[nConds].add(curr);  // neutral
+			termArray[nConds - 1] = termArray[nConds - 1].add(curr);  // neutral
 			break;
 		case 1:  // delta
 			termArray[i] = termArray[i].add(curr.negate());
 			int j = i + 1;
-			if (j > nConds)
+			if (j >= nConds)
 				j = 0;  // rotate the phases
 			termArray[j] = termArray[j].add(curr);
 			break;
@@ -699,9 +695,9 @@ public class LoadObjImpl extends PCElementImpl implements LoadObj {
 				curr = new Complex(WNominal, varNominal).divide(V).conjugate();  // above 95%, constant PQ
 			}
 
-			stickCurrInTerminalArray(getITerminal(), curr.negate(), i);  // put into terminal array taking into account connection
+			putCurrInTerminalArray(getITerminal(), curr.negate(), i);  // put into terminal array taking into account connection
 			setITerminalUpdated(true);
-			stickCurrInTerminalArray(getInjCurrent(), curr, i);  // put into terminal array taking into account connection
+			putCurrInTerminalArray(getInjCurrent(), curr, i);  // put into terminal array taking into account connection
 		}
 	}
 
@@ -715,9 +711,9 @@ public class LoadObjImpl extends PCElementImpl implements LoadObj {
 
 		for (int i = 0; i < nPhases; i++) {
 			curr = Yeq.multiply(VTerminal[i]);
-			stickCurrInTerminalArray(getITerminal(),  curr.negate(), i);  // put into terminal array taking into account connection
+			putCurrInTerminalArray(getITerminal(),  curr.negate(), i);  // put into terminal array taking into account connection
 			setITerminalUpdated(true);
-			stickCurrInTerminalArray(getInjCurrent(), curr, i);  // put into terminal array taking into account connection
+			putCurrInTerminalArray(getInjCurrent(), curr, i);  // put into terminal array taking into account connection
 		}
 	}
 
@@ -744,9 +740,9 @@ public class LoadObjImpl extends PCElementImpl implements LoadObj {
 				curr = new Complex(WNominal, 0.0).divide(V).conjugate();  // above 95%, constant P
 				curr = curr.add(new Complex(0.0, Yeq.getImaginary()).multiply(V));  // add in Q component of current
 			}
-			stickCurrInTerminalArray(getITerminal(), curr.negate(), i);  // put into terminal array taking into account connection
+			putCurrInTerminalArray(getITerminal(), curr.negate(), i);  // put into terminal array taking into account connection
 			setITerminalUpdated(true);
-			stickCurrInTerminalArray(getInjCurrent(), curr, i);  // put into terminal array taking into account connection
+			putCurrInTerminalArray(getInjCurrent(), curr, i);  // put into terminal array taking into account connection
 		}
 	}
 
@@ -770,12 +766,11 @@ public class LoadObjImpl extends PCElementImpl implements LoadObj {
 
 		for (int i = 0; i < nPhases; i++) {
 			V    = VTerminal[i];
-
 			curr = new Complex(WNominal, varNominal).divide( ComplexUtil.divide(V, V.abs()).multiply(VBase) ).conjugate();
 
-			stickCurrInTerminalArray(getITerminal(), curr.negate(), i);  // put into terminal array taking into account connection
+			putCurrInTerminalArray(getITerminal(), curr.negate(), i);  // put into terminal array taking into account connection
 			setITerminalUpdated(true);
-			stickCurrInTerminalArray(getInjCurrent(), curr, i);  // put into terminal array taking into account connection
+			putCurrInTerminalArray(getInjCurrent(), curr, i);  // put into terminal array taking into account connection
 		}
 	}
 
@@ -789,7 +784,7 @@ public class LoadObjImpl extends PCElementImpl implements LoadObj {
 		zeroITerminal();
 
 		for (i = 0; i < nPhases; i++) {
-			V    = VTerminal[i];
+			V = VTerminal[i];
 			VMag = V.abs();
 
 			if (VMag <= VBase95) {
@@ -811,9 +806,9 @@ public class LoadObjImpl extends PCElementImpl implements LoadObj {
 				curr = curr.multiply(yv);
 			}
 
-			stickCurrInTerminalArray(getITerminal(), curr.negate(), i);  // put into terminal array taking into account connection
+			putCurrInTerminalArray(getITerminal(), curr.negate(), i);  // put into terminal array taking into account connection
 			setITerminalUpdated(true);
-			stickCurrInTerminalArray(getInjCurrent(), curr, i);  // put into terminal array taking into account connection
+			putCurrInTerminalArray(getInjCurrent(), curr, i);  // put into terminal array taking into account connection
 		}
 	}
 
@@ -835,7 +830,7 @@ public class LoadObjImpl extends PCElementImpl implements LoadObj {
 
 		try {
 			for (int i = 0; i < nPhases; i++) {
-				V    = VTerminal[i];
+				V = VTerminal[i];
 				VMag = V.abs();
 				VRatio = VMag / VBase;  // VBase is l-n for wye and l-l for delta
 				// linear factor adjustment does not converge for some reason while power adjust does easily
@@ -857,17 +852,17 @@ public class LoadObjImpl extends PCElementImpl implements LoadObj {
 				} else if (CVRvarFactor == 3.0) {
 					varFactor = Math.pow(VRatio, 3);
 					/*writeDLLDebugFile(String.format("%s, V=%.6g +j %.6g", getName(), V.getReal(), V.getImaginary()));*/
-					CVar      = new Complex(0.0, varNominal * varFactor).divide(V).conjugate();
+					CVar = new Complex(0.0, varNominal * varFactor).divide(V).conjugate();
 				} else {
 					/* Other VAr factor code here if not squared or cubed */
 					varFactor = Math.pow(VRatio, CVRvarFactor);
-					CVar      = new Complex(0.0, varNominal * varFactor).divide(V).conjugate();
+					CVar = new Complex(0.0, varNominal * varFactor).divide(V).conjugate();
 				}
 				curr = curr.add(CVar);  // add in Q component of current
 				/*writeDLLDebugFile(String.format("%s, %d, %-.5g, %-.5g, %-.5g, %-.5g, %-.5g, %-.5g, %-.5g, %-.5g ", getName(), i, Vmag, VRatio, WNominal, WattFactor, varNominal, VarFactor, Curr.abs(), V.multiply(Curr.conjugate()).getReal()));*/
-				stickCurrInTerminalArray(getITerminal(), curr.negate(), i);  // put into terminal array taking into account connection
+				putCurrInTerminalArray(getITerminal(), curr.negate(), i);  // put into terminal array taking into account connection
 				setITerminalUpdated(true);
-				stickCurrInTerminalArray(getInjCurrent(), curr, i);  // put into terminal array taking into account connection
+				putCurrInTerminalArray(getInjCurrent(), curr, i);  // put into terminal array taking into account connection
 			}
 		} catch (Exception e) {
 			DSSGlobals.doSimpleMsg(String.format("Error in Load.%s: %s ", getName(), e.getMessage()), 5871);
@@ -895,9 +890,9 @@ public class LoadObjImpl extends PCElementImpl implements LoadObj {
 			} else {
 				curr = new Complex(WNominal, varBase).divide(V).conjugate();
 			}
-			stickCurrInTerminalArray(getITerminal(), curr.negate(), i);  // put into terminal array taking into account connection
+			putCurrInTerminalArray(getITerminal(), curr.negate(), i);  // put into terminal array taking into account connection
 			setITerminalUpdated(true);
-			stickCurrInTerminalArray(getInjCurrent(), curr, i);  // put into terminal array taking into account connection
+			putCurrInTerminalArray(getInjCurrent(), curr, i);  // put into terminal array taking into account connection
 		}
 	}
 
@@ -924,9 +919,9 @@ public class LoadObjImpl extends PCElementImpl implements LoadObj {
 				curr = curr.add(new Complex(0.0, YQFixed).multiply(V));   // add in Q component of current
 			}
 
-			stickCurrInTerminalArray(getITerminal(), curr.negate(), i);  // put into terminal array taking into account connection
+			putCurrInTerminalArray(getITerminal(), curr.negate(), i);  // put into terminal array taking into account connection
 			setITerminalUpdated(true);
-			stickCurrInTerminalArray(getInjCurrent(), curr, i);  // put into terminal array taking into account connection
+			putCurrInTerminalArray(getInjCurrent(), curr, i);  // put into terminal array taking into account connection
 		}
 	}
 
@@ -949,8 +944,8 @@ public class LoadObjImpl extends PCElementImpl implements LoadObj {
 		for (int i = 0; i < nPhases; i++) {
 			curr = mult.multiply(harmMag[i]);  // get base harmonic magnitude
 			curr = Utilities.rotatePhasorDeg(curr, loadHarmonic, harmAng[i]);  // time shift by fundamental
-			stickCurrInTerminalArray(getInjCurrent(), curr, i);  // put into terminal array taking into account connection
-			stickCurrInTerminalArray(getITerminal(), curr.negate(), i);  // put into terminal array taking into account connection
+			putCurrInTerminalArray(getInjCurrent(), curr, i);  // put into terminal array taking into account connection
+			putCurrInTerminalArray(getITerminal(), curr.negate(), i);  // put into terminal array taking into account connection
 			setITerminalUpdated(true);
 		}
 	}
@@ -975,8 +970,8 @@ public class LoadObjImpl extends PCElementImpl implements LoadObj {
 			break;
 		case 1:
 			for (int i = 0; i < nPhases; i++) {
-				j = i + 1;  // TODO Check zero based indexing
-				if (j > nConds)
+				j = i + 1;
+				if (j >= nConds)
 					j = 0;
 				VTerminal[i] = sol.vDiff(nodeRef[i], nodeRef[j]);
 			}
@@ -1384,41 +1379,41 @@ public class LoadObjImpl extends PCElementImpl implements LoadObj {
 
 	public void initPropertyValues(int arrayOffset) {
 
-		propertyValue[0]  = "3";        // "phases";
-		propertyValue[1]  = getBus(0);  // "bus1";
-		propertyValue[2]  = "12.47";
-		propertyValue[3]  = "10";
-		propertyValue[4]  = ".88";
-		propertyValue[5]  = "1";
-		propertyValue[6]  = "";
-		propertyValue[7]  = "";
-		propertyValue[8]  = "";
-		propertyValue[9]  = "";
-		propertyValue[10] = "wye";
-		propertyValue[11] = "5";
-		propertyValue[12] = "-1"; // "rneut"; // if entered -, assume open or user defined
-		propertyValue[13] = "0";  // "xneut";
-		propertyValue[14] = "variable"; //"status";  // fixed or variable
-		propertyValue[15] = "1";  // class
-		propertyValue[16] = "0.95";
-		propertyValue[17] = "1.05";
-		propertyValue[18] = "0.0";
-		propertyValue[19] = "0.0";
-		propertyValue[20] = "0.0";
-		propertyValue[21] = "0.5";  // allocation factor
-		propertyValue[22] = "11.3636";
-		propertyValue[23] = "50";
-		propertyValue[24] = "10";
-		propertyValue[25] = "1";    // CVR watt factor
-		propertyValue[26] = "2";    // CVR var factor
-		propertyValue[27] = "0";    // kwh bulling
-		propertyValue[28] = "30";   // kwhdays
-		propertyValue[29] = "4";    // Cfactor
-		propertyValue[30] = "";     // CVRCurve
-		propertyValue[31] = "1";    // NumCust
-		propertyValue[32] = "";     // ZIPV coefficient array
+		setPropertyValue(0, "3");        // "phases";
+		setPropertyValue(1, getBus(0));  // "bus1";
+		setPropertyValue(2, "12.47");
+		setPropertyValue(3, "10");
+		setPropertyValue(4, ".88");
+		setPropertyValue(5, "1");
+		setPropertyValue(6, "");
+		setPropertyValue(7, "");
+		setPropertyValue(8, "");
+		setPropertyValue(9, "");
+		setPropertyValue(10, "wye");
+		setPropertyValue(11, "5");
+		setPropertyValue(12, "-1"); // "rneut"; // if entered -, assume open or user defined
+		setPropertyValue(13, "0");  // "xneut";
+		setPropertyValue(14, "variable"); //"status";  // fixed or variable
+		setPropertyValue(15, "1");  // class
+		setPropertyValue(16, "0.95");
+		setPropertyValue(17, "1.05");
+		setPropertyValue(18, "0.0");
+		setPropertyValue(19, "0.0");
+		setPropertyValue(20, "0.0");
+		setPropertyValue(21, "0.5");  // allocation factor
+		setPropertyValue(22, "11.3636");
+		setPropertyValue(23, "50");
+		setPropertyValue(24, "10");
+		setPropertyValue(25, "1");    // CVR watt factor
+		setPropertyValue(26, "2");    // CVR var factor
+		setPropertyValue(27, "0");    // kwh bulling
+		setPropertyValue(28, "30");   // kwhdays
+		setPropertyValue(29, "4");    // Cfactor
+		setPropertyValue(30, "");     // CVRCurve
+		setPropertyValue(31, "1");    // NumCust
+		setPropertyValue(32, "");     // ZIPV coefficient array
 
-		super.initPropertyValues(Load.NumPropsThisClass);
+		super.initPropertyValues(Load.NumPropsThisClass - 1);
 	}
 
 	/**
@@ -1430,7 +1425,7 @@ public class LoadObjImpl extends PCElementImpl implements LoadObj {
 		String s = "phases=1 conn=wye";
 
 		// make sure voltage is line-neutral
-		if ((nPhases > 1) || (connection != 0)) {
+		if (nPhases > 1 || connection != 0) {
 			V = kVLoadBase / DSSGlobals.SQRT3;
 		} else {
 			V = kVLoadBase;

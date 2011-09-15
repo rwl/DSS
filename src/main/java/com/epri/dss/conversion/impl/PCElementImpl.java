@@ -89,7 +89,7 @@ public abstract class PCElementImpl extends DSSCktElement implements PCElement {
 
 			if (isEnabled()) {
 
-				if ( sol.lastSolutionWasDirect() && (! (sol.isDynamicModel() || sol.isHarmonicModel())) ) {
+				if ( sol.lastSolutionWasDirect() && (! (sol.isDynamicModel() || sol.isHarmonicModel()) ) ) {
 
 					// take a short cut and get currents from YPrim only
 					// for case where model is entirely in Y matrix

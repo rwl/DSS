@@ -13,8 +13,8 @@ public class PCClassImpl extends CktElementClassImpl implements PCClass {
 
 	public PCClassImpl() {
 		super();
-		this.numPCClassProps = 1;
-		this.classType = DSSClassDefs.PC_ELEMENT;
+		numPCClassProps = 1;
+		classType = DSSClassDefs.PC_ELEMENT;
 	}
 
 	/**
@@ -47,7 +47,7 @@ public class PCClassImpl extends CktElementClassImpl implements PCClass {
 			PCElement pElem = (PCElement) activePCObj;
 
 			switch (paramPointer) {
-			case 1:
+			case 0:
 				pElem.setSpectrum(Parser.getInstance().makeString());
 				break;
 			default:

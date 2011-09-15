@@ -39,8 +39,8 @@ public class ISourceObjImpl extends PCElementImpl implements ISourceObj {
 		nConds = 3;
 		setNTerms(1);
 
-		amps     = 0.0;
-		angle    = 0.0;
+		amps = 0.0;
+		angle = 0.0;
 		srcFrequency = baseFrequency;
 		phaseShift = 120.0;
 		scanType = 1;  // pos sequence
@@ -54,7 +54,6 @@ public class ISourceObjImpl extends PCElementImpl implements ISourceObj {
 
 	@Override
 	public void recalcElementData() {
-
 		setSpectrumObj( (com.epri.dss.general.SpectrumObj) DSSGlobals.spectrumClass.find(getSpectrum()) );
 
 		if (getSpectrumObj() == null)
@@ -68,11 +67,7 @@ public class ISourceObjImpl extends PCElementImpl implements ISourceObj {
 
 		// build only YPrim_Series
 		if (isYprimInvalid()) {
-			if (YPrimSeries != null)
-				YPrimSeries = null;
 			YPrimSeries = new CMatrixImpl(YOrder);
-			if (YPrim != null)
-				YPrim = null;
 			YPrim = new CMatrixImpl(YOrder);
 		} else {
 			YPrimSeries.clear();
@@ -93,10 +88,10 @@ public class ISourceObjImpl extends PCElementImpl implements ISourceObj {
 	private Complex getBaseCurr() {
 		double srcHarmonic;
 		Complex result = null;
-
+		SolutionObj sol;
 
 		try {
-			SolutionObj sol = DSSGlobals.activeCircuit.getSolution();
+			sol = DSSGlobals.activeCircuit.getSolution();
 
 			/* Get first phase current */
 			if (sol.isHarmonicModel()) {
@@ -210,7 +205,7 @@ public class ISourceObjImpl extends PCElementImpl implements ISourceObj {
 		setPropertyValue(5, "pos");
 		setPropertyValue(6, "pos");
 
-		super.initPropertyValues(ISource.NumPropsThisClass);
+		super.initPropertyValues(ISource.NumPropsThisClass - 1);
 	}
 
 	/**
