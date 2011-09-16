@@ -74,7 +74,6 @@ public class ReactorImpl extends PDClassImpl implements Reactor {
 
 	@Override
 	public int newObject(String objName) {
-
 		DSSGlobals.activeCircuit.setActiveCktElement(new ReactorObjImpl(this, objName));
 		return addObjectToList(DSSGlobals.activeDSSObject);
 	}
@@ -146,7 +145,7 @@ public class ReactorImpl extends PDClassImpl implements Reactor {
 
 		ReactorObj ar = activeReactorObj;
 
-		ar.setBus(1, s);
+		ar.setBus(0, s);
 
 		// default bus2 to zero node of bus1. (wye grounded connection)
 
@@ -161,7 +160,7 @@ public class ReactorImpl extends PDClassImpl implements Reactor {
 		for (i = 0; i < ar.getNPhases(); i++)
 			s2 = s2 + ".0";
 
-		ar.setBus(2, s2);
+		ar.setBus(1, s2);
 		ar.setShunt(true);
 	}
 
@@ -176,7 +175,7 @@ public class ReactorImpl extends PDClassImpl implements Reactor {
 
 		ReactorObj ar = activeReactorObj;
 
-		int paramPointer = 0;
+		int paramPointer = -1;
 		String paramName = parser.getNextParam();
 		String param = parser.makeString();
 
@@ -187,7 +186,7 @@ public class ReactorImpl extends PDClassImpl implements Reactor {
 				paramPointer = commandList.getCommand(paramName);
 			}
 
-			if ((paramPointer >= 0) && (paramPointer < numProperties))
+			if (paramPointer >= 0 && paramPointer < numProperties)
 				ar.setPropertyValue(paramPointer, param);
 
 			switch (paramPointer) {
@@ -198,7 +197,7 @@ public class ReactorImpl extends PDClassImpl implements Reactor {
 				reactorSetBus1(param);
 				break;
 			case 1:
-				ar.setBus(2, param);  // TODO Check zero based indexing
+				ar.setBus(1, param);
 				break;
 			case 2:
 				/*nPhases = parser.makeInteger();*/  // see below
@@ -239,7 +238,7 @@ public class ReactorImpl extends PDClassImpl implements Reactor {
 			// some specials ...
 			switch (paramPointer) {
 			case 0:
-				ar.setPropertyValue(1, ar.getBus(1));  // this gets modified   TODO Check zero based indexing
+				ar.setPropertyValue(1, ar.getBus(1));  // this gets modified
 				ar.getPrpSequence()[1] = 0;            // reset this for save function
 				break;
 			case 1:
@@ -271,7 +270,7 @@ public class ReactorImpl extends PDClassImpl implements Reactor {
 			}
 
 			// YPrim invalidation on anything that changes impedance values
-			if ((paramPointer >= 2) && (paramPointer <= 11))
+			if (paramPointer >= 2 && paramPointer <= 11)
 				ar.setYPrimInvalid(true);
 
 			paramName = parser.getNextParam();
@@ -316,18 +315,16 @@ public class ReactorImpl extends PDClassImpl implements Reactor {
 				ar.setRMatrix(new double[0]);
 			} else {
 				ar.setRMatrix( (double[]) Utilities.resizeArray(ar.getRMatrix(), ar.getNPhases() * ar.getNPhases()) );
-				for (i = 0; i < ar.getNPhases() * ar.getNPhases(); i++) {
+				for (i = 0; i < ar.getNPhases() * ar.getNPhases(); i++)
 					ar.getRMatrix()[i] = otherReactor.getRMatrix()[i];
-				}
 			}
 
 			if (otherReactor.getXMatrix() == null) {
 				ar.setXMatrix(new double[0]);
 			} else {
 				ar.setXMatrix( (double[]) Utilities.resizeArray(ar.getXMatrix(), ar.getNPhases() * ar.getNPhases()) );
-				for (i = 0; i < ar.getNPhases() * ar.getNPhases(); i++) {
+				for (i = 0; i < ar.getNPhases() * ar.getNPhases(); i++)
 					ar.getXMatrix()[i] = otherReactor.getXMatrix()[i];
-				}
 			}
 
 			classMakeLike(otherReactor);  // take care of inherited class properties

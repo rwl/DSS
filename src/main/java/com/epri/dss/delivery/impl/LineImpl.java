@@ -142,14 +142,12 @@ public class LineImpl extends PDClassImpl implements Line {
 				"Specify the Spacing first, using \"nphases\" tscables." + DSSGlobals.CRLF +
 				"You may later specify \"nconds-nphases\" wires for separate neutrals";
 
-
 		activeProperty = Line.NumPropsThisClass - 1;
 		super.defineProperties();  // add defs of inherited properties to bottom of list
 	}
 
 	@Override
 	public int newObject(String objName) {
-
 		DSSGlobals.activeCircuit.setActiveCktElement(new LineObjImpl(this, objName));
 		return addObjectToList(DSSGlobals.activeDSSObject);
 	}
@@ -160,18 +158,18 @@ public class LineImpl extends PDClassImpl implements Line {
 
 		LineObj al = activeLineObj;
 
-		double[] MatBuffer = new double[al.getNPhases() * al.getNPhases()];
-		int OrderFound = Parser.getInstance().parseAsSymMatrix(al.getNPhases(), MatBuffer);
+		double[] matBuffer = new double[al.getNPhases() * al.getNPhases()];
+		int orderFound = Parser.getInstance().parseAsSymMatrix(al.getNPhases(), matBuffer);
 
-		if (OrderFound > 0) {  // parse was successful
+		if (orderFound > 0) {  // parse was successful
 			/* R */
 			ZValues = al.getZ().asArray(nOrder);
 			if (nOrder.intValue() == al.getNPhases())
 				for (int j = 0; j < al.getNPhases() * al.getNPhases(); j++)
-					ZValues[j] = new Complex(MatBuffer[j], ZValues[j].getImaginary());
+					ZValues[j] = new Complex(matBuffer[j], ZValues[j].getImaginary());
 		}
 
-		MatBuffer = null;
+		matBuffer = null;
 	}
 
 	private void doXmatrix() {
@@ -180,18 +178,18 @@ public class LineImpl extends PDClassImpl implements Line {
 
 		LineObj al = activeLineObj;
 
-		double[] MatBuffer = new double[al.getNPhases() * al.getNPhases()];
-		int OrderFound = Parser.getInstance().parseAsSymMatrix(al.getNPhases(), MatBuffer);
+		double[] matBuffer = new double[al.getNPhases() * al.getNPhases()];
+		int orderFound = Parser.getInstance().parseAsSymMatrix(al.getNPhases(), matBuffer);
 
-		if (OrderFound > 0) {  // parse was successful
+		if (orderFound > 0) {  // parse was successful
 			/* X */
 			ZValues = al.getZ().asArray(nOrder);
 			if (nOrder.intValue() == al.getNPhases())
 				for (int j = 0; j < al.getNPhases() * al.getNPhases(); j++)
-					ZValues[j] = new Complex(ZValues[j].getReal(), MatBuffer[j]);
+					ZValues[j] = new Complex(ZValues[j].getReal(), matBuffer[j]);
 		}
 
-		MatBuffer = null;
+		matBuffer = null;
 	}
 
 	private void doCmatrix() {
@@ -248,7 +246,7 @@ public class LineImpl extends PDClassImpl implements Line {
 
 		LineObj al = activeLineObj;
 
-		int paramPointer = 0;
+		int paramPointer = -1;
 		String paramName = parser.getNextParam();
 		String param = parser.makeString();
 		while (param.length() > 0) {
@@ -258,7 +256,7 @@ public class LineImpl extends PDClassImpl implements Line {
 				paramPointer = commandList.getCommand(paramName);
 			}
 
-			if ((paramPointer >= 0) && (paramPointer < getNumProperties()))
+			if (paramPointer >= 0 && paramPointer < getNumProperties())
 				al.setPropertyValue(paramPointer, param);
 
 			switch (paramPointer) {
@@ -266,10 +264,10 @@ public class LineImpl extends PDClassImpl implements Line {
 				DSSGlobals.doSimpleMsg("Unknown parameter \"" + paramName + "\" for object \"Line." + al.getName() + "\"", 181);
 				break;
 			case 0:
-				al.setBus(1, param);  // TODO Check zero based indexing
+				al.setBus(0, param);
 				break;
 			case 1:
-				al.setBus(2, param);
+				al.setBus(1, param);
 				break;
 			case 2:
 				al.fetchLineCode(param);  // define line by conductor code
@@ -464,7 +462,7 @@ public class LineImpl extends PDClassImpl implements Line {
 				al.setSymComponentsChanged(false);
 				break;
 			case 20:
-				if ((al.getLineSpacingObj() != null) && (al.getWireData() != null)) {
+				if (al.getLineSpacingObj() != null && al.getWireData() != null) {
 					al.setSpacingSpecified(true);
 					al.setSymComponentsModel(false);
 					al.setSymComponentsChanged(false);
@@ -473,7 +471,7 @@ public class LineImpl extends PDClassImpl implements Line {
 				al.setYPrimInvalid(true);
 				break;
 			case 21:
-				if ((al.getLineSpacingObj() != null) && (al.getWireData() != null)) {
+				if (al.getLineSpacingObj() != null && al.getWireData() != null) {
 					al.setSpacingSpecified(true);
 					al.setSymComponentsModel(false);
 					al.setSymComponentsChanged(false);
@@ -484,7 +482,7 @@ public class LineImpl extends PDClassImpl implements Line {
 			}
 
 			// YPrim invalidation on anything that changes impedance values
-			if ((paramPointer >= 2) && (paramPointer <= 13)) {
+			if (paramPointer >= 2 && paramPointer <= 13) {
 				al.setYPrimInvalid(true);
 			} else if (paramPointer == 17) {
 				if (al.isGeometrySpecified() && (al.getLineGeometryObj() != null))
@@ -526,13 +524,6 @@ public class LineImpl extends PDClassImpl implements Line {
 
 				al.setYOrder(al.getNConds() * al.getNTerms());
 				al.setYPrimInvalid(true);
-
-				if (al.getZ() != null)
-					al.setZ(null);
-				if (al.getZInv() != null)
-					al.setZInv(null);
-				if (al.getYc() != null)
-					al.setYc(null);
 
 				// for a line, nPhases = nCond, for now
 				al.setZ(new CMatrixImpl(al.getNPhases()));

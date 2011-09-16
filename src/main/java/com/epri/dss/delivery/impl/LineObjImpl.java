@@ -102,7 +102,7 @@ public class LineObjImpl extends PDElementImpl implements LineObj {
 		/*baseFrequency = 60.0;*/  // set in base class
 		normAmps = 400.0;
 		emergAmps = 600.0;
-		pctPerm   = 20.0;
+		pctPerm = 20.0;
 		faultRate = 0.1;
 		hrsToRepair = 3.0;
 
@@ -133,7 +133,6 @@ public class LineObjImpl extends PDElementImpl implements LineObj {
 	}
 
 	public void fetchLineCode(String code) {
-
 
 		if (LineImpl.lineCodeClass == null)
 			LineImpl.lineCodeClass = (LineCode) DSSGlobals.DSSClassList.get(DSSGlobals.classNames.find("linecode"));
@@ -167,7 +166,7 @@ public class LineObjImpl extends PDElementImpl implements LineObj {
 			rho = lc.getRho();
 			KXg = Xg / Math.log(658.5 * Math.sqrt(rho / baseFrequency));
 
-			lineCodeUnits =  lc.getUnits();
+			lineCodeUnits = lc.getUnits();
 			lineCodeSpecified = true;
 
 			unitsConvert = LineUnits.convertLineUnits(lineCodeUnits, lengthUnits);
@@ -179,13 +178,7 @@ public class LineObjImpl extends PDElementImpl implements LineObj {
 			setHrsToRepair(lc.getHrsToRepair());
 			updatePDProperties();
 
-			if (getNPhases() !=  lc.getNPhases()) {
-				if (Z != null) Z = null;
-				if (ZInv != null) ZInv = null;
-
-				if (Yc != null) Yc = null;
-
-
+			if (getNPhases() != lc.getNPhases()) {
 				setNPhases(lc.getNPhases());
 				// for a line, nPhases = nCond, for now
 				Z    = new CMatrixImpl(nPhases);
@@ -218,10 +211,6 @@ public class LineObjImpl extends PDElementImpl implements LineObj {
 
 		Circuit ckt = DSSGlobals.activeCircuit;
 
-		if (Z != null) Z = null;
-		if (ZInv != null) ZInv = null;
-		if (Yc != null) Yc = null;
-
 		// for a line, nPhases = nCond, for now
 		Z    = new CMatrixImpl(getNPhases());
 		ZInv = new CMatrixImpl(getNPhases());
@@ -233,9 +222,9 @@ public class LineObjImpl extends PDElementImpl implements LineObj {
 
 		ZTemp = new Complex(R1, X1).multiply(2.0);
 		/* Handle special case for 1-phase line and/or pos seq model */
-		if ((getNPhases() == 1) || ckt.isPositiveSequence()) {
+		if (getNPhases() == 1 || ckt.isPositiveSequence()) {
 			// long-line equivalent pi, but only for cktModel=positive
-			if (ckt.isPositiveSequence() && (C1 > 0)) {
+			if (ckt.isPositiveSequence() && C1 > 0) {
 				// nominal pi parameters per unit length
 				Zs = new Complex(R1, X1);
 				Ys = new Complex(0.0, DSSGlobals.TWO_PI * baseFrequency * C1);
@@ -272,7 +261,7 @@ public class LineObjImpl extends PDElementImpl implements LineObj {
 		for (int i = 0; i < getNPhases(); i++) {
 			Z.set(i, i, Zs);
 			Yc.set(i, i, Ys);
-			for (int j = 0; j < i; j++) {  // TODO Check zero based indexing
+			for (int j = 0; j < i; j++) {
 				Z.setSym(i, j, Zm);
 				Yc.setSym(i, j, Ym);
 			}
@@ -357,9 +346,8 @@ public class LineObjImpl extends PDElementImpl implements LineObj {
 				DSSGlobals.doErrorMsg("LineObj.calcYPrim", "Matrix inversion error for line \"" + getName() + "\"",
 							"Invalid impedance specified. Replaced with tiny conductance.", 183);
 				ZInv.clear();
-				for (int i = 0; i < getNPhases(); i++) {
+				for (int i = 0; i < getNPhases(); i++)
 					ZInv.set(i, i, new Complex(DSSGlobals.EPSILON, 0.0));
-				}
 			} else {
 				/* Now, put in Yprim_Series matrix */
 				for (int i = 0; i < getNPhases(); i++) {
@@ -391,24 +379,24 @@ public class LineObjImpl extends PDElementImpl implements LineObj {
 		if (geometrySpecified || spacingSpecified) {
 
 			/* Values are already compensated for length and frequency */
-			k = -1;  // TODO Check zero based indexing
+			k = 0;
 			for (int j = 0; j < getNPhases(); j++) {
 				for (int i = 0; i < getNPhases(); i++) {
-					k += 1;  // assume matrix in col order (1,1  2,1  3,1 ...)
 					value = ComplexUtil.divide(YValues[k], 2.0);  // half at each end ...
 					YPrimShunt.add(i, j, value);
 					YPrimShunt.add(i + getNPhases(), j + getNPhases(), value);
+					k += 1;  // assume matrix in col order (1,1  2,1  3,1 ...)
 				}
 			}
 		} else {
 			/* Regular line model - values computed per unit length at base frequency */
-			k = -1;  // TODO Check zero based indexing
+			k = 0;
 			for (int j = 0; j < getNPhases(); j++) {
 				for (int i = 0; i < getNPhases(); i++) {
-					k += 1;  // assume matrix in col order (1,1  2,1  3,1 ...)
 					value = new Complex(0.0, YValues[k].getImaginary() * lengthMultiplier * freqMultiplier / 2.0);
 					YPrimShunt.add( i, j, value);
 					YPrimShunt.add(i + getNPhases(), j + getNPhases(), value);
+					k += 1;  // assume matrix in col order (1,1  2,1  3,1 ...)
 				}
 			}
 		}
@@ -441,25 +429,22 @@ public class LineObjImpl extends PDElementImpl implements LineObj {
 		f.println("~ " + pc.getPropertyName()[10] + "=" + getC0() * 1.0e9);
 		f.print("~ " + pc.getPropertyName()[11] + "=" + "\"");
 		for (int i = 0; i < getNPhases(); i++) {
-			for (int j = 0; j < getNPhases(); j++) {
+			for (int j = 0; j < getNPhases(); j++)
 				f.print(Z.get(i, j).getReal() + " ");
-			}
 			f.print("|");
 		}
 		f.println("\"");
 		f.print("~ " + pc.getPropertyName()[12] + "=" + "\"");
 		for (int i = 0; i < getNPhases(); i++) {
-			for (int j = 0; j < getNPhases(); j++) {
+			for (int j = 0; j < getNPhases(); j++)
 				f.print(Z.get(i, j).getImaginary() + " ");
-			}
 			f.print("|");
 		}
 		f.println("\"");
 		f.print("~ " + pc.getPropertyName()[13] + "=" + "\"");
 		for (int i = 0; i < getNPhases(); i++) {
-			for (int j = 0; j < getNPhases(); j++) {
+			for (int j = 0; j < getNPhases(); j++)
 				f.print((Yc.get(i, j).getImaginary() / DSSGlobals.TWO_PI / baseFrequency * 1.e9) + " ");
-			}
 			f.print("|");
 		}
 		f.println("\"");
@@ -472,9 +457,8 @@ public class LineObjImpl extends PDElementImpl implements LineObj {
 		}
 
 		/* Dump the rest by default */
-		for (int i = 14; i < pc.getNumProperties(); i++) {  // TODO Check zero based indexing
+		for (int i = 14; i < pc.getNumProperties(); i++)
 			f.println("~ " + pc.getPropertyName()[i] + "=" + getPropertyValue(i));
-		}
 	}
 
 	/**
@@ -492,7 +476,7 @@ public class LineObjImpl extends PDElementImpl implements LineObj {
 		double factor;
 		String result;
 
-		if ((index >= 11) && (index <= 13)) {
+		if (index >= 11 && index <= 13) {
 			result = "[";
 		} else {
 			result = "";
@@ -563,13 +547,13 @@ public class LineObjImpl extends PDElementImpl implements LineObj {
 					} else {
 						result = result + String.format("%-.7g", Z.get(i, j).getReal() / unitsConvert) + " ";
 					}
-					if (i < getNConds())
+					if (i < nConds - 1)
 						result = result + "|";
 				}
 			}
 			break;
 		case 12:
-			for (i = 0; i < getNConds(); i++) {
+			for (i = 0; i < nConds; i++) {
 				for (j = 0; j < i; j++) {
 					// X matrix
 					if (geometrySpecified || spacingSpecified) {
@@ -578,7 +562,7 @@ public class LineObjImpl extends PDElementImpl implements LineObj {
 						result = result + String.format("%-.7g", Z.get(i, j).getImaginary() / unitsConvert) + " ";
 					}
 				}
-				if (i < nConds)
+				if (i < nConds - 1)
 					result = result + "|";
 			}
 			break;
@@ -592,7 +576,7 @@ public class LineObjImpl extends PDElementImpl implements LineObj {
 						result = result + String.format("%-.7g", Yc.get(i, j).getImaginary() / factor / unitsConvert) + " ";
 					}
 				}
-				if (i < nConds)
+				if (i < nConds - 1)
 					result = result + "|";
 			}
 			break;
@@ -620,7 +604,7 @@ public class LineObjImpl extends PDElementImpl implements LineObj {
 			break;
 		}
 
-		if ((index >= 11) && (index <= 13))
+		if (index >= 11 && index <= 13)
 			result = result + "[";
 
 		return result;
@@ -647,12 +631,12 @@ public class LineObjImpl extends PDElementImpl implements LineObj {
 			/* 3-phase lines only */
 			computeITerminal();
 			for (int i = 0; i < 2; i++) {
-				k = (i - 1) * nPhases + 1;  // TODO Check zero based indexing
-				for (int j = 0; j < 2; j++)
+				k = i * nPhases;
+				for (int j = 0; j < 3; j++)
 					Vph[j] = DSSGlobals.activeCircuit.getSolution().getNodeV()[nodeRef[k + j]];
 				MathUtil.phase2SymComp(Vph, V012);
 				MathUtil.phase2SymComp(ITerminal[k], I012);
-				posSeqLosses = posSeqLosses.add( V012[1].multiply(I012[1].conjugate()) );  // TODO Check zero based indexing
+				posSeqLosses = posSeqLosses.add( V012[1].multiply(I012[1].conjugate()) );
 				negSeqLosses = negSeqLosses.add( V012[2].multiply(I012[2].conjugate()) );  // accumulate both line modes
 				zeroSeqLosses = zeroSeqLosses.add( V012[0].multiply(I012[0].conjugate()) );
 			}
@@ -665,38 +649,38 @@ public class LineObjImpl extends PDElementImpl implements LineObj {
 	@Override
 	public void initPropertyValues(int arrayOffset) {
 
-		propertyValue[0] = getBus(0);  // TODO Check zero based indexing
-		propertyValue[1] = getBus(1);
-		propertyValue[2] = "";
-		propertyValue[3] = "1.0";  // "5.28"; Changed 2/17/00
-		propertyValue[4] = "3";
-		propertyValue[5] = ".058";
-		propertyValue[6] = ".1206";
-		propertyValue[7] = ".1784";
-		propertyValue[8] = ".4047";
-		propertyValue[9] = "3.4";
-		propertyValue[10] = "1.6";
-		propertyValue[11] = "";
-		propertyValue[12] = "";
-		propertyValue[13] = "";
-		propertyValue[14] = "false";
-		propertyValue[15] = "0.01805";
-		propertyValue[16] = "0.155081";
-		propertyValue[17] = "100";
-		propertyValue[18] = "";
-		propertyValue[19] = "NONE";
-		propertyValue[20] = "";
-		propertyValue[21] = "";
-		propertyValue[22] = Utilities.getEarthModel(DSSGlobals.SIMPLECARSON);
+		setPropertyValue(0, getBus(0));
+		setPropertyValue(1, getBus(1));
+		setPropertyValue(2, "");
+		setPropertyValue(3, "1.0");  // "5.28"; Changed 2/17/00
+		setPropertyValue(4, "3");
+		setPropertyValue(5, ".058");
+		setPropertyValue(6, ".1206");
+		setPropertyValue(7, ".1784");
+		setPropertyValue(8, ".4047");
+		setPropertyValue(9, "3.4");
+		setPropertyValue(10, "1.6");
+		setPropertyValue(11, "");
+		setPropertyValue(12, "");
+		setPropertyValue(13, "");
+		setPropertyValue(14, "false");
+		setPropertyValue(15, "0.01805");
+		setPropertyValue(16, "0.155081");
+		setPropertyValue(17, "100");
+		setPropertyValue(18, "");
+		setPropertyValue(19, "NONE");
+		setPropertyValue(20, "");
+		setPropertyValue(21, "");
+		setPropertyValue(22, Utilities.getEarthModel(DSSGlobals.SIMPLECARSON));
 
-		super.initPropertyValues(Line.NumPropsThisClass);
+		super.initPropertyValues(Line.NumPropsThisClass - 1);
 
 		// override inherited properties just in case
-		propertyValue[Line.NumPropsThisClass + 1] = "400";  // normAmps    // TODO Check zero based indexing
-		propertyValue[Line.NumPropsThisClass + 2] = "600";  // emergAmps
-		propertyValue[Line.NumPropsThisClass + 3] = "0.1";  // faultRate
-		propertyValue[Line.NumPropsThisClass + 4] = "20";   // pctPerm
-		propertyValue[Line.NumPropsThisClass + 5] = "3";    // hrsToRepair
+		setPropertyValue(Line.NumPropsThisClass + 0, "400");  // normAmps
+		setPropertyValue(Line.NumPropsThisClass + 1, "600");  // emergAmps
+		setPropertyValue(Line.NumPropsThisClass + 2, "0.1");  // faultRate
+		setPropertyValue(Line.NumPropsThisClass + 3, "20");   // pctPerm
+		setPropertyValue(Line.NumPropsThisClass + 4, "3");    // hrsToRepair
 
 		clearPropSeqArray();
 	}
@@ -712,7 +696,7 @@ public class LineObjImpl extends PDElementImpl implements LineObj {
 		// if already single phase, let alone
 		if (nPhases > 1) {
 			// kill certain propertyValue elements to get a cleaner looking save
-			prpSequence[2] = 0;  // TODO Check zero based indexing
+			prpSequence[2] = 0;
 			for (i = 5; i < 13; i++)
 				prpSequence[i] = 0;
 
@@ -726,14 +710,12 @@ public class LineObjImpl extends PDElementImpl implements LineObj {
 					// average the diagonal and off-dialgonal elements
 					ZS = Complex.ZERO;
 					for (i = 0; i < nPhases; i++)
-						ZS = ZS.add(Z.get(i, i));
+						ZS = ZS.add( Z.get(i, i) );
 					ZS = ComplexUtil.divide(ZS, nPhases);
 					Zm = Complex.ZERO;
-					for (i = 0; i < nPhases - 1; i++) {  // TODO Check zero based indexing
-						for (j = i + 1; j < nPhases; j++) {
-							Zm = Zm.add(Z.get(i, j));
-						}
-					}
+					for (i = 0; i < nPhases - 1; i++)
+						for (j = i + 1; j < nPhases; j++)
+							Zm = Zm.add( Z.get(i, j) );
 					Zm = ComplexUtil.divide(Zm, nPhases * (nPhases - 1.0) / 2.0);
 					Z1 = ZS.subtract(Zm);
 
@@ -742,11 +724,9 @@ public class LineObjImpl extends PDElementImpl implements LineObj {
 					for (i = 0; i < nPhases; i++)
 						Cs = Cs + Yc.get(i, i).getImaginary();
 					Cm = 0.0;
-					for (i = 1; i < nPhases; i++) {  // TODO Check zero based indexing
-						for (j = i + 1; j < nPhases; j++) {
+					for (i = 1; i < nPhases; i++)
+						for (j = i + 1; j < nPhases; j++)
 							Cm = Cm + Yc.get(i, j).getImaginary();
-						}
-					}
 					C1New = (Cs - Cm) / DSSGlobals.TWO_PI / baseFrequency/ (nPhases * (nPhases - 1.0) / 2.0) * 1.0e9; // nanofarads
 				}
 				s = String.format(" R1=%-.5g  %-.5g  C1=%-.5g Phases=1", Z1.getReal(), Z1.getImaginary(), C1New);
@@ -796,13 +776,13 @@ public class LineObjImpl extends PDElementImpl implements LineObj {
 				/* redefine the bus connections */
 
 				// find bus in common between the two lines
-				common1 = 0;
-				common2 = 0;
-				i = 1;
-				while ((common1 == 0) && (i <= 2)) {
-					testBusNum = DSSGlobals.activeCircuit.getMapNodeToBus()[nodeRef[1 + (i - 1) * nConds]].busRef;
+				common1 = -1;
+				common2 = -1;
+				i = 0;
+				while (common1 == -1 && i < 2) {
+					testBusNum = DSSGlobals.activeCircuit.getMapNodeToBus()[nodeRef[1 + i * nConds]].busRef;
 					for (j = 0; j < 2; j++) {
-						if (DSSGlobals.activeCircuit.getMapNodeToBus()[otherLine.getNodeRef()[1 + (j - 1) * otherLine.getNConds()]].busRef == testBusNum) {
+						if (DSSGlobals.activeCircuit.getMapNodeToBus()[otherLine.getNodeRef()[1 + j * otherLine.getNConds()]].busRef == testBusNum) {
 							common1 = i;
 							common2 = j;
 							break;
@@ -811,28 +791,28 @@ public class LineObjImpl extends PDElementImpl implements LineObj {
 					i += 1;
 				}
 
-				if (common1 == 0)
+				if (common1 == -1)
 					return result;  // there's been an error; didn't find anything in common
 
 				/* redefine the bus connections */
 				switch (common1) {
-				case 1:
+				case 0:
 					switch (common2) {
-					case 1:
-						s = "Bus1=\"" + otherLine.getBus(1) + "\"";
+					case 0:
+						s = "bus1=\"" + otherLine.getBus(1) + "\"";
 						break;
-					case 2:
-						s = "Bus1=\"" + otherLine.getBus(0) + "\"";
+					case 1:
+						s = "bus1=\"" + otherLine.getBus(0) + "\"";
 						break;
 					}
 					break;
-				case 2:
+				case 1:
 					switch (common2) {
-					case 1:
-						s = "Bus2=\"" + otherLine.getBus(1) + "\"";
+					case 0:
+						s = "bus2=\"" + otherLine.getBus(1) + "\"";
 						break;
-					case 2:
-						s = "Bus2=\"" + otherLine.getBus(0) + "\"";
+					case 1:
+						s = "bus2=\"" + otherLine.getBus(0) + "\"";
 						break;
 					}
 					break;
@@ -840,7 +820,6 @@ public class LineObjImpl extends PDElementImpl implements LineObj {
 
 				Parser.getInstance().setCmdString(s);
 				edit();
-
 			}
 
 			/* Rename the line */
@@ -903,7 +882,7 @@ public class LineObjImpl extends PDElementImpl implements LineObj {
 					values1 = Z.asArray(order1);
 					values2 = otherLine.getZ().asArray(order2);
 
-					if (order1 != order2)
+					if (order1.intValue() != order2.intValue())
 						return result;  // lines not same size for some reason
 
 					// Z <= (Z1 + Z2) / TotalLen to get equiv ohms per unit length
@@ -914,7 +893,7 @@ public class LineObjImpl extends PDElementImpl implements LineObj {
 					values1 = Yc.asArray(order1);
 					values2 = otherLine.getYc().asArray(order2);
 
-					if (order1 != order2)
+					if (order1.intValue() != order2.intValue())
 						return result;  // lines not same size for some reason
 
 					for (i = 0; i < order1.intValue() * order1.intValue(); i++)
@@ -984,15 +963,14 @@ public class LineObjImpl extends PDElementImpl implements LineObj {
 			// need to establish Yorder before makeZFromSpacing
 			setNPhases( lineSpacingObj.getNPhases() );
 			setNConds(nPhases);  // force reallocation of terminal info
-			YOrder        = nConds * nTerms;
-			setYPrimInvalid(true);    // force rebuild of Y matrix
+			YOrder = nConds * nTerms;
+			setYPrimInvalid(true);  // force rebuild of Y matrix
 		} else {
 			DSSGlobals.doSimpleMsg("Line spacing object " + code + " not found.", 181);
 		}
 	}
 
 	public void fetchWireList(String code) {
-
 		int i, istart;
 
 		if (getLineSpacingObj() == null)
@@ -1002,10 +980,10 @@ public class LineObjImpl extends PDElementImpl implements LineObj {
 			lineCodeSpecified = false;
 			killGeometrySpecified();
 			wireData = new ConductorDataObj[lineSpacingObj.getNWires()];
-			istart = 1;
+			istart = 0;
 			phaseChoice = ConductorChoice.OVERHEAD;
 		} else {  // adding bare neutrals to an underground line - TODO what about repeat invocation?
-			istart = lineSpacingObj.getNPhases() + 1;
+			istart = lineSpacingObj.getNPhases();
 		}
 
 		DSSGlobals.auxParser.setCmdString(code);
@@ -1076,7 +1054,7 @@ public class LineObjImpl extends PDElementImpl implements LineObj {
 			setLineGeometryObj((LineGeometryObj) LineImpl.lineGeometryClass.getActiveObj());
 			ZFrequency = -1.0;  // init to signify not computed
 
-			geometryCode     = code.toLowerCase();
+			geometryCode = code.toLowerCase();
 
 			if (rhoSpecified)
 				lineGeometryObj.setRhoEarth(rho);
@@ -1105,14 +1083,10 @@ public class LineObjImpl extends PDElementImpl implements LineObj {
 		if (lineGeometryObj != null) {
 			/* This will make a new Z; throw away present allocations */
 
-			if (Z != null) Z = null;
-			if (ZInv != null) ZInv = null;
-			if (Yc != null) Yc = null;
-
 			DSSGlobals.activeEarthModel = getEarthModel();
 
-			Z    = getLineGeometryObj().getZMatrix(f, len, lengthUnits);
-			Yc   = getLineGeometryObj().getYcMatrix(f, len, lengthUnits);
+			Z  = getLineGeometryObj().getZMatrix(f, len, lengthUnits);
+			Yc = getLineGeometryObj().getYcMatrix(f, len, lengthUnits);
 			/* init Zinv */
 			if (Z != null) {
 				ZInv = new CMatrixImpl(Z.order());  // either no. phases or no. conductors
@@ -1132,10 +1106,6 @@ public class LineObjImpl extends PDElementImpl implements LineObj {
 
 		if (f == ZFrequency)
 			return;  // already done for this frequency, no need to do anything
-
-		if (Z != null) Z = null;
-		if (ZInv != null) ZInv = null;
-		if (Yc != null) Yc = null;
 
 		// make a temporary LineGeometry to calculate line constants
 		if (LineImpl.lineGeometryClass == null)
@@ -1169,7 +1139,7 @@ public class LineObjImpl extends PDElementImpl implements LineObj {
 	public void killGeometrySpecified() {
 		if (geometrySpecified) {
 			lineGeometryObj = null;
-			ZFrequency      = -1.0;
+			ZFrequency = -1.0;
 			geometrySpecified = false;
 		}
 	}
@@ -1188,17 +1158,13 @@ public class LineObjImpl extends PDElementImpl implements LineObj {
 	private void clearYPrim() {
 		// line object needs both series and shunt YPrims built
 		if (isYprimInvalid()) {  // reallocate YPrim if something has invalidated old allocation
-			if (YPrimSeries != null) YPrimSeries = null;
-			if (YPrimShunt != null) YPrimShunt = null;
-			if (YPrim != null) YPrim = null;
-
 			YPrimSeries = new CMatrixImpl(YOrder);
 			YPrimShunt  = new CMatrixImpl(YOrder);
-			YPrim        = new CMatrixImpl(YOrder);
+			YPrim       = new CMatrixImpl(YOrder);
 		} else {
 			YPrimSeries.clear();   // zero out YPrim_Series
 			YPrimShunt.clear();    // zero out YPrim_Shunt
-			YPrim.clear();          // zero out YPrim
+			YPrim.clear();         // zero out YPrim
 		}
 	}
 
@@ -1208,20 +1174,24 @@ public class LineObjImpl extends PDElementImpl implements LineObj {
 	// FIXME Private method in OpenDSS
 	public void resetLengthUnits() {
 		unitsConvert = 1.0;
-		lengthUnits  = LineUnits.UNITS_NONE;
+		lengthUnits = LineUnits.UNITS_NONE;
 	}
 
 	private int numConductorData() {
-		if (wireData != null) return lineSpacingObj.getNWires();
-		if (lineGeometryObj != null) return lineGeometryObj.getNWires();
+		if (wireData != null)
+			return lineSpacingObj.getNWires();
+		if (lineGeometryObj != null)
+			return lineGeometryObj.getNWires();
 		return 0;
 	}
 
 	private ConductorDataObj fetchConductorData(int i) {
 		if (wireData != null) {
-			if (i <= lineSpacingObj.getNWires()) return wireData[i];
+			if (i < lineSpacingObj.getNWires())
+				return wireData[i];
 		} else if (lineGeometryObj != null) {
-			if (i <= lineGeometryObj.getNWires()) return lineGeometryObj.getConductorData(i);
+			if (i < lineGeometryObj.getNWires())
+				return lineGeometryObj.getConductorData(i);
 		}
 		return null;
 	}

@@ -87,7 +87,6 @@ public class FuseImpl extends ControlClassImpl implements Fuse {
 
 	@Override
 	public int newObject(String objName) {
-
 		DSSGlobals.activeCircuit.setActiveCktElement(new FuseObjImpl(this, objName));
 		return addObjectToList(DSSGlobals.activeDSSObject);
 	}
@@ -104,7 +103,7 @@ public class FuseImpl extends ControlClassImpl implements Fuse {
 
 		FuseObj af = activeFuseObj;
 
-		int paramPointer = 0;
+		int paramPointer = -1;
 		String paramName = parser.getNextParam();
 		String param = parser.makeString();
 		while (param.length() > 0) {
@@ -114,7 +113,7 @@ public class FuseImpl extends ControlClassImpl implements Fuse {
 				paramPointer = commandList.getCommand(paramName);
 			}
 
-			if ((paramPointer >= 0) && (paramPointer < numProperties))  // TODO Check zero based indexing
+			if (paramPointer >= 0 && paramPointer < numProperties)
 				af.setPropertyValue(paramPointer, param);
 
 			switch (paramPointer) {

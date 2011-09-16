@@ -163,7 +163,6 @@ public class TransformerImpl extends PDClassImpl implements Transformer {
 
 	@Override
 	public int newObject(String objName) {
-
 		DSSGlobals.activeCircuit.setActiveCktElement(new TransformerObjImpl(this, objName));
 		return addObjectToList(DSSGlobals.activeDSSObject);
 	}
@@ -185,7 +184,7 @@ public class TransformerImpl extends PDClassImpl implements Transformer {
 		TransformerObj at = activeTransfObj;
 
 		at.setXHLChanged(false);
-		int paramPointer = 0;
+		int paramPointer = -1;
 		String paramName = parser.getNextParam();
 		String param = parser.makeString();
 		while (param.length() > 0) {
@@ -195,7 +194,7 @@ public class TransformerImpl extends PDClassImpl implements Transformer {
 				paramPointer = commandList.getCommand(paramName);
 			}
 
-			if ((paramPointer >= 0) && (paramPointer < numProperties))
+			if (paramPointer >= 0 && paramPointer < numProperties)
 				at.setPropertyValue(paramPointer, param);
 
 			switch (paramPointer) {
@@ -333,10 +332,10 @@ public class TransformerImpl extends PDClassImpl implements Transformer {
 				break;
 			case 6:
 				// default all winding kVAs to first winding so latter do not have to be specified
-				if (at.getActiveWinding() == 0) {  // TODO Check zero based indexing
+				if (at.getActiveWinding() == 0) {
 					for (int i = 1; i < at.getNumWindings(); i++)
 						at.getWinding()[i].setKVA(at.getWinding()[0].getKVA());
-					at.setNormMaxHKVA(1.1 * at.getWinding()[0].getKVA());    // defaults for new winding rating
+					at.setNormMaxHKVA(1.1 * at.getWinding()[0].getKVA());  // defaults for new winding rating
 					at.setEmergMaxHKVA(1.5 * at.getWinding()[0].getKVA());
 					at.getWinding()[0].setRpu(at.getPctLoadLoss() / 2.0 / 100.0);
 					at.getWinding()[1].setRpu(at.getWinding()[0].getRpu());
@@ -362,17 +361,17 @@ public class TransformerImpl extends PDClassImpl implements Transformer {
 				at.setXHLChanged(true);
 				break;
 			case 19:
-				for (int i = 0; i < ((at.getNumWindings() - 1) * at.getNumWindings() / 2); i++)
-					at.getXSC()[i] = at.getXsc(i) * 0.01;  // convert to per unit   TODO Check translation
+				for (int i = 0; i < at.getNumWindings() * at.getNumWindings() / 2; i++)
+					at.getXSC()[i] = at.getXSC()[i] * 0.01;  // convert to per unit
 				break;
 			case 25:  // assume load loss is split evenly between windings 1 and 2
-				at.getWinding()[0].setRpu(at.getPctLoadLoss() / 2.0 / 100.0);
-				at.getWinding()[1].setRpu(at.getWinding()[0].getRpu());
+				at.getWinding()[0].setRpu( at.getPctLoadLoss() / 2.0 / 100.0 );
+				at.getWinding()[1].setRpu( at.getWinding()[0].getRpu() );
 				break;
 			}
 
 			// YPrim invalidation on anything that changes impedance values
-			if ((paramPointer >= 4) && (paramPointer <= 18)) {
+			if (paramPointer >= 4 && paramPointer <= 18) {
 				at.setYPrimInvalid(true);
 			} else {
 				switch (paramPointer) {
@@ -393,7 +392,7 @@ public class TransformerImpl extends PDClassImpl implements Transformer {
 
 			/* Advance to next property on input line */
 			paramName = parser.getNextParam();
-			param     = parser.makeString();
+			param = parser.makeString();
 		}
 
 		at.recalcElementData();
@@ -404,7 +403,7 @@ public class TransformerImpl extends PDClassImpl implements Transformer {
 	private void setActiveWinding(int w) {
 		TransformerObj at = activeTransfObj;
 
-		if ((w >= 0) && (w < at.getNumWindings())) {
+		if (w >= 0 && w < at.getNumWindings()) {
 			at.setActiveWinding(w);
 		} else {
 			DSSGlobals.doSimpleMsg("Wdg parameter invalid for \"" + at.getName() + "\"", 112);
@@ -418,7 +417,7 @@ public class TransformerImpl extends PDClassImpl implements Transformer {
 	 */
 	private void interpretConnection(String s) {
 		TransformerObj at = activeTransfObj;
-		Winding aw = at.getWinding()[at.getActiveWinding()];
+		Winding aw = at.getWinding()[ at.getActiveWinding() ];
 
 		switch (s.toLowerCase().charAt(0)) {
 		case 'y':
@@ -450,10 +449,7 @@ public class TransformerImpl extends PDClassImpl implements Transformer {
 	 * Routine expecting all winding connections expressed in one array of strings.
 	 */
 	private void interpretAllConns(String s) {
-		@SuppressWarnings("unused")
-		String s1;
 		String s2;
-
 
 		DSSGlobals.auxParser.setCmdString(s);  // load up parser
 
@@ -461,7 +457,7 @@ public class TransformerImpl extends PDClassImpl implements Transformer {
 		TransformerObj at = activeTransfObj;
 		for (int i = 0; i < at.getNumWindings(); i++) {
 			at.setActiveWinding(i);
-			s1 = DSSGlobals.auxParser.getNextParam();  // ignore any parameter name not expecting any
+			DSSGlobals.auxParser.getNextParam();  // ignore any parameter name not expecting any
 			s2 = DSSGlobals.auxParser.makeString();
 			if (s2.length() > 0)
 				interpretConnection(s2);
@@ -472,8 +468,7 @@ public class TransformerImpl extends PDClassImpl implements Transformer {
 	 * Routine expecting all winding bus connections expressed in one array of strings.
 	 */
 	private void interpretAllBuses(String s) {
-		String busNam;
-
+		String busName;
 
 		DSSGlobals.auxParser.setCmdString(s);  // load up parser
 
@@ -482,9 +477,9 @@ public class TransformerImpl extends PDClassImpl implements Transformer {
 		for (int i = 0; i < at.getNumWindings(); i++) {
 			at.setActiveWinding(i);
 			DSSGlobals.auxParser.getNextParam();  // ignore any parameter name  not expecting any
-			busNam = DSSGlobals.auxParser.makeString();
-			if (busNam.length() > 0)
-				at.setBus(at.getActiveWinding(), busNam);
+			busName = DSSGlobals.auxParser.makeString();
+			if (busName.length() > 0)
+				at.setBus(at.getActiveWinding(), busName);
 		}
 	}
 
@@ -493,7 +488,6 @@ public class TransformerImpl extends PDClassImpl implements Transformer {
 	 */
 	private void interpretAllkVRatings(String s) {
 		String dataStr;
-
 
 		DSSGlobals.auxParser.setCmdString(s);  // load up parser
 
@@ -514,7 +508,6 @@ public class TransformerImpl extends PDClassImpl implements Transformer {
 	private void interpretAllkVARatings(String s) {
 		String dataStr;
 
-
 		DSSGlobals.auxParser.setCmdString(s);  // load up parser
 
 		/* Loop for no more than the expected number of windings; ignore omitted values */
@@ -534,7 +527,6 @@ public class TransformerImpl extends PDClassImpl implements Transformer {
 	private void interpretAllRs(String s) {
 		String dataStr;
 
-
 		DSSGlobals.auxParser.setCmdString(s);  // load up parser
 
 		/* Loop for no more than the expected number of windings; ignore omitted values */
@@ -553,7 +545,6 @@ public class TransformerImpl extends PDClassImpl implements Transformer {
 	 */
 	private void interpretAllTaps(String s) {
 		String dataStr;
-
 
 		DSSGlobals.auxParser.setCmdString(s);  // load up parser
 

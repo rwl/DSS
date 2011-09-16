@@ -52,10 +52,10 @@ public class FuseObjImpl extends ControlElemImpl implements FuseObj {
 
 		elementName = "";
 		setControlledElement(null);
-		elementTerminal = 1;
+		elementTerminal = 0;
 
 		monitoredElementName = "";
-		monitoredElementTerminal = 1;
+		monitoredElementTerminal = 0;
 		monitoredElement = null;
 
 		fuseCurve = FuseImpl.getTccCurve("tlink");
@@ -88,16 +88,16 @@ public class FuseObjImpl extends ControlElemImpl implements FuseObj {
 			setNPhases( monitoredElement.getNPhases() );  // force number of phases to be same
 			if (getNPhases() > Fuse.FUSEMAXDIM)
 				DSSGlobals.doSimpleMsg("Warning: Fuse "+getName()+": Number of phases > max fuse dimension.", 404);
-			if (monitoredElementTerminal > monitoredElement.getNTerms()) {
+			if (monitoredElementTerminal >= monitoredElement.getNTerms()) {
 				DSSGlobals.doErrorMsg("Fuse: \"" + getName() + "\"",
-										"Terminal no. \"" +"\" does not exist.",
-										"Re-specify terminal no.", 404);
+						"Terminal no. \"" +"\" does not exist.",
+						"Re-specify terminal no.", 404);
 			} else {
 				// sets name of i-th terminal's connected bus in fuse's bus list
-				setBus(1, monitoredElement.getBus(monitoredElementTerminal));  // TODO Check zero based indexing
+				setBus(0, monitoredElement.getBus(monitoredElementTerminal));
 				// allocate a buffer big enough to hold everything from the monitored element
 				cBuffer = Utilities.resizeArray(cBuffer, monitoredElement.getYorder());
-				condOffset = (monitoredElementTerminal - 1) * monitoredElement.getNConds();  // for speedy sampling
+				condOffset = monitoredElementTerminal * monitoredElement.getNConds();  // for speedy sampling
 			}
 		}
 
@@ -219,7 +219,7 @@ public class FuseObjImpl extends ControlElemImpl implements FuseObj {
 				/* Check phase trip, if any */
 
 				if (fuseCurve != null) {
-					CMag     = cBuffer[i].abs();
+					CMag = cBuffer[i].abs();
 					tripTime = fuseCurve.getTCCTime(CMag / ratedCurrent);
 				}
 
@@ -279,16 +279,16 @@ public class FuseObjImpl extends ControlElemImpl implements FuseObj {
 
 	@Override
 	public void initPropertyValues(int arrayOffset) {
-		propertyValue[1]  = "";  // "element";
-		propertyValue[2]  = "1"; // "terminal";
-		propertyValue[3]  = "";
-		propertyValue[4]  = "1"; // "terminal";
-		propertyValue[5]  = "Tlink";
-		propertyValue[6]  = "1.0";
-		propertyValue[7]  = "0";
-		propertyValue[8]  = "";
+		setPropertyValue(0, "");   // "element";
+		setPropertyValue(1, "1");  // "terminal";
+		setPropertyValue(2, "");
+		setPropertyValue(3, "1");  // "terminal";
+		setPropertyValue(4, "Tlink");
+		setPropertyValue(5, "1.0");
+		setPropertyValue(6, "0");
+		setPropertyValue(7, "");
 
-		super.initPropertyValues(Fuse.NumPropsThisClass);
+		super.initPropertyValues(Fuse.NumPropsThisClass - 1);
 	}
 
 	// FIXME: Private members in OpenDSS

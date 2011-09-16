@@ -36,7 +36,7 @@ public class PDElementImpl extends DSSCktElement implements PDElement {
 		super(parClass);
 
 		isShunt = false;
-		fromTerminal = 1;
+		fromTerminal = 0;
 		numCustomers = 0;
 		totalCustomers = 0;
 		sensorObj = null;
@@ -48,10 +48,11 @@ public class PDElementImpl extends DSSCktElement implements PDElement {
 	@Override
 	public void getCurrents(Complex[] curr) {
 		int i;
+		SolutionObj sol;
 
 		try {
 			if (isEnabled()) {
-				SolutionObj sol = DSSGlobals.activeCircuit.getSolution();
+				sol = DSSGlobals.activeCircuit.getSolution();
 				for (i = 0; i < YOrder; i++)
 					VTerminal[i] = sol.getNodeV()[nodeRef[i]];
 
@@ -61,25 +62,26 @@ public class PDElementImpl extends DSSCktElement implements PDElement {
 					curr[i] = Complex.ZERO;
 			}
 		} catch (Exception e) {
-			DSSGlobals.doErrorMsg(("Trying to Get Currents for Element: " + getName() + "."), e.getMessage(),
+			DSSGlobals.doErrorMsg(("Trying to get currents for element: " + getName() + "."), e.getMessage(),
 					"Has circuit been solved?", 660);
 		}
 	}
 
 	public Complex getExcessKVANorm (int idxTerm) {
-		Complex result;
+		double factor;
+		Complex result, kVA;
 
-		if ((normAmps == 0.0) || !isEnabled()) {
+		if (normAmps == 0.0 || !isEnabled()) {
 			overloadEEN = 0.0;
 			return Complex.ZERO;
 		}
 
-		Complex kVA = getPower(idxTerm).multiply(0.001);  // also forces computation of current into iTemp
-		double Factor = maxTerminalOneIMag() / normAmps - 1.0;
-		if (Factor > 0.0) {
-			overloadEEN = Factor;
-			Factor = 1.0 - 1.0 / (Factor + 1.0);  // to get factor
-			result = kVA.multiply(Factor) ;
+		kVA = getPower(idxTerm).multiply(0.001);  // also forces computation of current into iTemp
+		factor = maxTerminalOneIMag() / normAmps - 1.0;
+		if (factor > 0.0) {
+			overloadEEN = factor;
+			factor = 1.0 - 1.0 / (factor + 1.0);  // to get factor
+			result = kVA.multiply(factor) ;
 		} else {
 			overloadEEN = 0.0;
 			result = Complex.ZERO;
@@ -93,20 +95,21 @@ public class PDElementImpl extends DSSCktElement implements PDElement {
 	}
 
 	public Complex getExcessKVAEmerg(int idxTerm) {
-		Complex result;
+		double factor;
+		Complex result, kVA;
 
-		if ((getEmergAmps() == 0.0) || !isEnabled()) {
+		if (getEmergAmps() == 0.0 || !isEnabled()) {
 			overloadUE = 0.0;
 			return Complex.ZERO;
 		}
 
-		Complex kVA = getPower(idxTerm).multiply(0.001);  // also forces computation of current into iTemp
+		kVA = getPower(idxTerm).multiply(0.001);  // also forces computation of current into iTemp
 
-		double Factor = maxTerminalOneIMag() / getEmergAmps() - 1.0;
-		if (Factor > 0.0) {
-			overloadUE = Factor;
-			Factor = 1.0 - 1.0 / (Factor + 1.0);  // to get excess
-			result = kVA.multiply(Factor);
+		factor = maxTerminalOneIMag() / getEmergAmps() - 1.0;
+		if (factor > 0.0) {
+			overloadUE = factor;
+			factor = 1.0 - 1.0 / (factor + 1.0);  // to get excess
+			result = kVA.multiply(factor);
 		} else {
 			overloadUE = 0.0;
 			result = Complex.ZERO;
@@ -118,11 +121,11 @@ public class PDElementImpl extends DSSCktElement implements PDElement {
 	@Override
 	public void initPropertyValues(int arrayOffset) {
 
-		propertyValue[arrayOffset + 1] = "400";  // normAmps   TODO Check zero based indexing
-		propertyValue[arrayOffset + 2] = "600";  // emerAamps
-		propertyValue[arrayOffset + 3] = "0.1";  // faultRate
-		propertyValue[arrayOffset + 4] = "20";   // pctPerm
-		propertyValue[arrayOffset + 5] = "3";    // hrsToRepair
+		setPropertyValue(arrayOffset + 1, "400");  // normAmps
+		setPropertyValue(arrayOffset + 2, "600");  // emerAamps
+		setPropertyValue(arrayOffset + 3, "0.1");  // faultRate
+		setPropertyValue(arrayOffset + 4, "20");   // pctPerm
+		setPropertyValue(arrayOffset + 5, "3");    // hrsToRepair
 
 		super.initPropertyValues(arrayOffset + 5);
 	}

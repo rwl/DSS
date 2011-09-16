@@ -26,7 +26,7 @@ public class PDClassImpl extends CktElementClassImpl implements PDClass {
 	 * Define the properties for the base power delivery element class.
 	 */
 	protected void defineProperties() {
-		propertyName[activeProperty + 1] = "normamps";  // TODO Check zero based indexing
+		propertyName[activeProperty + 1] = "normamps";
 		propertyName[activeProperty + 2] = "emergamps";
 		propertyName[activeProperty + 3] = "faultrate";
 		propertyName[activeProperty + 4] = "pctperm";
@@ -51,19 +51,19 @@ public class PDClassImpl extends CktElementClassImpl implements PDClass {
 			PDElement PDElem = (PDElement) activePDObj;
 
 			switch (paramPointer) {
-			case 1:
+			case 0:
 				PDElem.setNormAmps(parser.makeDouble());
 				break;
-			case 2:
+			case 1:
 				PDElem.setEmergAmps(parser.makeDouble());
 				break;
-			case 3:
+			case 2:
 				PDElem.setFaultRate(parser.makeDouble());
 				break;
-			case 4:
+			case 3:
 				PDElem.setPctPerm(parser.makeDouble());
 				break;
-			case 5:
+			case 4:
 				PDElem.setHrsToRepair(parser.makeDouble());
 				break;
 			default:
