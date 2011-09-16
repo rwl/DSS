@@ -45,11 +45,9 @@ public class CNLineConstantsImpl extends CableConstantsImpl implements CNLineCon
 
 		if (ZReduced != null) {
 			reducedSize = ZReduced.order();
-			ZReduced = null;
 		} else {
 			reducedSize = 0;
 		}
-		if (YcReduced != null) YcReduced = null;
 		ZReduced = null;
 		YcReduced = null;
 
@@ -62,7 +60,7 @@ public class CNLineConstantsImpl extends CableConstantsImpl implements CNLineCon
 
 		/* For less than 1 kHz use GMR to better match published data */
 		LFactor = new Complex(0.0, w * MU0 / LineConstants.TWO_PI);
-		if ((f < 1000.0) && (f > 40.0)) {
+		if (f < 1000.0 && f > 40.0) {
 			powerFreq = true;
 		} else {
 			powerFreq= false;
@@ -95,7 +93,7 @@ public class CNLineConstantsImpl extends CableConstantsImpl implements CNLineCon
 		// mutual impedances - between CN cores and bare neutrals
 		for (i = 0; i < getNumConds(); i++) {
 			for (j = 0; j < i - 1; j++) {
-				Dij = Math.sqrt(MathUtil.sqr(X[i] - X[j]) + MathUtil.sqr(Y[i] - Y[j]));
+				Dij = Math.sqrt( MathUtil.sqr(X[i] - X[j]) + MathUtil.sqr(Y[i] - Y[j]) );
 				ZMat.setSym(i, j, LFactor.multiply( Math.log(1.0 / Dij) ).add(getZe(i, j)));
 			}
 		}
@@ -105,7 +103,7 @@ public class CNLineConstantsImpl extends CableConstantsImpl implements CNLineCon
 			idxi = i + getNumConds();
 			for (j = 0; j < i - 1; j++) {  // CN to other CN
 				idxj = j + getNumConds();
-				Dij = Math.sqrt(MathUtil.sqr(X[i] - X[j]) + MathUtil.sqr(Y[i] - Y[j]));
+				Dij = Math.sqrt( MathUtil.sqr(X[i] - X[j]) + MathUtil.sqr(Y[i] - Y[j]) );
 				ZMat.setSym(idxi, idxj, LFactor.multiply( Math.log(1.0 / Dij) ).add(getZe(i, j)));
 			}
 			for (j = 0; j < getNumConds(); j++) {  // CN to cores and bare neutrals
@@ -114,7 +112,7 @@ public class CNLineConstantsImpl extends CableConstantsImpl implements CNLineCon
 				if (i == j) {  // CN to its own phase core
 					Dij = radCN;
 				} else {  // CN to another phase or bare neutral
-					Dij = Math.sqrt(MathUtil.sqr(X[i] - X[j]) + MathUtil.sqr(Y[i] - Y[j]));
+					Dij = Math.sqrt( MathUtil.sqr(X[i] - X[j]) + MathUtil.sqr(Y[i] - Y[j]) );
 					Dij = Math.pow(Math.pow(Dij, kStrand[i]) - Math.pow(radCN, kStrand[i]),
 							1.0 / kStrand[i]);
 				}
@@ -125,7 +123,6 @@ public class CNLineConstantsImpl extends CableConstantsImpl implements CNLineCon
 		// reduce out the CN
 		while (ZMat.order() > getNumConds()) {
 			ZTemp = ZMat.kron(ZMat.order());
-			ZMat = null;
 			ZMat = ZTemp;
 		}
 		ZMatrix.copyFrom(ZMat);
@@ -135,14 +132,14 @@ public class CNLineConstantsImpl extends CableConstantsImpl implements CNLineCon
 		// assumes the insulation may lie between semicon layers
 		for (i = 0; i < getNPhases(); i++) {
 			YFactor = LineConstants.TWO_PI * LineConstants.E0 * epsR[i] * w;  // includes frequency so C==>Y
-		    radOut = 0.5 * diaIns[i];
-		    radIn = radOut - insLayer[i];
-		    denom = Math.log(radOut / radIn);
+			radOut = 0.5 * diaIns[i];
+			radIn = radOut - insLayer[i];
+			denom = Math.log(radOut / radIn);
 			YcMatrix.set(i, i, new Complex(0.0, YFactor / denom));
 		}
 
 		if (reducedSize > 0)
-			Kron(reducedSize);  // was reduced so reduce again to same size
+			kron(reducedSize);  // was reduced so reduce again to same size
 
 		/* else the Zmatrix is OK as last computed */
 		rhoChanged = false;
@@ -165,22 +162,22 @@ public class CNLineConstantsImpl extends CableConstantsImpl implements CNLineCon
 	}
 
 	public void setKStrand(int i, int kstrand) {
-		if ((i >= 0) && (i <= getNumConds()))
+		if (i >= 0 && i <= getNumConds())
 			this.kStrand[i] = kstrand;
 	}
 
 	public void setDiaStrand(int i, int units, double diastrand) {
-		if ((i >= 0) && (i <= getNumConds()))
+		if (i >= 0 && i <= getNumConds())
 			diaStrand[i] = diastrand * LineUnits.toMeters(units);
 	}
 
 	public void setGmrStrand(int i, int units, double gmrstrand) {
-		if ((i >= 0) && (i <= getNumConds()))
+		if (i >= 0 && i <= getNumConds())
 			gmrStrand[i] = gmrstrand * LineUnits.toMeters(units);
 	}
 
 	public void setRStrand(int i, int units, double rstrand) {
-		if ((i >= 0) && (i <= getNumConds()))
+		if (i >= 0 && i <= getNumConds())
 			rStrand[i] = rstrand * LineUnits.toPerMeter(units);
 	}
 

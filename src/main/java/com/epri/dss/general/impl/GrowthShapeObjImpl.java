@@ -48,8 +48,8 @@ public class GrowthShapeObjImpl extends DSSObjectImpl implements GrowthShapeObj 
 
 		if (npts > 0) {  // handle exceptional cases
 			index = yr - baseYear;
-			if (index > 0) {  // returns 1.0 for base year or any year previous  TODO Check zero based indexing
-				if (index > nYears) {  // make some more space
+			if (index >= 0) {  // returns 1.0 for base year or any year previous
+				if (index >= nYears) {  // make some more space
 					nYears = index + 10;
 					yearMult = Utilities.resizeArray(yearMult, nYears);
 					reCalcYearMult();
@@ -64,14 +64,14 @@ public class GrowthShapeObjImpl extends DSSObjectImpl implements GrowthShapeObj 
 	/* FIXME Private procedure in OpenDSS */
 	public void reCalcYearMult() {
 		// fill up the yearMult array with total yearly multiplier from base year
-		double mult = multiplier[1];
+		double mult = multiplier[0];
 		double multInc = mult;
-		yearMult[0] = mult;  // TODO Check zero based indexing
-		int dataPtr = 1;  // TODO Check zero based indexing
+		yearMult[0] = mult;
+		int dataPtr = 0;
 		int yr = baseYear;
-		for (int i = 1; i < nYears; i++) {  // TODO Check zero based indexing
+		for (int i = 1; i < nYears; i++) {
 			yr += 1;
-			if (dataPtr < npts) {
+			if (dataPtr < npts - 1) {
 				if (year[dataPtr + 1] == yr) {
 					dataPtr += 1;
 					multInc = multiplier[dataPtr];
@@ -87,10 +87,10 @@ public class GrowthShapeObjImpl extends DSSObjectImpl implements GrowthShapeObj 
 
 		for (int i = 0; i < parentClass.getNumProperties(); i++) {
 			switch (i) {
-			case 2:  // TODO Check zero based indexing
+			case 1:
 				f.println("~ " + parentClass.getPropertyName()[i] + "=(" + getPropertyValue(i) + ")");
 				break;
-			case 3:
+			case 2:
 				f.println("~ " + parentClass.getPropertyName()[i] + "=(" + getPropertyValue(i) + ")");
 				break;
 			default:
@@ -105,10 +105,10 @@ public class GrowthShapeObjImpl extends DSSObjectImpl implements GrowthShapeObj 
 		String result;
 
 		switch (index) {
-		case 2:  // TODO Check zero based indexing
+		case 1:
 			result = "(";
 			break;
-		case 3:
+		case 2:
 			result = "(";
 			break;
 		default:
@@ -117,11 +117,11 @@ public class GrowthShapeObjImpl extends DSSObjectImpl implements GrowthShapeObj 
 		}
 
 		switch (index) {
-		case 2:
+		case 1:
 			for (i = 0; i < npts; i++)
 				result = result + String.format("%-d, ", year[i]);
 			break;
-		case 3:
+		case 2:
 			for (i = 0; i < npts; i++)
 				result = result + String.format("%-g, ", multiplier[i]);
 			break;
@@ -131,10 +131,10 @@ public class GrowthShapeObjImpl extends DSSObjectImpl implements GrowthShapeObj 
 		}
 
 		switch (index) {
-		case 2:
+		case 1:
 			result = result + ")";
 			break;
-		case 3:
+		case 2:
 			result = result + ")";
 			break;
 		}
@@ -151,7 +151,7 @@ public class GrowthShapeObjImpl extends DSSObjectImpl implements GrowthShapeObj 
 		propertyValue[4] = "";   // switch input to a binary file of singles (year, mult)
 		propertyValue[5] = "";   // switch input to a binary file of doubles (year, mult)
 
-		super.initPropertyValues(GrowthShape.NumPropsThisClass);
+		super.initPropertyValues(GrowthShape.NumPropsThisClass - 1);
 	}
 
 

@@ -86,13 +86,10 @@ public class LineConstantsImpl implements LineConstants {
 
 		if (ZReduced != null) {
 			reducedSize = ZReduced.order();
-			ZReduced = null;
 		} else {
 			reducedSize = 0;
 		}
 
-		if (YcReduced != null)
-			YcReduced = null;
 		ZReduced = null;
 		YcReduced = null;
 
@@ -102,7 +99,7 @@ public class LineConstantsImpl implements LineConstants {
 		/* For less than 1 kHz use GMR to better match published data */
 
 		LFactor = new Complex(0.0, w * MU0/ TWO_PI);
-		if ((f < 1000.0) && (f > 40.0)) {
+		if (f < 1000.0 && f > 40.0) {
 			powerFreq = true;
 		} else {
 			powerFreq = false;
@@ -125,8 +122,8 @@ public class LineConstantsImpl implements LineConstants {
 		/* Mutual impedances */
 
 		for (i = 0; i < numConds; i++) {
-			for (j = 0; j < i - 1; j++) {  // TODO Check zero based indexing
-				Dij = Math.sqrt(Math.pow(X[i] - X[j], 2) + Math.pow(Y[i] - Y[j], 2));
+			for (j = 0; j < i; j++) {
+				Dij = Math.sqrt( Math.pow(X[i] - X[j], 2) + Math.pow(Y[i] - Y[j], 2) );
 				ZMatrix.setSym(i, j, LFactor.multiply( Math.log(1.0 / Dij) ).add(getZe(i, j)));
 			}
 		}
@@ -141,9 +138,9 @@ public class LineConstantsImpl implements LineConstants {
 			YcMatrix.set(i, i, new Complex(0.0, PFactor * Math.log(2.0 * Y[i] / radius[i])));
 
 		for (i = 0; i < numConds; i++) {
-			for (j = 0; j < i - 1; j++) {  // TODO Check zero based indexing
-				Dij = Math.sqrt(Math.pow(X[i] - X[j], 2) + Math.pow(Y[i] - Y[j], 2));
-				Dijp = Math.sqrt(Math.pow(X[i] - X[j], 2) + Math.pow(Y[i] + Y[j], 2));  // distance to image j
+			for (j = 0; j < i; j++) {
+				Dij = Math.sqrt( Math.pow(X[i] - X[j], 2) + Math.pow(Y[i] - Y[j], 2) );
+				Dijp = Math.sqrt( Math.pow(X[i] - X[j], 2) + Math.pow(Y[i] + Y[j], 2) );  // distance to image j
 				YcMatrix.setSym(i, j, new Complex(0.0, PFactor * Math.log(Dijp / Dij)));
 			}
 		}
@@ -151,7 +148,7 @@ public class LineConstantsImpl implements LineConstants {
 		YcMatrix.invert();  // now should be nodal C matrix
 
 		if (reducedSize > 0)
-			Kron(reducedSize);  // was reduced so reduce again to same size
+			kron(reducedSize - 1);  // was reduced so reduce again to same size
 
 		/* else the Zmatrix is OK as last computed */
 
@@ -176,8 +173,8 @@ public class LineConstantsImpl implements LineConstants {
 
 		/* Check for overlapping conductors */
 		for (i = 0; i < numConds; i++) {
-			for (j = i + 1; j < numConds; j++) {  // TODO Check zero based indexing
-				Dij = Math.sqrt(Math.pow(X[i] - X[j], 2) + Math.pow(Y[i] - Y[j], 2));
+			for (j = i + 1; j < numConds; j++) {
+				Dij = Math.sqrt( Math.pow(X[i] - X[j], 2) + Math.pow(Y[i] - Y[j], 2) );
 				if (Dij < (radius[i] + radius[j])) {
 					result = true;
 					errorMessage.append(String.format("Conductors %d and %d occupy the same space.", i, j));
@@ -240,7 +237,7 @@ public class LineConstantsImpl implements LineConstants {
 		newSize = result.order();
 		unitLengthConversion = LineUnits.fromPerMeter(units) * length;
 		for (int i = 0; i < newSize * newSize; i++)
-			YcValues[i] = YcValues[i].multiply(unitLengthConversion);  // a=a*b
+			YcValues[i] = YcValues[i].multiply( unitLengthConversion );  // a = a * b
 
 		return result;
 	}
@@ -266,7 +263,7 @@ public class LineConstantsImpl implements LineConstants {
 				thetaij = 0.0;
 				Dij = 2.0 * Yi;
 			} else {
-				Dij = Math.sqrt(Math.pow((Yi + Yj) + Math.pow(X[i] - X[j], 2), 2));
+				Dij = Math.sqrt( Math.pow((Yi + Yj) + Math.pow(X[i] - X[j], 2), 2) );
 				thetaij = Math.acos( (Yi + Yj) / Dij );
 			}
 			mij = 2.8099e-3 * Dij * Math.sqrt(frequency / rhoEarth);
@@ -343,7 +340,7 @@ public class LineConstantsImpl implements LineConstants {
 		CMatrix Z;
 		Complex[] ZValues;
 
-		if ((f != frequency) || rhoChanged)
+		if (f != frequency || rhoChanged)
 			calc(f);  // only recalcs if f changed or rho earth changed
 
 		if (ZReduced != null) {
@@ -361,7 +358,7 @@ public class LineConstantsImpl implements LineConstants {
 		/* Convert the values by units and length */
 		unitLengthConversion = LineUnits.fromPerMeter(units) * length;
 		for (i = 0; i < newSize * newSize; i++)
-			ZValues[i] = ZValues[i].multiply(unitLengthConversion);  // a=a*b
+			ZValues[i] = ZValues[i].multiply(unitLengthConversion);  // a = a * b
 
 		return null;
 	}
@@ -369,17 +366,12 @@ public class LineConstantsImpl implements LineConstants {
 	/**
 	 * Performs a Kron reduction leaving first nOrder rows.
 	 */
-	public void Kron(int nOrder) {
+	public void kron(int nOrder) {
 
 		CMatrix ZTemp  = ZMatrix;
 		boolean firstTime = true;
 
-		if ((frequency >= 0.0) && (nOrder > 0) && (nOrder < numConds)) {
-
-			if (ZReduced != null)
-				ZReduced = null;
-			if (YcReduced != null)
-				YcReduced = null;
+		if (frequency >= 0.0 && nOrder > 0 && nOrder < numConds) {
 
 			/* Reduce computed matrix one row/col at a time until it is norder */
 
@@ -409,7 +401,7 @@ public class LineConstantsImpl implements LineConstants {
 	 * Kron reduce to num phases only.
 	 */
 	public void reduce() {
-		Kron(numPhases);
+		kron(numPhases);
 	}
 
 	protected void setFrequency(double value) {
@@ -427,7 +419,7 @@ public class LineConstantsImpl implements LineConstants {
 	}
 
 	public void setGMR(int i, int units, double value) {
-		if ((i > 0) && (i <= numConds)) {  // TODO Check zero based indexing
+		if (i >= 0 && i < numConds) {
 			GMR[i] = value * LineUnits.toMeters(units);
 			if (radius[i] < 0.0)
 				radius[i] = GMR[i] / 0.7788;  // equivalent round conductor
@@ -439,12 +431,12 @@ public class LineConstantsImpl implements LineConstants {
 	}
 
 	public void setRac(int i, int units, double value) {
-		if ((i > 0) && (i <= numConds))  // TODO Check zero based indexing
+		if (i >= 0 && i < numConds)
 			Rac[i] = value * LineUnits.toPerMeter(units);
 	}
 
 	public void setRadius(int i, int units, double value) {
-		if ((i > 0) && (i <= numConds)) {  // TODO Check zero based indexing
+		if (i >= 0 && i <= numConds) {
 			radius[i] = value * LineUnits.toMeters(units);
 			if (GMR[i] < 0.0)
 				GMR[i] = radius[i] * 0.7788;  // default to round conductor
@@ -452,17 +444,17 @@ public class LineConstantsImpl implements LineConstants {
 	}
 
 	public void setRdc(int i, int units, double value) {
-		if ((i > 0) && (i <= numConds))
+		if (i >= 0 && i < numConds)
 			Rdc[i] = value * LineUnits.toPerMeter(units);
 	}
 
 	public void setX(int i, int units, double value) {
-		if ((i > 0) && (i <= numConds))
+		if (i >= 0 && i < numConds)
 			X[i] = value * LineUnits.toMeters(units);
 	}
 
 	public void setY(int i, int units, double value) {
-		if ((i > 0) && (i <= numConds))
+		if (i >= 0 && i < numConds)
 			Y[i] = value * LineUnits.toMeters(units);
 	}
 
@@ -474,7 +466,7 @@ public class LineConstantsImpl implements LineConstants {
 		return numConds;
 	}
 
-	private double getFrequency() {
+	public double getFrequency() {
 		return frequency;
 	}
 

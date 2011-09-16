@@ -50,10 +50,10 @@ public class CableDataObjImpl extends ConductorDataObjImpl implements CableDataO
 
 	@Override
 	public void initPropertyValues(int arrayOffset) {
-		setPropertyValue(arrayOffset + 0, "2.3");  // TODO Check zero based indexing
-		setPropertyValue(arrayOffset + 1, "-1");
+		setPropertyValue(arrayOffset + 1, "2.3");
 		setPropertyValue(arrayOffset + 2, "-1");
 		setPropertyValue(arrayOffset + 3, "-1");
+		setPropertyValue(arrayOffset + 4, "-1");
 		super.initPropertyValues(arrayOffset + 4);
 	}
 

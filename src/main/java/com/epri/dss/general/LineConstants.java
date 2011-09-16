@@ -94,7 +94,7 @@ public interface LineConstants {
 	/**
 	 * Performs a Kron reduction leaving first nOrder rows
 	 */
-	void Kron(int nOrder);
+	void kron(int nOrder);
 
 	/**
 	 * Kron reduce to numPhases only

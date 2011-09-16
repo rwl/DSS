@@ -80,16 +80,16 @@ public class ConductorDataObjImpl extends DSSObjectImpl implements ConductorData
 
 	@Override
 	public void initPropertyValues(int arrayOffset) {
-		setPropertyValue(arrayOffset + 0, "-1");
 		setPropertyValue(arrayOffset + 1, "-1");
-		setPropertyValue(arrayOffset + 2, "none");
-		setPropertyValue(arrayOffset + 3, "-1");
-		setPropertyValue(arrayOffset + 4, "none");
-		setPropertyValue(arrayOffset + 5, "-1");
-		setPropertyValue(arrayOffset + 6, "none");
-		setPropertyValue(arrayOffset + 7, "-1");
+		setPropertyValue(arrayOffset + 2, "-1");
+		setPropertyValue(arrayOffset + 3, "none");
+		setPropertyValue(arrayOffset + 4, "-1");
+		setPropertyValue(arrayOffset + 5, "none");
+		setPropertyValue(arrayOffset + 6, "-1");
+		setPropertyValue(arrayOffset + 7, "none");
 		setPropertyValue(arrayOffset + 8, "-1");
 		setPropertyValue(arrayOffset + 9, "-1");
+		setPropertyValue(arrayOffset + 10, "-1");
 		super.initPropertyValues(arrayOffset + 10);
 	}
 

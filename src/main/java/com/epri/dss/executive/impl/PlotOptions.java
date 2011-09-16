@@ -72,26 +72,26 @@ public class PlotOptions {
 		plotHelp = new String[NumPlotOptions];
 
 		plotHelp[ 0] = "One of {Circuit | Monitor | Daisy | Zones | AutoAdd | "+ CRLF +
-							"General (bus data) | Loadshape Tshape | Priceshape | Profile} " + CRLF +
-							"A \"Daisy\" plot is a special circuit plot that places a marker at each Generator location " +
-							"or at buses in the BusList property, if defined. " +
-							"A Zones plot shows the meter zones (see help on Object). " +
-							"Autoadd shows the autoadded generators. General plot shows quantities associated with buses " +
-							"using gradient colors between C1 and C2. Values are read from a file (see Object). " +
-							"Loadshape plots the specified loadshape. Examples:"+CRLF+CRLF+
-							"Plot type=circuit quantity=power" +CRLF+
-							"Plot Circuit Losses" +CRLF+
-							"Plot Circuit quantity=3 object=mybranchdata.csv" +CRLF+
-							"Plot daisy power max=5000 dots=N Buslist=[file=MyBusList.txt]" +CRLF+
-							"Plot General quantity=1 object=mybusdata.csv" +CRLF+
-							"Plot Loadshape object=myloadshape" +CRLF+
-							"Plot Tshape object=mytemperatureshape" +CRLF+
-							"Plot Priceshape object=mypriceshape" +CRLF+
-							"Plot Profile" +CRLF+
-							"Plot Profile Phases=Primary";
+				"General (bus data) | Loadshape Tshape | Priceshape | Profile} " + CRLF +
+				"A \"Daisy\" plot is a special circuit plot that places a marker at each Generator location " +
+				"or at buses in the BusList property, if defined. " +
+				"A Zones plot shows the meter zones (see help on Object). " +
+				"Autoadd shows the autoadded generators. General plot shows quantities associated with buses " +
+				"using gradient colors between C1 and C2. Values are read from a file (see Object). " +
+				"Loadshape plots the specified loadshape. Examples:"+CRLF+CRLF+
+				"Plot type=circuit quantity=power" +CRLF+
+				"Plot Circuit Losses" +CRLF+
+				"Plot Circuit quantity=3 object=mybranchdata.csv" +CRLF+
+				"Plot daisy power max=5000 dots=N Buslist=[file=MyBusList.txt]" +CRLF+
+				"Plot General quantity=1 object=mybusdata.csv" +CRLF+
+				"Plot Loadshape object=myloadshape" +CRLF+
+				"Plot Tshape object=mytemperatureshape" +CRLF+
+				"Plot Priceshape object=mypriceshape" +CRLF+
+				"Plot Profile" +CRLF+
+				"Plot Profile Phases=Primary";
 		plotHelp[ 1] = "One of {Voltage | Current | Power | Losses | Capacity | (Value Index for General, AutoAdd, or Circuit[w/ file]) }";
 		plotHelp[ 2] = "Enter 0 or the value corresponding to max scale or line thickness in the circuit plots. "+
-							"Power and Losses in kW.";
+				"Power and Losses in kW.";
 		plotHelp[ 3] = "Yes or No*. Places a marker on the circuit plot at the bus location. See Set Markercode under options.";
 		plotHelp[ 4] = "Yes or No*. If yes, bus labels (abbreviated) are printed on the circuit plot.";
 		plotHelp[ 5] = "Object to be plotted. One of [Meter Name (zones plot) | Monitor Name | LoadShape Name | File Name for General bus data | File Name Circuit branch data]";
@@ -102,20 +102,20 @@ public class PlotOptions {
 		plotHelp[10] = "RGB color number for color C2. Used for gradients and tricolor plots such as circuit voltage.";
 		plotHelp[11] = "RGB color number for color C3. Used for gradients and tricolor plots such a circuit voltage.";
 		plotHelp[12] = "Array of channel numbers for monitor plot. Example" +CRLF+CRLF+
-							"Plot Type=Monitor Object=MyMonitor Channels=[1, 3, 5]"+CRLF+CRLF+
-							"Do \"Show Monitor MyMonitor\" to see channel definitions.";
+				"Plot Type=Monitor Object=MyMonitor Channels=[1, 3, 5]"+CRLF+CRLF+
+				"Do \"Show Monitor MyMonitor\" to see channel definitions.";
 		plotHelp[13] = "Array of base values for each channel for monitor plot. Useful for creating per unit plots. Default is 1.0 for each channel.  Set Base= property after defining channels."+CRLF+CRLF+
-							"Plot Type=Monitor Object=MyMonitor Channels=[1, 3, 5] Bases=[2400 2400 2400]"+CRLF+CRLF+
-							"Do \"Show Monitor MyMonitor\" to see channel range and definitions.";;
+				"Plot Type=Monitor Object=MyMonitor Channels=[1, 3, 5] Bases=[2400 2400 2400]"+CRLF+CRLF+
+				"Do \"Show Monitor MyMonitor\" to see channel range and definitions.";;
 		plotHelp[14] = "{Yes | No*} Displays a marker at each transformer declared to be a substation. " +
-							"At least one bus coordinate must be defined for the transformer. "+
-							"See MarkTransformer and TransMarkerCode options.";
+				"At least one bus coordinate must be defined for the transformer. "+
+				"See MarkTransformer and TransMarkerCode options.";
 		plotHelp[15] = "Max thickness allowed for lines in circuit plots (default=7).";
 		plotHelp[16] = "{Array of Bus Names | File=filename } This is for the Daisy plot. "+CRLF+CRLF+
-							"Plot daisy power max=5000 dots=N Buslist=[file=MyBusList.txt]" +CRLF+CRLF+
-							"A \"daisy\" marker is plotted for " +
-							"each bus in the list. Bus name may be repeated, which results in multiple markers distributed around the bus location. " +
-							"This gives the appearance of a daisy if there are several symbols at a bus. Not needed for plotting active generators.";
+				"Plot daisy power max=5000 dots=N Buslist=[file=MyBusList.txt]" +CRLF+CRLF+
+				"A \"daisy\" marker is plotted for " +
+				"each bus in the list. Bus name may be repeated, which results in multiple markers distributed around the bus location. " +
+				"This gives the appearance of a daisy if there are several symbols at a bus. Not needed for plotting active generators.";
 		plotHelp[17] = "Enter 0 (the default value) or the value corresponding to min value corresponding to color C1 in General bus data plots.";
 		plotHelp[18] = "Line style for drawing 3-phase lines. A number in the range of [1..7].Default is 1 (solid). Use 3 for dotted; 2 for dashed.";
 		plotHelp[19] = "Line style for drawing 1-phase lines. A number in the range of [1..7].Default is 1 (solid). Use 3 for dotted; 2 for dashed.";
@@ -128,7 +128,6 @@ public class PlotOptions {
 				"LLPRIMARY = plot all nodes -- L-L voltages primary only)" +CRLF+
 				"(phase number) = plot all nodes on selected phase"+CRLF+CRLF+
 				"Note: Only nodes downline from an energy meter are plotted.";
-
 	}
 
 	/** Produce a plot with the DSSGraphX object. */
@@ -152,9 +151,10 @@ public class PlotOptions {
 		DSSPlotImpl.getDSSPlotObj().setDefaults();
 
 		/* Get next parameter on command line */
-		int paramPointer = 0;
+		int paramPointer = -1;
 		String paramName = parser.getNextParam().toUpperCase();
 		String param = parser.makeString().toUpperCase();
+
 		while (param.length() > 0) {
 			/* Interpret Parameter */
 			if (paramName.length() == 0) {
@@ -264,30 +264,30 @@ public class PlotOptions {
 			case 11:
 				plot.setColor3(Utilities.interpretColor(param));
 				break;
-			case 12:  // Channel definitions for Plot Monitor
+			case 12:  // channel definitions for plot monitor
 				numChannels = parser.parseAsVector(51, dblBuffer);  // allow up to 50 channels
-				if (numChannels > 0) {  // Else take the defaults
-					plot.setChannels(new int[numChannels]);
-					for (int i = 0; i < numChannels - 1; i++)  // TODO Check zero indexing
+				if (numChannels > 0) {  // else take the defaults
+					plot.setChannels( new int[numChannels] );
+					for (int i = 0; i < numChannels; i++)
 						plot.getChannels()[i] = (int) dblBuffer[i];
-					plot.setBases(new double[numChannels]);
-					for (int i = 0; i < numChannels - 1; i++)  // TODO Check zero indexing
+					plot.setBases( new double[numChannels] );
+					for (int i = 0; i < numChannels; i++)
 						plot.getBases()[i] = 1.0;
 				}
 				break;
 			case 13:
 				numChannels = parser.parseAsVector(51, dblBuffer);  // allow up to 50 channels
 				if (numChannels > 0) {
-					plot.setBases(new double[numChannels]);
-					for (int i = 0; i < numChannels - 1; i++)  // TODO Check zero indexing
+					plot.setBases( new double[numChannels] );
+					for (int i = 0; i < numChannels; i++)
 						plot.getBases()[i] = dblBuffer[i];
 				}
 				break;
 			case 14:
-				plot.setShowSubs(Utilities.interpretYesNo(param));
+				plot.setShowSubs( Utilities.interpretYesNo(param) );
 				break;
 			case 15:
-				plot.setMaxLineThickness(parser.makeInteger());
+				plot.setMaxLineThickness( parser.makeInteger() );
 				break;
 			case 16:
 				Utilities.interpretStringListArray(param, plot.getDaisyBusList());  // read in Bus list

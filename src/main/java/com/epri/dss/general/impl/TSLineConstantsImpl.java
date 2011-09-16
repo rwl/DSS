@@ -165,7 +165,7 @@ public class TSLineConstantsImpl extends CableConstantsImpl implements TSLineCon
 		}
 
 		if (reducedSize > 0)
-			Kron(reducedSize);  // was reduced so reduce again to same size
+			kron(reducedSize);  // was reduced so reduce again to same size
 
 		/* else the Zmatrix is OK as last computed */
 		rhoChanged = false;

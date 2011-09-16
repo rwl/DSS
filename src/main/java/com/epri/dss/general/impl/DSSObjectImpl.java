@@ -37,9 +37,8 @@ public class DSSObjectImpl extends NamedObjectImpl implements DSSObject {
 
 	public void clearPropSeqArray() {
 		propSeqCount = 0;
-		for (int i = 0; i < parentClass.getNumProperties(); i++) {
+		for (int i = 0; i < parentClass.getNumProperties(); i++)
 			prpSequence[i] = 0;
-		}
 	}
 
 	public DSSObjectImpl(DSSClass parClass) {
@@ -54,16 +53,6 @@ public class DSSObjectImpl extends NamedObjectImpl implements DSSObject {
 		prpSequence = new int[parentClass.getNumProperties()];
 
 		hasBeenSaved = false;
-	}
-
-	protected void finalize() throws Throwable {
-		for (int i = 0; i < parentClass.getNumProperties(); i++) {
-			propertyValue[i] = "";
-		}
-		propertyValue = new String[0];
-		prpSequence = new int[0];
-
-		super.finalize();
 	}
 
 	public void dumpProperties(PrintStream f, boolean complete) {
@@ -88,7 +77,7 @@ public class DSSObjectImpl extends NamedObjectImpl implements DSSObject {
 	}
 
 	public void initPropertyValues(int arrayOffset) {
-		this.propertyValue[arrayOffset] = "";
+		propertyValue[arrayOffset] = "";
 
 		// clear propertySequence array after initialization
 		clearPropSeqArray();
@@ -99,27 +88,27 @@ public class DSSObjectImpl extends NamedObjectImpl implements DSSObject {
 		 * final order they were actually set.
 		 */
 		int iProp = getNextPropertySet(0); // works on activeDSSObject
-		while (iProp > 0) {
+		while (iProp >= 0) {
 			DSSClass pc = parentClass;
 			f.print(" " + pc.getPropertyName()[ pc.getRevPropertyIdxMap()[iProp] ]);
-			f.print("=" + Utilities.checkForBlanks(propertyValue[iProp]));
+			f.print("=" + Utilities.checkForBlanks( propertyValue[iProp] ));
 			iProp = getNextPropertySet(iProp);
 		}
 	}
 
 	/**
 	 * Find next larger property sequence number
-	 * return 0 if none found
+	 * return -1 if none found
 	 */
 	protected int getNextPropertySet(int idx) {
-		int smallest = 9999999; // some big number
-		int result = 0;
+		int smallest = 9999999;  // some big number
+		int result = -1;
 
 		if (idx >= 0)
 			idx = prpSequence[idx];
 
 		for (int i = 0; i < parentClass.getNumProperties(); i++)
-			if (prpSequence[i] > idx)
+			if (prpSequence[i] > idx + 1)  // one-based
 				if (prpSequence[i] < smallest) {
 					smallest = prpSequence[i];
 					result = i;

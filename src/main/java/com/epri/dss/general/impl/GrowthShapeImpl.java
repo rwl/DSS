@@ -76,17 +76,16 @@ public class GrowthShapeImpl extends DSSClassImpl implements GrowthShape {
 	}
 
 	public int edit() {
-
 		double[] YrBuffer;
-
 		int result = 0;
+
 		// continue parsing with contents of parser
 		activeGrowthShapeObj = (GrowthShapeObj) elementList.getActive();
 		DSSGlobals.activeDSSObject = activeGrowthShapeObj;
 
 		GrowthShapeObj pShape = activeGrowthShapeObj;
 
-		int paramPointer = 0;
+		int paramPointer = -1;
 		String paramName = Parser.getInstance().getNextParam();
 		String param = Parser.getInstance().makeString();
 		while (param.length() > 0) {
@@ -96,17 +95,17 @@ public class GrowthShapeImpl extends DSSClassImpl implements GrowthShape {
 				paramPointer = commandList.getCommand(paramName);
 			}
 
-			if ((paramPointer > 0) && (paramPointer <= numProperties))  // TODO Check zero based indexing
+			if (paramPointer >= 0 && paramPointer < numProperties)
 				pShape.setPropertyValue(paramPointer, param);
 
 			switch (paramPointer) {
-			case 0:
+			case -1:
 				DSSGlobals.doSimpleMsg("Unknown parameter \"" + paramName + "\" for Object \"" + getName() +"."+ getName() + "\"", 600);
 				break;
-			case 1:
+			case 0:
 				pShape.setNPts(Parser.getInstance().makeInteger());
 				break;
-			case 2:
+			case 1:
 				pShape.setYear( Utilities.resizeArray(pShape.getYear(), pShape.getNPts()) );
 				YrBuffer = new double[pShape.getNPts()];
 				Utilities.interpretDblArray(param, pShape.getNPts(), YrBuffer);  // Parser.parseAsVector(pShape.getNpts(), Yrbuffer);
@@ -116,17 +115,17 @@ public class GrowthShapeImpl extends DSSClassImpl implements GrowthShape {
 				pShape.setBaseYear(pShape.getYear()[0]);
 				YrBuffer = null;
 				break;
-			case 3:
+			case 2:
 				pShape.setMultiplier( Utilities.resizeArray(pShape.getMultiplier(), pShape.getNPts()) );
 				Utilities.interpretDblArray(param, pShape.getNPts(), pShape.getMultiplier());   //Parser.parseAsVector(pShape.getNpts(), pShape.getMultiplier());
 				break;
-			case 4:
+			case 3:
 				doCSVFile(param);
 				break;
-			case 5:
+			case 4:
 				doSngFile(param);
 				break;
-			case 6:
+			case 5:
 				doDblFile(param);
 				break;
 			default:
@@ -145,10 +144,13 @@ public class GrowthShapeImpl extends DSSClassImpl implements GrowthShape {
 	}
 
 	protected int makeLike(String shapeName) {
+		GrowthShapeObj pShape, otherGrowthShape;
+
 		/* See if we can find this line code in the present collection */
-		GrowthShapeObj otherGrowthShape = (GrowthShapeObj) find(shapeName);
+		otherGrowthShape = (GrowthShapeObj) find(shapeName);
+
 		if (otherGrowthShape != null) {
-			GrowthShapeObj pShape = activeGrowthShapeObj;
+			pShape = activeGrowthShapeObj;
 			pShape.setNPts(otherGrowthShape.getNPts());
 			pShape.setMultiplier( Utilities.resizeArray(pShape.getMultiplier(), pShape.getNPts()) );
 			for (int i = 0; i < pShape.getNPts(); i++)
@@ -199,7 +201,6 @@ public class GrowthShapeImpl extends DSSClassImpl implements GrowthShape {
 		DataInputStream dis;
 		BufferedReader br;
 		String s;
-
 		Parser parser;
 
 		try {
@@ -210,8 +211,7 @@ public class GrowthShapeImpl extends DSSClassImpl implements GrowthShape {
 			GrowthShapeObj pShape = activeGrowthShapeObj;
 
 			int i = 0;
-			while (((s = br.readLine()) != null) && i < pShape.getNPts()) {  // TODO: Check zero based indexing
-				i += 1;
+			while (((s = br.readLine()) != null) && i < pShape.getNPts()) {
 				// use aux parser to allow flexible formats
 				parser = DSSGlobals.auxParser;
 				parser.setCmdString(s);
@@ -219,6 +219,7 @@ public class GrowthShapeImpl extends DSSClassImpl implements GrowthShape {
 				pShape.getYear()[i] = parser.makeInteger();
 				parser.getNextParam();
 				pShape.getMultiplier()[i] = parser.makeDouble();
+				i += 1;
 			}
 
 			fis.close();

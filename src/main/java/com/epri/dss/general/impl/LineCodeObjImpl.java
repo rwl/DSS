@@ -13,33 +13,33 @@ import com.epri.dss.shared.impl.LineUnits;
 
 public class LineCodeObjImpl extends DSSObjectImpl implements LineCodeObj {
 
-	private int NeutralConductor;
+	private int neutralConductor;
 
-	private int NPhases;
+	private int nPhases;
 
-	protected boolean SymComponentsModel, ReduceByKron;
+	protected boolean symComponentsModel, reduceByKron;
 
 	protected CMatrix Z,  // base frequency series Z matrix
 		Zinv,
 		Yc;               // shunt capacitance matrix at base frequency
 
-	protected double BaseFrequency;
+	protected double baseFrequency;
 
 	protected double R1, X1, R0, X0, C1, C0;
-	protected double NormAmps, EmergAmps, FaultRate, PctPerm, HrsToRepair;
+	protected double normAmps, emergAmps, faultRate, pctPerm, hrsToRepair;
 	protected double Rg, Xg, rho;
 
-	protected int Units;  // see LineUnits
+	protected int units;  // see LineUnits
 
-	public LineCodeObjImpl(DSSClass ParClass, String LineCodeName) {
-		super(ParClass);
+	public LineCodeObjImpl(DSSClass parClass, String lineCodeName) {
+		super(parClass);
 
-		setName(LineCodeName.toLowerCase());
-		objType = ParClass.getDSSClassType();
+		setName(lineCodeName.toLowerCase());
+		objType = parClass.getDSSClassType();
 
 		setNPhases(3);  // directly set conds and phases
-		NeutralConductor = NPhases - 1;  // initialize to last conductor  TODO Check zero indexing
-		R1 = 0.0580;  // ohms per 1000 ft
+		neutralConductor = nPhases - 1;  // initialize to last conductor
+		R1 = 0.0580;  // ohms per 1000ft
 		X1 = 0.1206;
 		R0 = 0.1784;
 		X0 = 0.4047;
@@ -48,108 +48,101 @@ public class LineCodeObjImpl extends DSSObjectImpl implements LineCodeObj {
 		Z    = null;
 		Zinv = null;
 		Yc   = null;
-		BaseFrequency = DSSGlobals.activeCircuit.getFundamental();
-		Units = LineUnits.UNITS_NONE;  // default to none  (no conversion)
-		NormAmps = 400.0;
-		EmergAmps = 600.0;
-		PctPerm = 20.0;
-		FaultRate = 0.1;
+		baseFrequency = DSSGlobals.activeCircuit.getFundamental();
+		units = LineUnits.UNITS_NONE;  // default to none (no conversion)
+		normAmps  = 400.0;
+		emergAmps = 600.0;
+		pctPerm   = 20.0;
+		faultRate = 0.1;
 
-		Rg = 0.01805;  // ohms per 1000'
-		Xg = 0.155081;
+		Rg  = 0.01805;  // ohms per 1000'
+		Xg  = 0.155081;
 		rho = 100.0;
 
-		SymComponentsModel = true;
-		ReduceByKron = false;
+		symComponentsModel = true;
+		reduceByKron = false;
 		calcMatricesFromZ1Z0();  // put some reasonable values in
 
 		initPropertyValues(0);
 	}
 
 	private String getRMatrix() {
-		String Result = "[";
-		for (int i = 0; i < NPhases; i++) {
-			for (int j = 0; j < NPhases; j++)
-				Result = Result + String.format("%12.8f ", Z.get(i, j).getReal());
-			if (i < NPhases)  // TODO Check zero based indexing
-				Result = Result + "|";
+		String result = "[";
+		for (int i = 0; i < nPhases; i++) {
+			for (int j = 0; j < nPhases; j++)
+				result = result + String.format("%12.8f ", Z.get(i, j).getReal());
+			if (i < nPhases - 1)
+				result = result + "|";
 		}
-		return Result + "]";
+		return result + "]";
 	}
 
 	private String getXMatrix() {
-		String Result = "[";
-		for (int i = 0; i < NPhases; i++) {
-			for (int j = 0; j < NPhases; j++)
-				Result = Result + String.format("%12.8f ", Z.get(i, j).getImaginary());
-			if (i < NPhases)  // TODO Check zero based indexing
-				Result = Result + "|";
+		String result = "[";
+		for (int i = 0; i < nPhases; i++) {
+			for (int j = 0; j < nPhases; j++)
+				result = result + String.format("%12.8f ", Z.get(i, j).getImaginary());
+			if (i < nPhases - 1)
+				result = result + "|";
 		}
-		return Result + "]";
+		return result + "]";
 	}
 
 	private String getCMatrix() {
-		String Result = "[";
-		for (int i = 0; i < NPhases; i++) {
-			for (int j = 0; j < NPhases; j++)
-				Result = Result + String.format("%12.8f ", Yc.get(i, j).getImaginary() / DSSGlobals.TWO_PI / BaseFrequency * 1.e9);
-			if (i < NPhases)  // TODO Check zero based indexing
-				Result = Result + "|";
+		String result = "[";
+		for (int i = 0; i < nPhases; i++) {
+			for (int j = 0; j < nPhases; j++)
+				result = result + String.format("%12.8f ", Yc.get(i, j).getImaginary() / DSSGlobals.TWO_PI / baseFrequency * 1.e9);
+			if (i < nPhases - 1)
+				result = result + "|";
 		}
-		return Result + "]";
+		return result + "]";
 	}
 
 	/**
 	 * Set the number of phases and reallocate phase-sensitive arrays.
 	 * Need to preserve values in Z matrices.
 	 */
-	public void setNPhases(int Value) {
-		if (Value > 0)
-			if (NPhases != Value) {  // if size is no different, we don't need to do anything
-				NPhases = Value;
-				NeutralConductor = NPhases;  // init to last conductor
+	public void setNPhases(int value) {
+		if (value > 0)
+			if (nPhases != value) {  // if size is no different, we don't need to do anything
+				nPhases = value;
+				neutralConductor = nPhases;  // init to last conductor
 				// put some reasonable values in these matrices
 				calcMatricesFromZ1Z0();  // reallocs matrices
 			}
 	}
 
 	public int getNPhases() {
-		return NPhases;
+		return nPhases;
 	}
 
 	public void calcMatricesFromZ1Z0() {
 		Complex Zs, Zm, Ys, Ym, Ztemp;
 		int i, j;
-		double Yc1, Yc0, OneThird;
-
-		if (Z != null)
-			Z = null;
-		if (Zinv != null)
-			Zinv = null;
-		if (Yc != null)
-			Yc = null;
+		double Yc1, Yc0, oneThird;
 
 		// for a line, nPhases = nCond, for now
-		Z    = new CMatrixImpl(NPhases);
-		Zinv = new CMatrixImpl(NPhases);
-		Yc   = new CMatrixImpl(NPhases);
+		Z    = new CMatrixImpl(nPhases);
+		Zinv = new CMatrixImpl(nPhases);
+		Yc   = new CMatrixImpl(nPhases);
 
-		OneThird = 1.0 / 3.0;  // do this to get more precision in next few statements
+		oneThird = 1.0 / 3.0;  // do this to get more precision in next few statements
 
 		Ztemp = new Complex(R1, X1).multiply(2.0);
-		Zs = Ztemp.add(new Complex(R0, X0)).multiply(OneThird);
-		Zm = new Complex(R0, X0).subtract(new Complex(R1, X1)).multiply(OneThird);
+		Zs = Ztemp.add(new Complex(R0, X0)).multiply(oneThird);
+		Zm = new Complex(R0, X0).subtract(new Complex(R1, X1)).multiply(oneThird);
 
-		Yc1 = DSSGlobals.TWO_PI * BaseFrequency * C1;
-		Yc0 = DSSGlobals.TWO_PI * BaseFrequency * C0;
+		Yc1 = DSSGlobals.TWO_PI * baseFrequency * C1;
+		Yc0 = DSSGlobals.TWO_PI * baseFrequency * C0;
 
-		Ys = new Complex(0.0, Yc1).multiply(2.0).add(new Complex(0.0, Yc0)).multiply(OneThird);
-		Ym = new Complex(0.0, Yc0).subtract(new Complex(0.0, Yc1)).multiply(OneThird);
+		Ys = new Complex(0.0, Yc1).multiply(2.0).add(new Complex(0.0, Yc0)).multiply(oneThird);
+		Ym = new Complex(0.0, Yc0).subtract(new Complex(0.0, Yc1)).multiply(oneThird);
 
-		for (i = 0; i < NPhases; i++) {
+		for (i = 0; i < nPhases; i++) {
 			Z.set(i, i, Zs);
 			Yc.set(i, i, Ys);
-			for (j = 0; j < i - 1; j++) {
+			for (j = 0; j < i; j++) {
 				Z.setSym(i, j, Zm);
 				Yc.setSym(i, j, Ym);
 			}
@@ -162,159 +155,155 @@ public class LineCodeObjImpl extends DSSObjectImpl implements LineCodeObj {
 	public void dumpProperties(PrintStream F, boolean Complete) {
 		super.dumpProperties(F, Complete);
 
-		F.println("~ " + parentClass.getPropertyName()[1] + "=" + NPhases);
-		F.println("~ " + parentClass.getPropertyName()[2] + "=" + R1);
-		F.println("~ " + parentClass.getPropertyName()[3] + "=" + X1);
-		F.println("~ " + parentClass.getPropertyName()[4] + "=" + R0);
-		F.println("~ " + parentClass.getPropertyName()[5] + "=" + X0);
-		F.println("~ " + parentClass.getPropertyName()[6] + "=" + C1 * 1.0e9);
-		F.println("~ " + parentClass.getPropertyName()[7] + "=" + C0 * 1.0e9);
-		F.println("~ " + parentClass.getPropertyName()[8] + "=" + propertyValue[8]);
-		F.print("~ " + parentClass.getPropertyName()[9] + "=\"");
-		for (int i = 0; i < NPhases; i++) {
-			for (int j = 0; j < NPhases; j++)
+		F.println("~ " + parentClass.getPropertyName()[0] + "=" + nPhases);
+		F.println("~ " + parentClass.getPropertyName()[1] + "=" + R1);
+		F.println("~ " + parentClass.getPropertyName()[2] + "=" + X1);
+		F.println("~ " + parentClass.getPropertyName()[3] + "=" + R0);
+		F.println("~ " + parentClass.getPropertyName()[4] + "=" + X0);
+		F.println("~ " + parentClass.getPropertyName()[5] + "=" + C1 * 1.0e9);
+		F.println("~ " + parentClass.getPropertyName()[6] + "=" + C0 * 1.0e9);
+		F.println("~ " + parentClass.getPropertyName()[7] + "=" + propertyValue[8]);
+		F.print("~ " + parentClass.getPropertyName()[8] + "=\"");
+		for (int i = 0; i < nPhases; i++) {
+			for (int j = 0; j < nPhases; j++)
 				F.print(Z.get(i, j).getReal() + " ");
 			F.print("|");
 		}
 		F.println("\"");
 
-		F.print("~ " + parentClass.getPropertyName()[10] + "=\"");
-		for (int i = 0; i < NPhases; i++) {
-			for (int j = 0; j < NPhases; j++)
+		F.print("~ " + parentClass.getPropertyName()[9] + "=\"");
+		for (int i = 0; i < nPhases; i++) {
+			for (int j = 0; j < nPhases; j++)
 				F.print(Z.get(i, j).getImaginary() + " ");
 			F.print("|");
 		}
 		F.println("\"");
 
-		F.print("~ " + parentClass.getPropertyName()[11] + "=\"");
-		for (int i = 0; i < NPhases; i++) {
-			for (int j = 0; j < NPhases; j++)
-				F.print((Yc.get(i, j).getImaginary() / DSSGlobals.TWO_PI / BaseFrequency * 1.e9) + " ");
+		F.print("~ " + parentClass.getPropertyName()[10] + "=\"");
+		for (int i = 0; i < nPhases; i++) {
+			for (int j = 0; j < nPhases; j++)
+				F.print((Yc.get(i, j).getImaginary() / DSSGlobals.TWO_PI / baseFrequency * 1.e9) + " ");
 			F.print("|");
 		}
 		F.println("\"");
 
-		for (int i = 12; i < 21; i++)
+		for (int i = 11; i < 21; i++)
 			F.println("~ " + parentClass.getPropertyName()[i] + "=" + propertyValue[i]);
 
-		F.println(String.format("~ %s=%d", parentClass.getPropertyName()[22], NeutralConductor));
+		F.println(String.format("~ %s=%d", parentClass.getPropertyName()[22], neutralConductor));
 	}
 
 	@Override
-	public String getPropertyValue(int Index) {
-		switch (Index) {
+	public String getPropertyValue(int index) {
+		switch (index) {
+		case 0:
+			return String.format("%d", nPhases);
 		case 1:
-			return String.format("%d", NPhases);
+			return symComponentsModel ? String.format("%.5g", R1) : "----";
 		case 2:
-			return SymComponentsModel ? String.format("%.5g", R1) : "----";
+			return symComponentsModel ? String.format("%.5g", X1) : "----";
 		case 3:
-			return SymComponentsModel ? String.format("%.5g", X1) : "----";
+			return symComponentsModel ? String.format("%.5g", R0) : "----";
 		case 4:
-			return SymComponentsModel ? String.format("%.5g", R0) : "----";
+			return symComponentsModel ? String.format("%.5g", X0) : "----";
 		case 5:
-			return SymComponentsModel ? String.format("%.5g", X0) : "----";
+			return symComponentsModel ? String.format("%.5g", C1 * 1.0e9) : "----";
 		case 6:
-			return SymComponentsModel ? String.format("%.5g", C1 * 1.0e9) : "----";
+			return symComponentsModel ? String.format("%.5g", C0 * 1.0e9) : "----";
 		case 7:
-			return SymComponentsModel ? String.format("%.5g", C0 * 1.0e9) : "----";
+			return LineUnits.lineUnitsStr(units);
 		case 8:
-			return LineUnits.lineUnitsStr(Units);
-		case 9:
 			return getRMatrix();
-		case 10:
+		case 9:
 			return getXMatrix();
-		case 11:
+		case 10:
 			return getCMatrix();
-		case 12:
+		case 11:
 			return String.format("%.g", DSSGlobals.defaultBaseFreq);  // "baseFreq";
+		case 17:
+			return reduceByKron ? "Y" : "N";
 		case 18:
-			return ReduceByKron ? "Y" : "N";
-		case 19:
 			return String.format("%.5g", Rg);
-		case 20:
+		case 19:
 			return String.format("%.5g", Xg);
-		case 21:
+		case 20:
 			return String.format("%.5g", rho);
-		case 22:
-			return String.valueOf(NeutralConductor);
+		case 21:
+			return String.valueOf(neutralConductor);
 		default:
-			return super.getPropertyValue(Index);
+			return super.getPropertyValue(index);
 		}
 	}
 
 	@Override
 	public void initPropertyValues(int ArrayOffset) {
 
-		propertyValue[0] =  "3";      // "nphases";
-		propertyValue[1] =  ".058";   // "r1";
-		propertyValue[2] =  ".1206";  // "x1";
-		propertyValue[3] =  "0.1784"; // "r0";
-		propertyValue[4] =  "0.4047"; // "x0";
-		propertyValue[5] =  "3.4";  // "c1";
-		propertyValue[6] =  "1.6";  // "c0";
-		propertyValue[7] =  "none"; // "units";
-		propertyValue[8] =  "";     // "rmatrix";
-		propertyValue[9] =  "";     // "xmatrix";
-		propertyValue[10] = "";     // "cmatrix";
-		propertyValue[11] = String.format("%6.1f", DSSGlobals.defaultBaseFreq);  // "baseFreq";
-		propertyValue[12] = "400";  // "normamps";
-		propertyValue[13] = "600";  // "emergamps";
-		propertyValue[14] = "0.1";  // "faultrate";
-		propertyValue[15] = "20";   // "pctperm";
-		propertyValue[16] = "3";    // "Hrs to repair";
-		propertyValue[17] = "N";    // "Kron";
-		propertyValue[18] = ".01805";  // "Rg";
-		propertyValue[19] = ".155081"; // "Xg";
-		propertyValue[20] = "100";     // "rho";
-		propertyValue[21] = "3";       // "Neutral";
+		setPropertyValue(0, "3");      // "nphases"
+		setPropertyValue(1, ".058");   // "r1"
+		setPropertyValue(2, ".1206");  // "x1"
+		setPropertyValue(3, "0.1784"); // "r0"
+		setPropertyValue(4, "0.4047"); // "x0"
+		setPropertyValue(5, "3.4");  // "c1"
+		setPropertyValue(6, "1.6");  // "c0"
+		setPropertyValue(7, "none"); // "units"
+		setPropertyValue(8, "");     // "rmatrix"
+		setPropertyValue(9, "");     // "xmatrix"
+		setPropertyValue(10, "");     // "cmatrix"
+		setPropertyValue(11, String.format("%6.1f", DSSGlobals.defaultBaseFreq));  // "baseFreq"
+		setPropertyValue(12, "400");  // "normamps"
+		setPropertyValue(13, "600");  // "emergamps"
+		setPropertyValue(14, "0.1");  // "faultrate"
+		setPropertyValue(15, "20");   // "pctperm"
+		setPropertyValue(16, "3");    // "Hrs to repair"
+		setPropertyValue(17, "N");    // "Kron"
+		setPropertyValue(18, ".01805");  // "Rg"
+		setPropertyValue(19, ".155081"); // "Xg"
+		setPropertyValue(20, "100");     // "rho"
+		setPropertyValue(21, "3");       // "Neutral"
 
 		super.initPropertyValues(LineCode.NumPropsThisClass);
 	}
 
 	// FIXME Private method in OpenDSS
 	public void doKronReduction() {
-		if (NeutralConductor == 0)  // TODO Check zero based indexing
-			return;   // Do Nothing
+		if (neutralConductor == -1)
+			return;
 
-		CMatrix NewZ = null;
-		CMatrix NewYc = null;
+		CMatrix newZ = null;
+		CMatrix newYc = null;
 
-		if (NPhases > 1) {
+		if (nPhases > 1) {
 			try {
-				NewZ = Z.kron(NeutralConductor);  // perform Kron reductions into temp space
+				newZ = Z.kron(neutralConductor);  // perform Kron reductions into temp space
 				/* Have to invert the Y matrix to eliminate properly */
 				Yc.invert();  // Vn = 0 not In
-				NewYc = Yc.kron(NeutralConductor);
+				newYc = Yc.kron(neutralConductor);
 			} catch (Exception e) {
-				DSSGlobals.doSimpleMsg(String.format("Kron reduction failed: LineCode.%s. Attempting to eliminate neutral conductor %d.", getName(), NeutralConductor), 103);
+				DSSGlobals.doSimpleMsg(String.format("Kron reduction failed: LineCode.%s. Attempting to eliminate neutral conductor %d.", getName(), neutralConductor), 103);
 			}
 
 			// Reallocate into smaller space if Kron was successful
 
-			if ((NewZ != null) && (NewYc != null)) {
+			if (newZ != null && newYc != null) {
 
-				NewYc.invert();  // back to Y
+				newYc.invert();  // back to Y
 
-				NPhases = NewZ.order();
+				nPhases = newZ.order();
 
-				// get rid of Z and Yc and replace
-				Z = null;
-				Yc = null;
+				Z  = newZ;
+				Yc = newYc;
 
-				Z  = NewZ;
-				Yc = NewYc;
-
-				NeutralConductor = 0;  // TODO Check zero based indexing
-				ReduceByKron = false;
+				neutralConductor = -1;
+				reduceByKron = false;
 
 				/* Change property values to reflect Kron reduction for save circuit function */
-				propertyValue[0] = String.format("%d", NPhases);
-				propertyValue[8] = getRMatrix();
-				propertyValue[9] = getXMatrix();
-				propertyValue[10] = getCMatrix();
+				setPropertyValue(0, String.format("%d", nPhases));
+				setPropertyValue(8, getRMatrix());
+				setPropertyValue(9, getXMatrix());
+				setPropertyValue(10, getCMatrix());
 
 			} else {
-				DSSGlobals.doSimpleMsg(String.format("Kron reduction failed: LineCode.%s. Attempting to eliminate neutral conductor %d.", getName(), NeutralConductor), 103);
+				DSSGlobals.doSimpleMsg(String.format("Kron reduction failed: LineCode.%s. Attempting to eliminate neutral conductor %d.", getName(), neutralConductor), 103);
 			}
 
 		} else {
@@ -323,19 +312,19 @@ public class LineCodeObjImpl extends DSSObjectImpl implements LineCodeObj {
 	}
 
 	public boolean isSymComponentsModel() {
-		return SymComponentsModel;
+		return symComponentsModel;
 	}
 
-	public void setSymComponentsModel(boolean symComponentsModel) {
-		SymComponentsModel = symComponentsModel;
+	public void setSymComponentsModel(boolean model) {
+		symComponentsModel = model;
 	}
 
 	public boolean isReduceByKron() {
-		return ReduceByKron;
+		return reduceByKron;
 	}
 
-	public void setReduceByKron(boolean reduceByKron) {
-		ReduceByKron = reduceByKron;
+	public void setReduceByKron(boolean reduce) {
+		reduceByKron = reduce;
 	}
 
 	public CMatrix getZ() {
@@ -363,11 +352,11 @@ public class LineCodeObjImpl extends DSSObjectImpl implements LineCodeObj {
 	}
 
 	public double getBaseFrequency() {
-		return BaseFrequency;
+		return baseFrequency;
 	}
 
-	public void setBaseFrequency(double baseFrequency) {
-		BaseFrequency = baseFrequency;
+	public void setBaseFrequency(double frequency) {
+		baseFrequency = frequency;
 	}
 
 	public double getR1() {
@@ -419,43 +408,43 @@ public class LineCodeObjImpl extends DSSObjectImpl implements LineCodeObj {
 	}
 
 	public double getNormAmps() {
-		return NormAmps;
+		return normAmps;
 	}
 
-	public void setNormAmps(double normAmps) {
-		NormAmps = normAmps;
+	public void setNormAmps(double amps) {
+		normAmps = amps;
 	}
 
 	public double getEmergAmps() {
-		return EmergAmps;
+		return emergAmps;
 	}
 
-	public void setEmergAmps(double emergAmps) {
-		EmergAmps = emergAmps;
+	public void setEmergAmps(double amps) {
+		emergAmps = amps;
 	}
 
 	public double getFaultRate() {
-		return FaultRate;
+		return faultRate;
 	}
 
-	public void setFaultRate(double faultRate) {
-		FaultRate = faultRate;
+	public void setFaultRate(double rate) {
+		faultRate = rate;
 	}
 
 	public double getPctPerm() {
-		return PctPerm;
+		return pctPerm;
 	}
 
-	public void setPctPerm(double pctPerm) {
-		PctPerm = pctPerm;
+	public void setPctPerm(double pct) {
+		pctPerm = pct;
 	}
 
 	public double getHrsToRepair() {
-		return HrsToRepair;
+		return hrsToRepair;
 	}
 
-	public void setHrsToRepair(double hrsToRepair) {
-		HrsToRepair = hrsToRepair;
+	public void setHrsToRepair(double hrs) {
+		hrsToRepair = hrs;
 	}
 
 	public double getRg() {
@@ -478,27 +467,27 @@ public class LineCodeObjImpl extends DSSObjectImpl implements LineCodeObj {
 		return rho;
 	}
 
-	public void setRho(double rho) {
-		this.rho = rho;
+	public void setRho(double r) {
+		this.rho = r;
 	}
 
 	public int getUnits() {
-		return Units;
+		return units;
 	}
 
-	public void setUnits(int units) {
-		Units = units;
+	public void setUnits(int u) {
+		units = u;
 	}
 
 
 	// FIXME Private members in OpenDSS
 
 	public int getNeutralConductor() {
-		return NeutralConductor;
+		return neutralConductor;
 	}
 
-	public void setNeutralConductor(int neutralConductor) {
-		NeutralConductor = neutralConductor;
+	public void setNeutralConductor(int neutral) {
+		neutralConductor = neutral;
 	}
 
 }

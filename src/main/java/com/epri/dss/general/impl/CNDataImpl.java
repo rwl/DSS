@@ -64,7 +64,7 @@ public class CNDataImpl extends CableDataImpl implements CNData {
 
 		CNDataObj acd = (CNDataObj) ConductorDataImpl.activeConductorDataObj;
 
-		int paramPointer = 0;
+		int paramPointer = -1;
 		String paramName = parser.getNextParam();
 		String param = parser.makeString();
 
@@ -75,7 +75,7 @@ public class CNDataImpl extends CableDataImpl implements CNData {
 				paramPointer = commandList.getCommand(paramName);
 			}
 
-			if ((paramPointer >= 0) && (paramPointer < numProperties))
+			if (paramPointer >= 0 && paramPointer < numProperties)
 				acd.setPropertyValue(paramPointer, param);
 
 			switch (paramPointer) {

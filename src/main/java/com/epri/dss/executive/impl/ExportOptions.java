@@ -190,16 +190,16 @@ public class ExportOptions {
 		/* Assign default file name if alternate not specified */
 		if (fileName.length() == 0) {
 			switch (paramPointer) {
-			case 0: fileName = "EXP_VOLTAGES.csv"; break;
-			case 1: fileName = "EXP_SEQVOLTAGES.csv"; break;
-			case 2: fileName = "EXP_CURRENTS.csv"; break;
-			case 3: fileName = "EXP_SEQCURRENTS.csv"; break;
-			case 4: fileName = "EXP_ESTIMATION.csv"; break;  // estimation error
-			case 5: fileName = "EXP_CAPACITY.csv"; break;
-			case 6: fileName = "EXP_OVERLOADS.csv"; break;
-			case 7: fileName = "EXP_UNSERVED.csv"; break;
-			case 8: fileName = "EXP_POWERS.csv"; break;
-			case 9: fileName = "EXP_SEQPOWERS.csv"; break;
+			case  0: fileName = "EXP_VOLTAGES.csv"; break;
+			case  1: fileName = "EXP_SEQVOLTAGES.csv"; break;
+			case  2: fileName = "EXP_CURRENTS.csv"; break;
+			case  3: fileName = "EXP_SEQCURRENTS.csv"; break;
+			case  4: fileName = "EXP_ESTIMATION.csv"; break;  // estimation error
+			case  5: fileName = "EXP_CAPACITY.csv"; break;
+			case  6: fileName = "EXP_OVERLOADS.csv"; break;
+			case  7: fileName = "EXP_UNSERVED.csv"; break;
+			case  8: fileName = "EXP_POWERS.csv"; break;
+			case  9: fileName = "EXP_SEQPOWERS.csv"; break;
 			case 10: fileName = "EXP_FAULTS.csv"; break;
 			case 11: fileName = "EXP_GENMETERS.csv"; break;
 			case 12: fileName = "EXP_LOADS.csv"; break;
@@ -223,8 +223,7 @@ public class ExportOptions {
 			case 30: fileName = "CDPSM_StateVariables.xml"; break;
 			case 31: fileName = "EXP_Profile.csv"; break;
 			case 32: fileName = "EXP_EVTLOG.csv"; break;
-			default:
-				fileName = "EXP_VOLTAGES.csv"; break;
+			default: fileName = "EXP_VOLTAGES.csv"; break;
 			}
 			fileName = DSSGlobals.DSSDataDirectory + DSSGlobals.circuitName_ + fileName;  // explicitly define directory
 		}
@@ -275,9 +274,7 @@ public class ExportOptions {
 		case 30: ExportResults.exportCDPSM(fileName, CIMProfileChoice.STATE_VARIABLES); break;
 		case 31: ExportResults.exportProfile(fileName, phasesToPlot); break;
 		case 32: ExportResults.exportEventLog(fileName); break;
-		default:
-			ExportResults.exportVoltages(fileName);
-			break;
+		default: ExportResults.exportVoltages(fileName); break;
 		}
 
 		int result = 0;

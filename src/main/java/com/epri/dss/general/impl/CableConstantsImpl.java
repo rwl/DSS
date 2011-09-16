@@ -25,23 +25,17 @@ public class CableConstantsImpl extends LineConstantsImpl implements CableConsta
 	 * Don't reduce Y, it has zero neutral capacitance.
 	 */
 	@Override
-	public void Kron(int norder) {
+	public void kron(int norder) {
 		CMatrix ZTemp;
-		boolean firstTime;
 		int i, j;
 
 		ZTemp = ZMatrix;
-		firstTime = true;
-		if ((frequency >= 0.0) && (norder > 0) && (norder < getNumConds())) {
-			if (ZReduced != null) ZReduced = null;
-			if (YcReduced != null) YcReduced = null;
+		if (frequency >= 0.0 && norder > 0 && norder < getNumConds()) {
 			while (ZTemp.order() > norder) {
-				ZReduced = ZTemp.kron(ZTemp.order());  // Eliminate last row
-				if (!firstTime) ZTemp = null;  // Ztemp points to intermediate matrix
+				ZReduced = ZTemp.kron(ZTemp.order());  // eliminate last row
 				ZTemp = ZReduced;
-				firstTime = false;
 			}
-			// now copy part of FYCmatrix to FYCreduced
+			// now copy part of YcMatrix to YcReduced
 			YcReduced = new CMatrixImpl(norder);
 			for (i = 0; i < norder; i++)
 				for (j = 0; j < norder; j++)
@@ -57,13 +51,12 @@ public class CableConstantsImpl extends LineConstantsImpl implements CableConsta
 
 		boolean result = false;
 
-		for (i = 0; i < getNumConds(); i++) {
+		for (i = 0; i < getNumConds(); i++)
 			if (Y[i] >= 0.0) {
 				result = true;
-				errorMessage.append(String.format("Cable %d height must be < 0. ", i));  // FIXME Pass by reference
+				errorMessage.append(String.format("Cable %d height must be < 0. ", i));
 				return result;
 			}
-		}
 
 		for (i = 0; i < getNumConds(); i++) {
 			if (i <= getNPhases()) {
@@ -71,13 +64,13 @@ public class CableConstantsImpl extends LineConstantsImpl implements CableConsta
 			} else {
 				Ri = 0.5 * diaCable[i];
 			}
-			for (j = i; j < getNumConds(); j++) {  // TODO Check zero based indexing
-				if (j <= getNPhases()) {
+			for (j = i + 1; j < getNumConds(); j++) {
+				if (j < getNPhases()) {
 					Rj = radius[j];
 				} else {
 					Rj = 0.5 * diaCable[j];
 				}
-				Dij = Math.sqrt(MathUtil.sqr(X[i] - X[j]) + MathUtil.sqr(Y[i] - Y[j]));
+				Dij = Math.sqrt( MathUtil.sqr(X[i] - X[j]) + MathUtil.sqr(Y[i] - Y[j]) );
 				if (Dij < (Ri + Rj)) {
 					result = true;
 					errorMessage.append(String.format("Cable conductors %d and %d occupy the same space.", i, j));
@@ -101,7 +94,7 @@ public class CableConstantsImpl extends LineConstantsImpl implements CableConsta
 	}
 
 	public void setInsLayer(int i, int units, double inslayer) {
-		if ((i >= 0) && (i < getNumConds()))
+		if (i >= 0 && i < getNumConds())
 			insLayer[i] = inslayer * LineUnits.toMeters(units);
 	}
 
@@ -110,7 +103,7 @@ public class CableConstantsImpl extends LineConstantsImpl implements CableConsta
 	}
 
 	public void setDiaIns(int i, int units, double diains) {
-		if ((i >= 0) && (i < getNumConds()))
+		if (i >= 0 && i < getNumConds())
 			diaIns[i] = diains * LineUnits.toMeters(units);
 	}
 
@@ -119,7 +112,7 @@ public class CableConstantsImpl extends LineConstantsImpl implements CableConsta
 	}
 
 	public void setDiaCable(int i, int units, double diacable) {
-		if ((i >= 0) && (i < getNumConds()))
+		if (i >= 0 && i < getNumConds())
 			diaCable[i] = diacable * LineUnits.toMeters(units);
 	}
 
