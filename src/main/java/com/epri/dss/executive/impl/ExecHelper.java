@@ -64,6 +64,7 @@ public class ExecHelper {
 		addMarkerCommands, setBusXYCommands;
 
 	private ExecHelper() {
+
 	}
 
 	public static void initialize() {
@@ -129,8 +130,8 @@ public class ExecHelper {
 	public static int doNewCmd() {
 		StringBuffer objClass = new StringBuffer();
 		StringBuffer objName = new StringBuffer();
-		int handle = 0;
-		int result = 0;
+		int handle = -1;
+		int result = 0;  // TODO Check return value
 
 		getObjClassAndName(objClass, objName);
 
@@ -147,7 +148,8 @@ public class ExecHelper {
 			handle = addObject(objClass.toString(), objName.toString());
 		}
 
-		if (handle == -1) result = 1;
+		if (handle == -1)
+			result = 1;
 
 		return result;
 	}
@@ -194,7 +196,7 @@ public class ExecHelper {
 
 			switch (DSSGlobals.lastClassReferenced) {
 			case -1:
-				DSSGlobals.doSimpleMsg("BatchEdit command: Object Type \"" + objType + "\" not found."+ DSSGlobals.CRLF + parser.getCmdString(), 267);
+				DSSGlobals.doSimpleMsg("BatchEdit command: Object type \"" + objType + "\" not found."+ DSSGlobals.CRLF + parser.getCmdString(), 267);
 				return result;
 			default:
 				params = parser.getPosition();
@@ -226,13 +228,11 @@ public class ExecHelper {
 	public static int doRedirect(boolean isCompile) {
 		FileReader fr;
 		BufferedReader br;
-		@SuppressWarnings("unused")
-		String paramName;
 		String inputLine, currDir = "", saveDir;
 		int result = 0;
 
 		// get next parm and try to interpret as a file name
-		paramName = Parser.getInstance().getNextParam();
+		Parser.getInstance().getNextParam();
 		ExecCommands.getInstance().setRedirFile(
 				Utilities.expandFileName(Parser.getInstance().makeString()));
 
@@ -290,8 +290,8 @@ public class ExecHelper {
 				fr.close();
 			} catch (IOException e) {
 				DSSGlobals.doErrorMsg("DoRedirect"+DSSGlobals.CRLF+"Error processing input stream in Compile/Redirect.",
-							e.getMessage(),
-							"Error in file: \"" + ExecCommands.getInstance().getRedirFile() + "\" or filename.", 244);
+						e.getMessage(),
+						"Error in file: \"" + ExecCommands.getInstance().getRedirFile() + "\" or filename.", 244);
 			} finally {
 				DSSGlobals.inRedirect = false;
 				if (isCompile) {
@@ -314,13 +314,13 @@ public class ExecHelper {
 	public static int doSelectCmd() {
 		StringBuffer objClass = new StringBuffer();
 		StringBuffer objName = new StringBuffer();
-		String paramName, param;
+		String param;
 
 		int result = 1;
 
 		getObjClassAndName(objClass, objName);  // parse object class and name
 
-		if ((objClass.toString().length() == 0) && (objName.toString().length() == 0))
+		if (objClass.toString().length() == 0 && objName.toString().length() == 0)
 			return result;  // select active obj if any
 
 		if (objClass.toString().equalsIgnoreCase("circuit")) {
@@ -344,7 +344,7 @@ public class ExecHelper {
 					default:  // for circuit types set activeCircuit element too
 						DSSGlobals.activeCircuit.setActiveCktElement((CktElement) DSSGlobals.activeDSSClass.getActiveObj());
 						// now check for active terminal designation
-						paramName = Parser.getInstance().getNextParam().toLowerCase();
+						Parser.getInstance().getNextParam().toLowerCase();
 						param = Parser.getInstance().makeString();
 						if (param.length() > 0) {
 							DSSGlobals.activeCircuit.getActiveCktElement().setActiveTerminalIdx(Parser.getInstance().makeInteger());
@@ -457,8 +457,8 @@ public class ExecHelper {
 		DSSClass classPtr;
 		CktElement cktElem;
 
-		//Result = setActiveCktElement();
-		//if (Result > 0) DSSGlobals.activeCircuit.getActiveCktElement().setEnabled(true);
+		//result = setActiveCktElement();
+		//if (result >= 0) DSSGlobals.activeCircuit.getActiveCktElement().setEnabled(true);
 
 		int result = 0;
 
@@ -523,7 +523,7 @@ public class ExecHelper {
 						}
 					} else {
 						// just load up the parser and call the edit routine for the object in question
-						Parser.getInstance().setCmdString("Enabled=false");  // will only work for CktElements
+						Parser.getInstance().setCmdString("enabled=false");  // will only work for CktElements
 						result = editObject(objType.toString(), objName.toString());
 					}
 
@@ -589,14 +589,13 @@ public class ExecHelper {
 	public static int doOpenCmd() {
 		int terminal;
 		int conductor;
-		String paramName;
 		Parser parser = Parser.getInstance();
 
 		int retval = setActiveCktElement();
 		if (retval > 0) {
-			paramName = parser.getNextParam();
+			parser.getNextParam();
 			terminal  = parser.makeInteger();
-			paramName = parser.getNextParam();
+			parser.getNextParam();
 			conductor = parser.makeInteger();
 
 			Circuit ckt = DSSGlobals.activeCircuit;
@@ -622,23 +621,21 @@ public class ExecHelper {
 	public static int doCloseCmd() {
 		int terminal;
 		int conductor;
-		String paramName;
 		Parser parser = Parser.getInstance();
 
 		int retval = setActiveCktElement();
 		if (retval > 0) {
-			paramName = parser.getNextParam();
+			parser.getNextParam();
 			terminal = parser.makeInteger();
-			paramName = parser.getNextParam();
+			parser.getNextParam();
 			conductor = parser.makeInteger();
 
 			Circuit ckt = DSSGlobals.activeCircuit;
 
 			ckt.getActiveCktElement().setActiveTerminalIdx(terminal);
 			ckt.getActiveCktElement().setConductorClosed(conductor, true);
-			DSSGlobals.setActiveBus(
-					Utilities.stripExtension(ckt.getActiveCktElement().getBus(
-							ckt.getActiveCktElement().getActiveTerminalIdx()) ) );
+			DSSGlobals.setActiveBus( Utilities.stripExtension(ckt.getActiveCktElement().getBus(
+					ckt.getActiveCktElement().getActiveTerminalIdx()) ) );
 		} else {
 			DSSGlobals.doSimpleMsg("Error in Close command circuit element not found."+DSSGlobals.CRLF+parser.getCmdString(), 260);
 		}
@@ -646,12 +643,12 @@ public class ExecHelper {
 	}
 
 	public static int doResetCmd() {
+		String param;
 		Parser parser = Parser.getInstance();
-		int result = 0;
 
 		// get next parm and try to interpret as a file name
-		String paramName = parser.getNextParam();
-		String param = parser.makeString().toUpperCase();
+		parser.getNextParam();
+		param = parser.makeString().toUpperCase();
 		if (param.length() == 0) {
 			doResetMonitors();
 			doResetMeters();
@@ -707,12 +704,11 @@ public class ExecHelper {
 		cls = DSSClassDefs.getDSSClass("capacitor");
 		if (cls != null) {
 			objRef = cls.getFirst();
-			while (objRef > 0) {
+			while (objRef >= 0) {
 				capElement = (CapacitorObj) DSSGlobals.activeDSSObject;
 				if (capElement.isShunt()) {
-					if (capElement.isEnabled()) {
+					if (capElement.isEnabled())
 						DSSGlobals.activeCircuit.getBuses()[capElement.getTerminals()[0].getBusRef()].setKeep(true);
-					}
 				}
 				objRef = cls.getNext();
 			}
@@ -722,12 +718,12 @@ public class ExecHelper {
 		cls = DSSClassDefs.getDSSClass("reactor");
 		if (cls != null) {
 			objRef = cls.getFirst();
-			while (objRef > 0) {
+			while (objRef >= 0) {
 				reacElement = (ReactorObj) DSSGlobals.activeDSSObject;
 				if (reacElement.isShunt()) {
 					try {
 						if (reacElement.isEnabled())
-							DSSGlobals.activeCircuit.getBuses()[reacElement.getTerminals()[0].getBusRef()].setKeep(true);
+							DSSGlobals.activeCircuit.getBuses()[ reacElement.getTerminals()[0].getBusRef() ].setKeep(true);
 					} catch (Exception e) {
 						DSSGlobals.doSimpleMsg(String.format("%s %s reactor=%s Bus No.=%d ", e.getMessage(), DSSGlobals.CRLF, reacElement.getName(), reacElement.getNodeRef()[0]), 9999);
 					}
@@ -738,18 +734,19 @@ public class ExecHelper {
 	}
 
 	public static int doReduceCmd() {
+		String param;
 		EnergyMeter meterClass;
 		int devClassIndex;
 
-		int result = 0;
 		// get next parm and try to interpret as a file name
-		String paramName = Parser.getInstance().getNextParam();
-		String param = Parser.getInstance().makeString().toUpperCase();
+		Parser.getInstance().getNextParam();
+		param = Parser.getInstance().makeString().toUpperCase();
 
 		/* Mark capacitor and reactor buses as keep so we don't lose them */
 		markCapAndReactorBuses();
 
-		if (param.length() == 0) param = "A";
+		if (param.length() == 0)
+			param = "A";
 		switch (param.charAt(0)) {
 		case 'A':
 			for (EnergyMeterObj MeterObj : DSSGlobals.activeCircuit.getEnergyMeters())
@@ -758,7 +755,7 @@ public class ExecHelper {
 		default:
 			/* Reduce a specific meter */
 			devClassIndex = DSSGlobals.classNames.find("energymeter");
-			if (devClassIndex > 0) {  // TODO Check zero indexing
+			if (devClassIndex >= 0) {
 				meterClass = (EnergyMeter) DSSGlobals.DSSClassList.get(devClassIndex);
 				if (meterClass.setActive(param)) {   // try to set it active
 					EnergyMeterObj MeterObj = (EnergyMeterObj) meterClass.getActiveObj();
@@ -779,10 +776,11 @@ public class ExecHelper {
 	}
 
 	public static int doFileEditCmd() {
+		String param;
 
 		// get next parm and try to interpret as a file name
-		String paramName = Parser.getInstance().getNextParam();
-		String param = Parser.getInstance().makeString();
+		Parser.getInstance().getNextParam();
+		param = Parser.getInstance().makeString();
 
 		if (new File(param).exists()) {
 			Utilities.fireOffEditor(param);
@@ -800,8 +798,10 @@ public class ExecHelper {
 	 *     3. Property                       (classname and objectname omitted
 	 */
 	public static void parseObjName(String fullName, StringBuffer objName, StringBuffer propName) {
+		int dotpos1, dotpos2;
 		String tmpName;
-		int dotpos1 = fullName.indexOf(".");
+
+		dotpos1 = fullName.indexOf(".");
 		switch (dotpos1) {
 		case -1:
 			objName.delete(0, objName.length());
@@ -809,22 +809,22 @@ public class ExecHelper {
 			propName.replace(0, fullName.length(), fullName);
 			break;
 		default:
-			tmpName = fullName.substring(dotpos1 + 1, (fullName.length() - dotpos1));  // TODO check indexing
+			tmpName = fullName.substring(dotpos1 + 1, fullName.length());
 			propName.setLength(tmpName.length());
 			propName.replace(0, tmpName.length(), tmpName);
-			int dotpos2 = propName.indexOf(".");
+			dotpos2 = propName.indexOf(".");
 			switch (dotpos2) {
 			case -1:
-				tmpName = fullName.substring(0, dotpos1 - 1);
+				tmpName = fullName.substring(0, dotpos1);
 				objName.setLength(tmpName.length());
 				objName.replace(0, tmpName.length(), tmpName);
 				break;
 			default:
-				tmpName = fullName.substring(0, dotpos1 + dotpos2 - 1);
+				tmpName = fullName.substring(0, dotpos1 + dotpos2);
 				objName.setLength(tmpName.length());
 				objName.replace(0, tmpName.length(), tmpName);
 
-				tmpName = propName.substring(dotpos2 + 1, propName.length() - dotpos2);
+				tmpName = propName.substring(dotpos2 + 1, propName.length());
 				propName.setLength(tmpName.length());
 				propName.replace(0, tmpName.length(), tmpName);
 				break;
@@ -838,12 +838,13 @@ public class ExecHelper {
 	 * Syntax: "? Line.Line1.R1"
 	 */
 	public static int doQueryCmd() {
+		String param;
 		StringBuffer objName = new StringBuffer();
 		StringBuffer propName = new StringBuffer();
 		int result = 0;
 
-		String paramName = Parser.getInstance().getNextParam();
-		String param = Parser.getInstance().makeString();
+		Parser.getInstance().getNextParam();
+		param = Parser.getInstance().makeString();
 
 		parseObjName(param, objName, propName);
 
@@ -858,14 +859,14 @@ public class ExecHelper {
 
 		// put property value in global variable
 		int propIndex = DSSGlobals.activeDSSClass.propertyIndex(propName.toString());
-		if (propIndex > 0) {
+		if (propIndex >= 0) {
 			DSSGlobals.globalPropertyValue = DSSGlobals.activeDSSObject.getPropertyValue(propIndex);
 		} else {
 			DSSGlobals.globalPropertyValue = "Property unknown";
 		}
 
 		DSSGlobals.globalResult = DSSGlobals.globalPropertyValue;
-		//MessageDlg(Param + ' = ' + GlobalPropertyValue,  mtCustom, [mbOK], 0);
+		//messageDlg(param + ' = ' + globalPropertyValue,  mtCustom, [mbOK], 0);
 
 		return result;
 	}
@@ -876,11 +877,14 @@ public class ExecHelper {
 	}
 
 	public static int doNextCmd() {
-		// get next parm and try to interpret as a file name
-		String paramName = Parser.getInstance().getNextParam();
-		String param = Parser.getInstance().makeString();
+		String param;
+		SolutionObj solution;
 
-		SolutionObj solution = DSSGlobals.activeCircuit.getSolution();
+		// get next parm and try to interpret as a file name
+		Parser.getInstance().getNextParam();
+		param = Parser.getInstance().makeString();
+
+		solution = DSSGlobals.activeCircuit.getSolution();
 
 		switch (param.toUpperCase().charAt(0)) {
 		case 'Y':
@@ -903,7 +907,8 @@ public class ExecHelper {
 	}
 
 	public static void doAboutBox() {
-		if (DSSGlobals.noFormsAllowed) return;
+		if (DSSGlobals.noFormsAllowed)
+			return;
 		DSSGlobals.DSSForms.showAboutBox();
 	}
 
@@ -962,7 +967,7 @@ public class ExecHelper {
 						DSSGlobals.activeCircuit.addCktElement(handle);  // adds active object to active circuit
 					} else {
 						DSSGlobals.doSimpleMsg("Warning: Duplicate new element definition: \""+ DSSGlobals.activeDSSClass.getName()+"."+name+"\""+
-									DSSGlobals.CRLF+ "Element being redefined.", 266);
+								DSSGlobals.CRLF+ "Element being redefined.", 266);
 					}
 				}
 				break;
@@ -970,7 +975,8 @@ public class ExecHelper {
 
 			// activeDSSObject now points to the object just added
 			// if a circuit element, activeCktElement in activeCircuit is also set
-			if (handle >= 0) DSSGlobals.activeDSSObject.setClassIndex(handle);
+			if (handle >= 0)
+				DSSGlobals.activeDSSObject.setClassIndex(handle);
 
 			// process remaining instructions on the command line
 			DSSGlobals.activeDSSClass.edit();
@@ -982,7 +988,6 @@ public class ExecHelper {
 	}
 
 	public static int editObject(String objType, String name) {
-
 		int result = 0;
 		DSSGlobals.lastClassReferenced = DSSGlobals.classNames.find(objType);
 
@@ -1003,7 +1008,7 @@ public class ExecHelper {
 		return result;
 	}
 
-	public static int doSetkVBase() {
+	public static int doSetKVBase() {
 		int result = 0;
 
 		// parse off next two items on line
@@ -1018,15 +1023,15 @@ public class ExecHelper {
 
 		ckt.setActiveBusIndex(ckt.getBusList().find(busName));
 
-		if (ckt.getActiveBusIndex() > 0) {
+		if (ckt.getActiveBusIndex() >= 0) {
 			if (paramName.equalsIgnoreCase("kvln")) {
-				ckt.getBuses()[ckt.getActiveBusIndex()].setKVBase(kVValue);
+				ckt.getBuses()[ ckt.getActiveBusIndex() ].setKVBase(kVValue);
 			} else {
-				ckt.getBuses()[ckt.getActiveBusIndex()].setKVBase(kVValue / DSSGlobals.SQRT3);
+				ckt.getBuses()[ ckt.getActiveBusIndex() ].setKVBase(kVValue / DSSGlobals.SQRT3);
 			}
 			result = 0;
 			ckt.getSolution().setVoltageBaseChanged(true);
-			// Solution.setSolutionInitialized(false);  // force reinitialization
+			// solution.setSolutionInitialized(false);  // force reinitialization
 		} else {
 			result = 1;
 			DSSGlobals.appendGlobalResult("Bus " + busName + " not found.");
@@ -1127,7 +1132,8 @@ public class ExecHelper {
 				ckt = DSSGlobals.activeCircuit;
 
 				iBus = ckt.getBusList().find(param);
-				if (iBus > 0) ckt.getBuses()[iBus].setKeep(true);
+				if (iBus >= 0)
+					ckt.getBuses()[iBus].setKeep(true);
 
 				DSSGlobals.auxParser.getNextParam();
 				param = DSSGlobals.auxParser.makeString();
@@ -1152,11 +1158,12 @@ public class ExecHelper {
 
 	public static int doCurrentsCmd() {
 		Complex[] cBuffer;
+		CktElement cktElem;
 		int nValues;
 		int result = 0;
 
 		if (DSSGlobals.activeCircuit != null) {
-			CktElement cktElem = DSSGlobals.activeCircuit.getActiveCktElement();
+			cktElem = DSSGlobals.activeCircuit.getActiveCktElement();
 
 			nValues = cktElem.getNConds() * cktElem.getNTerms();
 			DSSGlobals.globalResult = "";
@@ -1174,10 +1181,11 @@ public class ExecHelper {
 
 	public static int doLossesCmd() {
 		Complex lossValue;
+		Circuit ckt;
 
 		int result = 0;
 		if (DSSGlobals.activeCircuit != null) {
-			Circuit ckt = DSSGlobals.activeCircuit;
+			ckt = DSSGlobals.activeCircuit;
 			if (ckt.getActiveCktElement() != null) {
 				DSSGlobals.globalResult = "";
 				lossValue = ckt.getActiveCktElement().getLosses();
@@ -1195,12 +1203,13 @@ public class ExecHelper {
 	 */
 	public static int doPhaseLossesCmd() {
 		Complex[] cBuffer;
+		CktElement cktElem;
 		int nValues;
 
 		int result = 0;
 
 		if (DSSGlobals.activeCircuit != null) {
-			CktElement cktElem = DSSGlobals.activeCircuit.getActiveCktElement();
+			cktElem = DSSGlobals.activeCircuit.getActiveCktElement();
 
 			nValues = cktElem.getNPhases();
 			cBuffer = new Complex[nValues];
@@ -1218,11 +1227,12 @@ public class ExecHelper {
 
 	public static int doPowersCmd() {
 		Complex[] cBuffer;
+		CktElement cktElem;
 		int nValues;
 
 		int result = 0;
 		if (DSSGlobals.activeCircuit != null) {
-			CktElement cktElem = DSSGlobals.activeCircuit.getActiveCktElement();
+			cktElem = DSSGlobals.activeCircuit.getActiveCktElement();
 
 			nValues = cktElem.getNConds() * cktElem.getNTerms();
 			DSSGlobals.globalResult = "";
@@ -1247,12 +1257,14 @@ public class ExecHelper {
 		Complex[] Iph = new Complex[3];
 		Complex[] I012 = new Complex[3];
 		Complex[] cBuffer;
+		Circuit ckt;
+		CktElement cktElem;
 
 		int result = 0;
 		if (DSSGlobals.activeCircuit != null) {
-			Circuit ckt = DSSGlobals.activeCircuit;
+			ckt = DSSGlobals.activeCircuit;
 			if (ckt.getActiveCktElement() != null) {
-				CktElement cktElem = DSSGlobals.activeCircuit.getActiveCktElement();
+				cktElem = DSSGlobals.activeCircuit.getActiveCktElement();
 
 				DSSGlobals.globalResult = "";
 				if (cktElem.getNPhases() < 3) {
@@ -1263,7 +1275,7 @@ public class ExecHelper {
 					cBuffer = new Complex[nValues];
 					cktElem.getCurrents(cBuffer);
 					for (int j = 0; j < cktElem.getNTerms(); j++) {
-						k = (j - 1) * cktElem.getNConds();
+						k = j * cktElem.getNConds();
 						for (i = 0; i < 3; i++)
 							Iph[i] = cBuffer[k + i];
 						MathUtil.phase2SymComp(Iph, I012);
@@ -1292,13 +1304,15 @@ public class ExecHelper {
 		Complex[] Iph = new Complex[3];
 		Complex[] I012 = new Complex[3];
 		Complex[] cBuffer;
+		Circuit ckt;
+		CktElement cktElem;
 
 		int result = 0;
 		if (DSSGlobals.activeCircuit != null) {
-			Circuit ckt = DSSGlobals.activeCircuit;
+			ckt = DSSGlobals.activeCircuit;
 
 			if (ckt.getActiveCktElement() != null) {
-				CktElement cktElem = DSSGlobals.activeCircuit.getActiveCktElement();
+				cktElem = DSSGlobals.activeCircuit.getActiveCktElement();
 
 				DSSGlobals.globalResult = "";
 				if (cktElem.getNPhases() < 3) {
@@ -1309,9 +1323,9 @@ public class ExecHelper {
 					cBuffer = new Complex[nValues];
 					cktElem.getCurrents(cBuffer);
 					for (j = 0; j < cktElem.getNTerms(); j++) {
-						k = (j - 1) * cktElem.getNConds();
+						k = j * cktElem.getNConds();
 						for (i = 0; i < 3; i++)
-							Vph[i] = ckt.getSolution().getNodeV()[cktElem.getTerminals()[j].getTermNodeRef()[i]];
+							Vph[i] = ckt.getSolution().getNodeV()[ cktElem.getTerminals()[j].getTermNodeRef()[i] ];
 						for (i = 0; i < 3; i++)
 							Iph[i] = cBuffer[k + i];
 						MathUtil.phase2SymComp(Iph, I012);
@@ -1340,15 +1354,17 @@ public class ExecHelper {
 		Complex[] Vph = new Complex[3];
 		Complex[] V012 = new Complex[3];
 		String S;
+		Circuit ckt;
+		CktElement cktElem;
 
 		int result = 0;
 		nValues = -1;  // unassigned, for exception message
 		n = -1;        // unassigned, for exception message
 		if (DSSGlobals.activeCircuit != null) {
-			Circuit ckt = DSSGlobals.activeCircuit;
+			ckt = DSSGlobals.activeCircuit;
 
 			if (ckt.getActiveCktElement() != null) {
-				CktElement cktElem = DSSGlobals.activeCircuit.getActiveCktElement();
+				cktElem = DSSGlobals.activeCircuit.getActiveCktElement();
 
 				if (cktElem.isEnabled()) {
 					try {
@@ -1360,9 +1376,9 @@ public class ExecHelper {
 						} else {
 							for (j = 0; j < cktElem.getNTerms(); j++) {
 
-								k = (j - 1) * cktElem.getNConds();
+								k = j * cktElem.getNConds();
 								for (i = 0; i < 3; i++)
-									Vph[i] = ckt.getSolution().getNodeV()[cktElem.getNodeRef()[i + k]];
+									Vph[i] = ckt.getSolution().getNodeV()[ cktElem.getNodeRef()[i + k] ];
 
 								MathUtil.phase2SymComp(Vph, V012);  // compute symmetrical components
 
@@ -1400,11 +1416,11 @@ public class ExecHelper {
 		if (DSSGlobals.activeCircuit != null) {
 			Circuit ckt = DSSGlobals.activeCircuit;
 
-			if (ckt.getActiveBusIndex() != 0) { // TODO Check indexing.
-				activeBus = ckt.getBuses()[ckt.getActiveBusIndex()];
+			if (ckt.getActiveBusIndex() >= 0) {
+				activeBus = ckt.getBuses()[ ckt.getActiveBusIndex() ];
 				DSSGlobals.globalResult = "";
 				for (int i = 0; i < activeBus.getNumNodesThisBus(); i++) {
-					volts = ckt.getSolution().getNodeV()[activeBus.getRef(i)];
+					volts = ckt.getSolution().getNodeV()[ activeBus.getRef(i) ];
 					VMag = volts.abs();
 					if (perUnit && (activeBus.getKVBase() > 0.0)) {
 						VMag = VMag * 0.001 / activeBus.getKVBase();
@@ -1433,8 +1449,8 @@ public class ExecHelper {
 		if (DSSGlobals.activeCircuit != null) {
 			Circuit ckt = DSSGlobals.activeCircuit;
 
-			if (ckt.getActiveBusIndex() != 0) {  // FIXME: Bus indexing.
-				activeBus = ckt.getBuses()[ckt.getActiveBusIndex()];
+			if (ckt.getActiveBusIndex() >= 0) {
+				activeBus = ckt.getBuses()[ ckt.getActiveBusIndex() ];
 				DSSGlobals.globalResult = "";
 				if (activeBus.getZsc() == null)
 					return result;
@@ -1468,8 +1484,8 @@ public class ExecHelper {
 		if (DSSGlobals.activeCircuit != null) {
 			Circuit ckt = DSSGlobals.activeCircuit;
 
-			if (ckt.getActiveBusIndex() != 0) {  // FIXME: Bus indexing.
-				activeBus = ckt.getBuses()[ckt.getActiveBusIndex()];
+			if (ckt.getActiveBusIndex() >= 0) {
+				activeBus = ckt.getBuses()[ ckt.getActiveBusIndex() ];
 				DSSGlobals.globalResult = "";
 				if (activeBus.getZsc() == null) {
 
@@ -1494,7 +1510,6 @@ public class ExecHelper {
 	 * Adjusts loads defined by connected kVA or kWh billing.
 	 */
 	public static int doAllocateLoadsCmd() {
-
 		int result = 0;
 		Circuit ckt = DSSGlobals.activeCircuit;
 
@@ -1551,22 +1566,21 @@ public class ExecHelper {
 		} else {
 			solution.setDoAllHarmonics(false);
 
-			double[] Dummy = new double[100];  // big buffer
-			int Num = Parser.getInstance().parseAsVector(100, Dummy);
+			double[] tmp = new double[100];  // big buffer
+			int num = Parser.getInstance().parseAsVector(100, tmp);
 			/* Parsing zero-fills the array */
 
-			solution.setHarmonicListSize(Num);
-			Utilities.resizeArray(solution.getHarmonicList(), solution.getHarmonicListSize());  // FIXME set list
+			solution.setHarmonicListSize(num);
+			solution.setHarmonicList( Utilities.resizeArray(solution.getHarmonicList(), solution.getHarmonicListSize()) );
 			for (int i = 0; i < solution.getHarmonicListSize(); i++)
-				solution.getHarmonicList()[i] = Dummy[i];
-			Dummy = null;
+				solution.getHarmonicList()[i] = tmp[i];
+			tmp = null;
 		}
 
 		return result;
 	}
 
 	public static int doFormEditCmd() {
-
 		if (DSSGlobals.noFormsAllowed)
 			return 0;
 
@@ -1595,7 +1609,7 @@ public class ExecHelper {
 
 	public static int doCapacityCmd() {
 
-		int paramPointer = 0;
+		int paramPointer = -1;
 		String paramName = Parser.getInstance().getNextParam();
 		String param = Parser.getInstance().makeString();
 
@@ -1606,25 +1620,25 @@ public class ExecHelper {
 			} else {
 				switch (paramName.charAt(0)) {
 				case 's':
-					paramPointer = 1;
+					paramPointer = 0;
 					break;
 				case 'i':
-					paramPointer = 2;
+					paramPointer = 1;
 					break;
 				default:
-					paramPointer = 0;
+					paramPointer = -1;
 					break;
 				}
 			}
 
 			switch (paramPointer) {
-			case 0:
+			case -1:
 				DSSGlobals.doSimpleMsg("Unknown parameter \""+paramName+"\" for capacity command", 273);
 				break;
-			case 1:
+			case 0:
 				DSSGlobals.activeCircuit.setCapacityStart(Parser.getInstance().makeDouble());
 				break;
-			case 2:
+			case 1:
 				DSSGlobals.activeCircuit.setCapacityIncrement(Parser.getInstance().makeDouble());
 				break;
 			}
@@ -1656,23 +1670,25 @@ public class ExecHelper {
 		if (DSSClassDefs.getNumUserClasses() == 0) {
 			DSSGlobals.appendGlobalResult("No user classes defined.");
 		} else {
-			for (int i = DSSClassDefs.getNumIntrinsicClasses() + 1; i < DSSGlobals.DSSClassList.size(); i++)
+			for (int i = DSSClassDefs.getNumIntrinsicClasses(); i < DSSGlobals.DSSClassList.size(); i++)
 				DSSGlobals.appendGlobalResult( ((DSSClassImpl) DSSGlobals.DSSClassList.get(i)).getName() );
 		}
-	return 0;
+		return 0;
 	}
 
 	public static int doZscRefresh() {
+		Circuit ckt;
+		SolutionObj solution;
 		int result = 1;
 
 		try {
-			Circuit ckt = DSSGlobals.activeCircuit;
-			SolutionObj solution = ckt.getSolution();
+			ckt = DSSGlobals.activeCircuit;
+			solution = ckt.getSolution();
 			for (int i = 0; i < ckt.getNumNodes(); i++)
 				solution.getCurrents()[i] = Complex.ZERO;  // clear currents array
 
-			if ((ckt.getActiveBusIndex() > 0) && (ckt.getActiveBusIndex() <= ckt.getNumBuses())) {  // TODO Check zero indexing
-				if (ckt.getBuses()[ckt.getActiveBusIndex()].getZsc() == null)
+			if (ckt.getActiveBusIndex() >= 0 && ckt.getActiveBusIndex() < ckt.getNumBuses()) {
+				if (ckt.getBuses()[ ckt.getActiveBusIndex() ].getZsc() == null)
 					ckt.getBuses()[ckt.getActiveBusIndex()].allocateBusQuantities();
 				SolutionAlgs.computeYsc(ckt.getActiveBusIndex());  // compute Ysc for active bus
 				result = 0;
@@ -1686,8 +1702,10 @@ public class ExecHelper {
 	}
 
 	public static int doVarValuesCmd() {
+		Circuit ckt;
+
 		if (DSSGlobals.activeCircuit != null) {
-			Circuit ckt = DSSGlobals.activeCircuit;
+			ckt = DSSGlobals.activeCircuit;
 			/* Check if PCElement */
 			switch (ckt.getActiveCktElement().getDSSObjType()) {
 			case DSSClassDefs.PC_ELEMENT:
@@ -1696,7 +1714,7 @@ public class ExecHelper {
 					DSSGlobals.appendGlobalResult(String.format("%-.6g", cktElem.getVariable(i)));
 				break;
 			default:
-				DSSGlobals.appendGlobalResult("Null");
+				DSSGlobals.appendGlobalResult("null");
 				break;
 			}
 		}
@@ -1714,7 +1732,7 @@ public class ExecHelper {
 					DSSGlobals.appendGlobalResult(cktElem.variableName(i));
 				break;
 			default:
-				DSSGlobals.appendGlobalResult("Null");
+				DSSGlobals.appendGlobalResult("null");
 				break;
 			}
 		}
@@ -1734,9 +1752,10 @@ public class ExecHelper {
 		String busName, s;
 		int ib, result = 0;
 		File f;
+		Bus bus;
 
 		/* Get next parameter on command line */
-		String paramName = Parser.getInstance().getNextParam();
+		Parser.getInstance().getNextParam();
 		String param = Parser.getInstance().makeString();
 
 		try {
@@ -1752,8 +1771,8 @@ public class ExecHelper {
 				parser.getNextParam();
 				busName = parser.makeString();
 				ib = DSSGlobals.activeCircuit.getBusList().find(busName);
-				if (ib > 0) {
-					Bus bus = DSSGlobals.activeCircuit.getBuses()[ib];
+				if (ib >= 0) {
+					bus = DSSGlobals.activeCircuit.getBuses()[ib];
 					parser.getNextParam();
 					if (swapXY) {
 						bus.setY( parser.makeDouble() );
@@ -1780,7 +1799,6 @@ public class ExecHelper {
 	}
 
 	public static int doMakePosSeq() {
-
 		DSSGlobals.activeCircuit.setPositiveSequence(true);
 
 		for (CktElement cktElem : DSSGlobals.activeCircuit.getCktElements())
@@ -1801,14 +1819,14 @@ public class ExecHelper {
 
 		DSSGlobals.activeCircuit.setReductionStrategyString(s);
 		DSSGlobals.auxParser.setCmdString(s);
-		String paramName = DSSGlobals.auxParser.getNextParam();
+		DSSGlobals.auxParser.getNextParam();
 		String param = DSSGlobals.auxParser.makeString().toUpperCase();
-		paramName = DSSGlobals.auxParser.getNextParam();
+		DSSGlobals.auxParser.getNextParam();
 		String param2 = DSSGlobals.auxParser.makeString();
 
 		DSSGlobals.activeCircuit.setReductionStrategy(ReductionStrategyType.DEFAULT);
 		if (param.length() == 0)
-			return;  // No option given
+			return;  // no option given
 
 		switch (param.charAt(0)) {
 		case 'B':
@@ -1850,12 +1868,12 @@ public class ExecHelper {
 	 */
 	public static int doInterpolateCmd() {
 		EnergyMeter meterClass;
-		String paramName, param;
+		String param;
 		int devClassIndex;
 
 		int result = 0;
 
-		paramName = Parser.getInstance().getNextParam();
+		Parser.getInstance().getNextParam();
 		param = Parser.getInstance().makeString().toUpperCase();
 
 		// initialize the checked flag for all circuit elements
@@ -1864,7 +1882,9 @@ public class ExecHelper {
 		for (CktElement cktElem : ckt.getCktElements())
 			cktElem.setChecked(false);
 
-		if (param.length() == 0) param = "A";
+		if (param.length() == 0)
+			param = "A";
+
 		switch (param.charAt(0)) {
 		case 'A':
 			for (EnergyMeterObj MetObj : ckt.getEnergyMeters())
@@ -1873,11 +1893,10 @@ public class ExecHelper {
 		default:
 			/* Interpolate a specific meter */
 			devClassIndex = DSSGlobals.classNames.find("energymeter");
-			if (devClassIndex > 0) {
+			if (devClassIndex >= 0) {
 				meterClass = (EnergyMeter) DSSGlobals.DSSClassList.get(devClassIndex);
-				if (meterClass.setActive(param)) {  // Try to set it active
-					EnergyMeterObj MetObj = (EnergyMeterObj) meterClass.getActiveObj();
-					MetObj.interpolateCoordinates();
+				if (meterClass.setActive(param)) {  // try to set it active
+					((EnergyMeterObj) meterClass.getActiveObj()).interpolateCoordinates();
 				} else {
 					DSSGlobals.doSimpleMsg("EnergyMeter \""+param+"\" not found.", 277);
 				}
@@ -1893,7 +1912,7 @@ public class ExecHelper {
 	 */
 	public static int doAlignFileCmd() {
 		int result = 0;
-		String paramName = Parser.getInstance().getNextParam();
+		Parser.getInstance().getNextParam();
 		String param = Parser.getInstance().makeString();
 
 		if (new File(param).exists()) {
@@ -1916,13 +1935,14 @@ public class ExecHelper {
 	 */
 	public static int doTOPCmd() {
 		int result = 0;
-		String paramName = Parser.getInstance().getNextParam();
+		Parser.getInstance().getNextParam();
 		String param = Parser.getInstance().makeString().toUpperCase();
 
-		paramName = Parser.getInstance().getNextParam();
+		Parser.getInstance().getNextParam();
 		String objName = Parser.getInstance().makeString().toUpperCase();
 
-		if (objName.length() == 0) objName = "ALL";
+		if (objName.length() == 0)
+			objName = "ALL";
 
 		switch (param.charAt(0)) {
 		case 'L':
@@ -1947,7 +1967,7 @@ public class ExecHelper {
 	public static void doSetNormal(double pctNormal) {
 		Circuit ckt = DSSGlobals.activeCircuit;
 		if (ckt != null) {
-			pctNormal = pctNormal * 0.01;  // FIXME local copy only
+			pctNormal = pctNormal * 0.01;
 			for (LineObj line : ckt.getLines())
 				line.setNormAmps(pctNormal * line.getEmergAmps());
 		}
@@ -1958,7 +1978,6 @@ public class ExecHelper {
 	 */
 	public static int doRotateCmd() {
 		double angle, xmin, xmax, ymin, ymax, xc, yc;
-		String paramName;
 		Bus bus;
 		Complex a, vector;
 
@@ -1966,7 +1985,7 @@ public class ExecHelper {
 		Circuit ckt = DSSGlobals.activeCircuit;
 		if (ckt != null) {
 
-			paramName = Parser.getInstance().getNextParam();
+			Parser.getInstance().getNextParam();
 			angle = Parser.getInstance().makeDouble() * DSSGlobals.PI / 180.0;   // deg to rad
 
 			a = new Complex(Math.cos(angle), Math.sin(angle));
@@ -2064,7 +2083,7 @@ public class ExecHelper {
 	public static int doDistributeCmd() {
 		Parser parser = Parser.getInstance();
 		int result = 0;
-		int paramPointer = 0;
+		int paramPointer = -1;
 		/* Defaults */
 		double kW = 1000.0;
 		String how = "Proportional";
@@ -2082,22 +2101,22 @@ public class ExecHelper {
 			}
 
 			switch (paramPointer) {
-			case 1:
+			case 0:
 				kW = parser.makeDouble();
 				break;
-			case 2:
+			case 1:
 				how = parser.makeString();
 				break;
-			case 3:
+			case 2:
 				skip = parser.makeInteger();
 				break;
-			case 4:
+			case 3:
 				PF = parser.makeDouble();
 				break;
-			case 5:
+			case 4:
 				fileName = parser.makeString();
 				break;
-			case 6:
+			case 5:
 				kW = parser.makeDouble() * 1000.0;
 				break;
 			default:
@@ -2134,7 +2153,7 @@ public class ExecHelper {
 
 		Parser parser = Parser.getInstance();
 
-		int paramPointer = 0;
+		int paramPointer = -1;
 		String paramName = parser.getNextParam();
 		String param = parser.makeString();
 		while (param.length() > 0) {
@@ -2145,22 +2164,22 @@ public class ExecHelper {
 			}
 
 			switch (paramPointer) {
-			case 1:
+			case 0:
 				caseName = param;
 				break;
-			case 2:
+			case 1:
 				caseYear = parser.makeInteger();
 				break;
-			case 3:
+			case 2:
 				numRegs = parser.parseAsVector(EnergyMeterObj.NumEMRegisters, dRegisters);
 				iRegisters = new int[numRegs];
 				for (int i = 0; i < numRegs; i++)
 					iRegisters[i - 1] = (int) dRegisters[i];
 				break;
-			case 4:
+			case 3:
 				peakDay = Utilities.interpretYesNo(param);
 				break;
-			case 5:
+			case 4:
 				meterName = parser.makeString();
 				break;
 			default:
@@ -2193,7 +2212,7 @@ public class ExecHelper {
 		int reg = 9;  // overload EEN
 		String whichFile = "Totals";
 
-		int paramPointer = 0;
+		int paramPointer = -1;
 		String paramName = Parser.getInstance().getNextParam().toUpperCase();
 		String param = Parser.getInstance().makeString();
 		while (param.length() > 0) {
@@ -2202,13 +2221,13 @@ public class ExecHelper {
 				paramPointer += 1;
 			} else {
 				if (Utilities.compareTextShortest(paramName, "CASE1") == 0) {
-					paramPointer = 1;
+					paramPointer = 0;
 				} else if (Utilities.compareTextShortest(paramName, "CASE2") == 0) {
-					paramPointer = 2;
+					paramPointer = 1;
 				} else if (Utilities.compareTextShortest(paramName, "REGISTER") == 0) {
-					paramPointer = 3;
+					paramPointer = 2;
 				} else if (Utilities.compareTextShortest(paramName, "METER") == 0) {
-					paramPointer = 4;
+					paramPointer = 3;
 				} else {
 					unknown = true;
 				}
@@ -2216,16 +2235,16 @@ public class ExecHelper {
 
 			if (!unknown) {
 				switch (paramPointer) {
-				case 1:
+				case 0:
 					caseName1 = param;
 					break;
-				case 2:
+				case 1:
 					caseName2 = param;
 					break;
-				case 3:
+				case 2:
 					reg = Parser.getInstance().makeInteger();
 					break;
-				case 4:
+				case 3:
 					whichFile = param;
 					break;
 				default:
@@ -2261,7 +2280,7 @@ public class ExecHelper {
 		caseNames.clear();
 		whichFile = "Totals";
 
-		int paramPointer = 0;
+		int paramPointer = -1;
 		String paramName = Parser.getInstance().getNextParam();
 		String param = Parser.getInstance().makeString();
 		while (param.length() > 0) {
@@ -2271,13 +2290,13 @@ public class ExecHelper {
 			} else {
 				switch (paramName.toUpperCase().charAt(0)) {
 				case 'C':
-					paramPointer = 1;
+					paramPointer = 0;
 					break;
 				case 'R':
-					paramPointer = 2;
+					paramPointer = 1;
 					break;
 				case 'M':
-					paramPointer = 3;  // meter=
+					paramPointer = 2;  // meter=
 					break;
 				default:
 					unknown = true;
@@ -2287,7 +2306,7 @@ public class ExecHelper {
 
 			if (!unknown) {
 				switch (paramPointer) {
-				case 1:  // List of case names
+				case 0:  // List of case names
 					DSSGlobals.auxParser.setCmdString(param);
 					DSSGlobals.auxParser.getNextParam();
 					param = DSSGlobals.auxParser.makeString();
@@ -2297,13 +2316,13 @@ public class ExecHelper {
 						param = DSSGlobals.auxParser.makeString();
 					}
 					break;
-				case 2:
+				case 1:
 					nRegs = Parser.getInstance().parseAsVector(EnergyMeterObj.NumEMRegisters, dRegisters);
 					iRegisters = new int[nRegs];
 					for (int i = 0; i < nRegs; i++)
-						iRegisters[i - 1] = (int) dRegisters[i];  // TODO: Check zero indexing
+						iRegisters[i] = (int) dRegisters[i];  // TODO: check zero based indexing
 					break;
-				case 3:
+				case 2:
 					whichFile = param;
 					break;
 				default:
@@ -2334,7 +2353,7 @@ public class ExecHelper {
 		quantity = DSSPlot.vizCURRENT;
 		String elemName = "";
 		/* Parse rest of command line */
-		int paramPointer = 0;
+		int paramPointer = -1;
 		String paramName = Parser.getInstance().getNextParam().toUpperCase();
 		String param = Parser.getInstance().makeString();
 		while (param.length() > 0) {
@@ -2343,9 +2362,9 @@ public class ExecHelper {
 				paramPointer += 1;
 			} else {
 				if (Utilities.compareTextShortest(paramName, "WHAT") == 0) {
-					paramPointer = 1;
+					paramPointer = 0;
 				} else if (Utilities.compareTextShortest(paramName, "ELEMENT") == 0) {
-					paramPointer = 2;
+					paramPointer = 1;
 				} else {
 					unknown = true;
 				}
@@ -2353,7 +2372,7 @@ public class ExecHelper {
 
 			if (!unknown) {
 				switch (paramPointer) {
-				case 1:
+				case 0:
 					switch (param.toLowerCase().charAt(0)) {
 					case 'c':
 						quantity = DSSPlot.vizCURRENT;
@@ -2365,7 +2384,7 @@ public class ExecHelper {
 						quantity = DSSPlot.vizPOWER;
 						break;
 					}
-				case 2:
+				case 1:
 					elemName = param;
 					break;
 				default:
@@ -2380,8 +2399,8 @@ public class ExecHelper {
 
 		/*--------------------------------------------------------------*/
 
-		devIndex = Utilities.getCktElementIndex(elemName); // Global function
-		if (devIndex > 0) {  //  element must already exist
+		devIndex = Utilities.getCktElementIndex(elemName);
+		if (devIndex >= 0) {  //  element must already exist
 			elem = DSSGlobals.activeCircuit.getCktElements().get(devIndex);
 			if (elem instanceof DSSCktElement) {
 				DSSPlotImpl.getDSSPlotObj().doVisualizationPlot((CktElement) elem, quantity);
@@ -2389,7 +2408,7 @@ public class ExecHelper {
 				DSSGlobals.doSimpleMsg(elem.getName() + " must be a circuit element type!", 282);   // wrong type
 			}
 		} else {
-		DSSGlobals.doSimpleMsg("Requested Circuit Element: \"" + elemName + "\" Not Found.", 282);  // did not find it ..
+		DSSGlobals.doSimpleMsg("Requested Circuit element: \"" + elemName + "\" not found.", 282);  // did not find it ..
 		}
 
 		return result;
@@ -2413,8 +2432,8 @@ public class ExecHelper {
 
 		/* Let's look to see how well we did */
 		if (!DSSGlobals.autoShowExport)
-			DSSExecutive.getInstance().setCommand("Set showexport=yes");
-		DSSExecutive.getInstance().setCommand("Export Estimation");
+			DSSExecutive.getInstance().setCommand("set showexport=yes");
+		DSSExecutive.getInstance().setCommand("export estimation");
 
 		return 0;
 	}
@@ -2425,9 +2444,8 @@ public class ExecHelper {
 		Line lineClass;
 		int traceDirection;
 
-
 		int result = 0;
-		int paramPointer = 0;
+		int paramPointer = -1;
 		boolean lineCodeSpecified = false;
 		boolean geometrySpecified = false;
 		String line1 = "";
@@ -2442,23 +2460,23 @@ public class ExecHelper {
 				paramPointer = reconductorCommands.getCommand(paramName);
 			}
 			switch (paramPointer) {
-			case 1:
+			case 0:
 				line1 = param;
 				break;
-			case 2:
+			case 1:
 				line2 = param;
 				break;
-			case 3:
+			case 2:
 				lineCode = param;
 				lineCodeSpecified = true;
 				geometrySpecified = false;
 				break;
-			case 4:
+			case 3:
 				geometry = param;
 				lineCodeSpecified = false;
 				geometrySpecified = true;
 				break;
-			case 5:
+			case 4:
 				myEditString = param;
 				break;
 			default:
@@ -2476,7 +2494,7 @@ public class ExecHelper {
 		line1 = Utilities.stripClassName(line1);
 		line2 = Utilities.stripClassName(line2);
 
-		if ((line1.length() == 0) || (line2.length() == 0)) {
+		if (line1.length() == 0 || line2.length() == 0) {
 			DSSGlobals.doSimpleMsg("Both Line1 and Line2 must be specified!", 28702);
 			return result;
 		}
@@ -2490,7 +2508,7 @@ public class ExecHelper {
 		pLine1 = (LineObj) lineClass.find(line1);
 		pLine2 = (LineObj) lineClass.find(line2);
 
-		if ((pLine1 == null) || (pLine2 == null)) {
+		if (pLine1 == null || pLine2 == null) {
 			if (pLine1 == null) {
 				DSSGlobals.doSimpleMsg("Line."+line1+" not found.", 28704);
 			} else if (pLine2 == null) {
@@ -2500,7 +2518,7 @@ public class ExecHelper {
 		}
 
 		/* Now check to make sure they are in the same meter's zone */
-		if ((pLine1.getMeterObj() == null) || (pLine2.getMeterObj() == null)) {
+		if (pLine1.getMeterObj() == null || pLine2.getMeterObj() == null) {
 			DSSGlobals.doSimpleMsg("Error: Both Lines must be in the same EnergyMeter zone. One or both are not in any meter zone.", 28705);
 			return result;
 		}
@@ -2547,10 +2565,11 @@ public class ExecHelper {
 		String busName = "";
 		int busIdx;
 		Bus bus;
+		Circuit ckt;
 		Parser parser = Parser.getInstance();
 
 		int result = 0;
-		int paramPointer = 0;
+		int paramPointer = -1;
 
 		String paramName = parser.getNextParam();
 		String param = parser.makeString();
@@ -2562,16 +2581,16 @@ public class ExecHelper {
 			}
 
 			switch (paramPointer) {
-			case 1:
+			case 0:
 				busName = param;
 				break;
-			case 2:
+			case 1:
 				DSSPlotImpl.setAddMarkerCode(parser.makeInteger());
 				break;
-			case 3:
+			case 2:
 				DSSPlotImpl.setAddMarkerColor(parser.makeInteger());
 				break;
-			case 4:
+			case 3:
 				DSSPlotImpl.setAddMarkerSize(parser.makeInteger());
 				break;
 			default:
@@ -2583,11 +2602,11 @@ public class ExecHelper {
 			param = parser.makeString();
 		}
 
-		Circuit ckt = DSSGlobals.activeCircuit;
+		ckt = DSSGlobals.activeCircuit;
 
 		busIdx = ckt.getBusList().find(busName);
-		if (busIdx > 0) {  // TODO Check zero indexing.
-			bus = ckt.getBuses()[busIdx];
+		if (busIdx >= 0) {
+			bus = ckt.getBuses()[ busIdx ];
 			if (bus.isCoordDefined()) {
 				DSSGraphDeclarations.addNewMarker(bus.getX(), bus.getY(), DSSPlotImpl.getAddMarkerColor(), DSSPlotImpl.getAddMarkerCode(), DSSPlotImpl.getAddMarkerSize());
 				DSSGraphDeclarations.showGraph();
@@ -2604,7 +2623,7 @@ public class ExecHelper {
 	public static int doSetLoadAndGenKVCmd() {
 		Bus pBus;
 		String sBus;
-		int iBus, i;
+		int iBus;
 		double kvln;
 
 		Circuit ckt = DSSGlobals.activeCircuit;
@@ -2612,11 +2631,11 @@ public class ExecHelper {
 		int result = 0;
 		for (LoadObj pLoad : ckt.getLoads()) {
 			LoadImpl.activeLoadObj = pLoad;  // for updateVoltageBases to work
-			sBus = Utilities.stripExtension(pLoad.getBus(0));
+			sBus = Utilities.stripExtension( pLoad.getBus(0) );
 			iBus = ckt.getBusList().find(sBus);
 			pBus = ckt.getBuses()[iBus];
 			kvln = pBus.getKVBase();
-			if ((pLoad.getConnection() == 1) || (pLoad.getNPhases() == 3)) {
+			if (pLoad.getConnection() == 1 || pLoad.getNPhases() == 3) {
 				pLoad.setKVLoadBase(kvln * DSSGlobals.SQRT3);
 			} else {
 				pLoad.setKVLoadBase(kvln);
@@ -2626,11 +2645,11 @@ public class ExecHelper {
 		}
 
 		for (GeneratorObj pGen : ckt.getGenerators()) {
-			sBus = Utilities.stripExtension(pGen.getBus(0));
+			sBus = Utilities.stripExtension( pGen.getBus(0) );
 			iBus = ckt.getBusList().find(sBus);
 			pBus = ckt.getBuses()[iBus];
 			kvln = pBus.getKVBase();
-			if ((pGen.getConnection() == 1) || (pGen.getNPhases() > 1)) {
+			if (pGen.getConnection() == 1 || pGen.getNPhases() > 1) {
 				pGen.setPresentKV(kvln * DSSGlobals.SQRT3);
 			} else {
 				pGen.setPresentKV(kvln);
@@ -2652,10 +2671,11 @@ public class ExecHelper {
 		LoadShape loadShapeClass;
 		String action;
 
-		String paramName = Parser.getInstance().getNextParam();
+		Parser.getInstance().getNextParam();
 		String param = Parser.getInstance().makeString();
 
-		if (param.length() == 0) param = "s";
+		if (param.length() == 0)
+			param = "s";
 
 		/* Double file or Single file? */
 		switch (param.toLowerCase().charAt(0)) {
@@ -2675,12 +2695,12 @@ public class ExecHelper {
 		try {
 			pw = new PrintWriter(f);
 
-			iLoadshape = loadShapeClass.getFirst();  // TODO Make class iterable.
-			while (iLoadshape > 0) {  // FIXME Zero based indexing
+			iLoadshape = loadShapeClass.getFirst();
+			while (iLoadshape >= 0) {
 				pLoadShape = (LoadShapeObj) loadShapeClass.getActiveObj();
 				Parser.getInstance().setCmdString(action);
 				pLoadShape.edit();
-				pw.println(String.format("New loadShape.%s npts=%d interval=%.8g %s", pLoadShape.getName(), pLoadShape.getNumPoints(), pLoadShape.getInterval(), DSSGlobals.globalResult));
+				pw.println(String.format("new loadShape.%s npts=%d interval=%.8g %s", pLoadShape.getName(), pLoadShape.getNumPoints(), pLoadShape.getInterval(), DSSGlobals.globalResult));
 				iLoadshape = loadShapeClass.getNext();
 			}
 
@@ -2706,12 +2726,11 @@ public class ExecHelper {
 		MutableInt numNodes = new MutableInt();
 		int[] nodeBuffer = new int[50];
 
-
 		int result = 0;
 		String paramName = Parser.getInstance().getNextParam();
 		String param = Parser.getInstance().makeString();
 		sNode1 = param;
-		if (paramName.indexOf('2') >= 0)  // TODO Check zero indexing
+		if (paramName.indexOf('2') >= 0)
 			sNode2 = param;
 
 		paramName = Parser.getInstance().getNextParam();
@@ -2722,11 +2741,11 @@ public class ExecHelper {
 
 		// get first node voltage
 		DSSGlobals.auxParser.setToken(sNode1);
-		nodeBuffer[0] = 1;  // TODO Check zero indexing
+		nodeBuffer[0] = 1;
 		sBusName = DSSGlobals.auxParser.parseAsBusName(numNodes, nodeBuffer);
 		iBusIdx = DSSGlobals.activeCircuit.getBusList().find(sBusName);
-		if (iBusIdx > 0) {
-			b1ref = DSSGlobals.activeCircuit.getBuses()[iBusIdx].find(nodeBuffer[0]);  // TODO Check zero indexing
+		if (iBusIdx >= 0) {
+			b1ref = DSSGlobals.activeCircuit.getBuses()[iBusIdx].find(nodeBuffer[0]);
 		} else {
 			DSSGlobals.doSimpleMsg(String.format("Bus %s not found.", sBusName), 28709);
 			return result;
@@ -2736,11 +2755,11 @@ public class ExecHelper {
 
 		// get 2nd node voltage
 		DSSGlobals.auxParser.setToken(sNode2);
-		nodeBuffer[0] = 1;  // TODO Check zero indexing
+		nodeBuffer[0] = 1;
 		sBusName = DSSGlobals.auxParser.parseAsBusName(numNodes, nodeBuffer);
 		iBusIdx = DSSGlobals.activeCircuit.getBusList().find(sBusName);
 		if (iBusIdx > 0) {
-			b2ref = DSSGlobals.activeCircuit.getBuses()[iBusIdx].find(nodeBuffer[0]); // TODO Check zero indexing
+			b2ref = DSSGlobals.activeCircuit.getBuses()[iBusIdx].find(nodeBuffer[0]);
 		} else {
 			DSSGlobals.doSimpleMsg(String.format("Bus %s not found.", sBusName), 28710);
 			return result;
@@ -2760,9 +2779,8 @@ public class ExecHelper {
 		LineObj pStartLine;
 		Line lineClass;
 
-
 		int result = 0;
-		int paramPointer = 0;
+		int paramPointer = -1;
 		String myEditString = "";
 		String scriptFileName = "RephaseEditScript.dss";
 		boolean transfStop = true;  // stop at transformers
@@ -2777,19 +2795,19 @@ public class ExecHelper {
 			}
 
 			switch (paramPointer) {
-			case 1:
+			case 0:
 				startLine = param;
 				break;
-			case 2:
+			case 1:
 				newPhases = param;
 				break;
-			case 3:
+			case 2:
 				myEditString = param;
 				break;
-			case 4:
+			case 3:
 				scriptFileName = param;
 				break;
-			case 5:
+			case 4:
 				transfStop = Utilities.interpretYesNo(param);
 				break;
 			default:
@@ -2801,8 +2819,8 @@ public class ExecHelper {
 			param = Parser.getInstance().makeString();
 		}
 
-		lineClass = (Line) DSSGlobals.DSSClassList.get(DSSGlobals.classNames.find("Line"));
-		pStartLine = (LineObj) lineClass.find(Utilities.stripClassName(startLine));
+		lineClass = (Line) DSSGlobals.DSSClassList.get( DSSGlobals.classNames.find("Line") );
+		pStartLine = (LineObj) lineClass.find( Utilities.stripClassName(startLine) );
 		if (pStartLine == null) {
 			DSSGlobals.doSimpleMsg("Starting line ("+startLine+") not found.", 28712);
 			return result;
@@ -2828,11 +2846,10 @@ public class ExecHelper {
 		double XVal = 0.0;
 		double YVal = 0.0;
 
-
 		int result = 0;
 		String paramName = Parser.getInstance().getNextParam();
 		String param = Parser.getInstance().makeString();
-		int paramPointer = 0;
+		int paramPointer = -1;
 		while (param.length() > 0) {
 			if (paramName.length() == 0) {
 				paramPointer += 1;
@@ -2841,13 +2858,13 @@ public class ExecHelper {
 			}
 
 			switch (paramPointer) {
-			case 1:
+			case 0:
 				busName = param;
 				break;
-			case 2:
+			case 1:
 				XVal = Parser.getInstance().makeDouble();
 				break;
-			case 3:
+			case 2:
 				YVal = Parser.getInstance().makeDouble();
 				break;
 			default:
@@ -2856,10 +2873,10 @@ public class ExecHelper {
 			}
 
 			int iB = DSSGlobals.activeCircuit.getBusList().find(busName);
-			if (iB > 0) {
-			DSSGlobals.activeCircuit.getBuses()[iB].setX(XVal);
-			DSSGlobals.activeCircuit.getBuses()[iB].setY(YVal);
-			DSSGlobals.activeCircuit.getBuses()[iB].setCoordDefined(true);
+			if (iB >= 0) {
+				DSSGlobals.activeCircuit.getBuses()[iB].setX(XVal);
+				DSSGlobals.activeCircuit.getBuses()[iB].setY(YVal);
+				DSSGlobals.activeCircuit.getBuses()[iB].setCoordDefined(true);
 			} else {
 				DSSGlobals.doSimpleMsg("Error: Bus \"" + busName + "\" not found.", 28722);
 			}

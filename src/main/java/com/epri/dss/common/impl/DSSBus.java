@@ -13,7 +13,7 @@ public class DSSBus extends NamedObjectImpl implements Bus {
 	public class NodeBus {
 		/* Ref to bus in circuit's bus list */
 		public int busRef;
-		public int nodeNum;
+		public int nodeNum;  // one-based
 	}
 
 	private int numNodesThisBus;

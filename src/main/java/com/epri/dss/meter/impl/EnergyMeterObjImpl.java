@@ -1129,8 +1129,8 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 					switch (loadElem.getNPhases()) {
 					/* For single phase loads, allocate based on phase factor, else average factor */
 					case 1:
-						connectedPhase = DSSGlobals.activeCircuit.getMapNodeToBus()[nodeRef[0]].nodeNum;
-						if ((connectedPhase > 0) && (connectedPhase < 4))  // restrict to phases 1..3
+						connectedPhase = DSSGlobals.activeCircuit.getMapNodeToBus()[nodeRef[0]].nodeNum;  // one-based
+						if (connectedPhase > 0 && connectedPhase < 4)  // restrict to phases 1..3
 							loadElem.setAllocationFactor( loadElem.getAllocationFactor() * loadElem.getSensorObj().getPhsAllocationFactor()[connectedPhase] );
 						break;
 					default:
