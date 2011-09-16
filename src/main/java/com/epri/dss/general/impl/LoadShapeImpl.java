@@ -75,9 +75,9 @@ public class LoadShapeImpl extends DSSClassImpl implements LoadShape {
 		propertyHelp[3] = "Array of hour values. Only necessary to define for variable interval data."+
 				" If the data are fixed interval, do not use this property. " +
 				"You can also use the syntax: "+CRLF+
-					"hour = (file=filename)     !for text file one value per line"+CRLF+
-					"hour = (dblfile=filename)  !for packed file of doubles"+CRLF+
-					"hour = (sngfile=filename)  !for packed file of singles ";     // vextor of hour values
+				"hour = (file=filename)     !for text file one value per line"+CRLF+
+				"hour = (dblfile=filename)  !for packed file of doubles"+CRLF+
+				"hour = (sngfile=filename)  !for packed file of singles ";     // vextor of hour values
 		propertyHelp[4] = "Mean of the active power multipliers.  This is computed on demand the first time a "+
 				"value is needed.  However, you may set it to another value independently. "+
 				"Used for Monte Carlo load simulations.";     // set the mean (otherwise computed)
@@ -115,13 +115,11 @@ public class LoadShapeImpl extends DSSClassImpl implements LoadShape {
 		propertyHelp[16] = "Base P value for normalization. Default is zero, meaning the peak will be used.";
 		propertyHelp[17] = "Base Q value for normalization. Default is zero, meaning the peak will be used.";
 
-
 		activeProperty = LoadShape.NumPropsThisClass - 1;
 		super.defineProperties();  // add defs of inherited properties to bottom of list
 	}
 
 	public int newObject(String objName) {
-
 		DSSGlobals.activeDSSObject = new LoadShapeObjImpl(this, objName);
 		return addObjectToList(DSSGlobals.activeDSSObject);
 	}
@@ -136,9 +134,10 @@ public class LoadShapeImpl extends DSSClassImpl implements LoadShape {
 
 		LoadShapeObj als = activeLoadShapeObj;
 
-		int paramPointer = 0;
+		int paramPointer = -1;
 		String paramName = parser.getNextParam();
 		String param = parser.makeString();
+
 		while (param.length() > 0) {
 			if (paramName.length() == 0){
 				paramPointer += 1;
@@ -146,7 +145,7 @@ public class LoadShapeImpl extends DSSClassImpl implements LoadShape {
 				paramPointer = commandList.getCommand(paramName);
 			}
 
-			if ((paramPointer >= 0) && (paramPointer < numProperties))
+			if (paramPointer >= 0 && paramPointer < numProperties)
 				als.setPropertyValue(paramPointer, param);
 
 			switch (paramPointer) {
@@ -228,7 +227,7 @@ public class LoadShapeImpl extends DSSClassImpl implements LoadShape {
 			}
 
 			switch (paramPointer) {
-			case 2:  // TODO Check zero based indexing
+			case 2:
 				als.setStdDevCalculated(false);   // now calculated on demand
 				als.setArrayPropertyIndex(paramPointer);
 				als.setNumPoints(als.getNumPoints());  // keep properties in order for save command
@@ -269,7 +268,7 @@ public class LoadShapeImpl extends DSSClassImpl implements LoadShape {
 	 * Find an obj of this class by name.
 	 */
 	public Object find(String objName) {
-		if ((objName.length() == 0) || (objName.equalsIgnoreCase("none"))) {
+		if (objName.length() == 0 || objName.equalsIgnoreCase("none")) {
 			return null;
 		} else {
 			return super.find(objName);
@@ -305,7 +304,6 @@ public class LoadShapeImpl extends DSSClassImpl implements LoadShape {
 			als.setBaseP(otherLoadShape.getBaseP());
 			als.setBaseQ(otherLoadShape.getBaseQ());
 
-
 			/*als.setMaxP(OtherLoadShape.getMaxP());
 			als.setMaxQ(OtherLoadShape.getMaxQ());
 			als.setMean(OtherLoadShape.getMean());
@@ -329,8 +327,7 @@ public class LoadShapeImpl extends DSSClassImpl implements LoadShape {
 	 * Returns active LoadShape string.
 	 */
 	public String getCode() {
-		LoadShapeObj pShape = (LoadShapeObj) elementList.getActive();
-		return pShape.getName();
+		return ((LoadShapeObj) elementList.getActive()).getName();
 	}
 
 	/**
@@ -371,8 +368,7 @@ public class LoadShapeImpl extends DSSClassImpl implements LoadShape {
 			if (als.getInterval() == 0.0)
 				als.setHours( Utilities.resizeArray(als.getHours(), als.getNumPoints()) );
 			int i = 0;
-			while (((s = br.readLine()) != null) && i < als.getNumPoints()) {  // TODO: Check zero based indexing
-				i += 1;
+			while (((s = br.readLine()) != null) && i < als.getNumPoints()) {
 				/* aux parser allows commas or white space */
 				parser = DSSGlobals.auxParser;
 				parser.setCmdString(s);
@@ -382,6 +378,7 @@ public class LoadShapeImpl extends DSSClassImpl implements LoadShape {
 				}
 				parser.getNextParam();
 				als.getPMultipliers()[i] = parser.makeDouble();
+				i += 1;
 			}
 			fis.close();
 			dis.close();

@@ -39,11 +39,6 @@ public class NamedObjectImpl implements NamedObject {
 		uuid = null;
 	}
 
-	protected void finalize() throws Throwable {
-		if (uuid != null)
-			uuid = null;
-	}
-
 	public String getDisplayName() {
 		if (this.displayName == "") {
 			return pathName + "_" + localName;

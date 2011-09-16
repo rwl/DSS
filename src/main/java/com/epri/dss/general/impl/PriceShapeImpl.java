@@ -119,7 +119,7 @@ public class PriceShapeImpl extends DSSClassImpl implements PriceShape {
 
 		PriceShapeObj aps = activePriceShapeObj;
 
-		int paramPointer = 0;
+		int paramPointer = -1;
 		String paramName = parser.getNextParam();
 
 		String param = parser.makeString();
@@ -130,7 +130,7 @@ public class PriceShapeImpl extends DSSClassImpl implements PriceShape {
 				paramPointer = commandList.getCommand(paramName);
 			}
 
-			if ((paramPointer >= 0) && (paramPointer < numProperties))
+			if (paramPointer >= 0 && paramPointer < numProperties)
 				aps.setPropertyValue(paramPointer, param);
 
 			switch (paramPointer) {
@@ -220,7 +220,7 @@ public class PriceShapeImpl extends DSSClassImpl implements PriceShape {
 
 	@Override
 	public Object find(String objName) {
-		if ((objName.length() == 0) || objName.equalsIgnoreCase("none")) {
+		if (objName.length() == 0 || objName.equalsIgnoreCase("none")) {
 			return null;
 		} else {
 			return super.find(objName);
@@ -230,16 +230,18 @@ public class PriceShapeImpl extends DSSClassImpl implements PriceShape {
 	@Override
 	protected int makeLike(String shapeName) {
 		PriceShapeObj otherPriceShape;
+		PriceShapeObj aps;
 		int i, result = 0;
 
 		/* See if we can find this line code in the present collection */
 		otherPriceShape = (PriceShapeObj) find(shapeName);
 		if (otherPriceShape != null) {
-			PriceShapeObj aps = activePriceShapeObj;
+			aps = activePriceShapeObj;
 
 			aps.setNumPoints(otherPriceShape.getNumPoints());
 			aps.setInterval(otherPriceShape.getInterval());
 			aps.setPriceValues( Utilities.resizeArray(aps.getPriceValues(), aps.getNumPoints()) );
+
 			for (i = 0; i < aps.getNumPoints(); i++)
 				aps.getPriceValues()[i] = otherPriceShape.getPriceValues()[i];
 			if (aps.getInterval() > 0.0) {
@@ -304,8 +306,7 @@ public class PriceShapeImpl extends DSSClassImpl implements PriceShape {
 			if (aps.getInterval() == 0.0)
 				aps.setHours( Utilities.resizeArray(aps.getHours(), aps.getNumPoints()) );
 			int i = 0;
-			while (((s = br.readLine()) != null) && i < aps.getNumPoints()) {  // TODO: Check zero based indexing
-				i += 1;
+			while (((s = br.readLine()) != null) && i < aps.getNumPoints()) {
 				/* Aux parser allows commas or white space */
 				parser = DSSGlobals.auxParser;
 				parser.setCmdString(s);
@@ -315,11 +316,12 @@ public class PriceShapeImpl extends DSSClassImpl implements PriceShape {
 				}
 				parser.getNextParam();
 				aps.getPriceValues()[i] = parser.makeDouble();
+				i += 1;
 			}
 			fis.close();
 			dis.close();
 			br.close();
-			if (i != aps.getNumPoints())  // TODO: Check zero based indexing
+			if (i != aps.getNumPoints() - 1)
 				aps.setNumPoints(i);
 
 			fis.close();
@@ -332,7 +334,7 @@ public class PriceShapeImpl extends DSSClassImpl implements PriceShape {
 	}
 
 	private void doSngFile(String fileName) {
-		throw new UnsupportedOperationException();  // FIXME
+		throw new UnsupportedOperationException();
 	}
 
 	private void doDblFile(String fileName) {

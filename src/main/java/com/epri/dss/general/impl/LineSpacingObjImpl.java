@@ -37,15 +37,15 @@ public class LineSpacingObjImpl extends DSSObjectImpl implements LineSpacingObj 
 	public void dumpProperties(PrintStream f, boolean complete) {
 		super.dumpProperties(f, complete);
 
-		for (int i = 0; i < 5; i++)  // TODO Check zero based indexing
+		for (int i = 0; i < 5; i++)
 			f.println("~ " + parentClass.getPropertyName()[i] + "=" + getPropertyValue(i));
 	}
 
 	private String arrayString(double[] pf, int n) {
-		// FIXME Use StringBuffer
+		// FIXME use StringBuffer
 		String r = "[";
 		if (n > 0)
-			r = r + String.format("%-g", pf[0]);  // TODO Check zero based indexing
+			r = r + String.format("%-g", pf[0]);
 		for (int i = 1; i < n; i++)
 			r = r + String.format(",%-g", pf[i]);
 		return r + "]";
@@ -54,11 +54,11 @@ public class LineSpacingObjImpl extends DSSObjectImpl implements LineSpacingObj 
 	@Override
 	public String getPropertyValue(int index) {
 		switch (index) {
-		case 3:
+		case 2:
 			return arrayString(X, nConds);
-		case 4:
+		case 3:
 			return arrayString(Y, nConds);
-		case 5:
+		case 4:
 			LineUnits.lineUnitsStr(units);
 		default:
 			// inherited parameters
@@ -67,22 +67,22 @@ public class LineSpacingObjImpl extends DSSObjectImpl implements LineSpacingObj 
 	}
 
 	public double getXCoord(int i) {
-		return i <= nConds ? X[i] : 0.0;
+		return i < nConds ? X[i] : 0.0;
 	}
 
 	public double getYCoord(int i) {
-		return i <= nConds ? Y[i] : 0.0;
+		return i < nConds ? Y[i] : 0.0;
 	}
 
 	@Override
 	public void initPropertyValues(int arrayOffset) {
-		propertyValue[0] = "3";
-		propertyValue[1] = "3";
-		propertyValue[2] = "0";
-		propertyValue[3] = "32";
-		propertyValue[4] = "ft";
+		setPropertyValue(0, "3");
+		setPropertyValue(1, "3");
+		setPropertyValue(2, "0");
+		setPropertyValue(3, "32");
+		setPropertyValue(4, "ft");
 
-		super.initPropertyValues(LineSpacing.NumPropsThisClass);
+		super.initPropertyValues(LineSpacing.NumPropsThisClass - 1);
 	}
 
 	public void setNWires(int value) {

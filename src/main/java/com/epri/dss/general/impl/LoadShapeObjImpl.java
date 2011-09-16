@@ -40,7 +40,7 @@ public class LoadShapeObjImpl extends DSSObjectImpl implements LoadShapeObj {
 		setName(loadShapeName.toLowerCase());
 		objType = parClass.getDSSClassType();
 
-		lastValueAccessed = 1;
+		lastValueAccessed = 0;
 
 		numPoints    = 0;
 		interval     = 1.0;  // hr
@@ -59,7 +59,7 @@ public class LoadShapeObjImpl extends DSSObjectImpl implements LoadShapeObj {
 		initPropertyValues(0);
 	}
 
-	/** Set imaginary part of Result when Qmultipliers not defined. */
+	/** Set imaginary part of result when QMultipliers not defined. */
 	private double setResultIm(double realpart) {
 		// if actual, assume zero, same as real otherwise
 		return useActual ? 0.0 : realpart;
@@ -84,9 +84,9 @@ public class LoadShapeObjImpl extends DSSObjectImpl implements LoadShapeObj {
 
 		if (numPoints > 0) {  // handle exceptional cases
 			if (numPoints == 1) {
-				result[0] = PMultipliers[0];  // TODO Check zero based indexing
+				result[0] = PMultipliers[0];
 				if (QMultipliers != null) {
-					result[1] = QMultipliers[0];  // TODO Check zero based indexing
+					result[1] = QMultipliers[0];
 				} else {
 					result[1] = setResultIm(result[0]);
 				}
@@ -115,8 +115,8 @@ public class LoadShapeObjImpl extends DSSObjectImpl implements LoadShapeObj {
 						hr = hr - (hr / hours[numPoints]) * hours[numPoints];
 
 					if (hours[lastValueAccessed] > hr)
-						lastValueAccessed = 1;  // Start over from beginning
-					for (int i = lastValueAccessed + 1; i < numPoints; i++) {  // TODO Check zero based indexing
+						lastValueAccessed = 1;  // start over from beginning
+					for (int i = lastValueAccessed + 1; i < numPoints; i++) {
 						if (Math.abs(hours[i] - hr) < 0.00001) {  // if close to an actual point, just use it.
 							result[0] = PMultipliers[i];
 							if (QMultipliers != null) {
@@ -127,7 +127,7 @@ public class LoadShapeObjImpl extends DSSObjectImpl implements LoadShapeObj {
 							lastValueAccessed = i;
 							return new Complex(result[0], result[1]);
 						} else if (hours[i] > hr) {  // interpolate for multiplier
-							lastValueAccessed = i - 1;  // TODO Check zero based indexing
+							lastValueAccessed = i - 1;
 							result[0] = PMultipliers[lastValueAccessed] +
 								(hr - hours[lastValueAccessed]) / (hours[i] - hours[lastValueAccessed]) *
 									(PMultipliers[i] -PMultipliers[lastValueAccessed]);
@@ -163,8 +163,8 @@ public class LoadShapeObjImpl extends DSSObjectImpl implements LoadShapeObj {
 		int i;
 		if (numPoints > 0) {
 			if (maxMult <= 0.0) {
-				maxMult = Math.abs(multipliers[0]);  // TODO Check zero based indexing
-				for (i = 1; i < numPoints; i++)  // TODO Check zero based indexing
+				maxMult = Math.abs(multipliers[0]);
+				for (i = 1; i < numPoints; i++)
 					maxMult = Math.max(maxMult, Math.abs(multipliers[i]));
 			}
 
@@ -188,16 +188,16 @@ public class LoadShapeObjImpl extends DSSObjectImpl implements LoadShapeObj {
 	}
 
 	public void calcMeanAndStdDev() {
-		if (numPoints > 0)
+		if (numPoints > 0) {
 			if (interval > 0.0) {
 				MathUtil.RCDMeanandStdDev(PMultipliers, numPoints, mean, stdDev);
 			} else {
 				MathUtil.curveMeanAndStdDev(PMultipliers, hours, numPoints, mean, stdDev);
 			}
+		}
 
-		// TODO Check indenting
-		propertyValue[4] = String.format("%.8g", mean.doubleValue());  // TODO Check zero based indexing.
-		propertyValue[5] = String.format("%.8g", stdDev.doubleValue());
+		setPropertyValue(4, String.format("%.8g", mean.doubleValue()));
+		setPropertyValue(5, String.format("%.8g", stdDev.doubleValue()));
 
 		stdDevCalculated = true;
 		/* No action is taken on Q multipliers */
@@ -207,7 +207,7 @@ public class LoadShapeObjImpl extends DSSObjectImpl implements LoadShapeObj {
 		if (interval > 0.0) {
 			return interval;
 		} else {
-			if (lastValueAccessed > 1) {  // TODO Check zero based indexing
+			if (lastValueAccessed > 0) {
 				return hours[lastValueAccessed] - hours[lastValueAccessed - 1];
 			} else {
 				return 0.0;
@@ -231,7 +231,7 @@ public class LoadShapeObjImpl extends DSSObjectImpl implements LoadShapeObj {
 	 * Get multiplier by index.
 	 */
 	public double mult(int i) {
-		if ((i <= numPoints) && (i > 0)) {
+		if (i < numPoints && i >= 0) {
 			lastValueAccessed = i;
 			return PMultipliers[i];
 		} else {
@@ -244,7 +244,7 @@ public class LoadShapeObjImpl extends DSSObjectImpl implements LoadShapeObj {
 	 */
 	public double hour(int i) {
 		if (interval == 0) {
-			if ((i <= numPoints) & (i > 0)) {
+			if (i < numPoints & i >= 0) {
 				lastValueAccessed = i;
 				return hours[i];
 			} else {
@@ -261,7 +261,7 @@ public class LoadShapeObjImpl extends DSSObjectImpl implements LoadShapeObj {
 
 		for (int i = 0; i < parentClass.getNumProperties(); i++) {
 			switch (i) {
-			case 2:  // TODO Check zero based indexing
+			case 2:
 				f.println("~ " + parentClass.getPropertyName()[i] + "=(" + propertyValue[i] + ")");
 				break;
 			case 3:
@@ -360,24 +360,24 @@ public class LoadShapeObjImpl extends DSSObjectImpl implements LoadShapeObj {
 
 	public void initPropertyValues(int arrayOffset) {
 
-		propertyValue[0] = "0";  // number of points to expect
-		propertyValue[1] = "1";  // default = 1.0 hr;
-		propertyValue[2] = "";   // vector of multiplier values
-		propertyValue[3] = "";   // vector of hour values
-		propertyValue[4] = "0";  // set the mean (otherwise computed)
-		propertyValue[5] = "0";  // set the std dev (otherwise computed)
-		propertyValue[6] = "";   // switch input to a csvfile
-		propertyValue[7] = "";   // switch input to a binary file of singles
-		propertyValue[8] = "";   // switch input to a binary file of singles
-		propertyValue[9] = "";   // action option.
-		propertyValue[10] = "";  // Qmult.
-		propertyValue[11] = "No";
-		propertyValue[12] = "0";
-		propertyValue[13] = "0";
-		propertyValue[14] = "3600";  // seconds
-		propertyValue[15] = "60";    // minutes
+		setPropertyValue(0, "0");  // number of points to expect
+		setPropertyValue(1, "1");  // default = 1.0 hr;
+		setPropertyValue(2, "");   // vector of multiplier values
+		setPropertyValue(3, "");   // vector of hour values
+		setPropertyValue(4, "0");  // set the mean (otherwise computed)
+		setPropertyValue(5, "0");  // set the std dev (otherwise computed)
+		setPropertyValue(6, "");   // switch input to a csvfile
+		setPropertyValue(7, "");   // switch input to a binary file of singles
+		setPropertyValue(8, "");   // switch input to a binary file of singles
+		setPropertyValue(9, "");   // action option.
+		setPropertyValue(10, "");  // Qmult.
+		setPropertyValue(11, "No");
+		setPropertyValue(12, "0");
+		setPropertyValue(13, "0");
+		setPropertyValue(14, "3600");  // seconds
+		setPropertyValue(15, "60");    // minutes
 
-		super.initPropertyValues(LoadShape.NumPropsThisClass);
+		super.initPropertyValues(LoadShape.NumPropsThisClass - 1);
 	}
 
 	// TODO Implement TOPExport method
@@ -398,7 +398,7 @@ public class LoadShapeObjImpl extends DSSObjectImpl implements LoadShapeObj {
 	public void setMaxPandQ() {
 		iMaxP = Utilities.iMaxAbsdblArrayValue(numPoints, PMultipliers);
 
-		if (iMaxP >= 0) {  // TODO Check zero based indexing
+		if (iMaxP >= 0) {
 			maxP = PMultipliers[iMaxP];
 			if (QMultipliers != null) {
 				maxQ = QMultipliers[iMaxP];
@@ -415,14 +415,14 @@ public class LoadShapeObjImpl extends DSSObjectImpl implements LoadShapeObj {
 
 	public void setNumPoints(int value) {
 
-		propertyValue[0] = String.valueOf(value);  // update property list variable
+		setPropertyValue(0, String.valueOf(value));  // update property list variable
 
 		// reset array property values to keep them in proper order in save
 
-		if (arrayPropertyIndex >= 0)  // TODO Check zero based indexing
+		if (arrayPropertyIndex >= 0)
 			propertyValue[arrayPropertyIndex] = propertyValue[arrayPropertyIndex];
 		if (QMultipliers != null)
-			propertyValue[10] = propertyValue[10];  // TODO Check zero based indexing
+			propertyValue[10] = propertyValue[10];
 
 		numPoints = value;  // now assign the value
 	}

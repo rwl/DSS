@@ -62,8 +62,10 @@ public class PriceShapeObjImpl extends DSSObjectImpl implements PriceShapeObj {
 			} else {
 				if (interval > 0.0) {
 					index = (int) Math.round(hr / interval);
-					if (index > numPoints) index = index % numPoints;  // wrap around using remainder
-					if (index == 0) index = numPoints;
+					if (index >= numPoints)
+						index = index % numPoints;  // wrap around using remainder
+					if (index == -1)
+						index = numPoints;
 					result = priceValues[index];
 				} else {
 					// for random interval
@@ -73,12 +75,12 @@ public class PriceShapeObjImpl extends DSSObjectImpl implements PriceShapeObj {
 					 */
 
 					/* Normalize Hr to max hour in curve to get wraparound */
-					if (hr > hours[numPoints]) {
+					if (hr > hours[numPoints])
 						hr = hr - (int) (hr / hours[numPoints]) * hours[numPoints];
-					}
 
-					if (hours[lastValueAccessed] > hr) lastValueAccessed = 1;  // start over from beginning
-					for (i = lastValueAccessed; i < numPoints; i++) {  // TODO Check zero based indexing
+					if (hours[lastValueAccessed] > hr)
+						lastValueAccessed = 0;  // start over from beginning
+					for (i = lastValueAccessed + 1; i < numPoints; i++) {
 						if (Math.abs(hours[i] - hr) < 0.00001) {  // if close to an actual point, just use it.
 							result = priceValues[i];
 							lastValueAccessed = i;
@@ -102,12 +104,13 @@ public class PriceShapeObjImpl extends DSSObjectImpl implements PriceShapeObj {
 	}
 
 	private void calcMeanandStdDev() {
-		if (numPoints > 0)
+		if (numPoints > 0) {
 			if (interval > 0.0) {
 				MathUtil.RCDMeanandStdDev(priceValues, numPoints, mean, stdDev);
 			} else {
 				MathUtil.curveMeanAndStdDev(priceValues, hours, numPoints, mean, stdDev);
 			}
+		}
 
 		setPropertyValue(4, String.format("%.8g", mean.doubleValue()));
 		setPropertyValue(5, String.format("%.8g", stdDev.doubleValue()));
@@ -116,12 +119,14 @@ public class PriceShapeObjImpl extends DSSObjectImpl implements PriceShapeObj {
 	}
 
 	public double getMean() {
-		if (!stdDevCalculated) calcMeanandStdDev();
+		if (!stdDevCalculated)
+			calcMeanandStdDev();
 		return mean.doubleValue();
 	}
 
 	public double getStdDev() {
-		if (!stdDevCalculated) calcMeanandStdDev();
+		if (!stdDevCalculated)
+			calcMeanandStdDev();
 		return stdDev.doubleValue();
 	}
 
@@ -129,7 +134,7 @@ public class PriceShapeObjImpl extends DSSObjectImpl implements PriceShapeObj {
 	 * Get prices by index.
 	 */
 	public double getPrice(int i) {
-		if ((i < numPoints) && (i >= 0)) {
+		if (i < numPoints && i >= 0) {
 			lastValueAccessed = i;
 			return priceValues[i];
 		} else {
@@ -142,7 +147,7 @@ public class PriceShapeObjImpl extends DSSObjectImpl implements PriceShapeObj {
 	 */
 	public double getHour(int i) {
 		if (interval == 0) {
-			if ((i < numPoints) && (i >= 0)) {
+			if (i < numPoints && i >= 0) {
 				lastValueAccessed = i;
 				return hours[i];
 			} else {

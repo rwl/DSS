@@ -68,7 +68,7 @@ public class LineGeometryObjImpl extends DSSObjectImpl implements LineGeometryOb
 
 		setNConds(3);  // allocates terminals
 		nPhases = 3;
-		setActiveCond(1);  // TODO Check zero based indexing
+		setActiveCond(0);
 		lastUnit  = LineUnits.UNITS_FT;
 		normAmps  = 0.0;
 		emergAmps = 0.0;
@@ -82,7 +82,7 @@ public class LineGeometryObjImpl extends DSSObjectImpl implements LineGeometryOb
 	public void dumpProperties(PrintStream f, boolean complete) {
 		super.dumpProperties(f, complete);
 
-		for (int i = 0; i < 2; i++)  // TODO Check zero based indexing
+		for (int i = 0; i < 2; i++)
 			f.println("~ " + parentClass.getPropertyName()[i] + "=" + getPropertyValue(i));
 
 		for (int j = 0; j < nConds; j++) {
@@ -152,7 +152,7 @@ public class LineGeometryObjImpl extends DSSObjectImpl implements LineGeometryOb
 	}
 
 	public double getXCoord(int i) {
-		return i < nConds ? X[i] : 0.0;  // TODO Check zero based indexing
+		return i < nConds ? X[i] : 0.0;
 	}
 
 	public double getYCoord(int i) {
@@ -208,17 +208,17 @@ public class LineGeometryObjImpl extends DSSObjectImpl implements LineGeometryOb
 	@Override
 	public void initPropertyValues(int arrayOffset) {
 
-		propertyValue[0] = "3";
-		propertyValue[1] = "3";
-		propertyValue[2] = "1";
-		propertyValue[3] = "";
-		propertyValue[4] = "0";
-		propertyValue[5] = "32";
-		propertyValue[6] = "ft";
-		propertyValue[7] = "0";
-		propertyValue[8] = "0";
+		setPropertyValue(0, "3");
+		setPropertyValue(1, "3");
+		setPropertyValue(2, "1");
+		setPropertyValue(3, "");
+		setPropertyValue(4, "0");
+		setPropertyValue(5, "32");
+		setPropertyValue(6, "ft");
+		setPropertyValue(7, "0");
+		setPropertyValue(8, "0");
 
-		super.initPropertyValues(LineGeometry.NumPropsThisClass);
+		super.initPropertyValues(LineGeometry.NumPropsThisClass - 1);
 	}
 
 	/**
@@ -230,8 +230,8 @@ public class LineGeometryObjImpl extends DSSObjectImpl implements LineGeometryOb
 		/* Write only properties that were explicitly set in the
 		 * final order they were actually set.
 		 */
-		int iProp = getNextPropertySet(0);  // works on activeDSSObject
-		if (iProp >= 0)  // TODO Check zero based indexing
+		int iProp = getNextPropertySet(-1);  // works on activeDSSObject
+		if (iProp >= 0)
 			f.println();
 
 		while (iProp >= 0) {
@@ -448,7 +448,7 @@ public class LineGeometryObjImpl extends DSSObjectImpl implements LineGeometryOb
 		for (i = 0; i < nConds; i++)
 			units[i] = spc.getUnits();
 		dataChanged = true;
-		normAmps    = wires[0].getNormAmps();  // TODO Check zero based indexing
+		normAmps    = wires[0].getNormAmps();
 		emergAmps   = wires[0].getEmergAmps();
 
 		try {

@@ -31,11 +31,9 @@ public class LineSpacingImpl extends DSSClassImpl implements LineSpacing {
 	}
 
 	protected void defineProperties() {
-
 		numProperties = NumPropsThisClass;
 		countProperties();   // get inherited property count
 		allocatePropertyArrays();
-
 
 		propertyName[0]  = "nconds";
 		propertyName[1]  = "nphases";
@@ -56,7 +54,6 @@ public class LineSpacingImpl extends DSSClassImpl implements LineSpacing {
 
 	@Override
 	public int newObject(String objName) {
-
 		DSSGlobals.activeDSSObject = new LineSpacingObjImpl(this, objName);
 		return addObjectToList(DSSGlobals.activeDSSObject);
 	}
@@ -93,7 +90,7 @@ public class LineSpacingImpl extends DSSClassImpl implements LineSpacing {
 
 		LineSpacingObj als = activeLineSpacingObj;
 
-		int paramPointer = 0;
+		int paramPointer = -1;
 		String paramName = parser.getNextParam();
 		String param = parser.makeString();
 		while (param.length() > 0) {
@@ -101,56 +98,56 @@ public class LineSpacingImpl extends DSSClassImpl implements LineSpacing {
 				paramPointer += 1;
 			} else {
 				paramPointer = commandList.getCommand(paramName);
-
-				if ((paramPointer > 0) && (paramPointer <= numProperties))
-					als.setPropertyValue(paramPointer, param);
-
-				switch (paramPointer) {
-				case 0:  // TODO Check zero based indexing
-					DSSGlobals.doSimpleMsg("Unknown parameter \"" + paramName + "\" for object \"" + getName() +"."+ als.getName() + "\"", 10101);
-					break;
-				case 1:
-					als.setNWires(parser.makeInteger());  // use property value to force reallocations
-					break;
-				case 2:
-					als.setNPhases(parser.makeInteger());
-					break;
-				case 3:
-					interpretArray(param, SpcParmChoice.X);
-					break;
-				case 4:
-					interpretArray(param, SpcParmChoice.H);
-					break;
-				case 5:
-					als.setUnits(LineUnits.getUnitsCode(param));
-					break;
-				default:
-					// inherited parameters
-					classEdit(activeLineSpacingObj, paramPointer - LineSpacing.NumPropsThisClass);
-					break;
-				}
-
-				switch (paramPointer) {
-				case 1:  // TODO Check zero based indexing
-					als.setDataChanged(true);
-					break;
-				case 2:
-					als.setDataChanged(true);
-					break;
-				case 3:
-					als.setDataChanged(true);
-					break;
-				case 4:
-					als.setDataChanged(true);
-					break;
-				case 5:
-					als.setDataChanged(true);
-					break;
-				}
-
-				paramName = parser.getNextParam();
-				param = parser.makeString();
 			}
+
+			if (paramPointer >= 0 && paramPointer < numProperties)
+				als.setPropertyValue(paramPointer, param);
+
+			switch (paramPointer) {
+			case -1:
+				DSSGlobals.doSimpleMsg("Unknown parameter \"" + paramName + "\" for object \"" + getName() +"."+ als.getName() + "\"", 10101);
+				break;
+			case 0:
+				als.setNWires(parser.makeInteger());  // use property value to force reallocations
+				break;
+			case 1:
+				als.setNPhases(parser.makeInteger());
+				break;
+			case 2:
+				interpretArray(param, SpcParmChoice.X);
+				break;
+			case 3:
+				interpretArray(param, SpcParmChoice.H);
+				break;
+			case 4:
+				als.setUnits(LineUnits.getUnitsCode(param));
+				break;
+			default:
+				// inherited parameters
+				classEdit(activeLineSpacingObj, paramPointer - LineSpacing.NumPropsThisClass);
+				break;
+			}
+
+			switch (paramPointer) {
+			case 0:
+				als.setDataChanged(true);
+				break;
+			case 1:
+				als.setDataChanged(true);
+				break;
+			case 2:
+				als.setDataChanged(true);
+				break;
+			case 3:
+				als.setDataChanged(true);
+				break;
+			case 4:
+				als.setDataChanged(true);
+				break;
+			}
+
+			paramName = parser.getNextParam();
+			param = parser.makeString();
 		}
 
 		return result;
@@ -160,11 +157,13 @@ public class LineSpacingImpl extends DSSClassImpl implements LineSpacing {
 	protected int makeLike(String lineName) {
 		int i;
 		int result = 0;
+		LineSpacingObj als;
 
 		/* See if we can find this line code in the present collection */
 		LineSpacingObj otherLineSpacing = (LineSpacingObj) find(lineName);
+
 		if (otherLineSpacing != null) {
-			LineSpacingObj als = activeLineSpacingObj;
+			als = activeLineSpacingObj;
 
 			als.setNWires(otherLineSpacing.getNWires());  // allocates
 			als.setNPhases(otherLineSpacing.getNPhases());
