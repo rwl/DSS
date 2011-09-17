@@ -22,7 +22,8 @@ public abstract class MathUtil {
 		Complex a  = new Complex(-0.5, 0.866025403);
 		Complex aa = new Complex(-0.5,-0.866025403);
 
-		for (int i = 0; i < 3; i++) Amat.setSym(0, i, Complex.ONE);
+		for (int i = 0; i < 3; i++)
+			Amat.setSym(0, i, Complex.ONE);
 		Amat.set(1, 1, aa);
 		Amat.set(2, 2, aa);
 		Amat.setSym(1, 2, a);
@@ -84,7 +85,7 @@ public abstract class MathUtil {
 
 	private static int L;
 	private static int index(int i, int j) {
-		return (j - 1) * L + i;
+		return j * L + i;
 	}
 	/**
 	 * Matrix= reference to matrix of doulbes
@@ -103,7 +104,7 @@ public abstract class MathUtil {
 	 * stuff.
 	 *
 	 */
-	public static void ETKInvert(double[] A, int norder, MutableInt error) {  // TODO Check zero based indexing
+	public static void ETKInvert(double[] A, int norder, MutableInt error) {
 
 		int j, k, LL, M, i;
 		int[] LT;
@@ -196,13 +197,13 @@ public abstract class MathUtil {
 	/**
 	 * Compute complex power in kW and kvar in each phase.
 	 */
-	public static void calckPowers(Complex[] kWkVAr, Complex[] V, Complex[] I, int n) {
+	public static void calcKPowers(Complex[] kWkVAr, Complex[] V, Complex[] I, int n) {
 		for (int j = 0; j < n; j++)
 			kWkVAr[j] = V[j].multiply(I[j].conjugate()).multiply(0.001);
 	}
 
-	public static void calckPowers(Complex[] kWkVAr, Complex[] V, Complex I, int n) {
-		calckPowers(kWkVAr, V, new Complex[] {I}, n);
+	public static void calcKPowers(Complex[] kWkVAr, Complex[] V, Complex I, int n) {
+		calcKPowers(kWkVAr, V, new Complex[] {I}, n);
 	}
 
 	/**
@@ -231,7 +232,7 @@ public abstract class MathUtil {
 		return sum;
 	}
 
-	public static void RCDMeanandStdDev(double[] pData, int nData, MutableDouble mean, MutableDouble stdDev) {
+	public static void meanandStdDev(double[] pData, int nData, MutableDouble mean, MutableDouble stdDev) {
 		double[] data = new double[100];
 		double S;
 
@@ -287,7 +288,7 @@ public abstract class MathUtil {
 	/**
 	 * z = I0(a)
 	 */
-	public static Complex Bessel_I0(Complex a) {
+	public static Complex besselI0(Complex a) {
 		int maxTerm = 1000;
 		double epsilonSqr = 1.0E-20;
 
@@ -302,7 +303,7 @@ public abstract class MathUtil {
 		result = result.add(zSQR25);  // term 1
 
 		i = 0;
-		while ((i < maxTerm) && (sizeSqr > epsilonSqr)) {
+		while (i <= maxTerm && sizeSqr > epsilonSqr) {
 			term = zSQR25.multiply(term);
 			i += 1;
 			term = ComplexUtil.divide(term, Math.pow(i, 2));

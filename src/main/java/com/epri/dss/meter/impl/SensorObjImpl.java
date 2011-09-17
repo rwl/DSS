@@ -15,7 +15,7 @@ public class SensorObjImpl extends MeterElementImpl implements SensorObj {
 	private boolean validSensor;
 	private double[] sensorKW;
 	private double[] sensorKVAr;
-	private double KVBase;  // value specified
+	private double kVBase;  // value specified
 	private double VBase;   // in volts
 
 	private int conn;
@@ -38,7 +38,7 @@ public class SensorObjImpl extends MeterElementImpl implements SensorObj {
 		sensorKW   = null;
 		sensorKVAr = null;
 
-		KVBase = 12.47;  // default 3-phase voltage
+		kVBase = 12.47;  // default 3-phase voltage
 		weight = 1.0;
 		pctError = 1.0;
 
@@ -61,7 +61,7 @@ public class SensorObjImpl extends MeterElementImpl implements SensorObj {
 		if (devIndex >= 0) {  // sensored element must already exist
 			meteredElement = DSSGlobals.activeCircuit.getCktElements().get(devIndex);
 
-			if (meteredTerminal > meteredElement.getNTerms()) {  // TODO Check zero based indexing
+			if (meteredTerminal >= meteredElement.getNTerms()) {
 				DSSGlobals.doErrorMsg("Sensor: \"" + getName() + "\"",
 						"Terminal no. \"" +"\" does not exist.",
 						"Respecify terminal no.", 665);
@@ -71,7 +71,7 @@ public class SensorObjImpl extends MeterElementImpl implements SensorObj {
 
 				// sets name of i-th terminal's connected bus in Sensor's bus list
 				// this value will be used to set the nodeRef array (see takeSample)
-				setBus(1, meteredElement.getBus(meteredTerminal));
+				setBus(0, meteredElement.getBus(meteredTerminal));
 
 				clearSensor();
 
@@ -94,7 +94,7 @@ public class SensorObjImpl extends MeterElementImpl implements SensorObj {
 	@Override
 	public void makePosSequence() {
 		if (meteredElement != null) {
-			setBus(1, meteredElement.getBus(meteredTerminal));
+			setBus(0, meteredElement.getBus(meteredTerminal));
 			setNPhases( meteredElement.getNPhases() );
 			setNConds( meteredElement.getNConds() );
 			clearSensor();
@@ -110,13 +110,13 @@ public class SensorObjImpl extends MeterElementImpl implements SensorObj {
 		switch (conn) {
 		case 0:
 			if (nPhases == 1) {
-				VBase = KVBase * 1000.0;
+				VBase = kVBase * 1000.0;
 			} else {
-				VBase = KVBase * 1000.0 / DSSGlobals.SQRT3;
+				VBase = kVBase * 1000.0 / DSSGlobals.SQRT3;
 			}
 			break;
 		case 1:
-			VBase = KVBase * 1000.0;
+			VBase = kVBase * 1000.0;
 			break;
 		}
 	}
@@ -139,10 +139,13 @@ public class SensorObjImpl extends MeterElementImpl implements SensorObj {
 		// make sure result is within limits
 		if (nPhases > 2) {
 			// assumes 2 phase delta is open delta
-			if (result > nPhases) result = 1;
-			if (result < 1) result = nPhases;
+			if (result >= nPhases)
+				result = 0;
+			if (result < 0)
+				result = nPhases - 1;
 		} else {
-			if (result < 1) result = 3;  // for 2-phase delta, next phase will be 3rd phase
+			if (result < 0)
+				result = 2;  // for 2-phase delta, next phase will be 3rd phase
 		}
 
 		return result;
@@ -150,7 +153,7 @@ public class SensorObjImpl extends MeterElementImpl implements SensorObj {
 
 	@Override
 	public void takeSample() {
-		if (!(validSensor && isEnabled()))
+		if ( !(validSensor && isEnabled()) )
 			return;
 
 		meteredElement.getCurrents(calculatedCurrent);
@@ -249,7 +252,7 @@ public class SensorObjImpl extends MeterElementImpl implements SensorObj {
 	}
 
 	private void allocateSensorObjArrays() {
-		sensorKW   = Utilities.resizeArray(sensorKW, nPhases);
+		sensorKW = Utilities.resizeArray(sensorKW, nPhases);
 		sensorKVAr = Utilities.resizeArray(sensorKVAr, nPhases);
 		allocateSensorArrays();
 	}
@@ -323,7 +326,7 @@ public class SensorObjImpl extends MeterElementImpl implements SensorObj {
 	}
 
 	public double getKVBase() {
-		return KVBase;
+		return kVBase;
 	}
 
 	public int getDeltaDirection() {
@@ -414,7 +417,7 @@ public class SensorObjImpl extends MeterElementImpl implements SensorObj {
 	}
 
 	public void setKVBase(double base) {
-		this.KVBase = base;
+		this.kVBase = base;
 	}
 
 	public void setDeltaDirection(int direction) {

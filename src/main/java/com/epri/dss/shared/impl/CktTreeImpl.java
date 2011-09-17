@@ -34,11 +34,11 @@ public class CktTreeImpl implements CktTree {
 			numEnds += 1;
 			endNodeList.add(node);
 			endBuses = Utilities.resizeArray(endBuses, numEnds);
-			endBuses[numEnds - 1] = endBusRef;  // TODO Check zero based indexing
+			endBuses[numEnds - 1] = endBusRef;
 		}
 
 		public int get(int i, CktTreeNode node) {
-			node = (CktTreeNode) endNodeList.get(i);  // FIXME Make generic
+			node = (CktTreeNode) endNodeList.get(i);
 			return endBuses[i];
 		}
 
@@ -94,9 +94,8 @@ public class CktTreeImpl implements CktTree {
 	 * Adds a pointer to an object to be associated with the current node.
 	 */
 	public void setNewObject(DSSObject value) {
-		if (presentBranch != null) {
+		if (presentBranch != null)
 			presentBranch.addObject(value);
-		}
 	}
 
 	private void pushAllChildren() {
@@ -106,7 +105,7 @@ public class CktTreeImpl implements CktTree {
 			// push all children of present node onto stack
 			pChild = presentBranch.getFirstChild();
 			while (pChild != null) {
-				forwardStack.push((DSSObject) pChild);  // FIXME Implement generics
+				forwardStack.push( (DSSObject) pChild );
 				pChild = presentBranch.getNextChild();
 			}
 			presentBranch.setChildAdded(false);
@@ -126,7 +125,7 @@ public class CktTreeImpl implements CktTree {
 		if (forwardStack.size() == 0)
 			pushAllChildren();
 
-		presentBranch = (CktTreeNode) forwardStack.pop();  // FIXME Implement generics
+		presentBranch = (CktTreeNode) forwardStack.pop();
 		pushAllChildren();  // push all children of latest
 		if (presentBranch != null) {
 			return presentBranch.getCktObject();
@@ -212,7 +211,7 @@ public class CktTreeImpl implements CktTree {
 	public void startHere() {
 		forwardStack.clear();
 		if (presentBranch != null)
-			forwardStack.push((DSSObject) presentBranch);  // FIXME Implement generics
+			forwardStack.push((DSSObject) presentBranch);
 	}
 
 	/**
@@ -258,7 +257,7 @@ public class CktTreeImpl implements CktTree {
 	private static void getPCElementsConnectedToBus(List<CktElement> adjLst, CktTree branchList, boolean analyze) {
 		CktElement p;
 
-		for (int i = 0; i < adjLst.size() - 1; i++) {
+		for (int i = 0; i < adjLst.size(); i++) {
 			p = adjLst.get(i);
 			if (p.isEnabled()) {
 				if (analyze) {
@@ -279,7 +278,7 @@ public class CktTreeImpl implements CktTree {
 		int i, j;
 		CktElement p;
 
-		for (i = 0; i < adjLst.size() - 1; i++) {
+		for (i = 0; i < adjLst.size(); i++) {
 			p = adjLst.get(i);
 			if (p.isEnabled() && p != activeBranch) {
 				if (analyze || !p.isChecked()) {
@@ -313,7 +312,7 @@ public class CktTreeImpl implements CktTree {
 
 	private static void getShuntPDElementsConnectedToBus(List<CktElement> adjLst, CktTree branchList, boolean analyze) {
 		CktElement p;
-		for (int i = 0; i < adjLst.size() - 1; i++) {
+		for (int i = 0; i < adjLst.size(); i++) {
 			p = adjLst.get(i);
 			if (p.isEnabled() && Utilities.isShuntElement(p)) {
 				if (analyze) {
@@ -365,17 +364,17 @@ public class CktTreeImpl implements CktTree {
 		testBranch = testElement;
 		while (testBranch != null) {
 			for (iTerm = 0; iTerm < testBranch.getNTerms(); iTerm++) {
-				if (!testBranch.getTerminals()[iTerm].isChecked()) {
+				if (!testBranch.getTerminals()[ iTerm ].isChecked()) {
 					// now find all PC elements connected to the bus on this end of branch
 					// attach them as generic objects to cktTree node.
 					testBusNum = testBranch.getTerminals()[iTerm].getBusRef();
 					branchList.getPresentBranch().setToBusReference(testBusNum);  // add this as a "to" bus reference
 					if (testBusNum > 0) {
-						ckt.getBuses()[testBusNum].setBusChecked(true);
+						ckt.getBuses()[ testBusNum ].setBusChecked(true);
 						getSourcesConnectedToBus(testBusNum, branchList, analyze);
-						getPCElementsConnectedToBus(lstPC[testBusNum], branchList, analyze);
-						getShuntPDElementsConnectedToBus(lstPD[testBusNum], branchList, analyze);
-						findAllChildBranches(lstPD[testBusNum], testBusNum, branchList, analyze, testBranch);
+						getPCElementsConnectedToBus(lstPC[ testBusNum ], branchList, analyze);
+						getShuntPDElementsConnectedToBus(lstPD[ testBusNum ], branchList, analyze);
+						findAllChildBranches(lstPD[ testBusNum ], testBusNum, branchList, analyze, testBranch);
 					}
 				}
 			}
@@ -391,7 +390,7 @@ public class CktTreeImpl implements CktTree {
 		Circuit ckt = DSSGlobals.activeCircuit;
 
 		nBus = ckt.getNumBuses();
-		// Circuit.buses is effectively 1-based; bus 0 is ground   TODO Check zero based indexing
+		// Circuit.buses is effectively 1-based; bus 0 is ground
 		lstPD = new List[nBus + 1];
 		lstPC = new List[nBus + 1];
 		for (i = 0; i < nBus; i++) {

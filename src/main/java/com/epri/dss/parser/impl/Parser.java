@@ -154,7 +154,6 @@ public class Parser {
 	private boolean isDelimiter(final String lineBuffer, MutableInt linePos) {
 		int i;
 		char ch;
-
 		boolean result = false;
 
 		if (isCommentChar(lineBuffer, linePos)) {
@@ -316,7 +315,7 @@ public class Parser {
 		if (dotpos == -1) {
 			return tokenBuffer;
 		} else {
-			result = tokenBuffer.substring(0, dotpos).trim();  // bus name  TODO Check zero based indexing
+			result = tokenBuffer.substring(0, dotpos).trim();  // bus name
 			tokenSave = tokenBuffer;
 			/* Now get nodes */
 			nodeBuffer = tokenBuffer.substring(dotpos, tokenBuffer.length() - dotpos) + " ";
@@ -422,7 +421,7 @@ public class Parser {
 	}
 
 	private int _elementIndex(int ii, int jj, int expectedOrder) {
-		return jj* expectedOrder + ii;
+		return jj * expectedOrder + ii;
 	}
 
 	public int parseAsSymMatrix(int expectedOrder, double[] matrixBuffer) {
@@ -470,7 +469,7 @@ public class Parser {
 	}
 
 	public int makeInteger() {
-		// Hex integers must be preceeded by "$"
+		// hex integers must be preceeded by "$"
 		int result = 0;
 		double temp = 0;
 		MutableInt code = new MutableInt();
@@ -522,7 +521,9 @@ public class Parser {
 
 		if (autoIncrement)
 			getNextParam();
+
 		convertError = false;
+
 		if (tokenBuffer.length() == 0) {
 			result = 0.0;
 		} else {
@@ -538,7 +539,7 @@ public class Parser {
 			}
 
 			if (code.intValue() != 0) {
-				// not needed with throw ... Result = 0.0;
+				// not needed with throw ... result = 0.0;
 				convertError = true;
 //				throw new ParserProblem("Floating point number conversion error for string: \""+TokenBuffer+"\"");
 				DSSGlobals.doErrorMsg("", "Floating point number conversion error for string: \""+tokenBuffer+"\"", "", 0);
@@ -553,10 +554,10 @@ public class Parser {
 	}
 
 	/**
-	 * Checks for CommentChar and '//'.
+	 * Checks for commentChar and '//'.
 	 */
 	private boolean isCommentChar(final String lineBuffer, MutableInt linePos) {
-		switch (lineBuffer.charAt(linePos.intValue())) {
+		switch (lineBuffer.charAt( linePos.intValue() )) {
 		case CommentChar:
 			return true;
 		case '/':

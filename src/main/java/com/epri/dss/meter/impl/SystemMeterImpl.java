@@ -46,8 +46,8 @@ public class SystemMeterImpl implements SystemMeter {
 	public void appendDemandIntervalFile() {
 		String fileName = "";
 
-
-		if (thisMeterDIFileIsOpen) return;
+		if (thisMeterDIFileIsOpen)
+			return;
 
 		try {
 			fileName = DSSGlobals.energyMeterClass.getDI_Dir() + "/DI_SystemMeter.csv";
@@ -109,13 +109,14 @@ public class SystemMeterImpl implements SystemMeter {
 
 	// FIXME Protected method in OpenDSS
 	public void openDemandIntervalFile() {
+		PrintWriter systemDIPrinter;
 
 		try {
 			if (thisMeterDIFileIsOpen)
 				systemDIFile.close();
 
 			systemDIFile = new FileWriter(DSSGlobals.energyMeterClass.getDI_Dir()+"/DI_SystemMeter.csv");
-			PrintWriter systemDIPrinter = new PrintWriter(systemDIFile);
+			systemDIPrinter = new PrintWriter(systemDIFile);
 
 			thisMeterDIFileIsOpen = true;
 			systemDIPrinter.print("\"Hour\", ");
@@ -131,20 +132,21 @@ public class SystemMeterImpl implements SystemMeter {
 	}
 
 	public void save() {
-		String csvName = "SystemMeter.csv", Folder;
-
+		String folder, csvName = "SystemMeter.csv";
+		FileWriter fw;
+		PrintWriter pw;
 
 		try {
 			/* If we are doing a simulation and saving interval data, create this in the
 			 * same directory as the demand interval data.
 			 */
 			if (DSSGlobals.energyMeterClass.isSaveDemandInterval()) {
-				Folder = DSSGlobals.energyMeterClass.getDI_Dir() + "/";
+				folder = DSSGlobals.energyMeterClass.getDI_Dir() + "/";
 			} else {
-				Folder = DSSGlobals.DSSDataDirectory;
+				folder = DSSGlobals.DSSDataDirectory;
 			}
-			FileWriter fw = new FileWriter(Folder + csvName, false);
-			PrintWriter pw = new PrintWriter(fw);
+			fw = new FileWriter(folder + csvName, false);
+			pw = new PrintWriter(fw);
 
 			DSSGlobals.globalResult = csvName;
 
@@ -185,7 +187,8 @@ public class SystemMeterImpl implements SystemMeter {
 		peakLossesKW = Math.max(cLosses.getReal(), peakLossesKW);
 
 		firstSampleAfterReset = false;
-		if (thisMeterDIFileIsOpen) writeDemandIntervalData();
+		if (thisMeterDIFileIsOpen)
+			writeDemandIntervalData();
 	}
 
 	protected void writeDemandIntervalData() {

@@ -318,7 +318,7 @@ public class LineConstantsImpl implements LineConstants {
 			if (alpha.abs() > 35.0) {
 				I0I1 = Complex.ONE;
 			} else {
-				I0I1 = MathUtil.Bessel_I0(alpha).divide( MathUtil.Bessel_I0(alpha) );
+				I0I1 = MathUtil.besselI0(alpha).divide( MathUtil.besselI0(alpha) );
 			}
 			result = C1_j1.multiply(I0I1).multiply( Math.sqrt(Rdc[i] * frequency * MU0) / 2.0 );
 			break;

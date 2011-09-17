@@ -66,6 +66,8 @@ public class ReduceAlgs {
 	public static void doReduceDangling(CktTree branchList) {
 		CktElement lineElem1;
 		int toBusRef;
+		CktTreeNode pb;
+		Bus bus;
 
 		if (branchList != null) {
 			/* Let's throw away all dangling end branches */
@@ -74,15 +76,15 @@ public class ReduceAlgs {
 
 			while (lineElem1 != null) {
 				if (Utilities.isLineElement(lineElem1)) {
-					CktTreeNode pb = branchList.getPresentBranch();
+					pb = branchList.getPresentBranch();
 
 					/* If it is at the end of a section and has no load,cap, reactor,
 					 * or coordinate, just throw it away.
 					 */
 					if (pb.isDangling()) {
 						toBusRef = pb.getToBusReference();  // only access this property once
-						if (toBusRef > 0) {
-							Bus bus = DSSGlobals.activeCircuit.getBuses()[toBusRef];
+						if (toBusRef >= 0) {
+							bus = DSSGlobals.activeCircuit.getBuses()[toBusRef];
 							if (!bus.isKeep())
 								lineElem1.setEnabled(false);
 						}
@@ -100,6 +102,7 @@ public class ReduceAlgs {
 		LineObj lineElement1, lineElement2;
 		LoadObj loadElement;
 		CktTreeNode parentNode;
+		CktTreeNode pb;
 
 		Circuit ckt = DSSGlobals.activeCircuit;
 
@@ -123,16 +126,16 @@ public class ReduceAlgs {
 			while (lineElement1 != null) {
 				if (lineElement1.isFlag()) {  // merge this element out
 
-					CktTreeNode pb = branchList.getPresentBranch();
+					pb = branchList.getPresentBranch();
 
-					if ((pb.getNumChildren() == 0) && (pb.getNumObjects() == 0)) {
+					if (pb.getNumChildren() == 0 && pb.getNumObjects() == 0) {
 						lineElement1.setEnabled(false);  // just discard it
-					} else if ((pb.getNumChildren() == 0) || (pb.getNumChildren() > 1)) {
+					} else if (pb.getNumChildren() == 0 || pb.getNumChildren() > 1) {
 						/* Merge with parent and move loads on parent to to node */
 						parentNode = pb.getParent();
 						if (parentNode != null) {
 							if (parentNode.getNumChildren() == 1)  // only works for in-line
-								if (!ckt.getBuses()[parentNode.getToBusReference()].isKeep()) {
+								if (!ckt.getBuses()[ parentNode.getToBusReference() ].isKeep()) {
 									/* Let's consider merging */
 									lineElement2 = (LineObj) parentNode.getCktObject();
 									if (lineElement2.isEnabled())  // check to make sure it hasn't been merged out
@@ -151,7 +154,7 @@ public class ReduceAlgs {
 								}
 						}  /* if parentNode */
 					} else {  /* Merge with child */
-						if (!ckt.getBuses()[pb.getToBusReference()].isKeep()) {
+						if (!ckt.getBuses()[ pb.getToBusReference() ].isKeep()) {
 							/* Let's consider merging */
 							lineElement2 = (LineObj) pb.getFirstChild().getCktObject();
 							if (Utilities.isLineElement(lineElement2))
@@ -178,6 +181,7 @@ public class ReduceAlgs {
 	 */
 	public static void doReduceSwitches(CktTree branchList) {
 		LineObj lineElement1, lineElement2;
+		CktTreeNode pb;
 
 		if (branchList != null) {
 			lineElement1 = (LineObj) branchList.getFirst();
@@ -187,7 +191,7 @@ public class ReduceAlgs {
 				if (lineElement1.isEnabled()) {  // maybe we threw it away already
 					if (Utilities.isLineElement(lineElement1))
 						if (lineElement1.isSwitch()) {
-							CktTreeNode pb = branchList.getPresentBranch();
+							pb = branchList.getPresentBranch();
 							/* See if eligble for merging */
 							switch (pb.getNumChildren()) {
 							case 0:  /* Throw away if dangling */
@@ -215,6 +219,7 @@ public class ReduceAlgs {
 
 	public static void doReduceDefault(CktTree branchList) {
 		LineObj lineElement1, lineElement2;
+		CktTreeNode pb;
 
 		if (branchList != null) {
 
@@ -225,7 +230,7 @@ public class ReduceAlgs {
 				if (Utilities.isLineElement(lineElement1))
 					if (!lineElement1.isSwitch())
 						if (lineElement1.isEnabled()) {  // maybe we threw it away already
-							CktTreeNode pb = branchList.getPresentBranch();
+							pb = branchList.getPresentBranch();
 							/* see if eligble for merging */
 							if (pb.getNumChildren() == 1)
 								if (pb.getNumObjects() == 0)

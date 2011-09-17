@@ -30,7 +30,7 @@ public class MeterElementImpl extends DSSCktElement implements MeterElement {
 
 		elementName         = "";
 		meteredElement      = null;
-		meteredTerminal     = 1;
+		meteredTerminal     = 0;
 		sensorCurrent       = null;
 		sensorVoltage       = null;
 		phsAllocationFactor = null;
@@ -42,7 +42,7 @@ public class MeterElementImpl extends DSSCktElement implements MeterElement {
 		if (meteredElement != null)
 			calculatedCurrent = Utilities.resizeArray(calculatedCurrent, meteredElement.getYorder());
 		if (meteredElement != null)
-			calculatedVoltage = (Complex[]) Utilities.resizeArray(calculatedVoltage, meteredElement.getYorder());
+			calculatedVoltage = Utilities.resizeArray(calculatedVoltage, meteredElement.getYorder());
 		sensorCurrent = Utilities.resizeArray(sensorCurrent, nPhases);
 		sensorVoltage = Utilities.resizeArray(sensorVoltage, nPhases);
 		phsAllocationFactor = Utilities.resizeArray(phsAllocationFactor, nPhases);
@@ -56,7 +56,7 @@ public class MeterElementImpl extends DSSCktElement implements MeterElement {
 		meteredElement.getCurrents(calculatedCurrent);
 
 		// the phase allocation factor is the amount that the load must change to match the measured peak
-		iOffset = (meteredTerminal - 1) * meteredElement.getNConds();
+		iOffset = meteredTerminal * meteredElement.getNConds();
 		avgAllocFactor = 0.0;
 		for (i = 0; i < nPhases; i++) {
 			mag = calculatedCurrent[i + iOffset].abs();

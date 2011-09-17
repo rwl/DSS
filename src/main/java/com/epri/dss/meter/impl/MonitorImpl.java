@@ -74,7 +74,6 @@ public class MonitorImpl extends MeterClassImpl implements Monitor {
 
 	@Override
 	public int newObject(String objName) {
-
 		DSSGlobals.activeCircuit.setActiveCktElement(new MonitorObjImpl(this, objName));
 		return addObjectToList(DSSGlobals.activeDSSObject);
 	}
@@ -91,7 +90,7 @@ public class MonitorImpl extends MeterClassImpl implements Monitor {
 
 		MonitorObj am = activeMonitorObj;
 
-		int paramPointer = 0;
+		int paramPointer = -1;
 		String paramName = parser.getNextParam();
 		String param = parser.makeString();
 		while (param.length() > 0) {
@@ -101,7 +100,7 @@ public class MonitorImpl extends MeterClassImpl implements Monitor {
 				paramPointer = commandList.getCommand(paramName);
 			}
 
-			if ((paramPointer >= 0) && (paramPointer < numProperties))
+			if (paramPointer >= 0 && paramPointer < numProperties)
 				am.setPropertyValue(paramPointer, param);
 
 			switch (paramPointer) {
@@ -226,7 +225,7 @@ public class MonitorImpl extends MeterClassImpl implements Monitor {
 			mon = (MonitorObj) elementList.get(handle);
 			mon.resetIt();
 		} else {
-			// Do 'em all
+			// do them all
 			for (int i = 0; i < elementList.size(); i++) {
 				mon = (MonitorObj) elementList.get(i);
 				mon.resetIt();

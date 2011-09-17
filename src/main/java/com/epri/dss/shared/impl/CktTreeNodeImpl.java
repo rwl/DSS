@@ -35,11 +35,11 @@ public class CktTreeNodeImpl implements CktTreeNode {
 		}
 		childBranches   = new PointerListImpl(2);
 		shuntObjects    = new PointerListImpl(1);
-		fromBusReference = 0;
-		voltBaseIndex    = 0;  // index to voltage base list used by EnergyMeter and maybe others
+		fromBusReference = -1;
+		voltBaseIndex    = -1;  // index to voltage base list used by EnergyMeter and maybe others
 		numToBuses = 0;
 		toBusList = null;
-		toBusPtr = 0;
+		toBusPtr = -1;
 		childAdded = false;
 
 		isDangling = true;
@@ -91,8 +91,8 @@ public class CktTreeNodeImpl implements CktTreeNode {
 			return toBusList[0];  // always return the first
 		} else {
 			toBusPtr += 1;
-			if (toBusPtr >= numToBuses) {  // TODO Check zero based indexing
-				toBusPtr = 0;  // ready for next sequence of access
+			if (toBusPtr >= numToBuses) {
+				toBusPtr = -1;  // ready for next sequence of access
 				return -1;
 			} else {
 				return toBusList[toBusPtr];
@@ -107,11 +107,11 @@ public class CktTreeNodeImpl implements CktTreeNode {
 	}
 
 	public void resetToBusList() {
-		toBusPtr = 0;  // TODO Check zero based indexing
+		toBusPtr = -1;
 	}
 
 	public DSSObject getFirstObject() {
-		return (DSSObject) shuntObjects.getFirst();  // TODO Make generic
+		return (DSSObject) shuntObjects.getFirst();
 	}
 
 	public DSSObject getNextObject() {

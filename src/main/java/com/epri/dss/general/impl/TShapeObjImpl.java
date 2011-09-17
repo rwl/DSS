@@ -108,7 +108,7 @@ public class TShapeObjImpl extends DSSObjectImpl implements TShapeObj {
 	private void calcMeanAndStdDev() {
 		if (numPoints > 0)
 			if (interval > 0.0) {
-				MathUtil.RCDMeanandStdDev(TValues, numPoints, mean, stdDev);
+				MathUtil.meanandStdDev(TValues, numPoints, mean, stdDev);
 			} else {
 				MathUtil.curveMeanAndStdDev(TValues, hours, numPoints, mean, stdDev);
 			}

@@ -97,7 +97,7 @@ public class SensorImpl extends MeterClassImpl implements Sensor {
 
 		SensorObj as = activeSensorObj;
 
-		int paramPointer = 0;
+		int paramPointer = -1;
 		String paramName = parser.getNextParam();
 		String param = parser.makeString();
 		while (param.length() > 0) {
@@ -107,7 +107,7 @@ public class SensorImpl extends MeterClassImpl implements Sensor {
 				paramPointer = commandList.getCommand(paramName);
 			}
 
-			if ((paramPointer >= 0) && (paramPointer < numProperties))
+			if (paramPointer >= 0 && paramPointer < numProperties)
 				as.setPropertyValue(paramPointer, param);
 
 			switch (paramPointer) {
@@ -302,7 +302,7 @@ public class SensorImpl extends MeterClassImpl implements Sensor {
 		if (handle >= 0) {
 			sensor = (SensorObj) elementList.get(handle);
 			sensor.resetIt();
-		} else {  // Do 'em all
+		} else {  // do them all
 			for (int i = 0; i < elementList.size(); i++) {
 				sensor = (SensorObj) elementList.get(i);
 				sensor.resetIt();

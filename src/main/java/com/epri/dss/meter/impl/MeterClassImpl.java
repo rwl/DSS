@@ -27,8 +27,7 @@ public class MeterClassImpl extends CktElementClassImpl implements MeterClass {
 	}
 
 	protected int classEdit(Object activeMeterObj, int paramPointer) {
-
-		if (paramPointer > 0)
+		if (paramPointer >= 0)
 			super.classEdit(activeMeterObj, paramPointer - numMeterClassProps);
 
 		return 0;

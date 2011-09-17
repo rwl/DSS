@@ -190,7 +190,7 @@ public class LoadShapeObjImpl extends DSSObjectImpl implements LoadShapeObj {
 	public void calcMeanAndStdDev() {
 		if (numPoints > 0) {
 			if (interval > 0.0) {
-				MathUtil.RCDMeanandStdDev(PMultipliers, numPoints, mean, stdDev);
+				MathUtil.meanandStdDev(PMultipliers, numPoints, mean, stdDev);
 			} else {
 				MathUtil.curveMeanAndStdDev(PMultipliers, hours, numPoints, mean, stdDev);
 			}

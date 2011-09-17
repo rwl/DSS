@@ -15,7 +15,7 @@ public abstract class LineUnits {
 
 	public static int getUnitsCode(String s) {
 
-		String sTest = s.substring(0, 2);  // copy first 2 chars for most of the test  TODO Check indexing
+		String sTest = s.substring(0, 2);  // copy first 2 chars for most of the test
 		if (sTest.equalsIgnoreCase("no")) {
 			return UNITS_NONE;  // no units specified
 		} else if (sTest.equalsIgnoreCase("mi")) {
@@ -105,8 +105,8 @@ public abstract class LineUnits {
 	}
 
 	public static double convertLineUnits(int fromUnits, int toUnits) {
-		if ((fromUnits == UNITS_NONE) || (toUnits == UNITS_NONE)) {
-			return 1.0;  // Don't know what to convert
+		if (fromUnits == UNITS_NONE || toUnits == UNITS_NONE) {
+			return 1.0;  // don't know what to convert
 		} else {
 			return fromMeters(toUnits) * toMeters(fromUnits);
 		}

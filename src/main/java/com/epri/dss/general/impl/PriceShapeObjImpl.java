@@ -106,7 +106,7 @@ public class PriceShapeObjImpl extends DSSObjectImpl implements PriceShapeObj {
 	private void calcMeanandStdDev() {
 		if (numPoints > 0) {
 			if (interval > 0.0) {
-				MathUtil.RCDMeanandStdDev(priceValues, numPoints, mean, stdDev);
+				MathUtil.meanandStdDev(priceValues, numPoints, mean, stdDev);
 			} else {
 				MathUtil.curveMeanAndStdDev(priceValues, hours, numPoints, mean, stdDev);
 			}
