@@ -42,7 +42,7 @@ public class XYCurveObjImpl extends DSSObjectImpl implements XYCurveObj {
 	 * the curve is extrapolated from the ends.
 	 */
 	public double getYValue(double X) {
-		double Result = 0.0;  // default return value if no points in curve
+		double result = 0.0;  // default return value if no points in curve
 
 		if (numPoints > 0)  // handle exceptional cases
 			if (numPoints == 1) {
@@ -56,38 +56,38 @@ public class XYCurveObjImpl extends DSSObjectImpl implements XYCurveObj {
 					lastValueAccessed = 1;  // start over from beginning
 
 				// if off the curve for the first point, extrapolate from the first two points
-				if ((lastValueAccessed == 0) && (XValues[0] > X)) {
-					Result = interpolatePoints(0, 1, X, XValues, YValues);
-					return Result;
+				if (lastValueAccessed == 0 && XValues[0] > X) {
+					result = interpolatePoints(0, 1, X, XValues, YValues);
+					return result;
 				}
 
 				// in the middle of the arrays
 				for (int i = lastValueAccessed; i < numPoints; i++) {
 					if (Math.abs(XValues[i] - X) < 0.00001) {  // if close to an actual point, just use it
-						Result = YValues[i];
+						result = YValues[i];
 						lastValueAccessed = i;
-						return Result;
+						return result;
 					} else if (XValues[i] > X) {
 						// interpolate between two values
-						lastValueAccessed = i - 1;  // TODO Check zero based indexing
-						Result = interpolatePoints(i, lastValueAccessed, X, XValues, YValues);
-						return Result;
+						lastValueAccessed = i - 1;
+						result = interpolatePoints(i, lastValueAccessed, X, XValues, YValues);
+						return result;
 					}
 				}
 
-				// if we fall through the loop, Extrapolate from last two points
-				lastValueAccessed = numPoints - 1;
-				Result = interpolatePoints(numPoints, lastValueAccessed,  X, XValues, YValues);
+				// if we fall through the loop, extrapolate from last two points
+				lastValueAccessed = numPoints - 2;
+				result = interpolatePoints(numPoints, lastValueAccessed,  X, XValues, YValues);
 			}
 
-		return Result;
+		return result;
 	}
 
 	/**
 	 * Get Y value by index.
 	 */
 	public double getYValue(int i) {
-		if ((i < numPoints) && (i >= 0)) {
+		if (i < numPoints && i >= 0) {
 			lastValueAccessed = i;
 			return YValues[i];
 		} else {
@@ -99,7 +99,7 @@ public class XYCurveObjImpl extends DSSObjectImpl implements XYCurveObj {
 	 * Get X value corresponding to point index.
 	 */
 	public double getXValue(int i) {
-		if ((i < numPoints) && (i >= 0)) {
+		if (i < numPoints && i >= 0) {
 			lastValueAccessed = i;
 			return XValues[i];
 		} else {
@@ -219,26 +219,26 @@ public class XYCurveObjImpl extends DSSObjectImpl implements XYCurveObj {
 					lastValueAccessed = 0;  // start over from beginning
 
 				// if off the curve for the first point, extrapolate from the first two points
-				if ((lastValueAccessed == 0) && (YValues[0] > Y)) {
+				if (lastValueAccessed == 0 && YValues[0] > Y) {
 					result = interpolatePoints(0, 1, Y, YValues, XValues);
 					return result;
 				}
 
-				for (int i = lastValueAccessed; i < numPoints; i++) {  // TODO Check zero based indexing
+				for (int i = lastValueAccessed; i < numPoints; i++) {
 					if (Math.abs(YValues[i] - Y) < 0.00001) {  // if close to an actual point, just use it.
 						result = XValues[i];
 						lastValueAccessed = i;
 						return result;
 					} else if (YValues[i] > Y) {
 						// interpolate
-						lastValueAccessed = i - 1;  // TODO Check zero based indexing
+						lastValueAccessed = i - 1;
 						result = interpolatePoints(i, lastValueAccessed, Y, YValues, XValues);
 						return result;
 					}
 				}
 
 				// if we fall through the loop, extrapolate from last two points
-				lastValueAccessed = numPoints - 1;
+				lastValueAccessed = numPoints - 2;
 				result = interpolatePoints(numPoints, lastValueAccessed,  Y, YValues, XValues);
 			}
 

@@ -180,9 +180,9 @@ public class EnergyMeterImpl extends MeterClassImpl implements EnergyMeter {
 
 		aem.setMeteredElementChanged(false);
 
-		int paramPointer = 0;
+		int paramPointer = -1;
 		String paramName = parser.getNextParam();
-		String param     = parser.makeString();
+		String param = parser.makeString();
 		while (param.length() > 0) {
 			if (paramName.length() == 0) {
 				paramPointer += 1;
@@ -190,7 +190,7 @@ public class EnergyMeterImpl extends MeterClassImpl implements EnergyMeter {
 				paramPointer = commandList.getCommand(paramName);
 			}
 
-			if ((paramPointer > 0) && (paramPointer <= numProperties))
+			if (paramPointer >= 0 && paramPointer < numProperties)
 				aem.setPropertyValue(paramPointer, param);
 
 			switch (paramPointer) {
@@ -302,12 +302,14 @@ public class EnergyMeterImpl extends MeterClassImpl implements EnergyMeter {
 	}
 
 	protected int makeLike(String energyMeterName) {
+		EnergyMeterObj aem;
 		int result = 0;
+
 		/* See if we can find this EnergyMeter name in the present collection */
 		EnergyMeterObj otherEnergyMeter = (EnergyMeterObj) find(energyMeterName);
 		if (otherEnergyMeter != null) {
 
-			EnergyMeterObj aem = activeEnergyMeterObj;
+			aem = activeEnergyMeterObj;
 
 			aem.setNPhases(otherEnergyMeter.getNPhases());
 			aem.setNConds(otherEnergyMeter.getNConds());  // force reallocation of terminal stuff
@@ -636,10 +638,10 @@ public class EnergyMeterImpl extends MeterClassImpl implements EnergyMeter {
 		for (PDElement PDElem : ckt.getPDElements()) {
 			if (PDElem.isEnabled() && !PDElem.isShunt()) {  // ignore shunts
 
-				if ((PDElem.getNormAmps() > 0.0) || (PDElem.getEmergAmps() > 0.0)) {
+				if (PDElem.getNormAmps() > 0.0 || PDElem.getEmergAmps() > 0.0) {
 					PDElem.computeITerminal();
 					CMax = PDElem.maxTerminalOneIMag();  // for now, check only terminal 1 for overloads
-					if ((CMax > PDElem.getNormAmps()) || (CMax > PDElem.getEmergAmps())) {
+					if (CMax > PDElem.getNormAmps() || CMax > PDElem.getEmergAmps()) {
 						pw.printf("%-.6g,", ckt.getSolution().getDblHour());
 						pw.printf(" %s, %-.4g, %-.4g,", Utilities.fullName(PDElem), PDElem.getNormAmps(), PDElem.getEmergAmps());
 						if (PDElem.getNormAmps() > 0.0) {
@@ -671,7 +673,6 @@ public class EnergyMeterImpl extends MeterClassImpl implements EnergyMeter {
 
 	private void createDI_Totals() {
 		EnergyMeterObj meter;
-
 
 		try {
 			DI_Totals = new FileWriter(DI_Dir + "/DI_Totals.csv");
@@ -725,7 +726,6 @@ public class EnergyMeterImpl extends MeterClassImpl implements EnergyMeter {
 		double[] regSum = new double[EnergyMeter.NUM_EM_REGISTERS];
 		int i, j;
 		File f;
-
 
 		/* Sum up all registers of all meters and write to Totals.csv */
 		for (i = 0; i < EnergyMeter.NUM_EM_REGISTERS; i++) regSum[i] = 0.0;
@@ -809,7 +809,7 @@ public class EnergyMeterImpl extends MeterClassImpl implements EnergyMeter {
 
 	private void interpretRegisterMaskArray(double[] mask) {
 		int n = Parser.getInstance().parseAsVector(NUM_EM_REGISTERS, mask);
-		for (int i = n; i < EnergyMeter.NUM_EM_REGISTERS; i++)  // TODO Check zero based indexing
+		for (int i = n - 1; i < EnergyMeter.NUM_EM_REGISTERS; i++)
 			mask[i] = 1.0;  // set the rest to 1
 	}
 
@@ -829,12 +829,14 @@ public class EnergyMeterImpl extends MeterClassImpl implements EnergyMeter {
 			systemMeter.openDemandIntervalFile();
 
 			/* Optional exception reporting */
-			if (doOverloadReport) openOverloadReportFile();
-			if (doVoltageExceptionReport) openVoltageReportFile();
+			if (doOverloadReport)
+				openOverloadReportFile();
+			if (doVoltageExceptionReport)
+				openVoltageReportFile();
 
 			/* Open DI_Totals */
 			try {
-				createDI_Totals();  // TODO Add throws exception
+				createDI_Totals();  // TODO add throws exception
 			} catch (Exception e) {
 				DSSGlobals.doSimpleMsg("Error opening demand interval file \""+getName()+".csv" + " for appending."+DSSGlobals.CRLF+e.getMessage(), 538);
 			}
@@ -846,7 +848,8 @@ public class EnergyMeterImpl extends MeterClassImpl implements EnergyMeter {
 	private void openOverloadReportFile() {
 
 		try {
-			if (overloadFileIsOpen) overloadFile.close();
+			if (overloadFileIsOpen)
+				overloadFile.close();
 
 			overloadFile = new FileWriter(DSSGlobals.energyMeterClass.getDI_Dir() + "/DI_Overloads.csv");
 			PrintWriter pw = new PrintWriter(overloadFile);
@@ -863,7 +866,8 @@ public class EnergyMeterImpl extends MeterClassImpl implements EnergyMeter {
 	private void openVoltageReportFile() {
 
 		try {
-			if (voltageFileIsOpen) voltageFile.close();
+			if (voltageFileIsOpen)
+				voltageFile.close();
 
 			voltageFile = new FileWriter(DSSGlobals.energyMeterClass.getDI_Dir()+"/DI_VoltExceptions.csv");
 

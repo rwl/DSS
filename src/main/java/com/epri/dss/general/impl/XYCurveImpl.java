@@ -110,7 +110,7 @@ public class XYCurveImpl extends DSSClassImpl implements XYCurve {
 
 		XYCurveObj xyc = activeXYCurveObj;
 
-		int paramPointer = 0;
+		int paramPointer = -1;
 		String paramName = parser.getNextParam();
 		String param = parser.makeString();
 
@@ -121,7 +121,7 @@ public class XYCurveImpl extends DSSClassImpl implements XYCurve {
 				paramPointer = commandList.getCommand(paramName);
 			}
 
-			if ((paramPointer >= 0) && (paramPointer < numProperties))
+			if (paramPointer >= 0 && paramPointer < numProperties)
 				xyc.setPropertyValue(paramPointer, param);
 
 			switch (paramPointer) {
@@ -268,9 +268,8 @@ public class XYCurveImpl extends DSSClassImpl implements XYCurve {
 			xyc.setXValues( Utilities.resizeArray(xyc.getXValues(), xyc.getNumPoints()) );
 			xyc.setYValues( Utilities.resizeArray(xyc.getYValues(), xyc.getNumPoints()) );
 
-			int i = -1;  // TODO Check zero based indexing
-			while (((s = br.readLine()) != null) && i < xyc.getNumPoints()) {  // TODO: Check zero based indexing
-				i += 1;
+			int i = 0;
+			while (((s = br.readLine()) != null) && i < xyc.getNumPoints()) {
 				/* Aux parser allows commas or white space */
 				parser = DSSGlobals.auxParser;
 				parser.setCmdString(s);
@@ -278,11 +277,12 @@ public class XYCurveImpl extends DSSClassImpl implements XYCurve {
 				xyc.getXValues()[i] = parser.makeDouble();
 				parser.getNextParam();
 				xyc.getYValues()[i] = parser.makeDouble();
+				i += 1;
 			}
 			fis.close();
 			dis.close();
 			br.close();
-			if (i != xyc.getNumPoints())  // TODO: Check zero based indexing
+			if (i != xyc.getNumPoints() - 1)
 				xyc.setNumPoints(i);
 
 			fis.close();
@@ -338,7 +338,7 @@ public class XYCurveImpl extends DSSClassImpl implements XYCurve {
 	 */
 	@Override
 	public Object find(String objName) {
-		if ((objName.length() == 0) || objName.equalsIgnoreCase("none")) {
+		if (objName.length() == 0 || objName.equalsIgnoreCase("none")) {
 			return null;
 		} else {
 			return super.find(objName);

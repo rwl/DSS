@@ -63,8 +63,10 @@ public class TShapeObjImpl extends DSSObjectImpl implements TShapeObj {
 			} else {
 				if (interval > 0.0) {
 					index = (int) Math.round(hr / interval);
-					if (index > numPoints) index = index % numPoints;  // wrap around using remainder
-					if (index == 0) index = numPoints;
+					if (index > numPoints)
+						index = index % numPoints;  // wrap around using remainder
+					if (index == 0)
+						index = numPoints;
 					result = TValues[index];
 				} else {
 					// for random interval
@@ -73,13 +75,14 @@ public class TShapeObjImpl extends DSSObjectImpl implements TShapeObj {
 					 * of the time, this function will be called sequentially
 					 */
 
-					/* Normalize Hr to max hour in curve to get wraparound */
+					/* Normalize hr to max hour in curve to get wraparound */
 					if (hr > hours[numPoints]) {
-						hr = hr - (int) (hr / hours[numPoints]) * hours[numPoints];
+						hr = hr - (int) (hr / hours[numPoints - 1]) * hours[numPoints - 1];
 					}
 
-					if (hours[lastValueAccessed] > hr) lastValueAccessed = 1;  // start over from beginning
-					for (i = lastValueAccessed; i < numPoints; i++) {  // TODO Check zero based indexing
+					if (hours[lastValueAccessed] > hr)
+						lastValueAccessed = 1;  // start over from beginning
+					for (i = lastValueAccessed; i < numPoints; i++) {
 						if (Math.abs(hours[i] - hr) < 0.00001) {  // if close to an actual point, just use it
 							result = TValues[i];
 							lastValueAccessed = i;
@@ -95,14 +98,14 @@ public class TShapeObjImpl extends DSSObjectImpl implements TShapeObj {
 
 					// if we fall through the loop, just use last value
 					lastValueAccessed = numPoints - 1;
-					result            = TValues[numPoints];
+					result            = TValues[numPoints - 1];
 				}
 			}
 
 		return result;
 	}
 
-	private void calcMeanandStdDev() {
+	private void calcMeanAndStdDev() {
 		if (numPoints > 0)
 			if (interval > 0.0) {
 				MathUtil.RCDMeanandStdDev(TValues, numPoints, mean, stdDev);
@@ -117,12 +120,14 @@ public class TShapeObjImpl extends DSSObjectImpl implements TShapeObj {
 	}
 
 	public double getMean() {
-		if (!stdDevCalculated) calcMeanandStdDev();
+		if (!stdDevCalculated)
+			calcMeanAndStdDev();
 		return mean.doubleValue();
 	}
 
 	public double getStdDev() {
-		if (!stdDevCalculated) calcMeanandStdDev();
+		if (!stdDevCalculated)
+			calcMeanAndStdDev();
 		return stdDev.doubleValue();
 	}
 
@@ -130,7 +135,7 @@ public class TShapeObjImpl extends DSSObjectImpl implements TShapeObj {
 	 * Get temperatures by index.
 	 */
 	public double getTemperature(int i) {
-		if ((i < numPoints) && (i >= 0)) {
+		if (i < numPoints && i >= 0) {
 			lastValueAccessed = i;
 			return TValues[i];
 		} else {
@@ -143,7 +148,7 @@ public class TShapeObjImpl extends DSSObjectImpl implements TShapeObj {
 	 */
 	public double getHour(int i) {
 		if (interval == 0) {
-			if ((i < numPoints) && (i >= 0)) {
+			if (i < numPoints && i >= 0) {
 				lastValueAccessed = i;
 				return hours[i];
 			} else {

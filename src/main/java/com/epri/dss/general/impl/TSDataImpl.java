@@ -62,7 +62,7 @@ public class TSDataImpl extends CableDataImpl implements TSData {
 
 		TSDataObj tsd = (TSDataObj) ConductorDataImpl.activeConductorDataObj;
 
-		int paramPointer = 0;
+		int paramPointer = -1;
 		String paramName = parser.getNextParam();
 		String param = parser.makeString();
 		while (param.length() > 0) {
@@ -72,7 +72,7 @@ public class TSDataImpl extends CableDataImpl implements TSData {
 				paramPointer = commandList.getCommand(paramName);
 			}
 
-			if ((paramPointer >= 0) && (paramPointer < numProperties))
+			if (paramPointer >= 0 && paramPointer < numProperties)
 				tsd.setPropertyValue(paramPointer, param);
 
 			switch (paramPointer) {

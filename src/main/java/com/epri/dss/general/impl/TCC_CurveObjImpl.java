@@ -21,12 +21,12 @@ public class TCC_CurveObjImpl extends DSSObjectImpl implements TCC_CurveObj {
 		setName(name.toLowerCase());
 		objType = parClass.getDSSClassType();
 
-		lastValueAccessed = 0;  // TODO Check zero based indexing
+		lastValueAccessed = 0;
 		npts = 0;
 		cValues = null;
 		tValues = null;
-		logC     = null;
-		logT     = null;
+		logC    = null;
+		logT    = null;
 
 		initPropertyValues(0);
 	}
@@ -55,13 +55,13 @@ public class TCC_CurveObjImpl extends DSSObjectImpl implements TCC_CurveObj {
 				 */
 				if (cValues[lastValueAccessed] > cValue)
 					lastValueAccessed = 0;  // start over from beginning
-				for (i = lastValueAccessed + 1; i < npts; i++) {  // TODO Check zero based indexing
+				for (i = lastValueAccessed + 1; i < npts; i++) {
 					if (cValues[i] == cValue) {
 						result = tValues[i];
 						lastValueAccessed = i;
 						return result;
 					} else if (cValues[i] > cValue) {  // log-log interpolation
-						lastValueAccessed = i - 1;  // TODO Check zero based indexing
+						lastValueAccessed = i - 1;
 						if (cValue > 0.0) {
 							logTest = Math.log(cValue);
 						} else {
@@ -75,7 +75,7 @@ public class TCC_CurveObjImpl extends DSSObjectImpl implements TCC_CurveObj {
 				}
 
 				// if we fall through the loop, just use last value
-				lastValueAccessed = npts - 1;  // TODO Check zero based indexing
+				lastValueAccessed = npts - 2;
 				result = tValues[npts];
 			}
 
@@ -93,10 +93,10 @@ public class TCC_CurveObjImpl extends DSSObjectImpl implements TCC_CurveObj {
 			if (npts == 1) {
 				result = tValues[0];
 			} else {
-				i = 0;  // TODO Check zero based indexing
+				i = 0;
 				while (cValues[i] < vValue) {
 					i += 1;
-					if (i > npts)
+					if (i >= npts)
 						break;
 				}
 				result = tValues[i - 1];
@@ -117,10 +117,10 @@ public class TCC_CurveObjImpl extends DSSObjectImpl implements TCC_CurveObj {
 			if (npts == 1) {
 				result = tValues[0];
 			} else {
-				i = npts;
+				i = npts - 1;
 				while (cValues[i] > vValue) {
 					i -= 1;
-					if (i == 0)
+					if (i < 0)
 						break;
 				}
 				result = tValues[i + 1];
@@ -133,7 +133,7 @@ public class TCC_CurveObjImpl extends DSSObjectImpl implements TCC_CurveObj {
 	 * Get C_Value by index.
 	 */
 	public double value(int i) {
-		if ((i <= npts) && (i > 0)) {
+		if (i < npts && i >= 0) {
 			lastValueAccessed = i;
 			return cValues[i];
 		} else {
@@ -145,7 +145,7 @@ public class TCC_CurveObjImpl extends DSSObjectImpl implements TCC_CurveObj {
 	 * Get time value (sec) corresponding to point index.
 	 */
 	public double time(int i) {
-		if ((i <= npts) && (i > 0)) {
+		if (i <= npts && i > 0) {
 			lastValueAccessed = i;
 			return tValues[i];
 		} else {
@@ -179,11 +179,11 @@ public class TCC_CurveObjImpl extends DSSObjectImpl implements TCC_CurveObj {
 		}
 
 		switch (index) {
-		case 2:
+		case 1:
 			for (i = 0; i < npts; i++)
 				result = result + String.format("%-g, ", cValues[i]);
 			break;
-		case 3:
+		case 2:
 			for (i = 0; i < npts; i++)
 				result = result + String.format("%-g, ", tValues[i]);
 			break;
@@ -206,11 +206,11 @@ public class TCC_CurveObjImpl extends DSSObjectImpl implements TCC_CurveObj {
 
 	@Override
 	public void initPropertyValues(int arrayOffset) {
-		propertyValue[0] = "0";  // number of points to expect
-		propertyValue[1] = "";   // vector of multiplier values
-		propertyValue[2] = "";   // vector of sec values
+		setPropertyValue(0, "0");  // number of points to expect
+		setPropertyValue(1, "");   // vector of multiplier values
+		setPropertyValue(2, "");   // vector of sec values
 
-		super.initPropertyValues(TCC_Curve.NumPropsThisClass);
+		super.initPropertyValues(TCC_Curve.NumPropsThisClass - 1);
 	}
 
 	public int getNumPoints() {

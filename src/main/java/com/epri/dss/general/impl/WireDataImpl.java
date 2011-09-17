@@ -52,7 +52,7 @@ public class WireDataImpl extends ConductorDataImpl implements WireData {
 
 		ConductorDataObj acd = activeConductorDataObj;
 
-		int paramPointer = 0;
+		int paramPointer = -1;
 		String paramName = parser.getNextParam();
 		String param = parser.makeString();
 		while (param.length() > 0) {
@@ -62,11 +62,11 @@ public class WireDataImpl extends ConductorDataImpl implements WireData {
 				paramPointer = commandList.getCommand(paramName);
 			}
 
-			if ((paramPointer > 0) && (paramPointer <= numProperties))
+			if (paramPointer >= 0 && paramPointer < numProperties)
 				acd.setPropertyValue(paramPointer, param);
 
 			switch (paramPointer) {
-			case -1:  // TODO Check zero based indexing
+			case -1:
 				DSSGlobals.doSimpleMsg("Unknown parameter \"" + paramName + "\" for object \"" + getName() +'.'+ acd.getName() + "\"", 101);
 				break;
 			default:

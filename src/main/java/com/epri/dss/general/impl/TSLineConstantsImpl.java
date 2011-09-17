@@ -34,17 +34,17 @@ public class TSLineConstantsImpl extends CableConstantsImpl implements TSLineCon
 	}
 
 	public void setDiaShield(int i, int units, double shield) {
-		if ((i >= 0) && (i < numConds))
+		if (i >= 0 && i < numConds)
 			diaShield[i] = shield * LineUnits.toMeters(units);
 	}
 
 	public void setTapeLayer(int i, int units, double layer) {
-		if ((i >= 0) && (i < numConds))
+		if (i >= 0 && i < numConds)
 			tapeLayer[i] = layer * LineUnits.toMeters(units);
 	}
 
 	public void setTapeLap(int i, double lap) {
-		if ((i >= 0) && (i < numConds))
+		if (i >= 0 && i < numConds)
 			tapeLap[i] = lap;
 	}
 
@@ -69,12 +69,10 @@ public class TSLineConstantsImpl extends CableConstantsImpl implements TSLineCon
 
 		if (ZReduced != null) {
 			reducedSize = ZReduced.order();
-			ZReduced = null;
 		} else {
 			reducedSize = 0;
 		}
 
-		if (YcReduced != null) YcReduced = null;
 		ZReduced = null;
 		YcReduced = null;
 
@@ -87,7 +85,7 @@ public class TSLineConstantsImpl extends CableConstantsImpl implements TSLineCon
 
 		/* For less than 1 kHz use GMR to better match published data */
 		LFactor = new Complex(0.0, w * MU0 / TWO_PI);
-		if ((f < 1000.0) && (f > 40.0)) {
+		if (f < 1000.0 && f > 40.0) {
 			powerFreq = true;
 		} else {
 			powerFreq = false;
@@ -117,19 +115,19 @@ public class TSLineConstantsImpl extends CableConstantsImpl implements TSLineCon
 
 		// mutual impedances - between TS cores and bare neutrals
 		for (i = 0; i < numConds; i++) {
-			for (j = 0; j < i; j++) {  // TODO Check zero based indexing
-				Dij = Math.sqrt(MathUtil.sqr(X[i] - X[j]) + MathUtil.sqr(Y[i] - Y[j]));
-				ZMat.setSym(i, j, LFactor.multiply( Math.log(1.0 / Dij)).add(getZe(i, j)));
+			for (j = 0; j < i; j++) {
+				Dij = Math.sqrt( MathUtil.sqr(X[i] - X[j]) + MathUtil.sqr(Y[i] - Y[j]) );
+				ZMat.setSym(i, j, LFactor.multiply( Math.log(1.0 / Dij) ).add(getZe(i, j)));
 			}
 		}
 
 		// mutual impedances - TS to other TS, cores, and bare neutrals
 		for (i = 0; i < numPhases; i++) {
 			idxi = i + numConds;
-			for (j = 0; j < i; j++) {  // TODO Check zero based indexing
+			for (j = 0; j < i; j++) {
 				// TS to other TS
 				idxj = j + numConds;
-				Dij = Math.sqrt(MathUtil.sqr(X[i] - X[j]) + MathUtil.sqr(Y[i] - Y[j]));
+				Dij = Math.sqrt( MathUtil.sqr(X[i] - X[j]) + MathUtil.sqr(Y[i] - Y[j]) );
 				ZMat.setSym(idxi, idxj, LFactor.multiply( Math.log(1.0 / Dij) ).add(getZe(i, j)));
 			}
 			for (j = 0; j < numConds; j++) {
@@ -139,7 +137,7 @@ public class TSLineConstantsImpl extends CableConstantsImpl implements TSLineCon
 				if (i == j) {  // TS to its own phase core
 					Dij = gmrTS;
 				} else {  // TS to another phase or bare neutral
-					Dij = Math.sqrt(MathUtil.sqr(X[i] - X[j]) + MathUtil.sqr(Y[i] - Y[j]));
+					Dij = Math.sqrt( MathUtil.sqr(X[i] - X[j]) + MathUtil.sqr(Y[i] - Y[j]) );
 				}
 				ZMat.setSym(idxi, idxj, LFactor.multiply( Math.log(1.0 / Dij) ).add(getZe(i, j)));
 			}
@@ -158,9 +156,9 @@ public class TSLineConstantsImpl extends CableConstantsImpl implements TSLineCon
 		// assumes the insulation may lie between semicon layers
 		for (i = 0; i < numPhases; i++) {
 			YFactor = TWO_PI * E0 * epsR[i] * w;  // includes frequency so C==>Y
-		    radOut = 0.5 * diaIns[i];
-		    radIn  = radOut - insLayer[i];
-		    denom  = Math.log(radOut / radIn);
+			radOut = 0.5 * diaIns[i];
+			radIn  = radOut - insLayer[i];
+			denom  = Math.log(radOut / radIn);
 			YcMatrix.set(i, i, new Complex(0.0, YFactor / denom));
 		}
 

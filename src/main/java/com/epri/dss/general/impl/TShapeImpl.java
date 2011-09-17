@@ -119,7 +119,7 @@ public class TShapeImpl extends DSSClassImpl implements TShape {
 
 		TShapeObj ats = activeTShapeObj;
 
-		int paramPointer = 0;
+		int paramPointer = -1;
 		String paramName = parser.getNextParam();
 
 		String param = parser.makeString();
@@ -130,7 +130,7 @@ public class TShapeImpl extends DSSClassImpl implements TShape {
 				paramPointer = commandList.getCommand(paramName);
 			}
 
-			if ((paramPointer >= 0) && (paramPointer < numProperties))
+			if (paramPointer >= 0 && paramPointer < numProperties)
 				ats.setPropertyValue(paramPointer, param);
 
 			switch (paramPointer) {
@@ -220,7 +220,7 @@ public class TShapeImpl extends DSSClassImpl implements TShape {
 
 	@Override
 	public Object find(String objName) {
-		if ((objName.length() == 0) || objName.equalsIgnoreCase("none")) {
+		if (objName.length() == 0 || objName.equalsIgnoreCase("none")) {
 			return null;
 		} else {
 			return super.find(objName);
@@ -304,8 +304,7 @@ public class TShapeImpl extends DSSClassImpl implements TShape {
 			if (ats.getInterval() == 0.0)
 				ats.setHours( Utilities.resizeArray(ats.getHours(), ats.getNumPoints()) );
 			int i = 0;
-			while (((s = br.readLine()) != null) && i < ats.getNumPoints()) {  // TODO: Check zero based indexing
-				i += 1;
+			while (((s = br.readLine()) != null) && i < ats.getNumPoints()) {
 				/* Aux parser allows commas or white space */
 				parser = DSSGlobals.auxParser;
 				parser.setCmdString(s);
@@ -315,11 +314,12 @@ public class TShapeImpl extends DSSClassImpl implements TShape {
 				}
 				parser.getNextParam();
 				ats.getTValues()[i] = parser.makeDouble();
+				i += 1;
 			}
 			fis.close();
 			dis.close();
 			br.close();
-			if (i != ats.getNumPoints())  // TODO: Check zero based indexing
+			if (i != ats.getNumPoints() - 1)
 				ats.setNumPoints(i);
 
 			fis.close();
@@ -338,61 +338,6 @@ public class TShapeImpl extends DSSClassImpl implements TShape {
 	private void doDblFile(String fileName) {
 		throw new UnsupportedOperationException();
 	}
-
-//	public String getCode() {
-//		return null;
-//	}
-//
-//	public void setCode(String Value) {
-//
-//	}
-//
-//	private void doCSVFile(String FileName) {
-//
-//	}
-//
-//	private void doSngFile(String FileName) {
-//
-//	}
-//
-//	private void doDblFile(String FileName) {
-//
-//	}
-//
-//	protected void defineProperties() {
-//
-//	}
-//
-//	@Override
-//	protected int makeLike(String CNName) {
-//		return 0;
-//	}
-//
-//	/**
-//	 * Uses global parser.
-//	 */
-//	@Override
-//	public int edit() {
-//		return 0;
-//	}
-//
-//	@Override
-//	public int init(int Handle) {
-//		return 0;
-//	}
-//
-//	@Override
-//	public int newObject(String ObjName) {
-//		return 0;
-//	}
-//
-//	/**
-//	 * Find an obj of this class by name.
-//	 */
-//	@Override
-//	public Object find(String ObjName) {
-//		return null;
-//	}
 
 	/**
 	 * Can export this to top for plotting

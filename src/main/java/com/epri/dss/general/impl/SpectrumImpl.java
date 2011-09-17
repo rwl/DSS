@@ -69,7 +69,6 @@ public class SpectrumImpl extends DSSClassImpl implements Spectrum {
 
 	@Override
 	public int newObject(String objName) {
-
 		DSSGlobals.activeDSSObject = new SpectrumObjImpl(this, objName);
 		return addObjectToList(DSSGlobals.activeDSSObject);
 	}
@@ -85,7 +84,7 @@ public class SpectrumImpl extends DSSClassImpl implements Spectrum {
 
 		SpectrumObj aso = activeSpectrumObj;
 
-		int paramPointer = 0;
+		int paramPointer = -1;
 		String paramName = parser.getNextParam();
 		String param = parser.makeString();
 		while (param.length() > 0) {
@@ -93,49 +92,49 @@ public class SpectrumImpl extends DSSClassImpl implements Spectrum {
 				paramPointer += 1;
 			} else {
 				paramPointer = commandList.getCommand(paramName);
-
-				if ((paramPointer > 0) && (paramPointer <= numProperties))  // TODO Check zero based indexing
-					aso.setPropertyValue(paramPointer, param);
-
-				switch (paramPointer) {
-				case 0:
-					DSSGlobals.doSimpleMsg("Unknown parameter \""+paramName+"\" for Object \""+getName()+"\"", 650);
-					break;
-				case 1:
-					aso.setNumHarm(parser.makeInteger());
-					aso.setAngleArray( Utilities.resizeArray(aso.getAngleArray(), aso.getNumHarm()));  // make a dummy angle array
-					for (int i = 0; i < aso.getNumHarm(); i++)
-						aso.getAngleArray()[i] = 0.0;
-					break;
-				case 2:
-					aso.setHarmArray( Utilities.resizeArray(aso.getHarmArray(), aso.getNumHarm()) );
-					Utilities.interpretDblArray(param, aso.getNumHarm(), aso.getHarmArray());
-					break;
-				case 3:
-					aso.setPUMagArray( Utilities.resizeArray(aso.getPUMagArray(), aso.getNumHarm()) );
-					Utilities.interpretDblArray(param, aso.getNumHarm(), aso.getPUMagArray());
-					for (int i = 0; i < aso.getNumHarm(); i++)
-						aso.getPUMagArray()[i] = aso.getPUMagArray()[i] * 0.01;  // convert to per unit
-					break;
-				case 4:
-					aso.setAngleArray( Utilities.resizeArray(aso.getAngleArray(), aso.getNumHarm()) );
-					Utilities.interpretDblArray(param, aso.getNumHarm(), aso.getAngleArray());
-					break;
-				case 5:
-					doCSVFile(param);
-					break;
-				default:
-					// inherited parameters
-					classEdit(activeSpectrumObj, paramPointer - Spectrum.NumPropsThisClass);
-					break;
-				}
-
-				paramName = parser.getNextParam();
-				param = parser.makeString();
 			}
+
+			if (paramPointer >= 0 && paramPointer < numProperties)
+				aso.setPropertyValue(paramPointer, param);
+
+			switch (paramPointer) {
+			case -1:
+				DSSGlobals.doSimpleMsg("Unknown parameter \""+paramName+"\" for Object \""+getName()+"\"", 650);
+				break;
+			case 0:
+				aso.setNumHarm(parser.makeInteger());
+				aso.setAngleArray( Utilities.resizeArray(aso.getAngleArray(), aso.getNumHarm()));  // make a dummy angle array
+				for (int i = 0; i < aso.getNumHarm(); i++)
+					aso.getAngleArray()[i] = 0.0;
+				break;
+			case 1:
+				aso.setHarmArray( Utilities.resizeArray(aso.getHarmArray(), aso.getNumHarm()) );
+				Utilities.interpretDblArray(param, aso.getNumHarm(), aso.getHarmArray());
+				break;
+			case 2:
+				aso.setPUMagArray( Utilities.resizeArray(aso.getPUMagArray(), aso.getNumHarm()) );
+				Utilities.interpretDblArray(param, aso.getNumHarm(), aso.getPUMagArray());
+				for (int i = 0; i < aso.getNumHarm(); i++)
+					aso.getPUMagArray()[i] = aso.getPUMagArray()[i] * 0.01;  // convert to per unit
+				break;
+			case 3:
+				aso.setAngleArray( Utilities.resizeArray(aso.getAngleArray(), aso.getNumHarm()) );
+				Utilities.interpretDblArray(param, aso.getNumHarm(), aso.getAngleArray());
+				break;
+			case 4:
+				doCSVFile(param);
+				break;
+			default:
+				// inherited parameters
+				classEdit(activeSpectrumObj, paramPointer - Spectrum.NumPropsThisClass);
+				break;
+			}
+
+			paramName = parser.getNextParam();
+			param = parser.makeString();
 		}
 
-		if ((aso.getHarmArray() != null) && (aso.getPUMagArray() != null) && (aso.getAngleArray() != null))
+		if (aso.getHarmArray() != null && aso.getPUMagArray() != null && aso.getAngleArray() != null)
 			aso.setMultArray();
 
 		return result;
@@ -212,7 +211,6 @@ public class SpectrumImpl extends DSSClassImpl implements Spectrum {
 			dis = new DataInputStream(fis);
 			br = new BufferedReader(new InputStreamReader(dis));
 
-
 			SpectrumObj aso = activeSpectrumObj;
 
 			aso.setHarmArray( Utilities.resizeArray(aso.getHarmArray(), aso.getNumHarm()) );
@@ -220,8 +218,7 @@ public class SpectrumImpl extends DSSClassImpl implements Spectrum {
 			aso.setAngleArray( Utilities.resizeArray(aso.getAngleArray(), aso.getNumHarm()) );
 
 			int i = 0;
-			while (((s = br.readLine()) != null) && i < aso.getNumHarm()) {  // TODO: Check zero based indexing
-				i += 1;
+			while (((s = br.readLine()) != null) && i < aso.getNumHarm()) {
 				// use aux parser, which allows for formats
 				parser = DSSGlobals.auxParser;
 				parser.setCmdString(s);
@@ -231,11 +228,12 @@ public class SpectrumImpl extends DSSClassImpl implements Spectrum {
 				aso.getPUMagArray()[i] = parser.makeDouble() * 0.01;
 				parser.getNextParam();
 				aso.getAngleArray()[i] = parser.makeDouble();
+				i += 1;
 			}
 			fis.close();
 			dis.close();
 			br.close();
-			if (i != aso.getNumHarm())
+			if (i != aso.getNumHarm() - 1)
 				aso.setNumHarm(i);   // reset number of points
 
 

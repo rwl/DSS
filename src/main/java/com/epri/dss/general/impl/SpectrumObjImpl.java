@@ -42,7 +42,7 @@ public class SpectrumObjImpl extends DSSObjectImpl implements SpectrumObj {
 
 		for (i = 0; i < parentClass.getNumProperties(); i++) {
 			switch (i) {
-			case 1:  // TODO Check zero based indexing
+			case 1:
 				f.print("~ " + parentClass.getPropertyName()[i] + "=(");
 				for (j = 0; j < numHarm; j++)
 					f.printf("%-g, ", harmArray[j]);
@@ -93,7 +93,7 @@ public class SpectrumObjImpl extends DSSObjectImpl implements SpectrumObj {
 		String result;
 
 		switch (index) {
-		case 1:  // TODO Check zero based indexing
+		case 1:
 			result = "(";
 			break;
 		case 2:
@@ -145,13 +145,13 @@ public class SpectrumObjImpl extends DSSObjectImpl implements SpectrumObj {
 
 	public void initPropertyValues(int arrayOffset) {
 
-		propertyValue[0] = "0";
-		propertyValue[1] =  "";
-		propertyValue[2] =  "";
-		propertyValue[3] =  "";
-		propertyValue[4] =  "";
+		setPropertyValue(0, "0");
+		setPropertyValue(1, "");
+		setPropertyValue(2, "");
+		setPropertyValue(3, "");
+		setPropertyValue(4, "");
 
-		super.initPropertyValues(Spectrum.NumPropsThisClass);
+		super.initPropertyValues(Spectrum.NumPropsThisClass - 1);
 	}
 
 	/**
@@ -161,7 +161,6 @@ public class SpectrumObjImpl extends DSSObjectImpl implements SpectrumObj {
 	public void setMultArray() {
 		int i;
 		double fundAngle;
-
 
 		try {
 			fundAngle = 0.0;
@@ -176,7 +175,7 @@ public class SpectrumObjImpl extends DSSObjectImpl implements SpectrumObj {
 			for (i = 0; i < numHarm; i++)
 				multArray[i] = ComplexUtil.polarDeg2Complex(puMagArray[i], (angleArray[i] - harmArray[i] * fundAngle));
 		} catch (Exception e) {
-			DSSGlobals.doSimpleMsg("Exception while computing spectrum."+getName()+". Check Definition. Aborting", 655);
+			DSSGlobals.doSimpleMsg("Exception while computing spectrum."+getName()+". Check definition. Aborting", 655);
 			if (DSSGlobals.inRedirect)
 				DSSGlobals.redirectAbort = true;
 		}

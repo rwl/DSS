@@ -194,22 +194,22 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 
 		/* Registers for capturing losses by base voltage, names assigned later */
 		for (i = EnergyMeter.REG_VBASE_START + 1; i < EnergyMeter.NUM_EM_REGISTERS; i++)
-		registerNames[i] = "";
+			registerNames[i] = "";
 
 		resetRegisters();
 		for (i = 0; i < EnergyMeter.NUM_EM_REGISTERS; i++)
-		totalsMask[i] = 1.0;
+			totalsMask[i] = 1.0;
 
 		allocateSensorArrays();
 
 		for (i = 0; i < nPhases; i++)
-		sensorCurrent[i] = 400.0;
+			sensorCurrent[i] = 400.0;
 
 		//recalcElementData();
 	}
 
 	private static int jiIndex(int i, int j) {
-		return (j - 1) * 3 + i;
+		return j * 3 + i;
 	}
 
 	@Override
@@ -218,39 +218,39 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 		int devIndex = Utilities.getCktElementIndex(elementName);
 
 		if (devIndex >= 0) {  // monitored element must already exist
-		meteredElement = (DSSCktElement) DSSGlobals.activeCircuit.getCktElements().get(devIndex);
-		/* MeteredElement must be a PDElement */
-		if (!(meteredElement instanceof PDElement)) {
-			meteredElement = null;  // element not found
-			DSSGlobals.doErrorMsg("EnergyMeter: \"" + getName() + "\"", "Circuit element \""+ elementName + "\" is not a Power Delivery (PD) element.",
-				" Element must be a PD element.", 525);
-			return;
-		}
-
-		if (meteredTerminal >= meteredElement.getNTerms()) {  // TODO Check zero based indexing
-			DSSGlobals.doErrorMsg("EnergyMeter: \"" + getName() + "\"",
-				"Terminal no. \"" + String.valueOf(meteredTerminal)+"\" does not exist.",
-				"Respecify terminal no.", 524);
-		} else {
-
-			if (meteredElementChanged) {
-				// Sets name of i-th terminal's connected bus in monitor's bus list
-				// This value will be used to set the nodeRef array (see takeSample)
-				setBus(1, meteredElement.getBus(meteredTerminal));
-				setNPhases( meteredElement.getNPhases() );
-				nConds  = meteredElement.getNConds();
-				allocateSensorArrays();
-
-				// if we come through here, throw branch list away
-				branchList = null;
+			meteredElement = (DSSCktElement) DSSGlobals.activeCircuit.getCktElements().get(devIndex);
+			/* MeteredElement must be a PDElement */
+			if (!(meteredElement instanceof PDElement)) {
+				meteredElement = null;  // element not found
+				DSSGlobals.doErrorMsg("EnergyMeter: \"" + getName() + "\"", "Circuit element \""+ elementName + "\" is not a Power Delivery (PD) element.",
+					" Element must be a PD element.", 525);
+				return;
 			}
 
-			if (hasFeeder) makeFeederObj();  // OK to call multiple times
-		}
+			if (meteredTerminal >= meteredElement.getNTerms()) {
+				DSSGlobals.doErrorMsg("EnergyMeter: \"" + getName() + "\"",
+					"Terminal no. \"" + String.valueOf(meteredTerminal)+"\" does not exist.",
+					"Respecify terminal no.", 524);
+			} else {
+
+				if (meteredElementChanged) {
+					// sets name of i-th terminal's connected bus in monitor's bus list
+					// this value will be used to set the nodeRef array (see takeSample)
+					setBus(0, meteredElement.getBus(meteredTerminal));
+					setNPhases( meteredElement.getNPhases() );
+					nConds  = meteredElement.getNConds();
+					allocateSensorArrays();
+
+					// if we come through here, throw branch list away
+					branchList = null;
+				}
+
+				if (hasFeeder) makeFeederObj();  // OK to call multiple times
+			}
 		} else {
-		meteredElement = null;  // element not found
-		DSSGlobals.doErrorMsg("EnergyMeter: \"" + getName() + "\"", "Circuit element \""+ elementName + "\" not found.",
-				" Element must be defined previously.", 525);
+			meteredElement = null;  // element not found
+			DSSGlobals.doErrorMsg("EnergyMeter: \"" + getName() + "\"", "Circuit element \""+ elementName + "\" not found.",
+					" Element must be defined previously.", 525);
 		}
 	}
 
@@ -261,14 +261,15 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 	public void makePosSequence() {
 
 		if (meteredElement != null) {
-		setBus(1, meteredElement.getBus(meteredTerminal));
-		setNPhases( meteredElement.getNPhases() );
-		setNConds( meteredElement.getNConds() );
-		allocateSensorArrays();
-		branchList = null;
+			setBus(0, meteredElement.getBus(meteredTerminal));
+			setNPhases( meteredElement.getNPhases() );
+			setNConds( meteredElement.getNConds() );
+			allocateSensorArrays();
+			branchList = null;
 		}
 
-		if (hasFeeder) makeFeederObj();
+		if (hasFeeder)
+			makeFeederObj();
 
 		super.makePosSequence();
 	}
@@ -281,22 +282,22 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 		int i;
 
 		for (i = 0; i < EnergyMeter.NUM_EM_REGISTERS; i++)
-		registers[i] = 0.0;
+			registers[i] = 0.0;
 		for (i = 0; i < EnergyMeter.NUM_EM_REGISTERS; i++)
-		derivatives[i] = 0.0;
+			derivatives[i] = 0.0;
 
 		/* Initialise drag hand registers to some big negative number */
-		registers[EnergyMeter.REG_MAX_KW]           = -1.0e50;
-		registers[EnergyMeter.REG_MAX_KVA]          = -1.0e50;
-		registers[EnergyMeter.REG_ZONE_MAX_KW]       = -1.0e50;
-		registers[EnergyMeter.REG_ZONE_MAX_KVA]      = -1.0e50;
-		registers[EnergyMeter.REG_MAX_LOAD_LOSSES]   = -1.0e50;
+		registers[EnergyMeter.REG_MAX_KW]             = -1.0e50;
+		registers[EnergyMeter.REG_MAX_KVA]            = -1.0e50;
+		registers[EnergyMeter.REG_ZONE_MAX_KW]        = -1.0e50;
+		registers[EnergyMeter.REG_ZONE_MAX_KVA]       = -1.0e50;
+		registers[EnergyMeter.REG_MAX_LOAD_LOSSES]    = -1.0e50;
 		registers[EnergyMeter.REG_MAX_NO_LOAD_LOSSES] = -1.0e50;
-		registers[EnergyMeter.REG_LOSSES_MAX_KW]     = -1.0e50;
-		registers[EnergyMeter.REG_LOSSES_MAX_KVAR]   = -1.0e50;
+		registers[EnergyMeter.REG_LOSSES_MAX_KW]      = -1.0e50;
+		registers[EnergyMeter.REG_LOSSES_MAX_KVAR]    = -1.0e50;
 
-		registers[EnergyMeter.REG_GEN_MAX_KW]        = -1.0e50;
-		registers[EnergyMeter.REG_GEN_MAX_KVA]       = -1.0e50;
+		registers[EnergyMeter.REG_GEN_MAX_KW]         = -1.0e50;
+		registers[EnergyMeter.REG_GEN_MAX_KVA]        = -1.0e50;
 
 		firstSampleAfterReset = true;  // initialise for trapezoidal integration
 		// Removed .. open in solution loop See Solve Yearly if (EnergyMeterClass.SaveDemandInterval) openDemandIntervalFile();
@@ -311,7 +312,6 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 		File f;
 		FileWriter fw;
 		BufferedWriter bw;
-
 
 		String csvName = "MTR_" + getName() + ".csv";
 
@@ -346,13 +346,12 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 		if (!firstSampleAfterReset)
 			registers[reg] = registers[reg] + 0.5 * interval * (deriv + derivatives[reg]);
 		} else {
-		/* Plain Euler integration */
-		registers[reg] = registers[reg] + interval * deriv;
+			/* Plain Euler integration */
+			registers[reg] = registers[reg] + interval * deriv;
 		}
 
 		/* Set the derivatives so that the proper value shows up in demand interval files
-		 * and prepare for next time step in Trapezoidal integration.
-		 */
+		 * and prepare for next time step in Trapezoidal integration. */
 		derivatives[reg] = deriv;
 	}
 
@@ -404,7 +403,7 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 			loadKVA,
 			genKVA,
 			S_LocalKVA,
-			LoadKW;
+			loadKW;
 		Complex S_PosSeqLosses;
 		Complex S_ZeroSeqLosses;
 		Complex S_NegSeqLosses;
@@ -415,7 +414,7 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 		// compute energy in branch to which meter is connected
 
 		//MeteredElement.setActiveTerminalIdx(MeteredTerminal);  // needed for excess kVA calcs
-		S_Local     = meteredElement.getPower(meteredTerminal).multiply(0.001);
+		S_Local    = meteredElement.getPower(meteredTerminal).multiply(0.001);
 		S_LocalKVA = S_Local.abs();
 		deltaHrs   = DSSGlobals.activeCircuit.getSolution().getIntervalHrs();
 		integrate(EnergyMeter.REG_KWH,   S_Local.getReal(), deltaHrs);  // accumulate the power
@@ -460,9 +459,9 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 			}
 		}
 
-		cktElem           = (PDElement) branchList.getFirst();
-		maxExcessKWNorm   = 0.0;
-		maxExcessKWEmerg  = 0.0;
+		cktElem = (PDElement) branchList.getFirst();
+		maxExcessKWNorm = 0.0;
+		maxExcessKWEmerg = 0.0;
 
 		/* ------------------------------------------------------------------ */
 		/* ------------------------ Local Zone Only ------------------------- */
@@ -486,8 +485,10 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 
 			/* For radial circuits just keep the maximum overload; for mesh, add them up */
 			if (zoneIsRadial) {
-				if (UE  > maxExcessKWEmerg) maxExcessKWEmerg = UE;
-				if (EEN > maxExcessKWNorm)  maxExcessKWNorm  = EEN;
+				if (UE  > maxExcessKWEmerg)
+					maxExcessKWEmerg = UE;
+				if (EEN > maxExcessKWNorm)
+					maxExcessKWNorm  = EEN;
 			} else {
 				maxExcessKWEmerg = maxExcessKWEmerg + UE;
 				maxExcessKWNorm  = maxExcessKWNorm  + EEN;
@@ -509,13 +510,13 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 			while (PCElem != null) {
 				if ((PCElem.getDSSObjType() & DSSClassDefs.CLASSMASK) == DSSClassDefs.LOAD_ELEMENT) {
 					load = (LoadObj) PCElem;
-					if ((cktElem.getOverloadEEN() > 0.0) && (zoneIsRadial) && !voltageUEOnly) {
+					if (cktElem.getOverloadEEN() > 0.0 && zoneIsRadial && !voltageUEOnly) {
 						load.setEEN_Factor(cktElem.getOverloadEEN());
 					} else {
 						load.setEEN_Factor(0.0);
 					}
 
-					if ((cktElem.getOverloadUE() > 0.0) && zoneIsRadial && !voltageUEOnly) {
+					if (cktElem.getOverloadUE() > 0.0 && zoneIsRadial && !voltageUEOnly) {
 						load.setUE_Factor(cktElem.getOverloadUE());
 					} else {
 						load.setUE_Factor(0.0);
@@ -546,17 +547,17 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 				case DSSClassDefs.LOAD_ELEMENT:
 					if (!localOnly) {  // don't check for load EEN/UE if Local only
 						load = (LoadObj) PCElem;
-						LoadKW = accumulateLoad(load, totalZoneKW, totalZoneKVAr, totalLoad_EEN, totalLoad_UE);
+						loadKW = accumulateLoad(load, totalZoneKW, totalZoneKVAr, totalLoad_EEN, totalLoad_UE);
 						if (VBaseLosses) {
 							int vbi = branchList.getPresentBranch().getVoltBaseIndex();
 							if (vbi > 0)
-								VBaseLoad[vbi] = VBaseLoad[vbi] + LoadKW;
+								VBaseLoad[vbi] = VBaseLoad[vbi] + loadKW;
 						}
 					}
 					break;
 				case DSSClassDefs.GEN_ELEMENT:
 					gen = (GeneratorObj) PCElem;
-					accumulateGen(gen, totalGenKW, totalGenKVAr);
+					accumulateGen(gen, totalGenKW, totalGenKVAr);  // FIXME pass by reference
 					break;
 				}
 				PCElem = (PCElement) branchList.getNextObject();
@@ -628,7 +629,7 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 						if (ckt.getBuses()[fbr].getKVBase() > 0.0) {
 							for (i = 0; i < ckt.getBuses()[fbr].getNumNodesThisBus(); i++) {
 								j = ckt.getBuses()[fbr].getNum(i);
-								if ((j >= 0) && (j < 3)) {  // TODO Check zero based indexing
+								if (j >= 0 && j < 3) {
 									puV = ckt.getSolution().getNodeV()[ ckt.getBuses()[fbr].getRef(i) ].abs() / ckt.getBuses()[fbr].getKVBase();
 									VPhaseMax[jiIndex(j, vbi)] = Math.max(VPhaseMax[jiIndex(j, vbi)], puV);
 									VPhaseMin[jiIndex(j, vbi)] = Math.min(VPhaseMin[jiIndex(j, vbi)], puV);
@@ -646,28 +647,28 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 
 		/* NOTE: integrate proc automatically sets derivatives array */
 		integrate(EnergyMeter.REG_LOAD_EEN, totalLoad_EEN, deltaHrs);
-		integrate(EnergyMeter.REG_LOAD_UE , totalLoad_UE,  deltaHrs);
+		integrate(EnergyMeter.REG_LOAD_UE,  totalLoad_UE,  deltaHrs);
 
 		/* Accumulate losses in appropriate registers */
-		integrate(EnergyMeter.REG_ZONE_LOSSES_KWH,     totalLosses.getReal(),          deltaHrs);
-		integrate(EnergyMeter.REG_ZONE_LOSSES_KVARH,   totalLosses.getImaginary(),     deltaHrs);
-		integrate(EnergyMeter.REG_LOAD_LOSSES_KWH,     totalLoadLosses.getReal(),      deltaHrs);
-		integrate(EnergyMeter.REG_LOAD_LOSSES_KVARH,   totalLoadLosses.getImaginary(), deltaHrs);
+		integrate(EnergyMeter.REG_ZONE_LOSSES_KWH,      totalLosses.getReal(),          deltaHrs);
+		integrate(EnergyMeter.REG_ZONE_LOSSES_KVARH,    totalLosses.getImaginary(),     deltaHrs);
+		integrate(EnergyMeter.REG_LOAD_LOSSES_KWH,      totalLoadLosses.getReal(),      deltaHrs);
+		integrate(EnergyMeter.REG_LOAD_LOSSES_KVARH,    totalLoadLosses.getImaginary(), deltaHrs);
 		integrate(EnergyMeter.REG_NO_LOAD_LOSSES_KWH,   totalNoLoadLosses.getReal(),    deltaHrs);
-		integrate(EnergyMeter.REG_NO_LOAD_LOSSES_KVARH, totalNoLoadLosses.getImaginary(),    deltaHrs);
-		integrate(EnergyMeter.REG_LINE_LOSSES_KWH,     totalLineLosses.getReal(),      deltaHrs);
+		integrate(EnergyMeter.REG_NO_LOAD_LOSSES_KVARH, totalNoLoadLosses.getImaginary(), deltaHrs);
+		integrate(EnergyMeter.REG_LINE_LOSSES_KWH,      totalLineLosses.getReal(),      deltaHrs);
 		integrate(EnergyMeter.REG_LINE_MODE_LINE_LOSS,  totalLineModeLosses.getReal(),  deltaHrs);
 		integrate(EnergyMeter.REG_ZERO_MODE_LINE_LOSS,  totalZeroModeLosses.getReal(),  deltaHrs);
-		integrate(EnergyMeter.REG_3_PHASE_LINE_LOSS,   total3PhaseLosses.getReal(),    deltaHrs);
-		integrate(EnergyMeter.REG_1_PHASE_LINE_LOSS,   total1PhaseLosses.getReal(),    deltaHrs);
+		integrate(EnergyMeter.REG_3_PHASE_LINE_LOSS,    total3PhaseLosses.getReal(),    deltaHrs);
+		integrate(EnergyMeter.REG_1_PHASE_LINE_LOSS,    total1PhaseLosses.getReal(),    deltaHrs);
 		integrate(EnergyMeter.REG_TRANSFORMER_LOSSES_KWH,  totalTransformerLosses.getReal(),  deltaHrs);
 
 		for (i = 0; i < maxVBaseCount; i++) {
 			integrate(EnergyMeter.REG_VBASE_START + i, VBaseTotalLosses[i],  deltaHrs);
-			integrate(EnergyMeter.REG_VBASE_START + 1 * maxVBaseCount + i, VBaseLineLosses[i],    deltaHrs);
-			integrate(EnergyMeter.REG_VBASE_START + 2 * maxVBaseCount + i, VBaseLoadLosses[i],    deltaHrs);
-			integrate(EnergyMeter.REG_VBASE_START + 3 * maxVBaseCount + i, VBaseNoLoadLosses[i],  deltaHrs);
-			integrate(EnergyMeter.REG_VBASE_START + 4 * maxVBaseCount + i, VBaseLoad[i],          deltaHrs);
+			integrate(EnergyMeter.REG_VBASE_START + 1 * maxVBaseCount + i, VBaseLineLosses[i],   deltaHrs);
+			integrate(EnergyMeter.REG_VBASE_START + 2 * maxVBaseCount + i, VBaseLoadLosses[i],   deltaHrs);
+			integrate(EnergyMeter.REG_VBASE_START + 3 * maxVBaseCount + i, VBaseNoLoadLosses[i], deltaHrs);
+			integrate(EnergyMeter.REG_VBASE_START + 4 * maxVBaseCount + i, VBaseLoad[i],         deltaHrs);
 		}
 
 
@@ -686,15 +687,15 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 		/* ---------------   Set Drag Hand Registers  ----------------------- */
 		/* ------------------------------------------------------------------ */
 
-		setDragHandRegister(EnergyMeter.REG_LOSSES_MAX_KW,     Math.abs(totalLosses.getReal()));
-		setDragHandRegister(EnergyMeter.REG_LOSSES_MAX_KVAR,   Math.abs(totalLosses.getImaginary()));
-		setDragHandRegister(EnergyMeter.REG_MAX_LOAD_LOSSES,   Math.abs(totalLoadLosses.getReal()));
+		setDragHandRegister(EnergyMeter.REG_LOSSES_MAX_KW,      Math.abs(totalLosses.getReal()));
+		setDragHandRegister(EnergyMeter.REG_LOSSES_MAX_KVAR,    Math.abs(totalLosses.getImaginary()));
+		setDragHandRegister(EnergyMeter.REG_MAX_LOAD_LOSSES,    Math.abs(totalLoadLosses.getReal()));
 		setDragHandRegister(EnergyMeter.REG_MAX_NO_LOAD_LOSSES, Math.abs(totalNoLoadLosses.getReal()));
-		setDragHandRegister(EnergyMeter.REG_ZONE_MAX_KW,       totalZoneKW);  // Removed abs()  3-10-04
-		setDragHandRegister(EnergyMeter.REG_ZONE_MAX_KVA,      loadKVA);
+		setDragHandRegister(EnergyMeter.REG_ZONE_MAX_KW,        totalZoneKW);  // Removed abs()  3-10-04
+		setDragHandRegister(EnergyMeter.REG_ZONE_MAX_KVA,       loadKVA);
 		/* Max total generator registers */
-		setDragHandRegister(EnergyMeter.REG_GEN_MAX_KW,        totalGenKW); // Removed abs()  3-10-04
-		setDragHandRegister(EnergyMeter.REG_GEN_MAX_KVA,       genKVA);
+		setDragHandRegister(EnergyMeter.REG_GEN_MAX_KW, totalGenKW);  // removed abs()  3-10-04
+		setDragHandRegister(EnergyMeter.REG_GEN_MAX_KVA, genKVA);
 
 		/* ------------------------------------------------------------------ */
 		/* ---------------------   Overload Energy  ------------------------- */
@@ -711,14 +712,16 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 		/* regs 9 and 10 */
 		/* Fixed these formulas 2-7-07 per discussions with Daniel Brooks */
 		if (maxZoneKVANorm > 0.0) {
-			if (S_LocalKVA == 0.0) S_LocalKVA = maxZoneKVANorm;
+			if (S_LocalKVA == 0.0)
+				S_LocalKVA = maxZoneKVANorm;
 			integrate(EnergyMeter.REG_OVERLOAD_KWH_NORM, Math.max(0.0, (zoneKW * (1.0 - maxZoneKVANorm / S_LocalKVA))), deltaHrs);
 		} else {
 			integrate(EnergyMeter.REG_OVERLOAD_KWH_NORM, maxExcessKWNorm, deltaHrs);
 		}
 
 		if (maxZoneKVAEmerg > 0.0) {
-			if (S_LocalKVA == 0.0) S_LocalKVA = maxZoneKVAEmerg;
+			if (S_LocalKVA == 0.0)
+				S_LocalKVA = maxZoneKVAEmerg;
 			integrate(EnergyMeter.REG_OVERLOAD_KWH_EMERG, Math.max(0.0, (zoneKW * (1.0 - maxZoneKVAEmerg / S_LocalKVA))), deltaHrs);
 		} else {
 			integrate(EnergyMeter.REG_OVERLOAD_KWH_EMERG, maxExcessKWEmerg,  deltaHrs);
@@ -750,7 +753,7 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 		/* This algorithm could be made more efficient with a sequence list */
 
 		for (i = 0; i < branchList.getZoneEndsList().getNumEnds(); i++) {
-			/*Busref = */branchList.getZoneEndsList().get(i, presentNode);
+			/*busref = */branchList.getZoneEndsList().get(i, presentNode);
 			if (presentNode != null) {
 				cktElem = (PDElement) presentNode.getCktObject();
 				if (!cktElem.isChecked()) {  // don't do a zone end element more than once
@@ -759,7 +762,8 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 					while (true) {  /* Trace back to the source */
 						cktElem.setTotalCustomers( cktElem.getTotalCustomers() + accumulator );
 						presentNode = presentNode.getParent();
-						if (presentNode == null) break;
+						if (presentNode == null)
+							break;
 						cktElem = (PDElement) presentNode.getCktObject();
 						if (!cktElem.isChecked()) {  // avoid double counting
 							accumulator = accumulator + cktElem.getNumCustomers();
@@ -789,14 +793,13 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 		List<PDElement> adjLstPD;
 
 		zoneListCounter = 0;
-		VBaseCount      = 0;  /* Build the voltage base list over in case a base added or deleted */
+		VBaseCount = 0;  /* Build the voltage base list over in case a base added or deleted */
 		for (j = 0; j < maxVBaseCount; j++)
 			VBaseList[j] = 0.0;
 
-
 		branchList = new CktTreeImpl();  /* Instantiates ZoneEndsList, too */
 
-		// Get Started
+		// get started
 		if (meteredElement != null) {
 			branchList.setNew(meteredElement);
 		} else {
@@ -863,7 +866,8 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 					adjLstPC = EnergyMeterImpl.busAdjPC[testBusNum];
 					for (iPC = 0; iPC < adjLstPC.size(); iPC++) {
 						pc = (PCElement) adjLstPC.get(iPC);
-						if (pc.isChecked()) continue;  // skip ones we already checked
+						if (pc.isChecked())
+							continue;  // skip ones we already checked
 						branchList.getPresentBranch().setDangling(false);  // something is connected here
 						// is this a load or a generator or a capacitor or reactor?
 						if (((pc.getDSSObjType() & DSSClassDefs.CLASSMASK) == DSSClassDefs.LOAD_ELEMENT)
@@ -874,7 +878,7 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 							branchList.setNewObject(pc);
 							pc.setChecked(true);  // so we don't pick this element up again
 							pc.setIsolated(false);
-							pc.setActiveTerminalIdx(1);  // TODO Check zero based indexing
+							pc.setActiveTerminalIdx(0);
 							/* Totalize number of customers if load type */
 							if (pc instanceof LoadObj) {
 								load = (LoadObj) pc;
@@ -932,7 +936,7 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 						/* This is an end of the feeder and testBusNum is the end bus */
 					} else {  // zone is manually specified; just add next element in list as a child
 						zoneListCounter += 1;
-						while (zoneListCounter <= definedZoneListSize) {
+						while (zoneListCounter < definedZoneListSize) {
 							if (ckt.setElementActive(definedZoneList[zoneListCounter]) == 0) {
 								zoneListCounter += 1;  // not found, let's search for another
 							} else {
@@ -1093,8 +1097,8 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 				return i;
 		}
 
-		if ((bus.getKVBase() > 0.0) && (VBaseCount < maxVBaseCount)) {
-			VBaseCount += 1;
+		if (bus.getKVBase() > 0.0 && VBaseCount < maxVBaseCount) {
+			VBaseCount += 1;  // TODO Check incrementation
 			VBaseList[VBaseCount] = bus.getKVBase();
 			return VBaseCount;
 		} else {
@@ -1175,7 +1179,7 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 
 	private void accumulateGen(GeneratorObj gen, double totalZonekW, double totalZoneKVAr) {  // FIXME Pass by reference
 		//pGen.setActiveTerminalIdx(1);
-		Complex S = gen.getPower(1).multiply(0.001).negate();  // TODO Check zero based indexing
+		Complex S = gen.getPower(0).multiply(0.001).negate();
 		totalZonekW   = totalZonekW   + S.getReal();
 		totalZoneKVAr = totalZoneKVAr + S.getImaginary();
 	}
@@ -1187,12 +1191,12 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 		double loadEEN, loadUE;
 
 		//pLoad.setActiveTerminalIdx(1);
-		SLoad  = load.getPower(1).multiply(0.001);  // get power in terminal 1   TODO Check zero based indexing
+		SLoad = load.getPower(0).multiply(0.001);  // get power in terminal 1
 		kWLoad = SLoad.getReal();
-		result  = kWLoad;
+		result = kWLoad;
 
 		/* Accumulate load in zone */
-		totalZoneKW   = totalZoneKW   + kWLoad;
+		totalZoneKW = totalZoneKW + kWLoad;
 		totalZoneKVAr = totalZoneKVAr + SLoad.getImaginary();
 
 		/* Always integrate even if the value is 0.0
@@ -1237,19 +1241,18 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 		if (branchList == null) makeMeterZoneLists();
 
 		switch (DSSGlobals.activeCircuit.getReductionStrategy()) {
-		case STUBS:         ReduceAlgs.doReduceStubs(branchList); break;
+		case STUBS:          ReduceAlgs.doReduceStubs(branchList); break;
 		case TAP_ENDS:       ReduceAlgs.doReduceTapEnds (branchList); break;
 		case MERGE_PARALLEL: ReduceAlgs.doMergeParallelLines(branchList); break;
-		case DANGLING:      ReduceAlgs.doReduceDangling(branchList); break;
+		case DANGLING:       ReduceAlgs.doReduceDangling(branchList); break;
 		case BREAK_LOOP:     ReduceAlgs.doBreakLoops(branchList); break;
-		case SWITCHES:      ReduceAlgs.doReduceSwitches(branchList); break;
-		default:
-			ReduceAlgs.doReduceDefault(branchList);
-			break;
+		case SWITCHES:       ReduceAlgs.doReduceSwitches(branchList); break;
+		default:             ReduceAlgs.doReduceDefault(branchList); break;
 		}
 
 		// resynchronize with feeders
-		if (hasFeeder) feederObj.initializeFeeder(branchList);
+		if (hasFeeder)
+			feederObj.initializeFeeder(branchList);
 	}
 
 	/**
@@ -1275,37 +1278,40 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 			secondCoordRef = firstCoordRef;  /* so compiler won't issue warning */
 			/* Find a bus with a coordinate */
 			if (!ckt.getBuses()[busRef].isCoordDefined()) {
-				while (!ckt.getBuses()[presentNode.getFromBusReference()].isCoordDefined()) {
+				while (!ckt.getBuses()[ presentNode.getFromBusReference() ].isCoordDefined()) {
 					presentNode = presentNode.getParent();
-					if (presentNode == null) break;
+					if (presentNode == null)
+						break;
 				}
-				if (presentNode != null) firstCoordRef = presentNode.getFromBusReference();
+				if (presentNode != null)
+					firstCoordRef = presentNode.getFromBusReference();
 			}
 
 			while (presentNode != null) {
 				/* Back up until we find another coord defined */
 				lineCount = 0;  /* number of line segments in this segment */
 				startNode = presentNode;
-				cktElem   = (CktElement) presentNode.getCktObject();
+				cktElem = (CktElement) presentNode.getCktObject();
 				if (firstCoordRef != presentNode.getFromBusReference()) {
 					/* Handle special case for end branch */
-					if (ckt.getBuses()[presentNode.getFromBusReference()].isCoordDefined()) {
+					if (ckt.getBuses()[ presentNode.getFromBusReference() ].isCoordDefined()) {
 						firstCoordRef = presentNode.getFromBusReference();
 					} else {
 						lineCount += 1;
 					}
 				}
 
-				while (!ckt.getBuses()[secondCoordRef].isCoordDefined() && !cktElem.isChecked()) {
+				while (!ckt.getBuses()[ secondCoordRef ].isCoordDefined() && !cktElem.isChecked()) {
 					cktElem.setChecked(true);
 					presentNode = presentNode.getParent();
-					if (presentNode == null) break;
+					if (presentNode == null)
+						break;
 					cktElem = (CktElement) presentNode.getCktObject();
 					secondCoordRef = presentNode.getFromBusReference();
 					lineCount += 1;
 				}
 
-				if ((presentNode != null) && (lineCount > 1)) {
+				if (presentNode != null && lineCount > 1) {
 					if (ckt.getBuses()[secondCoordRef].isCoordDefined()) {
 						calcBusCoordinates(startNode,  firstCoordRef, secondCoordRef, lineCount);
 					} else {
@@ -1321,7 +1327,8 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 	private void calcBusCoordinates(CktTreeNode startBranch, int firstCoordRef, int secondCoordRef, int lineCount) {
 		double X, Y, XInc, YInc;
 
-		if (lineCount == 1) return;  /* Nothing to do! */
+		if (lineCount == 1)
+			return;
 
 		Circuit ckt = DSSGlobals.activeCircuit;
 
@@ -1373,7 +1380,7 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 		}
 
 		switch (index) {
-		case 4:  // option
+		case 3:  // option
 			if (excessFlag) {
 				result = result + "E,";
 			} else {
@@ -1582,7 +1589,6 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 
 	// FIXME Protected method in OpenDSS
 	public void closeDemandIntervalFile() {
-
 		try {
 			if (thisMeterDI_FileIsOpen) {
 				DI_File.close();
@@ -1608,9 +1614,9 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 		int i, j;
 		double VBase;
 
-
 		try {
-			if (thisMeterDI_FileIsOpen) closeDemandIntervalFile();
+			if (thisMeterDI_FileIsOpen)
+				closeDemandIntervalFile();
 
 			if (DSSGlobals.energyMeterClass.isDIVerbose()) {
 
@@ -1651,13 +1657,6 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 		}
 	}
 
-	private double myCountAvg(double value, int count) {
-		if (count == 0) {
-			return 0.0;
-		} else {
-			return value / count;
-		}
-	}
 	protected void writeDemandIntervalData() {
 		int i, j;
 
@@ -1692,6 +1691,13 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 			VPhase_Printer.println();
 		}
 	}
+	private double myCountAvg(double value, int count) {
+		if (count == 0) {
+			return 0.0;
+		} else {
+			return value / count;
+		}
+	}
 
 	/**
 	 * Only called if "SaveDemandInterval".
@@ -1699,7 +1705,6 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 	// FIXME Protected method in OpenDSS
 	public void appendDemandIntervalFile() {
 		String fileName;
-
 
 		if (thisMeterDI_FileIsOpen)
 			return;

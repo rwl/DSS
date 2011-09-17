@@ -55,7 +55,6 @@ public class TCC_CurveImpl extends DSSClassImpl implements TCC_Curve {
 
 	@Override
 	public int newObject(String objName) {
-
 		DSSGlobals.activeDSSObject = new TCC_CurveObjImpl(this, objName);
 		return addObjectToList(DSSGlobals.activeDSSObject);
 	}
@@ -80,7 +79,7 @@ public class TCC_CurveImpl extends DSSClassImpl implements TCC_Curve {
 
 		TCC_CurveObj atc = activeTCC_CurveObj;
 
-		int paramPointer = 0;
+		int paramPointer = -1;
 		String paramName = parser.getNextParam();
 		String param = parser.makeString();
 		while (param.length() > 0) {
@@ -88,22 +87,22 @@ public class TCC_CurveImpl extends DSSClassImpl implements TCC_Curve {
 				paramPointer += 1;
 			} else {
 				paramPointer = commandList.getCommand(paramName);
-			}  // FIXME Check indenting of other edit methods at this point.
+			}
 
-			if ((paramPointer > 0) && (paramPointer <= numProperties))
+			if (paramPointer >= 0 && paramPointer < numProperties)
 				atc.setPropertyValue(paramPointer, param);
 
 			switch (paramPointer) {
-			case 0:
+			case -1:
 				DSSGlobals.doSimpleMsg("Unknown parameter \"" + paramName + "\" for object \"" + getName() +"."+ atc.getName() + "\"", 420);
 				break;
-			case 1:
+			case 0:
 				atc.setNPts(parser.makeInteger());
 				break;
-			case 2:
+			case 1:
 				Utilities.interpretDblArray(param, atc.getNPts(), atc.getCValues());   // Parser.ParseAsVector(Npts, Multipliers);
 				break;
-			case 3:
+			case 2:
 				Utilities.interpretDblArray(param, atc.getNPts(), atc.getTValues());   // Parser.ParseAsVector(Npts, Hours);
 				break;
 			default:
@@ -171,8 +170,7 @@ public class TCC_CurveImpl extends DSSClassImpl implements TCC_Curve {
 	}
 
 	public String getCode() {
-		TCC_CurveObj curve = (TCC_CurveObj) elementList.getActive();
-		return curve.getName();
+		return ((TCC_CurveObj) elementList.getActive()).getName();
 	}
 
 	public void setCode(String value) {
