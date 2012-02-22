@@ -626,11 +626,11 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 					int fbr = branchList.getPresentBranch().getFromBusReference();
 					if (vbi >= 0) {
 						Circuit ckt = DSSGlobals.activeCircuit;
-						if (ckt.getBuses()[fbr].getKVBase() > 0.0) {
-							for (i = 0; i < ckt.getBuses()[fbr].getNumNodesThisBus(); i++) {
-								j = ckt.getBuses()[fbr].getNum(i);
+						if (ckt.getBus(fbr).getKVBase() > 0.0) {
+							for (i = 0; i < ckt.getBus(fbr).getNumNodesThisBus(); i++) {
+								j = ckt.getBus(fbr).getNum(i);
 								if (j >= 0 && j < 3) {
-									puV = ckt.getSolution().getNodeV()[ ckt.getBuses()[fbr].getRef(i) ].abs() / ckt.getBuses()[fbr].getKVBase();
+									puV = ckt.getSolution().getNodeV()[ ckt.getBus(fbr).getRef(i) ].abs() / ckt.getBus(fbr).getKVBase();
 									VPhaseMax[jiIndex(j, vbi)] = Math.max(VPhaseMax[jiIndex(j, vbi)], puV);
 									VPhaseMin[jiIndex(j, vbi)] = Math.min(VPhaseMin[jiIndex(j, vbi)], puV);
 									VPhaseAccum[jiIndex(j, vbi)] = VPhaseAccum[jiIndex(j, vbi)] + puV;
@@ -823,11 +823,11 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 			((PCElement) meteredElement).setMeterObj(this);
 		}
 
-		meteredElement.getTerminals()[meteredTerminal].setChecked(true);
+		meteredElement.getTerminal(meteredTerminal).setChecked(true);
 		CktTreeNode pb = branchList.getPresentBranch();
 		// this bus is the head of the feeder; do not mark as radial bus
-		pb.setFromBusReference( meteredElement.getTerminals()[meteredTerminal].getBusRef() );
-		DSSGlobals.activeCircuit.getBuses()[pb.getFromBusReference()].setDistFromMeter(0.0);
+		pb.setFromBusReference( meteredElement.getTerminal(meteredTerminal).getBusRef() );
+		DSSGlobals.activeCircuit.getBus(pb.getFromBusReference()).setDistFromMeter(0.0);
 		pb.setVoltBaseIndex( addToVoltBaseList(pb.getFromBusReference()) );
 		pb.setFromTerminal(meteredTerminal);
 		if (meteredElement instanceof PDElement)
@@ -851,16 +851,16 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 			((PDElement) activeBranch).setNumCustomers(0);  // init counter
 
 			for (iTerm = 0; iTerm < activeBranch.getNTerms(); iTerm++) {
-				if (!activeBranch.getTerminals()[iTerm].isChecked()) {
+				if (!activeBranch.getTerminal(iTerm).isChecked()) {
 					// now find all loads and generators connected to the bus on this end of branch
 					// attach them as generic objects to cktTree node
-					testBusNum = activeBranch.getTerminals()[iTerm].getBusRef();
+					testBusNum = activeBranch.getTerminal(iTerm).getBusRef();
 					branchList.getPresentBranch().setToBusReference(testBusNum);  // add this as a "to" bus reference
 					if (Utilities.isLineElement(activeBranch)) {  // convert to consistent units (km)
-						ckt.getBuses()[testBusNum].setDistFromMeter( ckt.getBuses()[ branchList.getPresentBranch().getFromBusReference() ].getDistFromMeter()
+						ckt.getBus(testBusNum).setDistFromMeter( ckt.getBus( branchList.getPresentBranch().getFromBusReference() ).getDistFromMeter()
 								+ ((LineObj) activeBranch).getLen() * LineUnits.convertLineUnits( ((LineObj) activeBranch).getLengthUnits(), LineUnits.UNITS_KM) );
 					} else {
-						ckt.getBuses()[testBusNum].setDistFromMeter( ckt.getBuses()[branchList.getPresentBranch().getFromBusReference()].getDistFromMeter() );
+						ckt.getBus(testBusNum).setDistFromMeter( ckt.getBus(branchList.getPresentBranch().getFromBusReference()).getDistFromMeter() );
 					}
 
 					adjLstPC = EnergyMeterImpl.busAdjPC[testBusNum];
@@ -903,7 +903,7 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 							if (!(testElement == activeBranch)) {  // skip self
 								if (!testElement.hasEnergyMeter()) {  // stop at other meters so zones don't interfere
 									for (j = 0; j < testElement.getNTerms(); j++) {  // check each terminal
-										if (testBusNum == testElement.getTerminals()[j].getBusRef()) {
+										if (testBusNum == testElement.getTerminal(j).getBusRef()) {
 											branchList.getPresentBranch().setDangling(false);  // we found something it was connected to
 											/* Check for loops and parallel branches and mark them */
 											if (testElement.isChecked()) {  /* This branch is on some meter's list already */
@@ -915,7 +915,7 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 											} else {  // push testElement onto stack and set properties
 												isFeederEnd = false;  // for interpolation
 												branchList.addNewChild(testElement, testBusNum, j);  // add new child to the branch list
-												testElement.getTerminals()[j].setChecked(true);
+												testElement.getTerminal(j).setChecked(true);
 												testElement.setFromTerminal(j);
 												testElement.setChecked(true);
 												testElement.setIsolated(false);
@@ -1007,7 +1007,7 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 							branchList.getLevel(), pd.getParentClass().getName(), pd.getName(),
 							pd.getFirstBus(), pd.getNextBus(),
 							/*BusList.get(BranchList.getPresentBranch().getToBusReference()),*/
-							ckt.getBuses()[branchList.getPresentBranch().getToBusReference()].getDistFromMeter()));
+							ckt.getBus(branchList.getPresentBranch().getToBusReference()).getDistFromMeter()));
 					bw.newLine();
 					loadElem = (CktElement) branchList.getFirstObject();
 					while (loadElem != null) {
@@ -1090,7 +1090,7 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 	 * Add to VoltBase list if not already there and return index.
 	 */
 	private int addToVoltBaseList(int busRef) {
-		Bus bus = DSSGlobals.activeCircuit.getBuses()[busRef];
+		Bus bus = DSSGlobals.activeCircuit.getBus(busRef);
 
 		for (int i = 0; i < VBaseCount; i++) {
 			if (Math.abs(1.0 - bus.getKVBase() / VBaseList[i]) < 0.01)  // < 1% difference
@@ -1277,8 +1277,8 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 			firstCoordRef = busRef;
 			secondCoordRef = firstCoordRef;  /* so compiler won't issue warning */
 			/* Find a bus with a coordinate */
-			if (!ckt.getBuses()[busRef].isCoordDefined()) {
-				while (!ckt.getBuses()[ presentNode.getFromBusReference() ].isCoordDefined()) {
+			if (!ckt.getBus(busRef).isCoordDefined()) {
+				while (!ckt.getBus( presentNode.getFromBusReference() ).isCoordDefined()) {
 					presentNode = presentNode.getParent();
 					if (presentNode == null)
 						break;
@@ -1294,14 +1294,14 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 				cktElem = (CktElement) presentNode.getCktObject();
 				if (firstCoordRef != presentNode.getFromBusReference()) {
 					/* Handle special case for end branch */
-					if (ckt.getBuses()[ presentNode.getFromBusReference() ].isCoordDefined()) {
+					if (ckt.getBus( presentNode.getFromBusReference() ).isCoordDefined()) {
 						firstCoordRef = presentNode.getFromBusReference();
 					} else {
 						lineCount += 1;
 					}
 				}
 
-				while (!ckt.getBuses()[ secondCoordRef ].isCoordDefined() && !cktElem.isChecked()) {
+				while (!ckt.getBus( secondCoordRef ).isCoordDefined() && !cktElem.isChecked()) {
 					cktElem.setChecked(true);
 					presentNode = presentNode.getParent();
 					if (presentNode == null)
@@ -1312,7 +1312,7 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 				}
 
 				if (presentNode != null && lineCount > 1) {
-					if (ckt.getBuses()[secondCoordRef].isCoordDefined()) {
+					if (ckt.getBus(secondCoordRef).isCoordDefined()) {
 						calcBusCoordinates(startNode,  firstCoordRef, secondCoordRef, lineCount);
 					} else {
 						break;  /* While - went as far as we could go this way */
@@ -1332,11 +1332,11 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 
 		Circuit ckt = DSSGlobals.activeCircuit;
 
-		XInc = (ckt.getBuses()[firstCoordRef].getX() - ckt.getBuses()[secondCoordRef].getX()) / lineCount;
-		YInc = (ckt.getBuses()[firstCoordRef].getY() - ckt.getBuses()[secondCoordRef].getY()) / lineCount;
+		XInc = (ckt.getBus(firstCoordRef).getX() - ckt.getBus(secondCoordRef).getX()) / lineCount;
+		YInc = (ckt.getBus(firstCoordRef).getY() - ckt.getBus(secondCoordRef).getY()) / lineCount;
 
-		X = ckt.getBuses()[firstCoordRef].getX();
-		Y = ckt.getBuses()[firstCoordRef].getY();
+		X = ckt.getBus(firstCoordRef).getX();
+		Y = ckt.getBus(firstCoordRef).getY();
 
 		/*if (((X < 10.0) && (y < 10.0)) || ((ckt.getBuses()[SecondCoordRef].getX() < 10.0) && (ckt.getBuses()[SecondCoordRef].getY() < 10.0)))
 			X = Y;*/  // stopping point
@@ -1346,9 +1346,9 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 			// start with "to" end
 			X = X - XInc;
 			Y = Y - YInc;
-			ckt.getBuses()[startBranch.getFromBusReference()].setX(X);
-			ckt.getBuses()[startBranch.getFromBusReference()].setY(Y);
-			ckt.getBuses()[startBranch.getFromBusReference()].setCoordDefined(true);
+			ckt.getBus(startBranch.getFromBusReference()).setX(X);
+			ckt.getBus(startBranch.getFromBusReference()).setY(Y);
+			ckt.getBus(startBranch.getFromBusReference()).setCoordDefined(true);
 			lineCount -= 1;
 		}
 
@@ -1356,9 +1356,9 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 			X = X - XInc;
 			Y = Y - YInc;
 			startBranch = startBranch.getParent();  // back up the tree
-			ckt.getBuses()[startBranch.getFromBusReference()].setX(X);
-			ckt.getBuses()[startBranch.getFromBusReference()].setY(Y);
-			ckt.getBuses()[startBranch.getFromBusReference()].setCoordDefined(true);
+			ckt.getBus(startBranch.getFromBusReference()).setX(X);
+			ckt.getBus(startBranch.getFromBusReference()).setY(Y);
+			ckt.getBus(startBranch.getFromBusReference()).setCoordDefined(true);
 			lineCount -= 1;
 		}
 	}

@@ -367,7 +367,7 @@ public class EnergyMeterImpl extends MeterClassImpl implements EnergyMeter {
 			pCktElement.setChecked(false);
 			pCktElement.setIsolated(true);
 			for (i = 0; i < pCktElement.getNTerms(); i++)
-				pCktElement.getTerminals()[i].setChecked(false);
+				pCktElement.getTerminal(i).setChecked(false);
 		}
 
 		/* Clear some things that will be set by the meter zone */
@@ -391,7 +391,7 @@ public class EnergyMeterImpl extends MeterClassImpl implements EnergyMeter {
 
 		// initialise the checked flag for all buses
 		for (i = 0; i < ckt.getNumBuses(); i++)
-			ckt.getBuses()[i].setBusChecked(false);
+			ckt.getBus(i).setBusChecked(false);
 
 		for (EnergyMeterObj pMeter : ckt.getEnergyMeters())
 			if (pMeter.isEnabled())
@@ -655,7 +655,7 @@ public class EnergyMeterImpl extends MeterClassImpl implements EnergyMeter {
 							pw.print(" 0.0,");
 						}
 						/* Find bus of first terminal */
-						pw.printf(" %-.3g ", ckt.getBuses()[ckt.getMapNodeToBus()[ PDElem.getNodeRef()[0] ].busRef].getKVBase());
+						pw.printf(" %-.3g ", ckt.getBus(ckt.getMapNodeToBus()[ PDElem.getNodeRef()[0] ].busRef).getKVBase());
 
 						pw.println();
 					}
@@ -781,7 +781,7 @@ public class EnergyMeterImpl extends MeterClassImpl implements EnergyMeter {
 		overVMax   = ckt.getNormalMinVolts();
 		underVMin  = ckt.getNormalMaxVolts();
 		for (i = 0; i < ckt.getNumBuses(); i++) {
-			bus = ckt.getBuses()[i];
+			bus = ckt.getBus(i);
 			if (bus.getKVBase() > 0.0) {
 				for (j = 0; j < bus.getNumNodesThisBus(); j++) {
 					VMagPU = ckt.getSolution().getNodeV()[ bus.getRef(j) ].abs() / bus.getKVBase() * 0.001;

@@ -70,7 +70,7 @@ public class FeederObjImpl extends PCElementImpl implements FeederObj {
 				for (int i = 0; i < pElement.getNTerms() - 1; i++) {
 					bref = branchList.getPresentBranch().getToBusReference();  // each call pops off a new one
 					if (bref > 0)
-						DSSGlobals.activeCircuit.getBuses()[bref].setRadialBus(true);
+						DSSGlobals.activeCircuit.getBus(bref).setRadialBus(true);
 				}
 
 				pShunt = (CktElement) branchList.getPresentBranch().getFirstObject();

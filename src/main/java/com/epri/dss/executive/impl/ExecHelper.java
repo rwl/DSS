@@ -708,7 +708,7 @@ public class ExecHelper {
 				capElement = (CapacitorObj) DSSGlobals.activeDSSObject;
 				if (capElement.isShunt()) {
 					if (capElement.isEnabled())
-						DSSGlobals.activeCircuit.getBuses()[capElement.getTerminals()[0].getBusRef()].setKeep(true);
+						DSSGlobals.activeCircuit.getBus(capElement.getTerminal(0).getBusRef()).setKeep(true);
 				}
 				objRef = cls.getNext();
 			}
@@ -723,7 +723,7 @@ public class ExecHelper {
 				if (reacElement.isShunt()) {
 					try {
 						if (reacElement.isEnabled())
-							DSSGlobals.activeCircuit.getBuses()[ reacElement.getTerminals()[0].getBusRef() ].setKeep(true);
+							DSSGlobals.activeCircuit.getBus( reacElement.getTerminal(0).getBusRef() ).setKeep(true);
 					} catch (Exception e) {
 						DSSGlobals.doSimpleMsg(String.format("%s %s reactor=%s Bus No.=%d ", e.getMessage(), DSSGlobals.CRLF, reacElement.getName(), reacElement.getNodeRef()[0]), 9999);
 					}
@@ -1025,9 +1025,9 @@ public class ExecHelper {
 
 		if (ckt.getActiveBusIndex() >= 0) {
 			if (paramName.equalsIgnoreCase("kvln")) {
-				ckt.getBuses()[ ckt.getActiveBusIndex() ].setKVBase(kVValue);
+				ckt.getBus( ckt.getActiveBusIndex() ).setKVBase(kVValue);
 			} else {
-				ckt.getBuses()[ ckt.getActiveBusIndex() ].setKVBase(kVValue / DSSGlobals.SQRT3);
+				ckt.getBus( ckt.getActiveBusIndex() ).setKVBase(kVValue / DSSGlobals.SQRT3);
 			}
 			result = 0;
 			ckt.getSolution().setVoltageBaseChanged(true);
@@ -1118,7 +1118,7 @@ public class ExecHelper {
 					if (param.length() > 0) {
 						ckt = DSSGlobals.activeCircuit;
 						iBus = ckt.getBusList().find(param);
-						if (iBus > 0) ckt.getBuses()[iBus].setKeep(true);
+						if (iBus > 0) ckt.getBus(iBus).setKeep(true);
 					}
 				}
 				br.close();
@@ -1133,7 +1133,7 @@ public class ExecHelper {
 
 				iBus = ckt.getBusList().find(param);
 				if (iBus >= 0)
-					ckt.getBuses()[iBus].setKeep(true);
+					ckt.getBus(iBus).setKeep(true);
 
 				DSSGlobals.auxParser.getNextParam();
 				param = DSSGlobals.auxParser.makeString();
@@ -1325,7 +1325,7 @@ public class ExecHelper {
 					for (j = 0; j < cktElem.getNTerms(); j++) {
 						k = j * cktElem.getNConds();
 						for (i = 0; i < 3; i++)
-							Vph[i] = ckt.getSolution().getNodeV()[ cktElem.getTerminals()[j].getTermNodeRef()[i] ];
+							Vph[i] = ckt.getSolution().getNodeV()[ cktElem.getTerminal(j).getTermNodeRef()[i] ];
 						for (i = 0; i < 3; i++)
 							Iph[i] = cBuffer[k + i];
 						MathUtil.phase2SymComp(Iph, I012);
@@ -1417,7 +1417,7 @@ public class ExecHelper {
 			Circuit ckt = DSSGlobals.activeCircuit;
 
 			if (ckt.getActiveBusIndex() >= 0) {
-				activeBus = ckt.getBuses()[ ckt.getActiveBusIndex() ];
+				activeBus = ckt.getBus( ckt.getActiveBusIndex() );
 				DSSGlobals.globalResult = "";
 				for (int i = 0; i < activeBus.getNumNodesThisBus(); i++) {
 					volts = ckt.getSolution().getNodeV()[ activeBus.getRef(i) ];
@@ -1450,7 +1450,7 @@ public class ExecHelper {
 			Circuit ckt = DSSGlobals.activeCircuit;
 
 			if (ckt.getActiveBusIndex() >= 0) {
-				activeBus = ckt.getBuses()[ ckt.getActiveBusIndex() ];
+				activeBus = ckt.getBus( ckt.getActiveBusIndex() );
 				DSSGlobals.globalResult = "";
 				if (activeBus.getZsc() == null)
 					return result;
@@ -1485,7 +1485,7 @@ public class ExecHelper {
 			Circuit ckt = DSSGlobals.activeCircuit;
 
 			if (ckt.getActiveBusIndex() >= 0) {
-				activeBus = ckt.getBuses()[ ckt.getActiveBusIndex() ];
+				activeBus = ckt.getBus( ckt.getActiveBusIndex() );
 				DSSGlobals.globalResult = "";
 				if (activeBus.getZsc() == null) {
 
@@ -1685,11 +1685,11 @@ public class ExecHelper {
 			ckt = DSSGlobals.activeCircuit;
 			solution = ckt.getSolution();
 			for (int i = 0; i < ckt.getNumNodes(); i++)
-				solution.getCurrents()[i] = Complex.ZERO;  // clear currents array
+				solution.setCurrent(i, Complex.ZERO);  // clear currents array
 
 			if (ckt.getActiveBusIndex() >= 0 && ckt.getActiveBusIndex() < ckt.getNumBuses()) {
-				if (ckt.getBuses()[ ckt.getActiveBusIndex() ].getZsc() == null)
-					ckt.getBuses()[ckt.getActiveBusIndex()].allocateBusQuantities();
+				if (ckt.getBus( ckt.getActiveBusIndex() ).getZsc() == null)
+					ckt.getBus(ckt.getActiveBusIndex()).allocateBusQuantities();
 				SolutionAlgs.computeYsc(ckt.getActiveBusIndex());  // compute Ysc for active bus
 				result = 0;
 			}
@@ -1772,7 +1772,7 @@ public class ExecHelper {
 				busName = parser.makeString();
 				ib = DSSGlobals.activeCircuit.getBusList().find(busName);
 				if (ib >= 0) {
-					bus = DSSGlobals.activeCircuit.getBuses()[ib];
+					bus = DSSGlobals.activeCircuit.getBus(ib);
 					parser.getNextParam();
 					if (swapXY) {
 						bus.setY( parser.makeDouble() );
@@ -1994,8 +1994,8 @@ public class ExecHelper {
 			ymin =  1.0e50;
 			ymax = -1.0e50;
 			for (int i = 0; i < ckt.getNumBuses(); i++) {
-				if (ckt.getBuses()[i].isCoordDefined()) {
-					bus = ckt.getBuses()[i];
+				if (ckt.getBus(i).isCoordDefined()) {
+					bus = ckt.getBus(i);
 					xmax = Math.max(xmax, bus.getX());
 					xmin = Math.min(xmin, bus.getX());
 					ymax = Math.max(ymax, bus.getY());
@@ -2007,8 +2007,8 @@ public class ExecHelper {
 			yc = (ymax + ymin) / 2.0;
 
 			for (int i = 0; i < ckt.getNumBuses(); i++) {
-				if (ckt.getBuses()[i].isCoordDefined()) {
-					bus = ckt.getBuses()[i];
+				if (ckt.getBus(i).isCoordDefined()) {
+					bus = ckt.getBus(i);
 					vector = new Complex(bus.getX() - xc, bus.getY() - yc);
 					vector = vector.multiply(a);
 					bus.setX(xc + vector.getReal());
@@ -2443,6 +2443,7 @@ public class ExecHelper {
 		LineObj pLine1, pLine2;
 		Line lineClass;
 		int traceDirection;
+		int nPhases;
 
 		int result = 0;
 		int paramPointer = -1;
@@ -2451,6 +2452,7 @@ public class ExecHelper {
 		String line1 = "";
 		String line2 = "";
 		String myEditString = "";
+		nPhases = 0;  // no filtering by number of phases
 		String paramName = Parser.getInstance().getNextParam();
 		String param = Parser.getInstance().makeString();
 		while (param.length() > 0) {
@@ -2479,6 +2481,8 @@ public class ExecHelper {
 			case 4:
 				myEditString = param;
 				break;
+			case 5:
+				nPhases = Parser.getInstance().makeInteger();
 			default:
 				DSSGlobals.doSimpleMsg("Error: Unknown parameter on command line: "+param, 28701);
 				break;
@@ -2549,10 +2553,10 @@ public class ExecHelper {
 
 		switch (traceDirection) {
 		case 1:
-			Utilities.traceAndEdit(pLine1, pLine2, editString);
+			Utilities.traceAndEdit(pLine1, pLine2, nPhases, editString);
 			break;
 		case 2:
-			Utilities.traceAndEdit(pLine2, pLine1, editString);
+			Utilities.traceAndEdit(pLine2, pLine1, nPhases, editString);
 			break;
 		default:
 			DSSGlobals.doSimpleMsg("Traceback path not found between Line1 and Line2.", 28707);
@@ -2606,7 +2610,7 @@ public class ExecHelper {
 
 		busIdx = ckt.getBusList().find(busName);
 		if (busIdx >= 0) {
-			bus = ckt.getBuses()[ busIdx ];
+			bus = ckt.getBus(busIdx);
 			if (bus.isCoordDefined()) {
 				DSSGraphDeclarations.addNewMarker(bus.getX(), bus.getY(), DSSPlotImpl.getAddMarkerColor(), DSSPlotImpl.getAddMarkerCode(), DSSPlotImpl.getAddMarkerSize());
 				DSSGraphDeclarations.showGraph();
@@ -2633,7 +2637,7 @@ public class ExecHelper {
 			LoadImpl.activeLoadObj = pLoad;  // for updateVoltageBases to work
 			sBus = Utilities.stripExtension( pLoad.getBus(0) );
 			iBus = ckt.getBusList().find(sBus);
-			pBus = ckt.getBuses()[iBus];
+			pBus = ckt.getBus(iBus);
 			kvln = pBus.getKVBase();
 			if (pLoad.getConnection() == 1 || pLoad.getNPhases() == 3) {
 				pLoad.setKVLoadBase(kvln * DSSGlobals.SQRT3);
@@ -2647,7 +2651,7 @@ public class ExecHelper {
 		for (GeneratorObj pGen : ckt.getGenerators()) {
 			sBus = Utilities.stripExtension( pGen.getBus(0) );
 			iBus = ckt.getBusList().find(sBus);
-			pBus = ckt.getBuses()[iBus];
+			pBus = ckt.getBus(iBus);
 			kvln = pBus.getKVBase();
 			if (pGen.getConnection() == 1 || pGen.getNPhases() > 1) {
 				pGen.setPresentKV(kvln * DSSGlobals.SQRT3);
@@ -2745,7 +2749,7 @@ public class ExecHelper {
 		sBusName = DSSGlobals.auxParser.parseAsBusName(numNodes, nodeBuffer);
 		iBusIdx = DSSGlobals.activeCircuit.getBusList().find(sBusName);
 		if (iBusIdx >= 0) {
-			b1ref = DSSGlobals.activeCircuit.getBuses()[iBusIdx].find(nodeBuffer[0]);
+			b1ref = DSSGlobals.activeCircuit.getBus(iBusIdx).find(nodeBuffer[0]);
 		} else {
 			DSSGlobals.doSimpleMsg(String.format("Bus %s not found.", sBusName), 28709);
 			return result;
@@ -2759,7 +2763,7 @@ public class ExecHelper {
 		sBusName = DSSGlobals.auxParser.parseAsBusName(numNodes, nodeBuffer);
 		iBusIdx = DSSGlobals.activeCircuit.getBusList().find(sBusName);
 		if (iBusIdx > 0) {
-			b2ref = DSSGlobals.activeCircuit.getBuses()[iBusIdx].find(nodeBuffer[0]);
+			b2ref = DSSGlobals.activeCircuit.getBus(iBusIdx).find(nodeBuffer[0]);
 		} else {
 			DSSGlobals.doSimpleMsg(String.format("Bus %s not found.", sBusName), 28710);
 			return result;
@@ -2874,9 +2878,9 @@ public class ExecHelper {
 
 			int iB = DSSGlobals.activeCircuit.getBusList().find(busName);
 			if (iB >= 0) {
-				DSSGlobals.activeCircuit.getBuses()[iB].setX(XVal);
-				DSSGlobals.activeCircuit.getBuses()[iB].setY(YVal);
-				DSSGlobals.activeCircuit.getBuses()[iB].setCoordDefined(true);
+				DSSGlobals.activeCircuit.getBus(iB).setX(XVal);
+				DSSGlobals.activeCircuit.getBus(iB).setY(YVal);
+				DSSGlobals.activeCircuit.getBus(iB).setCoordDefined(true);
 			} else {
 				DSSGlobals.doSimpleMsg("Error: Bus \"" + busName + "\" not found.", 28722);
 			}

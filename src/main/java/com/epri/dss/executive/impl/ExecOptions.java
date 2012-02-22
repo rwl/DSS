@@ -995,7 +995,7 @@ public class ExecOptions {
 				case 57:
 					ckt = DSSGlobals.activeCircuit;
 					for (int i = 0; i < ckt.getNumBuses(); i++)
-						if (ckt.getBuses()[i].isKeep())
+						if (ckt.getBus(i).isKeep())
 							DSSGlobals.appendGlobalResult(ckt.getBusList().get(i));
 					break;
 				case 58:

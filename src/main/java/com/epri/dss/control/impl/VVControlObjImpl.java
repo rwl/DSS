@@ -302,7 +302,7 @@ public class VVControlObjImpl extends ControlElemImpl implements VVControlObj {
 			cBuffer = monitoredElement.getVTerminal();
 
 			// get the basekV for the monitored bus
-			baseKV = DSSGlobals.activeCircuit.getBuses()[ terminals[elementTerminal].getBusRef() ].getKVBase();
+			baseKV = DSSGlobals.activeCircuit.getBus( terminals[elementTerminal].getBusRef() ).getKVBase();
 			VAvg = 0;
 
 			// calculate the average voltage

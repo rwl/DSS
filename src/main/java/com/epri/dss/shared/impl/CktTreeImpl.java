@@ -238,7 +238,7 @@ public class CktTreeImpl implements CktTree {
 		for (PCElement psrc : ckt.getSources()) {  // sources are special PC elements
 			if (psrc.isEnabled()) {
 				if (analyze || !psrc.isChecked()) {
-					if (psrc.getTerminals()[0].getBusRef() == busNum) {  // ? connected to this bus ?
+					if (psrc.getTerminal(0).getBusRef() == busNum) {  // ? connected to this bus ?
 						if (analyze) {
 							psrc.setIsolated(false);
 							branchList.getPresentBranch().setDangling(false);
@@ -284,7 +284,7 @@ public class CktTreeImpl implements CktTree {
 				if (analyze || !p.isChecked()) {
 					if (!Utilities.isShuntElement(p) && Utilities.allTerminalsClosed(p)) {
 						for (j = 0; j < p.getNTerms(); j++) {
-							if (busNum == p.getTerminals()[j].getBusRef()) {
+							if (busNum == p.getTerminal(j).getBusRef()) {
 								if (analyze) {
 									p.setIsolated(false);
 									branchList.getPresentBranch().setDangling(false);
@@ -298,7 +298,7 @@ public class CktTreeImpl implements CktTree {
 								}
 								if (!p.isChecked()) {
 									branchList.addNewChild(p, busNum, j);
-									p.getTerminals()[j].setChecked(true);
+									p.getTerminal(j).setChecked(true);
 									p.setChecked(true);
 									break;  /* for */
 								}
@@ -364,13 +364,13 @@ public class CktTreeImpl implements CktTree {
 		testBranch = testElement;
 		while (testBranch != null) {
 			for (iTerm = 0; iTerm < testBranch.getNTerms(); iTerm++) {
-				if (!testBranch.getTerminals()[ iTerm ].isChecked()) {
+				if (!testBranch.getTerminal(iTerm).isChecked()) {
 					// now find all PC elements connected to the bus on this end of branch
 					// attach them as generic objects to cktTree node.
-					testBusNum = testBranch.getTerminals()[iTerm].getBusRef();
+					testBusNum = testBranch.getTerminal(iTerm).getBusRef();
 					branchList.getPresentBranch().setToBusReference(testBusNum);  // add this as a "to" bus reference
 					if (testBusNum > 0) {
-						ckt.getBuses()[ testBusNum ].setBusChecked(true);
+						ckt.getBus(testBusNum).setBusChecked(true);
 						getSourcesConnectedToBus(testBusNum, branchList, analyze);
 						getPCElementsConnectedToBus(lstPC[ testBusNum ], branchList, analyze);
 						getShuntPDElementsConnectedToBus(lstPD[ testBusNum ], branchList, analyze);
@@ -400,7 +400,7 @@ public class CktTreeImpl implements CktTree {
 
 		for (CktElement pCktElement : ckt.getPCElements()) {
 			if (pCktElement.isEnabled()) {
-				i = pCktElement.getTerminals()[0].getBusRef();
+				i = pCktElement.getTerminal(0).getBusRef();
 				lstPC[i].add((PCElement) pCktElement);
 			}
 		}
@@ -409,11 +409,11 @@ public class CktTreeImpl implements CktTree {
 			/* Put only eligible PD elements in the list */
 			if (pCktElement.isEnabled()) {
 				if (Utilities.isShuntElement(pCktElement)) {
-					i = pCktElement.getTerminals()[0].getBusRef();
+					i = pCktElement.getTerminal(0).getBusRef();
 					lstPC[i].add((PCElement) pCktElement);
 				} else if (Utilities.allTerminalsClosed(pCktElement))
 					for (j = 0; j < pCktElement.getNTerms(); j++) {
-						i = pCktElement.getTerminals()[j].getBusRef();
+						i = pCktElement.getTerminal(j).getBusRef();
 						lstPD[i].add((PDElement) pCktElement);
 					}
 			}

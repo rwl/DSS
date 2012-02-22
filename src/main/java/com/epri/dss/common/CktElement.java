@@ -65,6 +65,8 @@ public interface CktElement extends DSSObject {
 
 	PowerTerminal[] getTerminals();
 
+	PowerTerminal getTerminal(int idx);
+
 	void setTerminals(PowerTerminal[] terminals);
 
 	void setActiveTerminal(PowerTerminal activeTerminal);

@@ -46,7 +46,7 @@ public abstract class PCElementImpl extends DSSCktElement implements PCElement {
 		SolutionObj sol = DSSGlobals.activeCircuit.getSolution();
 
 		for (int i = 0; i < YOrder; i++)
-			sol.getCurrents()[nodeRef[i]] = sol.getCurrents()[nodeRef[i]].add( injCurrent[i] );
+			sol.setCurrent(nodeRef[i], sol.getCurrent(nodeRef[i]).add( injCurrent[i] ));
 
 		return 0;
 	}

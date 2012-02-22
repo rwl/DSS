@@ -281,7 +281,7 @@ public class AutoAddImpl implements AutoAdd {
 		DSSGlobals.energyMeterClass.sampleAll();
 
 		/* Check to see if bus base voltages have been defined. */
-		if (ckt.getBuses()[ckt.getNumBuses()].getKVBase() == 0.0)
+		if (ckt.getBus(ckt.getNumBuses()).getKVBase() == 0.0)
 			sol.setVoltageBases();
 
 		if (modeChanged) {
@@ -363,7 +363,7 @@ public class AutoAddImpl implements AutoAdd {
 					/* Get the number of phases at this bus and the node ref and add into the aux current array */
 
 					/* Assume either a 3-phase or 1-phase generator */
-					if (ckt.getBuses()[busIndex].getNumNodesThisBus() < 3) {
+					if (ckt.getBus(busIndex).getNumNodesThisBus() < 3) {
 						phases = 1;
 					} else {
 						phases = 3;
@@ -388,7 +388,7 @@ public class AutoAddImpl implements AutoAdd {
 						try {
 							FStream = new FileWriter(F, true);  // append
 							BufferedWriter FLog = new BufferedWriter(FStream);
-							FLog.write(String.format("\"%s\", %-g", testBus, ckt.getBuses()[busIndex].getKVBase()*DSSGlobals.SQRT3));
+							FLog.write(String.format("\"%s\", %-g", testBus, ckt.getBus(busIndex).getKVBase()*DSSGlobals.SQRT3));
 							FLog.write(String.format(", %-g, %-g", kWLosses, puLossImprovement * 100.0));
 							FLog.write(String.format(", %-g, %-g", kWEEN, puEENImprovement * 100.0));
 							FLog.write(String.format(", %-g, %d", lossImproveFactor, sol.getIteration()));
@@ -419,9 +419,9 @@ public class AutoAddImpl implements AutoAdd {
 				Executive exec = DSSExecutive.getInstance();
 
 				if (minBusPhases >= 3) {
-					kVrat = ckt.getBuses()[minLossBus].getKVBase() * DSSGlobals.SQRT3;
+					kVrat = ckt.getBus(minLossBus).getKVBase() * DSSGlobals.SQRT3;
 				} else {
-					kVrat = ckt.getBuses()[minLossBus].getKVBase();
+					kVrat = ckt.getBus(minLossBus).getKVBase();
 				}
 				commandString = "New, generator." + getUniqueGenName() +
 						", bus1=\"" + ckt.getBusList().get(minLossBus) +
@@ -474,7 +474,7 @@ public class AutoAddImpl implements AutoAdd {
 					/* Get the number of phases at this bus and the node ref and add into the aux current array */
 
 					/* Assume either a 3-phase or 1-phase capacitor */
-					if (ckt.getBuses()[busIndex].getNumNodesThisBus() < 3) {
+					if (ckt.getBus(busIndex).getNumNodesThisBus() < 3) {
 						phases = 1;
 					} else {
 						phases = 3;
@@ -482,7 +482,7 @@ public class AutoAddImpl implements AutoAdd {
 
 					// apply the capacitor at the bus rating
 
-					kVrat = ckt.getBuses()[busIndex].getKVBase();  // L-N Base kV
+					kVrat = ckt.getBus(busIndex).getKVBase();  // L-N Base kV
 					Ycap = (testCapKVAr * 0.001 / phases ) / (kVrat * kVrat) ;
 
 
@@ -502,7 +502,7 @@ public class AutoAddImpl implements AutoAdd {
 						try {
 							FStream = new FileWriter(F, true);  // append
 							BufferedWriter FLog = new BufferedWriter(FStream);
-							FLog.write(String.format("\"%s\", %-g", testBus, ckt.getBuses()[busIndex].getKVBase() * DSSGlobals.SQRT3));
+							FLog.write(String.format("\"%s\", %-g", testBus, ckt.getBus(busIndex).getKVBase() * DSSGlobals.SQRT3));
 							FLog.write(String.format(", %-g, %-g", kWLosses, puLossImprovement * 100.0));
 							FLog.write(String.format(", %-g, %-g", kWEEN, puEENImprovement * 100.0));
 							FLog.write(String.format(", %-g, %d", lossImproveFactor, sol.getIteration()));
@@ -531,9 +531,9 @@ public class AutoAddImpl implements AutoAdd {
 				Executive exec = DSSExecutive.getInstance();
 
 				if (minBusPhases >= 3) {
-					kVrat = ckt.getBuses()[minLossBus].getKVBase() * DSSGlobals.SQRT3;
+					kVrat = ckt.getBus(minLossBus).getKVBase() * DSSGlobals.SQRT3;
 				} else {
-					kVrat = ckt.getBuses()[minLossBus].getKVBase();
+					kVrat = ckt.getBus(minLossBus).getKVBase();
 				}
 
 				commandString = "New, Capacitor." + getUniqueCapName() +
@@ -572,7 +572,7 @@ public class AutoAddImpl implements AutoAdd {
 		case DSSGlobals.GENADD:
 			/* For buses with voltage != 0, add into aux current array */
 			for (int i = 0; i < phases; i++) {
-				nRef = ckt.getBuses()[busIndex].getRef(i);
+				nRef = ckt.getBus(busIndex).getRef(i);
 				if (nRef > 0) {  // add in only non-ground currents  TODO Check zero indexing
 					busV = sol.getNodeV()[nRef];
 					if ((busV.getReal() != 0.0) || (busV.getImaginary() != 0.0)) {
@@ -580,10 +580,10 @@ public class AutoAddImpl implements AutoAdd {
 						switch (solveType) {
 						case Solution.NEWTONSOLVE:
 							// FIXME Implement complex accumulate
-							sol.getCurrents()[nRef] = sol.getCurrents()[nRef].add( GenVA.divide(busV).conjugate().negate() );  // terminal current
+							sol.setCurrent(nRef, sol.getCurrent(nRef).add( GenVA.divide(busV).conjugate().negate() ));  // terminal current
 							break;
 						case Solution.NORMALSOLVE:
-							sol.getCurrents()[nRef] = sol.getCurrents()[nRef].add( GenVA.divide(busV).conjugate() );  // injection Current
+							sol.setCurrent(nRef, sol.getCurrent(nRef).add( GenVA.divide(busV).conjugate() ));  // injection Current
 							break;
 						}
 					}
@@ -594,17 +594,17 @@ public class AutoAddImpl implements AutoAdd {
 		case DSSGlobals.CAPADD:
 			/* For buses with voltage != 0, add into aux current array */
 			for (int i = 0; i < phases; i++) {
-				nRef = ckt.getBuses()[busIndex].getRef(i);
+				nRef = ckt.getBus(busIndex).getRef(i);
 				if (nRef >= 0) {
 					busV = sol.getNodeV()[nRef];
 					if (busV.getReal() != 0.0 || busV.getImaginary() != 0.0) {
 						/* Current into the system network */
 						switch (solveType) {
 						case Solution.NEWTONSOLVE:
-							sol.getCurrents()[nRef] = sol.getCurrents()[nRef].add( new Complex(0.0, Ycap).multiply(busV) );  // terminal current
+							sol.setCurrent(nRef, sol.getCurrent(nRef).add( new Complex(0.0, Ycap).multiply(busV) ));  // terminal current
 							break;
 						case Solution.NORMALSOLVE:
-							sol.getCurrents()[nRef] = sol.getCurrents()[nRef].add( new Complex(0.0, -Ycap).multiply(busV) );  // injection current
+							sol.setCurrent(nRef, sol.getCurrent(nRef).add( new Complex(0.0, -Ycap).multiply(busV) ));  // injection current
 							break;
 						}
 					}  // constant Y model

@@ -660,7 +660,7 @@ public class SolutionAlgs {
 	private static void allocateAllSCParms() {
 		Circuit ckt = DSSGlobals.activeCircuit;
 		for (int i = 0; i < ckt.getNumBuses(); i++)
-			ckt.getBuses()[i].allocateBusQuantities();
+			ckt.getBus(i).allocateBusQuantities();
 	}
 
 	/**
@@ -669,7 +669,7 @@ public class SolutionAlgs {
 	private static void computeIsc() {
 		Circuit ckt = DSSGlobals.activeCircuit;
 		for (int i = 0; i < ckt.getNumBuses(); i++) {
-			Bus bus = ckt.getBuses()[i];
+			Bus bus = ckt.getBus(i);
 			bus.getYsc().vMult(bus.getBusCurrent(), bus.getVBus());
 		}
 	}
@@ -683,7 +683,7 @@ public class SolutionAlgs {
 	public static void computeYsc(int iB) throws Esolv32Problem {
 		Circuit ckt = DSSGlobals.activeCircuit;
 		SolutionObj sol = ckt.getSolution();
-		Bus bus = ckt.getBuses()[iB];
+		Bus bus = ckt.getBus(iB);
 
 		int ref1;
 
@@ -691,14 +691,14 @@ public class SolutionAlgs {
 		for (int i = 0; i < bus.getNumNodesThisBus(); i++) {
 			ref1 = bus.getRef(i);
 			if (ref1 >= 0) {
-				sol.getCurrents()[ref1] = Complex.ONE;
+				sol.setCurrent(ref1, Complex.ONE);
 				/* SparseSet expects 1st element of voltage array, not 0-th element */
-				if (YMatrix.solveSparseSet(sol.getYSystem(), sol.getNodeV()[1], sol.getCurrents()[1]) < 1)
+				if (YMatrix.solveSparseSet(sol.getYSystem(), sol.getNodeV()[1], sol.getCurrent(1)) < 1)
 					throw new Esolv32Problem("Error solving system Y matrix in computeYsc. Problem with sparse matrix solver.");
 				/* Extract voltage vector = column of Zsc */
 				for (int j = 0; j < bus.getNumNodesThisBus(); j++)
 					bus.getZsc().set(j, i, sol.getNodeV()[ bus.getRef(j) ]);
-				sol.getCurrents()[ref1] = Complex.ZERO;
+				sol.setCurrent(ref1, Complex.ZERO);
 			}
 		}
 		bus.getYsc().copyFrom(bus.getZsc());
@@ -710,7 +710,7 @@ public class SolutionAlgs {
 		SolutionObj sol = ckt.getSolution();
 
 		for (int j = 0; j < ckt.getNumNodes(); j++)
-			sol.getCurrents()[j] = Complex.ZERO;
+			sol.setCurrent(j, Complex.ZERO);
 
 		progressCount = 0;
 

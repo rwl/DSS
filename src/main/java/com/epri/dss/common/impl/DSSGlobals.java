@@ -5,6 +5,7 @@ import java.io.FileWriter;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -147,7 +148,13 @@ public class DSSGlobals {
 	public static String globalHelpString = "";
 	public static String globalPropertyValue = "";
 	public static String globalResult = "";
+	public static String lastResultFile;
 	public static String versionString = "Version " + getDSSVersion();
+
+	public static boolean logQueries = false;
+	public static boolean queryFirstTime;
+	public static String queryLogFileName = "";
+	public static File queryLogFile;
 
 	public static String defaultEditor = "NotePad";
 	public static String DSSFileName;// = GetDSSExeFile();  // name of current exe or DLL
@@ -226,7 +233,11 @@ public class DSSGlobals {
 	public static void clearAllCircuits() {
 		activeCircuit = null;
 		circuits = new ArrayList<Circuit>(2);  // make a new list of circuits
+
+		// revert on key global flags to original states
 		numCircuits = 0;
+		logQueries = false;
+		maxAllocationIterations = 2;
 	}
 
 	/**
@@ -374,6 +385,40 @@ public class DSSGlobals {
 			debugFile.close();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
+		}
+	}
+
+	public static void resetQueryLogFile() {
+		queryFirstTime = true;
+	}
+
+	/**
+	 * Log file is written after a query command if LogQueries is true.
+	 */
+	public static void writeQueryLogfile(String prop, String s) {
+		FileWriter f;
+		PrintWriter writer;
+
+		try {
+			queryLogFileName =  DSSDataDirectory + "QueryLog.csv";
+
+			queryLogFile = new File(queryLogFileName);
+
+			if (queryFirstTime) {
+				f = new FileWriter(queryLogFile, false);
+				writer = new PrintWriter(f);
+				writer.println("Time(h), Property, Result");
+				queryFirstTime = false;
+			} else {
+				f = new FileWriter(queryLogFile, true);
+				writer = new PrintWriter(f);
+			}
+
+			writer.printf("%.10g, %s, %s", activeCircuit.getSolution().getDblHour(), prop, s);
+			writer.close();
+			f.close();
+		} catch (IOException e) {
+			doSimpleMsg("Error writing Query Log file: " + e.getMessage(), 908);
 		}
 	}
 

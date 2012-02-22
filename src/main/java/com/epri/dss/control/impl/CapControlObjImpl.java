@@ -423,7 +423,7 @@ public class CapControlObjImpl extends ControlElemImpl implements CapControlObj 
 			if (controlType != CapControlType.VOLTAGE) {  // don't bother for voltage control
 
 				if (VOverrideBusSpecified) {
-					getBusVoltages(DSSGlobals.activeCircuit.getBuses()[VOverrideBusIndex], cBuffer);
+					getBusVoltages(DSSGlobals.activeCircuit.getBus(VOverrideBusIndex), cBuffer);
 				} else {
 					monitoredElement.getTermVoltages(elementTerminal, cBuffer);
 				}

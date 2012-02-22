@@ -84,7 +84,7 @@ public class ReduceAlgs {
 					if (pb.isDangling()) {
 						toBusRef = pb.getToBusReference();  // only access this property once
 						if (toBusRef >= 0) {
-							bus = DSSGlobals.activeCircuit.getBuses()[toBusRef];
+							bus = DSSGlobals.activeCircuit.getBus(toBusRef);
 							if (!bus.isKeep())
 								lineElem1.setEnabled(false);
 						}
@@ -135,7 +135,7 @@ public class ReduceAlgs {
 						parentNode = pb.getParent();
 						if (parentNode != null) {
 							if (parentNode.getNumChildren() == 1)  // only works for in-line
-								if (!ckt.getBuses()[ parentNode.getToBusReference() ].isKeep()) {
+								if (!ckt.getBus( parentNode.getToBusReference() ).isKeep()) {
 									/* Let's consider merging */
 									lineElement2 = (LineObj) parentNode.getCktObject();
 									if (lineElement2.isEnabled())  // check to make sure it hasn't been merged out
@@ -154,7 +154,7 @@ public class ReduceAlgs {
 								}
 						}  /* if parentNode */
 					} else {  /* Merge with child */
-						if (!ckt.getBuses()[ pb.getToBusReference() ].isKeep()) {
+						if (!ckt.getBus( pb.getToBusReference() ).isKeep()) {
 							/* Let's consider merging */
 							lineElement2 = (LineObj) pb.getFirstChild().getCktObject();
 							if (Utilities.isLineElement(lineElement2))
@@ -201,7 +201,7 @@ public class ReduceAlgs {
 
 							case 1:
 								if (pb.getNumObjects() == 0)
-									if (!DSSGlobals.activeCircuit.getBuses()[pb.getToBusReference()].isKeep()) {
+									if (!DSSGlobals.activeCircuit.getBus(pb.getToBusReference()).isKeep()) {
 										/* Let's consider merging */
 										lineElement2 = (LineObj) pb.getFirstChild().getCktObject();
 										if (Utilities.isLineElement(lineElement2))
@@ -234,7 +234,7 @@ public class ReduceAlgs {
 							/* see if eligble for merging */
 							if (pb.getNumChildren() == 1)
 								if (pb.getNumObjects() == 0)
-									if (!DSSGlobals.activeCircuit.getBuses()[pb.getToBusReference()].isKeep()) {
+									if (!DSSGlobals.activeCircuit.getBus(pb.getToBusReference()).isKeep()) {
 										/* Let's consider merging */
 										lineElement2 = (LineObj) pb.getFirstChild().getCktObject();
 										if (Utilities.isLineElement(lineElement2))

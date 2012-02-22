@@ -348,17 +348,6 @@ public class SolutionObjImpl extends DSSObjectImpl implements SolutionObj {
 		for (CktElement pElem : ckt.getSources())
 			if (pElem.isEnabled())
 				pElem.injCurrents();  // uses nodeRef to add current into injCurr Array;
-
-		if (isHarmonicModel) {  // pick up generators and loads, too
-
-			for (GeneratorObj pElem : ckt.getGenerators())
-				if (pElem.isEnabled())
-					pElem.injCurrents();  // uses nodeRef to add current into injCurr array;
-
-			for (LoadObj pElem : ckt.getLoads())
-				if (pElem.isEnabled())
-					pElem.injCurrents();  // uses nodeRef to add current into injCurr array;
-		}
 	}
 
 	/**
@@ -683,7 +672,7 @@ public class SolutionObjImpl extends DSSObjectImpl implements SolutionObj {
 			solveZeroLoadSnapShot();
 
 			for (int i = 0; i < ckt.getNumBuses(); i++) {
-				Bus bus = ckt.getBuses()[i];
+				Bus bus = ckt.getBus(i);
 				bus.setKVBase( Utilities.nearestBasekV( nodeV[ bus.getRef(0) ].abs() * 0.001732 ) / DSSGlobals.SQRT3);  // l-n base kV
 			}
 
@@ -796,7 +785,11 @@ public class SolutionObjImpl extends DSSObjectImpl implements SolutionObj {
 
 		zeroInjCurr();  // side effect: allocates injCurr
 		getSourceInjCurrents();
-		getMachineInjCurrents();  // need this in dynamics mode to pick up injections
+
+		// Pick up PCElement injections for Harmonics mode and Dynamics mode
+		// Ignore these injections for powerflow; Use only admittance in Y matrix
+		if (isDynamicModel || isHarmonicModel)
+			getPCInjCurr();
 
 		if (solveSystem(nodeV) == 1) {  // solve with zero injection current
 			DSSGlobals.activeCircuit.setIsSolved(true);
@@ -1133,7 +1126,7 @@ public class SolutionObjImpl extends DSSObjectImpl implements SolutionObj {
 
 		/* When we go in and out of dynamics mode, we have to do some special things */
 		if (isDynamicModel && !valueIsDynamic)
-			Utilities.invalidateAllMachines();  // force recomp of YPrims when we leave dynamics mode
+			Utilities.invalidateAllPCElements();  // force recomp of YPrims when we leave dynamics mode
 
 		if (!isDynamicModel && valueIsDynamic) {  // see if conditions right for going into dynamics
 
@@ -1159,7 +1152,7 @@ public class SolutionObjImpl extends DSSObjectImpl implements SolutionObj {
 		Circuit ckt = DSSGlobals.activeCircuit;
 
 		if (isHarmonicModel && !(value == Dynamics.HARMONICMODE)) {
-			Utilities.invalidateAllMachines();  // force recomp of YPrims when we leave harmonics mode
+			Utilities.invalidateAllPCElements();  // force recomp of YPrims when we leave harmonics mode
 			frequency = ckt.getFundamental();   // resets everything to norm
 		}
 
@@ -1236,9 +1229,9 @@ public class SolutionObjImpl extends DSSObjectImpl implements SolutionObj {
 
 			for (int i = 0; i < ckt.getNumBuses(); i++) {
 				busName = ckt.getBusList().get(i);
-				for (int j = 0; j < ckt.getBuses()[i].getNumNodesThisBus(); j++) {
-					volts = nodeV[ckt.getBuses()[i].getRef(j)];
-					f.println(busName + ", " + ckt.getBuses()[i].getNum(j) + String.format(", %-.7g, %-.7g", volts.abs(), ComplexUtil.degArg(volts)));
+				for (int j = 0; j < ckt.getBus(i).getNumNodesThisBus(); j++) {
+					volts = nodeV[ckt.getBus(i).getRef(j)];
+					f.println(busName + ", " + ckt.getBus(i).getNum(j) + String.format(", %-.7g, %-.7g", volts.abs(), ComplexUtil.degArg(volts)));
 				}
 			}
 
@@ -1294,7 +1287,7 @@ public class SolutionObjImpl extends DSSObjectImpl implements SolutionObj {
 		Circuit ckt = DSSGlobals.activeCircuit;
 
 		for (int i = 0; i < ckt.getNumBuses(); i++) {
-			bus = ckt.getBuses()[i];
+			bus = ckt.getBus(i);
 			if (bus.getVBus() != null)
 				for (int j = 0; j < bus.getNumNodesThisBus(); j++)
 					bus.getVBus()[j] = nodeV[bus.getRef(j)];
@@ -1309,7 +1302,7 @@ public class SolutionObjImpl extends DSSObjectImpl implements SolutionObj {
 		Circuit ckt = DSSGlobals.activeCircuit;
 
 		for (int i = 0; i < ckt.getNumBuses(); i++) {
-			bus = ckt.getBuses()[i];
+			bus = ckt.getBus(i);
 			if (bus.getVBus() != null)
 				for (int j = 0; j < bus.getNumNodesThisBus(); j++)
 					nodeV[bus.getRef(j)] = bus.getVBus()[j];
@@ -1325,10 +1318,18 @@ public class SolutionObjImpl extends DSSObjectImpl implements SolutionObj {
 	public int solveYDirect() throws Esolv32Problem {
 		zeroInjCurr();  // side effect: allocates injCurr
 		getSourceInjCurrents();
-		getMachineInjCurrents();  // need this in dynamics mode to pick up injections
+		if (isDynamicModel) getPCInjCurr();  // Need this in dynamics mode to pick up additional injections
 
 		solveSystem(nodeV);  // solve with zero injection current
 		return 0;
+	}
+
+	public Complex getCurrent(int idx) {
+		return currents[idx];
+	}
+
+	public void setCurrent(int idx, Complex current) {
+		currents[idx] = current;
 	}
 
 	public double getFrequency() {

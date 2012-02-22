@@ -61,7 +61,7 @@ public class YMatrix {
 
 		for (int i = 0; i < ckt.getNumNodes(); i++) {
 			NodeBus nb = ckt.getMapNodeToBus()[i];
-			sol.getNodeVBase()[i] = ckt.getBuses()[nb.busRef].getKVBase() * 1000.0;
+			sol.getNodeVBase()[i] = ckt.getBus(nb.busRef).getKVBase() * 1000.0;
 			sol.setVoltageBaseChanged(false);
 		}
 	}

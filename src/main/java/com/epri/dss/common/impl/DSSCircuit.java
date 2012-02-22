@@ -1021,7 +1021,7 @@ public class DSSCircuit extends NamedObjectImpl implements Circuit {
 			for (CktElement elem : cktElements) {
 				elem.setChecked(false);
 				for (i = 0; i < elem.getNTerms(); i++)
-					elem.getTerminals()[i].setChecked(false);
+					elem.getTerminal(i).setChecked(false);
 				elem.setIsolated(true);  // till proven otherwise
 			}
 
@@ -1050,6 +1050,10 @@ public class DSSCircuit extends NamedObjectImpl implements Circuit {
 		if (busAdjPC == null)
 			CktTreeImpl.buildActiveBusAdjacencyLists(busAdjPD, busAdjPC);
 		return busAdjPC;
+	}
+
+	public Bus getBus(int idx) {
+		return buses[idx];
 	}
 
 	public int getActiveBusIndex() {

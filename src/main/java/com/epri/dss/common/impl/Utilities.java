@@ -233,7 +233,7 @@ public class Utilities {
 	}
 
 	public static String fullName(CktElement pElem) {
-		return encloseQuotes(pElem.getDSSClassName() + "." + pElem.getName());
+		return encloseQuotes(pElem.getDSSClassName() + "." + pElem.getName().toUpperCase());
 	}
 
 	/**
@@ -267,13 +267,48 @@ public class Utilities {
 	 * Put array values in parentheses separated by commas.
 	 */
 	public static String intArrayToString(int[] iarray, int count) {
-		String result = "(";
-		for (int i = 0; i < count; i++) {
-			result = result + String.valueOf(iarray[i]);
-			if (i != count - 1)  // TODO Check zero based indexing
-				result = result + ", ";
+
+		String result = "[NULL]";  // FIXME: use StringBuilder
+		if (count > 0) {
+			result = "[";
+			for (int i = 0; i < count; i++) {
+				result = result + String.valueOf(iarray[i]);
+				if (i != count - 1)
+					result = result + ", ";
+			}
+			result = result + "]";
 		}
-		return result + ')';
+		return result;
+	}
+
+	/**
+	 * Put array values in brackets separated by commas.
+	 */
+	public static String dblArrayToString(double[] dblarray, int count) {
+		String result = "[NULL]";
+		if (count > 0) {
+			result = String.format("[%.10g", dblarray[0]);
+			for (int i = 1; i < count; i++) {
+				result = result + String.format(", %.10g", dblarray[i]);
+			}
+			result = result + "]";
+		}
+		return result;
+	}
+
+	/**
+	 * Put array values in brackets separated by commas.
+	 */
+	public static String cmplxArrayToString(Complex[] cpxarray, int count) {
+		String result = "[NULL]";
+		if (count > 0) {
+			result = String.format("[%.10g +j %.10g",  cpxarray[0].getReal(), cpxarray[0].getImaginary());
+			for (int i = 1; i < count; i++) {
+				result = result + String.format(", %.10g +j %.10g", cpxarray[i].getReal(), cpxarray[i].getImaginary());
+			}
+			result = result + "]";
+		}
+		return result;
 	}
 
 	public static String encloseQuotes(String s) {
@@ -511,7 +546,11 @@ public class Utilities {
 		FileInputStream fis = null;
 		BufferedInputStream bis = null;
 		DataInputStream dis = null;
-
+		String csvFileName;
+		int csvColumn;
+		boolean csvHeader;
+		String inputLine;
+		int iskip;
 
 		DSSGlobals.auxParser.setCmdString(s);
 		String parmName = DSSGlobals.auxParser.getNextParam();
@@ -521,17 +560,52 @@ public class Utilities {
 		/* Syntax can be either a list of numeric values or a file specification: File= ... */
 
 		if (parmName.equalsIgnoreCase("file")) {
+			/* Default values */
+			if (param.equals("%%result%%")) {
+				csvFileName = DSSGlobals.lastResultFile;
+			} else {
+				csvFileName = param;
+			}
+
+			if (!new File(csvFileName).exists()) {
+				DSSGlobals.doSimpleMsg(String.format("CSV file \"%s\" does not exist", csvFileName), 70401);
+				return result;
+			}
+
+			// default options
+			csvColumn = 0;
+			csvHeader = false;
+
+			// look for other options  (may be in either order)
+			parmName = DSSGlobals.auxParser.getNextParam();
+			param = DSSGlobals.auxParser.makeString();
+			while (param.length() > 0) {
+				if (Utilities.compareTextShortest(parmName, "column") == 0)
+					csvColumn = DSSGlobals.auxParser.makeInteger();
+				if (Utilities.compareTextShortest(parmName, "header") == 0)
+					csvHeader = Utilities.interpretYesNo(param);
+				parmName = DSSGlobals.auxParser.getNextParam();
+				param = DSSGlobals.auxParser.makeString();
+			}
+
 			// load the list from a file
 			try {
 				// FIXME Use BufferedReader not BufferedInputStream
-				fis = new FileInputStream(param);
+				fis = new FileInputStream(csvFileName);
 				bis = new BufferedInputStream(fis);
 				dis = new DataInputStream(bis);
+
+				if (csvHeader) dis.readLine();  // skip the header row
 
 				for (int i = 0; i < maxValues; i++) {
 					try {
 						if (dis.available() != 0) {
-							resultArray[i] = dis.readDouble();
+							inputLine = dis.readLine();
+							DSSGlobals.auxParser.setCmdString(inputLine);
+							for (iskip = 0; iskip < csvColumn; iskip++) {
+								parmName = DSSGlobals.auxParser.getNextParam();
+								resultArray[i] = DSSGlobals.auxParser.makeDouble();
+							}
 						} else {
 							result = i - 1;  // this will be different if less found;  TODO Check zero based indexing
 							break;
@@ -1028,7 +1102,6 @@ public class Utilities {
 		PrintWriter pw;
 
 		try {
-			fileName = DSSGlobals.DSSDataDirectory + "AllocationFactors.txt";
 			FileWriter fw = new FileWriter(fileName);
 			pw = new PrintWriter(fw);
 		} catch (IOException e) {
@@ -1048,6 +1121,8 @@ public class Utilities {
 		}
 
 		pw.close();
+
+		DSSGlobals.globalResult = fileName;
 	}
 
 	public static void dumpAllDSSCommands(String fileName) {
@@ -1145,7 +1220,7 @@ public class Utilities {
 	}
 
 	/**
-	 * Intialize load and generator base values for harmonics analysis.
+	 * Intialize PCElement base values for harmonics analysis.
 	 */
 	public static boolean initializeForHarmonics() {
 		if (savePresentVoltages()) {  // zap voltage vector to disk
@@ -1172,9 +1247,10 @@ public class Utilities {
 	/**
 	 * For now, just does generators.
 	 */
-	public static void invalidateAllMachines() {
-		for (GeneratorObj pGen : DSSGlobals.activeCircuit.getGenerators())
-			pGen.setYPrimInvalid(true);
+	public static void invalidateAllPCElements() {
+		for (PCElement pElem : DSSGlobals.activeCircuit.getPCElements())
+			if (pElem.isEnabled())
+				pElem.setYPrimInvalid(true);
 	}
 
 	public static double presentTimeInSec() {
@@ -1492,7 +1568,7 @@ public class Utilities {
 	public static void doResetKeepList() {
 		Circuit ckt = DSSGlobals.activeCircuit;
 		for (int i = 0; i < ckt.getNumBuses(); i++)
-			ckt.getBuses()[i].setKeep(false);
+			ckt.getBus(i).setKeep(false);
 	}
 
 	private static String extractComment(String s) {
@@ -1629,12 +1705,12 @@ public class Utilities {
 	 */
 	public static boolean checkParallel(CktElement line1, CktElement line2) {
 
-		if (line1.getTerminals()[0].busRef == line2.getTerminals()[0].busRef)
-			if (line1.getTerminals()[1].busRef == line2.getTerminals()[1].busRef)
+		if (line1.getTerminal(0).busRef == line2.getTerminal(0).busRef)
+			if (line1.getTerminal(1).busRef == line2.getTerminal(1).busRef)
 				return true;
 
-		if (line1.getTerminals()[1].busRef == line2.getTerminals()[0].busRef)
-			if (line1.getTerminals()[0].busRef == line2.getTerminals()[1].busRef)
+		if (line1.getTerminal(1).busRef == line2.getTerminal(0).busRef)
+			if (line1.getTerminal(0).busRef == line2.getTerminal(1).busRef)
 				return true;
 
 		return false;
@@ -1647,11 +1723,11 @@ public class Utilities {
 		Circuit ckt = DSSGlobals.activeCircuit;
 
 		for (int i = 0; i < ckt.getNumBuses(); i++) {
-			if (ckt.getBuses()[i].getKVBase() > 0.0)
-				for (int j = 0; j < ckt.getBuses()[i].getNumNodesThisBus(); j++) {
-					nRef = ckt.getBuses()[i].getRef(j);
+			if (ckt.getBus(i).getKVBase() > 0.0)
+				for (int j = 0; j < ckt.getBus(i).getNumNodesThisBus(); j++) {
+					nRef = ckt.getBus(i).getRef(j);
 					if (nRef >= 0)
-						result = Math.max(result, ckt.getSolution().getNodeV()[nRef].abs() / ckt.getBuses()[i].getKVBase());
+						result = Math.max(result, ckt.getSolution().getNodeV()[nRef].abs() / ckt.getBus(i).getKVBase());
 				}
 		}
 
@@ -1668,7 +1744,7 @@ public class Utilities {
 		Circuit ckt = DSSGlobals.activeCircuit;
 
 		for (int i = 0; i < ckt.getNumBuses(); i++) {
-			Bus bus = ckt.getBuses()[i];
+			Bus bus = ckt.getBus(i);
 			if (bus.getKVBase() > 0.0)
 				for (int j = 0; j < bus.getNumNodesThisBus(); j++) {
 					nRef = bus.getRef(j);
@@ -1995,9 +2071,9 @@ public class Utilities {
 		int result = startNode;
 		int iBusIdx = ckt.getBusList().find(sBusName);
 		if (iBusIdx >= 0)
-			while (ckt.getBuses()[iBusIdx].findIdx(result) != -1)
+			while (ckt.getBus(iBusIdx).findIdx(result) != -1)
 				result += 1;
-		ckt.getBuses()[iBusIdx].add(result);  // add it to the list so next call will be unique
+		ckt.getBus(iBusIdx).add(result);  // add it to the list so next call will be unique
 		return result;
 	}
 
@@ -2020,11 +2096,13 @@ public class Utilities {
 	/**
 	 * Trace back up a tree and execute an edit command string.
 	 */
-	public static void traceAndEdit(PDElement fromLine, PDElement toLine, String editStr) {
+	public static void traceAndEdit(PDElement fromLine, PDElement toLine, int nPhases, String editStr) {
 		PDElement pLine = fromLine;
 		while (pLine != null) {
-			Parser.getInstance().setCmdString(editStr);
-			pLine.edit();  // uses parser
+			if ((pLine.getNPhases() == nPhases) || (nPhases == 0)) {
+				Parser.getInstance().setCmdString(editStr);
+				pLine.edit();  // uses parser
+			}
 			if (pLine.equals(toLine))
 				break;
 			pLine = pLine.getParentPDElement();
@@ -2369,7 +2447,7 @@ public class Utilities {
 						// preserve node designations if any
 						nodes = oldBusName.substring(dotpos);
 					}
-					bref  = pCktElem.getTerminals()[i].busRef;
+					bref  = pCktElem.getTerminal(i).busRef;
 					newBusName = String.format("B_%d%s", bref, nodes);
 					// check for transformer because that will be an exception
 					switch (pCktElem.getDSSObjType() & DSSClassDefs.CLASSMASK) {

@@ -213,6 +213,10 @@ public interface SolutionObj extends DSSObject {
 
 	void setCurrents(Complex[] currents);
 
+	Complex getCurrent(int idx);
+
+	void setCurrent(int idx, Complex current);
+
 	void zeroAuxCurrents();
 
 	int solveZeroLoadSnapShot() throws Esolv32Problem;

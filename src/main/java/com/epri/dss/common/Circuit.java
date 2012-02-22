@@ -258,6 +258,8 @@ public interface Circuit extends NamedObject {
 
 	Bus[] getBuses();
 
+	Bus getBus(int idx);
+
 	void setBuses(Bus[] buses);
 
 	NodeBus[] getMapNodeToBus();

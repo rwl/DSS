@@ -655,7 +655,7 @@ public class DSSCktElement extends DSSObjectImpl implements CktElement {
 			SolutionObj sol = DSSGlobals.activeCircuit.getSolution();
 
 			for (int i = 0; i < YOrder; i++)
-				sol.getCurrents()[nodeRef[i]] = sol.getCurrents()[nodeRef[i]].add(ITerminal[i]);
+				sol.setCurrent(nodeRef[i], sol.getCurrent(nodeRef[i]).add(ITerminal[i]));
 		}
 	}
 
@@ -769,6 +769,10 @@ public class DSSCktElement extends DSSObjectImpl implements CktElement {
 	public void zeroITerminal() {
 		for (int i = 0; i < YOrder; i++)
 			ITerminal[i] = Complex.ZERO;
+	}
+
+	public PowerTerminal getTerminal(int idx) {
+		return terminals[idx];
 	}
 
 	public int[] getNodeRef() {
