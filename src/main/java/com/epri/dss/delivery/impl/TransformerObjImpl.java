@@ -117,7 +117,7 @@ public class TransformerObjImpl extends PDElementImpl implements TransformerObj 
 
 	public void setNumWindings(int n) {
 		int i;
-		int oldWdgSize;
+		int oldWdgSize, newWdgSize;
 
 		if (n > 1) {
 			for (i = 0; i < numWindings; i++)
@@ -126,6 +126,7 @@ public class TransformerObjImpl extends PDElementImpl implements TransformerObj 
 			oldWdgSize = (numWindings - 1) * numWindings / 2;
 			numWindings = n;
 			maxWindings = n;
+			newWdgSize = (numWindings - 1) * numWindings / 2;
 			setNConds(nPhases + 1);
 			setNTerms(numWindings);
 
@@ -134,8 +135,8 @@ public class TransformerObjImpl extends PDElementImpl implements TransformerObj 
 				winding[i] = new WindingImpl();
 
 			// array of short circuit measurements between pairs of windings
-			XSC = Utilities.resizeArray(XSC, (numWindings - 1) * numWindings / 2);
-			for (i = oldWdgSize; i < (numWindings - 1) * numWindings / 2; i++)
+			XSC = Utilities.resizeArray(XSC, newWdgSize);
+			for (i = oldWdgSize; i < newWdgSize; i++)
 				XSC[i] = 0.30;
 			termRef = Utilities.resizeArray(termRef, 2 * numWindings * nPhases);
 
@@ -146,7 +147,7 @@ public class TransformerObjImpl extends PDElementImpl implements TransformerObj 
 			Y_Term     = new CMatrixImpl(2 * numWindings);
 			Y_Term_NL  = new CMatrixImpl(2 * numWindings);
 		} else {
-			DSSGlobals.doSimpleMsg("Invalid number of windings: " + String.valueOf(n) + " for transformer " + getName(), 111);
+			DSSGlobals.doSimpleMsg("Invalid number of windings: (" + String.valueOf(n) + ") for transformer " + getName(), 111);
 		}
 	}
 

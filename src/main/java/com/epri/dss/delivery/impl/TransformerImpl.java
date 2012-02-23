@@ -337,8 +337,6 @@ public class TransformerImpl extends PDClassImpl implements Transformer {
 						at.getWinding()[i].setKVA(at.getWinding()[0].getKVA());
 					at.setNormMaxHKVA(1.1 * at.getWinding()[0].getKVA());  // defaults for new winding rating
 					at.setEmergMaxHKVA(1.5 * at.getWinding()[0].getKVA());
-					at.getWinding()[0].setRpu(at.getPctLoadLoss() / 2.0 / 100.0);
-					at.getWinding()[1].setRpu(at.getWinding()[0].getRpu());
 				} else if (at.getNumWindings() == 2) {
 					at.getWinding()[0].setKVA(at.getWinding()[1].getKVA());  // for 2-winding, force both kVAs to be same
 				}
@@ -368,6 +366,8 @@ public class TransformerImpl extends PDClassImpl implements Transformer {
 				at.getWinding()[0].setRpu( at.getPctLoadLoss() / 2.0 / 100.0 );
 				at.getWinding()[1].setRpu( at.getWinding()[0].getRpu() );
 				break;
+			case 36:
+				at.setPctLoadLoss( (at.getWinding()[0].getRpu() + at.getWinding()[1].getRpu()) * 100.0 );  // update
 			}
 
 			// YPrim invalidation on anything that changes impedance values
@@ -376,15 +376,10 @@ public class TransformerImpl extends PDClassImpl implements Transformer {
 			} else {
 				switch (paramPointer) {
 				case 25:
-					at.setYPrimInvalid(true);
-					break;
 				case 26:
-					at.setYPrimInvalid(true);
-					break;
 				case 34:
-					at.setYPrimInvalid(true);
-					break;
 				case 35:
+				case 36:
 					at.setYPrimInvalid(true);
 					break;
 				}

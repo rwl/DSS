@@ -915,7 +915,7 @@ public class StorageControllerObjImpl extends ControlElemImpl implements Storage
 		StorageObj pStorage;
 		for (int i = 0; i < fleetPointerList.size(); i++) {
 			pStorage = (StorageObj) fleetPointerList.get(i);
-			pStorage.setState(Storage.CHARGING);
+			pStorage.setStorageState(Storage.CHARGING);
 		}
 		fleetState = Storage.CHARGING;
 	}
@@ -924,7 +924,7 @@ public class StorageControllerObjImpl extends ControlElemImpl implements Storage
 		StorageObj pStorage;
 		for (int i = 0; i < fleetPointerList.size(); i++) {
 			pStorage = (StorageObj) fleetPointerList.get(i);
-			pStorage.setState(Storage.DISCHARGING);
+			pStorage.setStorageState(Storage.DISCHARGING);
 		}
 		fleetState = Storage.DISCHARGING;
 	}
@@ -933,7 +933,7 @@ public class StorageControllerObjImpl extends ControlElemImpl implements Storage
 		StorageObj pStorage;
 		for (int i = 0; i < fleetPointerList.size(); i++) {
 			pStorage = (StorageObj) fleetPointerList.get(i);
-			pStorage.setState(Storage.IDLING);
+			pStorage.setStorageState(Storage.IDLING);
 			pStorage.setPresentKW(0.0);
 		}
 		fleetState = Storage.IDLING;
@@ -952,7 +952,7 @@ public class StorageControllerObjImpl extends ControlElemImpl implements Storage
 		StorageObj pStorage;
 		for (int i = 0; i < fleetPointerList.size(); i++) {
 			pStorage = (StorageObj) fleetPointerList.get(i);
-			pStorage.setState(Storage.EXTERNAL_MODE);
+			pStorage.setStorageState(Storage.EXTERNAL_MODE);
 		}
 	}
 

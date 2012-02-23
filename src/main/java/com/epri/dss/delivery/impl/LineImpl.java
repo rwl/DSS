@@ -353,6 +353,12 @@ public class LineImpl extends PDClassImpl implements Line {
 
 			// side effects ...
 			switch (paramPointer) {
+			case 2:
+				al.setSpacingSpecified(false);
+				if (al.isGeometrySpecified() == true)
+					al.killGeometrySpecified();
+				al.setGeometrySpecified(false);
+				break;
 			case 4:  /* Change the number of phases ... only valid if symComponentsModel=true */
 				if (al.getNPhases() != parser.makeInteger())
 					if (!al.isGeometrySpecified() && al.isSymComponentsModel()) {  // ignore change of nPhases if geometry used

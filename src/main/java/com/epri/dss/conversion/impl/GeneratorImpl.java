@@ -74,7 +74,7 @@ public class GeneratorImpl extends PCClassImpl implements Generator {
 						"4:Const kW, Fixed Q (Q never varies)"+DSSGlobals.CRLF+
 						"5:Const kW, Fixed Q(as a constant reactance)"+DSSGlobals.CRLF+
 						"6:Compute load injection from User-written Model.(see usage of Xd, Xdp)"+DSSGlobals.CRLF+
-						"7:Constant kW, kvar, but current limited below Vminpu");
+						"7:Constant kW, kvar, but current limited below Vminpu. Approximates a simple inverter.");
 		addProperty("Vminpu", 22,   "Default = 0.90.  Minimum per unit voltage for which the Model is assumed to apply. " +
 							"Below this value, the load model reverts to a constant impedance model.");
 		addProperty("Vmaxpu", 23, "Default = 1.10.  Maximum per unit voltage for which the Model is assumed to apply. " +

@@ -9,6 +9,7 @@ import java.io.PrintStream;
 import com.epri.dss.parser.impl.Parser;
 import com.epri.dss.shared.impl.CMatrixImpl;
 import org.apache.commons.math.complex.Complex;
+import org.apache.commons.math.complex.ComplexUtils;
 
 import com.epri.dss.shared.impl.ComplexUtil;
 import com.epri.dss.shared.impl.GeneratorVars;
@@ -36,11 +37,13 @@ public class GeneratorObjImpl extends PCElementImpl implements GeneratorObj {
 
 	private Complex[] cBuffer = new Complex[24];  // temp buffer for calcs
 
+        private Complex Zthev;
 	private Complex Yeq;     // at nominal
 	private Complex Yeq95;   // at 95%
 	private Complex Yeq105;  // at 105%
 
 	private Complex currentLimit;
+        private double model7MaxCurr;
 	private boolean debugTrace;
 	/** Max allowable var change on Model=3 per iteration */
 	private double deltaQMax;
@@ -436,8 +439,10 @@ public class GeneratorObjImpl extends PCElementImpl implements GeneratorObj {
 			}
 
 			/* When we leave here, all the Yeq's are in L-N values */
-			if (genModel == 7)
+			if (genModel == 7) {
 				currentLimit = ComplexUtil.divide(new Complex(genVars.PNominalPerPhase, genVars.QNominalPerPhase), VBase95);
+				model7MaxCurr = currentLimit.abs();
+			}
 		}
 
 		// if generator state changes, force re-calc of Y matrix
@@ -486,18 +491,11 @@ public class GeneratorObjImpl extends PCElementImpl implements GeneratorObj {
 		setSpectrumObj( (com.epri.dss.general.SpectrumObj) DSSGlobals.spectrumClass.find(getSpectrum()) );
 		if (getSpectrumObj() == null)
 			DSSGlobals.doSimpleMsg("Error: Spectrum \""+getSpectrum()+"\" not found.", 566);
-		/*
-		if (Rneut < 0.0) {  // flag for open neutral
-			YNeut = new Complex(0.0, 0.0);
-		} else if ((Rneut == 0.0) && (Xneut = 0.0)) {  // solidly grounded
-			YNeut = new Complex(1.0e6, 0.0);  // 1 microohm resistor
-		} else {
-			YNeut = new Complex(Rneut, XNeut).invert();
-		}
-		*/
 
 		YQFixed = -varBase / Math.pow(VBase, 2);   // 10-17-02  Fixed negative sign
-		VTarget = Vpu * 1000.0 * genVars.kVGeneratorBase / DSSGlobals.SQRT3;
+		VTarget = Vpu * 1000.0 * genVars.kVGeneratorBase;
+
+		if (nPhases > 1) VTarget = VTarget / DSSGlobals.SQRT3;
 
 		// initialize to zero - defaults to PQ generator
 		// solution object will reset after circuit modifications
@@ -1028,9 +1026,83 @@ public class GeneratorObjImpl extends PCElementImpl implements GeneratorObj {
 		Complex[] V012 = new Complex[2];
 		Complex[] I012 = new Complex[2];
 
-		calcYPrimContribution(getInjCurrent());  // init injCurrent array
+		calcYPrimContribution(getInjCurrent());  // init injCurrent array and computes VTerminal
 
 		/* Inj = -Itotal (in) - Yprim * Vtemp */
+
+		switch (genModel) {
+		case 6:
+			if (userModel.exists()) {  // auto selects model
+				/* We have total currents in ITerminal */
+				userModel.calc(VTerminal, ITerminal);  // returns terminal currents in Iterminal
+			} else {
+				DSSGlobals.doSimpleMsg(String.format("Dynamics model missing for Generator.%s ", getName()), 5671);
+				DSSGlobals.solutionAbort = true;
+			}
+			break;
+		default:
+			switch (nPhases) {  // no user model, use default Thevinen equivalent for standard generator model
+			case 1:
+				// 1-phase generators have 2 conductors
+				switch (genModel) {
+				case 7:
+					// assume inverter stays in phase with terminal voltage
+					calcVThevDynMod7(VTerminal[0].subtract(VTerminal[1]));
+					break;
+				default:
+					calcVThevDyn();  // update for latest phase angle
+					break;
+				}
+				ITerminal[0] = VTerminal[0].subtract(VThev).subtract(VTerminal[1]).divide(Zthev);
+				if (genModel == 7)
+					if (ITerminal[0].abs() > model7MaxCurr)  // limit the current but keep phase angle
+						ITerminal[0] = ComplexUtils.polar2Complex(model7MaxCurr, ITerminal[0].getArgument());
+
+				ITerminal[1] = ITerminal[0].negate();
+				break;
+			case 3:
+				MathUtil.phase2SymComp(VTerminal, V012);
+
+				switch (genModel) {
+				case 7:  // simple inverter model
+					// positive sequence contribution to ITerminal
+					// assume inverter stays in phase with pos seq voltage
+					calcVThevDynMod7(V012[0]);
+
+	                                // positive sequence contribution to ITerminal
+					I012[1] = V012[1].subtract(VThev).divide(Zthev);
+					if (I012[1].abs() > model7MaxCurr)  // limit the current but keep phase angle
+						I012[1] = ComplexUtils.polar2Complex(model7MaxCurr, I012[1].getArgument());
+					I012[2] = V012[2].divide(Zthev);  // for inverter
+					break;
+
+				default:  // positive sequence contribution to ITerminal
+					calcVThevDyn();  // update for latest phase angle
+
+					// positive sequence contribution to ITerminal
+					I012[1] = V012[1].subtract(VThev).divide(Zthev);
+					I012[2] = V012[2].divide(new Complex(0.0, genVars.Xdpp));  // machine use Xd"
+					break;
+				}
+	                      	/* Adjust for generator connection */
+	                      	if (connection == 1) {
+	                      		I012[0] = Complex.ZERO;
+	                      	} else {
+	                      		I012[0] = V012[0].divide(new Complex(0.0, genVars.Xdpp));
+	                      		MathUtil.symComp2Phase(ITerminal, I012);  // convert back to phase components
+	                      	}
+
+	                      	// neutral current
+	                      	if (connection == 0)
+	                      		ITerminal[nConds] = I012[0].multiply(3.0).negate();
+			default:
+				DSSGlobals.doSimpleMsg(String.format("Dynamics mode is implemented only for 1- or 3-phase generators. Generator.%s has %d phases.", getName(), nPhases), 5671);
+				DSSGlobals.solutionAbort = true;
+				break;
+			}
+			break;
+		}
+
 		if (genModel == 6 && userModel.exists()) {  // auto selects model
 			/* We have total currents in Itemp */
 			userModel.calc(VTerminal, ITerminal);  // returns terminal currents in iTerminal
@@ -1065,8 +1137,6 @@ public class GeneratorObjImpl extends PCElementImpl implements GeneratorObj {
 					getITerminal()[nConds] = I012[0].multiply(3.0).negate();
 				break;
 			default:
-				DSSGlobals.doSimpleMsg(String.format("Dynamics mode is implemented only for 1- or 3-phase generators. Generator."+getName()+" has %d phases.", nPhases), 5671);
-				DSSGlobals.solutionAbort = true;
 				break;
 			}
 		}
@@ -1565,6 +1635,15 @@ public class GeneratorObjImpl extends PCElementImpl implements GeneratorObj {
 
 		Yeq = ComplexUtil.invert(new Complex(0.0, genVars.Xdp));
 
+		switch (genModel) {
+		case 7:
+			Zthev = new Complex(genVars.Xdp, 0.0);  // use Xd' as an equivalent R for the inverter
+			break;
+		default:
+			Zthev = new Complex(0.0, genVars.Xdp);
+			break;
+		}
+
 		/* Compute nominal positive sequence voltage behind transient reactance */
 
 		if (genOn) {
@@ -1574,7 +1653,7 @@ public class GeneratorObjImpl extends PCElementImpl implements GeneratorObj {
 
 			switch (nPhases) {
 			case 1:
-				Edp = sol.getNodeV()[nodeRef[0]].subtract( sol.getNodeV()[nodeRef[1]] ).subtract( getITerminal()[0].multiply(new Complex(0.0, genVars.Xdp)) );
+				Edp = sol.getNodeV()[nodeRef[0]].subtract( sol.getNodeV()[nodeRef[1]] ).subtract( getITerminal()[0].multiply(Zthev) );
 				VThevMag = Edp.abs();
 
 				break;
@@ -1586,7 +1665,7 @@ public class GeneratorObjImpl extends PCElementImpl implements GeneratorObj {
 				for (i = 0; i < nPhases; i++)
 					Vabc[i] = sol.getNodeV()[nodeRef[i]];  // wye voltage
 				MathUtil.phase2SymComp(Vabc, V012);
-				Edp      = V012[1].subtract( I012[1].multiply(new Complex(0.0, genVars.Xdp)) );  // pos sequence
+				Edp      = V012[1].subtract( I012[1].multiply(Zthev) );  // pos sequence
 				VThevMag = Edp.abs();
 				break;
 			default:
@@ -2045,6 +2124,14 @@ public class GeneratorObjImpl extends PCElementImpl implements GeneratorObj {
 		if (genSwitchOpen)
 			VThevMag = 0.0;
 		VThev = ComplexUtil.pclx(VThevMag, genVars.theta);
+	}
+
+	/**
+	 * Adjust VThev to be in phase with V
+	 */
+	private void calcVThevDynMod7(Complex V) {
+		if (genSwitchOpen) VThevMag = 0.0;
+		VThev = ComplexUtil.pclx(VThevMag, V.getArgument());
 	}
 
 	public boolean isForcedOn() {
