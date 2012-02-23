@@ -59,33 +59,17 @@ import com.epri.dss.shared.impl.MathUtil;
 
 public class ExecHelper {
 
-	private static CommandList saveCommands, distributeCommands,
-		DI_PlotCommands, reconductorCommands, rephaseCommands,
-		addMarkerCommands, setBusXYCommands;
+	private static CommandList saveCommands = new CommandListImpl(new String[] {"class", "file", "dir", "keepdisabled"}, true);
+	private static CommandList distributeCommands = new CommandListImpl(new String[] {"kW", "how", "skip", "pf", "file", "MW"}, true);
+	private static CommandList DI_PlotCommands = new CommandListImpl(new String[] {"case", "year", "registers", "peak", "meter"});
+	private static CommandList reconductorCommands = new CommandListImpl(new String[] {"Line1", "Line2", "LineCode", "Geometry", "EditString"}, true);
+	private static CommandList rephaseCommands = new CommandListImpl(new String[] {"StartLine", "PhaseDesignation", "EditString", "ScriptFileName", "StopAtTransformers"}, true);
+	private static CommandList addMarkerCommands = new CommandListImpl(new String[] {"Bus", "code", "color", "size"}, true);
+	private static CommandList setBusXYCommands = new CommandListImpl(new String[] {"Bus", "x", "y"}, true);
+	private static CommandList pstCalcCommands = new CommandListImpl(new String[] {"Npts", "Voltages", "dt", "Frequency", "lamp"}, true);
 
 	private ExecHelper() {
 
-	}
-
-	public static void initialize() {
-		saveCommands = new CommandListImpl(new String[] {"class", "file", "dir", "keepdisabled"});
-		saveCommands.setAbbrevAllowed(true);
-
-		DI_PlotCommands = new CommandListImpl(new String[] {"case", "year", "registers", "peak", "meter"});
-		distributeCommands = new CommandListImpl(new String[] {"kW", "how", "skip", "pf", "file", "MW"});
-		distributeCommands.setAbbrevAllowed(true);
-
-		reconductorCommands = new CommandListImpl(new String[] {"Line1", "Line2", "LineCode", "Geometry", "EditString"});
-		reconductorCommands.setAbbrevAllowed(true);
-
-		rephaseCommands = new CommandListImpl(new String[] {"StartLine", "PhaseDesignation", "EditString", "ScriptFileName", "StopAtTransformers"});
-		rephaseCommands.setAbbrevAllowed(true);
-
-		addMarkerCommands = new CommandListImpl(new String[] {"Bus", "code", "color", "size"});
-		addMarkerCommands.setAbbrevAllowed(true);
-
-		setBusXYCommands = new CommandListImpl(new String[] {"Bus", "x", "y"});
-		setBusXYCommands.setAbbrevAllowed(true);
 	}
 
 	/**
@@ -866,7 +850,9 @@ public class ExecHelper {
 		}
 
 		DSSGlobals.globalResult = DSSGlobals.globalPropertyValue;
-		//messageDlg(param + ' = ' + globalPropertyValue,  mtCustom, [mbOK], 0);
+
+		if (DSSGlobals.logQueries)
+			DSSGlobals.writeQueryLogFile(param, DSSGlobals.globalResult);  // write time-stamped query
 
 		return result;
 	}
@@ -1721,6 +1707,70 @@ public class ExecHelper {
 		return 0;
 	}
 
+	/**
+	 * Get value of specified variable by name of index,
+	 */
+	public static int doValVarCmd() {
+		String paramName, param;
+		int varIndex;
+		int propIndex;
+		PCElement PCElem;
+		Parser parser = Parser.getInstance();
+
+		int result = 0;
+
+		/* Check to make sure this is a PC Element. If not, return null string in global result */
+
+		if ((DSSGlobals.activeCircuit.getActiveCktElement().getDSSObjType() & DSSClassDefs.BASECLASSMASK) != DSSClassDefs.PC_ELEMENT) {
+
+			DSSGlobals.globalResult = "";
+
+		} else {
+
+			PCElem = (PCElement) DSSGlobals.activeCircuit.getActiveCktElement();
+
+			/* Get next parameter on command line */
+
+			paramName = parser.getNextParam().toUpperCase();
+			param = parser.makeString();
+
+			propIndex = 0;
+			if (paramName.length() > 0) {
+				switch (paramName.charAt(0)) {
+				case 'N':
+					propIndex = 0;
+					break;
+				case 'I':
+					propIndex = 1;
+					break;
+				default:
+					break;
+				}
+			}
+
+			varIndex = 0;
+
+			switch (propIndex) {
+			case 0:
+				varIndex = PCElem.lookupVariable(param);  // look up property index
+				break;
+			case 1:
+				varIndex = parser.makeInteger();
+				break;
+			default:
+				break;
+			}
+
+			if ((varIndex >= 0) && (varIndex < PCElem.numVariables())) {
+				DSSGlobals.globalResult = String.format("%.8g", PCElem.getVariable(varIndex));
+			} else {
+				DSSGlobals.globalResult = "";   // invalid var name or index
+			}
+		}
+
+		return result;
+	}
+
 	public static int doVarNamesCmd() {
 		if (DSSGlobals.activeCircuit != null) {
 			Circuit ckt = DSSGlobals.activeCircuit;
@@ -2350,6 +2400,18 @@ public class ExecHelper {
 		DSSObject elem;
 
 		int result = 0;
+
+		// abort if no circuit or solution
+		if (DSSGlobals.activeCircuit == null) {
+			DSSGlobals.doSimpleMsg("No circuit created.", 24721);
+			return result;
+		}
+
+		if ((DSSGlobals.activeCircuit.getSolution() == null) || (DSSGlobals.activeCircuit.getSolution().getNodeV() == null)) {
+			DSSGlobals.doSimpleMsg("The circuit must be solved before you can do this.", 24722);
+			return result;
+		}
+
 		quantity = DSSPlot.vizCURRENT;
 		String elemName = "";
 		/* Parse rest of command line */
@@ -2836,7 +2898,7 @@ public class ExecHelper {
 		}
 
 		if (!(pStartLine.getMeterObj() instanceof EnergyMeterObj)) {
-			DSSGlobals.doSimpleMsg("Starting line must be in an EnergyMeter zone.", 28713);
+			DSSGlobals.doSimpleMsg("Starting line must be in an EnergyMeter zone.", 28714);
 			return result;
 		}
 
@@ -2895,6 +2957,84 @@ public class ExecHelper {
 	public static int doUpdateStorageCmd() {
 		DSSGlobals.storageClass.updateAll();
 		return 0;
+	}
+
+	public static int doPstCalc() {
+		String param;
+		String paramName;
+		int paramPointer;
+		int npts;
+		double[] VArray;
+		int cyclesPerSample;
+		int lamp;
+		double[] pstArray;
+		int nPst;
+		int i;
+		String s;
+		double freq;
+
+		Parser parser = Parser.getInstance();
+
+		int result = 0;
+		VArray   = null;
+		pstArray = null;
+		npts     = 0;
+		lamp     = 120;  // 120 or 230
+		cyclesPerSample = 60;
+		freq = DSSGlobals.defaultBaseFreq;
+
+
+		paramName      = parser.getNextParam();
+		param          = parser.makeString();
+		paramPointer   = -1;
+		while (param.length() > 0) {
+			if (paramName.length() == 0) {
+				paramPointer += 1;
+			} else {
+				paramPointer = pstCalcCommands.getCommand(paramName);
+			}
+
+			switch (paramPointer) {
+			case 0:
+				npts = parser.makeInteger();
+				VArray = Utilities.resizeArray(VArray, npts);
+				break;
+			case 1:
+				npts = Utilities.interpretDblArray(param, npts, VArray);
+				break;
+			case 3:
+				cyclesPerSample = (int) Math.round(DSSGlobals.activeCircuit.getSolution().getFrequency() * parser.makeDouble());
+				break;
+			case 4:
+				freq = parser.makeDouble();
+				break;
+			case 5:
+				lamp = parser.makeInteger();
+				break;
+			default:
+				DSSGlobals.doSimpleMsg("Error: Unknown Parameter on command line: " + param, 28722);
+			}
+
+			paramName = parser.getNextParam();
+			param = parser.makeString();
+		}
+
+		if (npts > 10) {
+			nPst = PstCalc.pstRMS(pstArray, VArray, freq, cyclesPerSample, npts, lamp);
+			// put resulting pst array in the result string
+			s = "";
+			for (i = 0; i < nPst; i++) {
+				s = s + String.format("%.8g, ", pstArray[i]);
+			}
+			DSSGlobals.globalResult = s;
+		} else {
+			DSSGlobals.doSimpleMsg("Insuffient number of points for Pst Calculation.", 28723);
+		}
+
+		VArray = null;
+		pstArray = null;
+
+		return result;
 	}
 
 }

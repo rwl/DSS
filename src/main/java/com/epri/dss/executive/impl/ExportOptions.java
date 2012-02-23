@@ -11,7 +11,7 @@ import com.epri.dss.shared.impl.CommandListImpl;
 
 public class ExportOptions {
 
-	private static final int NumExportOptions = 33;
+	private static final int NumExportOptions = 34;
 
 	private String[] exportOption;
 	private String[] exportHelp;
@@ -76,6 +76,7 @@ public class ExportOptions {
 		exportOption[30] = "CDPSMStateVar";
 		exportOption[31] = "Profile";
 		exportOption[32] = "EventLog";
+		exportOption[33] = "AllocationFactors";
 
 		exportHelp[ 0] = "(Default file = EXP_VOLTAGES.CSV) Voltages to ground by bus/node.";
 		exportHelp[ 1] = "(Default file = EXP_SEQVOLTAGES.CSV) Sequence voltages.";
@@ -113,6 +114,7 @@ public class ExportOptions {
 		exportHelp[31] = "[Default file = EXP_Profile.CSV] Coordinates, color of each line section in Profile plot. Same options as Plot Profile Phases property." + DSSGlobals.CRLF + DSSGlobals.CRLF +
 			"Example:  Export Profile Phases=All [optional file name]";
 		exportHelp[32] = "(Default file = EXP_EVTLOG.CSV) All entries in the present event log.";
+		exportHelp[33] = "Exports load allocation factors. File name is assigned.";
 	}
 
 	public int doExportCmd() {
@@ -122,9 +124,23 @@ public class ExportOptions {
 
 		Parser parser = Parser.getInstance();
 
+		int result = 0;
+
 		Parser.getInstance().getNextParam();
 		String parm1 = Parser.getInstance().makeString().toLowerCase();
 		int paramPointer = exportCommands.getCommand(parm1);
+
+		/* Check commands requiring a solution and abort if no solution or circuit */
+		if ((paramPointer >= 0 && paramPointer < 24) || (paramPointer >= 27 && paramPointer < 32)) {
+			if (DSSGlobals.activeCircuit == null) {
+				DSSGlobals.doSimpleMsg("No circuit created.", 24711);
+				return result;
+			}
+			if ((DSSGlobals.activeCircuit.getSolution() == null) || (DSSGlobals.activeCircuit.getSolution().getNodeV() == null)) {
+				DSSGlobals.doSimpleMsg("The circuit must be solved before you can do this.", 24712);
+				return result;
+			}
+		}
 
 		int MVAOpt = 0;
 		boolean UEOnlyOpt = false;
@@ -223,6 +239,7 @@ public class ExportOptions {
 			case 30: fileName = "CDPSM_StateVariables.xml"; break;
 			case 31: fileName = "EXP_Profile.csv"; break;
 			case 32: fileName = "EXP_EVTLOG.csv"; break;
+			case 33: fileName = "AllocationFactors.txt";
 			default: fileName = "EXP_VOLTAGES.csv"; break;
 			}
 			fileName = DSSGlobals.DSSDataDirectory + DSSGlobals.circuitName_ + fileName;  // explicitly define directory
@@ -274,10 +291,10 @@ public class ExportOptions {
 		case 30: ExportResults.exportCDPSM(fileName, CIMProfileChoice.STATE_VARIABLES); break;
 		case 31: ExportResults.exportProfile(fileName, phasesToPlot); break;
 		case 32: ExportResults.exportEventLog(fileName); break;
+		case 33: Utilities.dumpAllocationFactors(fileName); break;
 		default: ExportResults.exportVoltages(fileName); break;
 		}
 
-		int result = 0;
 		DSSGlobals.inShowResults = false;
 
 		if (DSSGlobals.autoShowExport)

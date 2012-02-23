@@ -47,6 +47,10 @@ public class DSSExecutive implements Executive {
 		this.recorderFile = "";
 
 		//DSSGlobals.getInstance().readDSS_Registry();
+
+		/* FIXME: Override Locale defaults so that CSV files get written properly */
+//		DSSGlobals.decimalSeparator = ".";
+//		DSSGlobals.thousandSeparator = ",";
 	}
 
 	private static class DSSExecutiveHolder {

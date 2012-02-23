@@ -163,6 +163,30 @@ public class PlotOptions {
 				paramPointer = plotCommands.getCommand(paramName);
 			}
 
+			/* Check options requiring a solution and abort if no solution or circuit */
+			switch (paramPointer) {
+			case 0:
+				switch (param.charAt(0)) {
+				case 'A':
+				case 'C':
+				case 'D':
+				case 'G':
+				case 'M':
+				case 'P':
+				case 'Z':
+					if (Utilities.compareTextShortest("pri", param) != 0) {  // allow price shape
+						if (DSSGlobals.activeCircuit == null) {
+							DSSGlobals.doSimpleMsg("No circuit created.", 24731);
+							return result;
+						}
+						if ((DSSGlobals.activeCircuit.getSolution() == null) || (DSSGlobals.activeCircuit.getSolution().getNodeV() == null)) {
+							DSSGlobals.doSimpleMsg("The circuit must be solved before you can do this.", 24732);
+							return result;
+						}
+					}
+				}
+			}
+
 			DSSPlot plot = DSSPlotImpl.getDSSPlotObj();
 			switch (paramPointer) {
 			case 0:

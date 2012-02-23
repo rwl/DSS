@@ -71,6 +71,7 @@ public class LoadShapeImpl extends DSSClassImpl implements LoadShape {
 				"mult = (file=filename)     !for text file one value per line"+CRLF+
 				"mult = (dblfile=filename)  !for packed file of doubles"+CRLF+
 				"mult = (sngfile=filename)  !for packed file of singles "+CRLF+CRLF+
+				"mult = (file=MyCSVFile.CSV, col=3, header=yes)  !for multicolumn CSV files "+CRLF+CRLF+
 				"Note: this property will reset Npts if the  number of values in the files are fewer.";     // vextor of hour values
 		propertyHelp[3] = "Array of hour values. Only necessary to define for variable interval data."+
 				" If the data are fixed interval, do not use this property. " +
@@ -166,6 +167,7 @@ public class LoadShapeImpl extends DSSClassImpl implements LoadShape {
 			case 3:
 				als.setHours( Utilities.resizeArray(als.getHours(), als.getNumPoints()) );
 				Utilities.interpretDblArray(param, als.getNumPoints(), als.getHours());   // parser.parseAsVector(Npts, Hours);
+				als.setInterval(0.0);
 				break;
 			case 4:
 				als.setMean(parser.makeDouble());

@@ -14,7 +14,7 @@ public class ShowOptions {
 
 	private static final String CRLF = DSSGlobals.CRLF;
 
-	private static final int NumShowOptions = 30;
+	private static final int NumShowOptions = 32;
 
 	private String[] showOption;
 	private String[] showHelp;
@@ -76,6 +76,8 @@ public class ShowOptions {
 		showOption[27] = "topology";
 		showOption[28] = "mismatch";
 		showOption[29] = "kvbasemismatch";
+		showOption[30] = "deltaV";
+		showOption[31] = "QueryLog";
 
 		showHelp = new String[NumShowOptions];
 
@@ -146,6 +148,8 @@ public class ShowOptions {
 		showHelp[28] = "Shows the current mismatches at each node in amperes and percent of max currents at node.";
 		showHelp[29] = "Creates a report of Load and Generator elements for which the base voltage does not match the Bus base voltage. " +
 				"Scripts for correcting the voltage base are suggested.";
+		showHelp[30] = "Show voltages ACROSS each 2-terminal element, phase-by-phase. ";
+		showHelp[31] = "Show Query Log file. ";
 
 	}
 
@@ -163,6 +167,7 @@ public class ShowOptions {
 		double freq;
 		int units;
 		double rhoLine;
+		int result = 0;
 
 		parser.getNextParam();
 		String param = parser.makeString().toLowerCase();
@@ -170,6 +175,37 @@ public class ShowOptions {
 
 		if (paramPointer == -1)
 			paramPointer = 12;  // voltages
+
+		/* Check commands requiring a solution and abort if no solution or circuit */
+		switch (paramPointer) {
+		case 3:
+		case 5:
+		case 7:
+		case 8:
+		case 9:
+		case 11:
+		case 12:
+		case 13:
+		case 14:
+		case 15:
+		case 16:
+		case 18:
+		case 19:
+		case 20:
+		case 21:
+		case 22:
+		case 28:
+		case 29:
+		case 30:
+			if (DSSGlobals.activeCircuit == null) {
+				DSSGlobals.doSimpleMsg("No circuit created.", 24701);
+				return result;
+			}
+			if ((DSSGlobals.activeCircuit.getSolution() == null) || (DSSGlobals.activeCircuit.getSolution().getNodeV() == null)) {
+				DSSGlobals.doSimpleMsg("The circuit must be solved before you can do this.", 24702);
+				return result;
+			}
+		}
 
 		DSSGlobals.inShowResults = true;
 
@@ -440,10 +476,13 @@ public class ShowOptions {
 		case 30:
 			ShowResults.showDeltaV(DSSGlobals.DSSDataDirectory + DSSGlobals.circuitName_ + "DeltaV.txt");
 			break;
+		case 31:
+			Utilities.fireOffEditor(DSSGlobals.queryLogFileName);
+			break;
 		}
 
 		DSSGlobals.inShowResults = false;
-		return 0;
+		return result;
 	}
 
 }

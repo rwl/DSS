@@ -17,7 +17,7 @@ import com.epri.dss.shared.impl.CommandListImpl;
 
 public class ExecOptions {
 
-	public final static int NumExecOptions = 79;
+	public final static int NumExecOptions = 82;
 
 	private String[] execOption;
 	private String[] optionHelp;
@@ -128,6 +128,9 @@ public class ExecOptions {
 		execOption[76] = "Marktransformers";
 		execOption[77] = "TransMarkerCode";
 		execOption[78] = "TransMarkerSize";
+		execOption[79] = "LoadShapeClass";
+		execOption[80] = "EarthModel";
+		execOption[81] = "QueryLog";
 
 		final String CRLF = DSSGlobals.CRLF;
 
@@ -333,6 +336,15 @@ public class ExecOptions {
 				"The coordinate of one of the buses for winding 1 or 2 must be defined for the symbol to show";
 		optionHelp[77] = "Numeric marker code for transformers. Default is 35. See markstransformers option.";
 		optionHelp[78] = "Size of transformer marker. Default is 1.";
+		optionHelp[79] = "={Daily | Yearly | Duty | None*} Default loadshape class to use for mode=time and mode=dynamic simulations. Loads and generators, etc., will follow " +
+				"this shape as time is advanced. Default value is None. That is, Load will not vary with time.";
+		optionHelp[80] = "One of {Carson | FullCarson | Deri*}.  Default is Deri, which is" +
+				"a  fit to the Full Carson that works well into high frequencies. " +
+				"\"Carson\" is the simplified Carson method that is typically used for 50/60 Hz power flow programs. " +
+				"Applies only to Line objects that use LineGeometry objects to compute impedances.";
+		optionHelp[81] = "{YES/TRUE | NO/FALSE} Default = FALSE. When set to TRUE/YES, clears the query log file and thereafter appends " +
+				"the time-stamped Result string contents to the log file after a query command, ?. ";
+
 	}
 
 	public String[] getExecOption() {
@@ -728,6 +740,10 @@ public class ExecOptions {
 			case 80:
 				DSSGlobals.defaultEarthModel = Utilities.interpretEarthModel(param);
 				break;
+			case 81:
+				DSSGlobals.logQueries = Utilities.interpretYesNo(param);
+				if (DSSGlobals.logQueries)
+					DSSGlobals.resetQueryLogFile();
 			default:
 				// ignore excess parameters
 				break;
@@ -1103,6 +1119,12 @@ public class ExecOptions {
 				case 80:
 					DSSGlobals.appendGlobalResult(Utilities.getEarthModel(DSSGlobals.defaultEarthModel));
 					break;
+				case 81:
+					if (DSSGlobals.logQueries) {
+						DSSGlobals.appendGlobalResult("Yes");
+					} else {
+						DSSGlobals.appendGlobalResult("No");
+					}
 				default:
 					// ignore excess parameters
 					break;

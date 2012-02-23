@@ -9,13 +9,17 @@ public class CommandListImpl implements CommandList {
 	private boolean abbrevAllowed;
 
 	public CommandListImpl(String[] commands) {
+		this(commands, true);
+	}
+
+	public CommandListImpl(String[] commands, boolean abbrevAllowed) {
 		super();
 		commandList = new HashListImpl(commands.length);
 
 		for (int i = 0; i < commands.length; i++)
 			commandList.add(commands[i]);
 
-		abbrevAllowed = true;
+		this.abbrevAllowed = abbrevAllowed;
 	}
 
 	public void addCommand(String cmd) {

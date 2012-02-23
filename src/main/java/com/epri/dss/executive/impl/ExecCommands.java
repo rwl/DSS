@@ -10,7 +10,7 @@ import com.epri.dss.shared.impl.CommandListImpl;
 
 public class ExecCommands {
 
-	public static final int NumExecCommands = 95;
+	public static final int NumExecCommands = 98;
 
 	private String[] execCommand = new String[NumExecCommands];
 	private String[] commandHelp = new String[NumExecCommands];
@@ -145,6 +145,9 @@ public class ExecCommands {
 		execCommand[92] = "Obfuscate";
 		execCommand[93] = "LatLongCoords";
 		execCommand[94] = "BatchEdit";
+		execCommand[95] = "Pstcalc";
+		execCommand[96] = "Variable";
+		execCommand[97] = "ReprocessBuses";
 
 
 		commandHelp = new String[NumExecCommands];
@@ -337,7 +340,7 @@ public class ExecCommands {
 		commandHelp[57] = "Define x,y coordinates for buses.  Execute after Solve or MakeBusList command is executed so that bus lists are defined." +
 				"Reads coordinates from a CSV file with records of the form: busname, x, y."+CRLF+CRLF+
 				"Example: BusCoords [file=]xxxx.csv";
-		commandHelp[58] = "Updates the buslist using the currently enabled circuit elements.  (This happens automatically for Solve command.)";
+		commandHelp[58] = "Updates the buslist, if needed, using the currently enabled circuit elements.  (This happens automatically for Solve command.) (See ReprocessBuses)";
 		commandHelp[59] = "Attempts to convert present circuit model to a positive sequence equivalent. " +
 				"It is recommended to Save the circuit after this and edit the saved version to correct possible misinterpretations.";
 		commandHelp[60] = "{All | MeterName}  Default is \"All\".  Reduce the circuit according to reduction options. " +
@@ -385,9 +388,11 @@ public class ExecCommands {
 				"To keep the DOS window open, use /k switch.";
 		commandHelp[75] = "Execute state estimator on present circuit given present sensor values.";
 		commandHelp[76] = "Reconductor a line section. Must be in an EnergyMeter zone. " + CRLF +
-				"Syntax: Reconductor Line1=... Line2=... [LineCode= | Geometry = ] " +CRLF+
-				"Line1 and Line2 may be given in any order. All lines in the path between the two are redefined " +
-				"with either the LineCode or Geometry.";
+				"Syntax: Reconductor Line1=... Line2=... [LineCode= | Geometry = ] NPhases=#" +CRLF+
+	                        "Line1 and Line2 may be given in any order. All lines in the path between the two are redefined " +
+	                        "with either the LineCode or Geometry (not both). You may also add an optional string the alter any other line properties. "+
+	                        "The edit string should be enclosed in quotes or parens or brackets." +CRLF+
+	                        "Nphases is an optional filter on the number of phases in line segments to change.";
 		commandHelp[77] = "For step control of solution process: Intialize iteration counters, etc. that normally occurs at the " +
 				"start of a snapshot solution process.";
 		commandHelp[78] = "For step control of solution process: Solves the circuit in present state but does not check for control actions.";
@@ -426,6 +431,20 @@ public class ExecCommands {
 		commandHelp[94] = "Batch edit objects in the same class. Example: BatchEdit Load..* duty=duty_shape" + CRLF +
 				"In place of the object name, supply a PERL regular expression. .* matches all names." + CRLF +
 				"The subsequent parameter string is applied to each object selected.";
+		commandHelp[95] = "Pst calculation. PstCalc Npts=nnn Voltages=[array] dt=nnn freq=nn lamp=120 or 230." +CRLF+
+				"Set Npts to a big enough value to hold the incoming voltage array. " +CRLF+
+				"dt = time increment in seconds. default is 1"+CRLF+
+				"freq = base frequency in Hz 50 or 60. Default is default base frequency" +CRLF+
+				"Lamp= 120 for North America; 230 for Europe. Default is 120" + CRLF+CRLF+
+				"PSTCalc Npts=1900 V=[file=MyCSVFile.CSV, Col=3, Header=y] dt=1 freq=60 lamp=120";
+		commandHelp[96] = "[name=] MyVariableName  [Index=] IndexofMyVariable " +CRLF+CRLF+
+				"Returns the value of the specified state variable of the active circuit element, if a PCelement. " +
+				"Returns the value as a string in the Result window or the Text.Result interface if using the COM server. " +CRLF+CRLF+
+				"You may specify the variable by name or by its index. You can determine the index using the VarNames command. " +
+				"If any part of the request is invalid, the Result is null.";
+		commandHelp[97] = "Forces reprocessing of bus definitions whether there has been a change or not. Use for rebuilding meter zone lists " +
+				"when a line length changes, for example or some other event that would not normally trigger an update to the bus list.";
+
 	}
 
 	public void processCommand(String cmdLine) {
@@ -827,6 +846,12 @@ public class ExecCommands {
 				DSSGlobals.cmdResult = ExecHelper.doBusCoordsCmd(true);  // swaps X and Y
 			case 94:
 				DSSGlobals.cmdResult = ExecHelper.doBatchEditCmd();
+			case 95:
+				DSSGlobals.cmdResult = ExecHelper.doPstCalc();
+			case 96:
+				DSSGlobals.cmdResult = ExecHelper.doValVarCmd();
+			case 97:
+				DSSGlobals.activeCircuit.reProcessBusDefs();
 			default:
 				// ignore excess parameters
 				break;

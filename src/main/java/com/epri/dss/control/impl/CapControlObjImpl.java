@@ -2,8 +2,6 @@ package com.epri.dss.control.impl;
 
 import java.io.PrintStream;
 
-import org.apache.commons.lang.mutable.MutableDouble;
-
 import org.apache.commons.math.complex.Complex;
 
 import com.epri.dss.common.Bus;
@@ -23,6 +21,9 @@ public class CapControlObjImpl extends ControlElemImpl implements CapControlObj 
 		CURRENT, VOLTAGE, KVAR, TIME, PF, SRP
 	}
 
+	private static boolean SRPInhibit = false;
+	private static int SRPControlActionHandle = 0;
+
 	private CapControlType controlType;
 
 	private int CTPhase, PTPhase;  // "ALL" is -1
@@ -39,6 +40,7 @@ public class CapControlObjImpl extends ControlElemImpl implements CapControlObj 
 		LastOpenTime;
 
 	private boolean VOverride;
+        private boolean VOverrideEvent;
 	private boolean VOverrideBusSpecified;
 	private String VOverrideBusName;
 	private int VOverrideBusIndex;
@@ -84,6 +86,7 @@ public class CapControlObjImpl extends ControlElemImpl implements CapControlObj 
 		PFOffValue = 1.05;
 
 		VOverride = false;
+		VOverrideEvent = false;
 		VOverrideBusSpecified = false;
 		VOverrideBusName = "";
 
@@ -277,8 +280,38 @@ public class CapControlObjImpl extends ControlElemImpl implements CapControlObj 
 	 */
 	@Override
 	public void doPendingAction(int code, int proxyHdl) {
+		Circuit ckt;
 
 		getControlledElement().setActiveTerminalIdx(0);  // set active terminal of capacitor to terminal 1
+
+		switch (controlType) {
+		case SRP:  // allows one capacitor to switch every 15 min
+			/* SRPInhibit is a module variable and if any SRP capcontrol sets it true all other SRP CapControls will simply exit */
+			if (SRPInhibit) {
+				if (code == CapControl.SRPINHIBITRELEASE) {
+					SRPInhibit = false;
+					return;  // without doing anything; just process the inhibit release if sent
+				} else {
+					// If it is a Voverride event just process the pending change
+					// but leave the inhibit on
+					// If not, need to remove the Armed switch so capcontrol  can sample and
+					// send the message again.
+					if (!VOverrideEvent) {
+						shouldSwitch = false;
+						armed        = false;  // reset control
+						return;  // don't do anything; just send it back
+					}
+				}
+			} else {
+				if ((code == ControlAction.OPEN.code()) || (code == ControlAction.CLOSE.code())) {  // skip NONE
+					/* We'll switch capacitor this time, but then not again until inhibit released */
+					SRPInhibit = true;  // prevent further switching until inhibit released  in 15 min
+					ckt = DSSGlobals.activeCircuit;
+					SRPControlActionHandle = ckt.getControlQueue().push(ckt.getSolution().getIntHour(),
+							ckt.getSolution().getDynaVars().t + 900.0 , CapControl.SRPINHIBITRELEASE, 0, this);
+				}
+			}
+		}
 
 		switch (pendingChange) {
 		case OPEN:
@@ -328,6 +361,7 @@ public class CapControlObjImpl extends ControlElemImpl implements CapControlObj 
 			break;
 		}
 
+		VOverrideEvent = false;
 		shouldSwitch = false;
 		armed = false;  // reset control
 	}
@@ -435,6 +469,7 @@ public class CapControlObjImpl extends ControlElemImpl implements CapControlObj 
 					if (VTest < VMin) {
 						setPendingChange(ControlAction.CLOSE);
 						shouldSwitch = true;
+						VOverrideEvent = true;
 						if (showEventLog)
 							Utilities.appendToEventLog("Capacitor." + getControlledElement().getName(),
 									String.format("Low Voltage Override: %.8g V", VTest));
@@ -444,6 +479,7 @@ public class CapControlObjImpl extends ControlElemImpl implements CapControlObj 
 					if (VTest > VMax) {
 						setPendingChange(ControlAction.OPEN);
 						shouldSwitch = true;
+						VOverrideEvent = true;
 						if (showEventLog)
 							Utilities.appendToEventLog("Capacitor." + getControlledElement().getName(),
 									String.format("High Voltage Override: %.8g V", VTest));
@@ -554,6 +590,7 @@ public class CapControlObjImpl extends ControlElemImpl implements CapControlObj 
 				//MonitoredElement.ActiveTerminalIdx = ElementTerminal;
 				S = monitoredElement.getPower(elementTerminal);
 				Q = S.getImaginary() * 0.001 + 0.20306 * S.getReal() * 0.001;  // kvar for -.98 PF
+				//Q = S.getImaginary() * 0.001 + 0.063341 * S.getReal() * 0.001;  // kvar for -.998 PF
 
 				switch (presentState) {
 				case OPEN:

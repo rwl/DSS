@@ -463,10 +463,7 @@ public class StorageControllerObjImpl extends ControlElemImpl implements Storage
 					pctDischargeRate = Math.min(pctKWRate, Math.max(pctKWRate * tDiff / upRampTime, 0.0));
 					setFleetkWRate(pctDischargeRate);
 					dischargeInhibited = false;
-
-					sol.setLoadsNeedUpdating(true);  // force recalc of power parms
-					// push present time onto control queue to force re solve at new dispatch value
-					ckt.getControlQueue().push(sol.getIntHour(), sol.getDynaVars().t, Storage.DISCHARGING, 0, this);
+					pushTimeOntoControlQueue(Storage.DISCHARGING);
 				}
 			} else {  // fleet is already discharging
 				tDiff = normalizeToTOD(sol.getIntHour(), sol.getDynaVars().t) - dischargeTriggerTime;
@@ -497,9 +494,7 @@ public class StorageControllerObjImpl extends ControlElemImpl implements Storage
 				}
 
 				if (pctDischargeRate != lastPctDischargeRate) {
-					sol.setLoadsNeedUpdating(true);  // force recalc of power parms
-					// push present time onto control queue to force re solve at new dispatch value
-					ckt.getControlQueue().push(sol.getIntHour(), sol.getDynaVars().t, Storage.DISCHARGING, 0, this);
+					pushTimeOntoControlQueue(Storage.DISCHARGING);
 				}
 			}
 		}
@@ -530,9 +525,7 @@ public class StorageControllerObjImpl extends ControlElemImpl implements Storage
 						if (dischargeMode == StorageController.FOLLOW) {
 							dischargeTriggeredByTime = true;
 						} else {
-							sol.setLoadsNeedUpdating(true);  // force recalc of power parms
-							// push present time onto control queue to force re solve at new dispatch value
-							ckt.getControlQueue().push(sol.getIntHour(), sol.getDynaVars().t, Storage.DISCHARGING, 0, this);
+							pushTimeOntoControlQueue(Storage.DISCHARGING);
 						}
 					}
 				} else {
@@ -550,10 +543,10 @@ public class StorageControllerObjImpl extends ControlElemImpl implements Storage
 						setFleetToCharge();
 						dischargeInhibited = true;
 						outOfEnergy        = false;
+						pushTimeOntoControlQueue(Storage.DISCHARGING);
 
 						sol.setLoadsNeedUpdating(true);  // force recalc of power parms
 						// push present time onto control queue to force re solve at new dispatch value
-						ckt.getControlQueue().push(sol.getIntHour(), sol.getDynaVars().t, Storage.CHARGING, 0, this);
 						ckt.getControlQueue().push(sol.getIntHour() + inhibitHrs, sol.getDynaVars().t, StorageController.RELEASE_INHIBIT, 0, this);
 					}
 				}
@@ -582,6 +575,16 @@ public class StorageControllerObjImpl extends ControlElemImpl implements Storage
 			result = result - 24.0;  // wrap around
 
 		return result;
+	}
+
+	/**
+	 * Push present time onto control queue to force re solve at new dispatch value
+	 */
+	private void pushTimeOntoControlQueue(int code) {
+		Circuit ckt = DSSGlobals.activeCircuit;
+		SolutionObj sol = ckt.getSolution();
+		sol.setLoadsNeedUpdating(true);  // force recalc of power parms
+		ckt.getControlQueue().push(sol.getIntHour(), sol.getDynaVars().t, code, 0, this);
 	}
 
 	private void doLoadFollowMode() {
@@ -664,6 +667,7 @@ public class StorageControllerObjImpl extends ControlElemImpl implements Storage
 					if (PDiff + getFleetKW() < 0.0 || outOfEnergy) {
 						// desired decrease is greater then present output; just cancel
 						setFleetToIdle();  // also sets presentkW = 0
+			                        pushTimeOntoControlQueue(Storage.IDLING);  // force a new power flow solution
 						chargingAllowed = true;
 						skipKWDispatch  = true;
 					}
@@ -696,8 +700,10 @@ public class StorageControllerObjImpl extends ControlElemImpl implements Storage
 						}
 					}
 				} else {
-					if (!(getFleetState() == Storage.IDLING))
+					if (!(getFleetState() == Storage.IDLING)) {
 						setFleetToIdle();
+			                        pushTimeOntoControlQueue(Storage.IDLING);  // force a new power flow solution
+					}
 					chargingAllowed = true;
 					outOfEnergy = true;
 					if (showEventLog)
@@ -732,12 +738,7 @@ public class StorageControllerObjImpl extends ControlElemImpl implements Storage
 			}
 
 			if (storeKWChanged || storeKVArChanged) {  // only push onto control queue if there has been a change
-				Circuit ckt = DSSGlobals.activeCircuit;
-				SolutionObj sol = ckt.getSolution();
-
-				sol.setLoadsNeedUpdating(true);  // force recalc of power parms
-				// push present time onto control queue to force re solve at new dispatch value
-				ckt.getControlQueue().push(sol.getIntHour(), sol.getDynaVars().t, Storage.DISCHARGING, 0, this);
+			           pushTimeOntoControlQueue(Storage.DISCHARGING);
 			}
 		}
 	}
@@ -869,10 +870,9 @@ public class StorageControllerObjImpl extends ControlElemImpl implements Storage
 			sol.setLoadsNeedUpdating(true);  // force recalc of power parms
 		}
 
+		/* Force a new power flow solution if fleet state has changed */
 		if (fleetState != fleetStateSaved || rateChanged) {
-			sol.setLoadsNeedUpdating(true);  // force recalc of power parms
-			// push present time onto control queue to force re solve at new dispatch value
-			ckt.getControlQueue().push(sol.getIntHour(), sol.getDynaVars().t, 0, 0, this);
+			pushTimeOntoControlQueue(0);
 		}
 	}
 	private void setAllFleetValues() {

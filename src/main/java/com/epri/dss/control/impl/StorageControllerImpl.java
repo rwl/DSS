@@ -95,14 +95,14 @@ public class StorageControllerImpl extends ControlClassImpl implements StorageCo
 				"Default is to set all weights to 1.0.";
 		propertyHelp[StorageController.MODE_DISCHARGE] =
 				"{PeakShave* | Follow | Support | Loadshape | Time | Schedule} Mode of operation for the DISCHARGE FUNCTION of this controller. " +
-				"In PeakShave mode (Default), the control attempts to discharge storage to keep power in the monitored element below the kWTarget. " +
-				"In Follow mode, the control is triggered by time and resets the kWTarget value to the present monitored element power. " +
+				DSSGlobals.CRLF+DSSGlobals.CRLF+"In PeakShave mode (Default), the control attempts to discharge storage to keep power in the monitored element below the kWTarget. " +
+				DSSGlobals.CRLF+DSSGlobals.CRLF+"In Follow mode, the control is triggered by time and resets the kWTarget value to the present monitored element power. " +
 				"It then attempts to discharge storage to keep power in the monitored element below the new kWTarget. See TimeDischargeTrigger." +
-				"In Support mode, the control operates oppositely of PeakShave mode: storage is discharged to keep kW power output up near the target. " +
-				"In Loadshape mode, both charging and discharging precisely follows the per unit loadshape. " +
+				DSSGlobals.CRLF+DSSGlobals.CRLF+"In Support mode, the control operates oppositely of PeakShave mode: storage is discharged to keep kW power output up near the target. " +
+				DSSGlobals.CRLF+DSSGlobals.CRLF+"In Loadshape mode, both charging and discharging precisely follows the per unit loadshape. " +
 				"Storage is discharged when the loadshape value is positive. " +
-				"In Time mode, the storage discharge is turned on at the specified %RatekW and %Ratekvar at the specified discharge trigger time in fractional hours." +
-				"In Schedule mode, the Tup, TFlat, and Tdn properties specify the up ramp duration, flat duration, and down ramp duration for the schedule. " +
+				DSSGlobals.CRLF+DSSGlobals.CRLF+"In Time mode, the storage discharge is turned on at the specified %RatekW and %Ratekvar at the specified discharge trigger time in fractional hours." +
+				DSSGlobals.CRLF+DSSGlobals.CRLF+"In Schedule mode, the Tup, TFlat, and Tdn properties specify the up ramp duration, flat duration, and down ramp duration for the schedule. " +
 				"The schedule start time is set by TimeDischargeTrigger and the rate of discharge for the flat part is determined by RatekW.";
 		propertyHelp[StorageController.MODE_CHARGE] =
 				"{Loadshape | Time*} Mode of operation for the CHARGE FUNCTION of this controller. " +

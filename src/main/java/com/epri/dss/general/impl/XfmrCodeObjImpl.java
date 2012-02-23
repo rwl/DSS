@@ -72,6 +72,7 @@ public class XfmrCodeObjImpl extends DSSObjectImpl implements XfmrCodeObj {
 
 	public void setNumWindings(int n) {
 		int oldWdgSize;
+		int newWdgSize;
 
 		if (n > 1) {
 			for (int i = 0; i < numWindings; i++)
@@ -79,11 +80,12 @@ public class XfmrCodeObjImpl extends DSSObjectImpl implements XfmrCodeObj {
 			oldWdgSize = (numWindings - 1) * numWindings / 2;
 			numWindings = n;
 			maxWindings = n;
+		        newWdgSize = (numWindings - 1) * numWindings / 2;
 			winding = Utilities.resizeArray(winding, maxWindings);  // reallocate collector array
 			for (int i = 0; i < maxWindings; i++)
 				winding[i] = new WindingImpl();
-			XSC = Utilities.resizeArray(XSC, ((numWindings - 1) * numWindings / 2));
-			for (int i = oldWdgSize; i < (numWindings-1) * numWindings / 2; i++)
+			XSC = Utilities.resizeArray(XSC, newWdgSize);
+			for (int i = oldWdgSize; i < newWdgSize; i++)
 				XSC[i] = 0.30;   // default to something
 		} else {
 			DSSGlobals.doSimpleMsg("Invalid number of windings: " + String.valueOf(n) + " for Transformer " +

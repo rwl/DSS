@@ -330,8 +330,6 @@ public class XfmrCodeImpl extends DSSClassImpl implements XfmrCode {
 						axc.getWinding()[i].setKVA(axc.getWinding()[0].getKVA());  // TODO Check zero based indexing
 					axc.setNormMaxHKVA(1.1 * axc.getWinding()[0].getKVA());    // defaults for new winding rating
 					axc.setEmergMaxHKVA(1.5 * axc.getWinding()[0].getKVA());
-					axc.getWinding()[0].setRpu(axc.getPctLoadLoss() / 2.0 / 100.0);
-					axc.getWinding()[1].setRpu(axc.getWinding()[0].getRpu());
 				} else {
 					if (axc.getNumWindings() == 2)
 						axc.getWinding()[0].setKVA(axc.getWinding()[1].getKVA());  // for 2-winding, force both kVAs to be same
@@ -362,6 +360,8 @@ public class XfmrCodeImpl extends DSSClassImpl implements XfmrCode {
 				axc.getWinding()[0].setRpu(axc.getPctLoadLoss() / 2.0 / 100.0);
 				axc.getWinding()[1].setRpu(axc.getWinding()[0].getRpu());
 				break;
+			case 32:
+				axc.setPctLoadLoss( (axc.getWinding()[0].getRpu() + axc.getWinding()[1].getRpu()) * 100.0 ); // Keep this up to date
 			}
 			/* advance to next property on input line */
 			paramName = parser.getNextParam();

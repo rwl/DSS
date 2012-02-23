@@ -395,7 +395,7 @@ public class DSSGlobals {
 	/**
 	 * Log file is written after a query command if LogQueries is true.
 	 */
-	public static void writeQueryLogfile(String prop, String s) {
+	public static void writeQueryLogFile(String prop, String s) {
 		FileWriter f;
 		PrintWriter writer;
 

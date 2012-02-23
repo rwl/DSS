@@ -95,11 +95,11 @@ public class VVControlImpl extends ControlClassImpl implements VVControl {
 		"Array of proportional weights corresponding to each generator in the GenList."
 		+ " The needed kW to get back to center band is dispatched to each generator according to these weights. " + "Default is to set all weights to 1.0.";
 		propertyHelp[16] =
-		"Number of points expected to be in the volt curve or the var curve.";
+		"Number of points expected to be in the volt curve or the var curve (XYCurve object).";
 		propertyHelp[17] =
-		"Name of the volt-var curve that has been previously defined using the VVC_Curve object.";
-		propertyName[18] =
-		"deltaQ_factor.  The maximum change in per-unit from the prior var output to the var output indicated by the volt-var curve.";
+		"Name of the volt-var curve that has been previously defined using the XYCurve object.";
+		propertyHelp[18] =
+		"deltaQ_factor.  The maximum change in per-unit from the prior var output to the var output indicated by the volt-var curve (XYCurve object).";
 
 		activeProperty = NumPropsThisClass - 1;
 		super.defineProperties();  // add defs of inherited properties to bottom of list

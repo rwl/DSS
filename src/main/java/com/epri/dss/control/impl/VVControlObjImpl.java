@@ -1,7 +1,6 @@
 package com.epri.dss.control.impl;
 
 import java.io.PrintStream;
-import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,7 +16,6 @@ import com.epri.dss.control.VVControlObj;
 import com.epri.dss.conversion.GeneratorObj;
 import com.epri.dss.general.XYCurveObj;
 import com.epri.dss.shared.PointerList;
-import com.epri.dss.shared.impl.ComplexUtil;
 import com.epri.dss.shared.impl.PointerListImpl;
 
 public class VVControlObjImpl extends ControlElemImpl implements VVControlObj {
@@ -208,10 +206,9 @@ public class VVControlObjImpl extends ControlElemImpl implements VVControlObj {
 	@Override
 	public void doPendingAction(final int code, int proxyHdl) {
 		int i;
-		double deltaQ, QHeadroom, QDesiredPU, PNeeded, QNeeded, PPresentGenOutput,
-			QPresentGenOutput, PMonitoredElement, QMonitoredElement, genKVAr;
+		double deltaQ, QHeadroom, QDesiredPU, QNeeded, PPresentGenOutput,
+			QPresentGenOutput, QMonitoredElement, genKVAr;
 		Complex SMonitoredElement, SPresentGenOutput;
-		boolean genKVArChanged;
 		GeneratorObj gen;
 
 		genKVAr = 0.0;
@@ -284,8 +281,7 @@ public class VVControlObjImpl extends ControlElemImpl implements VVControlObj {
 	@Override
 	public void sample() {
 		int i;
-		Complex SMonitoredElement;
-		double baseKV, VAvg, PNeeded, QNeeded, PMonitoredElement, QMonitoredElement;
+		double baseKV, VAvg;
 
 		// if list is not defined, go make one for all generators in circuit
 		if (genPointerList.size() == 0)
@@ -614,7 +610,7 @@ public class VVControlObjImpl extends ControlElemImpl implements VVControlObj {
 	}
 
 	public void setDeltaVTolerance(double deltaVTolerance) {
-		deltaVTolerance = deltaVTolerance;
+		this.deltaVTolerance = deltaVTolerance;
 	}
 
 	public double getTotalWeight() {
@@ -622,7 +618,7 @@ public class VVControlObjImpl extends ControlElemImpl implements VVControlObj {
 	}
 
 	public void setTotalWeight(double totalWeight) {
-		totalWeight = totalWeight;
+		this.totalWeight = totalWeight;
 	}
 
 	public double getQOldDeliver() {
@@ -678,7 +674,7 @@ public class VVControlObjImpl extends ControlElemImpl implements VVControlObj {
 	}
 
 	public void setControlActionHandle(int controlActionHandle) {
-		controlActionHandle = controlActionHandle;
+		this.controlActionHandle = controlActionHandle;
 	}
 
 	public int getListSize() {
@@ -686,7 +682,7 @@ public class VVControlObjImpl extends ControlElemImpl implements VVControlObj {
 	}
 
 	public void setListSize(int listSize) {
-		listSize = listSize;
+		this.listSize = listSize;
 	}
 
 	public List<String> getGeneratorNameList() {
@@ -694,7 +690,7 @@ public class VVControlObjImpl extends ControlElemImpl implements VVControlObj {
 	}
 
 	public void setGeneratorNameList(List<String> generatorNameList) {
-		generatorNameList = generatorNameList;
+		this.generatorNameList = generatorNameList;
 	}
 
 	public PointerList getGenPointerList() {
@@ -702,7 +698,7 @@ public class VVControlObjImpl extends ControlElemImpl implements VVControlObj {
 	}
 
 	public void setGenPointerList(PointerList genPointerList) {
-		genPointerList = genPointerList;
+		this.genPointerList = genPointerList;
 	}
 
 	public double[] getWeights() {
@@ -710,7 +706,7 @@ public class VVControlObjImpl extends ControlElemImpl implements VVControlObj {
 	}
 
 	public void setWeights(double[] weights) {
-		weights = weights;
+		this.weights = weights;
 	}
 
 	public int getVvc_curve_size() {
@@ -746,7 +742,7 @@ public class VVControlObjImpl extends ControlElemImpl implements VVControlObj {
 	}
 
 	public void setMonitoredElement(CktElement monitoredElement) {
-		monitoredElement = monitoredElement;
+		this.monitoredElement = monitoredElement;
 	}
 
 	public int getCondOffset() {
@@ -754,7 +750,7 @@ public class VVControlObjImpl extends ControlElemImpl implements VVControlObj {
 	}
 
 	public void setCondOffset(int condOffset) {
-		condOffset = condOffset;
+		this.condOffset = condOffset;
 	}
 
 }
