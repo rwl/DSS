@@ -27,7 +27,7 @@ import org.apache.commons.math.complex.Complex;
  */
 public interface StorageObj extends PCElement {
 
-	double getKWChargeLosses();
+	double getKWTotalLosses();
 
 	double getKWIdlingLosses();
 
@@ -47,7 +47,7 @@ public interface StorageObj extends PCElement {
 
 	double getPowerFactor();
 
-	void setState(int value);
+	void setStorageState(int value);
 
 	int getState();
 
@@ -355,5 +355,9 @@ public interface StorageObj extends PCElement {
 	StoreUserModel getUserModel();
 
 	void setUserModel(StoreUserModel userModel);
+
+	double getKWhBeforeUpdate();
+
+	void setKWhBeforeUpdate(double kWhBeforeUpdate);
 
 }

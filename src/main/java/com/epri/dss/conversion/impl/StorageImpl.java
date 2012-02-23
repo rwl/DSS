@@ -417,7 +417,7 @@ public class StorageImpl extends PCClassImpl implements Storage {
 					as.setVMaxPU(parser.makeDouble());
 					break;
 				case STATE:
-					as.setState(as.interpretState(param));
+					as.setStorageState(as.interpretState(param));
 					break;
 				case KVA:
 					as.setKVA_Rating(parser.makeDouble());
@@ -484,6 +484,7 @@ public class StorageImpl extends PCClassImpl implements Storage {
 					break;
 				case KWH_RATED:
 					as.setKWhStored(as.getKWhRating());  // Assume fully charged
+					as.setKWhBeforeUpdate(as.getKWhStored());
 					as.setKWhReserve(as.getKWhRating() * as.getPctReserve() * 0.01);
 					break;
 
@@ -506,6 +507,8 @@ public class StorageImpl extends PCClassImpl implements Storage {
 								TraceBuffer.write(", |Iterm"+ String.valueOf(i) + "|");
 							for (i = 0; i < as.getNPhases(); i++)
 								TraceBuffer.write(", |Vterm" + String.valueOf(i) + "|");
+							for (i = 0; i < as.numVariables(); i++)
+								TraceBuffer.write(", " + as.variableName(i));
 							TraceBuffer.write(",Vthev, Theta");
 							TraceBuffer.newLine();
 
@@ -573,7 +576,7 @@ public class StorageImpl extends PCClassImpl implements Storage {
 			as.setStorageClass(otherStorageObj.getStorageClass());
 			as.setVoltageModel(otherStorageObj.getVoltageModel());
 
-			as.setState(otherStorageObj.getState());
+			as.setStorageState(otherStorageObj.getState());
 			as.setStateChanged(otherStorageObj.isStateChanged());
 			as.setKVANotSet(otherStorageObj.isKVANotSet());
 
@@ -582,6 +585,7 @@ public class StorageImpl extends PCClassImpl implements Storage {
 			as.setKWRating(otherStorageObj.getKWRating());
 			as.setKWhRating(otherStorageObj.getKWhRating());
 			as.setKWhStored(otherStorageObj.getKWhStored());
+			as.setKWhBeforeUpdate(otherStorageObj.getKWhBeforeUpdate());
 			as.setKWhReserve(otherStorageObj.getKWhReserve());
 			as.setPctReserve(otherStorageObj.getPctReserve());
 			as.setDischargeTrigger(otherStorageObj.getDischargeTrigger());

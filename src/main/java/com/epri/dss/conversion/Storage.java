@@ -3,7 +3,7 @@ package com.epri.dss.conversion;
 public interface Storage extends PCClass {
 
 	static int NumStorageRegisters = 6;
-	static int NumStorageVariables = 5;
+	static int NumStorageVariables = 7;
 
 	static int CHARGING    = -1;
 	static int IDLING      =  0;

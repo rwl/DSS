@@ -30,10 +30,11 @@ public class StorageObjImpl extends PCElementImpl implements StorageObj {
 
 	private static Complex[] cBuffer = new Complex[24];
 
-	private Complex Yeq;         // at nominal
-	private Complex Yeq95;       // at 95%
-	private Complex Yeq105;      // at 105%
-	private Complex YeqIdling;   // in shunt representing idle impedance
+	private Complex Yeq;           // at nominal
+	private Complex Yeq95;         // at 95%
+	private Complex Yeq105;        // at 105%
+	private Complex YeqIdling;     // in shunt representing idle impedance
+        private Complex YeqDischarge;  // equiv at rated power of storage element only
 
 	private boolean debugTrace;
 	private int state;
@@ -59,6 +60,7 @@ public class StorageObjImpl extends PCElementImpl implements StorageObj {
 	private double dischargeTrigger;
 	private double chargeTrigger;
 	private double chargeTime;
+        private double kWhBeforeUpdate;
 
 	private double pctR;
 	private double pctX;
@@ -171,6 +173,7 @@ public class StorageObjImpl extends PCElementImpl implements StorageObj {
 		stateChanged = true;  // force building of YPrim
 		kWhRating    = 50;
 		kWhStored    = kWhRating;
+		kWhBeforeUpdate = kWhRating;
 		pctReserve   = 20.0;  // per cent of kWhRating
 		kWhReserve   = kWhRating * pctReserve /100.0;
 		pctR         = 0.0;;
@@ -408,6 +411,8 @@ public class StorageObjImpl extends PCElementImpl implements StorageObj {
 	}
 
 	private void setKWAndKVArOut() {
+		int oldState = state;
+
 		switch (state) {
 		case Storage.CHARGING:
 			if (kWhStored < kWhRating) {
@@ -424,7 +429,7 @@ public class StorageObjImpl extends PCElementImpl implements StorageObj {
 					}
 				}
 			} else {
-				setState(Storage.IDLING);   // all charged up
+				setStorageState(Storage.IDLING);   // all charged up
 			}
 			break;
 
@@ -443,10 +448,18 @@ public class StorageObjImpl extends PCElementImpl implements StorageObj {
 					}
 				}
 			} else {
-				setState(Storage.IDLING);   // not enough storage to discharge
+				setStorageState(Storage.IDLING);   // not enough storage to discharge
 			}
 			break;
 		}
+
+		/* If idling output is only losses */
+		if (state == Storage.IDLING) {
+			kWOut = 0.0;   // -kWIdlingLosses;     Just use YeqIdling
+		        kVArOut = 0.0;
+		}
+
+		if (oldState != state) stateChanged = true;
 	}
 
 	public void setNominalStorageOuput() {
@@ -482,15 +495,14 @@ public class StorageObjImpl extends PCElementImpl implements StorageObj {
 				case Dynamics.YEARLYMODE:
 					calcYearlyMult(sol.getDblHour());
 					break;
-				case Dynamics.MONTECARLO1:
+				/*case Dynamics.MONTECARLO1:  // do nothing for these modes
 					break;
 				case Dynamics.MONTEFAULT:
 					break;
 				case Dynamics.FAULTSTUDY:
 					break;
 				case Dynamics.DYNAMICMODE:
-					// do nothing
-					break;
+					break;*/
 				// assume daily curve, if any, for the following
 				case Dynamics.MONTECARLO2:
 					calcDailyMult(sol.getDblHour());
@@ -519,9 +531,11 @@ public class StorageObjImpl extends PCElementImpl implements StorageObj {
 
 			setKWAndKVArOut();  // based on state and amount of energy left in storage
 
+			/* Pnominalperphase is net at the terminal.  When discharging, the storage supplies the idling losses.
+			 * When charging, the idling losses are subtracting from the amount entering the storage element. */
+			PNominalPerPhase = 1000.0 * kWOut / nPhases;
+
 			if (state == Storage.IDLING) {
-				// YeqIdle will be in the Yprim matrix so set this to zero
-				PNominalPerPhase = 0.0;  // -0.1 * kWRating / nPhases;  // watts
 				if (dispatchMode == Storage.EXTERNAL_MODE) {  // check for requested kVAr
 					QNominalPerPhase = kVArRequested / nPhases * 1000.0;
 				} else {
@@ -531,7 +545,6 @@ public class StorageObjImpl extends PCElementImpl implements StorageObj {
 				Yeq95  = Yeq;
 				Yeq105 = Yeq;
 			} else {
-				PNominalPerPhase = 1000.0 * kWOut   / nPhases;
 				QNominalPerPhase = 1000.0 * kVArOut / nPhases;
 
 				switch (voltageModel) {
@@ -540,6 +553,7 @@ public class StorageObjImpl extends PCElementImpl implements StorageObj {
 					// Yeq = new Complex(0.0, -StoreVARs.Xd)).invert();  // gets negated in calcYPrim
 					break;
 				default:
+					/* Yeq no longer used for anything other than this calculation of Yeq95, Yeq105 */
 					Yeq = ComplexUtil.divide(new Complex(PNominalPerPhase, -QNominalPerPhase), Math.pow(VBase, 2));  // VBase must be L-N for 3-phase
 					if (VMinPU != 0.0) {
 						Yeq95 = ComplexUtil.divide(Yeq, Math.pow(VMinPU, 2));   // at 95% voltage
@@ -582,6 +596,7 @@ public class StorageObjImpl extends PCElementImpl implements StorageObj {
 		dischargeEff = pctDischargeEff * 0.01;
 
 		YeqIdling = new Complex(pctIdleKW, pctIdleKVAr).multiply( (kWRating * 10.0 / Math.pow(VBase, 2) / nPhases) );  // 10.0 = 1000/100 = kW->W/pct
+		YeqDischarge = new Complex((kWRating * 1000.0 / Math.pow(VBase, 2) / nPhases), 0.0);
 
 		setNominalStorageOuput();
 
@@ -627,11 +642,14 @@ public class StorageObjImpl extends PCElementImpl implements StorageObj {
 		if (/*sol.isIsDynamicModel() ||*/ sol.isHarmonicModel()) {
 			/* Yeq is computed from %R and %X -- inverse of Rthev + j Xthev */
 			switch (state) {
+			case Storage.CHARGING:
+				Y = YeqDischarge.add(YeqIdling);
+				break;
 			case Storage.IDLING:
 				Y = YeqIdling;
 				break;
 			case Storage.DISCHARGING:
-				Y = Yeq.negate().add(YeqIdling);
+				Y = YeqDischarge.negate().add(YeqIdling);
 				break;
 			default:
 				Y = Yeq;  // L-N value computed in initialization routines
@@ -663,9 +681,14 @@ public class StorageObjImpl extends PCElementImpl implements StorageObj {
 			/* Yeq is always expected as the equivalent line-neutral admittance */
 
 			switch (state) {
+			case Storage.CHARGING:
+				Y = YeqDischarge.add(YeqIdling);
+				break;
 			case Storage.IDLING:
 				Y = YeqIdling;
 				break;
+			case Storage.DISCHARGING:
+				Y = YeqDischarge.negate().add(YeqIdling);
 			default:
 				Y = Yeq.negate().add(YeqIdling);  // negate for generation; Yeq is L-N quantity
 				break;
@@ -736,11 +759,11 @@ public class StorageObjImpl extends PCElementImpl implements StorageObj {
 
 			// set charge and discharge modes based on sign of load shape
 			if (level > 0.0 && kWhStored > kWhReserve) {
-				setState(Storage.DISCHARGING);
+				setStorageState(Storage.DISCHARGING);
 			} else if (level < 0.0 && kWhStored < kWhRating) {
-				setState(Storage.CHARGING);
+				setStorageState(Storage.CHARGING);
 			} else {
-				setState(Storage.IDLING);
+				setStorageState(Storage.IDLING);
 			}
 		} else {
 			// all other dispatch modes, just compare to trigger value
@@ -753,12 +776,12 @@ public class StorageObjImpl extends PCElementImpl implements StorageObj {
 			case Storage.CHARGING:
 				if (chargeTrigger != 0.0)
 					if (chargeTrigger < level || kWhStored >= kWhRating)
-						setState(Storage.IDLING);
+						setStorageState(Storage.IDLING);
 				break;
 			case Storage.DISCHARGING:
 				if (dischargeTrigger != 0.0)
 					if (dischargeTrigger > level || kWhStored <= kWhReserve)
-						setState(Storage.IDLING);
+						setStorageState(Storage.IDLING);
 				break;
 			}
 
@@ -766,9 +789,9 @@ public class StorageObjImpl extends PCElementImpl implements StorageObj {
 			switch (getState()) {
 			case Storage.IDLING:
 				if (dischargeTrigger != 0.0 && dischargeTrigger < level && kWhStored > kWhReserve) {
-					setState(Storage.DISCHARGING);
+					setStorageState(Storage.DISCHARGING);
 				} else if (chargeTrigger != 0.0 && chargeTrigger > level && kWhStored < kWhRating) {
-					setState(Storage.CHARGING);
+					setStorageState(Storage.CHARGING);
 				}
 
 				// check to see if it is time to turn the charge cycle on If it is not already on
@@ -776,14 +799,16 @@ public class StorageObjImpl extends PCElementImpl implements StorageObj {
 					if (chargeTime > 0.0) {
 						SolutionObj sol = DSSGlobals.activeCircuit.getSolution();
 						if (Math.abs(normalizeToTOD(sol.getIntHour(), sol.getDynaVars().t) - chargeTime) < sol.getDynaVars().h / 3600.0)
-							setState(Storage.CHARGING);
+							setStorageState(Storage.CHARGING);
 					}
 				break;
 			}
 		}
 
-		if (oldState != state)
+		if (oldState != state) {
 			stateChanged = true;
+			setYPrimInvalid(true);
+		}
 	}
 
 	@Override
@@ -844,7 +869,7 @@ public class StorageObjImpl extends PCElementImpl implements StorageObj {
 				BufferedWriter bw = new BufferedWriter(fw);
 
 				bw.write(String.format("%-.g, %d, %-.g, ",
-						ckt.getSolution().getDynaVars().t,
+						ckt.getSolution().getDblHour(),
 						ckt.getSolution().getIteration(),
 						ckt.getLoadMultiplier()) +
 						Utilities.getSolutionModeID() + ", " +
@@ -860,6 +885,8 @@ public class StorageObjImpl extends PCElementImpl implements StorageObj {
 					bw.write( getITerminal()[i].abs() + ", ");
 				for (i = 0; i < nPhases; i++)
 					bw.write( getVTerminal()[i].abs() + ", " );
+				for (i = 0; i < numVariables(); i++)
+					bw.write( String.format("%-.g, ", getVariable(i)) );
 				//TraceBuffer.write(VThevMag + ", " + StoreVARs.Theta * 180.0 / Math.PI);
 				bw.newLine();
 				bw.close();
@@ -874,6 +901,7 @@ public class StorageObjImpl extends PCElementImpl implements StorageObj {
 	 * Compute total terminal current for Constant PQ.
 	 */
 	private void doConstantPQStorageObj() {
+		int i;
 		Complex curr = null, V;
 		double VMag;
 
@@ -882,38 +910,49 @@ public class StorageObjImpl extends PCElementImpl implements StorageObj {
 		calcYPrimContribution(getInjCurrent());  // init injCurrent array
 		zeroITerminal();
 
-		calcVTerminalPhase();  // get actual voltage across each phase of the load
-
-		for (int i = 0; i < nPhases; i++) {
-			V = VTerminal[i];
-			VMag = V.abs();
-
-			switch (connection) {
-			case 0:  /* Wye */
-				if (VMag <= VBase95) {
-					curr = Yeq95.multiply(V);   // below 95% use an impedance model
-				} else if (VMag > VBase105) {
-					curr = Yeq105.multiply(V);  // above 105% use an impedance model
-				} else {
-					curr = new Complex(PNominalPerPhase, QNominalPerPhase).divide(V).conjugate();  // between 95% -105%, constant PQ
-				}
-				break;
-
-			case 1:  /* Delta */
-				VMag = VMag / DSSGlobals.SQRT3;  // L-N magnitude
-				if (VMag <= VBase95) {
-					curr = ComplexUtil.divide(Yeq95, 3.0).multiply(V);   // below 95% use an impedance model
-				} else if (VMag > VBase105) {
-					curr = ComplexUtil.divide(Yeq105, 3.0).multiply(V);  // above 105% use an impedance model
-				} else {
-					curr = new Complex(PNominalPerPhase, QNominalPerPhase).divide(V).conjugate();  // between 95% -105%, constant PQ
-				}
-				break;
+		switch (state) {
+		case Storage.IDLING:  // YPrim current is only current
+			for (i = 0; i < nPhases; i++) {
+				curr = getInjCurrent()[i];
+				putCurrInTerminalArray(ITerminal, curr.negate(), i);  // put YPrim contribution into Terminal array taking into account connection
+				setITerminalUpdated(true);
+				putCurrInTerminalArray(getInjCurrent(), curr.negate(), i);    // Compensation current is zero since terminal current is same as Yprim contribution
 			}
+		default:  // For Charging and Discharging
 
-			putCurrInTerminalArray(getITerminal(), curr.negate(), i);  // put into terminal array taking into account connection
-			setITerminalUpdated(true);
-			putCurrInTerminalArray(getInjCurrent(), curr, i);  // put into terminal array taking into account connection
+			calcVTerminalPhase();  // get actual voltage across each phase of the load
+
+			for (i = 0; i < nPhases; i++) {
+				V = VTerminal[i];
+				VMag = V.abs();
+
+				switch (connection) {
+				case 0:  /* Wye */
+					if (VMag <= VBase95) {
+						curr = Yeq95.multiply(V);   // below 95% use an impedance model
+					} else if (VMag > VBase105) {
+						curr = Yeq105.multiply(V);  // above 105% use an impedance model
+					} else {
+						curr = new Complex(PNominalPerPhase, QNominalPerPhase).divide(V).conjugate();  // between 95% -105%, constant PQ
+					}
+					break;
+
+				case 1:  /* Delta */
+					VMag = VMag / DSSGlobals.SQRT3;  // L-N magnitude
+					if (VMag <= VBase95) {
+						curr = ComplexUtil.divide(Yeq95, 3.0).multiply(V);   // below 95% use an impedance model
+					} else if (VMag > VBase105) {
+						curr = ComplexUtil.divide(Yeq105, 3.0).multiply(V);  // above 105% use an impedance model
+					} else {
+						curr = new Complex(PNominalPerPhase, QNominalPerPhase).divide(V).conjugate();  // between 95% -105%, constant PQ
+					}
+					break;
+				}
+
+				putCurrInTerminalArray(getITerminal(), curr.negate(), i);  // put into terminal array taking into account connection
+				setITerminalUpdated(true);
+				putCurrInTerminalArray(getInjCurrent(), curr, i);  // put into terminal array taking into account connection
+			}
 		}
 	}
 
@@ -1215,45 +1254,64 @@ public class StorageObjImpl extends PCElementImpl implements StorageObj {
 	public void updateStorage() {
 		SolutionObj sol = DSSGlobals.activeCircuit.getSolution();
 
+		kWhBeforeUpdate = kWhStored;  // keep this for reporting change in storage as a variable
+
 		switch (state) {
 		case Storage.DISCHARGING:
-			kWhStored = kWhStored - getPresentKW() * sol.getIntervalHrs() / dischargeEff;
+                	/* Deplete storage by amount of idling power to achieve present kW output */
+			kWhStored = kWhStored - (getPresentKW() + getKWIdlingLosses()) * sol.getIntervalHrs() / dischargeEff;
 			if (kWhStored < kWhReserve) {
 				kWhStored = kWhReserve;
-				setState(Storage.IDLING);  // it's empty turn it off
+				setStorageState(Storage.IDLING);  // it's empty turn it off
 				stateChanged = true;
 			}
 			break;
 
 		case Storage.CHARGING:
-			kWhStored = kWhStored - getPresentKW() * sol.getIntervalHrs() * chargeEff;
+			/* kWIdlingLosses is always positive while presentKW is negative for charging */
+			kWhStored = kWhStored - (getPresentKW() + getKWIdlingLosses()) * sol.getIntervalHrs() * chargeEff;
 			if (kWhStored > kWhRating) {
 				kWhStored = kWhRating;
-				setState(Storage.IDLING);  // it's full turn it off
+				setStorageState(Storage.IDLING);  // it's full turn it off
 				stateChanged = true;
 			}
 			break;
 		}
+
+		// the update is done at the end of a time step so have to force
+		// a recalc of the Yprim for the next time step. Otherwise, it will stay the same.
+		if (stateChanged) setYPrimInvalid(true);
 	}
 
 	public double getPresentKW() {
 		return kWOut; //PNominalPerPhase * 0.001 * nPhases;
 	}
 
-	public double getKWChargeLosses() {
+	public double getKWTotalLosses() {
 		switch (getState()) {
 		case Storage.CHARGING:
-			return Math.abs(getPower(0).getReal() * (100.0 - pctChargeEff) / 100000.0);  // kW
+			return Math.abs(getPower(0).getReal() * (100.0 - pctChargeEff) / 100000.0) + pctChargeEff * getKWIdlingLosses() / 100.0;  // kW
 		case Storage.IDLING:
 			return getKWIdlingLosses();
 		case Storage.DISCHARGING:
-			return Math.abs(getPower(0).getReal() * (100.0 - pctDischargeEff) / 100000.0);  // kW
+			return Math.abs(getPower(0).getReal() * (100.0 - pctDischargeEff) / 100000.0) + (2.0 - pctChargeEff / 100.0) * getKWIdlingLosses();  // kW
 		}
 		return 0;
 	}
 
 	public double getKWIdlingLosses() {
-		return pctIdleKW * kWRating / 100.0;
+		int i;
+
+		computeVTerminal();
+
+		double result = 0.0;
+		// compute sum of sqr(V) at this device -- sum of VV*
+		for (i = 0; i < nPhases; i++)
+			result = result + getVTerminal()[i].multiply( getVTerminal()[i].conjugate() ).getReal();
+
+		result = result * YeqIdling.getReal() * 0.001;  // to kW
+
+		return result;
 	}
 
 	public double getPresentKV() {
@@ -1350,6 +1408,15 @@ public class StorageObjImpl extends PCElementImpl implements StorageObj {
 		}
 	}
 
+	private String stateToStr() {
+		switch (state) {
+		case Storage.CHARGING: return "Charging";
+		case Storage.IDLING: return "Idling";
+		case Storage.DISCHARGING: return "Discharging";
+		default: return "";
+		}
+	}
+
 	/**
 	 * Return variables one at a time.
 	 */
@@ -1357,8 +1424,7 @@ public class StorageObjImpl extends PCElementImpl implements StorageObj {
 	public double getVariable(int i) {
 		int n, k;
 
-		if (i < 0)
-			return -9999.99;
+		if (i < 0) return -9999.99;
 
 		// for now, report kWh stored and mode
 		switch (i) {
@@ -1367,9 +1433,23 @@ public class StorageObjImpl extends PCElementImpl implements StorageObj {
 		case 1:
 			return state;
 		case 2:
-			return pctKWout;
+			if (state != Storage.DISCHARGING) {
+				return 0.0;
+			} else {
+				return getPower(0).getReal() * 0.001;  // kW_Out; // pctkWout;  TODO check zero based indexing
+			}
 		case 3:
-			return pctKWIn;
+			if (state == Storage.CHARGING) {
+				return 0.0;
+			} else {
+				return getPower(0).getReal() * 0.001;  // kW_out; // pctkWin;  TODO check zero based indexing
+			}
+		case 4:
+			return getKWTotalLosses();  /* Present kW charge or discharge loss incl idle losses */
+		case 5:
+			return getKWIdlingLosses();  /* Present idling loss */
+		case 6:
+			return kWhStored - kWhBeforeUpdate;
 		default:
 			if (userModel.exists()) {
 				n = userModel.numVars();
@@ -1394,7 +1474,7 @@ public class StorageObjImpl extends PCElementImpl implements StorageObj {
 			kWhStored = value;
 			break;
 		case 1:
-			setState((int) value);
+			setStorageState((int) value);
 			break;
 		case 2:
 			setPctKWOut(value);
@@ -1406,6 +1486,9 @@ public class StorageObjImpl extends PCElementImpl implements StorageObj {
 			/* Do nothing; read only */
 			break;
 		case 5:
+			/* Do nothing; read only */
+			break;
+		case 6:
 			/* Do nothing; read only */
 			break;
 		default:
@@ -1462,6 +1545,8 @@ public class StorageObjImpl extends PCElementImpl implements StorageObj {
 			return "kW Losses";
 		case 5:
 			return "kW Idling Losses";
+		case 6:
+			return "kWh Change";
 		default:
 			if (userModel.exists()) {
 				pName = 0;
@@ -1576,7 +1661,8 @@ public class StorageObjImpl extends PCElementImpl implements StorageObj {
 		//syncUpPowerQuantities();
 	}
 
-	public void setState(int value) {
+	public void setStorageState(int value) {
+		if (value != state) stateChanged = true;
 		state = value;
 	}
 
@@ -2166,6 +2252,14 @@ public class StorageObjImpl extends PCElementImpl implements StorageObj {
 
 	public void setUserModel(StoreUserModel model) {
 		userModel = model;
+	}
+
+	public double getKWhBeforeUpdate() {
+		return kWhBeforeUpdate;
+	}
+
+	public void setKWhBeforeUpdate(double kWhBeforeUpdate) {
+		this.kWhBeforeUpdate = kWhBeforeUpdate;
 	}
 
 }
