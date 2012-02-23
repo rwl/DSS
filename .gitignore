@@ -1,4 +1,7 @@
 *~
 *.class
 
-target/*
+/core/*/target/*
+/core/*/.settings/
+/core/*/.classpath
+/core/*/.project
