@@ -9,6 +9,7 @@ public class DSSPartitionScanner extends RuleBasedPartitionScanner {
 
 	public final static String DSS_COMMENT = "__dss_comment";
 	public final static String DSS_INLINE_COMMENT = "__dss_inline_comment";
+	public final static String DSS_ARRAY = "__dss_array";
 
 	public DSSPartitionScanner() {
 

@@ -5,3 +5,11 @@
 /core/*/.settings/
 /core/*/.classpath
 /core/*/.project
+
+/eclipse/*/target/*
+/eclipse/*/.settings/
+/eclipse/*/.classpath
+/eclipse/*/.project
+
+javapyler.cfg
+
