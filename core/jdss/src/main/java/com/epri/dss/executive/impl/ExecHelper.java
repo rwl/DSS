@@ -53,6 +53,7 @@ import com.epri.dss.shared.CommandList;
 import com.epri.dss.shared.Dynamics;
 import com.epri.dss.shared.impl.CommandListImpl;
 import com.epri.dss.shared.impl.ComplexUtil;
+import com.epri.dss.shared.impl.PstCalc;
 
 import org.apache.commons.math.complex.Complex;
 import com.epri.dss.shared.impl.MathUtil;
@@ -2967,7 +2968,7 @@ public class ExecHelper {
 		double[] VArray;
 		int cyclesPerSample;
 		int lamp;
-		double[] pstArray;
+		double[][] pstArray;
 		int nPst;
 		int i;
 		String s;
@@ -2977,7 +2978,7 @@ public class ExecHelper {
 
 		int result = 0;
 		VArray   = null;
-		pstArray = null;
+		pstArray = new double[1][];
 		npts     = 0;
 		lamp     = 120;  // 120 or 230
 		cyclesPerSample = 60;
