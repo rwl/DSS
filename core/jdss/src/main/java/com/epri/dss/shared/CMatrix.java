@@ -1,6 +1,5 @@
 package com.epri.dss.shared;
 
-import org.apache.commons.lang.mutable.MutableInt;
 import org.apache.commons.math.complex.Complex;
 
 public interface CMatrix {
@@ -36,7 +35,7 @@ public interface CMatrix {
 	/** b = Ax */
 	void vMultAccum(Complex[] b, Complex[] x);
 
-	Complex[] asArray(MutableInt Order);
+	Complex[] asArray(int[] Order);
 
 	Complex[] asArray();
 

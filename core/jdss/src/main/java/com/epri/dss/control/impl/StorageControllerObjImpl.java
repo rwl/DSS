@@ -4,8 +4,6 @@ import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.lang.mutable.MutableDouble;
-
 import com.epri.dss.shared.Dynamics;
 import org.apache.commons.math.complex.Complex;
 
@@ -65,8 +63,8 @@ public class StorageControllerObjImpl extends ControlElemImpl implements Storage
 	private double upPlusFlatPlusDn;
 	private double lastPctDischargeRate;
 
-	private MutableDouble totalKWCapacity = new MutableDouble();
-	private MutableDouble totalKWhCapacity = new MutableDouble();
+	private double[] totalKWCapacity = new double[1];
+	private double[] totalKWhCapacity = new double[1];
 
 	private String yearlyShape;          // ="fixed" means no variation  on all the time
 	private LoadShapeObj yearlyShapeObj; // shape for this Storage element
@@ -356,22 +354,22 @@ public class StorageControllerObjImpl extends ControlElemImpl implements Storage
 		return String.format("%-.8g", getFleetkWh());
 	}
 
-	private String getkWhTotal(MutableDouble sum) {
+	private String getkWhTotal(double[] sum) {
 		StorageObj pStorage;
-		sum.setValue(0);
+		sum[0] = 0;
 		for (int i = 0; i < fleetPointerList.size(); i++) {
 			pStorage = (StorageObj) fleetPointerList.get(i);
-			sum.add(pStorage.getKWhRating());
+			sum[0] += pStorage.getKWhRating();
 		}
 		return String.format("%-.8g", sum);
 	}
 
-	private String getkWTotal(MutableDouble sum) {
+	private String getkWTotal(double[] sum) {
 		StorageObj pStorage;
-		sum.setValue(0);
+		sum[0] = 0;
 		for (int i = 0; i < fleetPointerList.size(); i++) {
 			pStorage = (StorageObj) fleetPointerList.get(i);
-			sum.add(pStorage.getKWRating());
+			sum[0] += pStorage.getKWRating();
 		}
 		return String.format("%-.8g", sum);
 	}
@@ -1442,22 +1440,22 @@ public class StorageControllerObjImpl extends ControlElemImpl implements Storage
 	}
 
 	public double getTotalKWCapacity() {
-		return totalKWCapacity.doubleValue();
+		return totalKWCapacity[0];
 	}
 
 
 	public void setTotalKWCapacity(double capacity) {
-		totalKWCapacity.setValue(capacity);
+		totalKWCapacity[0] = capacity;
 	}
 
 
 	public double getTotalKWhCapacity() {
-		return totalKWhCapacity.doubleValue();
+		return totalKWhCapacity[0];
 	}
 
 
 	public void setTotalKWhCapacity(double capacity) {
-		totalKWhCapacity.setValue(capacity);
+		totalKWhCapacity[0] = capacity;
 	}
 
 

@@ -1,6 +1,5 @@
 package com.epri.dss.shared.impl;
 
-import org.apache.commons.lang.mutable.MutableInt;
 import org.apache.commons.math.complex.Complex;
 
 import com.epri.dss.shared.CMatrix;
@@ -125,8 +124,8 @@ public class CMatrixImpl implements CMatrix {
 		return sum;
 	}
 
-	public Complex[] asArray(MutableInt order) {
-		order.setValue(nOrder);
+	public Complex[] asArray(int[] order) {
+		order[0] = nOrder;
 		return values;
 	}
 

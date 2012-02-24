@@ -2,8 +2,6 @@ package com.epri.dss.general.impl;
 
 import java.io.PrintStream;
 
-import org.apache.commons.lang.mutable.MutableDouble;
-
 import com.epri.dss.common.DSSClass;
 import com.epri.dss.general.PriceShape;
 import com.epri.dss.general.PriceShapeObj;
@@ -15,8 +13,8 @@ public class PriceShapeObjImpl extends DSSObjectImpl implements PriceShapeObj {
 	private int arrayPropertyIndex;
 
 	private boolean stdDevCalculated;
-	private MutableDouble mean = new MutableDouble();
-	private MutableDouble stdDev = new MutableDouble();
+	private double[] mean = new double[1];
+	private double[] stdDev = new double[1];
 
 	protected double interval;  // =0.0 then random interval (hr)
 	protected double[] hours;   // time values (hr) if interval > 0.0 else nil
@@ -112,8 +110,8 @@ public class PriceShapeObjImpl extends DSSObjectImpl implements PriceShapeObj {
 			}
 		}
 
-		setPropertyValue(4, String.format("%.8g", mean.doubleValue()));
-		setPropertyValue(5, String.format("%.8g", stdDev.doubleValue()));
+		setPropertyValue(4, String.format("%.8g", mean[0]));
+		setPropertyValue(5, String.format("%.8g", stdDev[0]));
 
 		stdDevCalculated = true;
 	}
@@ -121,13 +119,13 @@ public class PriceShapeObjImpl extends DSSObjectImpl implements PriceShapeObj {
 	public double getMean() {
 		if (!stdDevCalculated)
 			calcMeanandStdDev();
-		return mean.doubleValue();
+		return mean[0];
 	}
 
 	public double getStdDev() {
 		if (!stdDevCalculated)
 			calcMeanandStdDev();
-		return stdDev.doubleValue();
+		return stdDev[0];
 	}
 
 	/**
@@ -207,10 +205,10 @@ public class PriceShapeObjImpl extends DSSObjectImpl implements PriceShapeObj {
 					result = result + String.format("%-g, ", hours[i]);
 			break;
 		case 4:
-			result = String.format("%.8g", mean.doubleValue());
+			result = String.format("%.8g", mean[0]);
 			break;
 		case 5:
-			result = String.format("%.8g", stdDev.doubleValue());
+			result = String.format("%.8g", stdDev[0]);
 			break;
 		case 9:
 			result = String.format("%.8g", interval * 3600.0);
@@ -266,7 +264,7 @@ public class PriceShapeObjImpl extends DSSObjectImpl implements PriceShapeObj {
 
 	public void setMean(double value) {
 		stdDevCalculated = true;
-		mean.setValue(value);
+		mean[0] = value;
 	}
 
 	public void setNumPoints(int num) {
@@ -282,7 +280,7 @@ public class PriceShapeObjImpl extends DSSObjectImpl implements PriceShapeObj {
 
 	public void setStdDev(double stddev) {
 		stdDevCalculated = true;
-		stdDev.setValue(stddev);
+		stdDev[0] = stddev;
 	}
 
 	public int getNumPoints() {

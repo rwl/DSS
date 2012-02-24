@@ -13,8 +13,6 @@ import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.commons.lang.mutable.MutableInt;
-
 import com.epri.dss.common.Bus;
 import com.epri.dss.common.Circuit;
 import com.epri.dss.common.CktElement;
@@ -2790,7 +2788,7 @@ public class ExecHelper {
 		int iBusIdx;
 		int b1ref;
 		int b2ref;
-		MutableInt numNodes = new MutableInt();
+		int[] numNodes = new int[1];
 		int[] nodeBuffer = new int[50];
 
 		int result = 0;

@@ -5,9 +5,6 @@ import java.io.IOException;
 import java.io.PrintStream;
 import java.io.PrintWriter;
 
-import org.apache.commons.lang.mutable.MutableDouble;
-import org.apache.commons.lang.mutable.MutableInt;
-
 import org.apache.commons.math.complex.Complex;
 
 import com.epri.dss.shared.impl.ComplexUtil;
@@ -899,8 +896,8 @@ public class SolutionObjImpl extends DSSObjectImpl implements SolutionObj {
 
 	public void doControlActions() {
 		boolean succ;
-		MutableInt mHour, xHour = new MutableInt();
-		MutableDouble mSec, xSec = new MutableDouble();
+		int[] mHour, xHour = new int[1];
+		double[] mSec, xSec = new double[1];
 
 		Circuit ckt = DSSGlobals.activeCircuit;
 
@@ -914,11 +911,11 @@ public class SolutionObjImpl extends DSSObjectImpl implements SolutionObj {
 			}
 			break;
 		case DSSGlobals.EVENTDRIVEN:
-			mHour = new MutableInt();
-			mSec = new MutableDouble();
+			mHour = new int[1];
+			mSec = new double[1];
 			succ = ckt.getControlQueue().doNearestActions(mHour, mSec);  // advances time
-			intHour = mHour.intValue();
-			dynaVars.t = mSec.doubleValue();
+			intHour = mHour[1];
+			dynaVars.t = mSec[0];
 			if (!succ)
 				controlActionsDone = true;
 			break;

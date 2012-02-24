@@ -5,8 +5,6 @@ import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.lang.mutable.MutableInt;
-
 import org.apache.commons.math.complex.Complex;
 
 import com.epri.dss.common.Bus;
@@ -840,7 +838,7 @@ public class DSSCircuit extends NamedObjectImpl implements Circuit {
 	public void processBusDefs() {
 		int i, j, iTerm;
 		String busName;
-		MutableInt nNodes = new MutableInt();
+		int[] nNodes = new int[1];
 		int np = activeCktElement.getNPhases();
 		int nCond = activeCktElement.getNConds();
 
@@ -862,7 +860,7 @@ public class DSSCircuit extends NamedObjectImpl implements Circuit {
 			busName = Parser.getInstance().parseAsBusName(nNodes, nodeBuffer);
 
 			// check for error in node specification
-			for (j = 0; j < nNodes.intValue(); j++) {
+			for (j = 0; j < nNodes[0]; j++) {
 				if (nodeBuffer[j] < 0) {
 					int retval = DSSGlobals.DSSForms.messageDlg("Error in node specification for element: \""
 						+ activeCktElement.getParentClass().getName() + "." + activeCktElement.getName() + "\"" + DSSGlobals.CRLF +

@@ -10,7 +10,6 @@ import com.epri.dss.parser.impl.Parser;
 import com.epri.dss.shared.impl.CMatrixImpl;
 import com.epri.dss.shared.impl.CommandListImpl;
 
-import org.apache.commons.lang.mutable.MutableInt;
 import org.apache.commons.math.complex.Complex;
 import com.epri.dss.shared.impl.LineUnits;
 
@@ -164,7 +163,7 @@ public class LineCodeImpl extends DSSClassImpl implements LineCode {
 	 */
 	private void doMatrix(int i) {
 		int orderFound, j;
-		MutableInt nOrder = new MutableInt();
+		int[] nOrder = new int[1];
 		double[] matBuffer;
 		Complex[] ZValues;
 		double factor;
@@ -179,20 +178,20 @@ public class LineCodeImpl extends DSSClassImpl implements LineCode {
 			switch (i) {
 			case 1:  // r
 				ZValues = activeLineCodeObj.getZ().asArray(nOrder);
-				if (nOrder.intValue() == activeLineCodeObj.getNPhases())
+				if (nOrder[0] == activeLineCodeObj.getNPhases())
 					for (j = 0; j < np2; j++)
 						ZValues[j] = new Complex(matBuffer[j], ZValues[j].getImaginary());
 				break;
 			case 2:  // x
 				ZValues = activeLineCodeObj.getZ().asArray(nOrder);
-				if (nOrder.intValue() == activeLineCodeObj.getNPhases())
+				if (nOrder[0] == activeLineCodeObj.getNPhases())
 					for (j = 0; j < np2; j++)
 						ZValues[j] = new Complex(ZValues[j].getReal(), matBuffer[j]);
 				break;
 			case 3:  // Yc matrix
 				factor = DSSGlobals.TWO_PI * activeLineCodeObj.getBaseFrequency() * 1.0e-9;
 				ZValues = activeLineCodeObj.getYC().asArray(nOrder);
-				if (nOrder.intValue() == activeLineCodeObj.getNPhases())
+				if (nOrder[0] == activeLineCodeObj.getNPhases())
 					for (j = 0; j < np2; j++)
 						ZValues[j] = new Complex(ZValues[j].getReal(), factor * matBuffer[j]);
 				break;

@@ -5,8 +5,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 
-import org.apache.commons.lang.mutable.MutableDouble;
-
 import org.apache.commons.math.complex.Complex;
 
 import com.epri.dss.common.Circuit;
@@ -20,14 +18,14 @@ public class SystemMeterImpl implements SystemMeter {
 
 	private static double[] registerArray = new double[EnergyMeter.NUM_EM_REGISTERS];
 
-	private MutableDouble kWh = new MutableDouble();
-	private MutableDouble dkWh = new MutableDouble();
-	private MutableDouble kvarh = new MutableDouble();
-	private MutableDouble dkvarh = new MutableDouble();
-	private MutableDouble Losseskwh = new MutableDouble();
-	private MutableDouble dLosseskWh = new MutableDouble();
-	private MutableDouble Losseskvarh = new MutableDouble();
-	private MutableDouble dlosseskvarh = new MutableDouble();
+	private double[] kWh = new double[1];
+	private double[] dkWh = new double[1];
+	private double[] kVArh = new double[1];
+	private double[] dkVArh = new double[1];
+	private double[] losses_kWh = new double[1];
+	private double[] dLosses_kWh = new double[1];
+	private double[] losses_kVArh = new double[1];
+	private double[] dlosses_kVArh = new double[1];
 
 	private double peakKW, peakKVA, peakLossesKW;
 	private boolean firstSampleAfterReset, thisMeterDIFileIsOpen;
@@ -66,17 +64,17 @@ public class SystemMeterImpl implements SystemMeter {
 	}
 
 	private void clear() {
-		kWh.setValue(0.0);
-		kvarh.setValue(0.0);
+		kWh[0] = 0.0 ;
+		kVArh[0] = 0.0;
 		peakKW = 0.0;
 		peakKVA = 0.0;
-		Losseskwh.setValue(0.0);
-		Losseskvarh.setValue(0.0);
+		losses_kWh[0] = 0.0;
+		losses_kVArh[0] = 0.0;
 		peakLossesKW = 0.0;
-		dkWh.setValue(0.0);
-		dkvarh.setValue(0.0);
-		dLosseskWh.setValue(0.0);
-		dlosseskvarh.setValue(0.0);
+		dkWh[0] = 0.0;
+		dkVArh[0] = 0.0;
+		dLosses_kWh[0] = 0.0;
+		dlosses_kVArh[0] = 0.0;
 		firstSampleAfterReset = true;
 	}
 
@@ -92,19 +90,19 @@ public class SystemMeterImpl implements SystemMeter {
 		}
 	}
 
-	private void integrate(MutableDouble reg, double value, MutableDouble deriv) {
+	private void integrate(double[] reg, double value, double[] deriv) {
 		Circuit ckt = DSSGlobals.activeCircuit;
 
 		if (ckt.isTrapezoidalIntegration()) {
 			/* Trapezoidal rule integration */
 			if (!firstSampleAfterReset)
-				reg.add(0.5 * ckt.getSolution().getIntervalHrs() * (value + deriv.doubleValue()));
+				reg[0] += 0.5 * ckt.getSolution().getIntervalHrs() * (value + deriv[0]);
 		} else {
 			/* Plain Euler integration */
-			reg.add(ckt.getSolution().getIntervalHrs() * value);
+			reg[0] += ckt.getSolution().getIntervalHrs() * value;
 		}
 
-		deriv.setValue(value);
+		deriv[0] = value;
 	}
 
 	// FIXME Protected method in OpenDSS
@@ -172,7 +170,7 @@ public class SystemMeterImpl implements SystemMeter {
 		cPower = Utilities.getTotalPowerFromSources().multiply(0.001);  // convert to kW
 
 		integrate(kWh, cPower.getReal(), dkWh);
-		integrate(kvarh, cPower.getImaginary(), dkvarh);
+		integrate(kVArh, cPower.getImaginary(), dkVArh);
 
 		peakKW  = Math.max(cPower.getReal(), peakKW);
 		peakKVA = Math.max(cPower.abs(), peakKVA);
@@ -181,8 +179,8 @@ public class SystemMeterImpl implements SystemMeter {
 		cLosses = DSSGlobals.activeCircuit.getLosses();  // PD elements except shunts
 		cLosses = cLosses.multiply(0.001);  // convert to kW
 
-		integrate(Losseskwh, cLosses.getReal(), dLosseskWh);
-		integrate(Losseskvarh, cLosses.getImaginary(), dlosseskvarh);
+		integrate(losses_kWh, cLosses.getReal(), dLosses_kWh);
+		integrate(losses_kVArh, cLosses.getImaginary(), dlosses_kVArh);
 
 		peakLossesKW = Math.max(cLosses.getReal(), peakLossesKW);
 
@@ -216,12 +214,12 @@ public class SystemMeterImpl implements SystemMeter {
 
 	private void writeRegisters(PrintWriter f) {
 
-		f.printf(", %-g", kWh.doubleValue());
-		f.printf(", %-g", kvarh.doubleValue());
+		f.printf(", %-g", kWh[0]);
+		f.printf(", %-g", kVArh[0]);
 		f.printf(", %-g", peakKW);
 		f.printf(", %-g", peakKVA);
-		f.printf(", %-g", Losseskwh.doubleValue());
-		f.printf(", %-g", Losseskvarh.doubleValue());
+		f.printf(", %-g", losses_kWh[0]);
+		f.printf(", %-g", losses_kVArh[0]);
 		f.printf(", %-g", peakLossesKW);
 	}
 

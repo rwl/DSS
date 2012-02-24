@@ -3,8 +3,6 @@ package com.epri.dss.delivery.impl;
 import java.io.PrintStream;
 import java.io.PrintWriter;
 
-import org.apache.commons.lang.mutable.MutableInt;
-
 import com.epri.dss.parser.impl.Parser;
 import com.epri.dss.shared.impl.CMatrixImpl;
 import com.epri.dss.shared.impl.ComplexUtil;
@@ -924,7 +922,7 @@ public class TransformerObjImpl extends PDElementImpl implements TransformerObj 
 	@Override
 	public void makePosSequence() {
 		int iW, i;
-		MutableInt n = new MutableInt();
+		int[] n = new int[1];
 		String s;
 		int[] nodes = new int[5];  // integer buffer
 		boolean onPhase1;
@@ -938,9 +936,9 @@ public class TransformerObjImpl extends PDElementImpl implements TransformerObj 
 				DSSGlobals.auxParser.setCmdString(getBus(iW));
 				DSSGlobals.auxParser.getNextParam();
 				s = DSSGlobals.auxParser.parseAsBusName(n, nodes);
-				if (n.intValue() == 0)
+				if (n[0] == 0)
 					onPhase1 = true;
-				for (i = 0; i < n.intValue(); i++)
+				for (i = 0; i < n[0]; i++)
 					if (nodes[i] == 1)
 						onPhase1 = true;
 				if (!onPhase1) {

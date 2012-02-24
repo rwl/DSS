@@ -5,7 +5,6 @@ import java.io.PrintStream;
 import com.epri.dss.parser.impl.Parser;
 import com.epri.dss.shared.impl.CMatrixImpl;
 
-import org.apache.commons.lang.mutable.MutableInt;
 import org.apache.commons.math.complex.Complex;
 
 import com.epri.dss.shared.impl.ComplexUtil;
@@ -280,7 +279,7 @@ public class LineObjImpl extends PDElementImpl implements LineObj {
 
 		double XgMod;
 		int k;
-		MutableInt norder = new MutableInt();
+		int[] norder = new int[1];
 
 		double freqMultiplier = 1.0;
 		double lengthMultiplier = 1.0;
@@ -334,7 +333,7 @@ public class LineObjImpl extends PDElementImpl implements LineObj {
 				XgMod = 0.0;
 			}
 
-			for (int i = 0; i < norder.intValue() * norder.intValue(); i++) {
+			for (int i = 0; i < norder[0] * norder[0]; i++) {
 				ZInvValues[i] = new Complex((ZValues[i].getReal() + Rg * (freqMultiplier - 1.0) ) * lengthMultiplier,
 						(ZValues[i].getImaginary() - XgMod) * lengthMultiplier * freqMultiplier);
 			}
@@ -745,8 +744,8 @@ public class LineObjImpl extends PDElementImpl implements LineObj {
 	 */
 	public boolean mergeWith(LineObj otherLine, boolean series) {
 		Complex[] values1, values2;
-		MutableInt order1 = new MutableInt();
-		MutableInt order2 = new MutableInt();
+		int[] order1 = new int[1];
+		int[] order2 = new int[1];
 		int i, j, common1, common2;
 		double totalLen, wnano;
 		String s = "", newName;
@@ -882,21 +881,21 @@ public class LineObjImpl extends PDElementImpl implements LineObj {
 					values1 = Z.asArray(order1);
 					values2 = otherLine.getZ().asArray(order2);
 
-					if (order1.intValue() != order2.intValue())
+					if (order1[0] != order2[0])
 						return result;  // lines not same size for some reason
 
 					// Z <= (Z1 + Z2) / TotalLen to get equiv ohms per unit length
-					for (i = 0; i < order1.intValue() * order1.intValue(); i++)
+					for (i = 0; i < order1[0] * order1[0]; i++)
 						values1[i] = ComplexUtil.divide(values1[i].multiply(lenSelf).add(values2[i].multiply(lenOther)), totalLen);
 
 					// merge Yc matrices
 					values1 = Yc.asArray(order1);
 					values2 = otherLine.getYc().asArray(order2);
 
-					if (order1.intValue() != order2.intValue())
+					if (order1[0] != order2[0])
 						return result;  // lines not same size for some reason
 
-					for (i = 0; i < order1.intValue() * order1.intValue(); i++)
+					for (i = 0; i < order1[0] * order1[0]; i++)
 						values1[i] = ComplexUtil.divide(values1[i].multiply(lenSelf).add( values2[i].multiply(lenOther) ), totalLen);
 
 					/* R matrix */

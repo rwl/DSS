@@ -6,9 +6,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.lang.mutable.MutableDouble;
-import org.apache.commons.lang.mutable.MutableInt;
-
 import com.epri.dss.common.ControlQueue;
 import com.epri.dss.control.ControlElem;
 import com.epri.dss.control.impl.ControlAction;
@@ -119,24 +116,24 @@ public class ControlQueueImpl implements ControlQueue {
 	/**
 	 * Do only those actions with the same delay time as the first action return time.
 	 */
-	public boolean doNearestActions(MutableInt hour, MutableDouble sec) {
+	public boolean doNearestActions(int[] hour, double[] sec) {
 		ControlElem pElem;
 		TimeRec t;
-		MutableInt code = new MutableInt();
-		MutableInt hdl = new MutableInt();
-		MutableInt proxyHdl = new MutableInt();
+		int[] code = new int[1];
+		int[] hdl = new int[1];
+		int[] proxyHdl = new int[1];
 
 		boolean result = false;
 		if (actionList.size() > 0) {
 			t = actionList.get(0).actionTime;
-			hour.setValue(t.hour);
-			sec.setValue(t.sec);
+			hour[0] = t.hour;
+			sec[0] = t.sec;
 			pElem = pop(t, code, proxyHdl, hdl);
 			while (pElem != null) {
 				if (debugTrace)
-					writeTraceRecord(pElem.getName(), code.intValue(), pElem.getDblTraceParameter(),
+					writeTraceRecord(pElem.getName(), code[0], pElem.getDblTraceParameter(),
 							String.format("Pop Handle %d Do Nearest Action", hdl));
-				pElem.doPendingAction(code.intValue(), proxyHdl.intValue());
+				pElem.doPendingAction(code[0], proxyHdl[0]);
 				result = true;
 				pElem = pop(t, code, proxyHdl, hdl);
 			}
@@ -155,7 +152,7 @@ public class ControlQueueImpl implements ControlQueue {
 	/**
 	 * Pop off next control action with an action time <= actionTime (sec).
 	 */
-	private ControlElem pop(TimeRec actionTime, MutableInt code, MutableInt proxyHdl, MutableInt hdl) {
+	private ControlElem pop(TimeRec actionTime, int[] code, int[] proxyHdl, int[] hdl) {
 
 		ControlElem result = null;
 		ActionRecord action;
@@ -166,9 +163,9 @@ public class ControlQueueImpl implements ControlQueue {
 			action = actionList.get(i);
 			if (timeRecToTime(action.actionTime) <= t) {
 				result = action.controlElement;
-				code.setValue(action.actionCode);
-				proxyHdl.setValue(action.proxyHandle);
-				hdl.setValue(action.actionHandle);
+				code[0] = action.actionCode;
+				proxyHdl[0] = action.proxyHandle;
+				hdl[0] = action.actionHandle;
 				deleteFromQueue(i, true);
 				break;
 			}
@@ -205,9 +202,9 @@ public class ControlQueueImpl implements ControlQueue {
 	 */
 	public boolean doActions(int hour, double sec) {
 		TimeRec t = new TimeRec();
-		MutableInt code = new MutableInt();
-		MutableInt hdl = new MutableInt();
-		MutableInt proxyHdl = new MutableInt();
+		int[] code = new int[1];
+		int[] hdl = new int[1];
+		int[] proxyHdl = new int[1];
 
 		boolean result = false;
 		if (actionList.size() > 0) {
@@ -217,9 +214,9 @@ public class ControlQueueImpl implements ControlQueue {
 			ControlElem pElem = pop(t, code, proxyHdl, hdl);
 			while (pElem != null) {
 				if (debugTrace)
-					writeTraceRecord(pElem.getName(), code.intValue(), pElem.getDblTraceParameter(),
+					writeTraceRecord(pElem.getName(), code[0], pElem.getDblTraceParameter(),
 							String.format("Pop handle %d do action", hdl));
-				pElem.doPendingAction(code.intValue(), proxyHdl.intValue());
+				pElem.doPendingAction(code[0], proxyHdl[0]);
 				result = true;
 				pElem = pop(t, code, proxyHdl, hdl);
 			}

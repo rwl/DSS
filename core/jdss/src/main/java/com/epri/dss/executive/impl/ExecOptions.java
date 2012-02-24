@@ -1,7 +1,5 @@
 package com.epri.dss.executive.impl;
 
-import org.apache.commons.lang.mutable.MutableInt;
-
 import com.epri.dss.common.Circuit;
 import com.epri.dss.common.CktElement;
 import com.epri.dss.common.Solution;
@@ -437,7 +435,7 @@ public class ExecOptions {
 	 */
 	public int doSetCmd(int solveOption) {
 		LoadShapeObj testLoadShapeObj;
-		MutableInt numRegs;
+		int[] numRegs;
 
 		Parser parser = Parser.getInstance();
 		Circuit ckt;
@@ -579,18 +577,18 @@ public class ExecOptions {
 				DSSGlobals.activeCircuit.setLossWeight(parser.makeDouble());
 				break;
 			case 36:
-				numRegs = new MutableInt();
+				numRegs = new int[1];
 				DSSGlobals.activeCircuit.setUERegs(
 						Utilities.parseIntArray(DSSGlobals.activeCircuit.getUERegs(), numRegs, param)
 				);
-				DSSGlobals.activeCircuit.setNumUERegs(numRegs.intValue());
+				DSSGlobals.activeCircuit.setNumUERegs(numRegs[0]);
 				break;
 			case 37:
-				numRegs = new MutableInt();
+				numRegs = new int[1];
 				DSSGlobals.activeCircuit.setLossRegs(
 						Utilities.parseIntArray(DSSGlobals.activeCircuit.getLossRegs(), numRegs, param)
 				);
-				DSSGlobals.activeCircuit.setNumLossRegs(numRegs.intValue());
+				DSSGlobals.activeCircuit.setNumLossRegs(numRegs[0]);
 				break;
 			case 38:
 				ExecHelper.doLegalVoltageBases();

@@ -3,8 +3,6 @@ package com.epri.dss.common.impl;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.lang.mutable.MutableLong;
-
 import com.epri.dss.common.Circuit;
 import com.epri.dss.common.CktElement;
 import com.epri.dss.common.SolutionObj;
@@ -42,16 +40,16 @@ public class YMatrix {
 				pElem.calcYPrim();
 	}
 
-	public static void resetSparseMatrix(MutableLong Y, int size) throws Esolv32Problem {
-		if (Y.longValue() != 0) {
-			if (deleteSparseSet(Y.longValue()) < 1)  // get rid of existing one before making a new one
+	public static void resetSparseMatrix(long[] Y, int size) throws Esolv32Problem {
+		if (Y[0] != 0) {
+			if (deleteSparseSet(Y[0]) < 1)  // get rid of existing one before making a new one
 				throw new Esolv32Problem("Error deleting system Y Matrix in resetSparseMatrix. Problem with sparse matrix solver.");
-			Y.setValue(0);
+			Y[0] = 0;
 		}
 
 		// make a new sparse set
-		Y.setValue(newSparseSet(size));
-		if (Y.longValue() < 1)  // raise an exception  TODO Check zero based indexing
+		Y[0] = newSparseSet(size);
+		if (Y[0] < 1)  // raise an exception  TODO Check zero based indexing
 			throw new Esolv32Problem("Error creating system Y Matrix. Problem with sparse matrix solver.");
 	}
 

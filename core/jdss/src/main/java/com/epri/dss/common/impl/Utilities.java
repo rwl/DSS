@@ -17,8 +17,6 @@ import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.lang.mutable.MutableInt;
-
 import com.epri.dss.meter.EnergyMeterObj;
 import com.epri.dss.parser.impl.Parser;
 import org.apache.commons.math.complex.Complex;
@@ -981,25 +979,25 @@ public class Utilities {
 		}
 	}
 
-	public static int[] parseIntArray(int[] iarray, MutableInt count, String s) {
+	public static int[] parseIntArray(int[] iarray, int[] count, String s) {
 		String param = " ";
 
 		// parse the line once to get the count of tokens on string, S
 		DSSGlobals.auxParser.setCmdString(s);
-		count.setValue(0);
+		count[0] = 0;
 		while (param.length() > 0) {
 			DSSGlobals.auxParser.getNextParam();
 			param     = DSSGlobals.auxParser.makeString();
 			if (param.length() > 0)
-				count.increment();
+				count[0]++;
 		}
 
 		// reallocate iarray to new size
-		iarray = resizeArray(iarray, count.intValue());
+		iarray = resizeArray(iarray, count[0]);
 
 		// Parse again for real
 		DSSGlobals.auxParser.setCmdString(s);
-		for (int i = 0; i < count.intValue(); i++) {
+		for (int i = 0; i < count[0]; i++) {
 			DSSGlobals.auxParser.getNextParam();
 			iarray[i] = DSSGlobals.auxParser.makeInteger();
 		}

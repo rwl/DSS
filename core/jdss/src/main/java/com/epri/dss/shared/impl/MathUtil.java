@@ -1,7 +1,5 @@
 package com.epri.dss.shared.impl;
 
-import org.apache.commons.lang.mutable.MutableDouble;
-import org.apache.commons.lang.mutable.MutableInt;
 import org.apache.commons.math.complex.Complex;
 
 import com.epri.dss.shared.CMatrix;
@@ -104,19 +102,19 @@ public abstract class MathUtil {
 	 * stuff.
 	 *
 	 */
-	public static void ETKInvert(double[] A, int norder, MutableInt error) {
+	public static void ETKInvert(double[] A, int norder, int[] error) {
 
 		int j, k, LL, M, i;
 		int[] LT;
 		double RMY, T1;
 
 		L = norder;
-		error.setValue(0);
+		error[0] = 0;
 
 		/* Allocate LT */
 		LT = new int[L];
 		if (LT.length == 0) {
-			error.setValue(1);
+			error[0] = 1;
 			return;
 		}
 
@@ -143,7 +141,7 @@ public abstract class MathUtil {
 			/* Error Check. If RMY ends up zero, matrix is non-inversible */
 			RMY = Math.abs(T1);
 			if (RMY == 0.0) {
-				error.setValue(2);
+				error[0] = 2;
 				return;
 			}
 
@@ -232,45 +230,45 @@ public abstract class MathUtil {
 		return sum;
 	}
 
-	public static void meanandStdDev(double[] pData, int nData, MutableDouble mean, MutableDouble stdDev) {
+	public static void meanandStdDev(double[] pData, int nData, double[] mean, double[] stdDev) {
 		double[] data = new double[100];
 		double S;
 
 		data = pData;  // make a double pointer
 		if (nData == 1) {
-			mean.setValue(data[0]);
-			stdDev.setValue(data[0]);
+			mean[0] = data[0];
+			stdDev[0] = data[0];
 			return;
 		}
-		mean.setValue(sum(data, (nData)) / nData);
+		mean[0] = sum(data, (nData)) / nData;
 		S = 0;  // sum differences from the mean, for greater accuracy
 		for (int i = 0; i < nData; i++)
-			S = S + Math.pow(mean.doubleValue() - data[i], 2);
-		stdDev.setValue(Math.sqrt(S / (nData - 1)));
+			S = S + Math.pow(mean[0] - data[i], 2);
+		stdDev[0] = Math.sqrt(S / (nData - 1));
 	}
 
-	public static void curveMeanAndStdDev(double[] pY, double[] pX, int N, MutableDouble mean, MutableDouble stdDev) {
+	public static void curveMeanAndStdDev(double[] pY, double[] pX, int N, double[] mean, double[] stdDev) {
 		double s, dy1, dy2;
 		int i;
 
 		if (N == 1) {
-			mean.setValue(pY[0]);
-			stdDev.setValue(pY[0]);
+			mean[0] = pY[0];
+			stdDev[0] = pY[0];
 			return;
 		}
 		s = 0;
 		for (i = 0; i < N - 1; i++)
 			s += 0.5 * (pY[i] + pY[i + 1]) * (pX[i + 1] - pX[i]);
-		mean.setValue(s / (pX[N] - pX[0]));  // TODO Check zero based indexing
+		mean[0] = s / (pX[N] - pX[0]);  // TODO Check zero based indexing
 
 		s = 0;  // sum differences from the mean, for greater accuracy
 		for (i = 0; i < N - 1; i++) {
-			dy1 = (pY[i] - mean.doubleValue());
-			dy2 = (pY[i + 1] - mean.doubleValue());
+			dy1 = (pY[i] - mean[0]);
+			dy2 = (pY[i + 1] - mean[0]);
 			s += 0.5 * (dy1 * dy1 + dy2 * dy2) * (pX[i + 1] - pX[i]);
 		}
 
-		stdDev.setValue(Math.sqrt(s / (pX[N] - pX[0])));
+		stdDev[0] = Math.sqrt(s / (pX[N] - pX[0]));
 	}
 
 	/**
