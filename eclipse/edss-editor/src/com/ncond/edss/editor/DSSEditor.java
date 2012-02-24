@@ -1,18 +1,21 @@
 package com.ncond.edss.editor;
 
-import org.eclipse.ui.texteditor.AbstractTextEditor;
+import org.eclipse.ui.editors.text.TextEditor;
 
-public class DSSEditor extends AbstractTextEditor {
+public class DSSEditor extends TextEditor {
+
+	private ColorManager colorManager;
 
 	public DSSEditor() {
 		super();
-		setSourceViewerConfiguration(new DSSConfiguration());
+		colorManager = new ColorManager();
+		setSourceViewerConfiguration(new DSSConfiguration(colorManager));
 		setDocumentProvider(new DSSDocumentProvider());
 	}
 
-	protected void createActions() {
-		super.createActions();
-		//... add other editor actions here
+	public void dispose() {
+		colorManager.dispose();
+		super.dispose();
 	}
 
 }
