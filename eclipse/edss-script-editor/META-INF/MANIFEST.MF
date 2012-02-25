@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: eDSS Editor
-Bundle-SymbolicName: com.ncond.edss.editor; singleton:=true
+Bundle-Name: edss-script-editor
+Bundle-SymbolicName: edss-script-editor; singleton:=true
 Bundle-Version: 1.0.0.qualifier
 Bundle-Activator: com.ncond.edss.editor.Activator
 Require-Bundle: org.eclipse.ui,
