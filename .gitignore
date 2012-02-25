@@ -16,5 +16,11 @@
 /shell/*/.classpath
 /shell/*/.project
 
+/vaadin/*/target/*
+/vaadin/*/.settings/
+/vaadin/*/.classpath
+/vaadin/*/.project
+/vaadin/*/src/main/webapp/VAADIN/widgetsets/*
+
 javapyler.cfg
 

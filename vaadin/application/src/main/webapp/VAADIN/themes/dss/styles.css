@@ -1,0 +1,10 @@
+@import url(../reindeer/styles.css);
+
+.v-app {
+    background: #5D5D5D;
+}
+
+.term, .term .i {
+    background-color: #333333 !important;
+    color: white !important;
+}
