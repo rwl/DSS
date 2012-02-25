@@ -1,4 +1,4 @@
-package com.ncond.dss.shell;
+package com.ncond.dss.shell.jline;
 
 import com.ncond.dss.executive.Executive;
 import com.ncond.dss.executive.impl.DSSExecutive;

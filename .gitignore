@@ -11,5 +11,10 @@
 /eclipse/*/.classpath
 /eclipse/*/.project
 
+/shell/*/target/*
+/shell/*/.settings/
+/shell/*/.classpath
+/shell/*/.project
+
 javapyler.cfg
 

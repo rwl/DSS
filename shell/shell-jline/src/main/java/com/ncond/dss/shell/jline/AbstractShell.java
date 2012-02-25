@@ -1,4 +1,4 @@
-package com.ncond.dss.shell;
+package com.ncond.dss.shell.jline;
 
 import java.io.IOException;
 

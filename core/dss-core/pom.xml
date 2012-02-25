@@ -57,13 +57,6 @@
 	<scope>compile</scope>
 	</dependency>
 	<dependency>
-		<groupId>jline</groupId>
-		<artifactId>jline</artifactId>
-		<version>0.9.94</version>
-		<type>jar</type>
-		<scope>compile</scope>
-	</dependency>
-	<dependency>
 		<groupId>com.hp.hpl.jena</groupId>
 		<artifactId>jena</artifactId>
 		<version>2.6.4</version>
