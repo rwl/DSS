@@ -206,7 +206,7 @@ public class GeneratorObjImpl extends PCElementImpl implements GeneratorObj {
 		genVars.dSpeed = 0.0;
 		genVars.D      = 1.0;
 
-		userModel  = new GenUserModelImpl(genVars) ;
+		userModel = new GenUserModelImpl(genVars) ;
 		shaftModel = new GenUserModelImpl(genVars);
 
 		dispatchValue = 0.0;  // follow curves
