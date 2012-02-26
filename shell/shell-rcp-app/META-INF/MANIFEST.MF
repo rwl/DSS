@@ -1,0 +1,9 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: DSS Shell RCP App
+Bundle-SymbolicName: shell-rcp-app; singleton:=true
+Bundle-Version: 1.0.0.qualifier
+Bundle-Activator: com.ncond.dss.shell.Activator
+Require-Bundle: org.eclipse.core.runtime
+Bundle-ActivationPolicy: lazy
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
