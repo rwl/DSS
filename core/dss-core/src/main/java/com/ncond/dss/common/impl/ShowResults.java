@@ -3,6 +3,7 @@ package com.ncond.dss.common.impl;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.UUID;
 
 
 import org.apache.commons.math.complex.Complex;
@@ -2793,12 +2794,13 @@ public abstract class ShowResults {
 	public static void showY(String fileName) {
 		FileWriter fw;
 		PrintWriter pw;
-		CMatrix hY;
-		long nnz, nBus;
-		long i, row, col;
+		UUID hY;
+		int nnz, nBus;
+		int i, row, col;
 		double re, im;
-		long[] colIdx, rowIdx;
+		int[] colIdx, rowIdx;
 		Complex[] cVals;
+		int[] ip = new int[1];
 
 		Circuit ckt = DSSGlobals.activeCircuit;
 
@@ -2813,15 +2815,17 @@ public abstract class ShowResults {
 
 		// print lower triangle of G and B using new functions
 		// this compresses the entries if necessary - no extra work if already solved
-//		KLU.factorSparseMatrix(hY);
-//		KLU.getNNZ(hY, nNZ);
-//		KLU.getSize(hY, nBus);  // we should already know this
+		YMatrix.factorSparseMatrix(hY);
+		YMatrix.getNNZ(hY, ip);
+		nnz = ip[0];
+		YMatrix.getSize(hY, ip);  // we should already know this
+		nBus = ip[0];
 
 		try {
-//			ColIdx = new long[nNZ];
-//			RowIdx = new long[nNZ];
-//			cVals = new Complex[nNZ];
-//			KLU.getTripletMatrix(hY, nNZ, RowIdx[0], ColIdx[0], cVals[0]);
+			colIdx = new int[nnz];
+			rowIdx = new int[nnz];
+			cVals = new Complex[nnz];
+			YMatrix.getTripletMatrix(hY, nnz, rowIdx, colIdx, cVals);
 
 			fw = new FileWriter(fileName);
 			pw = new PrintWriter(fw);
@@ -2832,15 +2836,16 @@ public abstract class ShowResults {
 			pw.println();
 
 			// shows how to easily traverse the triplet format
-//			for (i = 0; i < nNZ - 1; i++) {  // TODO Check zero based indexing
-//				col = ColIdx[i] + 1;
-//				row = RowIdx[i] + 1;
-//				if (row >= col) {
-//					re = cVals[i].getReal();
-//					im = cVals[i].getImaginary();
-//					F.println(String.format("[%4d,%4d] = %13.10g + j%13.10g", row, col, re, im));
-//				}
-//			}
+			for (i = 0; i < nnz; i++) {  // TODO Check zero based indexing
+				col = colIdx[i];
+				row = rowIdx[i];
+				if (row >= col) {
+					re = cVals[i].getReal();
+					im = cVals[i].getImaginary();
+					pw.printf("[%4d,%4d] = %13.10g + j%13.10g", row, col, re, im);
+					pw.println();
+				}
+			}
 			pw.close();
 			fw.close();
 

@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.UUID;
 
 
 import org.apache.commons.math.complex.Complex;
@@ -1539,9 +1540,10 @@ public class ExportResults {
 		FileWriter f;
 		PrintWriter writer;
 		long i, j, p;
-		CMatrix Y;
-		long nBus = 0, nnz = 0;
-		long[] colPtr, rowIdx;
+		UUID Y;
+		int[] ip = new int[1];
+		int nBus = 0, nnz = 0;
+		int[] colPtr, rowIdx;
 		Complex[] cVals;
 		double re, im;
 
@@ -1554,18 +1556,20 @@ public class ExportResults {
 			return;
 		}
 		// this compresses the entries if necessary - no extra work if already solved
-//		KLU.factorSparseMatrix(Y);
-//		KLU.getNNZ(Y, nNZ);
-//		KLU.getSize(Y, nBus);  // we should already know this
+		YMatrix.factorSparseMatrix(Y);
+		YMatrix.getNNZ(Y, ip);
+		nnz = ip[0];
+		YMatrix.getSize(Y, ip);  // we should already know this
+		nBus = ip[0];
 
 		try {
 			f = new FileWriter(fileName);
 			writer = new PrintWriter(f);
 
-			colPtr = new long[(int) (nBus + 1)];
-			rowIdx = new long[(int) nnz];
-			cVals  = new Complex[(int) nnz];
-//			KLU.getCompressedMatrix(Y, nBus + 1, nNZ, ColPtr[0], RowIdx[0], cVals[0]);
+			colPtr = new int[nBus + 1];
+			rowIdx = new int[nnz];
+			cVals  = new Complex[nnz];
+			YMatrix.getCompressedMatrix(Y, nBus + 1, nnz, colPtr, rowIdx, cVals);
 
 			/* Write out fully qualified bus names */
 

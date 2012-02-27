@@ -694,7 +694,7 @@ public class SolutionAlgs {
 			if (ref1 >= 0) {
 				sol.setCurrent(ref1, Complex.ONE);
 				/* SparseSet expects 1st element of voltage array, not 0-th element */
-				if (YMatrix.solveSparseSet(sol.getYSystem(), sol.getNodeV()[1], sol.getCurrent(1)) < 1)
+				if (YMatrix.solveSparseSet(sol.getYSystem(), sol.getNodeV(), 1, sol.getCurrents(), 1) < 1)
 					throw new Esolv32Problem("Error solving system Y matrix in computeYsc. Problem with sparse matrix solver.");
 				/* Extract voltage vector = column of Zsc */
 				for (int j = 0; j < bus.getNumNodesThisBus(); j++)

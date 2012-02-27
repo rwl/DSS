@@ -2,6 +2,7 @@ package com.ncond.dss.common.impl;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import com.ncond.dss.common.Circuit;
 import com.ncond.dss.common.CktElement;
@@ -9,9 +10,12 @@ import com.ncond.dss.common.SolutionObj;
 import com.ncond.dss.common.impl.DSSBus.NodeBus;
 import com.ncond.dss.shared.CMatrix;
 
+import net.sourceforge.klusolve.KLUSolve;
+import net.sourceforge.klusolve.KLUSystem;
+
 import org.apache.commons.math.complex.Complex;
 
-public class YMatrix {
+public class YMatrix extends KLUSolve {
 
 	/* Options for building Y matrix */
 	public static final int SERIESONLY = 1;
@@ -41,16 +45,16 @@ public class YMatrix {
 				pElem.calcYPrim();
 	}
 
-	public static void resetSparseMatrix(long[] Y, int size) throws Esolv32Problem {
-		if (Y[0] != 0) {
+	public static void resetSparseMatrix(UUID[] Y, int size) throws Esolv32Problem {
+		if (Y[0] != null) {
 			if (deleteSparseSet(Y[0]) < 1)  // get rid of existing one before making a new one
 				throw new Esolv32Problem("Error deleting system Y Matrix in resetSparseMatrix. Problem with sparse matrix solver.");
-			Y[0] = 0;
+			Y[0] = null;
 		}
 
 		// make a new sparse set
 		Y[0] = newSparseSet(size);
-		if (Y[0] < 1)  // raise an exception  TODO Check zero based indexing
+		if (Y[0] == null)  // raise an exception  TODO Check zero based indexing
 			throw new Esolv32Problem("Error creating system Y Matrix. Problem with sparse matrix solver.");
 	}
 
@@ -71,6 +75,7 @@ public class YMatrix {
 	 * @throws Esolv32Problem
 	 */
 	public static void buildYMatrix(int BuildOption, boolean AllocateVI) throws Esolv32Problem {
+		UUID[] pY = new UUID[1];
 		int YMatrixSize;
 		Complex[] CmatArray;
 
@@ -93,11 +98,15 @@ public class YMatrix {
 
 		switch (BuildOption) {
 		case WHOLEMATRIX:
-			resetSparseMatrix(sol.getYSystem(), YMatrixSize);
+			pY[0] = sol.getYSystem();
+			resetSparseMatrix(pY, YMatrixSize);
+			sol.setYSystem(pY[0]);
 			sol.setY(sol.getYSystem());
 			break;
 		case SERIESONLY:
-			resetSparseMatrix(sol.getYSeries(), YMatrixSize);
+			pY[0] = sol.getYSeries();
+			resetSparseMatrix(pY, YMatrixSize);
+			sol.setYSeries(pY[0]);
 			sol.setY(sol.getYSeries());
 			break;
 		}
@@ -139,7 +148,7 @@ public class YMatrix {
 				}
 				// new function adding primitive Y matrix to KLU system Y matrix
 				if (CmatArray != null)
-					if (addPrimitiveMatrix(sol.getY(), pElem.getYorder(), pElem.getNodeRef()[0], CmatArray[0]) < 0)  // TODO Check zero based indexing
+					if (addPrimitiveMatrix(sol.getY(), pElem.getYorder(), pElem.getNodeRef(), 1, CmatArray, 1) < 0)  // TODO Check zero based indexing
 						throw new Esolv32Problem("Node index out of range adding to System Y Matrix");
 			}  // if enabled
 		}
@@ -182,25 +191,15 @@ public class YMatrix {
 
 	}
 
-	private static int addPrimitiveMatrix(CMatrix y, int yorder, int nodes, Complex mat) {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	private static void resetSparseMatrix(CMatrix ysystem, int yMatrixSize) {
-		// TODO Auto-generated method stub
-
-	}
-
 	/**
 	 * Leave the call to getMatrixElement, but add more diagnostics.
 	 */
 	public static String checkYMatrixforZeroes() {
-		Complex c = null;
-		CMatrix Y;
-		int sCol = 0;
+		Complex[] c = new Complex[1];
+		UUID Y;
+		int[] sCol = new int[1];
 		long nIslands, iCount, iFirst;
-		List<Long> Cliques;
+		int[] cliques;
 
 		Circuit ckt = DSSGlobals.activeCircuit;
 
@@ -209,7 +208,7 @@ public class YMatrix {
 		Y = ckt.getSolution().getY();
 		for (int i = 0; i < ckt.getNumNodes(); i++) {
 			getMatrixElement(Y, i, i, c);
-			if (c.abs() == 0.0) {
+			if (c[0].abs() == 0.0) {
 				NodeBus nb = ckt.getMapNodeToBus()[i];
 				Result += String.format("%sZero diagonal for bus %s, node %d", DSSGlobals.CRLF, ckt.getBusList().get(nb.busRef), nb.nodeNum);
 			}
@@ -217,20 +216,20 @@ public class YMatrix {
 
 		// new diagnostics
 		getSingularCol(Y, sCol);  // returns a 0-based node number  TODO Check zero based indexing
-		if (sCol >= 0) {
-			NodeBus nb = ckt.getMapNodeToBus()[sCol];
+		if (sCol[0] >= 0) {
+			NodeBus nb = ckt.getMapNodeToBus()[sCol[0]];
 			Result += String.format("%sMatrix singularity at bus %s, node %d", DSSGlobals.CRLF, ckt.getBusList().get(nb.busRef), sCol);
 		}
 
-		Cliques = new ArrayList<Long>(ckt.getNumNodes());  // TODO Check translation
-		nIslands = findIslands(Y, ckt.getNumNodes(), Cliques.get(0));
+		cliques = new int[ckt.getNumNodes()];
+		nIslands = findIslands(Y, ckt.getNumNodes(), cliques);
 		if (nIslands > 1) {
 			Result += String.format("%sFound %d electrical islands:", DSSGlobals.CRLF, nIslands);
 			for (int i = 0; i < nIslands; i++) {
 				iCount = 0;
 				iFirst = 0;
 				for (int p = 0; p < ckt.getNumNodes(); p++) {
-					if (Cliques.get(p) == i) {
+					if (cliques[p] == i) {
 						iCount += 1;
 						if (iFirst == 0)
 							iFirst = p + 1;
@@ -242,234 +241,6 @@ public class YMatrix {
 		}
 
 		return Result;
-	}
-
-	// function calls return 0 to indicate failure, 1 for success
-
-	private static long findIslands(CMatrix y, int numNodes, Long pNodes) {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	private static void getSingularCol(CMatrix y, long sCol) {
-		// TODO Auto-generated method stub
-
-	}
-
-	private static void getMatrixElement(CMatrix y, int i, int i2, Complex c) {
-		// TODO Auto-generated method stub
-
-	}
-
-	/**
-	 * Returns the non-zero handle of a new sparse matrix, if successful
-	 * must call deleteSparseSet on the valid handle when finished.
-	 */
-	public static long newSparseSet(long nBus) {
-		return 0;
-	}
-
-	/** return 1 for success, 0 for invalid handle */
-	public static long deleteSparseSet(long id) {
-		return 0;
-	}
-
-	/**
-	 * Return 1 for success, 2 for singular, 0 for invalid handle
-	 * factors matrix if needed.
-	 */
-	public static long solveSparseSet(long id, Complex[] x, Complex[] b) {
-		return 0;
-	}
-
-	/**
-	 * @param id
-	 * @return 1 for success, 0 for invalid handle
-	 */
-	public static long zeroSparseSet(long id) {
-		return 0;
-	}
-
-	/**
-	 * Does no extra work if the factoring was done previously.
-	 *
-	 * @param id
-	 * @return 1 for success, 2 for singular, 0 for invalid handle
-	 */
-	public static long factorSparseMatrix(long id) {
-		return 0;
-	}
-
-	/* These "get" functions for matrix information all return 1 for success, 0 for invalid handle */
-
-	/**
-	 * Res is the matrix order (number of nodes)
-	 */
-	public static long getSize(long id, long Res) {
-		return 0;
-	}
-
-	/**
-	 * The following function results are not known prior to factoring.
-	 *
-	 * @param id
-	 * @param Res the number of floating point operations to factor
-	 * @return
-	 */
-	public static long getFlops(long id, double Res) {
-		return 0;
-	}
-
-	/**
-	 * @param id
-	 * @param Res number of non-zero entries in the original matrix
-	 * @return
-	 */
-	public static long getNNZ(long id, long Res) {
-		return 0;
-	}
-
-	/**
-	 * @param id
-	 * @param Res number of non-zero entries in factored matrix
-	 * @return
-	 */
-	public static long getSparseNNZ(long id, long Res) {
-		return 0;
-	}
-
-	/**
-	 * @param id
-	 * @param Res a column number corresponding to a singularity, or 0 if not singular
-	 * @return
-	 */
-	public static long getSingularCol(long id, long Res) {
-		return 0;
-	}
-
-	/**
-	 * @param id
-	 * @param Res the pivot element growth factor
-	 * @return
-	 */
-	public static long getRGrowth(long id, double Res) {
-		return 0;
-	}
-
-	/**
-	 * @param id
-	 * @param Res quick estimate of the reciprocal of condition number
-	 * @return
-	 */
-	public static long getRCond(long id, double Res) {
-		return 0;
-	}
-
-	/**
-	 * @param id
-	 * @param Res a more accurate estimate of condition number
-	 * @return
-	 */
-	public static long getCondEst(long id, double Res) {
-		return 0;
-	}
-
-	/**
-	 * @param id
-	 * @param nOrder
-	 * @param Nodes
-	 * @param Mat
-	 * @return 1 for success, 0 for invalid handle or a node number out of range
-	 */
-	public static long addPrimitiveMatrix(long id, long nOrder, long Nodes, Complex Mat) {
-		return 0;
-	}
-
-	/**
-	 * @param Path
-	 * @param Action 0 (close), 1 (rewrite) or 2 (append)
-	 * @return
-	 */
-	public static long setLogFile(char Path, long Action) {
-		return 0;
-	}
-
-	/**
-	 * Fill sparse matrix in compressed column form.
-	 *
-	 * @param id
-	 * @param nColP
-	 * @param nNZ
-	 * @param pColP must be of length nColP == nBus + 1
-	 * @param pRowIdx length nnz
-	 * @param Mat length nnz
-	 * @return 1 for success, 0 for invalid handle, 2 for invalid array sizes
-	 */
-	public static long getCompressedMatrix(long id, long nColP, long nNZ, long pColP, long pRowIdx, Complex Mat) {
-		return 0;
-	}
-
-	/**
-	 * Fill sparse matrix in triplet form.
-	 *
-	 * @param id
-	 * @param nNZ
-	 * @param pRows length nnz
-	 * @param pCols length nnz
-	 * @param Mat length nnz
-	 * @return 1 for success, 0 for invalid handle, 2 for invalid array sizes
-	 */
-	public static long getTripletMatrix(long id, long nNZ, long pRows, long pCols, Complex Mat) {
-		return 0;
-	}
-
-	/**
-	 * @param id
-	 * @param nOrder
-	 * @param pNodes contains the island number for each node
-	 * @return number of islands >= 1 by graph traversal
-	 */
-	public static long findIslands(long id, long nOrder, long pNodes) {
-		return 0;
-	}
-
-	/**
-	 * Deprecated, use addPrimitiveMatrix instead.
-	 */
-	public static long addMatrixElement(long id, long i, long j, Complex Value) {
-		return 0;
-	}
-
-	/**
-	 * Deprecated, use getCompressedMatrix or getTripletMatrix.
-	 */
-	public static long getMatrixElement(long id, long i, long j, Complex Value) {
-		return 0;
-	}
-
-	public static int solveSparseSet(CMatrix ysystem, Complex complex, Complex complex2) {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	public static void setLogFile(String string, int action) {
-		// TODO Auto-generated method stub
-
-	}
-
-	public static void getRCond(CMatrix y, double dRes) {
-		// TODO Auto-generated method stub
-
-	}
-
-	public static void getNNZ(CMatrix y, long iRes) {
-		// TODO Auto-generated method stub
-
-	}
-
-	public static void getSparseNNZ(CMatrix y, long iRes) {
-		// TODO Auto-generated method stub
-
 	}
 
 }

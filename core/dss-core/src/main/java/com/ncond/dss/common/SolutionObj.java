@@ -1,6 +1,7 @@
 package com.ncond.dss.common;
 
 import java.io.PrintStream;
+import java.util.UUID;
 
 import org.apache.commons.math.complex.Complex;
 
@@ -105,17 +106,17 @@ public interface SolutionObj extends DSSObject {
 
 	void setDblHour(double dblHour);
 
-	CMatrix getYSystem();
+	UUID getYSystem();
 
-	void setYSystem(CMatrix ySystem);
+	void setYSystem(UUID ySystem);
 
-	CMatrix getYSeries();
+	UUID getYSeries();
 
-	void setYSeries(CMatrix ySeries);
+	void setYSeries(UUID ySeries);
 
-	CMatrix getY();
+	UUID getY();
 
-	void setY(CMatrix y);
+	void setY(UUID y);
 
 	double getIntervalHrs();
 

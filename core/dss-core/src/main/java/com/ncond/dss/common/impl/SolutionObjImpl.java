@@ -4,6 +4,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.io.PrintWriter;
+import java.util.UUID;
 
 import org.apache.commons.math.complex.Complex;
 
@@ -55,11 +56,11 @@ public class SolutionObjImpl extends DSSObjectImpl implements SolutionObj {
 	protected int intHour;
 	protected double dblHour;
 	/* Main (system) Y matrix */
-	protected CMatrix YSystem;
+	protected UUID YSystem;
 	/* Series Y matrix */
-	protected CMatrix YSeries;
+	protected UUID YSeries;
 	/* Either Ysystem or Yseries */
-	protected CMatrix Y;
+	protected UUID Y;
 	protected double intervalHrs;   // solution interval since last solution, hrs.
 	protected boolean isDynamicModel;
 	protected boolean isHarmonicModel;
@@ -1250,23 +1251,30 @@ public class SolutionObjImpl extends DSSObjectImpl implements SolutionObj {
 		int retCode;
 		long iRes = 0;
 		double dRes = 0;
+		double[] dp = new double[1];
+		int[] ip = new int[1];
 
 		/* Note: NodeV[0] = 0 + j0 always. Therefore, pass the address of the element 1 of the array. */
 		try {
-			// new function to log KLUSolve.DLL function calls
+			/* log KLUSolve function calls */
 			YMatrix.setLogFile("KLU_Log.txt", 1);
-			retCode = YMatrix.solveSparseSet(Y, V[1], currents[1]);  // solve for present injCurr
-			// new information functions
+
+			retCode = YMatrix.solveSparseSet(Y, V, 1, currents, 1);  // solve for present injCurr
+
+			/* information functions */
 			//YMatrix.getFlops(Y, dRes);
 			//YMatrix.getRGrowth(Y, dRes);
-			YMatrix.getRCond(Y, dRes);
+			YMatrix.getRCond(Y, dp);
+			dRes = dp[0];
 			//YMatrix.getCondEst(Y, dRes); // this can be expensive
 			//YMatrix.getSize(Y, iRes);
-			YMatrix.getNNZ(Y, iRes);
-			YMatrix.getSparseNNZ(Y, iRes);
+			YMatrix.getNNZ(Y, ip);
+			iRes = ip[0];
+			YMatrix.getSparseNNZ(Y, ip);
+			iRes = ip[0];
 			//YMatrix.getSingularCol(Y, iRes);
 		} catch (Exception e) {
-			throw new Esolv32Problem("Error solving system Y matrix. Sparse matrix solver reports numerical error: "+e.getMessage());
+			throw new Esolv32Problem("Error solving system Y matrix. Sparse matrix solver reports numerical error: " + e.getMessage());
 		}
 
 		return retCode;
@@ -1501,27 +1509,27 @@ public class SolutionObjImpl extends DSSObjectImpl implements SolutionObj {
 		this.dblHour = hour;
 	}
 
-	public CMatrix getYSystem() {
+	public UUID getYSystem() {
 		return YSystem;
 	}
 
-	public void setYSystem(CMatrix value) {
+	public void setYSystem(UUID value) {
 		YSystem = value;
 	}
 
-	public CMatrix getYSeries() {
+	public UUID getYSeries() {
 		return YSeries;
 	}
 
-	public void setYSeries(CMatrix value) {
+	public void setYSeries(UUID value) {
 		YSeries = value;
 	}
 
-	public CMatrix getY() {
+	public UUID getY() {
 		return Y;
 	}
 
-	public void setY(CMatrix y) {
+	public void setY(UUID y) {
 		Y = y;
 	}
 

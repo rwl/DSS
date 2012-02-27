@@ -144,20 +144,20 @@ public class KLUSystem {
 		return 1;
 	}
 
-	public int solveSystem(DZcsa _acxX, DZcsa _acxB) {
+	public int solveSystem(DZcsa acxX, DZcsa acxB) {
 		int rc = 0;
 		int i;
 
 		acx.set(0, cs_czero());
 
 		for (i = 0; i < m_nBus; i++) {
-			acx.set(i + 1, _acxB.get(i));
+			acx.set(i + 1, acxB.get(i));
 		}
 
 		solve(acx);
 
 		for (i = 0; i < m_nBus; i++) {
-			_acxX.set(i, acx.get(i + 1));
+			acxX.set(i, acx.get(i + 1));
 		}
 
 		return rc;
@@ -456,7 +456,7 @@ public class KLUSystem {
 		initialize(m_nBus, 0, m_nBus);
 	}
 
-	public void addElement(int iRow, int iCol, double[] cpxVal, int bSum) {  // bSum is ignored
+	public void addElement(int iRow, int iCol, double[] cpxVal, boolean bSum) {  // bSum is ignored
 		if (iRow > m_nBus || iCol > m_nBus) return;
 		if (iRow <= 0 || iCol <= 0) return;
 		--iRow;
@@ -522,23 +522,23 @@ public class KLUSystem {
 	 * @param pMat
 	 * @return
 	 */
-	public int addPrimitiveMatrix(int nOrder, int[] pNodes, DZcsa pMat) {
+	public int addPrimitiveMatrix(int nOrder, int[] pNodes, int node_offset, DZcsa pMat) {
 		int i, j, idRow, idCol, idVal;
 		double re, im;
 
 		// check the node numbers
 		for (i = 0; i < nOrder; i++) {
-			if (pNodes[i] > m_nBus) return 0;
+			if (pNodes[node_offset + i] > m_nBus) return 0;
 		}
 
 		// add the matrix transposed
 		for (i = 0; i < nOrder; i++) {
-			if (pNodes[i] < 1) continue; // skip ground
+			if (pNodes[node_offset + i] < 1) continue; // skip ground
 			idVal = i;
-			idRow = pNodes[i] - 1;  // convert to zero-based
+			idRow = pNodes[node_offset + i] - 1;  // convert to zero-based
 			for (j = 0; j < nOrder; j++) {
-				if (pNodes[j] != 0) {
-					idCol = pNodes[j] - 1;
+				if (pNodes[node_offset + j] != 0) {
+					idCol = pNodes[node_offset + j] - 1;
 					re = pMat.get(idVal)[0];
 					im = pMat.get(idVal)[0];
 					if (re != 0.0 || im != 0.0) {
@@ -554,14 +554,14 @@ public class KLUSystem {
 	}
 
 	/**
-	 * Return in compressed triplet form, return 1 for success, 0 for a size mismatch
+	 * Return in compressed triplet form.
 	 *
 	 * @param nColP
 	 * @param nNZ
 	 * @param pColP
 	 * @param pRowIdx
 	 * @param pMat
-	 * @return
+	 * @return 1 for success, 0 for a size mismatch
 	 */
 	public int getCompressedMatrix(int nColP, int nNZ, int[] pColP,
 			int[] pRowIdx, DZcsa pMat) {
