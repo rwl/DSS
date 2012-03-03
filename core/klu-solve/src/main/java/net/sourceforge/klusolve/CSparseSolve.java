@@ -2,7 +2,7 @@ package net.sourceforge.klusolve;
 
 import java.util.UUID;
 
-public class KLUSolve extends BaseSolve {
+public class CSparseSolve extends BaseSolve {
 
 	/**
 	 * Returns the non-zero handle of a new sparse matrix, if successful
@@ -14,7 +14,7 @@ public class KLUSolve extends BaseSolve {
 
 		try {
 			uuid = UUID.randomUUID();
-			sys = new KLUSystem();
+			sys = new CSparseSystem();
 			sys.initialize(nBus, 0, nBus);
 			sysMap.put(uuid, sys);
 		} catch (Exception e) {

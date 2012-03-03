@@ -14,5 +14,10 @@
   		<artifactId>commons-math</artifactId>
   		<version>1.2</version>
   	</dependency>
+  	<dependency>
+  		<groupId>edu.ufl.cise</groupId>
+  		<artifactId>KLUJ</artifactId>
+  		<version>1.1.1-SNAPSHOT</version>
+  	</dependency>
   </dependencies>
 </project>

@@ -1,21 +1,18 @@
 package com.ncond.dss.common.impl;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.UUID;
+
+import org.apache.commons.math.complex.Complex;
+
+import net.sourceforge.klusolve.CSparseSolve;
 
 import com.ncond.dss.common.Circuit;
 import com.ncond.dss.common.CktElement;
 import com.ncond.dss.common.SolutionObj;
 import com.ncond.dss.common.impl.DSSBus.NodeBus;
-import com.ncond.dss.shared.CMatrix;
 
-import net.sourceforge.klusolve.KLUSolve;
-import net.sourceforge.klusolve.KLUSystem;
 
-import org.apache.commons.math.complex.Complex;
-
-public class YMatrix extends KLUSolve {
+public class YMatrix extends CSparseSolve {
 
 	/* Options for building Y matrix */
 	public static final int SERIESONLY = 1;
