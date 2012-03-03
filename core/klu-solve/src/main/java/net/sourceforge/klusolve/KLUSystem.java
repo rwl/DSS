@@ -1,6 +1,6 @@
 /* ------------------------------------------------------------------------- */
 /* Copyright (C) 2008, EnerNex Corporation. All rights reserved.             */
-/* Copyright (C) 2012, Richard Lincoln.                                      */
+/* Copyright (C) 2012, Richard Lincoln. All rights reserved.                 */
 /* Licensed under the GNU Lesser General Public License (LGPL) v 2.1         */
 /* ------------------------------------------------------------------------- */
 
@@ -8,36 +8,44 @@ package net.sourceforge.klusolve;
 
 import edu.emory.mathcs.csparsej.tdcomplex.DZcs_common.DZcs;
 import edu.emory.mathcs.csparsej.tdcomplex.DZcs_common.DZcsa;
-import edu.ufl.cise.klu.common.KLU_common;
-import edu.ufl.cise.klu.common.KLU_numeric;
-import edu.ufl.cise.klu.common.KLU_symbolic;
+import edu.emory.mathcs.csparsej.tdcomplex.DZcs_common.DZcsn;
+import edu.emory.mathcs.csparsej.tdcomplex.DZcs_common.DZcss;
 
+import static edu.emory.mathcs.csparsej.tdcomplex.DZcs_usolve.cs_usolve;
 import static edu.emory.mathcs.csparsej.tdcomplex.DZcs_util.cs_spalloc;
 import static edu.emory.mathcs.csparsej.tdcomplex.DZcs_complex.cs_czero;
 import static edu.emory.mathcs.csparsej.tdcomplex.DZcs_entry.cs_entry;
+import static edu.emory.mathcs.csparsej.tdcomplex.DZcs_ipvec.cs_ipvec;
+import static edu.emory.mathcs.csparsej.tdcomplex.DZcs_lsolve.cs_lsolve;
+import static edu.emory.mathcs.csparsej.tdcomplex.DZcs_lu.cs_lu;
 import static edu.emory.mathcs.csparsej.tdcomplex.DZcs_compress.cs_compress;
 import static edu.emory.mathcs.csparsej.tdcomplex.DZcs_dupl.cs_dupl;
 import static edu.emory.mathcs.csparsej.tdcomplex.DZcs_dropzeros.cs_dropzeros;
+import static edu.emory.mathcs.csparsej.tdcomplex.DZcs_sqr.cs_sqr;
 import static edu.emory.mathcs.csparsej.tdcomplex.DZcs_transpose.cs_transpose;
 //import static edu.emory.mathcs.csparsej.tdcomplex.DZcs_print.cs_print;
 
-import static edu.ufl.cise.klu.tdouble.Dklu_defaults.klu_defaults;
-import static edu.ufl.cise.klu.tdouble.Dklu_analyze.klu_analyze;
-import static edu.ufl.cise.klu.tdouble.Dklu_factor.klu_factor;
-import static edu.ufl.cise.klu.tdouble.Dklu_solve.klu_solve;
-import static edu.ufl.cise.klu.tdouble.Dklu_diagnostics.klu_condest;
-import static edu.ufl.cise.klu.tdouble.Dklu_diagnostics.klu_flops;
-import static edu.ufl.cise.klu.tdouble.Dklu_diagnostics.klu_rcond;
-import static edu.ufl.cise.klu.tdouble.Dklu_diagnostics.klu_rgrowth;
-
-import static edu.ufl.cise.klu.tdouble.Dklu_version.KLU_OK;
-import static edu.ufl.cise.klu.tdouble.Dklu_version.KLU_SINGULAR;
+//import static edu.ufl.cise.klu.tdouble.Dklu_defaults.klu_defaults;
+//import static edu.ufl.cise.klu.tdouble.Dklu_analyze.klu_analyze;
+//import static edu.ufl.cise.klu.tdouble.Dklu_factor.klu_factor;
+//import static edu.ufl.cise.klu.tdouble.Dklu_solve.klu_solve;
+//import static edu.ufl.cise.klu.tdouble.Dklu_diagnostics.klu_condest;
+//import static edu.ufl.cise.klu.tdouble.Dklu_diagnostics.klu_flops;
+//import static edu.ufl.cise.klu.tdouble.Dklu_diagnostics.klu_rcond;
+//import static edu.ufl.cise.klu.tdouble.Dklu_diagnostics.klu_rgrowth;
+//
+//import static edu.ufl.cise.klu.tdouble.Dklu_version.KLU_OK;
+//import static edu.ufl.cise.klu.tdouble.Dklu_version.KLU_SINGULAR;
+//
+//import edu.ufl.cise.klu.common.KLU_common;
+//import edu.ufl.cise.klu.common.KLU_numeric;
+//import edu.ufl.cise.klu.common.KLU_symbolic;
 
 
 public class KLUSystem {
 
-	private static KLU_common common;
-	private static boolean common_init = false;
+//	private static KLU_common common;
+//	private static boolean common_init = false;
 
 	private DZcsa acx;
 
@@ -47,8 +55,10 @@ public class KLUSystem {
 	// admittance matrix blocks in triplet storage
 	private DZcs T22;
 
-	KLU_symbolic symbolic;
-	KLU_numeric numeric;
+//	KLU_symbolic symbolic;
+//	KLU_numeric numeric;
+	DZcss symbolic;
+	DZcsn numeric;
 
 	private int m_nBus;    // number of nodes
 	private int m_nX;      // number of unknown voltages, hardwired to m_nBus
@@ -73,11 +83,11 @@ public class KLUSystem {
 		acx = null;
 		zero_indices();
 		null_pointers();
-		if (!common_init) {
-			klu_defaults(common);
-			common.halt_if_singular = 0;
-			common_init = true;
-		}
+//		if (!common_init) {
+//			klu_defaults(common);
+//			common.halt_if_singular = 0;
+//			common_init = true;
+//		}
 	}
 
 	public void clear() {
@@ -114,14 +124,14 @@ public class KLUSystem {
 		if (T == null) return null;
 
 		if (T.nz > 0) {
-//			cs_print(T, false);
+			//cs_print(T, false);
 			C = cs_compress(T);
 			cs_dupl(C);
 			cs_dropzeros(C);
 			A = cs_transpose(C, true);
 			C = null;
 			m_NZpre += A.p[A.n];
-//			cs_print(A, false);
+			//cs_print(A, false);
 		}
 
 		T = null;
@@ -202,25 +212,29 @@ public class KLUSystem {
 	}
 
 	public double getRCond() {
-		klu_rcond (symbolic, numeric, common);
-		return common.rcond;
+//		klu_rcond (symbolic, numeric, common);
+//		return common.rcond;
+		return 0.0;
 	}
 
 	public double getRGrowth() {
-		if (Y22 == null) return 0.0;
-		klu_rgrowth (Y22.p, Y22.i, Y22.x, symbolic, numeric, common);
-		return common.rgrowth;
+//		if (Y22 == null) return 0.0;
+//		klu_rgrowth (Y22.p, Y22.i, Y22.x, symbolic, numeric, common);
+//		return common.rgrowth;
+		return 0.0;
 	}
 
 	public double getCondEst() {
-		if (Y22 == null) return 0.0;
-		if (Y22.n > 1) klu_condest (Y22.p, Y22.x, symbolic, numeric, common);
-		return common.condest;
+//		if (Y22 == null) return 0.0;
+//		if (Y22.n > 1) klu_condest (Y22.p, Y22.x, symbolic, numeric, common);
+//		return common.condest;
+		return 0.0;
 	}
 
 	public double getFlops() {
-		klu_flops(symbolic, numeric, common);
-		return common.flops;
+//		klu_flops(symbolic, numeric, common);
+//		return common.flops;
+		return 0.0;
 	}
 
 	public int getSingularCol() {
@@ -272,33 +286,42 @@ public class KLUSystem {
 			return 1;  // was found okay before
 		}
 
+		int order = 2;  // ordering method, 0:natural, 1:Chol, 2:LU, 3:QR
+		double tol = 1.0;//0.001;  // partial pivoting tolerance
+
 		// then factor Y22
 		if (numeric != null) numeric = null;
 		if (symbolic != null) symbolic = null;
 
 		if (Y22 != null) {
-			symbolic = klu_analyze (Y22.n, Y22.p, Y22.i, common);
-			numeric = klu_factor (Y22.p, Y22.i, Y22.x, symbolic, common);
-			m_fltBus = common.singular_col;
-			if (common.singular_col < Y22.n) {
-				++m_fltBus; // FIXME for 1-based NexHarm row numbers
-				m_fltBus += 0; // skip over the voltage source buses
-			} else {
-				m_fltBus = 0;  // no singular submatrix was found
-			}
-			if (common.status == KLU_OK) {
-				// compute size of the factorization
-				m_NZpost += (numeric.lnz + numeric.unz - numeric.n +
-					((numeric.Offp != null) ? (numeric.Offp[numeric.n]) : 0));
-				return 1;
-			} else if (common.status == KLU_SINGULAR) {
+//			symbolic = klu_analyze (Y22.n, Y22.p, Y22.i, common);
+//			numeric = klu_factor (Y22.p, Y22.i, Y22.x, symbolic, common);
+			symbolic = cs_sqr(order, Y22, false);		/* ordering and symbolic analysis */
+			numeric = cs_lu(Y22, symbolic, tol) ;		/* numeric LU factorization */
+			if (symbolic == null || numeric == null) {
 				return -1;
-			} else { // KLU_OUT_OF_MEMORY, KLU_INVALID, or KLU_TOO_LARGE
-				if (m_fltBus == 0) {
-					m_fltBus = 1;  // this is the flag for unsuccessful factorization
-				}
-				return 0;
 			}
+
+//			m_fltBus = common.singular_col;
+//			if (common.singular_col < Y22.n) {
+//				++m_fltBus; // FIXME for 1-based NexHarm row numbers
+//				m_fltBus += 0; // skip over the voltage source buses
+//			} else {
+//				m_fltBus = 0;  // no singular submatrix was found
+//			}
+//			if (common.status == KLU_OK) {
+//				// compute size of the factorization
+//				m_NZpost += (numeric.lnz + numeric.unz - numeric.n +
+//					((numeric.Offp != null) ? (numeric.Offp[numeric.n]) : 0));
+//				return 1;
+//			} else if (common.status == KLU_SINGULAR) {
+//				return -1;
+//			} else { // KLU_OUT_OF_MEMORY, KLU_INVALID, or KLU_TOO_LARGE
+//				if (m_fltBus == 0) {
+//					m_fltBus = 1;  // this is the flag for unsuccessful factorization
+//				}
+//				return 0;
+//			}
 		}
 
 		return 1;
@@ -322,19 +345,27 @@ public class KLUSystem {
 		offset = 1;
 		for (i = 0; i < m_nX; i++) {
 			i1 = 2 * i;
-			rhs[i1] = acxVbus.get(i+offset)[0];
-			rhs[i1+1] = acxVbus.get(i+offset)[1];
+			rhs[i1] = acxVbus.get(i + offset)[0];
+			rhs[i1 + 1] = acxVbus.get(i + offset)[1];
 		}
+		int n = Y22.n;
+		DZcsa b = new DZcsa(rhs);
+		DZcsa x = new DZcsa(n);
 
 		// solve and copy voltages into the output vector
 		// relying on Y22.n == m_nX from T22 creation by csz_spalloc
-		klu_solve (symbolic, numeric, Y22.n, 1, rhs, common);
+//		klu_solve (symbolic, numeric, Y22.n, 1, rhs, common);
+		cs_ipvec(numeric.pinv, b, x, n) ;		/* x = b(p) */
+		cs_lsolve(numeric.L, x) ;			/* x = L\x */
+		cs_usolve(numeric.U, x) ;			/* x = U\x */
+		cs_ipvec(symbolic.q, x, b, n) ;		/* b(q) = x */
 
 		offset = 1;
 		for (i = 0; i < m_nX; i++) {
 			i1 = 2 * i;
-			acxVbus.get(i+offset)[0] = rhs[i1];
-			acxVbus.get(i+offset)[1] = rhs[i1+1];
+//			acxVbus.get(i+offset)[0] = rhs[i1];
+//			acxVbus.get(i+offset)[1] = rhs[i1+1];
+			acxVbus.set(i, b.get(i));
 		}
 
 		rhs = null;
