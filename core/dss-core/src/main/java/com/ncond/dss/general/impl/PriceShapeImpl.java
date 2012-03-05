@@ -8,8 +8,8 @@ import java.io.InputStreamReader;
 
 import com.ncond.dss.common.impl.DSSClassDefs;
 import com.ncond.dss.common.impl.DSSClassImpl;
-import com.ncond.dss.common.impl.DSSGlobals;
-import com.ncond.dss.common.impl.Utilities;
+import com.ncond.dss.common.impl.DSS;
+import com.ncond.dss.common.impl.Util;
 import com.ncond.dss.general.PriceShape;
 import com.ncond.dss.general.PriceShapeObj;
 import com.ncond.dss.parser.impl.Parser;
@@ -35,7 +35,7 @@ public class PriceShapeImpl extends DSSClassImpl implements PriceShape {
 	}
 
 	protected void defineProperties() {
-		final String CRLF = DSSGlobals.CRLF;
+		final String CRLF = DSS.CRLF;
 
 		numProperties = PriceShape.NumPropsThisClass;
 		countProperties();  // get inherited property count
@@ -101,8 +101,8 @@ public class PriceShapeImpl extends DSSClassImpl implements PriceShape {
 
 	@Override
 	public int newObject(String ObjName) {
-		DSSGlobals.activeDSSObject = new PriceShapeObjImpl(this, ObjName);
-		return addObjectToList(DSSGlobals.activeDSSObject);
+		DSS.activeDSSObject = new PriceShapeObjImpl(this, ObjName);
+		return addObjectToList(DSS.activeDSSObject);
 	}
 
 	/**
@@ -115,7 +115,7 @@ public class PriceShapeImpl extends DSSClassImpl implements PriceShape {
 		int result = 0;
 		// continue parsing with contents of parser
 		activePriceShapeObj = (PriceShapeObj) elementList.getActive();
-		DSSGlobals.activeDSSObject = activePriceShapeObj;
+		DSS.activeDSSObject = activePriceShapeObj;
 
 		PriceShapeObj aps = activePriceShapeObj;
 
@@ -135,7 +135,7 @@ public class PriceShapeImpl extends DSSClassImpl implements PriceShape {
 
 			switch (paramPointer) {
 			case -1:
-				DSSGlobals.doSimpleMsg("Unknown parameter \"" + paramName + "\" for object \"" + getName() +"."+ aps.getName() + "\"", 610);
+				DSS.doSimpleMsg("Unknown parameter \"" + paramName + "\" for object \"" + getName() +"."+ aps.getName() + "\"", 610);
 				break;
 			case 0:
 				aps.setNumPoints(parser.makeInteger());
@@ -144,13 +144,13 @@ public class PriceShapeImpl extends DSSClassImpl implements PriceShape {
 				aps.setInterval(parser.makeDouble());
 				break;
 			case 2:
-				aps.setPriceValues( Utilities.resizeArray(aps.getPriceValues(), aps.getNumPoints()) );
+				aps.setPriceValues( Util.resizeArray(aps.getPriceValues(), aps.getNumPoints()) );
 				// allow possible resetting (to a lower value) of num points when specifying prices not hours
-				aps.setNumPoints( Utilities.interpretDblArray(param, aps.getNumPoints(), aps.getPriceValues()) );   //parser.parseAsVector(Npts, Prices);
+				aps.setNumPoints( Util.interpretDblArray(param, aps.getNumPoints(), aps.getPriceValues()) );   //parser.parseAsVector(Npts, Prices);
 				break;
 			case 3:
-				aps.setHours( Utilities.resizeArray(aps.getHours(), aps.getNumPoints()) );
-				Utilities.interpretDblArray(param, aps.getNumPoints(), aps.getHours());   //parser.parseAsVector(Npts, Hours);
+				aps.setHours( Util.resizeArray(aps.getHours(), aps.getNumPoints()) );
+				Util.interpretDblArray(param, aps.getNumPoints(), aps.getHours());   //parser.parseAsVector(Npts, Hours);
 				break;
 			case 4:
 				aps.setMean(parser.makeDouble());
@@ -240,14 +240,14 @@ public class PriceShapeImpl extends DSSClassImpl implements PriceShape {
 
 			aps.setNumPoints(otherPriceShape.getNumPoints());
 			aps.setInterval(otherPriceShape.getInterval());
-			aps.setPriceValues( Utilities.resizeArray(aps.getPriceValues(), aps.getNumPoints()) );
+			aps.setPriceValues( Util.resizeArray(aps.getPriceValues(), aps.getNumPoints()) );
 
 			for (i = 0; i < aps.getNumPoints(); i++)
 				aps.getPriceValues()[i] = otherPriceShape.getPriceValues()[i];
 			if (aps.getInterval() > 0.0) {
 				aps.setHours(new double[0]);
 			} else {
-				aps.setHours( Utilities.resizeArray(aps.getHours(), aps.getNumPoints()) );
+				aps.setHours( Util.resizeArray(aps.getHours(), aps.getNumPoints()) );
 			}
 			for (i = 0; i < aps.getNumPoints(); i++)
 				aps.getHours()[i] = otherPriceShape.getHours()[i];
@@ -255,7 +255,7 @@ public class PriceShapeImpl extends DSSClassImpl implements PriceShape {
 			for (i = 0; i < aps.getParentClass().getNumProperties(); i++)
 				aps.setPropertyValue(i, otherPriceShape.getPropertyValue(i));
 		} else {
-			DSSGlobals.doSimpleMsg("Error in PriceShape makeLike: \"" + shapeName + "\" not found.", 611);
+			DSS.doSimpleMsg("Error in PriceShape makeLike: \"" + shapeName + "\" not found.", 611);
 		}
 
 		return result;
@@ -263,7 +263,7 @@ public class PriceShapeImpl extends DSSClassImpl implements PriceShape {
 
 	@Override
 	public int init(int handle) {
-		DSSGlobals.doSimpleMsg("Need to implement PriceShape.init", -1);
+		DSS.doSimpleMsg("Need to implement PriceShape.init", -1);
 		return 0;
 	}
 
@@ -283,7 +283,7 @@ public class PriceShapeImpl extends DSSClassImpl implements PriceShape {
 			pPriceShapeObj = (PriceShapeObj) elementList.getNext();
 		}
 
-		DSSGlobals.doSimpleMsg("PriceShape: \"" + value + "\" not found.", 612);
+		DSS.doSimpleMsg("PriceShape: \"" + value + "\" not found.", 612);
 	}
 
 	private void doCSVFile(String fileName) {
@@ -301,14 +301,14 @@ public class PriceShapeImpl extends DSSClassImpl implements PriceShape {
 
 			PriceShapeObj aps = activePriceShapeObj;
 
-			aps.setPriceValues( Utilities.resizeArray(aps.getPriceValues(), aps.getNumPoints()) );
+			aps.setPriceValues( Util.resizeArray(aps.getPriceValues(), aps.getNumPoints()) );
 
 			if (aps.getInterval() == 0.0)
-				aps.setHours( Utilities.resizeArray(aps.getHours(), aps.getNumPoints()) );
+				aps.setHours( Util.resizeArray(aps.getHours(), aps.getNumPoints()) );
 			int i = 0;
 			while (((s = br.readLine()) != null) && i < aps.getNumPoints()) {
 				/* Aux parser allows commas or white space */
-				parser = DSSGlobals.auxParser;
+				parser = DSS.auxParser;
 				parser.setCmdString(s);
 				if (aps.getInterval() == 0.0) {
 					parser.getNextParam();
@@ -328,7 +328,7 @@ public class PriceShapeImpl extends DSSClassImpl implements PriceShape {
 			dis.close();
 			br.close();
 		} catch (IOException e) {
-			DSSGlobals.doSimpleMsg("Error processing CSV file: \"" + fileName + ". " + e.getMessage(), 604);
+			DSS.doSimpleMsg("Error processing CSV file: \"" + fileName + ". " + e.getMessage(), 604);
 			return;
 		}
 	}

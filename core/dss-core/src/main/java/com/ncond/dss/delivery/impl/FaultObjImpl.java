@@ -6,8 +6,8 @@ import org.apache.commons.math.complex.Complex;
 
 import com.ncond.dss.common.DSSClass;
 import com.ncond.dss.common.SolutionObj;
-import com.ncond.dss.common.impl.DSSGlobals;
-import com.ncond.dss.common.impl.Utilities;
+import com.ncond.dss.common.impl.DSS;
+import com.ncond.dss.common.impl.Util;
 import com.ncond.dss.delivery.Fault;
 import com.ncond.dss.delivery.FaultObj;
 import com.ncond.dss.parser.impl.Parser;
@@ -39,9 +39,9 @@ public class FaultObjImpl extends PDElementImpl implements FaultObj {
 		setName(faultName.toLowerCase());
 
 		// default to SLG fault
-		setNPhases(1);  // directly set conds and phases
-		nConds = 1;
-		setNTerms(2);   // force allocation of terminals and conductors
+		setNumPhases(1);  // directly set conds and phases
+		ncond = 1;
+		setNumTerms(2);   // force allocation of terminals and conductors
 
 		setBus(1, (getBus(0) + ".0"));  // default to grounded
 		setShunt(true);
@@ -66,7 +66,7 @@ public class FaultObjImpl extends PDElementImpl implements FaultObj {
 
 		initPropertyValues(0);
 
-		YOrder = nTerms * nConds;
+		YOrder = nterm * ncond;
 		recalcElementData();
 	}
 
@@ -79,16 +79,16 @@ public class FaultObjImpl extends PDElementImpl implements FaultObj {
 	 * Called from solveMontefault procedure.
 	 */
 	public void randomize() {
-		SolutionObj sol = DSSGlobals.activeCircuit.getSolution();
+		SolutionObj sol = DSS.activeCircuit.getSolution();
 
 		switch (sol.getRandomType()) {
-		case DSSGlobals.GAUSSIAN:
+		case DSS.GAUSSIAN:
 			randomMult = MathUtil.gauss(1.0, stdDev);
 			break;
-		case DSSGlobals.UNIFORM:
+		case DSS.UNIFORM:
 			randomMult = Math.random();
 			break;
-		case DSSGlobals.LOGNORMAL:
+		case DSS.LOGNORMAL:
 			randomMult = MathUtil.quasiLognormal(1.0);
 			break;
 		default:
@@ -128,7 +128,7 @@ public class FaultObjImpl extends PDElementImpl implements FaultObj {
 
 		// make sure randomMult is 1.0 if not solution mode MonteFault
 
-		if (DSSGlobals.activeCircuit.getSolution().getMode() != Dynamics.MONTEFAULT)
+		if (DSS.activeCircuit.getSolution().getMode() != Dynamics.MONTEFAULT)
 			randomMult = 1.0;
 
 		if (randomMult == 0.0)
@@ -146,25 +146,25 @@ public class FaultObjImpl extends PDElementImpl implements FaultObj {
 				value = Complex.ZERO;
 			}
 			value2 = value.negate();
-			for (i = 0; i < nPhases; i++) {
+			for (i = 0; i < nphase; i++) {
 				YPrimTemp.set(i, i, value);  // elements are only on the diagonals
-				YPrimTemp.set(i + nPhases, i + nPhases, value);
-				YPrimTemp.setSym(i, i + nPhases, value2);
+				YPrimTemp.set(i + nphase, i + nphase, value);
+				YPrimTemp.setSym(i, i + nphase, value2);
 			}
 			break;
 		case 2:  // G matrix specified
-			for (i = 0; i < nPhases; i++) {
-				ioffset = i * nPhases;
-				for (j = 0; j < nPhases; j++) {
+			for (i = 0; i < nphase; i++) {
+				ioffset = i * nphase;
+				for (j = 0; j < nphase; j++) {
 					if (isOn) {
 						value = new Complex(GMatrix[ioffset + j] / randomMult, 0.0);
 					} else {
 						value = Complex.ZERO;
 					}
 					YPrimTemp.set(i, j, value);
-					YPrimTemp.set(i + nPhases, j + nPhases, value);
+					YPrimTemp.set(i + nphase, j + nphase, value);
 					value = value.negate();
-					YPrimTemp.setSym(i, j + nPhases, value);
+					YPrimTemp.setSym(i, j + nphase, value);
 				}
 			}
 			break;
@@ -187,15 +187,15 @@ public class FaultObjImpl extends PDElementImpl implements FaultObj {
 		f.println("~ " + pc.getPropertyName()[0] + "=" + getFirstBus());
 		f.println("~ " + pc.getPropertyName()[1] + "=" + getNextBus());
 
-		f.println("~ " + pc.getPropertyName()[2] + "=" + nPhases);
+		f.println("~ " + pc.getPropertyName()[2] + "=" + nphase);
 		f.println("~ " + pc.getPropertyName()[3] + "=" + (1.0 / G));
 		f.println("~ " + pc.getPropertyName()[4] + "=" + (stdDev * 100.0));
 		if (GMatrix != null) {
 			f.print("~ " + pc.getPropertyName()[5] + "= (");
-			for (i = 0; i < nPhases; i++) {
+			for (i = 0; i < nphase; i++) {
 				for (j = 0; j < i; j++)
-					f.print(GMatrix[i * nPhases + j] + " ");
-				if (i != nPhases)
+					f.print(GMatrix[i * nphase + j] + " ");
+				if (i != nphase)
 					f.print("|");
 			}
 			f.println(")");
@@ -219,15 +219,15 @@ public class FaultObjImpl extends PDElementImpl implements FaultObj {
 	public void checkStatus(int controlMode) {
 
 		switch (controlMode) {
-		case DSSGlobals.CTRLSTATIC:  /* Leave it however it is defined by other processes */
+		case DSS.CTRLSTATIC:  /* Leave it however it is defined by other processes */
 			break;
-		case DSSGlobals.EVENTDRIVEN:
+		case DSS.EVENTDRIVEN:
 			if (!isOn) {
 				/* Turn it on unless it has been previously cleared */
-				if (Utilities.presentTimeInSec() > onTime && !cleared) {
+				if (Util.presentTimeInSec() > onTime && !cleared) {
 					isOn = true;
 					setYPrimInvalid(true);
-					Utilities.appendToEventLog("Fault." + getName(), "**APPLIED**");
+					Util.appendToEventLog("Fault." + getName(), "**APPLIED**");
 				}
 			} else {
 				if (isTemporary)
@@ -235,17 +235,17 @@ public class FaultObjImpl extends PDElementImpl implements FaultObj {
 						isOn = false;
 						cleared = true;
 						setYPrimInvalid(true);
-						Utilities.appendToEventLog("Fault." + getName(), "**CLEARED**");
+						Util.appendToEventLog("Fault." + getName(), "**CLEARED**");
 					}
 			}
 			break;
-		case DSSGlobals.TIMEDRIVEN:  // identical to event driven case.
+		case DSS.TIMEDRIVEN:  // identical to event driven case.
 			if (!isOn) {
 				/* Turn it on unless it has been previously cleared */
-				if (Utilities.presentTimeInSec() > onTime && !cleared) {
+				if (Util.presentTimeInSec() > onTime && !cleared) {
 					isOn = true;
 					setYPrimInvalid(true);
-					Utilities.appendToEventLog("Fault." + getName(), "**APPLIED**");
+					Util.appendToEventLog("Fault." + getName(), "**APPLIED**");
 				}
 			} else {
 				if (isTemporary)
@@ -253,7 +253,7 @@ public class FaultObjImpl extends PDElementImpl implements FaultObj {
 						isOn = false;
 						cleared = true;
 						setYPrimInvalid(true);
-						Utilities.appendToEventLog("Fault." + getName(), "**CLEARED**");
+						Util.appendToEventLog("Fault." + getName(), "**CLEARED**");
 					}
 			}
 			break;
@@ -262,7 +262,7 @@ public class FaultObjImpl extends PDElementImpl implements FaultObj {
 
 	private boolean faultStillGoing() {
 		computeITerminal();
-		for (int i = 0; i < nPhases; i++)
+		for (int i = 0; i < nphase; i++)
 			if (ITerminal[i].abs() > minAmps)
 				return true;
 		return false;
@@ -303,10 +303,10 @@ public class FaultObjImpl extends PDElementImpl implements FaultObj {
 		case 5:
 			result = "(";
 			if (GMatrix != null) {
-				for (int i = 0; i < nPhases; i++) {
+				for (int i = 0; i < nphase; i++) {
 					for (int j = 0; j < i; j++)
-						result = result + String.format("%-g", GMatrix[i * nPhases + j]) + " ";
-					if (i < nPhases - 1)
+						result = result + String.format("%-g", GMatrix[i * nphase + j]) + " ";
+					if (i < nphase - 1)
 						result = result + "|";
 				}
 			}
@@ -322,11 +322,21 @@ public class FaultObjImpl extends PDElementImpl implements FaultObj {
 
 	@Override
 	public void makePosSequence() {
-		if (nPhases != 1) {
+		if (nphase != 1) {
 			Parser.getInstance().setCmdString("Phases=1");
 			edit();
 		}
 		super.makePosSequence();
+	}
+
+	@Override
+	public void getInjCurrents(Complex[] curr) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public int injCurrents() {
+		throw new UnsupportedOperationException();
 	}
 
 	// FIXME Private members in OpenDSS

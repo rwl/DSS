@@ -15,11 +15,11 @@ import com.ncond.dss.common.Circuit;
 import com.ncond.dss.common.CktElement;
 import com.ncond.dss.common.FeederObj;
 import com.ncond.dss.common.SolutionObj;
-import com.ncond.dss.common.impl.DSSCktElement;
+import com.ncond.dss.common.impl.CktElementImpl;
 import com.ncond.dss.common.impl.DSSClassDefs;
 import com.ncond.dss.common.impl.DSSClassImpl;
-import com.ncond.dss.common.impl.DSSGlobals;
-import com.ncond.dss.common.impl.Utilities;
+import com.ncond.dss.common.impl.DSS;
+import com.ncond.dss.common.impl.Util;
 import com.ncond.dss.conversion.GeneratorObj;
 import com.ncond.dss.conversion.LoadObj;
 import com.ncond.dss.conversion.PCElement;
@@ -97,14 +97,14 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 		super(parClass);
 
 		int i;
-		Circuit ckt = DSSGlobals.activeCircuit;
+		Circuit ckt = DSS.activeCircuit;
 
 		setName(energyMeterName.toLowerCase());
 		objType = parClass.getDSSClassType();  // ENERGY_METER;
 
-		setNPhases(3);  // directly set conds and phases
-		nConds = 3;
-		setNTerms(1);  // this forces allocation of terminals and conductors in base class
+		setNumPhases(3);  // directly set conds and phases
+		ncond = 3;
+		setNumTerms(1);  // this forces allocation of terminals and conductors in base class
 		excessFlag     = true;  // default to excess energy for UE
 		elementName    = "Vsource." + ckt.getCktElements().get(0).getName();  // default to first circuit element (source)
 		meteredElement = null;
@@ -202,7 +202,7 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 
 		allocateSensorArrays();
 
-		for (i = 0; i < nPhases; i++)
+		for (i = 0; i < nphase; i++)
 			sensorCurrent[i] = 400.0;
 
 		//recalcElementData();
@@ -215,20 +215,20 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 	@Override
 	public void recalcElementData() {
 
-		int devIndex = Utilities.getCktElementIndex(elementName);
+		int devIndex = Util.getCktElementIndex(elementName);
 
 		if (devIndex >= 0) {  // monitored element must already exist
-			meteredElement = (DSSCktElement) DSSGlobals.activeCircuit.getCktElements().get(devIndex);
+			meteredElement = (CktElementImpl) DSS.activeCircuit.getCktElements().get(devIndex);
 			/* MeteredElement must be a PDElement */
 			if (!(meteredElement instanceof PDElement)) {
 				meteredElement = null;  // element not found
-				DSSGlobals.doErrorMsg("EnergyMeter: \"" + getName() + "\"", "Circuit element \""+ elementName + "\" is not a Power Delivery (PD) element.",
+				DSS.doErrorMsg("EnergyMeter: \"" + getName() + "\"", "Circuit element \""+ elementName + "\" is not a Power Delivery (PD) element.",
 					" Element must be a PD element.", 525);
 				return;
 			}
 
-			if (meteredTerminal >= meteredElement.getNTerms()) {
-				DSSGlobals.doErrorMsg("EnergyMeter: \"" + getName() + "\"",
+			if (meteredTerminal >= meteredElement.getNumTerms()) {
+				DSS.doErrorMsg("EnergyMeter: \"" + getName() + "\"",
 					"Terminal no. \"" + String.valueOf(meteredTerminal)+"\" does not exist.",
 					"Respecify terminal no.", 524);
 			} else {
@@ -237,8 +237,8 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 					// sets name of i-th terminal's connected bus in monitor's bus list
 					// this value will be used to set the nodeRef array (see takeSample)
 					setBus(0, meteredElement.getBus(meteredTerminal));
-					setNPhases( meteredElement.getNPhases() );
-					nConds  = meteredElement.getNConds();
+					setNumPhases( meteredElement.getNumPhases() );
+					ncond  = meteredElement.getNumConds();
 					allocateSensorArrays();
 
 					// if we come through here, throw branch list away
@@ -249,7 +249,7 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 			}
 		} else {
 			meteredElement = null;  // element not found
-			DSSGlobals.doErrorMsg("EnergyMeter: \"" + getName() + "\"", "Circuit element \""+ elementName + "\" not found.",
+			DSS.doErrorMsg("EnergyMeter: \"" + getName() + "\"", "Circuit element \""+ elementName + "\" not found.",
 					" Element must be defined previously.", 525);
 		}
 	}
@@ -262,8 +262,8 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 
 		if (meteredElement != null) {
 			setBus(0, meteredElement.getBus(meteredTerminal));
-			setNPhases( meteredElement.getNPhases() );
-			setNConds( meteredElement.getNConds() );
+			setNumPhases( meteredElement.getNumPhases() );
+			setNumConds( meteredElement.getNumConds() );
 			allocateSensorArrays();
 			branchList = null;
 		}
@@ -275,7 +275,7 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 	}
 
 	private String makeVPhaseReportFileName() {
-		return DSSGlobals.energyMeterClass.getDI_Dir() + "/" + getName() + "_PhaseVoltageReport.csv";
+		return DSS.energyMeterClass.getDI_Dir() + "/" + getName() + "_PhaseVoltageReport.csv";
 	}
 
 	public void resetRegisters() {
@@ -316,13 +316,13 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 		String csvName = "MTR_" + getName() + ".csv";
 
 		try {
-			f = new File(DSSGlobals.DSSDataDirectory + csvName);
+			f = new File(DSS.DSSDataDirectory + csvName);
 			fw = new FileWriter(f, false);
 			bw = new BufferedWriter(fw);
 
-			DSSGlobals.globalResult = csvName;
+			DSS.globalResult = csvName;
 
-			bw.write("Year, " + DSSGlobals.activeCircuit.getSolution().getYear() + ",");
+			bw.write("Year, " + DSS.activeCircuit.getSolution().getYear() + ",");
 			bw.newLine();
 
 			for (int i = 0; i < EnergyMeter.NUM_EM_REGISTERS; i++) {
@@ -333,13 +333,13 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 			bw.close();
 			fw.close();
 		} catch (Exception e) {
-			DSSGlobals.doSimpleMsg("Error opening Meter File \"" + DSSGlobals.CRLF + csvName + "\": " + e.getMessage(), 526);
+			DSS.doSimpleMsg("Error opening Meter File \"" + DSS.CRLF + csvName + "\": " + e.getMessage(), 526);
 			return;
 		}
 	}
 
 	private void integrate(int reg, double deriv, double interval) {
-		Circuit ckt = DSSGlobals.activeCircuit;
+		Circuit ckt = DSS.activeCircuit;
 
 		if (ckt.isTrapezoidalIntegration()) {
 		/* Trapezoidal rule integration */
@@ -364,12 +364,12 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 		int i, j;
 
 		/* pass by reference */
-		double[] mS_TotalLosses = new double[2],
-			mS_LoadLosses = new double[2],
-			mS_NoLoadLosses = new double[2],
-			mS_PosSeqLosses = new double[2],
-			mS_ZeroSeqLosses = new double[2],
-			mS_NegSeqLosses = new double[2];
+		Complex[] pS_TotalLosses = new Complex[1],
+			pS_LoadLosses = new Complex[1],
+			pS_NoLoadLosses = new Complex[1],
+			pS_PosSeqLosses = new Complex[1],
+			pS_ZeroSeqLosses = new Complex[1],
+			pS_NegSeqLosses = new Complex[1];
 		Complex S_Local,
 			S_TotalLosses,
 			S_LoadLosses,
@@ -416,7 +416,7 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 		//MeteredElement.setActiveTerminalIdx(MeteredTerminal);  // needed for excess kVA calcs
 		S_Local    = meteredElement.getPower(meteredTerminal).multiply(0.001);
 		S_LocalKVA = S_Local.abs();
-		deltaHrs   = DSSGlobals.activeCircuit.getSolution().getIntervalHrs();
+		deltaHrs   = DSS.activeCircuit.getSolution().getIntervalHrs();
 		integrate(EnergyMeter.REG_KWH,   S_Local.getReal(), deltaHrs);  // accumulate the power
 		integrate(EnergyMeter.REG_KVARH, S_Local.getImaginary(), deltaHrs);
 		setDragHandRegister(EnergyMeter.REG_MAX_KW,  S_Local.getReal());   // 3-10-04 removed abs()
@@ -566,10 +566,10 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 			if (losses) {  // compute and report losses
 
 				/* Get losses from the present circuit element */
-				cktElem.getLosses(mS_TotalLosses, mS_LoadLosses, mS_NoLoadLosses);  // returns watts, vars
-				S_TotalLosses = new Complex(mS_TotalLosses[0], mS_TotalLosses[1]);
-				S_LoadLosses = new Complex(mS_LoadLosses[0], mS_LoadLosses[1]);
-				S_NoLoadLosses = new Complex(mS_NoLoadLosses[0], mS_NoLoadLosses[1]);
+				cktElem.getLosses(pS_TotalLosses, pS_LoadLosses, pS_NoLoadLosses);  // returns watts, vars
+				S_TotalLosses = pS_TotalLosses[0];
+				S_LoadLosses = pS_LoadLosses[0];
+				S_NoLoadLosses = pS_NoLoadLosses[0];
 
 				/* Convert to kW */
 				S_TotalLosses = S_TotalLosses.multiply(0.001);
@@ -581,13 +581,13 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 				totalNoLoadLosses = totalNoLoadLosses.add(S_NoLoadLosses);  // accumulate total no load losses in meter zone
 
 				/* Line and transformer elements */
-				if (Utilities.isLineElement(cktElem) && lineLosses) {
+				if (Util.isLineElement(cktElem) && lineLosses) {
 					totalLineLosses = totalLineLosses.add(S_TotalLosses);  // accumulate total losses in meter zone
 					if (seqLosses) {
-						cktElem.getSeqLosses(mS_PosSeqLosses, mS_NegSeqLosses, mS_ZeroSeqLosses);
-						S_PosSeqLosses = new Complex(mS_PosSeqLosses[0], mS_PosSeqLosses[1]);
-						S_NegSeqLosses = new Complex(mS_NegSeqLosses[0], mS_NegSeqLosses[1]);
-						S_ZeroSeqLosses = new Complex(mS_ZeroSeqLosses[0], mS_ZeroSeqLosses[1]);
+						cktElem.getSeqLosses(pS_PosSeqLosses, pS_NegSeqLosses, pS_ZeroSeqLosses);
+						S_PosSeqLosses = pS_PosSeqLosses[0];
+						S_NegSeqLosses = pS_NegSeqLosses[0];
+						S_ZeroSeqLosses = pS_ZeroSeqLosses[0];
 
 						S_PosSeqLosses = S_PosSeqLosses.add(S_NegSeqLosses);  // add line modes together
 						S_PosSeqLosses = S_PosSeqLosses.multiply(0.001);  // convert to kW
@@ -597,13 +597,13 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 					}
 					/* Separate line losses into 3- and "1-phase" losses */
 					if (threePhaseLosses) {
-						if (cktElem.getNPhases() == 3) {
+						if (cktElem.getNumPhases() == 3) {
 							total3PhaseLosses = total3PhaseLosses.add(S_TotalLosses);
 						} else {
 							total1PhaseLosses = total1PhaseLosses.add(S_TotalLosses);
 						}
 					}
-				} else if (Utilities.isTransformerElement(cktElem) && xfmrLosses) {
+				} else if (Util.isTransformerElement(cktElem) && xfmrLosses) {
 					totalTransformerLosses = totalTransformerLosses.add(S_TotalLosses);  // accumulate total losses in meter zone
 				}
 
@@ -611,9 +611,9 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 					int vbi = branchList.getPresentBranch().getVoltBaseIndex();
 					if (vbi >= 0) {
 						VBaseTotalLosses[vbi] = VBaseTotalLosses[vbi]  + S_TotalLosses.getReal();
-						if (Utilities.isLineElement(cktElem)) {
+						if (Util.isLineElement(cktElem)) {
 							VBaseLineLosses[vbi] = VBaseLineLosses[vbi] + S_TotalLosses.getReal();
-						} else if (Utilities.isTransformerElement(cktElem)) {
+						} else if (Util.isTransformerElement(cktElem)) {
 							VBaseLoadLosses[vbi]   = VBaseLoadLosses[vbi]   + S_LoadLosses.getReal();
 							VBaseNoLoadLosses[vbi] = VBaseNoLoadLosses[vbi] + S_NoLoadLosses.getReal();
 						}
@@ -625,7 +625,7 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 					int vbi = branchList.getPresentBranch().getVoltBaseIndex();
 					int fbr = branchList.getPresentBranch().getFromBusReference();
 					if (vbi >= 0) {
-						Circuit ckt = DSSGlobals.activeCircuit;
+						Circuit ckt = DSS.activeCircuit;
 						if (ckt.getBus(fbr).getKVBase() > 0.0) {
 							for (i = 0; i < ckt.getBus(fbr).getNumNodesThisBus(); i++) {
 								j = ckt.getBus(fbr).getNum(i);
@@ -728,7 +728,7 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 		}
 
 		firstSampleAfterReset = false;
-		if (DSSGlobals.energyMeterClass.isSaveDemandInterval())
+		if (DSS.energyMeterClass.isSaveDemandInterval())
 			writeDemandIntervalData();
 	}
 
@@ -738,7 +738,7 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 		PDElement cktElem;
 
 		if (branchList == null) {
-			DSSGlobals.doSimpleMsg("Meter zone lists need to be built. Solve or makeBusList first.", 529);
+			DSS.doSimpleMsg("Meter zone lists need to be built. Solve or makeBusList first.", 529);
 			return;
 		}
 
@@ -780,7 +780,7 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 	 * Must be updated whenever there is a change in the circuit.
 	 */
 	public void makeMeterZoneLists() {
-		Circuit ckt = DSSGlobals.activeCircuit;
+		Circuit ckt = DSS.activeCircuit;
 
 		int testBusNum, zoneListCounter;
 		int j, iTerm, iPC, iPD;
@@ -803,7 +803,7 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 		if (meteredElement != null) {
 			branchList.setNew(meteredElement);
 		} else {
-			DSSGlobals.doSimpleMsg("Metered Element for EnergyMeter "+getName()+" not defined.", 527);
+			DSS.doSimpleMsg("Metered Element for EnergyMeter "+getName()+" not defined.", 527);
 			return;
 		}
 
@@ -827,7 +827,7 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 		CktTreeNode pb = branchList.getPresentBranch();
 		// this bus is the head of the feeder; do not mark as radial bus
 		pb.setFromBusReference( meteredElement.getTerminal(meteredTerminal).getBusRef() );
-		DSSGlobals.activeCircuit.getBus(pb.getFromBusReference()).setDistFromMeter(0.0);
+		DSS.activeCircuit.getBus(pb.getFromBusReference()).setDistFromMeter(0.0);
 		pb.setVoltBaseIndex( addToVoltBaseList(pb.getFromBusReference()) );
 		pb.setFromTerminal(meteredTerminal);
 		if (meteredElement instanceof PDElement)
@@ -850,13 +850,13 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 
 			((PDElement) activeBranch).setNumCustomers(0);  // init counter
 
-			for (iTerm = 0; iTerm < activeBranch.getNTerms(); iTerm++) {
+			for (iTerm = 0; iTerm < activeBranch.getNumTerms(); iTerm++) {
 				if (!activeBranch.getTerminal(iTerm).isChecked()) {
 					// now find all loads and generators connected to the bus on this end of branch
 					// attach them as generic objects to cktTree node
 					testBusNum = activeBranch.getTerminal(iTerm).getBusRef();
 					branchList.getPresentBranch().setToBusReference(testBusNum);  // add this as a "to" bus reference
-					if (Utilities.isLineElement(activeBranch)) {  // convert to consistent units (km)
+					if (Util.isLineElement(activeBranch)) {  // convert to consistent units (km)
 						ckt.getBus(testBusNum).setDistFromMeter( ckt.getBus( branchList.getPresentBranch().getFromBusReference() ).getDistFromMeter()
 								+ ((LineObj) activeBranch).getLen() * LineUnits.convertLineUnits( ((LineObj) activeBranch).getLengthUnits(), LineUnits.UNITS_KM) );
 					} else {
@@ -902,15 +902,15 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 							// see resetMeterZonesAll()
 							if (!(testElement == activeBranch)) {  // skip self
 								if (!testElement.hasEnergyMeter()) {  // stop at other meters so zones don't interfere
-									for (j = 0; j < testElement.getNTerms(); j++) {  // check each terminal
+									for (j = 0; j < testElement.getNumTerms(); j++) {  // check each terminal
 										if (testBusNum == testElement.getTerminal(j).getBusRef()) {
 											branchList.getPresentBranch().setDangling(false);  // we found something it was connected to
 											/* Check for loops and parallel branches and mark them */
 											if (testElement.isChecked()) {  /* This branch is on some meter's list already */
 												branchList.getPresentBranch().setLoopedHere(true);  /* It's a loop */
 												branchList.getPresentBranch().setLoopLineObj(testElement);
-												if (Utilities.isLineElement(activeBranch) && Utilities.isLineElement(testElement))
-													if (Utilities.checkParallel(activeBranch, testElement))
+												if (Util.isLineElement(activeBranch) && Util.isLineElement(testElement))
+													if (Util.checkParallel(activeBranch, testElement))
 														branchList.getPresentBranch().setParallel(true);  /* It's paralleled with another line */
 											} else {  // push testElement onto stack and set properties
 												isFeederEnd = false;  // for interpolation
@@ -956,7 +956,7 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 					}
 				}
 			}  /* for iTerm */
-			activeBranch = (DSSCktElement) branchList.goForward();  // sets present node
+			activeBranch = (CktElementImpl) branchList.goForward();  // sets present node
 		}
 
 		totalUpDownstreamCustomers();
@@ -969,13 +969,13 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 
 	@Override
 	public void getCurrents(Complex[] curr) {
-		for (int i = 0; i < nConds; i++)
+		for (int i = 0; i < ncond; i++)
 			curr[i] = Complex.ZERO;
 	}
 
 	@Override
 	public void getInjCurrents(Complex[] curr) {
-		for (int i = 0; i < nConds; i++)
+		for (int i = 0; i < ncond; i++)
 			curr[i] = Complex.ZERO;
 	}
 
@@ -986,16 +986,16 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 		PDElement pd;
 		CktElement loadElem;
 
-		Circuit ckt = DSSGlobals.activeCircuit;
+		Circuit ckt = DSS.activeCircuit;
 
 		String csvName = "Zone_" + getName() + ".csv";
 
 		try {
-			f = new File(DSSGlobals.DSSDataDirectory, csvName);
+			f = new File(DSS.DSSDataDirectory, csvName);
 			fw = new FileWriter(f, false);
 			bw = new BufferedWriter(fw);
 
-			DSSGlobals.globalResult = csvName;
+			DSS.globalResult = csvName;
 
 			bw.write("Level, Branch, Bus1, Bus2, Distance");
 			bw.newLine();
@@ -1022,7 +1022,7 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 			bw.close();
 			fw.close();
 		} catch (Exception e) {
-			DSSGlobals.doSimpleMsg("Error opening file \"" + csvName + "\": " + e.getMessage(), 528);
+			DSS.doSimpleMsg("Error opening file \"" + csvName + "\": " + e.getMessage(), 528);
 		}
 	}
 
@@ -1090,7 +1090,7 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 	 * Add to VoltBase list if not already there and return index.
 	 */
 	private int addToVoltBaseList(int busRef) {
-		Bus bus = DSSGlobals.activeCircuit.getBus(busRef);
+		Bus bus = DSS.activeCircuit.getBus(busRef);
 
 		for (int i = 0; i < VBaseCount; i++) {
 			if (Math.abs(1.0 - bus.getKVBase() / VBaseList[i]) < 0.01)  // < 1% difference
@@ -1130,10 +1130,10 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 			loadElem = (LoadObj) branchList.getFirstObject();
 			while (loadElem != null) {
 				if ((loadElem.getDSSObjType() & DSSClassDefs.CLASSMASK) == DSSClassDefs.LOAD_ELEMENT) {  // only for loads not other shunts
-					switch (loadElem.getNPhases()) {
+					switch (loadElem.getNumPhases()) {
 					/* For single phase loads, allocate based on phase factor, else average factor */
 					case 1:
-						connectedPhase = DSSGlobals.activeCircuit.getMapNodeToBus()[nodeRef[0]].nodeNum;  // one-based
+						connectedPhase = DSS.activeCircuit.getMapNodeToBus()[nodeRef[0]].nodeNum;  // one-based
 						if (connectedPhase > 0 && connectedPhase < 4)  // restrict to phases 1..3
 							loadElem.setAllocationFactor( loadElem.getAllocationFactor() * loadElem.getSensorObj().getPhsAllocationFactor()[connectedPhase] );
 						break;
@@ -1240,7 +1240,7 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 		// make sure zone list is built
 		if (branchList == null) makeMeterZoneLists();
 
-		switch (DSSGlobals.activeCircuit.getReductionStrategy()) {
+		switch (DSS.activeCircuit.getReductionStrategy()) {
 		case STUBS:          ReduceAlgs.doReduceStubs(branchList); break;
 		case TAP_ENDS:       ReduceAlgs.doReduceTapEnds (branchList); break;
 		case MERGE_PARALLEL: ReduceAlgs.doMergeParallelLines(branchList); break;
@@ -1264,10 +1264,10 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 		CktTreeNode startNode, presentNode = null;
 		CktElement cktElem;
 
-		Circuit ckt = DSSGlobals.activeCircuit;
+		Circuit ckt = DSS.activeCircuit;
 
 		if (branchList == null) {
-			DSSGlobals.doSimpleMsg("Meter zone lists need to be built. Solve or makeBusList first.", 529);
+			DSS.doSimpleMsg("Meter zone lists need to be built. Solve or makeBusList first.", 529);
 			return;
 		}
 
@@ -1330,7 +1330,7 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 		if (lineCount == 1)
 			return;
 
-		Circuit ckt = DSSGlobals.activeCircuit;
+		Circuit ckt = DSS.activeCircuit;
 
 		XInc = (ckt.getBus(firstCoordRef).getX() - ckt.getBus(secondCoordRef).getX()) / lineCount;
 		YInc = (ckt.getBus(firstCoordRef).getY() - ckt.getBus(secondCoordRef).getY()) / lineCount;
@@ -1422,7 +1422,7 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 		PrintWriter pwbranches, pwshunts, pwloads, pwgens, pwcaps;
 		int nbranches, nshunts, nloads, ngens, ncaps;
 
-		Circuit ckt = DSSGlobals.activeCircuit;
+		Circuit ckt = DSS.activeCircuit;
 
 		/* We are in the directory indicated by dirname */
 
@@ -1438,7 +1438,7 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 
 				nbranches = 0;
 			} catch (Exception e) {
-				DSSGlobals.doSimpleMsg("Error creating Branches.dss for EnergyMeter: " + getName()+". " + e.getMessage(), 530);
+				DSS.doSimpleMsg("Error creating Branches.dss for EnergyMeter: " + getName()+". " + e.getMessage(), 530);
 				return;
 			}
 
@@ -1449,7 +1449,7 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 
 				nshunts = 0;
 			} catch (Exception e) {
-				DSSGlobals.doSimpleMsg("Error creating Shunts.dss for EnergyMeter: " + getName() + ". " + e.getMessage(), 531);
+				DSS.doSimpleMsg("Error creating Shunts.dss for EnergyMeter: " + getName() + ". " + e.getMessage(), 531);
 				return;
 			}
 
@@ -1460,7 +1460,7 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 
 				nloads = 0;
 			} catch (Exception e) {
-				DSSGlobals.doSimpleMsg("Error creating Loads.dss for EnergyMeter: " + getName() + ". " + e.getMessage(), 532);
+				DSS.doSimpleMsg("Error creating Loads.dss for EnergyMeter: " + getName() + ". " + e.getMessage(), 532);
 				return;
 			}
 
@@ -1471,7 +1471,7 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 
 				ngens = 0;
 			} catch (Exception e) {
-				DSSGlobals.doSimpleMsg("Error creating Generators.dss for EnergyMeter: " + getName() + ". " + e.getMessage(), 533);
+				DSS.doSimpleMsg("Error creating Generators.dss for EnergyMeter: " + getName() + ". " + e.getMessage(), 533);
 				return;
 			}
 
@@ -1481,7 +1481,7 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 				pwcaps = new PrintWriter(fwcaps);
 				ncaps = 0;
 			} catch (Exception e) {
-				DSSGlobals.doSimpleMsg("Error creating Capacitors.dss for EnergyMeter: " + getName() + ". " + e.getMessage(), 534);
+				DSS.doSimpleMsg("Error creating Capacitors.dss for EnergyMeter: " + getName() + ". " + e.getMessage(), 534);
 				return;
 			}
 
@@ -1491,10 +1491,10 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 				if (cktElem.isEnabled()) {
 					ckt.setActiveCktElement(cktElem);
 					nbranches += 1;
-					Utilities.writeActiveDSSObject(pwbranches, "New");  // sets hasBeenSaved(true)
+					Util.writeActiveDSSObject(pwbranches, "New");  // sets hasBeenSaved(true)
 					if (ckt.getActiveCktElement().hasControl()) {
 						ckt.setActiveCktElement( ckt.getActiveCktElement().getControlElement() );
-						Utilities.writeActiveDSSObject(pwbranches, "New");  // regulator control ... also, relays, switch controls
+						Util.writeActiveDSSObject(pwbranches, "New");  // regulator control ... also, relays, switch controls
 					}
 
 					shuntElement = (CktElement) branchList.getFirstObject();
@@ -1509,24 +1509,24 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 							}
 							ckt.setActiveCktElement(shuntElement);  // reset in case edit mangles it
 							nloads += 1;
-							Utilities.writeActiveDSSObject(pwloads, "New");
+							Util.writeActiveDSSObject(pwloads, "New");
 						} else if ((shuntElement.getDSSObjType() & DSSClassDefs.CLASSMASK) == DSSClassDefs.GEN_ELEMENT) {
 							ngens += 1;
-							Utilities.writeActiveDSSObject(pwgens, "New");
+							Util.writeActiveDSSObject(pwgens, "New");
 							if (ckt.getActiveCktElement().hasControl()) {
 								ckt.setActiveCktElement(ckt.getActiveCktElement().getControlElement());
-								Utilities.writeActiveDSSObject(pwgens, "New");
+								Util.writeActiveDSSObject(pwgens, "New");
 							}
 						} else if ((shuntElement.getDSSObjType() & DSSClassDefs.CLASSMASK) == DSSClassDefs.CAP_ELEMENT) {
 							ncaps += 1;
-							Utilities.writeActiveDSSObject(pwcaps, "New");
+							Util.writeActiveDSSObject(pwcaps, "New");
 							if (ckt.getActiveCktElement().hasControl()) {
 								ckt.setActiveCktElement(ckt.getActiveCktElement().getControlElement());
-								Utilities.writeActiveDSSObject(pwcaps, "New");
+								Util.writeActiveDSSObject(pwcaps, "New");
 							}
 						} else {
 							nshunts += 1;
-							Utilities.writeActiveDSSObject(pwshunts, "New");
+							Util.writeActiveDSSObject(pwshunts, "New");
 						}
 						shuntElement = (CktElement) branchList.getNextObject();
 					}
@@ -1553,27 +1553,27 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 
 			/* If any records were written to the file, record their relative names */
 			if (nbranches > 0) {
-				DSSGlobals.savedFileList.add(dirname + "/Branches.dss");
+				DSS.savedFileList.add(dirname + "/Branches.dss");
 			} else {
 				fbranches.delete();
 			}
 			if (nshunts > 0) {
-				DSSGlobals.savedFileList.add(dirname + "/Shunts.dss");
+				DSS.savedFileList.add(dirname + "/Shunts.dss");
 			} else {
 				fshunts.delete();
 			}
 			if (nloads > 0) {
-				DSSGlobals.savedFileList.add(dirname + "/Loads.dss");
+				DSS.savedFileList.add(dirname + "/Loads.dss");
 			} else {
 				floads.delete();
 			}
 			if (ngens > 0) {
-				DSSGlobals.savedFileList.add(dirname + "/Generators.dss");
+				DSS.savedFileList.add(dirname + "/Generators.dss");
 			} else {
 				fgens.delete();
 			}
 			if (ncaps > 0) {
-				DSSGlobals.savedFileList.add(dirname + "/Capacitors.dss");
+				DSS.savedFileList.add(dirname + "/Capacitors.dss");
 			} else {
 				fcaps.delete();
 			}
@@ -1597,11 +1597,11 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 				VPhaseReportFileIsOpen = false;
 			}
 		} catch (IOException e) {
-			DSSGlobals.doSimpleMsg("Error closing demand interval file for meter \""+getName()+"\"", 534);
+			DSS.doSimpleMsg("Error closing demand interval file for meter \""+getName()+"\"", 534);
 		}
 
 		/* Write registers to totals file */
-		PrintWriter meterTotalsPrinter = new PrintWriter(DSSGlobals.energyMeterClass.getMeterTotals());
+		PrintWriter meterTotalsPrinter = new PrintWriter(DSS.energyMeterClass.getMeterTotals());
 		meterTotalsPrinter.print("\"" + getName() + "\"");
 		for (int i = 0; i < EnergyMeter.NUM_EM_REGISTERS; i++)
 			meterTotalsPrinter.printf(", %-g", registers[i]);
@@ -1618,7 +1618,7 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 			if (thisMeterDI_FileIsOpen)
 				closeDemandIntervalFile();
 
-			if (DSSGlobals.energyMeterClass.isDIVerbose()) {
+			if (DSS.energyMeterClass.isDIVerbose()) {
 
 				DI_File = new FileWriter(makeDIFileName());
 				PrintWriter DI_Printer = new PrintWriter(DI_File);
@@ -1638,7 +1638,7 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 					VPhaseReportFileIsOpen = true;
 					VPhase_Printer.write("\"Hour\"");
 					for (i = 0; i < maxVBaseCount; i++) {
-						VBase = VBaseList[i] * DSSGlobals.SQRT3;
+						VBase = VBaseList[i] * DSS.SQRT3;
 						if (VBase > 0.0) {
 							for (j = 0; j < 3; j++) {
 								VPhase_Printer.printf(", %.3gkV_Phs_%d_Max", VBase, j);
@@ -1653,16 +1653,16 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 
 			}
 		} catch (IOException e) {
-			DSSGlobals.doSimpleMsg("Error opening demand interval file \"" + getName() + ".csv" +" for writing."+DSSGlobals.CRLF+e.getMessage(), 535);
+			DSS.doSimpleMsg("Error opening demand interval file \"" + getName() + ".csv" +" for writing."+DSS.CRLF+e.getMessage(), 535);
 		}
 	}
 
 	protected void writeDemandIntervalData() {
 		int i, j;
 
-		SolutionObj sol = DSSGlobals.activeCircuit.getSolution();
+		SolutionObj sol = DSS.activeCircuit.getSolution();
 
-		if ((DSSGlobals.energyMeterClass.isDIVerbose()) && thisMeterDI_FileIsOpen) {
+		if ((DSS.energyMeterClass.isDIVerbose()) && thisMeterDI_FileIsOpen) {
 			PrintWriter DI_Printer = new PrintWriter(DI_File);
 			DI_Printer.printf("%-.6g", sol.getDblHour());
 			for (i = 0; i < EnergyMeter.NUM_EM_REGISTERS; i++)
@@ -1673,7 +1673,7 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 
 		/* Add to class demand interval registers */
 		for (i = 0; i < EnergyMeter.NUM_EM_REGISTERS; i++)
-			DSSGlobals.energyMeterClass.getDI_RegisterTotals()[i] += derivatives[i] * totalsMask[i];
+			DSS.energyMeterClass.getDI_RegisterTotals()[i] += derivatives[i] * totalsMask[i];
 
 		/* Phase voltage report, if requested */
 		if (VPhaseReportFileIsOpen) {
@@ -1710,7 +1710,7 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 			return;
 
 		try {
-			if (DSSGlobals.energyMeterClass.isDIVerbose()) {
+			if (DSS.energyMeterClass.isDIVerbose()) {
 				fileName = makeDIFileName();  // creates directory if it doesn't exist
 				/* File must exist */
 				if (new File(fileName).exists()) {
@@ -1722,7 +1722,7 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 				thisMeterDI_FileIsOpen = true;
 			}
 		} catch (Exception e) {
-			DSSGlobals.doSimpleMsg("Error opening demand interval file \""+getName()+".csv" + " for appending."+DSSGlobals.CRLF+e.getMessage(), 537);
+			DSS.doSimpleMsg("Error opening demand interval file \""+getName()+".csv" + " for appending."+DSS.CRLF+e.getMessage(), 537);
 		}
 	}
 
@@ -1733,7 +1733,7 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 		ireg = 0;
 		for (i = 0; i < maxVBaseCount; i++) {
 			if (VBaseList[i] > 0.0) {
-				VBase = VBaseList[i] * DSSGlobals.SQRT3;
+				VBase = VBaseList[i] * DSS.SQRT3;
 				registerNames[i + EnergyMeter.REG_VBASE_START] = String.format("%.3g kV Losses", VBase);
 				registerNames[i + 1 * maxVBaseCount + EnergyMeter.REG_VBASE_START] = String.format("%.3g kV Line Loss", VBase);
 				registerNames[i + 2 * maxVBaseCount + EnergyMeter.REG_VBASE_START] = String.format("%.3g kV Load Loss", VBase);
@@ -1768,7 +1768,7 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 //			getFeederObj().setNConds(MeteredElement.getNConds());
 			//getFeederObj().setEnabled(DSSGlobals.activeCircuit.isRadialSolution());
 		} else {
-			DSSGlobals.doSimpleMsg("Error: Attempted to make Feeder object without instantiating meteredElement in EnergyMeter."+getName(), 544);
+			DSS.doSimpleMsg("Error: Attempted to make Feeder object without instantiating meteredElement in EnergyMeter."+getName(), 544);
 		}
 	}
 
@@ -1795,7 +1795,7 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 	}
 
 	private String makeDIFileName() {
-		return DSSGlobals.energyMeterClass.getDI_Dir() + "/" + getName() + ".csv";
+		return DSS.energyMeterClass.getDI_Dir() + "/" + getName() + ".csv";
 	}
 
 	public double getRegister(int idx) {
@@ -1804,6 +1804,11 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 
 	public double getTotalsMask(int idx) {
 		return totalsMask[idx];
+	}
+
+	@Override
+	public int injCurrents() {
+		throw new UnsupportedOperationException();
 	}
 
 	public String[] getRegisterNames() {

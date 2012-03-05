@@ -2,7 +2,7 @@ package com.ncond.dss.common.impl;
 
 import com.ncond.dss.common.CktElement;
 import com.ncond.dss.common.DSSClass;
-import com.ncond.dss.common.impl.DSSGlobals;
+import com.ncond.dss.common.impl.DSS;
 import com.ncond.dss.general.DSSObject;
 import com.ncond.dss.general.impl.DSSObjectImpl;
 import com.ncond.dss.parser.impl.Parser;
@@ -67,7 +67,7 @@ public class DSSClassImpl implements DSSClass {
 	}
 
 	public int newObject(String ObjName) {
-		DSSGlobals.doErrorMsg(
+		DSS.doErrorMsg(
 				"Reached base class of DSSClass for device \"" +ObjName+ "\"",
 				"N/A",
 				"Should be overridden.", 780);
@@ -77,10 +77,10 @@ public class DSSClassImpl implements DSSClass {
 	public void setActiveElement(int value) {
 		if (value >= 0 && value < elementList.size()) {
 			activeElement = value;
-			DSSGlobals.activeDSSObject = (DSSObjectImpl) elementList.get(activeElement);
+			DSS.activeDSSObject = (DSSObjectImpl) elementList.get(activeElement);
 
-			if (DSSGlobals.activeDSSObject instanceof DSSCktElement)
-				DSSGlobals.activeCircuit.setActiveCktElement( (CktElement) DSSGlobals.activeDSSObject );
+			if (DSS.activeDSSObject instanceof CktElementImpl)
+				DSS.activeCircuit.setActiveCktElement( (CktElement) DSS.activeDSSObject );
 		}
 	}
 
@@ -92,12 +92,12 @@ public class DSSClassImpl implements DSSClass {
 	 * @return 1 on success, 0 on error
 	 */
 	public int edit() {
-		DSSGlobals.doSimpleMsg("DSSClass.edit() called. Should be overriden.", 781);
+		DSS.doSimpleMsg("DSSClass.edit() called. Should be overriden.", 781);
 		return 0;
 	}
 
 	public int init(int handle) {
-		DSSGlobals.doSimpleMsg("DSSClass.init() called. Should be overriden.", 782);
+		DSS.doSimpleMsg("DSSClass.init() called. Should be overriden.", 782);
 		return 0;
 	}
 
@@ -124,7 +124,7 @@ public class DSSClassImpl implements DSSClass {
 		int idx = elementNameList.find(ObjName);
 		if (idx >= 0) {
 			setActiveElement(idx);
-			DSSGlobals.activeDSSObject = (DSSObject) elementList.get(idx);
+			DSS.activeDSSObject = (DSSObject) elementList.get(idx);
 			result = true;
 		}
 		return result;
@@ -205,7 +205,7 @@ public class DSSClassImpl implements DSSClass {
 
 		propertyName[activeProperty] = "like";
 		propertyHelp[activeProperty] = "Make like another object, e.g.:" +
-				DSSGlobals.CRLF + DSSGlobals.CRLF +
+				DSS.CRLF + DSS.CRLF +
 				"new capacitor.C2 like=c1  ...";
 	}
 
@@ -225,7 +225,7 @@ public class DSSClassImpl implements DSSClass {
 	 * @return 1 on success, 0 on error
 	 */
 	protected int makeLike(String objName) {
-		DSSGlobals.doSimpleMsg("DSSClass.makeLike() called. Should be overriden.", 784);
+		DSS.doSimpleMsg("DSSClass.makeLike() called. Should be overriden.", 784);
 		return 0;
 	}
 
@@ -236,9 +236,9 @@ public class DSSClassImpl implements DSSClass {
 		} else {
 
 			setActiveElement(0);
-			DSSGlobals.activeDSSObject = (DSSObjectImpl) elementList.getFirst();
-			if (DSSGlobals.activeDSSObject instanceof DSSCktElement) {
-				DSSGlobals.activeCircuit.setActiveCktElement( (CktElement) DSSGlobals.activeDSSObject );
+			DSS.activeDSSObject = (DSSObjectImpl) elementList.getFirst();
+			if (DSS.activeDSSObject instanceof CktElementImpl) {
+				DSS.activeCircuit.setActiveCktElement( (CktElement) DSS.activeDSSObject );
 				result = activeElement;
 			}
 		}
@@ -253,10 +253,10 @@ public class DSSClassImpl implements DSSClass {
 		if (activeElement >= elementList.size()) {
 			result = -1;
 		} else {
-			DSSGlobals.activeDSSObject = (DSSObject) elementList.getNext();
+			DSS.activeDSSObject = (DSSObject) elementList.getNext();
 
-			if (DSSGlobals.activeDSSObject instanceof DSSCktElement) {
-				DSSGlobals.activeCircuit.setActiveCktElement( (CktElement) DSSGlobals.activeDSSObject );
+			if (DSS.activeDSSObject instanceof CktElementImpl) {
+				DSS.activeCircuit.setActiveCktElement( (CktElement) DSS.activeDSSObject );
 				result = activeElement;
 			}
 		}

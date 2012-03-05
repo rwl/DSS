@@ -1,6 +1,6 @@
 package com.ncond.dss.common;
 
-import java.io.PrintStream;
+import java.io.OutputStream;
 
 import org.apache.commons.math.complex.Complex;
 
@@ -75,13 +75,13 @@ public interface CktElement extends DSSObject {
 
 	double getYPrimFreq();
 
-	void setNConds(int Value);
+	void setNumConds(int Value);
 
-	int getNConds();
+	int getNumConds();
 
-	void setNPhases(int Value);
+	void setNumPhases(int Value);
 
-	int getNPhases();
+	int getNumPhases();
 
 	void setEnabled(boolean Value);
 
@@ -91,7 +91,11 @@ public interface CktElement extends DSSObject {
 
 	int getActiveTerminalIdx();
 
-	boolean getConductorClosed(int Index);
+	/**
+	 * @param index if index=-1 return true if all phases closed, else false
+	 * @return the state of the selected conductor
+	 */
+	boolean isConductorClosed(int index);
 
 	void setYPrimInvalid(boolean Value);
 
@@ -101,77 +105,113 @@ public interface CktElement extends DSSObject {
 
 	String getNextBus();
 
+	/**
+	 * Get total losses in circuit element, all phases, all terminals.
+	 * Returns complex losses (watts, vars).
+	 */
 	Complex getLosses();
 
-	/** Get total complex power in active terminal */
+	/**
+	 * Get total complex power in active terminal
+	 */
 	Complex getPower(int idxTerm);
 
 	void setConductorClosed(int Index, boolean Value);
 
-	void setNTerms(int Value);
+	void setNumTerms(int Value);
 
-	int getNTerms();
+	int getNumTerms();
 
 	void setHandle(int Value);
 
 	int getHandle();
 
-	CMatrix getYPrim(int Opt);
+	CMatrix getYPrim(int opt);
 
-	Complex[] getYPrimValues(int Opt);
+	/**
+	 * Returns the storage arrays for fast access.
+	 */
+	Complex[] getYPrimValues(int opt);
 
 	/** Max of ITerminal 1 phase currents */
 	double maxTerminalOneIMag();
 
-	/** Computes ITerminal for this device */
+	/**
+	 * Computes ITerminal for this device
+	 */
 	void computeITerminal();
 
 	void computeVTerminal();
 
 	void zeroITerminal();
 
-	/** Get present value of terminal current for reports */
+	/**
+	 * Get present value of terminal current for reports
+	 */
 	void getCurrents(Complex[] curr);
 
-	/** Returns injection currents */
+	/**
+	 * Returns injection currents
+	 */
 	void getInjCurrents(Complex[] curr);
 
-	/** Applies to PC elements puts straight into solution array */
+	/**
+	 * Applies to PC elements puts straight into solution array
+	 */
 	int injCurrents();
 
-	/** Get bus name by index */
+	/**
+	 * Get bus name by index
+	 */
 	String getBus(int i);
 
-	/** Set bus name by index */
+	/**
+	 * Set bus name by index
+	 */
 	void setBus(int i, String s);
 
-	/** Set NodeRef array for fast solution with intrinsics */
+	/**
+	 * Set NodeRef array for fast solution with intrinsics.
+	 * Also allocates VTemp & ITemp.
+	 */
 	void setNodeRef(int iTerm, int[] nodeRefArray);
 
 	void recalcElementData();
 
 	void calcYPrim();
 
-	/** Make a positive sequence model */
+	/**
+	 * Make a positive sequence model
+	 */
 	void makePosSequence();
 
 	void getTermVoltages(int iTerm, Complex[] VBuffer);
 
-	void getPhasePower(Complex[] PowerBuffer);
+	/**
+	 * Get the power in each phase (complex losses) of active terminal
+	 * neutral conductors are ignored by this routine.
+	 */
+	void getPhasePower(Complex[] powerBuffer);
 
-	void getPhaseLosses(int numPhases, Complex[] lossBuffer);
+	/**
+	 * Get the losses in each phase (complex losses);  Power difference coming out
+	 * each phase. Note: This can be misleading if the nodeV voltage is greatly unbalanced.
+	 *
+	 * Neutral conductors are ignored by this routine.
+	 */
+	void getPhaseLosses(int[] numPhases, Complex[] lossBuffer);
 
-	void getLosses(double[] totalLosses, double[] loadLosses,
-			double[] noLoadLosses);
+	void getLosses(Complex[] totalLosses, Complex[] loadLosses,
+			Complex[] noLoadLosses);
 
-	void getSeqLosses(double[] posSeqLosses, double[] negSeqLosses,
-			double[] zeroModeLosses);
+	void getSeqLosses(Complex[] posSeqLosses, Complex[] negSeqLosses,
+			Complex[] zeroModeLosses);
 
 	String getPropertyValue(int index);
 
 	void initPropertyValues(int arrayOffset);
 
-	void dumpProperties(PrintStream f, boolean complete);
+	void dumpProperties(OutputStream f, boolean complete);
 
 	void sumCurrents();
 

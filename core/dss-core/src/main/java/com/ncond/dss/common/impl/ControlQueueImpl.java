@@ -234,13 +234,13 @@ public class ControlQueueImpl implements ControlQueue {
 
 		if (debugTrace) {
 			try {
-				traceFile = new FileWriter(DSSGlobals.DSSDataDirectory + "Trace_ControlQueue.csv");
+				traceFile = new FileWriter(DSS.DSSDataDirectory + "Trace_ControlQueue.csv");
 				BufferedWriter traceBuffer = new BufferedWriter(traceFile);
 				traceBuffer.write("\"Hour\", \"sec\", \"Control Iteration\", \"Element\", \"Action Code\", \"Trace Parameter\", \"Description\"");
 				traceBuffer.newLine();
 				traceBuffer.close();
 			} catch (IOException e) {
-				DSSGlobals.doSimpleMsg("Error initialising control queue trace: " + e.getMessage(), 0);
+				DSS.doSimpleMsg("Error initialising control queue trace: " + e.getMessage(), 0);
 			}
 		}
 	}
@@ -270,22 +270,22 @@ public class ControlQueueImpl implements ControlQueue {
 			}
 			fileBuffer.close();
 		} catch (IOException e) {
-			DSSGlobals.doSimpleMsg("Error writing control queue: " + e.getMessage(), 0);
+			DSS.doSimpleMsg("Error writing control queue: " + e.getMessage(), 0);
 		} finally {
-			Utilities.fireOffEditor(fileName);
+			Util.fireOffEditor(fileName);
 		}
 	}
 
 	private void writeTraceRecord(String elementName, int code, double traceParameter, String s) {
 
 		try {
-			if (!DSSGlobals.inShowResults) {
+			if (!DSS.inShowResults) {
 				BufferedWriter traceBuffer = new BufferedWriter(traceFile);
 
 				traceBuffer.write(String.format("%d, %.6g, %d, %s, %d, %-.g, %s",
-						DSSGlobals.activeCircuit.getSolution().getIntHour(),
-						DSSGlobals.activeCircuit.getSolution().getDynaVars().t,
-						DSSGlobals.activeCircuit.getSolution().getControlIteration(),
+						DSS.activeCircuit.getSolution().getIntHour(),
+						DSS.activeCircuit.getSolution().getDynaVars().t,
+						DSS.activeCircuit.getSolution().getControlIteration(),
 						elementName,
 						code,
 						traceParameter,
@@ -294,7 +294,7 @@ public class ControlQueueImpl implements ControlQueue {
 				traceBuffer.close();
 			}
 		} catch (IOException e) {
-			DSSGlobals.doSimpleMsg("Error writing control queue trace: " + e.getMessage(), 0);
+			DSS.doSimpleMsg("Error writing control queue trace: " + e.getMessage(), 0);
 		}
 	}
 

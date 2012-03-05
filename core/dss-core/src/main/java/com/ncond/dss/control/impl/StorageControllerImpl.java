@@ -1,8 +1,8 @@
 package com.ncond.dss.control.impl;
 
 import com.ncond.dss.common.impl.DSSClassDefs;
-import com.ncond.dss.common.impl.DSSGlobals;
-import com.ncond.dss.common.impl.Utilities;
+import com.ncond.dss.common.impl.DSS;
+import com.ncond.dss.common.impl.Util;
 import com.ncond.dss.control.StorageController;
 import com.ncond.dss.control.StorageControllerObj;
 import com.ncond.dss.general.LoadShapeObj;
@@ -95,14 +95,14 @@ public class StorageControllerImpl extends ControlClassImpl implements StorageCo
 				"Default is to set all weights to 1.0.";
 		propertyHelp[StorageController.MODE_DISCHARGE] =
 				"{PeakShave* | Follow | Support | Loadshape | Time | Schedule} Mode of operation for the DISCHARGE FUNCTION of this controller. " +
-				DSSGlobals.CRLF+DSSGlobals.CRLF+"In PeakShave mode (Default), the control attempts to discharge storage to keep power in the monitored element below the kWTarget. " +
-				DSSGlobals.CRLF+DSSGlobals.CRLF+"In Follow mode, the control is triggered by time and resets the kWTarget value to the present monitored element power. " +
+				DSS.CRLF+DSS.CRLF+"In PeakShave mode (Default), the control attempts to discharge storage to keep power in the monitored element below the kWTarget. " +
+				DSS.CRLF+DSS.CRLF+"In Follow mode, the control is triggered by time and resets the kWTarget value to the present monitored element power. " +
 				"It then attempts to discharge storage to keep power in the monitored element below the new kWTarget. See TimeDischargeTrigger." +
-				DSSGlobals.CRLF+DSSGlobals.CRLF+"In Support mode, the control operates oppositely of PeakShave mode: storage is discharged to keep kW power output up near the target. " +
-				DSSGlobals.CRLF+DSSGlobals.CRLF+"In Loadshape mode, both charging and discharging precisely follows the per unit loadshape. " +
+				DSS.CRLF+DSS.CRLF+"In Support mode, the control operates oppositely of PeakShave mode: storage is discharged to keep kW power output up near the target. " +
+				DSS.CRLF+DSS.CRLF+"In Loadshape mode, both charging and discharging precisely follows the per unit loadshape. " +
 				"Storage is discharged when the loadshape value is positive. " +
-				DSSGlobals.CRLF+DSSGlobals.CRLF+"In Time mode, the storage discharge is turned on at the specified %RatekW and %Ratekvar at the specified discharge trigger time in fractional hours." +
-				DSSGlobals.CRLF+DSSGlobals.CRLF+"In Schedule mode, the Tup, TFlat, and Tdn properties specify the up ramp duration, flat duration, and down ramp duration for the schedule. " +
+				DSS.CRLF+DSS.CRLF+"In Time mode, the storage discharge is turned on at the specified %RatekW and %Ratekvar at the specified discharge trigger time in fractional hours." +
+				DSS.CRLF+DSS.CRLF+"In Schedule mode, the Tup, TFlat, and Tdn properties specify the up ramp duration, flat duration, and down ramp duration for the schedule. " +
 				"The schedule start time is set by TimeDischargeTrigger and the rate of discharge for the flat part is determined by RatekW.";
 		propertyHelp[StorageController.MODE_CHARGE] =
 				"{Loadshape | Time*} Mode of operation for the CHARGE FUNCTION of this controller. " +
@@ -169,8 +169,8 @@ public class StorageControllerImpl extends ControlClassImpl implements StorageCo
 	@Override
 	public int newObject(String objName) {
 
-		DSSGlobals.activeCircuit.setActiveCktElement(new StorageControllerObjImpl(this, objName));
-		return addObjectToList(DSSGlobals.activeDSSObject);
+		DSS.activeCircuit.setActiveCktElement(new StorageControllerObjImpl(this, objName));
+		return addObjectToList(DSS.activeDSSObject);
 	}
 
 	@Override
@@ -179,7 +179,7 @@ public class StorageControllerImpl extends ControlClassImpl implements StorageCo
 
 		// continue parsing with contents of parser
 		activeStorageControllerObj = (StorageControllerObj) elementList.getActive();
-		DSSGlobals.activeCircuit.setActiveCktElement(activeStorageControllerObj);
+		DSS.activeCircuit.setActiveCktElement(activeStorageControllerObj);
 
 		int result = 0;
 
@@ -200,7 +200,7 @@ public class StorageControllerImpl extends ControlClassImpl implements StorageCo
 
 			switch (paramPointer) {
 			case -1:
-				DSSGlobals.doSimpleMsg("Unknown parameter \"" + paramName + "\" for object \"" + getName() +"."+ asc.getName() + "\"", 14407);
+				DSS.doSimpleMsg("Unknown parameter \"" + paramName + "\" for object \"" + getName() +"."+ asc.getName() + "\"", 14407);
 				break;
 			case StorageController.ELEMENT:
 				asc.setElementName(param.toLowerCase());
@@ -215,19 +215,19 @@ public class StorageControllerImpl extends ControlClassImpl implements StorageCo
 				asc.setPctKWBand(parser.makeDouble());
 				break;
 			case StorageController.PF_TARGET:
-				asc.setPFTarget( Utilities.convertPFToPFRange2(parser.makeDouble()) );
+				asc.setPFTarget( Util.convertPFToPFRange2(parser.makeDouble()) );
 				break;
 			case StorageController.PF_BAND:
 				asc.setPFBand(parser.makeDouble());
 				break;
 			case StorageController.ELEMENT_LIST:
-				Utilities.interpretStringListArray(param, asc.getStorageNameList());
+				Util.interpretStringListArray(param, asc.getStorageNameList());
 				break;
 			case StorageController.WEIGHTS:
 				asc.setFleetSize(asc.getStorageNameList().size());
 				if (asc.getFleetSize() > 0) {
-					asc.setWeights( Utilities.resizeArray(asc.getWeights(), asc.getFleetSize()) );
-					Utilities.interpretDblArray(param, asc.getFleetSize(), asc.getWeights());
+					asc.setWeights( Util.resizeArray(asc.getWeights(), asc.getFleetSize()) );
+					Util.interpretDblArray(param, asc.getFleetSize(), asc.getWeights());
 				}
 				break;
 			case StorageController.MODE_DISCHARGE:
@@ -281,10 +281,10 @@ public class StorageControllerImpl extends ControlClassImpl implements StorageCo
 				asc.setDutyShape(param);
 				break;
 			case StorageController.EVENTLOG:
-				asc.setShowEventLog(Utilities.interpretYesNo(param));
+				asc.setShowEventLog(Util.interpretYesNo(param));
 				break;
 			case StorageController.VAR_DISPATCH:
-				asc.setDispatchVars(Utilities.interpretYesNo(param));
+				asc.setDispatchVars(Util.interpretYesNo(param));
 				break;
 			case StorageController.INHIBIT_TIME:
 				asc.setInhibitHrs( Math.max(1, parser.makeInteger()) );  // >= 1
@@ -330,24 +330,24 @@ public class StorageControllerImpl extends ControlClassImpl implements StorageCo
 				asc.setElementListSpecified(true);
 				asc.setFleetSize(asc.getStorageNameList().size());
 				// realloc weights to be same size as possible number of storage elements
-				asc.setWeights( Utilities.resizeArray(asc.getWeights(), asc.getFleetSize()) );
+				asc.setWeights( Util.resizeArray(asc.getWeights(), asc.getFleetSize()) );
 				for (int i = 0; i < asc.getFleetSize(); i++)
 					asc.getWeights()[i] = 1.0;
 				break;
 			case YEARLY:
-				asc.setYearlyShapeObj( (LoadShapeObj) DSSGlobals.loadShapeClass.find(asc.getYearlyShape()) );
+				asc.setYearlyShapeObj( (LoadShapeObj) DSS.loadShapeClass.find(asc.getYearlyShape()) );
 				if (asc.getYearlyShapeObj() == null)
-					DSSGlobals.doSimpleMsg("Yearly loadshape \"" + asc.getYearlyShape() + "\" not found.", 14404);
+					DSS.doSimpleMsg("Yearly loadshape \"" + asc.getYearlyShape() + "\" not found.", 14404);
 				break;
 			case DAILY:
-				asc.setDailyShapeObj( (LoadShapeObj) DSSGlobals.loadShapeClass.find(asc.getDailyShape()) );
+				asc.setDailyShapeObj( (LoadShapeObj) DSS.loadShapeClass.find(asc.getDailyShape()) );
 				if (asc.getDailyShapeObj() == null)
-					DSSGlobals.doSimpleMsg("Daily loadshape \"" + asc.getDailyShape() + "\" not found.", 14405);
+					DSS.doSimpleMsg("Daily loadshape \"" + asc.getDailyShape() + "\" not found.", 14405);
 				break;
 			case DUTY:
-				asc.setDutyShapeObj( (LoadShapeObj) DSSGlobals.loadShapeClass.find(asc.getDutyShape()) );
+				asc.setDutyShapeObj( (LoadShapeObj) DSS.loadShapeClass.find(asc.getDutyShape()) );
 				if (asc.getDutyShapeObj() == null)
-					DSSGlobals.doSimpleMsg("Dutycycle loadshape \"" + asc.getDutyShape() + "\" not found.", 14406);
+					DSS.doSimpleMsg("Dutycycle loadshape \"" + asc.getDutyShape() + "\" not found.", 14406);
 				break;
 			}
 
@@ -368,8 +368,8 @@ public class StorageControllerImpl extends ControlClassImpl implements StorageCo
 		if (otherStorageController != null) {
 			StorageControllerObj asc = activeStorageControllerObj;
 
-			asc.setNPhases(otherStorageController.getNPhases());
-			asc.setNConds(otherStorageController.getNConds());  // force reallocation of terminal stuff
+			asc.setNumPhases(otherStorageController.getNumPhases());
+			asc.setNumConds(otherStorageController.getNumConds());  // force reallocation of terminal stuff
 
 			asc.setElementName(otherStorageController.getElementName());
 			asc.setControlledElement(otherStorageController.getControlledElement());  // pointer to target circuit element
@@ -389,7 +389,7 @@ public class StorageControllerImpl extends ControlClassImpl implements StorageCo
 
 			asc.setFleetSize(asc.getStorageNameList().size());
 			if (asc.getFleetSize() > 0) {
-				asc.setWeights( Utilities.resizeArray(asc.getWeights(), asc.getFleetSize()) );
+				asc.setWeights( Util.resizeArray(asc.getWeights(), asc.getFleetSize()) );
 				for (int i = 0; i < asc.getFleetSize(); i++)
 					asc.getWeights()[i] = otherStorageController.getWeights()[i];
 			}
@@ -417,7 +417,7 @@ public class StorageControllerImpl extends ControlClassImpl implements StorageCo
 			for (int i = 0; i < asc.getParentClass().getNumProperties(); i++)
 				asc.setPropertyValue(i, otherStorageController.getPropertyValue(i));
 		} else {
-			DSSGlobals.doSimpleMsg("Error in StorageController makeLike: \"" + storageControllerName + "\" not found.", 370);
+			DSS.doSimpleMsg("Error in StorageController makeLike: \"" + storageControllerName + "\" not found.", 370);
 		}
 
 		return result;

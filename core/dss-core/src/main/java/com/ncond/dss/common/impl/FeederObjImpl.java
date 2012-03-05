@@ -50,14 +50,14 @@ public class FeederObjImpl extends PCElementImpl implements FeederObj {
 		if (branchList != null) {
 			rootElement = (CktElement) branchList.getFirst();
 
-			setNPhases( rootElement.getNPhases() );  // take care of allocating terminal stuff
-			setNConds( rootElement.getNConds() );
-			setNTerms(1);
-			YOrder = nTerms * nConds;
+			setNumPhases( rootElement.getNumPhases() );  // take care of allocating terminal stuff
+			setNumConds( rootElement.getNumConds() );
+			setNumTerms(1);
+			YOrder = nterm * ncond;
 
 			terminals[0].setBusRef( branchList.getPresentBranch().getFromBusReference() );
 			setBus(0, rootElement.getBus(branchList.getPresentBranch().getFromTerminal()));  // set bus name same as first element
-			fromTerminalOffset = branchList.getPresentBranch().getFromTerminal() * nConds;
+			fromTerminalOffset = branchList.getPresentBranch().getFromTerminal() * ncond;
 			setNodeRef(0, rootElement.getNodeRef()[ fromTerminalOffset ]);
 
 			// build the sequence list and shunt list
@@ -67,10 +67,10 @@ public class FeederObjImpl extends PCElementImpl implements FeederObj {
 
 				// mark all the to buses for this branch as radial buses
 				branchList.getPresentBranch().resetToBusList();  // reset pointer to first to bus
-				for (int i = 0; i < pElement.getNTerms() - 1; i++) {
+				for (int i = 0; i < pElement.getNumTerms() - 1; i++) {
 					bref = branchList.getPresentBranch().getToBusReference();  // each call pops off a new one
 					if (bref > 0)
-						DSSGlobals.activeCircuit.getBus(bref).setRadialBus(true);
+						DSS.activeCircuit.getBus(bref).setRadialBus(true);
 				}
 
 				pShunt = (CktElement) branchList.getPresentBranch().getFirstObject();

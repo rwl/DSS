@@ -3,7 +3,7 @@ package com.ncond.dss.general.impl;
 import java.io.PrintStream;
 
 import com.ncond.dss.common.DSSClass;
-import com.ncond.dss.common.impl.Utilities;
+import com.ncond.dss.common.impl.Util;
 import com.ncond.dss.general.GrowthShape;
 import com.ncond.dss.general.GrowthShapeObj;
 
@@ -51,7 +51,7 @@ public class GrowthShapeObjImpl extends DSSObjectImpl implements GrowthShapeObj 
 			if (index >= 0) {  // returns 1.0 for base year or any year previous
 				if (index >= nYears) {  // make some more space
 					nYears = index + 10;
-					yearMult = Utilities.resizeArray(yearMult, nYears);
+					yearMult = Util.resizeArray(yearMult, nYears);
 					reCalcYearMult();
 				}
 				result = yearMult[index];

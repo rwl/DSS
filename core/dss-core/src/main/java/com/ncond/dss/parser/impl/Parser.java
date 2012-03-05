@@ -1,6 +1,6 @@
 package com.ncond.dss.parser.impl;
 
-import com.ncond.dss.common.impl.DSSGlobals;
+import com.ncond.dss.common.impl.DSS;
 import com.ncond.dss.parser.RPNCalc;
 
 public class Parser {
@@ -331,7 +331,7 @@ public class Parser {
 					tokenBuffer = getToken(nodeBuffer, nodeBufferPos);
 				}
 			} catch (Exception e) {
-				DSSGlobals.forms.messageDlg("Node buffer too small: " + e.getMessage(), true);
+				DSS.forms.messageDlg("Node buffer too small: " + e.getMessage(), true);
 			}
 
 			delimChars = delimSave;  // restore to original delimiters
@@ -374,7 +374,7 @@ public class Parser {
 
 			result = numElements;
 		} catch (Exception e) {
-			DSSGlobals.forms.messageDlg("Vector buffer in parseAsVector probably too small: " + e.getMessage(), true);
+			DSS.forms.messageDlg("Vector buffer in parseAsVector probably too small: " + e.getMessage(), true);
 		}
 
 		delimChars  = delimSave;  // restore to original delimiters
@@ -409,7 +409,7 @@ public class Parser {
 				}
 			}
 		} catch (Exception e) {
-			DSSGlobals.forms.messageDlg("Matrix buffer in parseAsMatrix probably too small: " + e.getMessage(), true);
+			DSS.forms.messageDlg("Matrix buffer in parseAsMatrix probably too small: " + e.getMessage(), true);
 		}
 
 		if (rowBuf != null)
@@ -450,7 +450,7 @@ public class Parser {
 			}
 
 		} catch (Exception e) {
-			DSSGlobals.forms.messageDlg("Matrix buffer in parseAsSymMatrix() probably too small: " + e.getMessage(), true);
+			DSS.forms.messageDlg("Matrix buffer in parseAsSymMatrix() probably too small: " + e.getMessage(), true);
 		}
 
 		if (rowBuf != null)
@@ -503,7 +503,7 @@ public class Parser {
 					// not needed with throw ...  Result = 0;
 					convertError = true;
 //					throw new ParserProblem("Integer number conversion error for string: \""+TokenBuffer+"\"");
-					DSSGlobals.doErrorMsg("", "Integer number conversion error for string: \""+tokenBuffer+"\"", "", 0);
+					DSS.doErrorMsg("", "Integer number conversion error for string: \""+tokenBuffer+"\"", "", 0);
 				} else {
 					result = (int) Math.round(temp);
 				}
@@ -540,7 +540,7 @@ public class Parser {
 				// not needed with throw ... result = 0.0;
 				convertError = true;
 //				throw new ParserProblem("Floating point number conversion error for string: \""+TokenBuffer+"\"");
-				DSSGlobals.doErrorMsg("", "Floating point number conversion error for string: \""+tokenBuffer+"\"", "", 0);
+				DSS.doErrorMsg("", "Floating point number conversion error for string: \""+tokenBuffer+"\"", "", 0);
 			}
 		}
 
@@ -585,7 +585,7 @@ public class Parser {
 			try {
 				code[0] = processRPNCommand(tokenBuffer, RPNCalculator);
 			} catch (ParserProblem e) {
-				DSSGlobals.doErrorMsg("", e.getMessage(), "", 0);
+				DSS.doErrorMsg("", e.getMessage(), "", 0);
 				if (code[0] > 0)
 					break;  // stop on any floating point error
 			}

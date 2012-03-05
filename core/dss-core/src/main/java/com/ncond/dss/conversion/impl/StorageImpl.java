@@ -5,8 +5,8 @@ import java.io.File;
 import java.io.FileWriter;
 
 import com.ncond.dss.common.impl.DSSClassDefs;
-import com.ncond.dss.common.impl.DSSGlobals;
-import com.ncond.dss.common.impl.Utilities;
+import com.ncond.dss.common.impl.DSS;
+import com.ncond.dss.common.impl.Util;
 import com.ncond.dss.conversion.Storage;
 import com.ncond.dss.conversion.StorageObj;
 import com.ncond.dss.general.LoadShapeObj;
@@ -66,17 +66,17 @@ public class StorageImpl extends PCClassImpl implements Storage {
 		addProperty("kv", KV,
 				"Nominal rated (1.0 per unit) voltage, kV, for Storage element. For 2- and 3-phase Storage elements, specify phase-phase kV. "+
 				"Otherwise, specify actual kV across each branch of the Storage element. "+
-				"If wye (star), specify phase-neutral kV. "+DSSGlobals.CRLF+DSSGlobals.CRLF+
+				"If wye (star), specify phase-neutral kV. "+DSS.CRLF+DSS.CRLF+
 				"If delta or phase-phase connected, specify phase-phase kV.");  // line-neutral voltage//  base voltage
 		addProperty("kW", KW,
-				"Get/set the present kW value.  A positive value denotes power coming OUT of the element, "+DSSGlobals.CRLF+
+				"Get/set the present kW value.  A positive value denotes power coming OUT of the element, "+DSS.CRLF+
 				"which is the opposite of a Load element. A negative value indicates the Storage element is in Charging state. " +
 				"This value is modified internally depending on the dispatch mode. " );
 		addProperty("pf", PF,
 				"Nominally, the power factor for discharging (acting as a generator). Default is 1.0. " +
 				"Setting this property will also set the kvar property." +
 				"Enter negative for leading powerfactor "+
-				"(when kW and kvar have opposite signs.)"+DSSGlobals.CRLF+DSSGlobals.CRLF+
+				"(when kW and kvar have opposite signs.)"+DSS.CRLF+DSS.CRLF+
 				"A positive power factor for a generator signifies that the Storage element produces vars " +
 				"as is typical for a generator.  ");
 		addProperty("conn", CONNECTION,
@@ -96,7 +96,7 @@ public class StorageImpl extends PCClassImpl implements Storage {
 		addProperty("%stored", PCT_STORED,
 				"Present amount of energy stored, % of rated kWh. Default is 100%.");
 		addProperty("%reserve", PCT_RESERVE,
-				"Percent of rated kWh storage capacity to be held in reserve for normal operation. Default = 20. " + DSSGlobals.CRLF +
+				"Percent of rated kWh storage capacity to be held in reserve for normal operation. Default = 20. " + DSS.CRLF +
 				"This is treated as the minimum energy discharge level unless there is an emergency. For emergency operation " +
 				"set this property lower. Cannot be less than zero.");
 		addProperty("State", STATE,
@@ -131,9 +131,9 @@ public class StorageImpl extends PCClassImpl implements Storage {
 				"Use %Idlekvar and kvar properties to account for any reactive power during power flow solutions.");
 		addProperty("model", MODEL,
 				"Integer code (default=1) for the model to use for powet output variation with voltage. "+
-				"Valid values are:" +DSSGlobals.CRLF+DSSGlobals.CRLF+
-				"1:Storage element injects a CONSTANT kW at specified power factor."+DSSGlobals.CRLF+
-				"2:Storage element is modeled as a CONSTANT ADMITTANCE."  +DSSGlobals.CRLF+
+				"Valid values are:" +DSS.CRLF+DSS.CRLF+
+				"1:Storage element injects a CONSTANT kW at specified power factor."+DSS.CRLF+
+				"2:Storage element is modeled as a CONSTANT ADMITTANCE."  +DSS.CRLF+
 				"3:Compute load injection from User-written Model.");
 
 		addProperty("Vminpu", VMIN_PU,
@@ -153,26 +153,26 @@ public class StorageImpl extends PCClassImpl implements Storage {
 				"the Storage element uses this loadshape to trigger State changes."); // daily dispatch (hourly)
 		addProperty("duty", DUTY,
 				"Load shape to use for duty cycle dispatch simulations such as for solar ramp rate studies. " +
-				"Must be previously defined as a Loadshape object. "+DSSGlobals.CRLF+DSSGlobals.CRLF+
-				"Typically would have time intervals of 1-5 seconds. "+DSSGlobals.CRLF+DSSGlobals.CRLF+
+				"Must be previously defined as a Loadshape object. "+DSS.CRLF+DSS.CRLF+
+				"Typically would have time intervals of 1-5 seconds. "+DSS.CRLF+DSS.CRLF+
 				"Designate the number of points to solve using the Set Number=xxxx command. "+
 				"If there are fewer points in the actual shape, the shape is assumed to repeat.");  // as for wind generation
 		addProperty("DispMode", DISP_MODE,
-				"{DEFAULT | FOLLOW | EXTERNAL | LOADLEVEL | PRICE } Default = \"DEFAULT\". Dispatch mode. "+DSSGlobals.CRLF+DSSGlobals.CRLF+
+				"{DEFAULT | FOLLOW | EXTERNAL | LOADLEVEL | PRICE } Default = \"DEFAULT\". Dispatch mode. "+DSS.CRLF+DSS.CRLF+
 				"In DEFAULT mode, Storage element state is triggered to discharge or charge at the specified rate by the " +
-				"loadshape curve corresponding to the solution mode. "+ DSSGlobals.CRLF + DSSGlobals.CRLF +
+				"loadshape curve corresponding to the solution mode. "+ DSS.CRLF + DSS.CRLF +
 				"In FOLLOW mode the kW and kvar output of the STORAGE element follows the active loadshape multipliers " +
 				"until storage is either exhausted or full. " +
 				"The element discharges for positive values and charges for negative values.  The loadshapes are based on the kW and kvar " +
-				"values in the most recent definition of kW and PF or kW and kvar properties. " + DSSGlobals.CRLF + DSSGlobals.CRLF);
+				"values in the most recent definition of kW and PF or kW and kvar properties. " + DSS.CRLF + DSS.CRLF);
 		addProperty("DischargeTrigger", DISP_OUT_TRIG,
-				"Dispatch trigger value for discharging the storage. "+DSSGlobals.CRLF+
-				"If = 0.0 the Storage element state is changed by the State command or by a StorageController object. " +DSSGlobals.CRLF+
+				"Dispatch trigger value for discharging the storage. "+DSS.CRLF+
+				"If = 0.0 the Storage element state is changed by the State command or by a StorageController object. " +DSS.CRLF+
 				"If <> 0  the Storage element state is set to DISCHARGING when this trigger level is EXCEEDED by either the specified " +
 				"Loadshape curve value or the price signal or global Loadlevel value, depending on dispatch mode. See State property.");
 		addProperty("Chargetrigger", DISP_IN_TRIG,
-				"Dispatch trigger value for charging the storage. "+DSSGlobals.CRLF+DSSGlobals.CRLF+
-				"If = 0.0 the Storage element state is changed by the State command or StorageController object.  " +DSSGlobals.CRLF+DSSGlobals.CRLF+
+				"Dispatch trigger value for charging the storage. "+DSS.CRLF+DSS.CRLF+
+				"If = 0.0 the Storage element state is changed by the State command or StorageController object.  " +DSS.CRLF+DSS.CRLF+
 				"If <> 0  the Storage element state is set to CHARGING when this trigger level is GREATER than either the specified " +
 				"Loadshape curve value or the price signal or global Loadlevel value, depending on dispatch mode. See State property.");
 		addProperty("TimeChargeTrig", CHARGE_TIME,
@@ -204,8 +204,8 @@ public class StorageImpl extends PCClassImpl implements Storage {
 	@Override
 	public int newObject(String objName) {
 
-		DSSGlobals.activeCircuit.setActiveCktElement(new StorageObjImpl(this, objName));
-		return addObjectToList(DSSGlobals.activeDSSObject);
+		DSS.activeCircuit.setActiveCktElement(new StorageObjImpl(this, objName));
+		return addObjectToList(DSS.activeDSSObject);
 	}
 
 	private void setNcondsForConnection() {
@@ -213,18 +213,18 @@ public class StorageImpl extends PCClassImpl implements Storage {
 
 		switch (as.getConnection()) {
 		case 0:
-			as.setNConds(as.getNPhases() + 1);
+			as.setNumConds(as.getNumPhases() + 1);
 			break;
 		case 1:
-			switch (as.getNPhases()) {
+			switch (as.getNumPhases()) {
 			case 1:
-				as.setNConds(as.getNPhases() + 1);  // L-L
+				as.setNumConds(as.getNumPhases() + 1);  // L-L
 				break;
 			case 2:
-				as.setNConds(as.getNPhases() + 1);  // open-delta
+				as.setNumConds(as.getNumPhases() + 1);  // open-delta
 				break;
 			default:
-				as.setNConds(as.getNPhases());
+				as.setNumConds(as.getNumPhases());
 				break;
 			}
 			break;
@@ -274,12 +274,12 @@ public class StorageImpl extends PCClassImpl implements Storage {
 
 		/* VBase is always L-N voltage unless 1-phase device or more than 3 phases */
 
-		switch (as.getNPhases()) {
+		switch (as.getNumPhases()) {
 		case 2:
-			as.setVBase(as.getKVStorageBase() * DSSGlobals.InvSQRT3x1000);  // L-N Volts
+			as.setVBase(as.getKVStorageBase() * DSS.InvSQRT3x1000);  // L-N Volts
 			break;
 		case 3:
-			as.setVBase(as.getKVStorageBase() * DSSGlobals.InvSQRT3x1000);
+			as.setVBase(as.getKVStorageBase() * DSS.InvSQRT3x1000);
 			break;
 		default:
 			as.setVBase(as.getKVStorageBase() * 1000.0);  // just use what is supplied
@@ -289,7 +289,7 @@ public class StorageImpl extends PCClassImpl implements Storage {
 		as.setVBase95(as.getVMinPU() * as.getVBase());
 		as.setVBase105(as.getVMaxPU() * as.getVBase());
 
-		as.setYOrder(as.getNConds() * as.getNTerms());
+		as.setYOrder(as.getNumConds() * as.getNumTerms());
 		as.setYPrimInvalid(true);
 	}
 
@@ -316,7 +316,7 @@ public class StorageImpl extends PCClassImpl implements Storage {
 
 		// continue parsing with contents of parser
 		activeStorageObj = (StorageObj) elementList.getActive();
-		DSSGlobals.activeCircuit.setActiveCktElement(activeStorageObj);
+		DSS.activeCircuit.setActiveCktElement(activeStorageObj);
 
 		int result = 0;
 
@@ -336,17 +336,17 @@ public class StorageImpl extends PCClassImpl implements Storage {
 			if (paramPointer >= 0 && paramPointer < numProperties) {
 				as.setPropertyValue(propertyIdxMap[paramPointer], param);  // update the string value of the property
 			} else {
-				DSSGlobals.doSimpleMsg("Unknown parameter \""+paramName+"\" for Storage \""+as.getName()+"\"", 560);
+				DSS.doSimpleMsg("Unknown parameter \""+paramName+"\" for Storage \""+as.getName()+"\"", 560);
 			}
 
 			if (paramPointer > 0) {
 				iCase = propertyIdxMap[paramPointer];
 				switch (iCase) {
 				case -1:
-					DSSGlobals.doSimpleMsg("Unknown parameter \"" + paramName + "\" for object \"" + getName() +"."+ as.getName() + "\"", 561);
+					DSS.doSimpleMsg("Unknown parameter \"" + paramName + "\" for object \"" + getName() +"."+ as.getName() + "\"", 561);
 					break;
 				case 0:
-					as.setNPhases(parser.makeInteger());  // num phases
+					as.setNumPhases(parser.makeInteger());  // num phases
 					break;
 				case 1:
 					as.setBus(0, param);
@@ -442,7 +442,7 @@ public class StorageImpl extends PCClassImpl implements Storage {
 					as.getUserModel().edit(parser.makeString());  // send edit string to user model
 					break;
 				case DEBUG_TRACE:
-					as.setDebugTrace(Utilities.interpretYesNo(param));
+					as.setDebugTrace(Util.interpretYesNo(param));
 					break;
 				case PCT_KW_IN:
 					as.setPctKWin(parser.makeDouble());
@@ -472,13 +472,13 @@ public class StorageImpl extends PCClassImpl implements Storage {
 
 					/* Set load shape objects; returns nil if not valid */
 				case YEARLY:
-					as.setYearlyShapeObj((LoadShapeObj) DSSGlobals.loadShapeClass.find(as.getYearlyShape()));
+					as.setYearlyShapeObj((LoadShapeObj) DSS.loadShapeClass.find(as.getYearlyShape()));
 					break;
 				case DAILY:
-					as.setDailyShapeObj((LoadShapeObj) DSSGlobals.loadShapeClass.find(as.getDailyShape()));
+					as.setDailyShapeObj((LoadShapeObj) DSS.loadShapeClass.find(as.getDailyShape()));
 					break;
 				case DUTY:
-					as.setDutyShapeObj((LoadShapeObj) DSSGlobals.loadShapeClass.find(as.getDutyShape()));
+					as.setDutyShapeObj((LoadShapeObj) DSS.loadShapeClass.find(as.getDutyShape()));
 					break;
 				case KW_RATED:
 					as.setKVA_Rating(as.getKWRating());
@@ -497,16 +497,16 @@ public class StorageImpl extends PCClassImpl implements Storage {
 					if (as.isDebugTrace()) {
 						try {
 							// init trace file
-							File TraceFile = new File(DSSGlobals.DSSDataDirectory + "STOR_"+as.getName()+".csv");
+							File TraceFile = new File(DSS.DSSDataDirectory + "STOR_"+as.getName()+".csv");
 							FileWriter TraceStream = new FileWriter(TraceFile, false);
 							BufferedWriter TraceBuffer = new BufferedWriter(TraceStream);
 
 							TraceBuffer.write("t, Iteration, LoadMultiplier, Mode, LoadModel, StorageModel,  Qnominalperphase, Pnominalperphase, CurrentType");
-							for (i = 0; i < as.getNPhases(); i++)
+							for (i = 0; i < as.getNumPhases(); i++)
 								TraceBuffer.write(", |Iinj" + String.valueOf(i) + "|");
-							for (i = 0; i < as.getNPhases(); i++)
+							for (i = 0; i < as.getNumPhases(); i++)
 								TraceBuffer.write(", |Iterm"+ String.valueOf(i) + "|");
-							for (i = 0; i < as.getNPhases(); i++)
+							for (i = 0; i < as.getNumPhases(); i++)
 								TraceBuffer.write(", |Vterm" + String.valueOf(i) + "|");
 							for (i = 0; i < as.numVariables(); i++)
 								TraceBuffer.write(", " + as.variableName(i));
@@ -548,10 +548,10 @@ public class StorageImpl extends PCClassImpl implements Storage {
 		if (otherStorageObj != null) {
 			StorageObj as = activeStorageObj;
 
-			if (as.getNPhases() != otherStorageObj.getNPhases()) {
-				as.setNPhases(otherStorageObj.getNPhases());
-				as.setNConds(as.getNPhases());  // forces reallocation of terminal stuff
-				as.setYOrder(as.getNConds() * as.getNTerms());
+			if (as.getNumPhases() != otherStorageObj.getNumPhases()) {
+				as.setNumPhases(otherStorageObj.getNumPhases());
+				as.setNumConds(as.getNumPhases());  // forces reallocation of terminal stuff
+				as.setYOrder(as.getNumConds() * as.getNumTerms());
 				as.setYPrimInvalid(true);
 			}
 
@@ -613,7 +613,7 @@ public class StorageImpl extends PCClassImpl implements Storage {
 
 			result = 1;
 		} else {
-			DSSGlobals.doSimpleMsg("Error in Storage makeLike: \"" + otherStorageObjName + "\" not found.", 562);
+			DSS.doSimpleMsg("Error in Storage makeLike: \"" + otherStorageObjName + "\" not found.", 562);
 		}
 
 		return result;
@@ -634,7 +634,7 @@ public class StorageImpl extends PCClassImpl implements Storage {
 			pElem.randomize(0);
 		}
 
-		DSSGlobals.doSimpleMsg("Need to implement Storage.init", -1);
+		DSS.doSimpleMsg("Need to implement Storage.init", -1);
 		return 0;
 	}
 

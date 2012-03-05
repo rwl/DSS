@@ -3,12 +3,12 @@ package com.ncond.dss.control.impl;
 import com.ncond.dss.common.Bus;
 import com.ncond.dss.common.CktElement;
 import com.ncond.dss.common.DSSClass;
-import com.ncond.dss.common.impl.DSSCktElement;
+import com.ncond.dss.common.impl.CktElementImpl;
 import com.ncond.dss.common.impl.DSSClassDefs;
-import com.ncond.dss.common.impl.DSSGlobals;
+import com.ncond.dss.common.impl.DSS;
 import com.ncond.dss.control.ControlElem;
 
-public class ControlElemImpl extends DSSCktElement implements ControlElem {
+abstract public class ControlElemImpl extends CktElementImpl implements ControlElem {
 
 	private CktElement controlledElement;
 
@@ -37,18 +37,18 @@ public class ControlElemImpl extends DSSCktElement implements ControlElem {
 	 * Do the action that is pending from last sample.
 	 */
 	public void doPendingAction(int code, int proxyHdl) {
-		DSSGlobals.doSimpleMsg("Programming error: Reached base class for doPendingAction."+DSSGlobals.CRLF+"Device: "+getDSSClassName()+"."+getName(), 460);
+		DSS.doSimpleMsg("Programming error: Reached base class for doPendingAction."+DSS.CRLF+"Device: "+getDSSClassName()+"."+getName(), 460);
 	}
 
 	public void reset() {
-		DSSGlobals.doSimpleMsg("Programming error: Reached base class for reset."+DSSGlobals.CRLF+"Device: "+getDSSClassName()+"."+getName(), 461);
+		DSS.doSimpleMsg("Programming error: Reached base class for reset."+DSS.CRLF+"Device: "+getDSSClassName()+"."+getName(), 461);
 	}
 
 	/**
 	 * Sample control quantities and set action times in control queue.
 	 */
 	public void sample() {
-		DSSGlobals.doSimpleMsg("Programming error: Reached base class for sample."+DSSGlobals.CRLF+"Device: "+getDSSClassName()+"."+getName(), 462);
+		DSS.doSimpleMsg("Programming error: Reached base class for sample."+DSS.CRLF+"Device: "+getDSSClassName()+"."+getName(), 462);
 	}
 
 	public void setControlledElement(CktElement value) {

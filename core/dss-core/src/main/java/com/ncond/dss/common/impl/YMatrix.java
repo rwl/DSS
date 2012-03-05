@@ -22,9 +22,9 @@ public class YMatrix extends CSparseSolve {
 	}
 
 	private static void reCalcAllYPrims() {
-		Circuit ckt = DSSGlobals.activeCircuit;
+		Circuit ckt = DSS.activeCircuit;
 		if (ckt.isLogEvents())
-			Utilities.logThisEvent("Recalc All Yprims");
+			Util.logThisEvent("Recalc All Yprims");
 		for (CktElement pElem : ckt.getCktElements())
 			pElem.calcYPrim();
 	}
@@ -34,9 +34,9 @@ public class YMatrix extends CSparseSolve {
 	 * since last solution.
 	 */
 	private static void reCalcInvalidYPrims() {
-		Circuit ckt = DSSGlobals.activeCircuit;
+		Circuit ckt = DSS.activeCircuit;
 		if (ckt.isLogEvents())
-			Utilities.logThisEvent("Recalc Invalid Yprims");
+			Util.logThisEvent("Recalc Invalid Yprims");
 		for (CktElement pElem : ckt.getCktElements())
 			if (pElem.isYprimInvalid())
 				pElem.calcYPrim();
@@ -56,7 +56,7 @@ public class YMatrix extends CSparseSolve {
 	}
 
 	public static void initializeNodeVbase() {
-		Circuit ckt = DSSGlobals.activeCircuit;
+		Circuit ckt = DSS.activeCircuit;
 		SolutionObj sol = ckt.getSolution();
 
 		for (int i = 0; i < ckt.getNumNodes(); i++) {
@@ -80,7 +80,7 @@ public class YMatrix extends CSparseSolve {
 		// new function to log KLUSolve.DLL function calls
 		//setLogFile("KLU_Log.txt", 1);
 
-		Circuit ckt = DSSGlobals.activeCircuit;
+		Circuit ckt = DSS.activeCircuit;
 		SolutionObj sol = ckt.getSolution();
 
 		if (sol.isPreserveNodeVoltages())
@@ -115,8 +115,8 @@ public class YMatrix extends CSparseSolve {
 			reCalcInvalidYPrims();
 		}
 
-		if (DSSGlobals.solutionAbort) {
-			DSSGlobals.doSimpleMsg("Y matrix build aborted due to error in primitive Y calculations.", 11001);
+		if (DSS.solutionAbort) {
+			DSS.doSimpleMsg("Y matrix build aborted due to error in primitive Y calculations.", 11001);
 			return;  // some problem occurred building Yprims
 		}
 
@@ -125,10 +125,10 @@ public class YMatrix extends CSparseSolve {
 		if (ckt.isLogEvents())
 			switch (BuildOption) {
 			case WHOLEMATRIX:
-				Utilities.logThisEvent("Building whole Y matrix");
+				Util.logThisEvent("Building whole Y matrix");
 				break;
 			case SERIESONLY:
-				Utilities.logThisEvent("Building series Y matrix");
+				Util.logThisEvent("Building series Y matrix");
 				break;
 			}
 
@@ -137,10 +137,10 @@ public class YMatrix extends CSparseSolve {
 			if (pElem.isEnabled()) {
 				switch (BuildOption) {
 				case WHOLEMATRIX:
-					CmatArray = pElem.getYPrimValues(DSSGlobals.ALL_YPRIM);
+					CmatArray = pElem.getYPrimValues(DSS.ALL_YPRIM);
 					break;
 				case SERIESONLY:
-					CmatArray = pElem.getYPrimValues(DSSGlobals.SERIES);
+					CmatArray = pElem.getYPrimValues(DSS.SERIES);
 					break;
 				}
 				// new function adding primitive Y matrix to KLU system Y matrix
@@ -153,11 +153,11 @@ public class YMatrix extends CSparseSolve {
 		// allocate voltage and current vectors if requested
 		if (AllocateVI) {
 			if (ckt.isLogEvents())
-				Utilities.logThisEvent("ReAllocating Solution Arrays");
-			sol.setNodeV( Utilities.resizeArray(sol.getNodeV(), ckt.getNumNodes() + 1) );  // allocate system voltage array - allow for zero element
+				Util.logThisEvent("ReAllocating Solution Arrays");
+			sol.setNodeV( Util.resizeArray(sol.getNodeV(), ckt.getNumNodes() + 1) );  // allocate system voltage array - allow for zero element
 			sol.getNodeV()[0] = Complex.ZERO;  // TODO Check zero based indexing
-			sol.setCurrents( Utilities.resizeArray(sol.getCurrents(), ckt.getNumNodes() + 1) );  // allocate system current array
-			sol.setAuxCurrents( Utilities.resizeArray(sol.getAuxCurrents(), ckt.getNumNodes()) );  // allocate system current array
+			sol.setCurrents( Util.resizeArray(sol.getCurrents(), ckt.getNumNodes() + 1) );  // allocate system current array
+			sol.setAuxCurrents( Util.resizeArray(sol.getAuxCurrents(), ckt.getNumNodes()) );  // allocate system current array
 			if (sol.getVMagSaved() != null)
 				sol.setVMagSaved(new double[0]);
 			if (sol.getErrorSaved() != null)
@@ -198,7 +198,7 @@ public class YMatrix extends CSparseSolve {
 		long nIslands, iCount, iFirst;
 		int[] cliques;
 
-		Circuit ckt = DSSGlobals.activeCircuit;
+		Circuit ckt = DSS.activeCircuit;
 
 		String Result = "";
 
@@ -207,7 +207,7 @@ public class YMatrix extends CSparseSolve {
 			getMatrixElement(Y, i, i, c);
 			if (c[0].abs() == 0.0) {
 				NodeBus nb = ckt.getMapNodeToBus()[i];
-				Result += String.format("%sZero diagonal for bus %s, node %d", DSSGlobals.CRLF, ckt.getBusList().get(nb.busRef), nb.nodeNum);
+				Result += String.format("%sZero diagonal for bus %s, node %d", DSS.CRLF, ckt.getBusList().get(nb.busRef), nb.nodeNum);
 			}
 		}
 
@@ -215,13 +215,13 @@ public class YMatrix extends CSparseSolve {
 		getSingularCol(Y, sCol);  // returns a 0-based node number  TODO Check zero based indexing
 		if (sCol[0] >= 0) {
 			NodeBus nb = ckt.getMapNodeToBus()[sCol[0]];
-			Result += String.format("%sMatrix singularity at bus %s, node %d", DSSGlobals.CRLF, ckt.getBusList().get(nb.busRef), sCol);
+			Result += String.format("%sMatrix singularity at bus %s, node %d", DSS.CRLF, ckt.getBusList().get(nb.busRef), sCol);
 		}
 
 		cliques = new int[ckt.getNumNodes()];
 		nIslands = findIslands(Y, ckt.getNumNodes(), cliques);
 		if (nIslands > 1) {
-			Result += String.format("%sFound %d electrical islands:", DSSGlobals.CRLF, nIslands);
+			Result += String.format("%sFound %d electrical islands:", DSS.CRLF, nIslands);
 			for (int i = 0; i < nIslands; i++) {
 				iCount = 0;
 				iFirst = 0;
@@ -233,7 +233,7 @@ public class YMatrix extends CSparseSolve {
 					}
 				}
 				NodeBus nb = ckt.getMapNodeToBus()[(int) iFirst];
-				Result += String.format("%s  #%d has %d nodes, including bus %s (node %d)", DSSGlobals.CRLF, i, iCount, ckt.getBusList().get(nb.busRef), iFirst);
+				Result += String.format("%s  #%d has %d nodes, including bus %s (node %d)", DSS.CRLF, i, iCount, ckt.getBusList().get(nb.busRef), iFirst);
 			}
 		}
 

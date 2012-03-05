@@ -1,6 +1,8 @@
 package com.ncond.dss.common.impl;
 
+import java.io.OutputStream;
 import java.io.PrintStream;
+import java.io.PrintWriter;
 
 import org.apache.commons.math.complex.Complex;
 
@@ -11,7 +13,7 @@ import com.ncond.dss.common.Terminal;
 import com.ncond.dss.general.impl.DSSObjectImpl;
 import com.ncond.dss.shared.CMatrix;
 
-public class DSSCktElement extends DSSObjectImpl implements CktElement {
+abstract public class CktElementImpl extends DSSObjectImpl implements CktElement {
 
 	private String[] busNames;
 	private boolean enabled;
@@ -20,16 +22,16 @@ public class DSSCktElement extends DSSObjectImpl implements CktElement {
 	private boolean YPrimInvalid;
 	private int handle;
 
-	protected int nTerms;
+	protected int nterm;
 	/* No. conductors per terminal */
-	protected int nConds;
-	protected int nPhases;
+	protected int ncond;
+	protected int nphase;
 
 	protected Complex[] complexBuffer;
 
 	protected int ITerminalSolutionCount;
 
-	protected int busIndex;
+	protected int busIdx;
 
 	protected CMatrix YPrimSeries;
 	protected CMatrix YPrimShunt;
@@ -58,7 +60,7 @@ public class DSSCktElement extends DSSObjectImpl implements CktElement {
 
 	protected Terminal activeTerminal;
 
-	public DSSCktElement(DSSClass parClass) {
+	public CktElementImpl(DSSClass parClass) {
 		super(parClass);
 
 		nodeRef     = null;
@@ -72,10 +74,10 @@ public class DSSCktElement extends DSSObjectImpl implements CktElement {
 		complexBuffer = null;
 
 		handle      = -1;
-		busIndex    = -1;
-		nTerms      = 0;
-		nConds      = 0;
-		nPhases     = 0;
+		busIdx    = -1;
+		nterm      = 0;
+		ncond      = 0;
+		nphase     = 0;
 		objType     = 0;
 		YOrder      = 0;
 
@@ -95,15 +97,14 @@ public class DSSCktElement extends DSSObjectImpl implements CktElement {
 		/* Indicates which solution ITemp is computed for */
 		ITerminalSolutionCount = -1;
 
-		baseFrequency = DSSGlobals.activeCircuit.getFundamental();
+		baseFrequency = DSS.activeCircuit.getFundamental();
 	}
 
 	public void setYPrimInvalid(boolean value) {
 		YPrimInvalid = value;
 		if (value) {
 			// if this device is in the circuit, then we have to rebuild Y on a change in Yprim
-			if (enabled)
-				DSSGlobals.activeCircuit.getSolution().setSystemYChanged(true);
+			if (enabled) DSS.activeCircuit.getSolution().setSystemYChanged(true);
 		}
 	}
 
@@ -112,7 +113,7 @@ public class DSSCktElement extends DSSObjectImpl implements CktElement {
 	}
 
 	public void setActiveTerminalIdx(int value) {
-		if (value >= 0 && value < nTerms) {
+		if (value >= 0 && value < nterm) {
 			activeTerminalIdx = value;
 			activeTerminal = terminals[value] ;
 		}
@@ -126,146 +127,147 @@ public class DSSCktElement extends DSSObjectImpl implements CktElement {
 		handle = value;
 	}
 
-	/**
-	 * Returns the state of selected conductor.
-	 * If index=-1 return true if all phases closed, else false.
-	 */
-	public boolean getConductorClosed(int index) {
-		boolean result;
+	public int getHandle() {
+		return handle;
+	}
+
+	public boolean isConductorClosed(int index) {
+		boolean isClosed;
 		if (index == -1) {  // all phases
-			result = true;
-			for (int i = 0; i < nPhases; i++) {
-				if (!terminals[activeTerminalIdx].getConductors()[i].isClosed()) {
-					result = false;
+			isClosed = true;
+			for (int i = 0; i < nphase; i++) {
+				if (!terminals[activeTerminalIdx].getConductor(i).isClosed()) {
+					isClosed = false;
 					break;
 				}
 			}
 		} else {
-			if (index >= 0 && index < nConds) {
-				result = terminals[activeTerminalIdx].getConductors()[index].isClosed();
+			if (index >= 0 && index < ncond) {
+				isClosed = terminals[activeTerminalIdx].getConductor(index).isClosed();
 			} else {
-				result = false;
+				isClosed = false;
 			}
 		}
-		return result;
+		return isClosed;
 	}
 
 	public void setConductorClosed(int index, boolean value) {
+		SolutionObj sol = DSS.activeCircuit.getSolution();
+
 		if (index == -1) {  // do all conductors
-			for (int i = 0; i < nPhases; i++)
-				terminals[activeTerminalIdx].getConductors()[i].setClosed(value);
-			DSSGlobals.activeCircuit.getSolution().setSystemYChanged(true);  // force Y matrix rebuild
-			YPrimInvalid = true;
+			for (int i = 0; i < nphase; i++)
+				terminals[activeTerminalIdx].getConductor(i).setClosed(value);
+			sol.setSystemYChanged(true);  // force Y matrix rebuild
+			setYPrimInvalid(true);
 		} else {
-			if (index >= 0 && index < nConds) {
-				terminals[activeTerminalIdx].getConductors()[index].setClosed(value);
-				DSSGlobals.activeCircuit.getSolution().setSystemYChanged(true);
-				YPrimInvalid = true;
+			if (index >= 0 && index < ncond) {
+				terminals[activeTerminalIdx].getConductor(index).setClosed(value);
+				sol.setSystemYChanged(true);
+				setYPrimInvalid(true);
 			}
 		}
 	}
 
-	public void setNConds(int value) {
+	public void setNumConds(int value) {
 		// check for an almost certain programming error
 		if (value <= 0) {
-			DSSGlobals.doSimpleMsg(String.format("Invalid number of terminals (%d) for \"%s.%s\"",
+			DSS.doSimpleMsg(String.format("Invalid number of terminals (%d) for \"%s.%s\"",
 					value, parentClass.getName(), getName()), 749);
 			return;
 		}
 
-		if (value != nConds)
-			DSSGlobals.activeCircuit.setBusNameRedefined(true);
-		nConds = value;
-		setNTerms(this.nTerms);  // realloc terminals; need more efficient way to do this
+		if (value != ncond)
+			DSS.activeCircuit.setBusNameRedefined(true);
+		ncond = value;
+		setNumTerms(nterm);  // realloc terminals; need more efficient way to do this
 	}
 
-	public int getNConds() {
-		return nConds;
+	public int getNumConds() {
+		return ncond;
 	}
 
-	public void setNPhases(int value) {
+	public void setNumPhases(int value) {
 		if (value > 0)
-			nPhases = value;
+			nphase = value;
 	}
 
-	public int getNPhases() {
-		return nPhases;
+	public int getNumPhases() {
+		return nphase;
 	}
 
-	public void setNTerms(int value) {
+	public void setNumTerms(int value) {
 		int i;
 		String[] newBusNames;
 
 		// check for an almost certain programming error
 		if (value <= 0) {
-			DSSGlobals.doSimpleMsg(String.format("Invalid number of terminals (%d) for \"%s.%s\"",
-								value, parentClass.getName(), getName()), 749);
+			DSS.doSimpleMsg(String.format("Invalid number of terminals (%d) for \"%s.%s\"",
+					value, parentClass.getName(), getName()), 749);
 			return;
 		}
 
 		// if value is same as present value, no reallocation necessary;
 		// if either nTerms or nConds has changed then reallocate
-		if (value != nTerms || value * nConds != YOrder) {
+		if ((value != nterm) || (value * ncond != YOrder)) {
 
 			/* Sanity check */
-			if (nConds > 101) {
-				DSSGlobals.doSimpleMsg(String.format("Warning: Number of conductors is very large (%d) for circuit element: \"%s.%s." +
+			if (ncond > 101) {
+				DSS.doSimpleMsg(String.format("Warning: Number of conductors is very large (%d) for circuit element: \"%s.%s." +
 						"Possible error in specifying the number of phases for element.",
-						nConds, parentClass.getName(), getName()), 750);
+						ncond, parentClass.getName(), getName()), 750);
 			}
 
 			/* Reallocate bus names */
-			// because they are strings, we have to do it differently
 
-			if (value < nTerms) {
-				busNames = Utilities.resizeArray(busNames, value);  // keeps old values; truncates storage
+			if (value < nterm) {
+				busNames = Util.resizeArray(busNames, value);  // keeps old values; truncates storage
 			} else {
 				if (busNames == null) {
 					// first allocation
-					busNames = new String[value];  // fill with zeros or strings will crash
+					busNames = new String[value];
 					for (i = 0; i < value; i++)
-						busNames[i] = getName()+'_'+String.valueOf(i);  // make up a bus name to stick in
+						busNames[i] = getName() + "_" + i;  // make up a bus name to stick in
 					// this is so devices like transformers which may be defined on multiple commands
 					// will have something in the busNames array
 				} else {
 					newBusNames = new String[value];  // make some new space
-					for (i = 0; i < nTerms; i++)
+					for (i = 0; i < nterm; i++)
 						newBusNames[i] = busNames[i];  // copy old into new
-					for (i = 0; i < nTerms; i++)
+					for (i = 0; i < nterm; i++)
 						busNames[i] = "";  // decrement usage counts by setting to empty string
-					for (i = 0; i < nTerms + 1; i++)
-						newBusNames[i] = getName()+'_'+String.valueOf(i);  // make up a bus name to stick in
+					for (i = 0; i < nterm + 1; i++)
+						newBusNames[i] = getName() + "_" + i;  // make up a bus name to stick in
 					busNames = newBusNames;
 				}
 			}
 
-			/* Reallocate terminals if nConds or nTerms changed */
+			/* Reallocate terminals if ncond or nterm changed */
 			if (terminals != null)
-				for (i = 0; i < nTerms; i++)
+				for (i = 0; i < nterm; i++)
 					terminals[i] = null;  // clean up old storage
 
-			terminals = Utilities.resizeArray(terminals, value);
+			terminals = Util.resizeArray(terminals, value);
 
-			nTerms = value;  // set new number of terminals
-			YOrder = nTerms * nConds;
-			VTerminal = Utilities.resizeArray(VTerminal, YOrder);
-			ITerminal = Utilities.resizeArray(ITerminal, YOrder);
-			complexBuffer = Utilities.resizeArray(complexBuffer, YOrder);  // used by both PD and PC elements
+			nterm = value;  // set new number of terminals
+			YOrder = nterm * ncond;
+			VTerminal = Util.resizeArray(VTerminal, YOrder);
+			ITerminal = Util.resizeArray(ITerminal, YOrder);
+			complexBuffer = Util.resizeArray(complexBuffer, YOrder);  // used by both PD and PC elements
 
 			for (i = 0; i < value; i++)
-				terminals[i] = new PowerTerminal(nConds);
+				terminals[i] = new PowerTerminal(ncond);
 		}
 	}
 
-	public int getNTerms() {
-		return nTerms;
+	public int getNumTerms() {
+		return nterm;
 	}
 
 	public void setEnabled(boolean value) {
 		if (value != enabled) {  // don't change unless this represents a change
 			enabled = value;
 			// force rebuilding of Y matrix and bus lists
-			DSSGlobals.activeCircuit.setBusNameRedefined(true);
+			DSS.activeCircuit.setBusNameRedefined(true);
 		}
 	}
 
@@ -274,39 +276,36 @@ public class DSSCktElement extends DSSObjectImpl implements CktElement {
 	}
 
 	public CMatrix getYPrim(int opt) {
-		CMatrix YMatrix = null;
+		CMatrix Y = null;
 
 		switch (opt) {
-		case DSSGlobals.ALL_YPRIM:
-			YMatrix = YPrim;
+		case DSS.ALL_YPRIM:
+			Y = YPrim;
 			break;
-		case DSSGlobals.SERIES:
-			YMatrix = YPrimSeries;
+		case DSS.SERIES:
+			Y = YPrimSeries;
 			break;
-		case DSSGlobals.SHUNT:
-			YMatrix = YPrimShunt;
+		case DSS.SHUNT:
+			Y = YPrimShunt;
 			break;
 		}
 
-		return YMatrix;
+		return Y;
 	}
 
-	/**
-	 * Returns the storage arrays for fast access.
-	 */
 	public Complex[] getYPrimValues(int opt) {
 		Complex[] result = null;
 
 		switch (opt) {
-		case DSSGlobals.ALL_YPRIM:
+		case DSS.ALL_YPRIM:
 			if (YPrim != null)
 				result = YPrim.asArray();
 			break;
-		case DSSGlobals.SERIES:
+		case DSS.SERIES:
 			if (YPrimSeries != null)
 				result = YPrimSeries.asArray();
 			break;
-		case DSSGlobals.SHUNT:
+		case DSS.SHUNT:
 			if (YPrimShunt != null)
 				result = YPrimShunt.asArray();
 			break;
@@ -315,65 +314,34 @@ public class DSSCktElement extends DSSObjectImpl implements CktElement {
 		return result;
 	}
 
-	/**
-	 * Get present value of terminal current for reports.
-	 */
-	public void getCurrents(Complex[] curr) {
-		DSSGlobals.doErrorMsg("Something is wrong. Got to base CktElement getCurrents for object:"+DSSGlobals.CRLF+getDSSClassName()+"."+getName(),
-				"N/A",
-				"Should not be able to get here. Probable programming error.", 751);
-	}
+	abstract public void getCurrents(Complex[] curr);
 
-	/**
-	 * Returns injection currents
-	 */
-	public void getInjCurrents(Complex[] curr) {
-		DSSGlobals.doErrorMsg("Something is wrong. Got to base CktElement getInjCurrents for object:"+DSSGlobals.CRLF+getDSSClassName()+"."+getName(), "****",
-				"Should not be able to get here. Probable programming error.", 752);
-	}
+	abstract public void getInjCurrents(Complex[] curr);
 
-	public void getLosses(double[] totalLosses, double[] loadLosses,
-			double[] NoLoadLosses) {
+	public void getLosses(Complex[] totalLosses, Complex[] loadLosses, Complex[] noLoadLosses) {
 		Complex totLosses = getLosses();  // watts, vars
 
-		totalLosses[0] = totLosses.getReal();
-		totalLosses[1] = totLosses.getImaginary();
-
-		loadLosses[0] = totLosses.getReal();
-		loadLosses[1] = totLosses.getImaginary();
-
-		NoLoadLosses[0] = 0;
-		NoLoadLosses[1] = 0;
+		totalLosses[0] = totLosses;
+		loadLosses[0] = totLosses;
+		noLoadLosses[0] = Complex.ZERO;
 	}
 
-	/**
-	 * Applies to PC Elements Puts straight into solution array
-	 */
-	public int injCurrents() {
-		DSSGlobals.doErrorMsg(("Improper call to injCurrents for element: " + getName() + "."), "****",
-				"Called CktElement class base function instead of actual.", 753);
-		return 0;
-	}
+	abstract public int injCurrents();
 
-	/**
-	 * Set NodeRef array for fast solution with intrinsics.
-	 *
-	 * Also allocates VTemp & ITemp.
-	 */
 	public void setNodeRef(int iTerm, int[] nodeRefArray) {
 		int size, size2;
 
 		// allocate nodeRef and move new values into it
 		size = YOrder;
-		size2 = nConds;  // size for one terminal
-		nodeRef = Utilities.resizeArray(nodeRef, size);  // doesn't do anything if already properly allocated
-		System.arraycopy(nodeRefArray[0], 0, nodeRef[iTerm * nConds], 0, size2);
-		System.arraycopy(nodeRefArray[0], 0, terminals[iTerm].getTermNodeRef(0), 0, size2);  // copy in terminal as well
+		size2 = ncond;  // size for one terminal
+		nodeRef = Util.resizeArray(nodeRef, size);  // doesn't do anything if already properly allocated
+		System.arraycopy(nodeRefArray[0], 0, nodeRef[iTerm * ncond], 0, size2);
+		System.arraycopy(nodeRefArray[0], 0, terminals[iTerm].getTermNodeRef(0), 0, size2);  // copy in terminals as well
 
 		// allocate temp array used to hold voltages and currents for calcs
-		VTerminal = Utilities.resizeArray(VTerminal, YOrder);
-		ITerminal = Utilities.resizeArray(ITerminal, YOrder);
-		complexBuffer = Utilities.resizeArray(complexBuffer, YOrder);
+		VTerminal = Util.resizeArray(VTerminal, YOrder);
+		ITerminal = Util.resizeArray(ITerminal, YOrder);
+		complexBuffer = Util.resizeArray(complexBuffer, YOrder);
 	}
 
 	public void setNodeRef(int iTerm, int nodeRefArray) {
@@ -381,61 +349,59 @@ public class DSSCktElement extends DSSObjectImpl implements CktElement {
 	}
 
 	public String getFirstBus() {
-		if (nTerms > 0) {
-			busIndex = 0;
-			return busNames[busIndex];
+		if (nterm > 0) {
+			busIdx = 0;
+			return busNames[busIdx];
 		} else {
 			return "";
 		}
 	}
 
 	public String getNextBus() {
-		String result = "";
-		if (nTerms > 0) {
-			busIndex += 1;
-			if (busIndex < nTerms) {
-				result = busNames[busIndex];
+		String name = "";
+		if (nterm > 0) {
+			busIdx += 1;
+			if (busIdx < nterm) {
+				name = busNames[busIdx];
 			} else {
-				busIndex = nTerms;
+				busIdx = nterm;
 			}
 		}
-		return result;
+		return name;
 	}
 
-	/**
-	 * Get bus name by index.
-	 */
 	public String getBus(int i) {
-		if (i < nTerms) {
+		if (i < nterm) {
 			return busNames[i];
 		} else {
 			return "";
 		}
 	}
 
-	/**
-	 * Set bus name by index.
-	 */
-	public void setBus(int i, String s) {
-		if (i < nTerms) {
-			busNames[i] = s.toLowerCase();
+	public void setBus(int i, String name) {
+		if (i < nterm) {
+			busNames[i] = name.toLowerCase();
 			// set global flag to signal circuit to rebuild bus defs
-			DSSGlobals.activeCircuit.setBusNameRedefined(true);
+			DSS.activeCircuit.setBusNameRedefined(true);
 		} else {
-			DSSGlobals.doSimpleMsg(String.format("Attempt to set bus name for non-existent circuit element terminal(%d): \"%s\"", i, s), 7541);
+			DSS.doSimpleMsg(String.format("Attempt to set bus name for non-existent circuit element terminal(%d): \"%s\"", i, name), 7541);
 		}
 	}
 
-	/**
-	 * Set freq and recompute YPrim.
-	 */
-	private void setFreq(double value) {
-		if (value > 0.0)
-			YPrimFreq = value;
+	public void setFreq(double value) {
+		if (value > 0.0) YPrimFreq = value;
+	}
+
+	public void setYPrimFreq(double value) {
+		setFreq(value);
+	}
+
+	public double getYPrimFreq() {
+		return this.YPrimFreq;
 	}
 
 	public void recalcElementData() {
-		DSSGlobals.doSimpleMsg("recalcElementData in base CktElement class called for device = \"" + getName() +"\"", 754);
+		DSS.doSimpleMsg("recalcElementData in base CktElement class called for device = \"" + getName() + "\"", 754);
 	}
 
 	public void calcYPrim() {
@@ -447,103 +413,85 @@ public class DSSCktElement extends DSSObjectImpl implements CktElement {
 			doYPrimCalcs(YPrim);
 	}
 
-	/**
-	 * Computes ITerminal for this device.
-	 */
 	public void computeITerminal() {
 		// to save time, only recompute if a different solution than last time it was computed
-		if (ITerminalSolutionCount != DSSGlobals.activeCircuit.getSolution().getSolutionCount()) {
+		if (ITerminalSolutionCount != DSS.activeCircuit.getSolution().getSolutionCount()) {
 			getCurrents(ITerminal);
-			ITerminalSolutionCount = DSSGlobals.activeCircuit.getSolution().getSolutionCount();
+			ITerminalSolutionCount = DSS.activeCircuit.getSolution().getSolutionCount();
 		}
 	}
 
-	/**
-	 * Max of ITerminal 1 phase currents.
-	 */
 	public double maxTerminalOneIMag() {
-		double result = 0.0;
-		if (enabled)
-			for (int i = 0; i < nPhases; i++)
-				result = Math.max(result, Math.pow(ITerminal[i].getReal(), 2) + Math.pow(ITerminal[i].getImaginary(), 2));
-		return Math.sqrt(result);  // just do the sqrt once and save a little time
+		double max = 0.0;
+		if (enabled) {
+			for (int i = 0; i < nphase; i++)
+				max = Math.max(max, Math.pow(ITerminal[i].getReal(), 2) + Math.pow(ITerminal[i].getImaginary(), 2));
+		}
+		return Math.sqrt(max);  // just do the sqrt once and save a little time
 	}
 
-	/**
-	 * Get total complex power in active terminal.
-	 */
 	public Complex getPower(int idxTerm) {
 		Complex cPower = Complex.ZERO;
 		int i, k, n;
-		SolutionObj sol;
+		SolutionObj sol = DSS.activeCircuit.getSolution();
 
 		activeTerminalIdx = idxTerm;
 
-		if (enabled)
-			computeITerminal();
+		if (enabled) computeITerminal();
 
 		// sum complex power going into phase conductors of active terminal
-		sol = DSSGlobals.activeCircuit.getSolution();
-		k = idxTerm * nConds;
-		for (i = 0; i < nConds; i++) {  // 11-7-08 changed from nPhases - was not accounting for all conductors
+		k = idxTerm * ncond;
+		for (i = 0; i < ncond; i++) {  // 11-7-08 changed from nPhases - was not accounting for all conductors
 			n = activeTerminal.getTermNodeRef(i);  // don't bother for grounded node
-			if (n >= 0)
+			if (n >= 0) {
 				cPower = cPower.add( sol.getNodeV(n).multiply( ITerminal[k + i].conjugate() ) );
+			}
 		}
 
 		/* If this is a positive sequence circuit, then we need to multiply by 3 to get the 3-phase power */
-		if (DSSGlobals.activeCircuit.isPositiveSequence())
+		if (DSS.activeCircuit.isPositiveSequence()) {
 			cPower = cPower.multiply(3.0);
+		}
 
 		return cPower;
 	}
 
-	/**
-	 * Get total losses in circuit element, all phases, all terminals.
-	 * Returns complex losses (watts, vars).
-	 */
 	public Complex getLosses() {
-		Complex cLoss = Complex.ZERO;
+		Complex loss, totalLoss = Complex.ZERO;
 		int k, n;
-		SolutionObj sol;
+		SolutionObj sol = DSS.activeCircuit.getSolution();
 
 		if (enabled) {
 			computeITerminal();
 
 			// sum complex power going into all conductors of all terminals
-			sol = DSSGlobals.activeCircuit.getSolution();
-
 			for (k = 0; k < YOrder; k++) {
 				n = nodeRef[k];
-				if (n >= 0)
-					if (DSSGlobals.activeCircuit.isPositiveSequence()) {
-						cLoss = cLoss.add( sol.getNodeV(n).multiply(ITerminal[k].conjugate()).multiply(3.0) );
+				if (n >= 0) {
+					if (DSS.activeCircuit.isPositiveSequence()) {
+						loss = sol.getNodeV(n).multiply( ITerminal[k].conjugate() ).multiply(3.0);
 					} else {
-						cLoss = cLoss.add( sol.getNodeV(n).multiply(ITerminal[k].conjugate()) );
+						loss = sol.getNodeV(n).multiply( ITerminal[k].conjugate() );
 					}
+					totalLoss = totalLoss.add(loss);
+				}
 			}
 		}
 
-		return cLoss;
+		return totalLoss;
 	}
 
-	/**
-	 * Get the power in each phase (complex losses) of active terminal
-	 * neutral conductors are ignored by this routine.
-	 */
 	public void getPhasePower(Complex[] powerBuffer) {
 		int i, n;
-		SolutionObj sol;
+		SolutionObj sol = DSS.activeCircuit.getSolution();
 
 		if (enabled) {
 			computeITerminal();
 
-			sol = DSSGlobals.activeCircuit.getSolution();
-
 			for (i = 0; i < YOrder; i++) {
 				n = nodeRef[i];  // increment through terminals
 				if (n >= 0) {
-					if (DSSGlobals.activeCircuit.isPositiveSequence()) {
+					if (DSS.activeCircuit.isPositiveSequence()) {
 						powerBuffer[i] = sol.getNodeV(n).multiply( ITerminal[i].conjugate() ).multiply(3.0);
 					} else {
 						powerBuffer[i] = sol.getNodeV(n).multiply( ITerminal[i].conjugate() );
@@ -551,35 +499,26 @@ public class DSSCktElement extends DSSObjectImpl implements CktElement {
 				}
 			}
 		} else {
-			for (i = 0; i < YOrder; i++)
-				powerBuffer[i] = Complex.ZERO;
+			for (i = 0; i < YOrder; i++) powerBuffer[i] = Complex.ZERO;
 		}
 	}
 
-	/**
-	 * Get the losses in each phase (complex losses);  Power difference coming out
-	 * each phase. Note: This can be misleading if the nodeV voltage is greatly unbalanced.
-	 *
-	 * Neutral conductors are ignored by this routine.
-	 */
-	public void getPhaseLosses(int numPhases, Complex[] lossBuffer) {
+	public void getPhaseLosses(int[] numPhases, Complex[] lossBuffer) {
 		int i, j, k, n;
 		Complex cLoss;
-		SolutionObj sol;
+		SolutionObj sol = DSS.activeCircuit.getSolution();
 
-		numPhases = nPhases;
+		numPhases[0] = nphase;
 		if (enabled) {
 			computeITerminal();
 
-			sol = DSSGlobals.activeCircuit.getSolution();
-
-			for (i = 0; i < numPhases; i++) {
+			for (i = 0; i < numPhases[0]; i++) {
 				cLoss = Complex.ZERO;
-				for (j = 0; j < nTerms; j++) {
-					k = j * nConds + i;
+				for (j = 0; j < nterm; j++) {
+					k = j * ncond + i;
 					n = nodeRef[k];  // increment through terminals
 					if (n >= 0) {
-						if (DSSGlobals.activeCircuit.isPositiveSequence()) {
+						if (DSS.activeCircuit.isPositiveSequence()) {
 							cLoss = cLoss.add( sol.getNodeV(n).multiply( ITerminal[k].conjugate() ).multiply(3.0) );
 						} else {
 							cLoss = cLoss.add( sol.getNodeV(n).multiply( ITerminal[k].conjugate() ) );
@@ -589,14 +528,13 @@ public class DSSCktElement extends DSSObjectImpl implements CktElement {
 				lossBuffer[i] = cLoss;
 			}
 		} else {
-			for (i = 0; i < numPhases; i++)
+			for (i = 0; i < numPhases[0]; i++)
 				lossBuffer[i] = Complex.ZERO;
 		}
 	}
 
-	public void dumpProperties(PrintStream f, boolean complete) {
-		// FIXME Implement this method
-		throw new UnsupportedOperationException();
+	public void dumpProperties(OutputStream out, boolean complete) {
+		PrintWriter pw = new PrintWriter(out);
 	}
 
 	private void doYPrimCalcs(CMatrix YMatrix) {
@@ -608,9 +546,9 @@ public class DSSCktElement extends DSSObjectImpl implements CktElement {
 		/* Now account for open conductors */
 		/* For any conductor that is open, zero out row and column */
 		k = 0;
-		for (i = 0; i < nTerms; i++) {
-			for (j = 0; j < nConds; j++) {
-				if (!terminals[i].getConductors()[j].isClosed()) {
+		for (i = 0; i < nterm; i++) {
+			for (j = 0; j < ncond; j++) {
+				if (!terminals[i].getConductor(j).isClosed()) {
 					if (!elementOpen) {
 						rowEliminated = new int[YOrder];
 						elementOpen = true;
@@ -619,7 +557,7 @@ public class DSSCktElement extends DSSObjectImpl implements CktElement {
 					elimRow = j + k;
 					Ynn = YMatrix.get(elimRow, elimRow);
 					if (Ynn.abs() == 0.0)
-						Ynn = new Complex(DSSGlobals.EPSILON, Ynn.getImaginary());
+						Ynn = new Complex(DSS.EPSILON, Ynn.getImaginary());
 					rowEliminated[elimRow] = 1;
 					for (ii = 0; ii < YOrder; ii++) {
 						if (rowEliminated[ii] == 0) {
@@ -635,10 +573,10 @@ public class DSSCktElement extends DSSObjectImpl implements CktElement {
 					// now zero out row and column
 					YMatrix.zeroRow(elimRow);
 					YMatrix.zeroCol(elimRow);
-					YMatrix.set(elimRow, elimRow, new Complex(DSSGlobals.EPSILON, 0.0));  // in case node gets isolated
+					YMatrix.set(elimRow, elimRow, new Complex(DSS.EPSILON, 0.0));  // in case node gets isolated
 				}
 			}
-			k = k + nConds;
+			k = k + ncond;
 		}
 		if (elementOpen)
 			rowEliminated = new int[0];
@@ -653,7 +591,7 @@ public class DSSCktElement extends DSSObjectImpl implements CktElement {
 		if (enabled) {
 			computeITerminal();
 
-			SolutionObj sol = DSSGlobals.activeCircuit.getSolution();
+			SolutionObj sol = DSS.activeCircuit.getSolution();
 
 			for (int i = 0; i < YOrder; i++)
 				sol.setCurrent(nodeRef[i], sol.getCurrent(nodeRef[i]).add(ITerminal[i]));
@@ -670,22 +608,20 @@ public class DSSCktElement extends DSSObjectImpl implements CktElement {
 		SolutionObj sol;
 
 		try {
-			int ncond = nConds;
-
 			/* Return zero if terminal number improperly specified */
-			if (iTerm <= 0 || iTerm >= nTerms) {
+			if (iTerm <= 0 || iTerm >= nterm) {
 				for (i = 0; i < ncond; i++)
 					VBuffer[i] = Complex.ZERO;
 				return;
 			}
 
-			sol = DSSGlobals.activeCircuit.getSolution();
+			sol = DSS.activeCircuit.getSolution();
 
 			for (i = 0; i < ncond; i++)
 				VBuffer[i] = sol.getNodeV( terminals[iTerm].getTermNodeRef(i) );
 		} catch (Exception e) {
-			DSSGlobals.doSimpleMsg("Error filling voltage buffer in getTermVoltages for circuit element:"+getDSSClassName()+"."+getName()+DSSGlobals.CRLF+
-					"Probable cause: Invalid definition of element."+DSSGlobals.CRLF+
+			DSS.doSimpleMsg("Error filling voltage buffer in getTermVoltages for circuit element:"+getDSSClassName()+"."+getName()+DSS.CRLF+
+					"Probable cause: Invalid definition of element."+DSS.CRLF+
 					"System error message: "+e.getMessage(), 755);
 		}
 	}
@@ -718,14 +654,11 @@ public class DSSCktElement extends DSSObjectImpl implements CktElement {
 	 *
 	 * Derived classes have to supply appropriate function.
 	 */
-	public void getSeqLosses(double[] posSeqLosses, double[] negSeqLosses,
-			double[] zeroModeLosses) {
-		posSeqLosses[0] = 0;
-		posSeqLosses[1] = 0;
-		negSeqLosses[0] = 0;
-		negSeqLosses[1] = 0;
-		zeroModeLosses[0] = 0;
-		zeroModeLosses[1] = 0;
+	public void getSeqLosses(Complex[] posSeqLosses, Complex[] negSeqLosses,
+			Complex[] zeroModeLosses) {
+		posSeqLosses[0] = Complex.ZERO;
+		negSeqLosses[0] = Complex.ZERO;
+		zeroModeLosses[0] = Complex.ZERO;
 	}
 
 	private boolean isGroundBus(String s) {
@@ -750,9 +683,9 @@ public class DSSCktElement extends DSSObjectImpl implements CktElement {
 	 */
 	public void makePosSequence() {
 		boolean grnd;
-		for (int i = 0; i < nTerms; i++) {
+		for (int i = 0; i < nterm; i++) {
 			grnd = isGroundBus(busNames[i]);
-			busNames[i] = Utilities.stripExtension(busNames[i]);
+			busNames[i] = Util.stripExtension(busNames[i]);
 			if (grnd)
 				busNames[i] = busNames[i] + ".0";
 		}
@@ -762,7 +695,7 @@ public class DSSCktElement extends DSSObjectImpl implements CktElement {
 	 * Put terminal voltages in an array.
 	 */
 	public void computeVTerminal() {
-		SolutionObj sol = DSSGlobals.activeCircuit.getSolution();
+		SolutionObj sol = DSS.activeCircuit.getSolution();
 		for (int i = 0; i < YOrder; i++)
 			VTerminal[i] = sol.getNodeV(nodeRef[i]);
 	}
@@ -894,18 +827,6 @@ public class DSSCktElement extends DSSObjectImpl implements CktElement {
 
 	public Terminal getActiveTerminal() {
 		return activeTerminal;
-	}
-
-	public void setYPrimFreq(double Value) {
-		setFreq(Value);
-	}
-
-	public double getYPrimFreq() {
-		return this.YPrimFreq;
-	}
-
-	public int getHandle() {
-		return 0;
 	}
 
 }

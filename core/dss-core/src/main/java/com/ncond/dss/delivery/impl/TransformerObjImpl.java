@@ -8,8 +8,8 @@ import org.apache.commons.math.complex.Complex;
 
 import com.ncond.dss.common.DSSClass;
 import com.ncond.dss.common.SolutionObj;
-import com.ncond.dss.common.impl.DSSGlobals;
-import com.ncond.dss.common.impl.Utilities;
+import com.ncond.dss.common.impl.DSS;
+import com.ncond.dss.common.impl.Util;
 import com.ncond.dss.delivery.Transformer;
 import com.ncond.dss.delivery.TransformerObj;
 import com.ncond.dss.delivery.Winding;
@@ -67,12 +67,12 @@ public class TransformerObjImpl extends PDElementImpl implements TransformerObj 
 		setName(transfName.toLowerCase());
 		objType = parClass.getDSSClassType(); //DSSObjType + XFMR; // override PDElement (kept in both actually)
 
-		setNPhases(3);  // directly set conds and phases
-		nConds = nPhases + 1;
+		setNumPhases(3);  // directly set conds and phases
+		ncond = nphase + 1;
 		setNumWindings(2);  // must do this after setting number of phases
 		activeWinding = 0;
 
-		setNTerms(numWindings);  // force allocation of terminals and conductors
+		setNumTerms(numWindings);  // force allocation of terminals and conductors
 
 		XHL = 0.07;
 		XHT = 0.35;
@@ -96,7 +96,7 @@ public class TransformerObjImpl extends PDElementImpl implements TransformerObj 
 		ppmFloatFactor   = 0.000001;
 		/* Compute antifloat added for each winding */
 		for (int i = 0; i < numWindings; i++)
-			winding[i].computeAntiFloatAdder(ppmFloatFactor, VABase / nPhases);
+			winding[i].computeAntiFloatAdder(ppmFloatFactor, VABase / nphase);
 
 		/* Default the no load properties to zero */
 		pctNoLoadLoss = 0.0;
@@ -108,7 +108,7 @@ public class TransformerObjImpl extends PDElementImpl implements TransformerObj 
 
 		Y_Terminal_FreqMult = 0.0;
 
-		YOrder = nTerms * nConds;
+		YOrder = nterm * ncond;
 		initPropertyValues(0);
 		recalcElementData();
 	}
@@ -125,18 +125,18 @@ public class TransformerObjImpl extends PDElementImpl implements TransformerObj 
 			numWindings = n;
 			maxWindings = n;
 			newWdgSize = (numWindings - 1) * numWindings / 2;
-			setNConds(nPhases + 1);
-			setNTerms(numWindings);
+			setNumConds(nphase + 1);
+			setNumTerms(numWindings);
 
-			winding = Utilities.resizeArray(winding, maxWindings);  // reallocate collector array
+			winding = Util.resizeArray(winding, maxWindings);  // reallocate collector array
 			for (i = 0; i < maxWindings; i++)
 				winding[i] = new WindingImpl();
 
 			// array of short circuit measurements between pairs of windings
-			XSC = Utilities.resizeArray(XSC, newWdgSize);
+			XSC = Util.resizeArray(XSC, newWdgSize);
 			for (i = oldWdgSize; i < newWdgSize; i++)
 				XSC[i] = 0.30;
-			termRef = Utilities.resizeArray(termRef, 2 * numWindings * nPhases);
+			termRef = Util.resizeArray(termRef, 2 * numWindings * nphase);
 
 			/* Reallocate impedance matrices */
 			ZB         = new CMatrixImpl(numWindings - 1);
@@ -145,7 +145,7 @@ public class TransformerObjImpl extends PDElementImpl implements TransformerObj 
 			Y_Term     = new CMatrixImpl(2 * numWindings);
 			Y_Term_NL  = new CMatrixImpl(2 * numWindings);
 		} else {
-			DSSGlobals.doSimpleMsg("Invalid number of windings: (" + String.valueOf(n) + ") for transformer " + getName(), 111);
+			DSS.doSimpleMsg("Invalid number of windings: (" + String.valueOf(n) + ") for transformer " + getName(), 111);
 		}
 	}
 
@@ -215,12 +215,12 @@ public class TransformerObjImpl extends PDElementImpl implements TransformerObj 
 			w = winding[i];  // get the actual turns voltage base for each winding
 			switch (w.getConnection()) {
 			case 0:
-				switch (nPhases) {  // wye
+				switch (nphase) {  // wye
 				case 2:
-					w.setVBase(w.getKVLL() * DSSGlobals.InvSQRT3x1000);  // assume 3-phase for 2-phase designation
+					w.setVBase(w.getKVLL() * DSS.InvSQRT3x1000);  // assume 3-phase for 2-phase designation
 					break;
 				case 3:
-					w.setVBase(w.getKVLL() * DSSGlobals.InvSQRT3x1000);
+					w.setVBase(w.getKVLL() * DSS.InvSQRT3x1000);
 					break;
 				default:
 					w.setVBase(w.getKVLL() * 1000.0);
@@ -237,7 +237,7 @@ public class TransformerObjImpl extends PDElementImpl implements TransformerObj 
 		VABase = winding[0].getKVA() * 1000.0;
 
 		for (i = 0; i < numWindings; i++)
-			winding[i].computeAntiFloatAdder(ppmFloatFactor, VABase / nPhases);
+			winding[i].computeAntiFloatAdder(ppmFloatFactor, VABase / nphase);
 
 		/* Normal and emergency terminal current rating for UE check */
 		VFactor = 1.0;  // ensure initialization
@@ -246,26 +246,26 @@ public class TransformerObjImpl extends PDElementImpl implements TransformerObj 
 			VFactor = winding[0].getVBase() * 0.001;  // wye
 			break;
 		case 1:
-			switch (nPhases) {
+			switch (nphase) {
 			case 1:
 				VFactor = winding[0].getVBase() * 0.001;
 				break;
 			case 2:
-				VFactor = winding[0].getVBase() * 0.001 / DSSGlobals.SQRT3;
+				VFactor = winding[0].getVBase() * 0.001 / DSS.SQRT3;
 				break;
 			case 3:
-				VFactor = winding[0].getVBase() * 0.001 / DSSGlobals.SQRT3;
+				VFactor = winding[0].getVBase() * 0.001 / DSS.SQRT3;
 				break;
 			default:
-				VFactor = winding[0].getVBase() * 0.001 * 0.5 / Math.sin(Math.PI / nPhases);
+				VFactor = winding[0].getVBase() * 0.001 * 0.5 / Math.sin(Math.PI / nphase);
 				break;
 			}
 			break;
 		}
 
 		/* Divide per phase kVA by voltage to neutral */
-		setNormAmps(normMaxHKVA  / nPhases / VFactor);
-		setEmergAmps(emergMaxHKVA / nPhases / VFactor);
+		setNormAmps(normMaxHKVA  / nphase / VFactor);
+		setEmergAmps(emergMaxHKVA / nphase / VFactor);
 
 		calcY_Terminal(1.0);  // calc Y_Terminal at base frequency
 	}
@@ -310,7 +310,7 @@ public class TransformerObjImpl extends PDElementImpl implements TransformerObj 
 				break;
 			default:
 				f.printf(" %s=%s", parentClass.getPropertyName()[ parentClass.getRevPropertyIdxMap()[iProp] ],
-						Utilities.checkForBlanks( getPropertyValue(iProp) ));
+						Util.checkForBlanks( getPropertyValue(iProp) ));
 				break;
 			}
 			iProp = getNextPropertySet(iProp);
@@ -327,29 +327,29 @@ public class TransformerObjImpl extends PDElementImpl implements TransformerObj 
 
 		k = 0;
 
-		switch (nPhases) {
+		switch (nphase) {
 		case 1:
 			for (j = 0; j < numWindings; j++) {
-				termRef[k] = j * nConds + 1;
+				termRef[k] = j * ncond + 1;
 				k += 1;
-				termRef[k] = j * nConds;
+				termRef[k] = j * ncond;
 				k += 1;
 			}
 			break;
 		default:
-			for (i = 0; i < nPhases; i++) {
+			for (i = 0; i < nphase; i++) {
 				for (j = 0; j < numWindings; j++) {
 					switch (winding[i].getConnection()) {
 					case 0:  // Wye
-						termRef[k] = j * nConds + i;
+						termRef[k] = j * ncond + i;
 						k += 1;
-						termRef[k] = j * nConds;
+						termRef[k] = j * ncond;
 						break;
 					/* **** WILL THIS WORK for 2-PHASE OPEN DELTA ???? Need to check this sometime */
 					case 1:  // Delta
-						termRef[k] = j * nConds + i;
+						termRef[k] = j * ncond + i;
 						k += 1;
-						termRef[k] = j * nConds + rotatePhases(i);  // connect to next phase in sequence
+						termRef[k] = j * ncond + rotatePhases(i);  // connect to next phase in sequence
 						break;
 					}
 					k += 1;
@@ -376,7 +376,7 @@ public class TransformerObjImpl extends PDElementImpl implements TransformerObj 
 		}
 
 		// Setfrequency multipliers for this calculation
-		YPrimFreq = DSSGlobals.activeCircuit.getSolution().getFrequency();
+		YPrimFreq = DSS.activeCircuit.getSolution().getFrequency();
 		freqMultiplier = YPrimFreq / baseFrequency;
 		// Check for rebuilding Y_Terminal; only rebuild if freq is different than last time
 		if (freqMultiplier != Y_Terminal_FreqMult)
@@ -407,7 +407,7 @@ public class TransformerObjImpl extends PDElementImpl implements TransformerObj 
 		/* Basic property dump */
 
 		f.println("~ " + "numWindings=" + numWindings);
-		f.println("~ " + "phases=" + nPhases);
+		f.println("~ " + "phases=" + nphase);
 
 		for (i = 0; i < numWindings; i++) {
 			Winding W = winding[i];
@@ -497,7 +497,7 @@ public class TransformerObjImpl extends PDElementImpl implements TransformerObj 
 			}
 			f.println();
 			f.print("TermRef= ");
-			for (i = 0; i < 2 * numWindings * nPhases; i++)
+			for (i = 0; i < 2 * numWindings * nphase; i++)
 				f.print(termRef[i] + " ");
 			f.println();
 		}
@@ -626,20 +626,20 @@ public class TransformerObjImpl extends PDElementImpl implements TransformerObj 
 		try {
 			/* Return zero if winding number improperly specified */
 			if (iWind < 0 || iWind >= numWindings) {
-				for (i = 0; i < nConds; i++)
+				for (i = 0; i < ncond; i++)
 					VBuffer[i] = Complex.ZERO;
 				return;
 			}
 
 			/* Load up VTemp - already allocated for all cktelements */
-			sol = DSSGlobals.activeCircuit.getSolution();
+			sol = DSS.activeCircuit.getSolution();
 
 			for (i = 0; i < YOrder; i++)
 				VTerminal[i] = sol.getNodeV(nodeRef[i]);
 
-			k = iWind * nConds;  // offset for winding
-			neutTerm = nPhases + k + 1;
-			for (i = 0; i < nPhases; i++) {
+			k = iWind * ncond;  // offset for winding
+			neutTerm = nphase + k + 1;
+			for (i = 0; i < nphase; i++) {
 				switch (winding[iWind].getConnection()) {
 				case 0:  // wye
 					VBuffer[i] = VTerminal[i + k].subtract( VTerminal[neutTerm] );
@@ -652,8 +652,8 @@ public class TransformerObjImpl extends PDElementImpl implements TransformerObj 
 			}
 
 		} catch (Exception e) {
-			DSSGlobals.doSimpleMsg("Error filling voltage buffer in getWindingVoltages for circuit element: Transformer."+getName()+DSSGlobals.CRLF+
-					"Probable Cause: Invalid definition of element."+DSSGlobals.CRLF+
+			DSS.doSimpleMsg("Error filling voltage buffer in getWindingVoltages for circuit element: Transformer."+getName()+DSS.CRLF+
+					"Probable Cause: Invalid definition of element."+DSS.CRLF+
 					"System error message: "+e.getMessage(), 114);
 		}
 	}
@@ -667,31 +667,28 @@ public class TransformerObjImpl extends PDElementImpl implements TransformerObj 
 	}
 
 	@Override
-	public void getLosses(double[] totalLosses, double[] loadLosses, double[] noLoadLosses) {
-		Complex cTotalLosses, cLoadLosses, cNoLoadLosses;
+	public void getLosses(Complex[] totalLosses, Complex[] loadLosses, Complex[] noLoadLosses) {
+		Complex tot, load, noload;
 		Complex[] cTempIterminal;
 
 		/* Calculates losses in watts, vars */
-		cTotalLosses = getLosses();  // side effect: computes ITerminal
+		tot = getLosses();  // side effect: computes ITerminal
 
 		/* Compute no load losses in YPrim_Shunt */
 		cTempIterminal = new Complex[YOrder];
 		computeVTerminal();
 		YPrimShunt.vMult(cTempIterminal, VTerminal);
 		/* No load losses are sum of all powers coming into YPrim_Shunt from each terminal */
-		cNoLoadLosses = Complex.ZERO;
+		noload = Complex.ZERO;
 		for (int i = 0; i < YOrder; i++)
-			cNoLoadLosses = cNoLoadLosses.add( VTerminal[i].multiply(cTempIterminal[i].conjugate()) );
+			noload = noload.add( VTerminal[i].multiply(cTempIterminal[i].conjugate()) );
 
-		cLoadLosses = cTotalLosses.subtract(cNoLoadLosses);
+		load = tot.subtract(noload);
 
 		/* Handle pass by reference */
-		totalLosses[0] = cTotalLosses.getReal();
-		totalLosses[1] = cTotalLosses.getImaginary();
-		loadLosses[0] = cLoadLosses.getReal();
-		loadLosses[1] = cLoadLosses.getImaginary();
-		noLoadLosses[0] = cNoLoadLosses.getReal();
-		noLoadLosses[1] = cNoLoadLosses.getImaginary();
+		totalLosses[0] = tot;
+		loadLosses[0] = load;
+		noLoadLosses[0] = noload;
 
 		cTempIterminal = null;
 	}
@@ -712,7 +709,7 @@ public class TransformerObjImpl extends PDElementImpl implements TransformerObj 
 
 		switch (index) {
 		case 0:
-			result = String.valueOf(nPhases);
+			result = String.valueOf(nphase);
 			break;
 		case 1:
 			result = String.valueOf(numWindings);
@@ -902,12 +899,12 @@ public class TransformerObjImpl extends PDElementImpl implements TransformerObj 
 		int result = iPhs + deltaDirection;
 
 		// make sure result is within limits
-		if (nPhases > 2) {
+		if (nphase > 2) {
 			// assumes 2 phase delta is open delta
-			if (result > nPhases)
+			if (result > nphase)
 				result = 0;
 			if (result < 1)
-				result = nPhases - 1;
+				result = nphase - 1;
 		} else if (result < 1) {
 			result = 2;  // for 2-phase delta, next phase will be 3rd phase
 		}
@@ -929,13 +926,13 @@ public class TransformerObjImpl extends PDElementImpl implements TransformerObj 
 		Winding w;
 
 		/* First, determine if we can convert this one. */
-		if (nPhases == 1 || nPhases == 2) {  // disable if any terminal not connected to phase one
+		if (nphase == 1 || nphase == 2) {  // disable if any terminal not connected to phase one
 			for (iW = 0; iW < numWindings; iW++) {
 				onPhase1 = false;
 				/* Load up auxiliary parser */
-				DSSGlobals.auxParser.setCmdString(getBus(iW));
-				DSSGlobals.auxParser.getNextParam();
-				s = DSSGlobals.auxParser.parseAsBusName(n, nodes);
+				DSS.auxParser.setCmdString(getBus(iW));
+				DSS.auxParser.getNextParam();
+				s = DSS.auxParser.parseAsBusName(n, nodes);
 				if (n[0] == 0)
 					onPhase1 = true;
 				for (i = 0; i < n[0]; i++)
@@ -960,8 +957,8 @@ public class TransformerObjImpl extends PDElementImpl implements TransformerObj 
 
 		for (i = 0; i < numWindings; i++) {
 			w = winding[i];
-			if (nPhases > 1 || w.getConnection() != 0) {
-				s = s + String.format(" %-.5g", w.getKVLL() / DSSGlobals.SQRT3);
+			if (nphase > 1 || w.getConnection() != 0) {
+				s = s + String.format(" %-.5g", w.getKVLL() / DSS.SQRT3);
 			} else {
 				s = s + String.format(" %-.5g", w.getKVLL());
 			}
@@ -970,11 +967,11 @@ public class TransformerObjImpl extends PDElementImpl implements TransformerObj 
 
 		for (i = 0; i < numWindings; i++) {
 			w = winding[i];
-			s = s + String.format(" %-.5g", w.getKVA() / nPhases);
+			s = s + String.format(" %-.5g", w.getKVA() / nphase);
 		}
 		s = s + ")";
 
-		s = s + " NormHkVA="+String.format(" %-.5g %-.5g", normMaxHKVA / nPhases, emergMaxHKVA / nPhases);
+		s = s + " NormHkVA="+String.format(" %-.5g %-.5g", normMaxHKVA / nphase, emergMaxHKVA / nphase);
 
 		Parser.getInstance().setCmdString(s);
 		edit();
@@ -1001,11 +998,11 @@ public class TransformerObjImpl extends PDElementImpl implements TransformerObj 
 					// 1 microohm resistor
 					value = ComplexUtil.invert(new Complex(w.getRNeut(), w.getXNeut() * freqMultiplier));
 				}
-				j = i * nConds;
+				j = i * ncond;
 				YPrimSeries.add(j, j, value);
 			} else {
 				// bump up neutral admittance a bit in case neutral is floating
-				j = i * nConds;
+				j = i * ncond;
 				if (ppmFloatFactor != 0.0) {
 					YPrimSeries.set(j, j, YPrimSeries.get(j, j).add( new Complex(0.0, w.getY_PPM()) ));
 					/* YPrim_Series.setElement(j, j, CmulReal_im(GetElement(j, j), ppm_FloatFactorPlusOne)); */
@@ -1024,7 +1021,7 @@ public class TransformerObjImpl extends PDElementImpl implements TransformerObj 
 			for (int j = 0; j < i; j++) {
 				value = YTerminal.get(i, j);
 				// this value goes in Yprim nPhases times
-				for (int k = 0; k < nPhases - 1; k++)
+				for (int k = 0; k < nphase - 1; k++)
 					YPrimComponent.addSym(termRef[i + k * nw2], termRef[j + k * nw2], value);
 			}
 		}
@@ -1042,7 +1039,7 @@ public class TransformerObjImpl extends PDElementImpl implements TransformerObj 
 
 		// construct ZBMatrix
 		ZB.clear();
-		ZBase = 1.0 / (VABase / nPhases);  // base ohms on 1.0 volt basis
+		ZBase = 1.0 / (VABase / nphase);  // base ohms on 1.0 volt basis
 		for (i = 0; i < numWindings - 1; i++)
 			/* convert pu to ohms on one volt base as we go... */
 			ZB.set(i, i, new Complex((winding[0].getRpu() + winding[i + 1].getRNeut()), freqMult * XSC[i]).multiply(ZBase));
@@ -1069,11 +1066,11 @@ public class TransformerObjImpl extends PDElementImpl implements TransformerObj 
 		ZB.invert();  // mhos on one volt base
 
 		if (ZB.getErrorCode() > 0) {
-			DSSGlobals.doErrorMsg("TransformerObj.calcYPrim", "Matrix inversion error for transformer \"" + getName() + "\"",
+			DSS.doErrorMsg("TransformerObj.calcYPrim", "Matrix inversion error for transformer \"" + getName() + "\"",
 					"Invalid impedance specified. Replaced with tiny conductance to ground.", 117);
 			ZB.clear();
 			for (i = 0; i < ZB.order(); i++)
-				ZB.set(i, i, new Complex(DSSGlobals.EPSILON, 0.0));
+				ZB.set(i, i, new Complex(DSS.EPSILON, 0.0));
 		}
 
 /* ******************************DEBUG****************************************************** */
@@ -1223,15 +1220,15 @@ public class TransformerObjImpl extends PDElementImpl implements TransformerObj 
 
 
 		if (TransformerImpl.XfmrCodeClass == null)
-			TransformerImpl.XfmrCodeClass = (com.ncond.dss.general.XfmrCode) DSSGlobals.DSSClassList.get(DSSGlobals.classNames.find("xfmrcode"));
+			TransformerImpl.XfmrCodeClass = (com.ncond.dss.general.XfmrCode) DSS.DSSClassList.get(DSS.classNames.find("xfmrcode"));
 
 		if (TransformerImpl.XfmrCodeClass.setActive(code)) {
 			obj = (XfmrCodeObj) TransformerImpl.XfmrCodeClass.getActiveObj();
 			XfmrCode = code.toLowerCase();
 			// set sizes and copy parameters
-			setNPhases(obj.getNPhases());
+			setNumPhases(obj.getNPhases());
 			setNumWindings(obj.getNumWindings());
-			setNConds(nPhases + 1);  // forces reallocation of terminals and conductors
+			setNumConds(nphase + 1);  // forces reallocation of terminals and conductors
 			for (i = 0; i < numWindings; i++) {
 				Winding W = winding[i];
 				W.setConnection(obj.getWinding()[i].getConnection());
@@ -1263,14 +1260,24 @@ public class TransformerObjImpl extends PDElementImpl implements TransformerObj 
 			pctNoLoadLoss    = obj.getPctNoLoadLoss();
 			setNormMaxHKVA(obj.getNormMaxHKVA());
 			setEmergMaxHKVA(obj.getEmergMaxHKVA());
-			YOrder = nConds * nTerms;
+			YOrder = ncond * nterm;
 			setYPrimInvalid(true);
 			Y_Terminal_FreqMult = 0.0;
 
 			recalcElementData();
 		} else {
-			DSSGlobals.doSimpleMsg("Xfmr Code:" + code + " not found.", 180);
+			DSS.doSimpleMsg("Xfmr Code:" + code + " not found.", 180);
 		}
+	}
+
+	@Override
+	public void getInjCurrents(Complex[] curr) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public int injCurrents() {
+		throw new UnsupportedOperationException();
 	}
 
 	public double getPresentTap(int i) {

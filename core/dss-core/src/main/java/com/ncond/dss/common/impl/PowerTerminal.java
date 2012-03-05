@@ -25,6 +25,10 @@ public class PowerTerminal implements Terminal {
 		activeConductor = 0;
 	}
 
+	public Conductor getConductor(int idx) {
+		return conductors[idx];
+	}
+
 	public int getTermNodeRef(int idx) {
 		return termNodeRef[idx];
 	}

@@ -1,9 +1,9 @@
 package com.ncond.dss.executive.impl;
 
 import com.ncond.dss.common.CktElement;
-import com.ncond.dss.common.impl.DSSGlobals;
+import com.ncond.dss.common.impl.DSS;
 import com.ncond.dss.common.impl.ShowResults;
-import com.ncond.dss.common.impl.Utilities;
+import com.ncond.dss.common.impl.Util;
 import com.ncond.dss.meter.MonitorObj;
 import com.ncond.dss.parser.impl.Parser;
 import com.ncond.dss.shared.CommandList;
@@ -12,7 +12,7 @@ import com.ncond.dss.shared.impl.LineUnits;
 
 public class ShowOptions {
 
-	private static final String CRLF = DSSGlobals.CRLF;
+	private static final String CRLF = DSS.CRLF;
 
 	private static final int NumShowOptions = 32;
 
@@ -197,25 +197,25 @@ public class ShowOptions {
 		case 28:
 		case 29:
 		case 30:
-			if (DSSGlobals.activeCircuit == null) {
-				DSSGlobals.doSimpleMsg("No circuit created.", 24701);
+			if (DSS.activeCircuit == null) {
+				DSS.doSimpleMsg("No circuit created.", 24701);
 				return result;
 			}
-			if ((DSSGlobals.activeCircuit.getSolution() == null) || (DSSGlobals.activeCircuit.getSolution().getNodeV() == null)) {
-				DSSGlobals.doSimpleMsg("The circuit must be solved before you can do this.", 24702);
+			if ((DSS.activeCircuit.getSolution() == null) || (DSS.activeCircuit.getSolution().getNodeV() == null)) {
+				DSS.doSimpleMsg("The circuit must be solved before you can do this.", 24702);
 				return result;
 			}
 		}
 
-		DSSGlobals.inShowResults = true;
+		DSS.inShowResults = true;
 
 		switch (paramPointer) {
 		case 0:  // autoadded
-			Utilities.fireOffEditor(DSSGlobals.DSSDataDirectory + DSSGlobals.circuitName_ + "AutoAddedGenerators.txt");
-			Utilities.fireOffEditor(DSSGlobals.DSSDataDirectory + DSSGlobals.circuitName_ + "AutoAddedCapacitors.txt");
+			Util.fireOffEditor(DSS.DSSDataDirectory + DSS.circuitName_ + "AutoAddedGenerators.txt");
+			Util.fireOffEditor(DSS.DSSDataDirectory + DSS.circuitName_ + "AutoAddedCapacitors.txt");
 			break;
 		case 1:
-			ShowResults.showBuses(DSSGlobals.DSSDataDirectory + DSSGlobals.circuitName_ + "Buses.txt");
+			ShowResults.showBuses(DSS.DSSDataDirectory + DSS.circuitName_ + "Buses.txt");
 			break;
 		case 2:
 			showOptionCode = 0;
@@ -255,45 +255,45 @@ public class ShowOptions {
 					fileName = "Curr_Elem";
 					break;
 				}
-				ShowResults.showCurrents(DSSGlobals.DSSDataDirectory + DSSGlobals.circuitName_ + fileName + ".txt", showResid, showOptionCode);
+				ShowResults.showCurrents(DSS.DSSDataDirectory + DSS.circuitName_ + fileName + ".txt", showResid, showOptionCode);
 			}
 			break;
 		case 3:
-			DSSGlobals.activeCircuit.getSolution().writeConvergenceReport(DSSGlobals.DSSDataDirectory + DSSGlobals.circuitName_ + "Convergence.txt");
+			DSS.activeCircuit.getSolution().writeConvergenceReport(DSS.DSSDataDirectory + DSS.circuitName_ + "Convergence.txt");
 			break;
 		case 4:
 			parser.getNextParam();  // look for another param
 			param = parser.makeString().toLowerCase();
-			ShowResults.showElements(DSSGlobals.DSSDataDirectory + DSSGlobals.circuitName_ + "Elements.txt", param);
+			ShowResults.showElements(DSS.DSSDataDirectory + DSS.circuitName_ + "Elements.txt", param);
 			break;
 		case 5:
-			ShowResults.showFaultStudy(DSSGlobals.DSSDataDirectory + DSSGlobals.circuitName_ + "FaultStudy.txt");
+			ShowResults.showFaultStudy(DSS.DSSDataDirectory + DSS.circuitName_ + "FaultStudy.txt");
 			break;
 		case 6:
-			ShowResults.showIsolated(DSSGlobals.DSSDataDirectory + DSSGlobals.circuitName_ + "Isolated.txt");
+			ShowResults.showIsolated(DSS.DSSDataDirectory + DSS.circuitName_ + "Isolated.txt");
 			break;
 		case 7:
-			ShowResults.showGenMeters(DSSGlobals.DSSDataDirectory + DSSGlobals.circuitName_ + "GenMeterOut.txt");
+			ShowResults.showGenMeters(DSS.DSSDataDirectory + DSS.circuitName_ + "GenMeterOut.txt");
 			break;
 		case 8:
-			ShowResults.showMeters(DSSGlobals.DSSDataDirectory + DSSGlobals.circuitName_ + "EMout.txt");
+			ShowResults.showMeters(DSS.DSSDataDirectory + DSS.circuitName_ + "EMout.txt");
 			break;
 		case 9:  // show monitor
 			parser.getNextParam();
 			param = parser.makeString();
 			if (param.length() > 0) {
-				pMon = (MonitorObj) DSSGlobals.monitorClass.find(param);
+				pMon = (MonitorObj) DSS.monitorClass.find(param);
 				if (pMon != null) {
 					pMon.translateToCSV(true);
 				} else {
-					DSSGlobals.doSimpleMsg("Monitor \""+param+"\" not found."+ DSSGlobals.CRLF + parser.getCmdString(), 248);
+					DSS.doSimpleMsg("Monitor \""+param+"\" not found."+ DSS.CRLF + parser.getCmdString(), 248);
 				}
 			} else {
-				DSSGlobals.doSimpleMsg("Monitor name not specified." + DSSGlobals.CRLF + parser.getCmdString(), 249);
+				DSS.doSimpleMsg("Monitor name not specified." + DSS.CRLF + parser.getCmdString(), 249);
 			}
 			break;
 		case 10:
-			DSSGlobals.forms.showControlPanel();
+			DSS.forms.showControlPanel();
 			break;
 		case 11:
 			showOptionCode = 0;
@@ -327,7 +327,7 @@ public class ShowOptions {
 				fileName = fileName + "_kVA";
 			}
 
-			ShowResults.showPowers(DSSGlobals.DSSDataDirectory + DSSGlobals.circuitName_ + fileName + ".txt", MVAOpt, showOptionCode);
+			ShowResults.showPowers(DSS.DSSDataDirectory + DSS.circuitName_ + fileName + ".txt", MVAOpt, showOptionCode);
 			break;
 		case 12:
 			LLOpt = false;  // line-line voltage option
@@ -361,40 +361,40 @@ public class ShowOptions {
 					break;
 				}
 			}
-			ShowResults.showVoltages(DSSGlobals.DSSDataDirectory + DSSGlobals.circuitName_ + fileName + ".txt", LLOpt, showOptionCode);
+			ShowResults.showVoltages(DSS.DSSDataDirectory + DSS.circuitName_ + fileName + ".txt", LLOpt, showOptionCode);
 			break;
 		case 13:
-			ShowResults.showMeterZone(DSSGlobals.DSSDataDirectory + DSSGlobals.circuitName_ + "ZoneOut.txt");
+			ShowResults.showMeterZone(DSS.DSSDataDirectory + DSS.circuitName_ + "ZoneOut.txt");
 			break;
 		case 14:
-			ShowResults.showRegulatorTaps(DSSGlobals.DSSDataDirectory + DSSGlobals.circuitName_ + "RegTaps.txt");
+			ShowResults.showRegulatorTaps(DSS.DSSDataDirectory + DSS.circuitName_ + "RegTaps.txt");
 			break;
 		case 15:
-			ShowResults.showOverloads(DSSGlobals.DSSDataDirectory + DSSGlobals.circuitName_ + "Overload.txt");
+			ShowResults.showOverloads(DSS.DSSDataDirectory + DSS.circuitName_ + "Overload.txt");
 			break;
 		case 16:
 			parser.getNextParam();
 			param = parser.makeString();
 			if (param.length() > 0) {
-				ShowResults.showUnserved(DSSGlobals.DSSDataDirectory + DSSGlobals.circuitName_ + "Unserved.txt", true);
+				ShowResults.showUnserved(DSS.DSSDataDirectory + DSS.circuitName_ + "Unserved.txt", true);
 			} else {
-				ShowResults.showUnserved(DSSGlobals.DSSDataDirectory + DSSGlobals.circuitName_ + "Unserved.txt", false);
+				ShowResults.showUnserved(DSS.DSSDataDirectory + DSS.circuitName_ + "Unserved.txt", false);
 			}
 			break;
 		case 17:
-			DSSGlobals.forms.showMessageForm(DSSGlobals.eventStrings);
+			DSS.forms.showMessageForm(DSS.eventStrings);
 			break;
 		case 18:
-			ShowResults.showVariables(DSSGlobals.DSSDataDirectory + DSSGlobals.circuitName_ + "Variables.txt");
+			ShowResults.showVariables(DSS.DSSDataDirectory + DSS.circuitName_ + "Variables.txt");
 			break;
 		case 19:
-			ShowResults.showRatings(DSSGlobals.DSSDataDirectory + DSSGlobals.circuitName_ + "RatingsOut.txt");
+			ShowResults.showRatings(DSS.DSSDataDirectory + DSS.circuitName_ + "RatingsOut.txt");
 			break;
 		case 20:
-			ShowResults.showLoops(DSSGlobals.DSSDataDirectory + DSSGlobals.circuitName_ + "Loops.txt");
+			ShowResults.showLoops(DSS.DSSDataDirectory + DSS.circuitName_ + "Loops.txt");
 			break;
 		case 21:
-			ShowResults.showLosses(DSSGlobals.DSSDataDirectory + DSSGlobals.circuitName_ + "Losses.txt");
+			ShowResults.showLosses(DSS.DSSDataDirectory + DSS.circuitName_ + "Losses.txt");
 			break;
 		case 22:  // show bus power report
 			showOptionCode = 0;
@@ -434,10 +434,10 @@ public class ShowOptions {
 				fileName = fileName + "_kVA";
 			}
 
-			ShowResults.showBusPowers(DSSGlobals.DSSDataDirectory + DSSGlobals.circuitName_ + fileName + ".txt", busName, MVAOpt, showOptionCode);
+			ShowResults.showBusPowers(DSS.DSSDataDirectory + DSS.circuitName_ + fileName + ".txt", busName, MVAOpt, showOptionCode);
 			break;
 		case 23:  // showLineConstants  show lineConstants 60 mi
-			freq = DSSGlobals.defaultBaseFreq;  // default
+			freq = DSS.defaultBaseFreq;  // default
 			units = LineUnits.UNITS_KFT; // 'kft'; // default
 			rhoLine = 100.0;
 			parser.getNextParam();
@@ -449,39 +449,39 @@ public class ShowOptions {
 			parser.getNextParam();
 			if (parser.makeString().length() > 0)
 				rhoLine = parser.makeDouble();
-			ShowResults.showLineConstants(DSSGlobals.DSSDataDirectory + DSSGlobals.circuitName_ + "LineConstants.txt", freq, units, rhoLine);
+			ShowResults.showLineConstants(DSS.DSSDataDirectory + DSS.circuitName_ + "LineConstants.txt", freq, units, rhoLine);
 			break;
 		case 24:
-			if (DSSGlobals.activeCircuit != null) {  // Yprim
-				CktElement cktElem = DSSGlobals.activeCircuit.getActiveCktElement();
-				ShowResults.showYPrim(DSSGlobals.DSSDataDirectory + cktElem.getParentClass().getName() + '_' + cktElem.getName() + "_Yprim.txt");
+			if (DSS.activeCircuit != null) {  // Yprim
+				CktElement cktElem = DSS.activeCircuit.getActiveCktElement();
+				ShowResults.showYPrim(DSS.DSSDataDirectory + cktElem.getParentClass().getName() + '_' + cktElem.getName() + "_Yprim.txt");
 			}
 			break;
 		case 25:  // Y
-			ShowResults.showY(DSSGlobals.DSSDataDirectory + DSSGlobals.circuitName_ + "SystemY.txt");
+			ShowResults.showY(DSS.DSSDataDirectory + DSS.circuitName_ + "SystemY.txt");
 			break;
 		case 26:
-			if (DSSGlobals.activeCircuit != null)
-				DSSGlobals.activeCircuit.getControlQueue().showQueue(DSSGlobals.DSSDataDirectory + DSSGlobals.circuitName_  + "ControlQueue.csv");
+			if (DSS.activeCircuit != null)
+				DSS.activeCircuit.getControlQueue().showQueue(DSS.DSSDataDirectory + DSS.circuitName_  + "ControlQueue.csv");
 			break;
 		case 27:
-			ShowResults.showTopology(DSSGlobals.DSSDataDirectory + DSSGlobals.circuitName_);
+			ShowResults.showTopology(DSS.DSSDataDirectory + DSS.circuitName_);
 			break;
 		case 28:
-			ShowResults.showNodeCurrentSum(DSSGlobals.DSSDataDirectory + DSSGlobals.circuitName_ + "NodeMismatch.txt");
+			ShowResults.showNodeCurrentSum(DSS.DSSDataDirectory + DSS.circuitName_ + "NodeMismatch.txt");
 			break;
 		case 29:
-			ShowResults.showkVBaseMismatch(DSSGlobals.DSSDataDirectory + DSSGlobals.circuitName_ + "kVBaseMismatch.txt");
+			ShowResults.showkVBaseMismatch(DSS.DSSDataDirectory + DSS.circuitName_ + "kVBaseMismatch.txt");
 			break;
 		case 30:
-			ShowResults.showDeltaV(DSSGlobals.DSSDataDirectory + DSSGlobals.circuitName_ + "DeltaV.txt");
+			ShowResults.showDeltaV(DSS.DSSDataDirectory + DSS.circuitName_ + "DeltaV.txt");
 			break;
 		case 31:
-			Utilities.fireOffEditor(DSSGlobals.queryLogFileName);
+			Util.fireOffEditor(DSS.queryLogFileName);
 			break;
 		}
 
-		DSSGlobals.inShowResults = false;
+		DSS.inShowResults = false;
 		return result;
 	}
 

@@ -11,7 +11,7 @@ import java.io.PrintStream;
 import java.io.PrintWriter;
 
 import com.ncond.dss.common.DSSClass;
-import com.ncond.dss.common.impl.Utilities;
+import com.ncond.dss.common.impl.Util;
 import com.ncond.dss.general.DSSObject;
 
 public class DSSObjectImpl extends NamedObjectImpl implements DSSObject {
@@ -91,7 +91,7 @@ public class DSSObjectImpl extends NamedObjectImpl implements DSSObject {
 		while (iProp >= 0) {
 			DSSClass pc = parentClass;
 			f.print(" " + pc.getPropertyName()[ pc.getRevPropertyIdxMap()[iProp] ]);
-			f.print("=" + Utilities.checkForBlanks( propertyValue[iProp] ));
+			f.print("=" + Util.checkForBlanks( propertyValue[iProp] ));
 			iProp = getNextPropertySet(iProp);
 		}
 	}

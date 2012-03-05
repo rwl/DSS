@@ -1,8 +1,8 @@
 package com.ncond.dss.delivery.impl;
 
 import com.ncond.dss.common.impl.DSSClassDefs;
-import com.ncond.dss.common.impl.DSSGlobals;
-import com.ncond.dss.common.impl.Utilities;
+import com.ncond.dss.common.impl.DSS;
+import com.ncond.dss.common.impl.Util;
 import com.ncond.dss.delivery.Capacitor;
 import com.ncond.dss.delivery.CapacitorObj;
 import com.ncond.dss.parser.impl.Parser;
@@ -28,7 +28,7 @@ public class CapacitorImpl extends PDClassImpl implements Capacitor {
 	}
 
 	protected void defineProperties() {
-		final String CRLF = DSSGlobals.CRLF;
+		final String CRLF = DSS.CRLF;
 
 		numProperties = Capacitor.NumPropsThisClass;
 		countProperties();  // get inherited property count
@@ -81,8 +81,8 @@ public class CapacitorImpl extends PDClassImpl implements Capacitor {
 
 	@Override
 	public int newObject(String objName) {
-		DSSGlobals.activeCircuit.setActiveCktElement(new CapacitorObjImpl(this, objName));
-		return addObjectToList(DSSGlobals.activeDSSObject);
+		DSS.activeCircuit.setActiveCktElement(new CapacitorObjImpl(this, objName));
+		return addObjectToList(DSS.activeDSSObject);
 	}
 
 	private void doCmatrix() {
@@ -91,13 +91,13 @@ public class CapacitorImpl extends PDClassImpl implements Capacitor {
 
 		CapacitorObj aco = activeCapacitorObj;
 
-		matBuffer = new double[aco.getNPhases() * aco.getNPhases()];
-		orderFound = Parser.getInstance().parseAsSymMatrix(aco.getNPhases(), matBuffer);
+		matBuffer = new double[aco.getNumPhases() * aco.getNumPhases()];
+		orderFound = Parser.getInstance().parseAsSymMatrix(aco.getNumPhases(), matBuffer);
 
 		if (orderFound > 0) {  // parse was successful
 			/* C */
-			aco.setCMatrix( Utilities.resizeArray(aco.getCMatrix(), aco.getNPhases() * aco.getNPhases()) );
-			for (j = 0; j < aco.getNPhases() * aco.getNPhases(); j++)
+			aco.setCMatrix( Util.resizeArray(aco.getCMatrix(), aco.getNumPhases() * aco.getNumPhases()) );
+			for (j = 0; j < aco.getNumPhases() * aco.getNumPhases(); j++)
 				aco.getCMatrix()[j] = 1.0e-6 * matBuffer[j];
 		}
 
@@ -137,11 +137,11 @@ public class CapacitorImpl extends PDClassImpl implements Capacitor {
 
 		switch (aco.getConnection()) {
 		case 1:
-			aco.setNTerms(1);  // force reallocation of terminals
+			aco.setNumTerms(1);  // force reallocation of terminals
 			break;
 		case 0:
-			if (aco.getNTerms() != 2)
-				aco.setNTerms(2);
+			if (aco.getNumTerms() != 2)
+				aco.setNumTerms(2);
 			break;
 		}
 	}
@@ -166,7 +166,7 @@ public class CapacitorImpl extends PDClassImpl implements Capacitor {
 		} else {
 			s2 = s.substring(0, s.length());  // copy up to dot
 		}
-		for (i = 0; i < aco.getNPhases(); i++)
+		for (i = 0; i < aco.getNumPhases(); i++)
 			s2 = s2 + ".0";   // append series of ".0"'s
 
 		aco.setBus(1, s2);    // default setting for bus2
@@ -180,7 +180,7 @@ public class CapacitorImpl extends PDClassImpl implements Capacitor {
 
 		// continue parsing with contents of parser
 		activeCapacitorObj = (CapacitorObj) elementList.getActive();
-		DSSGlobals.activeCircuit.setActiveCktElement(activeCapacitorObj);  // use property to set this value
+		DSS.activeCircuit.setActiveCktElement(activeCapacitorObj);  // use property to set this value
 
 		CapacitorObj aco = activeCapacitorObj;
 
@@ -199,7 +199,7 @@ public class CapacitorImpl extends PDClassImpl implements Capacitor {
 
 			switch (paramPointer) {
 			case -1:
-				DSSGlobals.doSimpleMsg("Unknown parameter \""+paramName+"\" for object \"Capacitor."+aco.getName()+"\"", 450);
+				DSS.doSimpleMsg("Unknown parameter \""+paramName+"\" for object \"Capacitor."+aco.getName()+"\"", 450);
 				break;
 			case 0:
 				capSetBus1(param);
@@ -211,7 +211,7 @@ public class CapacitorImpl extends PDClassImpl implements Capacitor {
 				//aco.setNumPhases(parser.makeInteger());  // see below
 				break;
 			case 3:
-				Utilities.interpretDblArray(param, aco.getNumSteps(), aco.getKVArRating());
+				Util.interpretDblArray(param, aco.getNumSteps(), aco.getKVArRating());
 				break;
 			case 4:
 				aco.setKVARating(parser.makeDouble());
@@ -223,13 +223,13 @@ public class CapacitorImpl extends PDClassImpl implements Capacitor {
 				doCmatrix();
 				break;
 			case 7:
-				Utilities.interpretDblArray(param, aco.getNumSteps(), aco.getC());
+				Util.interpretDblArray(param, aco.getNumSteps(), aco.getC());
 				break;
 			case 8:
-				Utilities.interpretDblArray(param, aco.getNumSteps(), aco.getR());
+				Util.interpretDblArray(param, aco.getNumSteps(), aco.getR());
 				break;
 			case 9:
-				Utilities.interpretDblArray(param, aco.getNumSteps(), aco.getXL());
+				Util.interpretDblArray(param, aco.getNumSteps(), aco.getXL());
 				break;
 			case 10:
 				aco.processHarmonicSpec(param);
@@ -253,14 +253,14 @@ public class CapacitorImpl extends PDClassImpl implements Capacitor {
 				aco.getPrpSequence()[1] = 0;  // reset this for save function
 				break;
 			case 1:
-				if (!Utilities.stripExtension(aco.getBus(0)).equalsIgnoreCase( Utilities.stripExtension(aco.getBus(1)) ))
+				if (!Util.stripExtension(aco.getBus(0)).equalsIgnoreCase( Util.stripExtension(aco.getBus(1)) ))
 					aco.setShunt(false);
 				break;
 			case 2:
-				if (aco.getNPhases() != parser.makeInteger()) {
-					aco.setNPhases(parser.makeInteger());
-					aco.setNConds(aco.getNPhases());  // force reallocation of terminal info
-					aco.setYOrder(aco.getNTerms() * aco.getNConds());
+				if (aco.getNumPhases() != parser.makeInteger()) {
+					aco.setNumPhases(parser.makeInteger());
+					aco.setNumConds(aco.getNumPhases());  // force reallocation of terminal info
+					aco.setYOrder(aco.getNumTerms() * aco.getNumConds());
 				}
 				break;
 			case 3:
@@ -328,11 +328,11 @@ public class CapacitorImpl extends PDClassImpl implements Capacitor {
 		if (otherCapacitor != null) {
 			CapacitorObj aco = activeCapacitorObj;
 
-			if (aco.getNPhases() != otherCapacitor.getNPhases()) {
-				aco.setNPhases(otherCapacitor.getNPhases());
-				aco.setNConds(aco.getNPhases());  // force reallocation of terminals and conductors
+			if (aco.getNumPhases() != otherCapacitor.getNumPhases()) {
+				aco.setNumPhases(otherCapacitor.getNumPhases());
+				aco.setNumConds(aco.getNumPhases());  // force reallocation of terminals and conductors
 
-				aco.setYOrder(aco.getNConds() * aco.getNTerms());
+				aco.setYOrder(aco.getNumConds() * aco.getNumTerms());
 				aco.setYPrimInvalid(true);
 			}
 
@@ -355,8 +355,8 @@ public class CapacitorImpl extends PDClassImpl implements Capacitor {
 			if (otherCapacitor.getCMatrix() == null) {
 				aco.setCMatrix(new double[0]);
 			} else {
-				aco.setCMatrix((double[]) Utilities.resizeArray(aco.getCMatrix(), aco.getNPhases() * aco.getNPhases()));
-				for (int i = 0; i < aco.getNPhases() * aco.getNPhases(); i++)
+				aco.setCMatrix((double[]) Util.resizeArray(aco.getCMatrix(), aco.getNumPhases() * aco.getNumPhases()));
+				for (int i = 0; i < aco.getNumPhases() * aco.getNumPhases(); i++)
 					aco.getCMatrix()[i] = otherCapacitor.getCMatrix()[i];
 			}
 
@@ -367,7 +367,7 @@ public class CapacitorImpl extends PDClassImpl implements Capacitor {
 				result = 1;
 			}
 		} else {
-			DSSGlobals.doSimpleMsg("Error in Capacitor.makeLike(): \"" + capacitorName + "\" not found.", 451);
+			DSS.doSimpleMsg("Error in Capacitor.makeLike(): \"" + capacitorName + "\" not found.", 451);
 		}
 
 		return result;
@@ -375,7 +375,7 @@ public class CapacitorImpl extends PDClassImpl implements Capacitor {
 
 	@Override
 	public int init(int handle) {
-		DSSGlobals.doSimpleMsg("Need to implement Capacitor.init()", 452);
+		DSS.doSimpleMsg("Need to implement Capacitor.init()", 452);
 		return 0;
 	}
 

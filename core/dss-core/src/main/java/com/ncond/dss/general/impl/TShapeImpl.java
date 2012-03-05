@@ -8,8 +8,8 @@ import java.io.InputStreamReader;
 
 import com.ncond.dss.common.impl.DSSClassDefs;
 import com.ncond.dss.common.impl.DSSClassImpl;
-import com.ncond.dss.common.impl.DSSGlobals;
-import com.ncond.dss.common.impl.Utilities;
+import com.ncond.dss.common.impl.DSS;
+import com.ncond.dss.common.impl.Util;
 import com.ncond.dss.general.TShape;
 import com.ncond.dss.general.TShapeObj;
 import com.ncond.dss.parser.impl.Parser;
@@ -35,7 +35,7 @@ public class TShapeImpl extends DSSClassImpl implements TShape {
 	}
 
 	protected void defineProperties() {
-		final String CRLF = DSSGlobals.CRLF;
+		final String CRLF = DSS.CRLF;
 
 		numProperties = TShape.NumPropsThisClass;
 		countProperties();  // get inherited property count
@@ -101,8 +101,8 @@ public class TShapeImpl extends DSSClassImpl implements TShape {
 
 	@Override
 	public int newObject(String objName) {
-		DSSGlobals.activeDSSObject = new TShapeObjImpl(this, objName);
-		return addObjectToList(DSSGlobals.activeDSSObject);
+		DSS.activeDSSObject = new TShapeObjImpl(this, objName);
+		return addObjectToList(DSS.activeDSSObject);
 	}
 
 	/**
@@ -115,7 +115,7 @@ public class TShapeImpl extends DSSClassImpl implements TShape {
 		int result = 0;
 		// continue parsing with contents of parser
 		activeTShapeObj = (TShapeObj) elementList.getActive();
-		DSSGlobals.activeDSSObject = activeTShapeObj;
+		DSS.activeDSSObject = activeTShapeObj;
 
 		TShapeObj ats = activeTShapeObj;
 
@@ -135,7 +135,7 @@ public class TShapeImpl extends DSSClassImpl implements TShape {
 
 			switch (paramPointer) {
 			case -1:
-				DSSGlobals.doSimpleMsg("Unknown parameter \"" + paramName + "\" for object \"" + getName() +"."+ ats.getName() + "\"", 610);
+				DSS.doSimpleMsg("Unknown parameter \"" + paramName + "\" for object \"" + getName() +"."+ ats.getName() + "\"", 610);
 				break;
 			case 0:
 				ats.setNumPoints(parser.makeInteger());
@@ -144,13 +144,13 @@ public class TShapeImpl extends DSSClassImpl implements TShape {
 				ats.setInterval(parser.makeDouble());
 				break;
 			case 2:
-				ats.setTValues( Utilities.resizeArray(ats.getTValues(), ats.getNumPoints()) );
+				ats.setTValues( Util.resizeArray(ats.getTValues(), ats.getNumPoints()) );
 				// allow possible resetting (to a lower value) of num points when specifying temperatures not hours
-				ats.setNumPoints( Utilities.interpretDblArray(param, ats.getNumPoints(), ats.getTValues()) );   //parser.parseAsVector(Npts, Temps);
+				ats.setNumPoints( Util.interpretDblArray(param, ats.getNumPoints(), ats.getTValues()) );   //parser.parseAsVector(Npts, Temps);
 				break;
 			case 3:
-				ats.setHours( Utilities.resizeArray(ats.getHours(), ats.getNumPoints()) );
-				Utilities.interpretDblArray(param, ats.getNumPoints(), ats.getHours());   //parser.parseAsVector(Npts, Hours);
+				ats.setHours( Util.resizeArray(ats.getHours(), ats.getNumPoints()) );
+				Util.interpretDblArray(param, ats.getNumPoints(), ats.getHours());   //parser.parseAsVector(Npts, Hours);
 				break;
 			case 4:
 				ats.setMean(parser.makeDouble());
@@ -239,13 +239,13 @@ public class TShapeImpl extends DSSClassImpl implements TShape {
 
 			aps.setNumPoints(otherTShape.getNumPoints());
 			aps.setInterval(otherTShape.getInterval());
-			aps.setTValues( Utilities.resizeArray(aps.getTValues(), aps.getNumPoints()) );
+			aps.setTValues( Util.resizeArray(aps.getTValues(), aps.getNumPoints()) );
 			for (i = 0; i < aps.getNumPoints(); i++)
 				aps.getTValues()[i] = otherTShape.getTValues()[i];
 			if (aps.getInterval() > 0.0) {
 				aps.setHours(new double[0]);
 			} else {
-				aps.setHours( Utilities.resizeArray(aps.getHours(), aps.getNumPoints()) );
+				aps.setHours( Util.resizeArray(aps.getHours(), aps.getNumPoints()) );
 			}
 			for (i = 0; i < aps.getNumPoints(); i++)
 				aps.getHours()[i] = otherTShape.getHours()[i];
@@ -253,7 +253,7 @@ public class TShapeImpl extends DSSClassImpl implements TShape {
 			for (i = 0; i < aps.getParentClass().getNumProperties(); i++)
 				aps.setPropertyValue(i, otherTShape.getPropertyValue(i));
 		} else {
-			DSSGlobals.doSimpleMsg("Error in TShape makeLike: \"" + shapeName + "\" not found.", 611);
+			DSS.doSimpleMsg("Error in TShape makeLike: \"" + shapeName + "\" not found.", 611);
 		}
 
 		return result;
@@ -261,7 +261,7 @@ public class TShapeImpl extends DSSClassImpl implements TShape {
 
 	@Override
 	public int init(int handle) {
-		DSSGlobals.doSimpleMsg("Need to implement TShape.init", -1);
+		DSS.doSimpleMsg("Need to implement TShape.init", -1);
 		return 0;
 	}
 
@@ -281,7 +281,7 @@ public class TShapeImpl extends DSSClassImpl implements TShape {
 			pTShapeObj = (TShapeObj) elementList.getNext();
 		}
 
-		DSSGlobals.doSimpleMsg("TShape: \"" + value + "\" not found.", 612);
+		DSS.doSimpleMsg("TShape: \"" + value + "\" not found.", 612);
 	}
 
 	private void doCSVFile(String fileName) {
@@ -299,14 +299,14 @@ public class TShapeImpl extends DSSClassImpl implements TShape {
 
 			TShapeObj ats = activeTShapeObj;
 
-			ats.setTValues( Utilities.resizeArray(ats.getTValues(), ats.getNumPoints()) );
+			ats.setTValues( Util.resizeArray(ats.getTValues(), ats.getNumPoints()) );
 
 			if (ats.getInterval() == 0.0)
-				ats.setHours( Utilities.resizeArray(ats.getHours(), ats.getNumPoints()) );
+				ats.setHours( Util.resizeArray(ats.getHours(), ats.getNumPoints()) );
 			int i = 0;
 			while (((s = br.readLine()) != null) && i < ats.getNumPoints()) {
 				/* Aux parser allows commas or white space */
-				parser = DSSGlobals.auxParser;
+				parser = DSS.auxParser;
 				parser.setCmdString(s);
 				if (ats.getInterval() == 0.0) {
 					parser.getNextParam();
@@ -326,7 +326,7 @@ public class TShapeImpl extends DSSClassImpl implements TShape {
 			dis.close();
 			br.close();
 		} catch (IOException e) {
-			DSSGlobals.doSimpleMsg("Error processing CSV file: \"" + fileName + ". " + e.getMessage(), 604);
+			DSS.doSimpleMsg("Error processing CSV file: \"" + fileName + ". " + e.getMessage(), 604);
 			return;
 		}
 	}

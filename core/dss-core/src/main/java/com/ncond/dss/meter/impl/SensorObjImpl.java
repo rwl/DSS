@@ -5,8 +5,8 @@ import java.io.PrintStream;
 import org.apache.commons.math.complex.Complex;
 
 import com.ncond.dss.common.impl.DSSClassImpl;
-import com.ncond.dss.common.impl.DSSGlobals;
-import com.ncond.dss.common.impl.Utilities;
+import com.ncond.dss.common.impl.DSS;
+import com.ncond.dss.common.impl.Util;
 import com.ncond.dss.meter.Sensor;
 import com.ncond.dss.meter.SensorObj;
 
@@ -31,9 +31,9 @@ public class SensorObjImpl extends MeterElementImpl implements SensorObj {
 		super(parClass);
 		setName(sensorName.toLowerCase());
 
-		setNPhases(3);  // directly set conds and phases
-		nConds = 3;
-		setNTerms(1);   // this forces allocation of terminals and conductors in base class
+		setNumPhases(3);  // directly set conds and phases
+		ncond = 3;
+		setNumTerms(1);   // this forces allocation of terminals and conductors in base class
 
 		sensorKW   = null;
 		sensorKVAr = null;
@@ -57,17 +57,17 @@ public class SensorObjImpl extends MeterElementImpl implements SensorObj {
 	public void recalcElementData() {
 
 		validSensor = false;
-		int devIndex = Utilities.getCktElementIndex(elementName);
+		int devIndex = Util.getCktElementIndex(elementName);
 		if (devIndex >= 0) {  // sensored element must already exist
-			meteredElement = DSSGlobals.activeCircuit.getCktElements().get(devIndex);
+			meteredElement = DSS.activeCircuit.getCktElements().get(devIndex);
 
-			if (meteredTerminal >= meteredElement.getNTerms()) {
-				DSSGlobals.doErrorMsg("Sensor: \"" + getName() + "\"",
+			if (meteredTerminal >= meteredElement.getNumTerms()) {
+				DSS.doErrorMsg("Sensor: \"" + getName() + "\"",
 						"Terminal no. \"" +"\" does not exist.",
 						"Respecify terminal no.", 665);
 			} else {
-				setNPhases( meteredElement.getNPhases() );
-				setNConds( meteredElement.getNConds() );
+				setNumPhases( meteredElement.getNumPhases() );
+				setNumConds( meteredElement.getNumConds() );
 
 				// sets name of i-th terminal's connected bus in Sensor's bus list
 				// this value will be used to set the nodeRef array (see takeSample)
@@ -83,7 +83,7 @@ public class SensorObjImpl extends MeterElementImpl implements SensorObj {
 			}
 		} else {
 			meteredElement = null;   // element not found
-			DSSGlobals.doErrorMsg("Sensor: \"" + getName() + "\"", "Circuit Element \""+ elementName + "\" not found.",
+			DSS.doErrorMsg("Sensor: \"" + getName() + "\"", "Circuit Element \""+ elementName + "\" not found.",
 					" Element must be defined previously.", 666);
 		}
 	}
@@ -95,8 +95,8 @@ public class SensorObjImpl extends MeterElementImpl implements SensorObj {
 	public void makePosSequence() {
 		if (meteredElement != null) {
 			setBus(0, meteredElement.getBus(meteredTerminal));
-			setNPhases( meteredElement.getNPhases() );
-			setNConds( meteredElement.getNConds() );
+			setNumPhases( meteredElement.getNumPhases() );
+			setNumConds( meteredElement.getNumConds() );
 			clearSensor();
 			validSensor = true;
 			allocateSensorObjArrays();
@@ -109,10 +109,10 @@ public class SensorObjImpl extends MeterElementImpl implements SensorObj {
 	private void recalcVbase() {
 		switch (conn) {
 		case 0:
-			if (nPhases == 1) {
+			if (nphase == 1) {
 				VBase = kVBase * 1000.0;
 			} else {
-				VBase = kVBase * 1000.0 / DSSGlobals.SQRT3;
+				VBase = kVBase * 1000.0 / DSS.SQRT3;
 			}
 			break;
 		case 1:
@@ -137,12 +137,12 @@ public class SensorObjImpl extends MeterElementImpl implements SensorObj {
 		int result = j + deltaDirection;
 
 		// make sure result is within limits
-		if (nPhases > 2) {
+		if (nphase > 2) {
 			// assumes 2 phase delta is open delta
-			if (result >= nPhases)
+			if (result >= nphase)
 				result = 0;
 			if (result < 0)
-				result = nPhases - 1;
+				result = nphase - 1;
 		} else {
 			if (result < 0)
 				result = 2;  // for 2-phase delta, next phase will be 3rd phase
@@ -160,11 +160,11 @@ public class SensorObjImpl extends MeterElementImpl implements SensorObj {
 		computeVTerminal();
 		switch (conn) {
 		case 1:
-			for (int i = 0; i < nPhases; i++)
+			for (int i = 0; i < nphase; i++)
 				calculatedVoltage[i] = VTerminal[i].subtract( VTerminal[rotatePhases(i)] );
 			break;
 		default:
-			for (int i = 0; i < nPhases; i++)
+			for (int i = 0; i < nphase; i++)
 				calculatedVoltage[i] = VTerminal[i];
 			break;
 		}
@@ -172,13 +172,13 @@ public class SensorObjImpl extends MeterElementImpl implements SensorObj {
 
 	@Override
 	public void getCurrents(Complex[] curr) {
-		for (int i = 0; i < nConds; i++)
+		for (int i = 0; i < ncond; i++)
 			curr[i] = Complex.ZERO;
 	}
 
 	@Override
 	public void getInjCurrents(Complex[] curr) {
-		for (int i = 0; i < nConds; i++)
+		for (int i = 0; i < ncond; i++)
 			curr[i] = Complex.ZERO;
 	}
 
@@ -195,19 +195,19 @@ public class SensorObjImpl extends MeterElementImpl implements SensorObj {
 		/* Convert P and Q specification to currents */
 		if (PSpecified) {  // compute currents assuming vbase
 			if (QSpecified) {
-				for (i = 0; i < nPhases; i++) {
+				for (i = 0; i < nphase; i++) {
 					kVA = new Complex(sensorKW[i], sensorKVAr[i]).abs();
 					sensorCurrent[i] = kVA * 1000.0 / VBase;
 				}
 			} else {  // no Q just use P
-				for (i = 0; i < nPhases; i++)
+				for (i = 0; i < nphase; i++)
 					sensorCurrent[i] = sensorKW[i] * 1000.0 / VBase;
 			}
 			ISpecified = true;  // overrides current specification
 		}
 
 		if (ISpecified)
-			for (i = 0; i < nPhases; i++)
+			for (i = 0; i < nphase; i++)
 				result = result + Math.pow(calculatedCurrent[i].getReal(), 2) + Math.pow(calculatedCurrent[i].getImaginary(), 2) - Math.pow(sensorCurrent[i], 2);
 
 		result = result * weight;
@@ -223,7 +223,7 @@ public class SensorObjImpl extends MeterElementImpl implements SensorObj {
 		double result = 0.0;
 
 		if (VSpecified)
-			for (i = 0; i < nPhases; i++)
+			for (i = 0; i < nphase; i++)
 				result = result + Math.pow(calculatedVoltage[i].getReal(), 2) + Math.pow(calculatedVoltage[i].getImaginary(), 2) - Math.pow(sensorVoltage[i], 2);
 
 		result = result * weight;
@@ -252,13 +252,13 @@ public class SensorObjImpl extends MeterElementImpl implements SensorObj {
 	}
 
 	private void allocateSensorObjArrays() {
-		sensorKW = Utilities.resizeArray(sensorKW, nPhases);
-		sensorKVAr = Utilities.resizeArray(sensorKVAr, nPhases);
+		sensorKW = Util.resizeArray(sensorKW, nphase);
+		sensorKVAr = Util.resizeArray(sensorKVAr, nphase);
 		allocateSensorArrays();
 	}
 
 	private void zeroSensorArrays() {
-		for (int i = 0; i < nPhases; i++) {
+		for (int i = 0; i < nphase; i++) {
 			sensorCurrent[i] = 0.0;
 			sensorVoltage[i] = 0.0;
 			sensorKW[i]      = 0.0;
@@ -283,6 +283,11 @@ public class SensorObjImpl extends MeterElementImpl implements SensorObj {
 		setPropertyValue(12, "");   // Action
 
 		super.initPropertyValues(Sensor.NumPropsThisClass);
+	}
+
+	@Override
+	public int injCurrents() {
+		throw new UnsupportedOperationException();
 	}
 
 	// FIXME Private method in OpenDSS

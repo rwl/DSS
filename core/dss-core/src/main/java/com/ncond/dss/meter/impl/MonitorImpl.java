@@ -1,8 +1,8 @@
 package com.ncond.dss.meter.impl;
 
 import com.ncond.dss.common.impl.DSSClassDefs;
-import com.ncond.dss.common.impl.DSSGlobals;
-import com.ncond.dss.common.impl.Utilities;
+import com.ncond.dss.common.impl.DSS;
+import com.ncond.dss.common.impl.Util;
 import com.ncond.dss.meter.Monitor;
 import com.ncond.dss.meter.MonitorObj;
 import com.ncond.dss.parser.impl.Parser;
@@ -44,22 +44,22 @@ public class MonitorImpl extends MeterClassImpl implements Monitor {
 		propertyHelp[0] = "Name (Full Object name) of element to which the monitor is connected.";
 		propertyHelp[1] = "Number of the terminal of the circuit element to which the monitor is connected. "+
 				"1 or 2, typically. For monitoring states, attach monitor to terminal 1.";
-		propertyHelp[2] = "Bitmask integer designating the values the monitor is to capture: "+DSSGlobals.CRLF+
-				"0 = Voltages and currents" + DSSGlobals.CRLF+
-				"1 = Powers"+DSSGlobals.CRLF+
-				"2 = Tap Position (Transformers only)"+DSSGlobals.CRLF+
-				"3 = State Variables (PCElements only)" +DSSGlobals.CRLF +DSSGlobals.CRLF+
-				"Normally, these would be actual phasor quantities from solution." + DSSGlobals.CRLF+
-				"Combine with adders below to achieve other results for terminal quantities:" + DSSGlobals.CRLF+
-				"+16 = Sequence quantities" + DSSGlobals.CRLF+
-				"+32 = Magnitude only" + DSSGlobals.CRLF+
-				"+64 = Positive sequence only or avg of all phases" + DSSGlobals.CRLF+ DSSGlobals.CRLF +
-				"Mix adder to obtain desired results. For example:" + DSSGlobals.CRLF+
-				"Mode=112 will save positive sequence voltage and current magnitudes only" + DSSGlobals.CRLF+
+		propertyHelp[2] = "Bitmask integer designating the values the monitor is to capture: "+DSS.CRLF+
+				"0 = Voltages and currents" + DSS.CRLF+
+				"1 = Powers"+DSS.CRLF+
+				"2 = Tap Position (Transformers only)"+DSS.CRLF+
+				"3 = State Variables (PCElements only)" +DSS.CRLF +DSS.CRLF+
+				"Normally, these would be actual phasor quantities from solution." + DSS.CRLF+
+				"Combine with adders below to achieve other results for terminal quantities:" + DSS.CRLF+
+				"+16 = Sequence quantities" + DSS.CRLF+
+				"+32 = Magnitude only" + DSS.CRLF+
+				"+64 = Positive sequence only or avg of all phases" + DSS.CRLF+ DSS.CRLF +
+				"Mix adder to obtain desired results. For example:" + DSS.CRLF+
+				"Mode=112 will save positive sequence voltage and current magnitudes only" + DSS.CRLF+
 				"Mode=48 will save all sequence voltages and currents, but magnitude only.";
-		propertyHelp[3] = "{Clear | Save | Take}" + DSSGlobals.CRLF +
-				"(C)lears or (S)aves current buffer." + DSSGlobals.CRLF +
-				"(T)ake action takes a sample."+ DSSGlobals.CRLF + DSSGlobals.CRLF +
+		propertyHelp[3] = "{Clear | Save | Take}" + DSS.CRLF +
+				"(C)lears or (S)aves current buffer." + DSS.CRLF +
+				"(T)ake action takes a sample."+ DSS.CRLF + DSS.CRLF +
 				"Note that monitors are automatically reset (cleared) when the Set Mode= command is issued. "+
 				"Otherwise, the user must explicitly reset all monitors (reset monitors command) or individual " +
 				"monitors with the Clear action.";
@@ -74,8 +74,8 @@ public class MonitorImpl extends MeterClassImpl implements Monitor {
 
 	@Override
 	public int newObject(String objName) {
-		DSSGlobals.activeCircuit.setActiveCktElement(new MonitorObjImpl(this, objName));
-		return addObjectToList(DSSGlobals.activeDSSObject);
+		DSS.activeCircuit.setActiveCktElement(new MonitorObjImpl(this, objName));
+		return addObjectToList(DSS.activeDSSObject);
 	}
 
 	@Override
@@ -84,7 +84,7 @@ public class MonitorImpl extends MeterClassImpl implements Monitor {
 
 		// continue parsing with contents of parser
 		activeMonitorObj = (MonitorObj) elementList.getActive();
-		DSSGlobals.activeCircuit.setActiveCktElement(activeMonitorObj);
+		DSS.activeCircuit.setActiveCktElement(activeMonitorObj);
 
 		int result = 0;
 
@@ -105,7 +105,7 @@ public class MonitorImpl extends MeterClassImpl implements Monitor {
 
 			switch (paramPointer) {
 			case -1:
-				DSSGlobals.doSimpleMsg("Unknown parameter \"" + paramName + "\" for object \"" + getName() +"."+ am.getName() + "\"", 661);
+				DSS.doSimpleMsg("Unknown parameter \"" + paramName + "\" for object \"" + getName() +"."+ am.getName() + "\"", 661);
 				break;
 			case 0:
 				am.setElementName(param.toLowerCase());
@@ -133,13 +133,13 @@ public class MonitorImpl extends MeterClassImpl implements Monitor {
 				}
 				break;
 			case 4:
-				am.setIncludeResidual( Utilities.interpretYesNo(param) );
+				am.setIncludeResidual( Util.interpretYesNo(param) );
 				break;
 			case 5:
-				am.setVIPolar( Utilities.interpretYesNo(param) );
+				am.setVIPolar( Util.interpretYesNo(param) );
 				break;
 			case 6:
-				am.setPPolar( Utilities.interpretYesNo(param) );
+				am.setPPolar( Util.interpretYesNo(param) );
 				break;
 			default:
 				// Inherited parameters
@@ -161,7 +161,7 @@ public class MonitorImpl extends MeterClassImpl implements Monitor {
 	 */
 	@Override
 	public void resetAll() {
-		for (MonitorObj pMon : DSSGlobals.activeCircuit.getMonitors())
+		for (MonitorObj pMon : DSS.activeCircuit.getMonitors())
 			if (pMon.isEnabled())
 				pMon.resetIt();
 	}
@@ -171,7 +171,7 @@ public class MonitorImpl extends MeterClassImpl implements Monitor {
 	 */
 	@Override
 	public void sampleAll() {
-		for (MonitorObj pMon : DSSGlobals.activeCircuit.getMonitors())
+		for (MonitorObj pMon : DSS.activeCircuit.getMonitors())
 			if (pMon.isEnabled())
 				pMon.takeSample();
 	}
@@ -181,7 +181,7 @@ public class MonitorImpl extends MeterClassImpl implements Monitor {
 	 */
 	@Override
 	public void saveAll() {
-		for (MonitorObj pMon : DSSGlobals.activeCircuit.getMonitors())
+		for (MonitorObj pMon : DSS.activeCircuit.getMonitors())
 			if (pMon.isEnabled())
 				pMon.save();
 	}
@@ -194,8 +194,8 @@ public class MonitorImpl extends MeterClassImpl implements Monitor {
 		if (otherMonitor != null) {
 			MonitorObj am = activeMonitorObj;
 
-			am.setNPhases(otherMonitor.getNPhases());
-			am.setNConds(otherMonitor.getNConds());  // force reallocation of terminal stuff
+			am.setNumPhases(otherMonitor.getNumPhases());
+			am.setNumConds(otherMonitor.getNumConds());  // force reallocation of terminal stuff
 
 			am.setBufferSize(otherMonitor.getBufferSize());
 			am.setElementName(otherMonitor.getElementName());
@@ -210,7 +210,7 @@ public class MonitorImpl extends MeterClassImpl implements Monitor {
 			am.setBaseFrequency(otherMonitor.getBaseFrequency());
 
 		} else {
-			DSSGlobals.doSimpleMsg("Error in Monitor makeLike: \"" + MonitorName + "\" not found.", 662);
+			DSS.doSimpleMsg("Error in Monitor makeLike: \"" + MonitorName + "\" not found.", 662);
 		}
 
 		return result;

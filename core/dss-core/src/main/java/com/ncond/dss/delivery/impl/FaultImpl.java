@@ -1,8 +1,8 @@
 package com.ncond.dss.delivery.impl;
 
 import com.ncond.dss.common.impl.DSSClassDefs;
-import com.ncond.dss.common.impl.DSSGlobals;
-import com.ncond.dss.common.impl.Utilities;
+import com.ncond.dss.common.impl.DSS;
+import com.ncond.dss.common.impl.Util;
 import com.ncond.dss.delivery.Fault;
 import com.ncond.dss.delivery.FaultObj;
 import com.ncond.dss.parser.impl.Parser;
@@ -45,8 +45,8 @@ public class FaultImpl extends PDClassImpl implements Fault {
 		propertyName[8] = "MinAmps";
 
 		// define property help values
-		propertyHelp[0] = "Name of first bus. Examples:"+DSSGlobals.CRLF+
-						"bus1=busname"+DSSGlobals.CRLF+
+		propertyHelp[0] = "Name of first bus. Examples:"+DSS.CRLF+
+						"bus1=busname"+DSS.CRLF+
 						"bus1=busname.1.2.3";
 		propertyHelp[1] = "Name of 2nd bus. Defaults to all phases connected "+
 						"to first bus, node 0, if not specified. (Shunt Wye Connection to ground reference)";
@@ -72,20 +72,20 @@ public class FaultImpl extends PDClassImpl implements Fault {
 
 	@Override
 	public int newObject(String objName) {
-		DSSGlobals.activeCircuit.setActiveCktElement(new FaultObjImpl(this, objName));
-		return addObjectToList(DSSGlobals.activeDSSObject);
+		DSS.activeCircuit.setActiveCktElement(new FaultObjImpl(this, objName));
+		return addObjectToList(DSS.activeDSSObject);
 	}
 
 	private void doGmatrix() {
 		FaultObj af = activeFaultObj;
 
-		double[] matBuffer = new double[af.getNPhases() * af.getNPhases()];
-		int orderFound = Parser.getInstance().parseAsSymMatrix(af.getNPhases(), matBuffer);
+		double[] matBuffer = new double[af.getNumPhases() * af.getNumPhases()];
+		int orderFound = Parser.getInstance().parseAsSymMatrix(af.getNumPhases(), matBuffer);
 
 		if (orderFound > 0) {  // parse was successful
 			/* X */
-			af.setGMatrix( Utilities.resizeArray(af.getGMatrix(), af.getNPhases() * af.getNPhases()) );
-			for (int j = 0; j < af.getNPhases() * af.getNPhases(); j++)
+			af.setGMatrix( Util.resizeArray(af.getGMatrix(), af.getNumPhases() * af.getNumPhases()) );
+			for (int j = 0; j < af.getNumPhases() * af.getNumPhases(); j++)
 				af.getGMatrix()[j] = matBuffer[j];
 		}
 
@@ -125,7 +125,7 @@ public class FaultImpl extends PDClassImpl implements Fault {
 		int result = 0;
 		// continue parsing with contents of parser
 		activeFaultObj = (FaultObj) elementList.getActive();
-		DSSGlobals.activeCircuit.setActiveCktElement(activeFaultObj);  // use property to set this value
+		DSS.activeCircuit.setActiveCktElement(activeFaultObj);  // use property to set this value
 
 		FaultObj af = activeFaultObj;
 
@@ -144,7 +144,7 @@ public class FaultImpl extends PDClassImpl implements Fault {
 
 			switch (paramPointer) {
 			case -1:
-				DSSGlobals.doSimpleMsg("Unknown parameter \"" + paramName + "\" for object \"" + getName() +"."+ af.getName() + "\"", 350);
+				DSS.doSimpleMsg("Unknown parameter \"" + paramName + "\" for object \"" + getName() +"."+ af.getName() + "\"", 350);
 				break;
 			case 0:
 				fltSetBus1(param);
@@ -173,7 +173,7 @@ public class FaultImpl extends PDClassImpl implements Fault {
 				af.setOnTime(parser.makeDouble());
 				break;
 			case 7:
-				af.setTemporary(Utilities.interpretYesNo(param));
+				af.setTemporary(Util.interpretYesNo(param));
 				break;
 			case 8:
 				af.setMinAmps(parser.makeDouble());
@@ -190,14 +190,14 @@ public class FaultImpl extends PDClassImpl implements Fault {
 				af.setPropertyValue(1, af.getBus(1));  // bus2 gets modified if bus1 is
 				break;
 			case 1:
-				if (!Utilities.stripExtension(af.getBus(0)).equalsIgnoreCase( Utilities.stripExtension(af.getBus(1)) ))
+				if (!Util.stripExtension(af.getBus(0)).equalsIgnoreCase( Util.stripExtension(af.getBus(1)) ))
 					af.setShunt(false);
 				break;
 			case 2:
-				if (af.getNPhases() != parser.makeInteger()) {
-					af.setNPhases(parser.makeInteger());
-					af.setNConds(af.getNPhases());  // force reallocation of terminal info
-					DSSGlobals.activeCircuit.setBusNameRedefined(true);  // set global flag to signal circuit to rebuild bus defs
+				if (af.getNumPhases() != parser.makeInteger()) {
+					af.setNumPhases(parser.makeInteger());
+					af.setNumConds(af.getNumPhases());  // force reallocation of terminal info
+					DSS.activeCircuit.setBusNameRedefined(true);  // set global flag to signal circuit to rebuild bus defs
 				}
 				break;
 			case 3:
@@ -243,11 +243,11 @@ public class FaultImpl extends PDClassImpl implements Fault {
 		if (otherFault != null) {
 			FaultObj af = activeFaultObj;
 
-			if (af.getNPhases() != otherFault.getNPhases()) {
-				af.setNPhases(otherFault.getNPhases());
-				af.setNConds(af.getNPhases());  // force reallocation of terminals and conductors
+			if (af.getNumPhases() != otherFault.getNumPhases()) {
+				af.setNumPhases(otherFault.getNumPhases());
+				af.setNumConds(af.getNumPhases());  // force reallocation of terminals and conductors
 
-				af.setYOrder(af.getNConds() * af.getNTerms());
+				af.setYOrder(af.getNumConds() * af.getNumTerms());
 				af.setYPrimInvalid(true);
 			}
 
@@ -264,8 +264,8 @@ public class FaultImpl extends PDClassImpl implements Fault {
 			if (otherFault.getGMatrix() == null) {
 				af.setGMatrix(null);
 			} else {
-				af.setGMatrix( (double[]) Utilities.resizeArray(af.getGMatrix(), af.getNPhases() * af.getNPhases()) );
-				for (int i = 0; i < af.getNPhases() * af.getNPhases(); i++)
+				af.setGMatrix( (double[]) Util.resizeArray(af.getGMatrix(), af.getNumPhases() * af.getNumPhases()) );
+				for (int i = 0; i < af.getNumPhases() * af.getNumPhases(); i++)
 					af.getGMatrix()[i] = otherFault.getGMatrix()[i];
 			}
 
@@ -275,14 +275,14 @@ public class FaultImpl extends PDClassImpl implements Fault {
 				af.setPropertyValue(i, otherFault.getPropertyValue(i));
 			result = 1;
 		} else {
-			DSSGlobals.doSimpleMsg("Error in Fault.makeLike(): \"" + faultName + "\" not found.", 351);
+			DSS.doSimpleMsg("Error in Fault.makeLike(): \"" + faultName + "\" not found.", 351);
 		}
 		return result;
 	}
 
 	@Override
 	public int init(int handle) {
-		DSSGlobals.doSimpleMsg("Need to implement Fault.init()", -1);
+		DSS.doSimpleMsg("Need to implement Fault.init()", -1);
 		return 0;
 	}
 

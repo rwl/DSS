@@ -2,8 +2,8 @@ package com.ncond.dss.control.impl;
 
 import com.ncond.dss.common.DSSClass;
 import com.ncond.dss.common.impl.DSSClassDefs;
-import com.ncond.dss.common.impl.DSSGlobals;
-import com.ncond.dss.common.impl.Utilities;
+import com.ncond.dss.common.impl.DSS;
+import com.ncond.dss.common.impl.Util;
 import com.ncond.dss.control.VVControl;
 import com.ncond.dss.control.VVControlObj;
 import com.ncond.dss.general.XYCurveObj;
@@ -107,18 +107,18 @@ public class VVControlImpl extends ControlClassImpl implements VVControl {
 
 	private XYCurveObj getVVCCurve(final String curveName) {
 
-		XYCurveObj result = (XYCurveObj) DSSGlobals.XYCurveClass.find(curveName);
+		XYCurveObj result = (XYCurveObj) DSS.XYCurveClass.find(curveName);
 
 		if (result == null)
-			DSSGlobals.doSimpleMsg("XY curve object: \"" + curveName + "\" not found.", 380);
+			DSS.doSimpleMsg("XY curve object: \"" + curveName + "\" not found.", 380);
 
 		return result;
 	}
 
 	@Override
 	public int newObject(String objName) {
-		DSSGlobals.activeCircuit.setActiveCktElement(new VVControlObjImpl(this, objName));
-		return addObjectToList(DSSGlobals.activeDSSObject);
+		DSS.activeCircuit.setActiveCktElement(new VVControlObjImpl(this, objName));
+		return addObjectToList(DSS.activeDSSObject);
 	}
 
 	@Override
@@ -127,7 +127,7 @@ public class VVControlImpl extends ControlClassImpl implements VVControl {
 
 		// continue parsing with contents of parser
 		activeVVCControlObj = (VVControlObj) elementList.getActive();
-		DSSGlobals.activeCircuit.setActiveCktElement(activeVVCControlObj);
+		DSS.activeCircuit.setActiveCktElement(activeVVCControlObj);
 
 		int result = 0;
 
@@ -148,7 +148,7 @@ public class VVControlImpl extends ControlClassImpl implements VVControl {
 
 			switch (paramPointer) {
 			case -1:
-				DSSGlobals.doSimpleMsg("Unknown parameter \"" + paramName + "\" for Object \"" +
+				DSS.doSimpleMsg("Unknown parameter \"" + paramName + "\" for Object \"" +
 						className + "." + avc.getName() + "\"", 364);
 				break;
 			case 0:
@@ -195,13 +195,13 @@ public class VVControlImpl extends ControlClassImpl implements VVControl {
 				break;
 
 			case 14:
-				Utilities.interpretStringListArray(param, avc.getGeneratorNameList());
+				Util.interpretStringListArray(param, avc.getGeneratorNameList());
 				break;
 			case 15:
 				avc.setListSize(avc.getGeneratorNameList().size());
 				if (avc.getListSize() > 0) {
-					Utilities.resizeArray(avc.getWeights(), avc.getListSize());
-					Utilities.interpretDblArray(param, avc.getListSize(), avc.getWeights());
+					Util.resizeArray(avc.getWeights(), avc.getListSize());
+					Util.interpretDblArray(param, avc.getListSize(), avc.getWeights());
 				}
 				break;
 			case 16:
@@ -224,7 +224,7 @@ public class VVControlImpl extends ControlClassImpl implements VVControl {
 				// re-alloc based on
 				avc.getGenPointerList().clear();  // clear this for resetting on first sample
 				avc.setListSize(avc.getGeneratorNameList().size());
-				Utilities.resizeArray(avc.getWeights(), avc.getListSize());
+				Util.resizeArray(avc.getWeights(), avc.getListSize());
 				for (int i = 0; i < avc.getListSize(); i++)
 					avc.getWeights()[i] = 1.0;
 			case 17:
@@ -252,8 +252,8 @@ public class VVControlImpl extends ControlClassImpl implements VVControl {
 		if (otherVVCControl != null) {
 			VVControlObj avc = activeVVCControlObj;
 
-			avc.setNPhases(otherVVCControl.getNPhases());
-			avc.setNConds(otherVVCControl.getNConds());  // force reallocation of terminal data
+			avc.setNumPhases(otherVVCControl.getNumPhases());
+			avc.setNumConds(otherVVCControl.getNumConds());  // force reallocation of terminal data
 
 			avc.setElementName(otherVVCControl.getElementName());
 			avc.setControlledElement(otherVVCControl.getControlElement());
@@ -267,7 +267,7 @@ public class VVControlImpl extends ControlClassImpl implements VVControl {
 			for (int i = 0; i < avc.getParentClass().getNumProperties(); i++)
 				avc.setPropertyValue(i, otherVVCControl.getPropertyValue(i));
 		} else {
-			DSSGlobals.doSimpleMsg("Error in VVCControl makeLike: \"" + VVCControlName +
+			DSS.doSimpleMsg("Error in VVCControl makeLike: \"" + VVCControlName +
 				  "\" Not Found.", 370);
 		}
 		return result;

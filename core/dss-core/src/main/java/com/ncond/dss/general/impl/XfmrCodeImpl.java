@@ -2,8 +2,8 @@ package com.ncond.dss.general.impl;
 
 import com.ncond.dss.common.impl.DSSClassDefs;
 import com.ncond.dss.common.impl.DSSClassImpl;
-import com.ncond.dss.common.impl.DSSGlobals;
-import com.ncond.dss.common.impl.Utilities;
+import com.ncond.dss.common.impl.DSS;
+import com.ncond.dss.common.impl.Util;
 import com.ncond.dss.delivery.Winding;
 import com.ncond.dss.general.XfmrCode;
 import com.ncond.dss.general.XfmrCodeObj;
@@ -32,7 +32,7 @@ public class XfmrCodeImpl extends DSSClassImpl implements XfmrCode {
 	}
 
 	protected void defineProperties() {
-		final String CRLF = DSSGlobals.CRLF;
+		final String CRLF = DSS.CRLF;
 
 		numProperties = XfmrCode.NumPropsThisClass;
 		countProperties();  // get inherited property count
@@ -146,8 +146,8 @@ public class XfmrCodeImpl extends DSSClassImpl implements XfmrCode {
 
 	@Override
 	public int newObject(String objName) {
-		DSSGlobals.activeDSSObject = new XfmrCodeObjImpl(this, objName);
-		return addObjectToList(DSSGlobals.activeDSSObject);
+		DSS.activeDSSObject = new XfmrCodeObjImpl(this, objName);
+		return addObjectToList(DSS.activeDSSObject);
 	}
 
 	private void setActiveWinding(int w) {
@@ -156,35 +156,35 @@ public class XfmrCodeImpl extends DSSClassImpl implements XfmrCode {
 		if (w >= 0 && w < axc.getNumWindings()) {
 			axc.setActiveWinding(w);
 		} else {
-			DSSGlobals.doSimpleMsg("Wdg parameter invalid for \"" + activeXfmrCodeObj.getName() + "\"", 112);
+			DSS.doSimpleMsg("Wdg parameter invalid for \"" + activeXfmrCodeObj.getName() + "\"", 112);
 		}
 	}
 
 	private void interpretWindings(String s, WdgParmChoice which) {
 		String str;
 
-		DSSGlobals.auxParser.setCmdString(s);
+		DSS.auxParser.setCmdString(s);
 		XfmrCodeObj axc = activeXfmrCodeObj;
 		for (int i = 0; i < axc.getNumWindings(); i++) {
 			axc.setActiveWinding(i);
-			DSSGlobals.auxParser.getNextParam();  // ignore any parameter name not expecting any
-			str = DSSGlobals.auxParser.makeString();
+			DSS.auxParser.getNextParam();  // ignore any parameter name not expecting any
+			str = DSS.auxParser.makeString();
 			if (str.length() > 0) {
 				switch (which) {
 				case CONN:
-					axc.getWinding()[axc.getActiveWinding()].setConnection(Utilities.interpretConnection(str));
+					axc.getWinding()[axc.getActiveWinding()].setConnection(Util.interpretConnection(str));
 					break;
 				case KV:
-					axc.getWinding()[axc.getActiveWinding()].setKVLL(DSSGlobals.auxParser.makeDouble());
+					axc.getWinding()[axc.getActiveWinding()].setKVLL(DSS.auxParser.makeDouble());
 					break;
 				case KVA:
-					axc.getWinding()[axc.getActiveWinding()].setKVA(DSSGlobals.auxParser.makeDouble());
+					axc.getWinding()[axc.getActiveWinding()].setKVA(DSS.auxParser.makeDouble());
 					break;
 				case R:
-					axc.getWinding()[axc.getActiveWinding()].setRpu(0.01 * DSSGlobals.auxParser.makeDouble());
+					axc.getWinding()[axc.getActiveWinding()].setRpu(0.01 * DSS.auxParser.makeDouble());
 					break;
 				case TAP:
-					axc.getWinding()[axc.getActiveWinding()].setPUTap(DSSGlobals.auxParser.makeDouble());
+					axc.getWinding()[axc.getActiveWinding()].setPUTap(DSS.auxParser.makeDouble());
 					break;
 				}
 			}
@@ -194,7 +194,7 @@ public class XfmrCodeImpl extends DSSClassImpl implements XfmrCode {
 	@Override
 	public int edit() {
 		activeXfmrCodeObj = (XfmrCodeObj) elementList.getActive();
-		DSSGlobals.activeDSSObject = activeXfmrCodeObj;
+		DSS.activeDSSObject = activeXfmrCodeObj;
 		boolean updateXsc = false;
 
 		Parser parser = Parser.getInstance();
@@ -215,7 +215,7 @@ public class XfmrCodeImpl extends DSSClassImpl implements XfmrCode {
 
 			switch (paramPointer) {
 			case -1:
-				DSSGlobals.doSimpleMsg("Unknown parameter \"" + paramName + "\" for object \"XfmrCode." + axc.getName() + "\"", 110);
+				DSS.doSimpleMsg("Unknown parameter \"" + paramName + "\" for object \"XfmrCode." + axc.getName() + "\"", 110);
 				break;
 			case 0:
 				axc.setNPhases(parser.makeInteger());
@@ -227,7 +227,7 @@ public class XfmrCodeImpl extends DSSClassImpl implements XfmrCode {
 				axc.setActiveWinding(parser.makeInteger());
 				break;
 			case 3:
-				axc.getWinding()[axc.getActiveWinding()].setConnection(Utilities.interpretConnection(param));
+				axc.getWinding()[axc.getActiveWinding()].setConnection(Util.interpretConnection(param));
 				break;
 			case 4:
 				axc.getWinding()[axc.getActiveWinding()].setKVLL(parser.makeDouble());
@@ -436,14 +436,14 @@ public class XfmrCodeImpl extends DSSClassImpl implements XfmrCode {
 				result = 1;
 			}
 		} else {
-			DSSGlobals.doSimpleMsg("Error in XfmrCode.makeLike: \"" + name + "\" not found.", 102);
+			DSS.doSimpleMsg("Error in XfmrCode.makeLike: \"" + name + "\" not found.", 102);
 		}
 		return result;
 	}
 
 	@Override
 	public int init(int handle) {
-		DSSGlobals.doSimpleMsg("Need to implement XfmrCode.init", -1);
+		DSS.doSimpleMsg("Need to implement XfmrCode.init", -1);
 		return 0;
 	}
 
@@ -463,7 +463,7 @@ public class XfmrCodeImpl extends DSSClassImpl implements XfmrCode {
 				return;
 			}
 		}
-		DSSGlobals.doSimpleMsg("XfmrCode: \"" + value + "\" not found.", 103);
+		DSS.doSimpleMsg("XfmrCode: \"" + value + "\" not found.", 103);
 	}
 
 }

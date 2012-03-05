@@ -3,8 +3,8 @@ package com.ncond.dss.meter.impl;
 import com.ncond.dss.common.Circuit;
 import com.ncond.dss.common.CktElement;
 import com.ncond.dss.common.impl.DSSClassDefs;
-import com.ncond.dss.common.impl.DSSGlobals;
-import com.ncond.dss.common.impl.Utilities;
+import com.ncond.dss.common.impl.DSS;
+import com.ncond.dss.common.impl.Util;
 import com.ncond.dss.conversion.PCElement;
 import com.ncond.dss.delivery.PDElement;
 import com.ncond.dss.meter.Sensor;
@@ -54,24 +54,24 @@ public class SensorImpl extends MeterClassImpl implements Sensor {
 		propertyHelp[0] = "Name (Full Object name) of element to which the Sensor is connected.";
 		propertyHelp[1] = "Number of the terminal of the circuit element to which the Sensor is connected. "+
 				"1 or 2, typically. Default is 1.";
-		propertyHelp[2] = "Voltage base for the sensor, in kV. If connected to a 2- or 3-phase terminal, " + DSSGlobals.CRLF +
+		propertyHelp[2] = "Voltage base for the sensor, in kV. If connected to a 2- or 3-phase terminal, " + DSS.CRLF +
 				"specify L-L voltage. For 1-phase devices specify L-N or actual 1-phase voltage. "+
 				"Like many other DSS devices, default is 12.47kV.";
 		propertyHelp[3] = "{ Yes | No }. Clear=Yes clears sensor values. Should be issued before putting in a new set of measurements.";
 		propertyHelp[4] = "Array of Voltages (kV) measured by the voltage sensor. For Delta-connected " +
 				"sensors, Line-Line voltages are expected. For Wye, Line-Neutral are expected.";
 		propertyHelp[5] = "Array of Currents (amps) measured by the current sensor. Specify this or power quantities; not both.";
-		propertyHelp[6] = "Array of Active power (kW) measurements at the sensor. Is converted into Currents along with q=[...]"+DSSGlobals.CRLF+
+		propertyHelp[6] = "Array of Active power (kW) measurements at the sensor. Is converted into Currents along with q=[...]"+DSS.CRLF+
 				"Will override any i=[...] specification.";
 		propertyHelp[7] = "Array of Reactive power (kvar) measurements at the sensor. Is converted into Currents along with p=[...]";
-		propertyHelp[8] = "Voltage sensor Connection: { wye | delta | LN | LL }.  Default is wye. Applies to voltage measurement only. "+DSSGlobals.CRLF+
-				"Currents are always assumed to be line currents." + DSSGlobals.CRLF +
+		propertyHelp[8] = "Voltage sensor Connection: { wye | delta | LN | LL }.  Default is wye. Applies to voltage measurement only. "+DSS.CRLF+
+				"Currents are always assumed to be line currents." + DSS.CRLF +
 				"If wye or LN, voltage is assumed measured line-neutral; otherwise, line-line.";
 		propertyHelp[9] ="{1 or -1}  Default is 1:  1-2, 2-3, 3-1.  For reverse rotation, enter -1. Any positive or negative entry will suffice.";
 		propertyHelp[10] ="Assumed percent error in the measurement. Default is 1.";
 		propertyHelp[11] ="Weighting factor: Default is 1.";
-		propertyHelp[12] ="NOT IMPLEMENTED.Action options: "+DSSGlobals.CRLF+"SQERROR: Show square error of the present value of the monitored terminal  "+DSSGlobals.CRLF+
-				"quantity vs the sensor value. Actual values - convert to per unit in calling program.  "+DSSGlobals.CRLF+
+		propertyHelp[12] ="NOT IMPLEMENTED.Action options: "+DSS.CRLF+"SQERROR: Show square error of the present value of the monitored terminal  "+DSS.CRLF+
+				"quantity vs the sensor value. Actual values - convert to per unit in calling program.  "+DSS.CRLF+
 				"Value reported in result window/result variable.";
 
 		activeProperty = Sensor.NumPropsThisClass - 1;
@@ -80,8 +80,8 @@ public class SensorImpl extends MeterClassImpl implements Sensor {
 
 	@Override
 	public int newObject(String objName) {
-		DSSGlobals.activeCircuit.setActiveCktElement(new SensorObjImpl(this, objName));
-		return addObjectToList(DSSGlobals.activeDSSObject);
+		DSS.activeCircuit.setActiveCktElement(new SensorObjImpl(this, objName));
+		return addObjectToList(DSS.activeDSSObject);
 	}
 
 	@Override
@@ -90,7 +90,7 @@ public class SensorImpl extends MeterClassImpl implements Sensor {
 
 		// continue parsing with contents of parser
 		activeSensorObj = (SensorObj) elementList.getActive();
-		DSSGlobals.activeCircuit.setActiveCktElement(activeSensorObj);
+		DSS.activeCircuit.setActiveCktElement(activeSensorObj);
 
 		int result = 0;
 		boolean doRecalcElementData = false;
@@ -112,7 +112,7 @@ public class SensorImpl extends MeterClassImpl implements Sensor {
 
 			switch (paramPointer) {
 			case -1:
-				DSSGlobals.doSimpleMsg("Unknown parameter \"" + paramName + "\" for object \"" + getName() +"."+ as.getName() + "\"", 661);
+				DSS.doSimpleMsg("Unknown parameter \"" + paramName + "\" for object \"" + getName() +"."+ as.getName() + "\"", 661);
 				break;
 			case 0:
 				as.setElementName(param.toLowerCase());
@@ -124,22 +124,22 @@ public class SensorImpl extends MeterClassImpl implements Sensor {
 				as.setKVBase(parser.makeDouble());
 				break;
 			case 3:
-				as.setClearSpecified(Utilities.interpretYesNo(param));
+				as.setClearSpecified(Util.interpretYesNo(param));
 				break;
 			case 4:
-				parser.parseAsVector(as.getNPhases(), as.getSensorVoltage());  // inits to zero
+				parser.parseAsVector(as.getNumPhases(), as.getSensorVoltage());  // inits to zero
 				break;
 			case 5:
-				parser.parseAsVector(as.getNPhases(), as.getSensorCurrent());  // inits to zero
+				parser.parseAsVector(as.getNumPhases(), as.getSensorCurrent());  // inits to zero
 				break;
 			case 6:
-				parser.parseAsVector(as.getNPhases(), as.getSensorKW());
+				parser.parseAsVector(as.getNumPhases(), as.getSensorKW());
 				break;
 			case 7:
-				parser.parseAsVector(as.getNPhases(), as.getSensorKVAr());
+				parser.parseAsVector(as.getNumPhases(), as.getSensorKVAr());
 				break;
 			case 8:
-				as.setConn(Utilities.interpretConnection(param));
+				as.setConn(Util.interpretConnection(param));
 				break;
 			case 9:
 				as.setDeltaDirection( as.limitToPlusMinusOne(parser.makeInteger()) );
@@ -211,7 +211,7 @@ public class SensorImpl extends MeterClassImpl implements Sensor {
 	 */
 	@Override
 	public void resetAll() {
-		for (SensorObj sensor : DSSGlobals.activeCircuit.getSensors())
+		for (SensorObj sensor : DSS.activeCircuit.getSensors())
 			sensor.resetIt();
 	}
 
@@ -220,7 +220,7 @@ public class SensorImpl extends MeterClassImpl implements Sensor {
 	 */
 	@Override
 	public void sampleAll() {
-		for (SensorObj sensor : DSSGlobals.activeCircuit.getSensors())
+		for (SensorObj sensor : DSS.activeCircuit.getSensors())
 			sensor.takeSample();
 	}
 
@@ -241,7 +241,7 @@ public class SensorImpl extends MeterClassImpl implements Sensor {
 		SensorObj thisSensor;
 		CktElement cktElem;
 
-		Circuit ckt = DSSGlobals.activeCircuit;
+		Circuit ckt = DSS.activeCircuit;
 
 		/* Initialize all to false */
 		for (i = 0; i < ckt.getPDElements().size(); i++) {
@@ -276,8 +276,8 @@ public class SensorImpl extends MeterClassImpl implements Sensor {
 		if (otherSensor != null) {
 			SensorObj as = activeSensorObj;
 
-			as.setNPhases(otherSensor.getNPhases());
-			as.setNConds(otherSensor.getNConds());  // force reallocation of terminal stuff
+			as.setNumPhases(otherSensor.getNumPhases());
+			as.setNumConds(otherSensor.getNumConds());  // force reallocation of terminal stuff
 
 			as.setElementName(otherSensor.getElementName());
 			as.setMeteredElement(otherSensor.getMeteredElement());  // target circuit element
@@ -288,7 +288,7 @@ public class SensorImpl extends MeterClassImpl implements Sensor {
 
 			as.setBaseFrequency(otherSensor.getBaseFrequency());
 		} else {
-			DSSGlobals.doSimpleMsg("Error in Sensor makeLike: \"" + sensorName + "\" not found.", 662);
+			DSS.doSimpleMsg("Error in Sensor makeLike: \"" + sensorName + "\" not found.", 662);
 		}
 
 		return result;

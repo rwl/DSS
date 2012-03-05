@@ -5,8 +5,8 @@ import java.io.File;
 import java.io.FileWriter;
 
 import com.ncond.dss.common.impl.DSSClassDefs;
-import com.ncond.dss.common.impl.DSSGlobals;
-import com.ncond.dss.common.impl.Utilities;
+import com.ncond.dss.common.impl.DSS;
+import com.ncond.dss.common.impl.Util;
 import com.ncond.dss.control.RegControl;
 import com.ncond.dss.control.RegControlObj;
 import com.ncond.dss.parser.impl.Parser;
@@ -66,7 +66,7 @@ public class RegControlImpl extends ControlClassImpl implements RegControl {
 
 		propertyHelp[0] = "Name of Transformer element to which the RegControl is connected. "+
 				"Do not specify the full object name; \"Transformer\" is assumed for "  +
-				"the object class.  Example:"+DSSGlobals.CRLF+DSSGlobals.CRLF+
+				"the object class.  Example:"+DSS.CRLF+DSS.CRLF+
 				"Transformer=Xfmr1";
 		propertyHelp[1] = "Number of the winding of the transformer element that the RegControl is monitoring. "+
 				"1 or 2, typically.  Side Effect: Sets TAPWINDING property to the same winding.";
@@ -101,8 +101,8 @@ public class RegControlImpl extends ControlClassImpl implements RegControl {
 				"after the first change.";
 		propertyHelp[16] = "{Yes | No*}  Default is no.  Turn this on to capture the progress of the regulator model " +
 				"for each control iteration.  Creates a separate file for each RegControl named \"REG_name.CSV\"." ;
-		propertyHelp[17] = "Maximum allowable tap change per control iteration in STATIC control mode.  Default is 16. " + DSSGlobals.CRLF+ DSSGlobals.CRLF +
-				"Set this to 1 to better approximate actual control action. " + DSSGlobals.CRLF + DSSGlobals.CRLF +
+		propertyHelp[17] = "Maximum allowable tap change per control iteration in STATIC control mode.  Default is 16. " + DSS.CRLF+ DSS.CRLF +
+				"Set this to 1 to better approximate actual control action. " + DSS.CRLF + DSS.CRLF +
 				"Set this to 0 to fix the tap in the current position.";
 		propertyHelp[18] = "{Yes | No*} Default is no.  The time delay is adjusted inversely proportional to the amount the voltage is outside the band down to 10%.";
 		propertyHelp[19] = "Winding containing the actual taps, if different than the WINDING property. Defaults to the same winding as specified by the WINDING property.";
@@ -121,8 +121,8 @@ public class RegControlImpl extends ControlClassImpl implements RegControl {
 
 	@Override
 	public int newObject(String objName) {
-		DSSGlobals.activeCircuit.setActiveCktElement(new GenDispatcherObjImpl(this, objName));
-		return addObjectToList(DSSGlobals.activeDSSObject);
+		DSS.activeCircuit.setActiveCktElement(new GenDispatcherObjImpl(this, objName));
+		return addObjectToList(DSS.activeDSSObject);
 	}
 
 	@Override
@@ -131,7 +131,7 @@ public class RegControlImpl extends ControlClassImpl implements RegControl {
 
 		// continue parsing with contents of parser
 		activeRegControlObj = (RegControlObj) elementList.getActive();
-		DSSGlobals.activeCircuit.setActiveCktElement(activeRegControlObj);
+		DSS.activeCircuit.setActiveCktElement(activeRegControlObj);
 
 		int result = 0;
 
@@ -152,7 +152,7 @@ public class RegControlImpl extends ControlClassImpl implements RegControl {
 
 			switch (paramPointer) {
 			case -1:
-				DSSGlobals.doSimpleMsg("Unknown parameter \"" + paramName + "\" for object \"" + getName() +"."+ arc.getName() + "\"", 120);
+				DSS.doSimpleMsg("Unknown parameter \"" + paramName + "\" for object \"" + getName() +"."+ arc.getName() + "\"", 120);
 				break;
 			case 0:
 				arc.setElementName("Transformer." + param.toLowerCase());
@@ -185,7 +185,7 @@ public class RegControlImpl extends ControlClassImpl implements RegControl {
 				arc.setTimeDelay(parser.makeDouble());
 				break;
 			case 10:
-				arc.setReversible(Utilities.interpretYesNo(param));
+				arc.setReversible(Util.interpretYesNo(param));
 				break;
 			case 11:
 				arc.setRevVReg(parser.makeDouble());
@@ -203,13 +203,13 @@ public class RegControlImpl extends ControlClassImpl implements RegControl {
 				arc.setTapDelay(parser.makeDouble());
 				break;
 			case 16:
-				arc.setDebugTrace(Utilities.interpretYesNo(param));
+				arc.setDebugTrace(Util.interpretYesNo(param));
 				break;
 			case 17:
 				arc.setTapLimitPerChange(Math.max(0, parser.makeInteger()));
 				break;
 			case 18:
-				arc.setInverseTime(Utilities.interpretYesNo(param));
+				arc.setInverseTime(Util.interpretYesNo(param));
 				break;
 			case 19:
 				arc.setTapWinding(parser.makeInteger());
@@ -223,9 +223,9 @@ public class RegControlImpl extends ControlClassImpl implements RegControl {
 				}
 				break;
 			case 21:
-				if (Utilities.compareTextShortest(param, "max") == 0) {
+				if (Util.compareTextShortest(param, "max") == 0) {
 					arc.setPTPhase(MAXPHASE);
-				} else if (Utilities.compareTextShortest(param, "min") == 0) {
+				} else if (Util.compareTextShortest(param, "min") == 0) {
 					arc.setPTPhase(MINPHASE);
 				} else {
 					arc.setPTPhase(Math.max(1, parser.makeInteger()));
@@ -238,10 +238,10 @@ public class RegControlImpl extends ControlClassImpl implements RegControl {
 				arc.setRevDelay(parser.makeDouble());
 				break;
 			case 24:
-				arc.setReverseNeutral(Utilities.interpretYesNo(param));
+				arc.setReverseNeutral(Util.interpretYesNo(param));
 				break;
 			case 25:
-				arc.setShowEventLog(Utilities.interpretYesNo(param));
+				arc.setShowEventLog(Util.interpretYesNo(param));
 			default:
 				// inherited parameters
 				classEdit(activeRegControlObj, paramPointer - RegControl.NumPropsThisClass);
@@ -256,7 +256,7 @@ public class RegControlImpl extends ControlClassImpl implements RegControl {
 			case 16:
 				if (arc.isDebugTrace()) {
 					try {
-						File TraceFile = new File(DSSGlobals.DSSDataDirectory + "REG_"+arc.getName()+".csv");
+						File TraceFile = new File(DSS.DSSDataDirectory + "REG_"+arc.getName()+".csv");
 						FileWriter TraceStream = new FileWriter(TraceFile, false);
 						BufferedWriter TraceBuffer = new BufferedWriter(TraceStream);
 
@@ -293,8 +293,8 @@ public class RegControlImpl extends ControlClassImpl implements RegControl {
 
 			RegControlObj arc = activeRegControlObj;
 
-			arc.setNPhases(otherRegControl.getNPhases());
-			arc.setNConds(otherRegControl.getNConds());  // force reallocation of terminal stuff
+			arc.setNumPhases(otherRegControl.getNumPhases());
+			arc.setNumConds(otherRegControl.getNumConds());  // force reallocation of terminal stuff
 
 			arc.setElementName(otherRegControl.getElementName());
 			arc.setControlledElement(otherRegControl.getControlledElement());  // pointer to target circuit element
@@ -329,7 +329,7 @@ public class RegControlImpl extends ControlClassImpl implements RegControl {
 			for (int i = 0; i < arc.getParentClass().getNumProperties(); i++)
 				arc.setPropertyValue(i, otherRegControl.getPropertyValue(i));
 		} else {
-			DSSGlobals.doSimpleMsg("Error in RegControl makeLike: \"" + regControlName + "\" not found.",121);
+			DSS.doSimpleMsg("Error in RegControl makeLike: \"" + regControlName + "\" not found.",121);
 		}
 
 		return result;

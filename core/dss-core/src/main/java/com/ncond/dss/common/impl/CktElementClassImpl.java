@@ -4,8 +4,7 @@ import com.ncond.dss.common.CktElement;
 import com.ncond.dss.common.CktElementClass;
 import com.ncond.dss.parser.impl.Parser;
 
-public class CktElementClassImpl extends DSSClassImpl implements
-		CktElementClass {
+public class CktElementClassImpl extends DSSClassImpl implements CktElementClass {
 
 	private int numCktElemClassProps;
 
@@ -15,15 +14,17 @@ public class CktElementClassImpl extends DSSClassImpl implements
 	}
 
 	protected int classEdit(Object activeCktElemObj, int paramPointer) {
+		Parser parser = Parser.getInstance();
+
 		// continue parsing with contents of parser
 		if (paramPointer >= 0) {
 			CktElement cktElem = (CktElement) activeCktElemObj;
 			switch (paramPointer) {
 			case 0:
-				cktElem.setBaseFrequency(Parser.getInstance().makeDouble());
+				cktElem.setBaseFrequency(parser.makeDouble());
 				break;
 			case 1:
-				cktElem.setEnabled(Utilities.interpretYesNo(Parser.getInstance().makeString()));
+				cktElem.setEnabled(Util.interpretYesNo(parser.makeString()));
 				break;
 			default:
 				super.classEdit(activeCktElemObj, paramPointer - numCktElemClassProps);
@@ -36,7 +37,7 @@ public class CktElementClassImpl extends DSSClassImpl implements
 	protected void classMakeLike(Object otherObj) {
 		CktElement otherCktObj = (CktElement) otherObj;
 
-		CktElement cktElem = (CktElement) DSSGlobals.activeDSSObject;
+		CktElement cktElem = (CktElement) DSS.activeDSSObject;
 		cktElem.setBaseFrequency(otherCktObj.getBaseFrequency());
 		cktElem.setEnabled(true);
 	}

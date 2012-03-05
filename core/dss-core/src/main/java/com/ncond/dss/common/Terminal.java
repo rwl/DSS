@@ -12,6 +12,8 @@ public interface Terminal {
 
 	void setTermNodeRef(int[] termNodeRef);
 
+	Conductor getConductor(int idx);
+
 	Conductor[] getConductors();
 
 	void setConductors(Conductor[] conductors);

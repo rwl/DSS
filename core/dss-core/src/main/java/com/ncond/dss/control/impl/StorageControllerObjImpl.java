@@ -10,8 +10,8 @@ import com.ncond.dss.common.Circuit;
 import com.ncond.dss.common.CktElement;
 import com.ncond.dss.common.SolutionObj;
 import com.ncond.dss.common.impl.DSSClassImpl;
-import com.ncond.dss.common.impl.DSSGlobals;
-import com.ncond.dss.common.impl.Utilities;
+import com.ncond.dss.common.impl.DSS;
+import com.ncond.dss.common.impl.Util;
 import com.ncond.dss.control.StorageController;
 import com.ncond.dss.control.StorageControllerObj;
 import com.ncond.dss.conversion.Storage;
@@ -82,9 +82,9 @@ public class StorageControllerObjImpl extends ControlElemImpl implements Storage
 		setName(storageControllerName.toLowerCase());
 		objType = parClass.getDSSClassType();
 
-		setNPhases(3);  // directly set conds and phases
-		nConds = 3;
-		setNTerms(1);   // this forces allocation of terminals and conductors
+		setNumPhases(3);  // directly set conds and phases
+		ncond = 3;
+		setNumTerms(1);   // this forces allocation of terminals and conductors
 
 		elementName       = "";
 		setControlledElement(null);  // not used in this control
@@ -178,7 +178,7 @@ public class StorageControllerObjImpl extends ControlElemImpl implements Storage
 		case StorageController.KW_BAND:
 			return String.format("%-.6g", pctkWBand);
 		case StorageController.PF_TARGET:
-			return String.format("%-.6g", Utilities.convertPFRange2ToPF(PFTarget));
+			return String.format("%-.6g", Util.convertPFRange2ToPF(PFTarget));
 		case StorageController.PF_BAND:
 			return String.format("%-.6g", PFBand);
 		case StorageController.ELEMENT_LIST:
@@ -283,26 +283,26 @@ public class StorageControllerObjImpl extends ControlElemImpl implements Storage
 	public void recalcElementData() {
 
 		/* Check for existence of monitored element */
-		int devIndex = Utilities.getCktElementIndex(elementName);
+		int devIndex = Util.getCktElementIndex(elementName);
 		if (devIndex >= 0) {
-			monitoredElement = DSSGlobals.activeCircuit.getCktElements().get(devIndex);
-			if (elementTerminal > monitoredElement.getNTerms()) {
-				DSSGlobals.doErrorMsg("StorageController: \"" + getName() + "\"",
+			monitoredElement = DSS.activeCircuit.getCktElements().get(devIndex);
+			if (elementTerminal > monitoredElement.getNumTerms()) {
+				DSS.doErrorMsg("StorageController: \"" + getName() + "\"",
 						"Terminal no. \"" +"\" does not exist.",
 						"Re-specify terminal no.", 371);
 			} else {
-				setNPhases( monitoredElement.getNPhases() );
-				setNConds(nPhases);
+				setNumPhases( monitoredElement.getNumPhases() );
+				setNumConds(nphase);
 				// sets name of i-th terminal's connected bus in StorageController's bus list
 				setBus(0, monitoredElement.getBus(elementTerminal));
 			}
 		} else {
-			DSSGlobals.doSimpleMsg("Monitored element in StorageController."+getName()+ " does not exist:\""+elementName+"\"", 372);
+			DSS.doSimpleMsg("Monitored element in StorageController."+getName()+ " does not exist:\""+elementName+"\"", 372);
 		}
 
 		if (fleetListChanged)
 			if (!makeFleetList())
-				DSSGlobals.doSimpleMsg("No unassigned storage elements found to assign to StorageController."+getName(), 37201);
+				DSS.doSimpleMsg("No unassigned storage elements found to assign to StorageController."+getName(), 37201);
 
 		getkWTotal(totalKWCapacity);
 		getkWhTotal(totalKWhCapacity);
@@ -322,8 +322,8 @@ public class StorageControllerObjImpl extends ControlElemImpl implements Storage
 	@Override
 	public void makePosSequence() {
 		if (monitoredElement != null) {
-			setNPhases( monitoredElement.getNPhases() );
-			setNConds(nPhases);
+			setNumPhases( monitoredElement.getNumPhases() );
+			setNumConds(nphase);
 			setBus(0, monitoredElement.getBus(elementTerminal));
 		}
 		super.makePosSequence();
@@ -336,13 +336,13 @@ public class StorageControllerObjImpl extends ControlElemImpl implements Storage
 
 	@Override
 	public void getCurrents(Complex[] curr) {
-		for (int i = 0; i < nConds; i++)
+		for (int i = 0; i < ncond; i++)
 			curr[i] = Complex.ZERO;
 	}
 
 	@Override
 	public void getInjCurrents(Complex[] curr) {
-		for (int i = 0; i < nConds; i++)
+		for (int i = 0; i < ncond; i++)
 			curr[i] = Complex.ZERO;
 	}
 
@@ -405,7 +405,7 @@ public class StorageControllerObjImpl extends ControlElemImpl implements Storage
 				return "UNKNOWN";
 			}
 		default:
-			DSSGlobals.doSimpleMsg("Unknown charge/discharge designation", 14401);
+			DSS.doSimpleMsg("Unknown charge/discharge designation", 14401);
 			return "";
 		}
 	}
@@ -444,7 +444,7 @@ public class StorageControllerObjImpl extends ControlElemImpl implements Storage
 		double tDiff;
 		double pctDischargeRate = 0.0;  // init for test
 
-		Circuit ckt = DSSGlobals.activeCircuit;
+		Circuit ckt = DSS.activeCircuit;
 		SolutionObj sol = ckt.getSolution();
 
 		if (dischargeTriggerTime > 0.0) {
@@ -455,7 +455,7 @@ public class StorageControllerObjImpl extends ControlElemImpl implements Storage
 				if (Math.abs(tDiff) < sol.getDynaVars().h / 7200.0) {
 					/* Time is within 1 time step of the trigger time */
 					if (showEventLog)
-						Utilities.appendToEventLog("StorageController." + getName(), "Fleet set to discharging (up ramp) by schedule");
+						Util.appendToEventLog("StorageController." + getName(), "Fleet set to discharging (up ramp) by schedule");
 					setFleetToDisCharge();
 					chargingAllowed = false;
 					pctDischargeRate = Math.min(pctKWRate, Math.max(pctKWRate * tDiff / upRampTime, 0.0));
@@ -481,7 +481,7 @@ public class StorageControllerObjImpl extends ControlElemImpl implements Storage
 						chargingAllowed = true;
 						pctDischargeRate = 0.0;
 						if (showEventLog)
-							Utilities.appendToEventLog("StorageController." + getName(), "Fleet set to idling by schedule");
+							Util.appendToEventLog("StorageController." + getName(), "Fleet set to idling by schedule");
 
 					} else {  // we're on the down ramp
 
@@ -505,7 +505,7 @@ public class StorageControllerObjImpl extends ControlElemImpl implements Storage
 	 * from the controller.
 	 */
 	private void doTimeMode(int opt) {
-		Circuit ckt = DSSGlobals.activeCircuit;
+		Circuit ckt = DSS.activeCircuit;
 		SolutionObj sol = ckt.getSolution();
 
 		switch (opt) {
@@ -516,7 +516,7 @@ public class StorageControllerObjImpl extends ControlElemImpl implements Storage
 					if (!(fleetState == Storage.DISCHARGING)) {
 						/* Time is within 1 time step of the trigger time */
 						if (showEventLog)
-							Utilities.appendToEventLog("StorageController." + getName(), "Fleet set to discharging by time trigger");
+							Util.appendToEventLog("StorageController." + getName(), "Fleet set to discharging by time trigger");
 						setFleetToDisCharge();
 						setFleetkWRate(pctKWRate);
 						dischargeInhibited = false;
@@ -537,7 +537,7 @@ public class StorageControllerObjImpl extends ControlElemImpl implements Storage
 					if (!(fleetState == Storage.CHARGING)) {
 						/* Time is within 1 time step of the trigger time */
 						if (showEventLog)
-							Utilities.appendToEventLog("StorageController." + getName(), "Fleet set to charging by time trigger");
+							Util.appendToEventLog("StorageController." + getName(), "Fleet set to charging by time trigger");
 						setFleetToCharge();
 						dischargeInhibited = true;
 						outOfEnergy        = false;
@@ -579,7 +579,7 @@ public class StorageControllerObjImpl extends ControlElemImpl implements Storage
 	 * Push present time onto control queue to force re solve at new dispatch value
 	 */
 	private void pushTimeOntoControlQueue(int code) {
-		Circuit ckt = DSSGlobals.activeCircuit;
+		Circuit ckt = DSS.activeCircuit;
 		SolutionObj sol = ckt.getSolution();
 		sol.setLoadsNeedUpdating(true);  // force recalc of power parms
 		ckt.getControlQueue().push(sol.getIntHour(), sol.getDynaVars().t, code, 0, this);
@@ -612,23 +612,23 @@ public class StorageControllerObjImpl extends ControlElemImpl implements Storage
 			case StorageController.FOLLOW:
 				if (dischargeTriggeredByTime) {
 					if (showEventLog)
-						Utilities.appendToEventLog("StorageController." + getName(),
+						Util.appendToEventLog("StorageController." + getName(),
 								String.format("Fleet set to discharging by time trigger; Old kWTarget = %-.6g; New = 5-.6g", kWTarget, S.getReal() * 0.001));
 					kWTarget = Math.max(kWThreshold, S.getReal() * 0.001);  // capture present kW and reset target
 					dischargeTriggeredByTime = false;  // so we don't come back in here right away
 					setFleetToIdle();
 				}
 				PDiff  = S.getReal() * 0.001 - kWTarget;  // assume S.re is normally positive
-				PFDiff = Utilities.convertPFToPFRange2(Utilities.powerFactor(S)) - PFTarget;  // for peak shaving
+				PFDiff = Util.convertPFToPFRange2(Util.powerFactor(S)) - PFTarget;  // for peak shaving
 				break;
 			// supporting DG; try to keep load above kW target
 			case StorageController.SUPPORT:
 				PDiff  = S.getReal() * 0.001 + kWTarget;  // assume S.re is normally negative
-				PFDiff = Utilities.convertPFToPFRange2(Utilities.powerFactor(S)) - PFTarget;  // for generator
+				PFDiff = Util.convertPFToPFRange2(Util.powerFactor(S)) - PFTarget;  // for generator
 				break;
 			case StorageController.PEAKSHAVE:
 				PDiff  = S.getReal() * 0.001 - kWTarget;  // assume S.re is normally positive
-				PFDiff = Utilities.convertPFToPFRange2(Utilities.powerFactor(S)) - PFTarget;  // for peak shaving
+				PFDiff = Util.convertPFToPFRange2(Util.powerFactor(S)) - PFTarget;  // for peak shaving
 				break;
 			default:
 				PDiff = 0.0;
@@ -683,7 +683,7 @@ public class StorageControllerObjImpl extends ControlElemImpl implements Storage
 						if (!(fleetState == Storage.DISCHARGING))
 							setFleetToDisCharge();
 						if (showEventLog)
-							Utilities.appendToEventLog("StorageController." + getName(),
+							Util.appendToEventLog("StorageController." + getName(),
 									String.format("Attempting to dispatch %-.6g kW with %-.6g kWh remaining and %-.6g reserve.", kWNeeded, remainingKWh, reserveKWh));
 						for (i = 0; i < fleetSize; i++) {
 							pStorage = (StorageObj) fleetPointerList.get(i);
@@ -705,7 +705,7 @@ public class StorageControllerObjImpl extends ControlElemImpl implements Storage
 					chargingAllowed = true;
 					outOfEnergy = true;
 					if (showEventLog)
-						Utilities.appendToEventLog("StorageController." + getName(),
+						Util.appendToEventLog("StorageController." + getName(),
 								String.format("Ran out of energy: %-.6g kWh remaining and %-.6g reserve.", remainingKWh, reserveKWh));
 				}
 			}
@@ -714,7 +714,7 @@ public class StorageControllerObjImpl extends ControlElemImpl implements Storage
 			// redispatch the vars only if the PF is outside the band
 			if (dispatchVars && Math.abs(PFDiff) > halfPFBand) {
 				if (showEventLog)
-					Utilities.appendToEventLog("StorageController." + getName(),
+					Util.appendToEventLog("StorageController." + getName(),
 							String.format("Changed kvar dispatch. PF diff needed = %.6g", PFDiff));
 				// redispatch storage elements
 				for (i = 0; i < fleetSize; i++) {
@@ -723,7 +723,7 @@ public class StorageControllerObjImpl extends ControlElemImpl implements Storage
 					if (PFTarget == 1.0) {
 						dispatchKVAr = 0.0;
 					} else {
-						dispatchKVAr = S.getReal() * Math.sqrt(1.0 / Math.pow(Utilities.convertPFRange2ToPF(PFTarget), 2) - 1.0) * (weights[i] / totalWeight);
+						dispatchKVAr = S.getReal() * Math.sqrt(1.0 / Math.pow(Util.convertPFRange2ToPF(PFTarget), 2) - 1.0) * (weights[i] / totalWeight);
 						if (PFTarget > 1.0)
 							dispatchKVAr = -dispatchKVAr;  // for watts and vars in opposite direction
 					}
@@ -771,7 +771,7 @@ public class StorageControllerObjImpl extends ControlElemImpl implements Storage
 			doScheduleMode();
 			break;
 		default:
-			DSSGlobals.doSimpleMsg(String.format("Invalid discharging mode: %d", dischargeMode), 14408);
+			DSS.doSimpleMsg(String.format("Invalid discharging mode: %d", dischargeMode), 14408);
 			break;
 		}
 
@@ -784,7 +784,7 @@ public class StorageControllerObjImpl extends ControlElemImpl implements Storage
 				doTimeMode(2);
 				break;
 			default:
-				DSSGlobals.doSimpleMsg(String.format("Invalid charging mode: %d", chargeMode), 14409);
+				DSS.doSimpleMsg(String.format("Invalid charging mode: %d", chargeMode), 14409);
 				break;
 			}
 	}
@@ -819,7 +819,7 @@ public class StorageControllerObjImpl extends ControlElemImpl implements Storage
 		double newChargeRate;
 		double newKWRate, newKVArRate;
 
-		Circuit ckt = DSSGlobals.activeCircuit;
+		Circuit ckt = DSS.activeCircuit;
 		SolutionObj sol = ckt.getSolution();
 
 		fleetStateSaved = fleetState;
@@ -982,7 +982,7 @@ public class StorageControllerObjImpl extends ControlElemImpl implements Storage
 			case 't':
 				return StorageController.TIME;
 			default:
-				DSSGlobals.doSimpleMsg("Discharge Mode \"" + s + "\" not recognized.", 14402);
+				DSS.doSimpleMsg("Discharge Mode \"" + s + "\" not recognized.", 14402);
 			}
 			break;
 		case StorageController.MODE_CHARGE:
@@ -996,7 +996,7 @@ public class StorageControllerObjImpl extends ControlElemImpl implements Storage
 			case 't':
 				return StorageController.TIME;
 			default:
-				DSSGlobals.doSimpleMsg("Charge Mode \"" + s + "\" not recognized.", 14402);
+				DSS.doSimpleMsg("Charge Mode \"" + s + "\" not recognized.", 14402);
 			}
 			break;
 		default:
@@ -1014,12 +1014,12 @@ public class StorageControllerObjImpl extends ControlElemImpl implements Storage
 
 			fleetPointerList.clear();
 			for (i = 0; i < fleetSize; i++) {
-				pStorage = (StorageObj) DSSGlobals.storageClass.find(storageNameList.get(i));
+				pStorage = (StorageObj) DSS.storageClass.find(storageNameList.get(i));
 				if (pStorage != null) {
 					if (pStorage.isEnabled())
 						fleetPointerList.add(pStorage);
 				} else {
-					DSSGlobals.doSimpleMsg("Error: Storage element \"" + storageNameList.get(i) + "\" not found.", 14403);
+					DSS.doSimpleMsg("Error: Storage element \"" + storageNameList.get(i) + "\" not found.", 14403);
 					return result;
 				}
 			}
@@ -1029,8 +1029,8 @@ public class StorageControllerObjImpl extends ControlElemImpl implements Storage
 			/* Search through the entire circuit for enabled storage elements and add them to the list */
 			storageNameList.clear();
 			fleetPointerList.clear();
-			for (i = 0; i < DSSGlobals.storageClass.getElementCount(); i++) {
-				pStorage = (StorageObj) DSSGlobals.storageClass.getElementList().get(i);
+			for (i = 0; i < DSS.storageClass.getElementCount(); i++) {
+				pStorage = (StorageObj) DSS.storageClass.getElementList().get(i);
 				// Look for a storage element not already assigned
 				if (pStorage.isEnabled() && (pStorage.getDispatchMode() != Storage.EXTERNAL_MODE)) {
 					storageNameList.add(pStorage.getName());  // add to list of names
@@ -1040,7 +1040,7 @@ public class StorageControllerObjImpl extends ControlElemImpl implements Storage
 
 			/* Allocate uniform weights */
 			fleetSize = fleetPointerList.size();
-			weights = Utilities.resizeArray(weights, fleetSize);
+			weights = Util.resizeArray(weights, fleetSize);
 			for (i = 0; i < fleetSize; i++)
 				weights[i] = 1.0;
 		}
@@ -1091,6 +1091,11 @@ public class StorageControllerObjImpl extends ControlElemImpl implements Storage
 		result = result + "]";  // terminate the array
 
 		return result;
+	}
+
+	@Override
+	public int injCurrents() {
+		throw new UnsupportedOperationException();
 	}
 
 	// FIXME Private members in OpenDSS

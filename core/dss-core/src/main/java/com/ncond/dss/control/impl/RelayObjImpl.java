@@ -8,8 +8,8 @@ import com.ncond.dss.common.Circuit;
 import com.ncond.dss.common.CktElement;
 import com.ncond.dss.common.impl.DSSClassDefs;
 import com.ncond.dss.common.impl.DSSClassImpl;
-import com.ncond.dss.common.impl.DSSGlobals;
-import com.ncond.dss.common.impl.Utilities;
+import com.ncond.dss.common.impl.DSS;
+import com.ncond.dss.common.impl.Util;
 import com.ncond.dss.control.Relay;
 import com.ncond.dss.control.RelayObj;
 import com.ncond.dss.conversion.PCElement;
@@ -81,9 +81,9 @@ public class RelayObjImpl extends ControlElemImpl implements RelayObj {
 		setName(relayName.toLowerCase());
 		objType = parClass.getDSSClassType();
 
-		setNPhases(3);  // directly set conds and phases
-		nConds = 3;
-		setNTerms(1);   // this forces allocation of terminals and conductors in base class
+		setNumPhases(3);  // directly set conds and phases
+		ncond = 3;
+		setNumTerms(1);   // this forces allocation of terminals and conductors in base class
 
 
 		elementName   = "";
@@ -110,7 +110,7 @@ public class RelayObjImpl extends ControlElemImpl implements RelayObj {
 		numReclose     = 3;
 		recloseIntervals = null;
 
-		recloseIntervals = Utilities.resizeArray(recloseIntervals, 4);  // fixed allocation of 4
+		recloseIntervals = Util.resizeArray(recloseIntervals, 4);  // fixed allocation of 4
 		recloseIntervals[0] = 0.5;
 		recloseIntervals[1] = 2.0;
 		recloseIntervals[2] = 2.0;
@@ -148,30 +148,30 @@ public class RelayObjImpl extends ControlElemImpl implements RelayObj {
 	@Override
 	public void recalcElementData() {
 
-		int devIndex = Utilities.getCktElementIndex(monitoredElementName);
+		int devIndex = Util.getCktElementIndex(monitoredElementName);
 		if (devIndex >= 0) {
-			monitoredElement = DSSGlobals.activeCircuit.getCktElements().get(devIndex);
-			setNPhases( monitoredElement.getNPhases() );  // force number of phases to be same
-			if (monitoredElementTerminal > monitoredElement.getNTerms()) {
-				DSSGlobals.doErrorMsg("Relay: \"" + getName() + "\"",
+			monitoredElement = DSS.activeCircuit.getCktElements().get(devIndex);
+			setNumPhases( monitoredElement.getNumPhases() );  // force number of phases to be same
+			if (monitoredElementTerminal > monitoredElement.getNumTerms()) {
+				DSS.doErrorMsg("Relay: \"" + getName() + "\"",
 						"Terminal no. \"" +"\" does not exist.",
 						"Re-specify terminal no.", 384);
 			} else {
 				// sets name of i-th terminal's connected bus in Relay's bus list
 				setBus(0, monitoredElement.getBus(monitoredElementTerminal));
 				// allocate a buffer big enough to hold everything from the monitored element
-				cBuffer = Utilities.resizeArray(cBuffer, monitoredElement.getYorder());
-				condOffset = monitoredElementTerminal * monitoredElement.getNConds();  // for speedy sampling
+				cBuffer = Util.resizeArray(cBuffer, monitoredElement.getYorder());
+				condOffset = monitoredElementTerminal * monitoredElement.getNumConds();  // for speedy sampling
 
 				switch (controlType) {
 				case Relay.GENERIC:
 					if ((monitoredElement.getDSSObjType() & DSSClassDefs.BASECLASSMASK) != DSSClassDefs.PC_ELEMENT) {
-						DSSGlobals.doSimpleMsg("Relay "+getName()+": Monitored element for generic relay is not a PC element.", 385);
+						DSS.doSimpleMsg("Relay "+getName()+": Monitored element for generic relay is not a PC element.", 385);
 					} else {
 						PCElement pElem = (PCElement) monitoredElement;
 						monitorVarIndex = pElem.lookupVariable(monitorVariable);
 						if (monitorVarIndex < 0)
-							DSSGlobals.doSimpleMsg("Relay "+getName()+": Monitor variable \""+monitorVariable+"\" does not exist.", 386);
+							DSS.doSimpleMsg("Relay "+getName()+": Monitor variable \""+monitorVariable+"\" does not exist.", 386);
 					}
 					break;
 				}
@@ -179,12 +179,12 @@ public class RelayObjImpl extends ControlElemImpl implements RelayObj {
 		}
 
 		/* Check for existence of controlled element */
-		devIndex = Utilities.getCktElementIndex(elementName);
+		devIndex = Util.getCktElementIndex(elementName);
 		if (devIndex >= 0) {
 			// both CktElement and monitored element must already exist
-			setControlledElement( DSSGlobals.activeCircuit.getCktElements().get(devIndex) );
+			setControlledElement( DSS.activeCircuit.getCktElements().get(devIndex) );
 			getControlledElement().setActiveTerminalIdx(elementTerminal);  // make the 1 st terminal active
-			if (getControlledElement().getConductorClosed(-1)) {  // check state of phases of active terminal
+			if (getControlledElement().isConductorClosed(-1)) {  // check state of phases of active terminal
 				presentState = ControlAction.CLOSE;
 				lockedOut = false;
 				operationCount = 1;
@@ -197,7 +197,7 @@ public class RelayObjImpl extends ControlElemImpl implements RelayObj {
 			}
 		} else {
 			setControlledElement(null);  // element not found
-			DSSGlobals.doErrorMsg("Relay: \"" + getName() + "\"", "CktElement element \""+ elementName + "\" not found.",
+			DSS.doErrorMsg("Relay: \"" + getName() + "\"", "CktElement element \""+ elementName + "\" not found.",
 					" Element must be defined previously.", 387);
 		}
 
@@ -205,12 +205,12 @@ public class RelayObjImpl extends ControlElemImpl implements RelayObj {
 
 		pickupAmps46 = baseAmps46 * pctPickup46 * 0.01;
 
-		switch (nPhases) {
+		switch (nphase) {
 		case 1:
 			VBase = kVBase * 1000.0;
 			break;
 		default:
-			VBase = kVBase / DSSGlobals.SQRT3 * 1000.0;
+			VBase = kVBase / DSS.SQRT3 * 1000.0;
 			break;
 		}
 
@@ -223,20 +223,20 @@ public class RelayObjImpl extends ControlElemImpl implements RelayObj {
 	@Override
 	public void makePosSequence() {
 		if (monitoredElement != null) {
-			setNPhases( monitoredElement.getNPhases() );
-			setNConds(nPhases);
+			setNumPhases( monitoredElement.getNumPhases() );
+			setNumConds(nphase);
 			setBus(0, monitoredElement.getBus(elementTerminal));
 			// allocate a buffer big enough to hold everything from the monitored element
-			cBuffer = Utilities.resizeArray(cBuffer, monitoredElement.getYorder());
-			condOffset = (elementTerminal - 1) * monitoredElement.getNConds();  // for speedy sampling
+			cBuffer = Util.resizeArray(cBuffer, monitoredElement.getYorder());
+			condOffset = (elementTerminal - 1) * monitoredElement.getNumConds();  // for speedy sampling
 		}
 
-		switch (nPhases) {
+		switch (nphase) {
 		case 1:
 			VBase = kVBase * 1000.0;
 			break;
 		default:
-			VBase = kVBase / DSSGlobals.SQRT3 * 1000.0;
+			VBase = kVBase / DSS.SQRT3 * 1000.0;
 			break;
 		}
 
@@ -252,13 +252,13 @@ public class RelayObjImpl extends ControlElemImpl implements RelayObj {
 
 	@Override
 	public void getCurrents(Complex[] curr) {
-		for (int i = 0; i < nConds; i++)
+		for (int i = 0; i < ncond; i++)
 			curr[i] = Complex.ZERO;
 	}
 
 	@Override
 	public void getInjCurrents(Complex[] curr) {
-		for (int i = 0; i < nConds; i++)
+		for (int i = 0; i < ncond; i++)
 			curr[i] = Complex.ZERO;
 	}
 
@@ -278,15 +278,15 @@ public class RelayObjImpl extends ControlElemImpl implements RelayObj {
 					getControlledElement().setConductorClosed(-1, false);  // open all phases of active terminal
 					if (operationCount > numReclose) {
 						lockedOut = true;
-						Utilities.appendToEventLog("Relay."+getName(), "Opened on "+relayTarget+" & Locked Out ");
+						Util.appendToEventLog("Relay."+getName(), "Opened on "+relayTarget+" & Locked Out ");
 					}
 				} else {
-					Utilities.appendToEventLog("Relay."+getName(), "Opened");
+					Util.appendToEventLog("Relay."+getName(), "Opened");
 				}
 				if (phaseTarget)
-					Utilities.appendToEventLog(" ", "Phase Target");
+					Util.appendToEventLog(" ", "Phase Target");
 				if (groundTarget)
-					Utilities.appendToEventLog(" ", "Ground Target");
+					Util.appendToEventLog(" ", "Ground Target");
 				armedForOpen = false;
 				break;
 			}
@@ -296,7 +296,7 @@ public class RelayObjImpl extends ControlElemImpl implements RelayObj {
 				if (armedForClose && !lockedOut) {
 					getControlledElement().setConductorClosed(-1, true);  // close all phases of active terminal
 					operationCount += 1;
-					Utilities.appendToEventLog("Relay."+getName(), "Closed");
+					Util.appendToEventLog("Relay."+getName(), "Closed");
 					armedForClose = false;
 				}
 				break;
@@ -343,7 +343,7 @@ public class RelayObjImpl extends ControlElemImpl implements RelayObj {
 	public void sample() {
 
 		getControlledElement().setActiveTerminalIdx(elementTerminal);
-		if (getControlledElement().getConductorClosed(-1)) {  // check state of phases of active terminal
+		if (getControlledElement().isConductorClosed(-1)) {  // check state of phases of active terminal
 			presentState = ControlAction.CLOSE;
 		} else {
 			presentState = ControlAction.OPEN;
@@ -528,7 +528,7 @@ public class RelayObjImpl extends ControlElemImpl implements RelayObj {
 		/* Check for trip */
 		if (varValue >  overTrip || varValue < underTrip) {
 			if (!armedForOpen) {  // push the trip operation and arm to trip
-				ckt = DSSGlobals.activeCircuit;
+				ckt = DSS.activeCircuit;
 				relayTarget = pElem.variableName(monitorVarIndex);
 				lastEventHandle = ckt.getControlQueue().push(ckt.getSolution().getIntHour(), ckt.getSolution().getDynaVars().t + delayTime + breakerTime, ControlAction.OPEN, 0, this);
 				operationCount = numReclose + 1;  // force a lockout
@@ -538,7 +538,7 @@ public class RelayObjImpl extends ControlElemImpl implements RelayObj {
 			/* Within bounds */
 			/* Less than pickup value: reset if armed */
 			if (armedForOpen) {  // we became unarmed, so reset and disarm
-				ckt = DSSGlobals.activeCircuit;
+				ckt = DSS.activeCircuit;
 				lastEventHandle = ckt.getControlQueue().push(ckt.getSolution().getIntHour(), ckt.getSolution().getDynaVars().t + resetTime, ControlAction.CTRL_RESET, 0, this);
 				armedForOpen = false;
 			}
@@ -556,12 +556,12 @@ public class RelayObjImpl extends ControlElemImpl implements RelayObj {
 
 		monitoredElement.setActiveTerminalIdx(monitoredElementTerminal);
 		monitoredElement.getCurrents(cBuffer);
-		iOffset = monitoredElementTerminal * monitoredElement.getNConds();  // offset for active terminal
+		iOffset = monitoredElementTerminal * monitoredElement.getNumConds();  // offset for active terminal
 		MathUtil.phase2SymComp(cBuffer[iOffset + 1], I012);
 		negSeqCurrentMag = I012[2].abs();
 		if (negSeqCurrentMag >= pickupAmps46) {
 			if (!armedForOpen) {  // push the trip operation and arm to trip
-				ckt = DSSGlobals.activeCircuit;
+				ckt = DSS.activeCircuit;
 				relayTarget = "-Seq Curr";
 				/* Simple estimate of trip time assuming current will be constant */
 				if (delayTime > 0.0) {
@@ -576,7 +576,7 @@ public class RelayObjImpl extends ControlElemImpl implements RelayObj {
 		} else {
 			/* Less than pickup value: reset if armed */
 			if (armedForOpen) {  // we became unarmed, so reset and disarm
-				ckt = DSSGlobals.activeCircuit;
+				ckt = DSS.activeCircuit;
 				lastEventHandle = ckt.getControlQueue().push(ckt.getSolution().getIntHour(), ckt.getSolution().getDynaVars().t + resetTime, ControlAction.CTRL_RESET, 0, this);
 				armedForOpen = false;
 			}
@@ -602,7 +602,7 @@ public class RelayObjImpl extends ControlElemImpl implements RelayObj {
 			/* Check ground trip, if any */
 			if ((groundCurve != null || delayTime > 0.0) && groundTrip > 0.0) {
 				CSum = Complex.ZERO;
-				for (i = condOffset; i < nPhases + condOffset; i++)
+				for (i = condOffset; i < nphase + condOffset; i++)
 					CSum = CSum.add(cBuffer[i]);
 				CMag  = CSum.abs();
 				if (groundInst > 0.0 && CMag >= groundInst && operationCount == 1) {
@@ -630,7 +630,7 @@ public class RelayObjImpl extends ControlElemImpl implements RelayObj {
 			/* Check phase trip, if any */
 
 			if ((phaseCurve != null || delayTime > 0.0) && phaseTrip > 0.0) {
-				for (i = condOffset; i < nPhases + condOffset; i++) {
+				for (i = condOffset; i < nphase + condOffset; i++) {
 					CMag = cBuffer[i].abs();
 					if (phaseInst > 0.0 && CMag >= phaseInst && operationCount == 1) {
 						phaseTime = 0.01 + breakerTime;  // inst trip on first operation
@@ -668,7 +668,7 @@ public class RelayObjImpl extends ControlElemImpl implements RelayObj {
 
 			if (tripTime > 0.0) {
 				if (!armedForOpen) {
-					ckt = DSSGlobals.activeCircuit;
+					ckt = DSS.activeCircuit;
 					// then arm for an open operation
 					relayTarget = "";
 					if (phaseTime > 0.0)
@@ -683,7 +683,7 @@ public class RelayObjImpl extends ControlElemImpl implements RelayObj {
 				}
 			} else {
 				if (armedForOpen) {
-					ckt = DSSGlobals.activeCircuit;
+					ckt = DSS.activeCircuit;
 					// if current dropped below pickup, disarm trip and set for reset
 					lastEventHandle = ckt.getControlQueue().push(ckt.getSolution().getIntHour(), ckt.getSolution().getDynaVars().t + resetTime, ControlAction.CTRL_RESET, 0, this);
 					armedForOpen  = false;
@@ -704,7 +704,7 @@ public class RelayObjImpl extends ControlElemImpl implements RelayObj {
 		if (S.getReal() < 0.0) {
 			if (Math.abs(S.getReal()) > phaseInst * 1000.0) {
 				if (!armedForOpen) {  // push the trip operation and arm to trip
-					ckt = DSSGlobals.activeCircuit;
+					ckt = DSS.activeCircuit;
 					relayTarget = "Rev P";
 					lastEventHandle = ckt.getControlQueue().push(ckt.getSolution().getIntHour(), ckt.getSolution().getDynaVars().t + delayTime +  breakerTime, ControlAction.OPEN, 0, this);
 					operationCount = numReclose + 1;  // force a lockout
@@ -712,7 +712,7 @@ public class RelayObjImpl extends ControlElemImpl implements RelayObj {
 				}
 			} else {
 				if (armedForOpen) {  // we became unarmed, so reset and disarm
-					ckt = DSSGlobals.activeCircuit;
+					ckt = DSS.activeCircuit;
 					lastEventHandle = ckt.getControlQueue().push(ckt.getSolution().getIntHour(), ckt.getSolution().getDynaVars().t + resetTime, ControlAction.CTRL_RESET, 0, this);
 					armedForOpen = false;
 				}
@@ -732,7 +732,7 @@ public class RelayObjImpl extends ControlElemImpl implements RelayObj {
 
 			VMin = 1.e50;
 			VMax = 0.0;
-			for (i = 0; i < monitoredElement.getNPhases(); i++)
+			for (i = 0; i < monitoredElement.getNumPhases(); i++)
 				VMag = cBuffer[i].abs();
 
 			if (VMag > VMax)
@@ -771,7 +771,7 @@ public class RelayObjImpl extends ControlElemImpl implements RelayObj {
 				}
 
 				if (tripTime > 0.0) {
-					ckt = DSSGlobals.activeCircuit;
+					ckt = DSS.activeCircuit;
 
 					if (armedForOpen && ((ckt.getSolution().getDynaVars().t + tripTime + breakerTime) < nextTripTime)) {
 						ckt.getControlQueue().delete(lastEventHandle);  // delete last event from queue
@@ -796,7 +796,7 @@ public class RelayObjImpl extends ControlElemImpl implements RelayObj {
 					}
 				} else {
 					if (armedForOpen) {
-						ckt = DSSGlobals.activeCircuit;
+						ckt = DSS.activeCircuit;
 						// if voltage dropped below pickup, disarm trip and set for reset
 						ckt.getControlQueue().delete(lastEventHandle);  // delete last event from queue
 						nextTripTime = -1.0;
@@ -809,7 +809,7 @@ public class RelayObjImpl extends ControlElemImpl implements RelayObj {
 				if (operationCount <= numReclose) {
 					if (!armedForClose) {
 						if (VMax > 0.9) {
-							ckt = DSSGlobals.activeCircuit;
+							ckt = DSS.activeCircuit;
 							// OK if voltage > 90%
 							lastEventHandle = ckt.getControlQueue().push(ckt.getSolution().getIntHour(), ckt.getSolution().getDynaVars().t + recloseIntervals[operationCount], ControlAction.CLOSE, 0, this);
 							armedForClose = true;
@@ -838,7 +838,7 @@ public class RelayObjImpl extends ControlElemImpl implements RelayObj {
 
 		if (negSeqVoltageMag >= pickupVolts47) {
 			if (!armedForOpen) {  // push the trip operation and arm to trip
-				ckt = DSSGlobals.activeCircuit;
+				ckt = DSS.activeCircuit;
 				relayTarget = "-Seq V";
 				lastEventHandle = ckt.getControlQueue().push(ckt.getSolution().getIntHour(), ckt.getSolution().getDynaVars().t + delayTime + breakerTime, ControlAction.OPEN, 0, this);
 				operationCount = numReclose + 1;  // force a lockout
@@ -847,11 +847,16 @@ public class RelayObjImpl extends ControlElemImpl implements RelayObj {
 		} else {
 			/* Less than pickup value: reset if armed */
 			if (armedForOpen) {  // we became unarmed, so reset and disarm
-				ckt = DSSGlobals.activeCircuit;
+				ckt = DSS.activeCircuit;
 				lastEventHandle = ckt.getControlQueue().push(ckt.getSolution().getIntHour(), ckt.getSolution().getDynaVars().t + resetTime, ControlAction.CTRL_RESET, 0, this);
 				armedForOpen = false;
 			}
 		}
+	}
+
+	@Override
+	public int injCurrents() {
+		throw new UnsupportedOperationException();
 	}
 
 	// FIXME Private members in OpenDSS

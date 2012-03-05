@@ -6,8 +6,8 @@ import java.util.Stack;
 
 import com.ncond.dss.common.Circuit;
 import com.ncond.dss.common.CktElement;
-import com.ncond.dss.common.impl.DSSGlobals;
-import com.ncond.dss.common.impl.Utilities;
+import com.ncond.dss.common.impl.DSS;
+import com.ncond.dss.common.impl.Util;
 import com.ncond.dss.conversion.PCElement;
 import com.ncond.dss.delivery.PDElement;
 import com.ncond.dss.general.DSSObject;
@@ -33,7 +33,7 @@ public class CktTreeImpl implements CktTree {
 		public void add(CktTreeNode node, int endBusRef) {
 			numEnds += 1;
 			endNodeList.add(node);
-			endBuses = Utilities.resizeArray(endBuses, numEnds);
+			endBuses = Util.resizeArray(endBuses, numEnds);
 			endBuses[numEnds - 1] = endBusRef;
 		}
 
@@ -233,7 +233,7 @@ public class CktTreeImpl implements CktTree {
 	 * Sources are excluded from the PC element list, so this is a brute-force search.
 	 */
 	private static void getSourcesConnectedToBus(int busNum, CktTree branchList, boolean analyze) {
-		Circuit ckt = DSSGlobals.activeCircuit;
+		Circuit ckt = DSS.activeCircuit;
 
 		for (PCElement psrc : ckt.getSources()) {  // sources are special PC elements
 			if (psrc.isEnabled()) {
@@ -282,8 +282,8 @@ public class CktTreeImpl implements CktTree {
 			p = adjLst.get(i);
 			if (p.isEnabled() && p != activeBranch) {
 				if (analyze || !p.isChecked()) {
-					if (!Utilities.isShuntElement(p) && Utilities.allTerminalsClosed(p)) {
-						for (j = 0; j < p.getNTerms(); j++) {
+					if (!Util.isShuntElement(p) && Util.allTerminalsClosed(p)) {
+						for (j = 0; j < p.getNumTerms(); j++) {
 							if (busNum == p.getTerminal(j).getBusRef()) {
 								if (analyze) {
 									p.setIsolated(false);
@@ -291,8 +291,8 @@ public class CktTreeImpl implements CktTree {
 									if (p.isChecked() && branchList.getLevel() > 0) {
 										branchList.getPresentBranch().setLoopedHere(true);
 										branchList.getPresentBranch().setLoopLineObj(p);
-										if (Utilities.isLineElement(p) && Utilities.isLineElement(activeBranch))
-											if (Utilities.checkParallel(activeBranch, p))
+										if (Util.isLineElement(p) && Util.isLineElement(activeBranch))
+											if (Util.checkParallel(activeBranch, p))
 												branchList.getPresentBranch().setParallel(true);
 									}
 								}
@@ -314,7 +314,7 @@ public class CktTreeImpl implements CktTree {
 		CktElement p;
 		for (int i = 0; i < adjLst.size(); i++) {
 			p = adjLst.get(i);
-			if (p.isEnabled() && Utilities.isShuntElement(p)) {
+			if (p.isEnabled() && Util.isShuntElement(p)) {
 				if (analyze) {
 					p.setIsolated(false);
 					branchList.getPresentBranch().setDangling(false);
@@ -342,7 +342,7 @@ public class CktTreeImpl implements CktTree {
 		CktElement testBranch, testElement;
 		List[] lstPD, lstPC;
 
-		Circuit ckt = DSSGlobals.activeCircuit;
+		Circuit ckt = DSS.activeCircuit;
 
 		lstPD = ckt.getBusAdjacentPDLists();
 		lstPC = ckt.getBusAdjacentPCLists();
@@ -363,7 +363,7 @@ public class CktTreeImpl implements CktTree {
 		// goes until end of circuit, another energy meter, an open terminal, or disabled device
 		testBranch = testElement;
 		while (testBranch != null) {
-			for (iTerm = 0; iTerm < testBranch.getNTerms(); iTerm++) {
+			for (iTerm = 0; iTerm < testBranch.getNumTerms(); iTerm++) {
 				if (!testBranch.getTerminal(iTerm).isChecked()) {
 					// now find all PC elements connected to the bus on this end of branch
 					// attach them as generic objects to cktTree node.
@@ -387,7 +387,7 @@ public class CktTreeImpl implements CktTree {
 		int i, j, nBus;
 //		CktElement pCktElement;
 
-		Circuit ckt = DSSGlobals.activeCircuit;
+		Circuit ckt = DSS.activeCircuit;
 
 		nBus = ckt.getNumBuses();
 		// Circuit.buses is effectively 1-based; bus 0 is ground
@@ -408,11 +408,11 @@ public class CktTreeImpl implements CktTree {
 		for (CktElement pCktElement : ckt.getPDElements()) {
 			/* Put only eligible PD elements in the list */
 			if (pCktElement.isEnabled()) {
-				if (Utilities.isShuntElement(pCktElement)) {
+				if (Util.isShuntElement(pCktElement)) {
 					i = pCktElement.getTerminal(0).getBusRef();
 					lstPC[i].add((PCElement) pCktElement);
-				} else if (Utilities.allTerminalsClosed(pCktElement))
-					for (j = 0; j < pCktElement.getNTerms(); j++) {
+				} else if (Util.allTerminalsClosed(pCktElement))
+					for (j = 0; j < pCktElement.getNumTerms(); j++) {
 						i = pCktElement.getTerminal(j).getBusRef();
 						lstPD[i].add((PDElement) pCktElement);
 					}

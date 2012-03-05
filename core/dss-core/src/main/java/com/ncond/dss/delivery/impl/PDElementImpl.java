@@ -4,13 +4,13 @@ import org.apache.commons.math.complex.Complex;
 
 import com.ncond.dss.common.DSSClass;
 import com.ncond.dss.common.SolutionObj;
-import com.ncond.dss.common.impl.DSSCktElement;
+import com.ncond.dss.common.impl.CktElementImpl;
 import com.ncond.dss.common.impl.DSSClassDefs;
-import com.ncond.dss.common.impl.DSSGlobals;
+import com.ncond.dss.common.impl.DSS;
 import com.ncond.dss.delivery.PDElement;
 import com.ncond.dss.meter.MeterElement;
 
-public class PDElementImpl extends DSSCktElement implements PDElement {
+abstract public class PDElementImpl extends CktElementImpl implements PDElement {
 
 	protected double normAmps,
 		emergAmps,
@@ -52,7 +52,7 @@ public class PDElementImpl extends DSSCktElement implements PDElement {
 
 		try {
 			if (isEnabled()) {
-				sol = DSSGlobals.activeCircuit.getSolution();
+				sol = DSS.activeCircuit.getSolution();
 				for (i = 0; i < YOrder; i++)
 					VTerminal[i] = sol.getNodeV(nodeRef[i]);
 
@@ -62,7 +62,7 @@ public class PDElementImpl extends DSSCktElement implements PDElement {
 					curr[i] = Complex.ZERO;
 			}
 		} catch (Exception e) {
-			DSSGlobals.doErrorMsg(("Trying to get currents for element: " + getName() + "."), e.getMessage(),
+			DSS.doErrorMsg(("Trying to get currents for element: " + getName() + "."), e.getMessage(),
 					"Has circuit been solved?", 660);
 		}
 	}

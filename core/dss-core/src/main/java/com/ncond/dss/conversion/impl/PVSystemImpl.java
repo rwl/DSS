@@ -5,8 +5,8 @@ import java.io.FileWriter;
 import java.io.IOException;
 
 import com.ncond.dss.common.impl.DSSClassDefs;
-import com.ncond.dss.common.impl.DSSGlobals;
-import com.ncond.dss.common.impl.Utilities;
+import com.ncond.dss.common.impl.DSS;
+import com.ncond.dss.common.impl.Util;
 import com.ncond.dss.conversion.PVSystem;
 import com.ncond.dss.conversion.PVSystemObj;
 import com.ncond.dss.general.LoadShapeObj;
@@ -44,7 +44,7 @@ public class PVSystemImpl extends PCClassImpl implements PVSystem {
 	}
 
 	protected void defineProperties() {
-		final String CRLF = DSSGlobals.CRLF;
+		final String CRLF = DSS.CRLF;
 
 		numProperties = PVSystem.NumPropsThisClass;
 		countProperties();  // get inherited property count
@@ -181,8 +181,8 @@ public class PVSystemImpl extends PCClassImpl implements PVSystem {
 	@Override
 	public int newObject(String objName) {
 
-		DSSGlobals.activeCircuit.setActiveCktElement(new PVSystemObjImpl(this, objName));
-		return addObjectToList(DSSGlobals.activeDSSObject);
+		DSS.activeCircuit.setActiveCktElement(new PVSystemObjImpl(this, objName));
+		return addObjectToList(DSS.activeDSSObject);
 	}
 
 	private void setNCondsForConnection() {
@@ -190,18 +190,18 @@ public class PVSystemImpl extends PCClassImpl implements PVSystem {
 
 		switch (apv.getConnection()) {
 		case 0:
-			apv.setNConds(apv.getNPhases() + 1);
+			apv.setNumConds(apv.getNumPhases() + 1);
 			break;
 		case 1:
-			switch (apv.getNPhases()) {
+			switch (apv.getNumPhases()) {
 			case 1:
-				apv.setNConds(apv.getNPhases() + 1);  // L-L
+				apv.setNumConds(apv.getNumPhases() + 1);  // L-L
 				break;
 			case 2:
-				apv.setNConds(apv.getNPhases() + 1);  // open-delta
+				apv.setNumConds(apv.getNumPhases() + 1);  // open-delta
 				break;
 			default:
-				apv.setNConds(apv.getNPhases());
+				apv.setNumConds(apv.getNumPhases());
 				break;
 			}
 			break;
@@ -250,12 +250,12 @@ public class PVSystemImpl extends PCClassImpl implements PVSystem {
 
 		/* VBase is always L-N voltage unless 1-phase device or more than 3 phases */
 
-		switch (apv.getNPhases()) {
+		switch (apv.getNumPhases()) {
 		case 2:
-			apv.setVBase(apv.getKVPVSystemBase() * DSSGlobals.InvSQRT3x1000);  // L-N volts
+			apv.setVBase(apv.getKVPVSystemBase() * DSS.InvSQRT3x1000);  // L-N volts
 			break;
 		case 3:
-			apv.setVBase(apv.getKVPVSystemBase() * DSSGlobals.InvSQRT3x1000);  // L-N volts
+			apv.setVBase(apv.getKVPVSystemBase() * DSS.InvSQRT3x1000);  // L-N volts
 			break;
 		default:
 			apv.setVBase(apv.getKVPVSystemBase() * 1000.0);  // just use what is supplied
@@ -265,7 +265,7 @@ public class PVSystemImpl extends PCClassImpl implements PVSystem {
 		apv.setVBase95(apv.getVMinPU() * apv.getVBase());
 		apv.setVBase105(apv.getVMaxPU() * apv.getVBase());
 
-		apv.setYOrder(apv.getNConds() * apv.getNTerms());
+		apv.setYOrder(apv.getNumConds() * apv.getNumTerms());
 		apv.setYPrimInvalid(true);
 	}
 
@@ -278,7 +278,7 @@ public class PVSystemImpl extends PCClassImpl implements PVSystem {
 
 		// continue parsing with contents of parser
 		activePVSystemObj = (PVSystemObj) elementList.getActive();
-		DSSGlobals.activeCircuit.setActiveCktElement(activePVSystemObj);
+		DSS.activeCircuit.setActiveCktElement(activePVSystemObj);
 
 		int iCase, result = 0;
 
@@ -297,17 +297,17 @@ public class PVSystemImpl extends PCClassImpl implements PVSystem {
 			if (paramPointer >= 0 && paramPointer < numProperties) {
 				apv.setPropertyValue(propertyIdxMap[paramPointer], param);  // update the string value of the property
 			} else {
-				DSSGlobals.doSimpleMsg("Unknown parameter \""+paramName+"\" for PVSystem \""+apv.getName()+"\"", 560);
+				DSS.doSimpleMsg("Unknown parameter \""+paramName+"\" for PVSystem \""+apv.getName()+"\"", 560);
 			}
 
 			if (paramPointer >= 0) {
 				iCase = propertyIdxMap[paramPointer];
 				switch (iCase) {
 				case -1:
-					DSSGlobals.doSimpleMsg("Unknown parameter \"" + paramName + "\" for object \"" + getName() +"."+ apv.getName() + "\"", 561);
+					DSS.doSimpleMsg("Unknown parameter \"" + paramName + "\" for object \"" + getName() +"."+ apv.getName() + "\"", 561);
 					break;
 				case 0:
-					apv.setNPhases(parser.makeInteger());  // num phases
+					apv.setNumPhases(parser.makeInteger());  // num phases
 					break;
 				case 1:
 					apv.setBus(0, param);
@@ -395,7 +395,7 @@ public class PVSystemImpl extends PCClassImpl implements PVSystem {
 					apv.getUserModel().edit(parser.makeString());  // send edit string to user model
 					break;
 				case DEBUG_TRACE:
-					apv.setDebugTrace(Utilities.interpretYesNo(param));
+					apv.setDebugTrace(Util.interpretYesNo(param));
 					break;
 				default:
 					// inherited parameters
@@ -409,44 +409,44 @@ public class PVSystemImpl extends PCClassImpl implements PVSystem {
 					break;
 				/* set loadshape objects; returns nil if not valid */
 				case YEARLY:
-					apv.setYearlyShapeObj( (LoadShapeObj) DSSGlobals.loadShapeClass.find(apv.getYearlyShape()) );
+					apv.setYearlyShapeObj( (LoadShapeObj) DSS.loadShapeClass.find(apv.getYearlyShape()) );
 					break;
 				case DAILY:
-					apv.setDailyShapeObj( (LoadShapeObj) DSSGlobals.loadShapeClass.find(apv.getDailyShape()) );
+					apv.setDailyShapeObj( (LoadShapeObj) DSS.loadShapeClass.find(apv.getDailyShape()) );
 					break;
 				case DUTY:
-					apv.setDutyShapeObj( (LoadShapeObj) DSSGlobals.loadShapeClass.find(apv.getDutyShape()) );
+					apv.setDutyShapeObj( (LoadShapeObj) DSS.loadShapeClass.find(apv.getDutyShape()) );
 					break;
 
 				case T_YEARLY:
-					apv.setYearlyTShapeObj( (TShapeObj) DSSGlobals.TShapeClass.find(apv.getYearlyTShape()) );
+					apv.setYearlyTShapeObj( (TShapeObj) DSS.TShapeClass.find(apv.getYearlyTShape()) );
 					break;
 				case T_DAILY:
-					apv.setDailyTShapeObj( (TShapeObj) DSSGlobals.TShapeClass.find(apv.getDailyTShape()) );
+					apv.setDailyTShapeObj( (TShapeObj) DSS.TShapeClass.find(apv.getDailyTShape()) );
 					break;
 				case T_DUTY:
-					apv.setDutyTShapeObj( (TShapeObj) DSSGlobals.TShapeClass.find(apv.getDutyTShape()) );
+					apv.setDutyTShapeObj( (TShapeObj) DSS.TShapeClass.find(apv.getDutyTShape()) );
 					break;
 
 				case INV_EFF_CURVE:
-					apv.setInverterCurveObj( (XYCurveObj) DSSGlobals.XYCurveClass.find(apv.getInverterCurve()) );
+					apv.setInverterCurveObj( (XYCurveObj) DSS.XYCurveClass.find(apv.getInverterCurve()) );
 					break;
 				case P_T_CURVE:
-					apv.setPowerTempCurveObj( (XYCurveObj) DSSGlobals.XYCurveClass.find(apv.getPowerTempCurve()) );
+					apv.setPowerTempCurveObj( (XYCurveObj) DSS.XYCurveClass.find(apv.getPowerTempCurve()) );
 					break;
 
 				case DEBUG_TRACE:
 					if (apv.isDebugTrace()) {  // init trace file
 						try {
-							FileWriter fw = new FileWriter(DSSGlobals.DSSDataDirectory + "STOR_"+apv.getName()+".csv", false);
+							FileWriter fw = new FileWriter(DSS.DSSDataDirectory + "STOR_"+apv.getName()+".csv", false);
 							BufferedWriter bw = new BufferedWriter(fw);
 
 							bw.write("t, Iteration, LoadMultiplier, Mode, LoadModel, PVSystemModel,  Qnominalperphase, Pnominalperphase, CurrentType");
-							for (int i = 0; i < apv.getNPhases(); i++)
+							for (int i = 0; i < apv.getNumPhases(); i++)
 								bw.write(", |Iinj"+String.valueOf(i)+"|");
-							for (int i = 0; i < apv.getNPhases(); i++)
+							for (int i = 0; i < apv.getNumPhases(); i++)
 								bw.write(", |Iterm"+String.valueOf(i)+"|");
-							for (int i = 0; i < apv.getNPhases(); i++)
+							for (int i = 0; i < apv.getNumPhases(); i++)
 								bw.write(", |Vterm"+String.valueOf(i)+"|");
 							bw.write(",Vthev, Theta");
 							bw.newLine();
@@ -479,10 +479,10 @@ public class PVSystemImpl extends PCClassImpl implements PVSystem {
 		if (otherPVsystemObj != null) {
 			PVSystemObj apv = activePVSystemObj;
 
-			if (apv.getNPhases() != otherPVsystemObj.getNPhases()) {
-				apv.setNPhases(otherPVsystemObj.getNPhases());
-				apv.setNConds(apv.getNPhases());  // forces reallocation of terminal stuff
-				apv.setYOrder(apv.getNConds() * apv.getNTerms());
+			if (apv.getNumPhases() != otherPVsystemObj.getNumPhases()) {
+				apv.setNumPhases(otherPVsystemObj.getNumPhases());
+				apv.setNumConds(apv.getNumPhases());  // forces reallocation of terminal stuff
+				apv.setYOrder(apv.getNumConds() * apv.getNumTerms());
 				apv.setYPrimInvalid(true);
 			}
 
@@ -539,7 +539,7 @@ public class PVSystemImpl extends PCClassImpl implements PVSystem {
 
 			result = 1;
 		} else {
-			DSSGlobals.doSimpleMsg("Error in PVSystem makeLike: \"" + otherPVSystemObjName + "\" not found.", 562);
+			DSS.doSimpleMsg("Error in PVSystem makeLike: \"" + otherPVSystemObjName + "\" not found.", 562);
 		}
 
 		return result;
@@ -561,7 +561,7 @@ public class PVSystemImpl extends PCClassImpl implements PVSystem {
 			p.randomize(0);
 		}
 
-		DSSGlobals.doSimpleMsg("Need to implement PVSystem.init", -1);
+		DSS.doSimpleMsg("Need to implement PVSystem.init", -1);
 		return 0;
 	}
 

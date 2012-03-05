@@ -3,8 +3,8 @@ package com.ncond.dss.general.impl;
 import java.io.PrintStream;
 
 import com.ncond.dss.common.DSSClass;
-import com.ncond.dss.common.impl.DSSGlobals;
-import com.ncond.dss.common.impl.Utilities;
+import com.ncond.dss.common.impl.DSS;
+import com.ncond.dss.common.impl.Util;
 import com.ncond.dss.delivery.TransformerObj;
 import com.ncond.dss.delivery.Winding;
 import com.ncond.dss.delivery.impl.TransformerImpl;
@@ -81,14 +81,14 @@ public class XfmrCodeObjImpl extends DSSObjectImpl implements XfmrCodeObj {
 			numWindings = n;
 			maxWindings = n;
 		        newWdgSize = (numWindings - 1) * numWindings / 2;
-			winding = Utilities.resizeArray(winding, maxWindings);  // reallocate collector array
+			winding = Util.resizeArray(winding, maxWindings);  // reallocate collector array
 			for (int i = 0; i < maxWindings; i++)
 				winding[i] = new WindingImpl();
-			XSC = Utilities.resizeArray(XSC, newWdgSize);
+			XSC = Util.resizeArray(XSC, newWdgSize);
 			for (int i = oldWdgSize; i < newWdgSize; i++)
 				XSC[i] = 0.30;   // default to something
 		} else {
-			DSSGlobals.doSimpleMsg("Invalid number of windings: " + String.valueOf(n) + " for Transformer " +
+			DSS.doSimpleMsg("Invalid number of windings: " + String.valueOf(n) + " for Transformer " +
 					TransformerImpl.activeTransfObj.getName(), 111);
 		}
 	}
@@ -97,7 +97,7 @@ public class XfmrCodeObjImpl extends DSSObjectImpl implements XfmrCodeObj {
 		int i;
 
 		setNumWindings(obj.getNumWindings());
-		nPhases = obj.getNPhases();
+		nPhases = obj.getNumPhases();
 		XHL = obj.getXHL();
 		XHT = obj.getXHT();
 		XLT = obj.getXLT();

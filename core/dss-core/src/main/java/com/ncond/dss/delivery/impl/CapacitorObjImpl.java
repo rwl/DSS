@@ -3,8 +3,8 @@ package com.ncond.dss.delivery.impl;
 import java.io.PrintStream;
 
 import com.ncond.dss.common.DSSClass;
-import com.ncond.dss.common.impl.DSSGlobals;
-import com.ncond.dss.common.impl.Utilities;
+import com.ncond.dss.common.impl.DSS;
+import com.ncond.dss.common.impl.Util;
 import com.ncond.dss.delivery.Capacitor;
 import com.ncond.dss.delivery.CapacitorObj;
 import com.ncond.dss.parser.impl.Parser;
@@ -42,9 +42,9 @@ public class CapacitorObjImpl extends PDElementImpl implements CapacitorObj {
 		setName(capacitorName.toLowerCase());
 		objType = parClass.getDSSClassType();
 
-		setNPhases(3);  // directly set conds and phases
-		nConds = 3;
-		setNTerms(2);  // force allocation of terminals and conductors
+		setNumPhases(3);  // directly set conds and phases
+		ncond = 3;
+		setNumTerms(2);  // force allocation of terminals and conductors
 
 		setBus(1, (getBus(0) + ".0.0.0"));  // default to grounded wye
 
@@ -63,26 +63,26 @@ public class CapacitorObjImpl extends PDElementImpl implements CapacitorObj {
 		setNumSteps(1);  // initial allocation for the arrays, too
 		lastStepInService = numSteps - 1;
 
-		Utilities.initDblArray(numSteps, R, 0.0);
-		Utilities.initDblArray(numSteps, XL, 0.0);
-		Utilities.initDblArray(numSteps, harm, 0.0);
-		Utilities.initDblArray(numSteps, kVArRating, 1200.0);
+		Util.initDblArray(numSteps, R, 0.0);
+		Util.initDblArray(numSteps, XL, 0.0);
+		Util.initDblArray(numSteps, harm, 0.0);
+		Util.initDblArray(numSteps, kVArRating, 1200.0);
 
 		states[0] = 1;
 
 		kVRating = 12.47;
-		Utilities.initDblArray(numSteps, C,
-				1.0 / (DSSGlobals.TWO_PI * baseFrequency * Math.pow(kVRating, 2) * 1000.0 / kVArRating[0]));
+		Util.initDblArray(numSteps, C,
+				1.0 / (DSS.TWO_PI * baseFrequency * Math.pow(kVRating, 2) * 1000.0 / kVArRating[0]));
 
 		connection = 0;  // 0 or 1 for wye (default) or delta, respectively
 		specType = 1;  // 1=kvar, 2=Cuf, 3=Cmatrix
 
-		normAmps = kVArRating[0] * DSSGlobals.SQRT3 / kVRating * 1.35;  // 135%
+		normAmps = kVArRating[0] * DSS.SQRT3 / kVRating * 1.35;  // 135%
 		emergAmps = getNormAmps() * 1.8 / 1.35;  // 180%
 		faultRate = 0.0005;
 		pctPerm = 100.0;
 		hrsToRepair = 3.0;
-		YOrder = nTerms * nConds;
+		YOrder = nterm * ncond;
 
 		doHarmonicRecalc = false;
 
@@ -98,7 +98,7 @@ public class CapacitorObjImpl extends PDElementImpl implements CapacitorObj {
 
 		totalKVAr = 0.0;
 		phaseKV = 1.0;
-		w = DSSGlobals.TWO_PI * baseFrequency;
+		w = DSS.TWO_PI * baseFrequency;
 		switch (specType) {
 		case 1:// kvar
 			switch (connection) {
@@ -106,12 +106,12 @@ public class CapacitorObjImpl extends PDElementImpl implements CapacitorObj {
 				phaseKV = kVRating;
 				break;
 			default:  // line-to-neutral
-				switch (nPhases) {
+				switch (nphase) {
 				case 2:
-					phaseKV = kVRating / DSSGlobals.SQRT3;  // assume three phase system
+					phaseKV = kVRating / DSS.SQRT3;  // assume three phase system
 					break;
 				case 3:
-					phaseKV = kVRating / DSSGlobals.SQRT3;
+					phaseKV = kVRating / DSS.SQRT3;
 					break;
 				default:
 					phaseKV = kVRating;
@@ -120,7 +120,7 @@ public class CapacitorObjImpl extends PDElementImpl implements CapacitorObj {
 				break;
 			}
 			for (i = 0; i < numSteps; i++)
-				C[i] = 1.0 / (w * Math.pow(phaseKV, 2) * 1000.0 / (kVArRating[0] / nPhases));
+				C[i] = 1.0 / (w * Math.pow(phaseKV, 2) * 1000.0 / (kVArRating[0] / nphase));
 			for (i = 0; i < numSteps; i++)
 				totalKVAr = totalKVAr + kVArRating[i];
 			break;
@@ -130,12 +130,12 @@ public class CapacitorObjImpl extends PDElementImpl implements CapacitorObj {
 				phaseKV = kVRating;
 				break;
 			default:  // line-to-neutral
-				switch (nPhases) {
+				switch (nphase) {
 				case 2:
-					phaseKV = kVRating / DSSGlobals.SQRT3;  // assume three phase system
+					phaseKV = kVRating / DSS.SQRT3;  // assume three phase system
 					break;
 				case 3:
-					phaseKV = kVRating / DSSGlobals.SQRT3;
+					phaseKV = kVRating / DSS.SQRT3;
 					break;
 				default:
 					phaseKV = kVRating;
@@ -162,7 +162,7 @@ public class CapacitorObjImpl extends PDElementImpl implements CapacitorObj {
 					R[i] = XL[i] / 1000.0;
 			}
 
-		kVArPerPhase = totalKVAr / nPhases;
+		kVArPerPhase = totalKVAr / nphase;
 		setNormAmps(kVArPerPhase / phaseKV * 1.35);
 		setEmergAmps(getNormAmps() * 1.8 / 1.35);
 	}
@@ -220,7 +220,7 @@ public class CapacitorObjImpl extends PDElementImpl implements CapacitorObj {
 		f.println("~ " + parentClass.getPropertyName()[0] + "=" + getFirstBus());
 		f.println("~ " + parentClass.getPropertyName()[1] + "=" + getNextBus());
 
-		f.println("~ " + parentClass.getPropertyName()[2] + "=" + getNPhases());
+		f.println("~ " + parentClass.getPropertyName()[2] + "=" + getNumPhases());
 		f.println("~ " + parentClass.getPropertyName()[3] + "=" + getPropertyValue(3));
 
 		f.println("~ " + parentClass.getPropertyName()[4] + "=" + getKVRating());
@@ -234,10 +234,10 @@ public class CapacitorObjImpl extends PDElementImpl implements CapacitorObj {
 		}
 		if (getCMatrix() != null) {
 			f.print(parentClass.getPropertyName()[6] + "= (");
-			for (int i = 0; i < getNPhases(); i++) {
+			for (int i = 0; i < getNumPhases(); i++) {
 				for (int j = 0; j < i; j++)
-					f.print((getCMatrix()[i * getNPhases() + j] * 1.0e6) + " ");
-				if (i != getNPhases())
+					f.print((getCMatrix()[i * getNumPhases() + j] * 1.0e6) + " ");
+				if (i != getNumPhases())
 					f.print("|");
 			}
 			f.println(")");
@@ -278,11 +278,11 @@ public class CapacitorObjImpl extends PDElementImpl implements CapacitorObj {
 		super.initPropertyValues(Capacitor.NumPropsThisClass - 1);
 
 		// override inherited properties
-		setPropertyValue(Capacitor.NumPropsThisClass + 0, Utilities.strReal(getNormAmps(), 0));
-		setPropertyValue(Capacitor.NumPropsThisClass + 1, Utilities.strReal(getEmergAmps(), 0));
-		setPropertyValue(Capacitor.NumPropsThisClass + 2, Utilities.strReal(getFaultRate(), 0));
-		setPropertyValue(Capacitor.NumPropsThisClass + 3, Utilities.strReal(getPctPerm(), 0));
-		setPropertyValue(Capacitor.NumPropsThisClass + 4, Utilities.strReal(getHrsToRepair(), 0));
+		setPropertyValue(Capacitor.NumPropsThisClass + 0, Util.strReal(getNormAmps(), 0));
+		setPropertyValue(Capacitor.NumPropsThisClass + 1, Util.strReal(getEmergAmps(), 0));
+		setPropertyValue(Capacitor.NumPropsThisClass + 2, Util.strReal(getFaultRate(), 0));
+		setPropertyValue(Capacitor.NumPropsThisClass + 3, Util.strReal(getPctPerm(), 0));
+		setPropertyValue(Capacitor.NumPropsThisClass + 4, Util.strReal(getHrsToRepair(), 0));
 		clearPropSeqArray();
 	}
 
@@ -292,12 +292,12 @@ public class CapacitorObjImpl extends PDElementImpl implements CapacitorObj {
 		double kVArPerPhase, phaseKV, Cs, Cm;
 		int i, j;
 
-		if (getNPhases() > 1) {
+		if (getNumPhases() > 1) {
 			switch (getSpecType()) {
 			case 1:  // kvar
 
-				if (getNPhases() > 1 || getConnection() != 0) {
-					phaseKV = getKVRating() / DSSGlobals.SQRT3;
+				if (getNumPhases() > 1 || getConnection() != 0) {
+					phaseKV = getKVRating() / DSS.SQRT3;
 				} else {
 					phaseKV = getKVRating();
 				}
@@ -305,7 +305,7 @@ public class CapacitorObjImpl extends PDElementImpl implements CapacitorObj {
 				s = "phases=1 " + String.format(" kV=%-.5g kvar=(", phaseKV);
 
 				for (i = 0; i < getNumSteps(); i++) {
-					kVArPerPhase = getKVArRating()[i] / getNPhases();
+					kVArPerPhase = getKVArRating()[i] / getNumPhases();
 					s = s + String.format(" %-.5g", kVArPerPhase);
 				}
 
@@ -320,15 +320,15 @@ public class CapacitorObjImpl extends PDElementImpl implements CapacitorObj {
 				s = "phases=1 ";
 				// r1
 				Cs = 0.0;  // avg self
-				for (i = 0; i < getNPhases(); i++)
-					Cs = Cs + getCMatrix()[i * getNPhases() + i];
-				Cs = Cs / getNPhases();
+				for (i = 0; i < getNumPhases(); i++)
+					Cs = Cs + getCMatrix()[i * getNumPhases() + i];
+				Cs = Cs / getNumPhases();
 
 				Cm = 0.0;  // avg mutual
-				for (i = 1; i < getNPhases(); i++)
-					for (j = i; j < getNPhases(); j++)
-						Cm = Cm + getCMatrix()[i * getNPhases() + j];
-				Cm = Cm / (getNPhases() * (getNPhases() - 1.0) / 2.0);
+				for (i = 1; i < getNumPhases(); i++)
+					for (j = i; j < getNumPhases(); j++)
+						Cm = Cm + getCMatrix()[i * getNumPhases() + j];
+				Cm = Cm / (getNumPhases() * (getNumPhases() - 1.0) / 2.0);
 
 				s = s + String.format(" Cuf=%-.5g", (Cs - Cm));
 				break;
@@ -374,12 +374,12 @@ public class CapacitorObjImpl extends PDElementImpl implements CapacitorObj {
 			}
 
 			// reallocate arrays (must be initialized to nil for first call)
-			setC( Utilities.resizeArray(getC(), value) );
-			setXL( Utilities.resizeArray(getXL(), value) );
-			setKVArRating( Utilities.resizeArray(getKVArRating(), value) );
-			setR( Utilities.resizeArray(getR(), value) );
-			setHarm( Utilities.resizeArray(getHarm(), value) );
-			setStates( Utilities.resizeArray(getStates(), value) );
+			setC( Util.resizeArray(getC(), value) );
+			setXL( Util.resizeArray(getXL(), value) );
+			setKVArRating( Util.resizeArray(getKVArRating(), value) );
+			setR( Util.resizeArray(getR(), value) );
+			setHarm( Util.resizeArray(getHarm(), value) );
+			setStates( Util.resizeArray(getStates(), value) );
 
 			// special case for numSteps=1
 
@@ -436,13 +436,13 @@ public class CapacitorObjImpl extends PDElementImpl implements CapacitorObj {
 
 	// FIXME Private member in OpenDSS
 	public void processHarmonicSpec(String param) {
-		Utilities.interpretDblArray(param, getNumSteps(), getHarm());
+		Util.interpretDblArray(param, getNumSteps(), getHarm());
 		setDoHarmonicRecalc(true);
 	}
 
 	// FIXME Private member in OpenDSS
 	public void processStatesSpec(String param) {
-		Utilities.interpretIntArray(param, getNumSteps(), getStates());
+		Util.interpretIntArray(param, getNumSteps(), getStates());
 
 		lastStepInService = -1;
 
@@ -462,9 +462,9 @@ public class CapacitorObjImpl extends PDElementImpl implements CapacitorObj {
 		double w, freqMultiple;
 		boolean hasZl;
 
-		setYPrimFreq( DSSGlobals.activeCircuit.getSolution().getFrequency() );
+		setYPrimFreq( DSS.activeCircuit.getSolution().getFrequency() );
 		freqMultiple = getYPrimFreq() / getBaseFrequency();
-		w = DSSGlobals.TWO_PI * getYPrimFreq();
+		w = DSS.TWO_PI * getYPrimFreq();
 
 		if ((getR()[iStep] + Math.abs(getXL()[iStep])) > 0.0) {
 			hasZl = true;
@@ -484,7 +484,7 @@ public class CapacitorObjImpl extends PDElementImpl implements CapacitorObj {
 			case 1:  // line-line
 				value2 = value.multiply(2.0);
 				value = value.negate();
-				for (i = 0; i < getNPhases(); i++) {
+				for (i = 0; i < getNumPhases(); i++) {
 					YPrimWork.set(i, i, value2);
 					for (j = 0; j < i; j++)
 						YPrimWork.setSym(i, j, value);
@@ -495,10 +495,10 @@ public class CapacitorObjImpl extends PDElementImpl implements CapacitorObj {
 				if (hasZl)
 					value = ComplexUtil.invert( Zl.add(ComplexUtil.invert( value )) ); // add in ZL
 				value2 = value.negate();
-				for (i = 0; i < getNPhases(); i++) {
+				for (i = 0; i < getNumPhases(); i++) {
 					YPrimWork.set(i, i, value);  // elements are only on the diagonals
-					YPrimWork.set(i + getNPhases(), i + getNPhases(), value);
-					YPrimWork.setSym(i, i + getNPhases(), value2);
+					YPrimWork.set(i + getNumPhases(), i + getNumPhases(), value);
+					YPrimWork.setSym(i, i + getNumPhases(), value2);
 				}
 				break;
 			}
@@ -510,7 +510,7 @@ public class CapacitorObjImpl extends PDElementImpl implements CapacitorObj {
 			case 1:  // line-line
 				value2 = value.multiply(2.0);
 				value = value.negate();
-				for (i = 0; i < getNPhases(); i++) {
+				for (i = 0; i < getNumPhases(); i++) {
 					YPrimWork.set(i, i, value2);
 					for (j = 0; j < i; j++)
 						YPrimWork.setSym(i, j, value);
@@ -521,23 +521,23 @@ public class CapacitorObjImpl extends PDElementImpl implements CapacitorObj {
 				if (hasZl)
 					value = ComplexUtil.invert( Zl.add(ComplexUtil.invert( value )) );  // add in ZL
 				value2 = value.negate();
-				for (i = 0; i < getNPhases(); i++) {
+				for (i = 0; i < getNumPhases(); i++) {
 					YPrimWork.set(i, i, value);  // elements are only on the diagonals
-					YPrimWork.set(i + getNPhases(), i + getNPhases(), value);
-					YPrimWork.setSym(i, i + getNPhases(), value2);
+					YPrimWork.set(i + getNumPhases(), i + getNumPhases(), value);
+					YPrimWork.setSym(i, i + getNumPhases(), value2);
 				}
 				break;
 			}
 			break;
 		case 3:  // C matrix specified
-			for (i = 0; i < getNPhases(); i++) {
-				ioffset = i * getNPhases();
-				for (j = 0; j < getNPhases(); j++) {
+			for (i = 0; i < getNumPhases(); i++) {
+				ioffset = i * getNumPhases();
+				for (j = 0; j < getNumPhases(); j++) {
 					value = new Complex(0.0, getCMatrix()[ioffset + j] * w);
 					YPrimWork.set(i, j, value);
-					YPrimWork.set(i + getNPhases(), j + getNPhases(), value);
+					YPrimWork.set(i + getNumPhases(), j + getNumPhases(), value);
 					value = value.negate();
-					YPrimWork.setSym(i, j + getNPhases(), value);
+					YPrimWork.setSym(i, j + getNumPhases(), value);
 				}
 			}
 			break;
@@ -551,10 +551,10 @@ public class CapacitorObjImpl extends PDElementImpl implements CapacitorObj {
 				switch (getConnection()) {
 				case 1:  // line-line
 					/* Add a little bit to each phase so it will invert */
-					for (i = 0; i < getNPhases(); i++)
+					for (i = 0; i < getNumPhases(); i++)
 						YPrimWork.set(i, i, YPrimWork.get(i, i).multiply(1.000001));
 					YPrimWork.invert();
-					for (i = 0; i < getNPhases(); i++) {
+					for (i = 0; i < getNumPhases(); i++) {
 						value = Zl.add(YPrimWork.get(i, i));
 						YPrimWork.set(i, i, value);
 					}
@@ -570,10 +570,10 @@ public class CapacitorObjImpl extends PDElementImpl implements CapacitorObj {
 				switch (getConnection()) {
 				case 1:  // line-line
 					/* Add a little bit to each phase so it will invert */
-					for (i = 0; i < getNPhases(); i++)
+					for (i = 0; i < getNumPhases(); i++)
 						YPrimWork.set(i, i, YPrimWork.get(i, i).multiply(1.000001));
 					YPrimWork.invert();
-					for (i = 0; i < getNPhases(); i++) {
+					for (i = 0; i < getNumPhases(); i++) {
 						value = Zl.add(YPrimWork.get(i, i));
 						YPrimWork.set(i, i, value);
 					}
@@ -586,7 +586,7 @@ public class CapacitorObjImpl extends PDElementImpl implements CapacitorObj {
 				break;
 			case 3:
 				YPrimWork.invert();
-				for (i = 0; i < getNPhases(); i++) {
+				for (i = 0; i < getNumPhases(); i++) {
 					value = Zl.add(YPrimWork.get(i, i));
 					YPrimWork.set(i, i, value);
 				}
@@ -609,26 +609,26 @@ public class CapacitorObjImpl extends PDElementImpl implements CapacitorObj {
 			result = getBus(1);
 			break;
 		case 3:
-			result = Utilities.getDSSArray(getNumSteps(), getKVArRating());
+			result = Util.getDSSArray(getNumSteps(), getKVArRating());
 			break;
 		case 7:
 			temp = new double[getNumSteps()];
 			for (int i = 0; i < getNumSteps(); i++)
 				temp[i] = getC()[i] * 1.0e6;  // to microfarads
-			result = Utilities.getDSSArray(getNumSteps(), temp);
+			result = Util.getDSSArray(getNumSteps(), temp);
 			temp = null;  // throw away temp storage
 			break;
 		case 8:
-			result = Utilities.getDSSArray(getNumSteps(), getR());
+			result = Util.getDSSArray(getNumSteps(), getR());
 			break;
 		case 10:
-			result = Utilities.getDSSArray(getNumSteps(), getXL());
+			result = Util.getDSSArray(getNumSteps(), getXL());
 			break;
 		case 11:
-			result = Utilities.getDSSArray(getNumSteps(), getHarm());
+			result = Util.getDSSArray(getNumSteps(), getHarm());
 			break;
 		case 12:
-			result = Utilities.getDSSArray(getNumSteps(), getStates());
+			result = Util.getDSSArray(getNumSteps(), getStates());
 			break;
 		default:
 			result = super.getPropertyValue(index);
@@ -661,6 +661,16 @@ public class CapacitorObjImpl extends PDElementImpl implements CapacitorObj {
 				return true;  // signify bank open
 			}
 		}
+	}
+
+	@Override
+	public void getInjCurrents(Complex[] curr) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public int injCurrents() {
+		throw new UnsupportedOperationException();
 	}
 
 	public int availableSteps() {

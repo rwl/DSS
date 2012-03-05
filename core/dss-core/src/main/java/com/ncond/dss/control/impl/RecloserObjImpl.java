@@ -7,8 +7,8 @@ import org.apache.commons.math.complex.Complex;
 import com.ncond.dss.common.Circuit;
 import com.ncond.dss.common.CktElement;
 import com.ncond.dss.common.impl.DSSClassImpl;
-import com.ncond.dss.common.impl.DSSGlobals;
-import com.ncond.dss.common.impl.Utilities;
+import com.ncond.dss.common.impl.DSS;
+import com.ncond.dss.common.impl.Util;
 import com.ncond.dss.control.Recloser;
 import com.ncond.dss.control.RecloserObj;
 import com.ncond.dss.general.TCC_CurveObj;
@@ -55,9 +55,9 @@ public class RecloserObjImpl extends ControlElemImpl implements RecloserObj {
 		setName(recloserName.toLowerCase());
 		objType = parClass.getDSSClassType();
 
-		setNPhases(3);  // directly set conds and phases
-		nConds = 3;
-		setNTerms(1);   // this forces allocation of terminals and conductors in base class
+		setNumPhases(3);  // directly set conds and phases
+		ncond = 3;
+		setNumTerms(1);   // this forces allocation of terminals and conductors in base class
 
 		elementName = "";
 		setControlledElement(null);
@@ -111,35 +111,35 @@ public class RecloserObjImpl extends ControlElemImpl implements RecloserObj {
 
 	@Override
 	public void recalcElementData() {
-		Circuit ckt = DSSGlobals.activeCircuit;
+		Circuit ckt = DSS.activeCircuit;
 
-		int devIndex = Utilities.getCktElementIndex(monitoredElementName);
+		int devIndex = Util.getCktElementIndex(monitoredElementName);
 
 		if (devIndex >= 0) {
 			monitoredElement = ckt.getCktElements().get(devIndex);
-			setNPhases(monitoredElement.getNPhases());  // force number of phases to be same
-			if (monitoredElementTerminal >= monitoredElement.getNTerms()) {
-				DSSGlobals.doErrorMsg("Recloser: \"" + getName() + "\"",
+			setNumPhases(monitoredElement.getNumPhases());  // force number of phases to be same
+			if (monitoredElementTerminal >= monitoredElement.getNumTerms()) {
+				DSS.doErrorMsg("Recloser: \"" + getName() + "\"",
 						"Terminal no. \"" +"\" does not exist.",
 						"Re-specify terminal no.", 392);
 			} else {
 				// sets name of i-th terminal's connected bus in Recloser's bus list
 				setBus(0, monitoredElement.getBus(monitoredElementTerminal));
 				// allocate a buffer big enough to hold everything from the monitored element
-				cBuffer = Utilities.resizeArray(cBuffer, monitoredElement.getYorder());
-				condOffset = monitoredElementTerminal * monitoredElement.getNConds();  // for speedy sampling
+				cBuffer = Util.resizeArray(cBuffer, monitoredElement.getYorder());
+				condOffset = monitoredElementTerminal * monitoredElement.getNumConds();  // for speedy sampling
 			}
 		}
 
 		/* Check for existence of controlled element */
 
-		devIndex = Utilities.getCktElementIndex(elementName);
+		devIndex = Util.getCktElementIndex(elementName);
 		if (devIndex >= 0) {  // both CktElement and monitored element must already exist
 
 			setControlledElement( ckt.getCktElements().get(devIndex) );
 
 			getControlledElement().setActiveTerminalIdx(elementTerminal);  // make the 1st terminal active
-			if (getControlledElement().getConductorClosed(-1)) {  // check state of phases of active terminal
+			if (getControlledElement().isConductorClosed(-1)) {  // check state of phases of active terminal
 				presentState = ControlAction.CLOSE;
 				lockedOut = false;
 				operationCount = 1;
@@ -152,7 +152,7 @@ public class RecloserObjImpl extends ControlElemImpl implements RecloserObj {
 			}
 		} else {
 			setControlledElement(null);  // element not found
-			DSSGlobals.doErrorMsg("Recloser: \"" + getName() + "\"", "CktElement \""+ elementName + "\" not found.",
+			DSS.doErrorMsg("Recloser: \"" + getName() + "\"", "CktElement \""+ elementName + "\" not found.",
 					" Element must be defined previously.", 393);
 		}
 	}
@@ -163,12 +163,12 @@ public class RecloserObjImpl extends ControlElemImpl implements RecloserObj {
 	@Override
 	public void makePosSequence() {
 		if (monitoredElement != null) {
-			setNPhases( monitoredElement.getNPhases() );
-			setNConds(nPhases);
+			setNumPhases( monitoredElement.getNumPhases() );
+			setNumConds(nphase);
 			setBus(0, monitoredElement.getBus(elementTerminal));
 			// allocate a buffer big enough to hold everything from the monitored element
-			cBuffer = Utilities.resizeArray(cBuffer, monitoredElement.getYorder());
-			condOffset = elementTerminal * monitoredElement.getNConds();  // for speedy sampling
+			cBuffer = Util.resizeArray(cBuffer, monitoredElement.getYorder());
+			condOffset = elementTerminal * monitoredElement.getNumConds();  // for speedy sampling
 		}
 		super.makePosSequence();
 	}
@@ -180,13 +180,13 @@ public class RecloserObjImpl extends ControlElemImpl implements RecloserObj {
 
 	@Override
 	public void getCurrents(Complex[] curr) {
-		for (int i = 0; i < nConds; i++)
+		for (int i = 0; i < ncond; i++)
 			curr[i] = Complex.ZERO;
 	}
 
 	@Override
 	public void getInjCurrents(Complex[] curr) {
-		for (int i = 0; i < nConds; i++)
+		for (int i = 0; i < ncond; i++)
 			curr[i] = Complex.ZERO;
 	}
 
@@ -205,18 +205,18 @@ public class RecloserObjImpl extends ControlElemImpl implements RecloserObj {
 					getControlledElement().setConductorClosed(-1, false);  // open all phases of active terminal
 					if (operationCount > numReclose) {
 						lockedOut = true;
-						Utilities.appendToEventLog("Recloser."+getName(), "Opened, Locked Out");
+						Util.appendToEventLog("Recloser."+getName(), "Opened, Locked Out");
 					} else {
 						if (operationCount > numFast) {
-							Utilities.appendToEventLog("Recloser."+getName(), "Opened, Delayed");
+							Util.appendToEventLog("Recloser."+getName(), "Opened, Delayed");
 						} else {
-							Utilities.appendToEventLog("Recloser."+getName(), "Opened, Fast");
+							Util.appendToEventLog("Recloser."+getName(), "Opened, Fast");
 						}
 					}
 					if (phaseTarget)
-						Utilities.appendToEventLog(" ", "Phase Target");
+						Util.appendToEventLog(" ", "Phase Target");
 					if (groundTarget)
-						Utilities.appendToEventLog(" ", "Ground Target");
+						Util.appendToEventLog(" ", "Ground Target");
 					armedForOpen = false;
 				}
 				break;
@@ -228,7 +228,7 @@ public class RecloserObjImpl extends ControlElemImpl implements RecloserObj {
 				if (armedForClose && !lockedOut) {
 					getControlledElement().setConductorClosed(-1, true);  // close all phases of active terminal
 					operationCount += 1;
-					Utilities.appendToEventLog("Recloser." + getName(), "Closed");
+					Util.appendToEventLog("Recloser." + getName(), "Closed");
 					armedForClose = false;
 				}
 				break;
@@ -285,7 +285,7 @@ public class RecloserObjImpl extends ControlElemImpl implements RecloserObj {
 
 		getControlledElement().setActiveTerminalIdx(elementTerminal);
 
-		if (getControlledElement().getConductorClosed(-1)) {  // check state of phases of active terminal
+		if (getControlledElement().isConductorClosed(-1)) {  // check state of phases of active terminal
 			presentState = ControlAction.CLOSE;
 		} else {
 			presentState = ControlAction.OPEN;
@@ -314,7 +314,7 @@ public class RecloserObjImpl extends ControlElemImpl implements RecloserObj {
 			/* Check ground trip, if any */
 			if (groundCurve != null) {
 				CSum = Complex.ZERO;
-				for (i = condOffset; i < nPhases + condOffset; i++)
+				for (i = condOffset; i < nphase + condOffset; i++)
 					CSum = CSum.add(cBuffer[i]);
 				CMag = CSum.abs();
 				if (groundInst > 0.0 && CMag >= groundInst && operationCount == 1) {
@@ -334,7 +334,7 @@ public class RecloserObjImpl extends ControlElemImpl implements RecloserObj {
 			/* Check phase trip, if any */
 
 			if (phaseCurve != null) {
-				for (i = condOffset; i < nPhases + condOffset; i++) {
+				for (i = condOffset; i < nphase + condOffset; i++) {
 					CMag =  cBuffer[i].abs();
 
 					if (phaseInst > 0.0 && CMag >= phaseInst && operationCount == 1) {
@@ -365,7 +365,7 @@ public class RecloserObjImpl extends ControlElemImpl implements RecloserObj {
 
 			if (tripTime > 0.0) {
 				if (!armedForOpen) {
-					ckt = DSSGlobals.activeCircuit;
+					ckt = DSS.activeCircuit;
 					// then arm for an open operation
 					ckt.getControlQueue().push(ckt.getSolution().getIntHour(), ckt.getSolution().getDynaVars().t + tripTime + delayTime, ControlAction.OPEN, 0, this);
 					if (operationCount <= numReclose)
@@ -375,7 +375,7 @@ public class RecloserObjImpl extends ControlElemImpl implements RecloserObj {
 				}
 			} else {
 				if (armedForOpen) {
-					ckt = DSSGlobals.activeCircuit;
+					ckt = DSS.activeCircuit;
 					// if current dropped below pickup, disarm trip and set for reset.
 					ckt.getControlQueue().push(ckt.getSolution().getIntHour(), ckt.getSolution().getDynaVars().t + resetTime, ControlAction.CTRL_RESET, 0, this);
 					armedForOpen = false;
@@ -462,6 +462,11 @@ public class RecloserObjImpl extends ControlElemImpl implements RecloserObj {
 		setPropertyValue(21, "1.0");
 
 		super.initPropertyValues(Recloser.NumPropsThisClass - 1);
+	}
+
+	@Override
+	public int injCurrents() {
+		throw new UnsupportedOperationException();
 	}
 
 	// FIXME Private members in Open DSS

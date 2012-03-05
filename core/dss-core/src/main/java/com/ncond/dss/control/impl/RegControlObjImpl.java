@@ -10,8 +10,8 @@ import org.apache.commons.math.complex.Complex;
 import com.ncond.dss.common.Circuit;
 import com.ncond.dss.common.SolutionObj;
 import com.ncond.dss.common.impl.DSSClassImpl;
-import com.ncond.dss.common.impl.DSSGlobals;
-import com.ncond.dss.common.impl.Utilities;
+import com.ncond.dss.common.impl.DSS;
+import com.ncond.dss.common.impl.Util;
 import com.ncond.dss.control.RegControl;
 import com.ncond.dss.control.RegControlObj;
 import com.ncond.dss.delivery.TransformerObj;
@@ -64,9 +64,9 @@ public class RegControlObjImpl extends ControlElemImpl implements RegControlObj 
 		setName(regControlName.toLowerCase());
 		objType = parClass.getDSSClassType();
 
-		setNPhases(3);  // directly set conds and phases
-		nConds = 3;
-		setNTerms(1);   // this forces allocation of terminals and conductors in base class
+		setNumPhases(3);  // directly set conds and phases
+		ncond = 3;
+		setNumTerms(1);   // this forces allocation of terminals and conductors in base class
 
 		Vreg         = 120.0;
 		bandwidth    = 3.0;
@@ -129,26 +129,26 @@ public class RegControlObjImpl extends ControlElemImpl implements RegControlObj 
 			usingRegulatedBus = true;
 		}
 
-		int devIndex = Utilities.getCktElementIndex(elementName);
+		int devIndex = Util.getCktElementIndex(elementName);
 		if (devIndex >= 0) {
 			// RegControled element must already exist
-			setControlledElement(DSSGlobals.activeCircuit.getCktElements().get(devIndex));
+			setControlledElement(DSS.activeCircuit.getCktElements().get(devIndex));
 
 			if (usingRegulatedBus) {
-				setNPhases(1);  // only need one phase
-				setNConds(2);
+				setNumPhases(1);  // only need one phase
+				setNumConds(2);
 			} else {
-				setNPhases( getControlledElement().getNPhases() );
-				setNConds(nPhases);
-				if (PTPhase > nPhases) {
+				setNumPhases( getControlledElement().getNumPhases() );
+				setNumConds(nphase);
+				if (PTPhase > nphase) {
 					PTPhase = 1;
 					setPropertyValue(21, "1");
 				}
 			}
 
 			if (getControlledElement().getDSSClassName().equalsIgnoreCase("transformer")) {
-				if (elementTerminal > getControlledElement().getNTerms()) {
-					DSSGlobals.doErrorMsg("RegControl: \"" + getName() + "\"", "Winding no. \"" +"\" does not exist.",
+				if (elementTerminal > getControlledElement().getNumTerms()) {
+					DSS.doErrorMsg("RegControl: \"" + getName() + "\"", "Winding no. \"" +"\" does not exist.",
 							"Respecify monitored winding no.", 122);
 				} else {
 					// sets name of i-th terminal's connected bus in RegControl's bus list
@@ -159,17 +159,17 @@ public class RegControlObjImpl extends ControlElemImpl implements RegControlObj 
 						setBus(0, getControlledElement().getBus(elementTerminal));
 					}
 					// buffer to hold regulator voltages
-					VBuffer = Utilities.resizeArray(VBuffer, getControlledElement().getNPhases());
-					CBuffer = Utilities.resizeArray(CBuffer, getControlledElement().getYorder());
+					VBuffer = Util.resizeArray(VBuffer, getControlledElement().getNumPhases());
+					CBuffer = Util.resizeArray(CBuffer, getControlledElement().getYorder());
 				}
 			} else {
 				setControlledElement(null);  // we get here if element not found
-				DSSGlobals.doErrorMsg("RegControl: \"" + getName() + "\"", "Controlled regulator element \""+ elementName + "\" is not a transformer.",
+				DSS.doErrorMsg("RegControl: \"" + getName() + "\"", "Controlled regulator element \""+ elementName + "\" is not a transformer.",
 						" Element must be defined previously.", 123);
 			}
 		} else {
 			setControlledElement(null);  // element not found
-			DSSGlobals.doErrorMsg("RegControl: \"" + getName() + "\"", "Transformer element \""+ elementName + "\" not found.",
+			DSS.doErrorMsg("RegControl: \"" + getName() + "\"", "Transformer element \""+ elementName + "\" not found.",
 					" Element must be defined previously.", 124);
 		}
 	}
@@ -224,13 +224,13 @@ public class RegControlObjImpl extends ControlElemImpl implements RegControlObj 
 
 	@Override
 	public void getCurrents(Complex[] curr) {
-		for (int i = 0; i < nConds; i++)
+		for (int i = 0; i < ncond; i++)
 			curr[i] = Complex.ZERO;
 	}
 
 	@Override
 	public void getInjCurrents(Complex[] curr) {
-		for (int i = 0; i < nConds; i++)
+		for (int i = 0; i < ncond; i++)
 			curr[i] = Complex.ZERO;
 	}
 
@@ -305,7 +305,7 @@ public class RegControlObjImpl extends ControlElemImpl implements RegControlObj 
 	@Override
 	public void doPendingAction(int code, int proxyHdl) {
 
-		Circuit ckt = DSSGlobals.activeCircuit;
+		Circuit ckt = DSS.activeCircuit;
 		SolutionObj sol = ckt.getSolution();
 
 		double tapChangeToMake;
@@ -322,17 +322,17 @@ public class RegControlObjImpl extends ControlElemImpl implements RegControlObj 
 				TransformerObj pElem = (TransformerObj) getControlledElement();
 
 				switch (sol.getControlMode()) {
-				case DSSGlobals.CTRLSTATIC:
+				case DSS.CTRLSTATIC:
 					tapChangeToMake = atLeastOneTap(pendingTapChange, pElem.getTapIncrement(tapWinding));
 					if (debugTrace)
 						regWriteTraceRecord(tapChangeToMake);
 					pElem.setPresentTap(tapWinding, pElem.getPresentTap(tapWinding) + tapChangeToMake);
 					if (showEventLog)
-						Utilities.appendToEventLog("Regulator." + getControlledElement().getName(), String.format(" Changed %d taps to %-.6g.", lastChange, pElem.getPresentTap(tapWinding)));
+						Util.appendToEventLog("Regulator." + getControlledElement().getName(), String.format(" Changed %d taps to %-.6g.", lastChange, pElem.getPresentTap(tapWinding)));
 					setPendingTapChange(0.0);  // reset to no change; program will determine if another needed
 					armed = false;
 
-				case DSSGlobals.EVENTDRIVEN:
+				case DSS.EVENTDRIVEN:
 					tapChangeToMake = oneInDirectionOf(pendingTapChange, pElem.getTapIncrement(tapWinding));
 					if (debugTrace)
 						regWriteTraceRecord(tapChangeToMake);
@@ -343,13 +343,13 @@ public class RegControlObjImpl extends ControlElemImpl implements RegControlObj 
 						armed = false;
 					}
 
-				case DSSGlobals.TIMEDRIVEN:
+				case DSS.TIMEDRIVEN:
 					tapChangeToMake = oneInDirectionOf(pendingTapChange, pElem.getTapIncrement(tapWinding));
 					if (debugTrace)
 						regWriteTraceRecord(tapChangeToMake);
 					pElem.setPresentTap(tapWinding, pElem.getPresentTap(tapWinding) + tapChangeToMake);
 					if (showEventLog)
-						Utilities.appendToEventLog("Regulator." + getControlledElement().getName(), String.format(" Changed %d tap to %-.6g.", lastChange, pElem.getPresentTap(tapWinding)));
+						Util.appendToEventLog("Regulator." + getControlledElement().getName(), String.format(" Changed %d tap to %-.6g.", lastChange, pElem.getPresentTap(tapWinding)));
 					if (debugTrace)
 						regWriteDebugRecord(String.format("--- Regulator.%s Changed %d tap to %-.6g.",
 								pElem.getControlElement().getName(), lastChange, pElem.getPresentTap(tapWinding)));
@@ -393,7 +393,7 @@ public class RegControlObjImpl extends ControlElemImpl implements RegControlObj 
 		TransformerObj controlledTransformer;
 		int transformerConnection;
 
-		Circuit ckt = DSSGlobals.activeCircuit;
+		Circuit ckt = DSS.activeCircuit;
 		controlledTransformer = (TransformerObj) getControlledElement();
 
 		/* First, check the direction of power flow to see if we need to
@@ -443,7 +443,7 @@ public class RegControlObjImpl extends ControlElemImpl implements RegControlObj 
 						if (!armed) {
 
 							setPendingTapChange(0.0);
-							if (Math.abs(controlledTransformer.getPresentTap(tapWinding) - 1.0) > DSSGlobals.EPSILON) {
+							if (Math.abs(controlledTransformer.getPresentTap(tapWinding) - 1.0) > DSS.EPSILON) {
 
 								increment = controlledTransformer.getTapIncrement(tapWinding);
 								setPendingTapChange( Math.round((1.0 - controlledTransformer.getPresentTap(tapWinding)) / increment) * increment );
@@ -470,7 +470,7 @@ public class RegControlObjImpl extends ControlElemImpl implements RegControlObj 
 
 			transformerConnection = controlledTransformer.getWinding()[elementTerminal].getConnection();
 			computeVTerminal();  // computes the voltage at the bus being regulated
-			for (i = 0; i < getNPhases(); i++) {
+			for (i = 0; i < getNumPhases(); i++) {
 				switch (transformerConnection) {
 				case 0:  // wye
 					VBuffer[i] = VTerminal[i];
@@ -486,7 +486,7 @@ public class RegControlObjImpl extends ControlElemImpl implements RegControlObj 
 			controlledTransformer.getWindingVoltages(elementTerminal, VBuffer);
 		}
 
-		VControl = getControlVoltage(VBuffer, getNPhases(), PTRatio);
+		VControl = getControlVoltage(VBuffer, getNumPhases(), PTRatio);
 
 		// check VLimit
 		if (VLimitActive) {
@@ -507,7 +507,7 @@ public class RegControlObjImpl extends ControlElemImpl implements RegControlObj 
 		if ((!usingRegulatedBus) && LDCActive) {
 
 			getControlledElement().getCurrents(CBuffer);
-			ILDC  = ComplexUtil.divide(CBuffer[getControlledElement().getNConds() * elementTerminal + controlledPhase], CTRating);
+			ILDC  = ComplexUtil.divide(CBuffer[getControlledElement().getNumConds() * elementTerminal + controlledPhase], CTRating);
 			if (inReverseMode) {
 				VLDC  = new Complex(revR, revX).multiply(ILDC);
 			} else {
@@ -608,7 +608,7 @@ public class RegControlObjImpl extends ControlElemImpl implements RegControlObj 
 
 		// write a general debug string
 		try {
-			if (!DSSGlobals.inShowResults) {
+			if (!DSS.inShowResults) {
 				fw = new FileWriter(traceFile, true);
 				bw = new BufferedWriter(fw);
 				bw.write(s);
@@ -626,10 +626,10 @@ public class RegControlObjImpl extends ControlElemImpl implements RegControlObj 
 		BufferedWriter bw;
 		String sep = ", ";
 
-		Circuit ckt = DSSGlobals.activeCircuit;
+		Circuit ckt = DSS.activeCircuit;
 
 		try {
-			if (!DSSGlobals.inShowResults) {
+			if (!DSS.inShowResults) {
 				fw = new FileWriter(traceFile, true);
 				bw = new BufferedWriter(fw);
 
@@ -710,11 +710,11 @@ public class RegControlObjImpl extends ControlElemImpl implements RegControlObj 
 		if (getControlledElement() != null) {
 			setEnabled( getControlledElement().isEnabled() );
 			if (usingRegulatedBus) {
-				setNPhases(1);
+				setNumPhases(1);
 			} else {
-				setNPhases( getControlledElement().getNPhases() );
+				setNumPhases( getControlledElement().getNumPhases() );
 			}
-			setNConds(nPhases);
+			setNumConds(nphase);
 			if (getControlledElement().getDSSClassName().equalsIgnoreCase("transformer")) {
 				// sets name of i-th terminal's connected bus in RegControl's bus list
 				// this value will be used to set the nodeRef array (see sample function)
@@ -723,8 +723,8 @@ public class RegControlObjImpl extends ControlElemImpl implements RegControlObj 
 				} else {
 					setBus(0, getControlledElement().getBus(elementTerminal));
 					// buffer to hold regulator voltages
-					VBuffer = Utilities.resizeArray(VBuffer, getControlledElement().getNPhases());
-					CBuffer = Utilities.resizeArray(CBuffer, getControlledElement().getYorder());
+					VBuffer = Util.resizeArray(VBuffer, getControlledElement().getNumPhases());
+					CBuffer = Util.resizeArray(CBuffer, getControlledElement().getYorder());
 				}
 			}
 		}
@@ -737,6 +737,11 @@ public class RegControlObjImpl extends ControlElemImpl implements RegControlObj 
 		} else {
 			return timeDelay;
 		}
+	}
+
+	@Override
+	public int injCurrents() {
+		throw new UnsupportedOperationException();
 	}
 
 	public double getPendingTapChange() {

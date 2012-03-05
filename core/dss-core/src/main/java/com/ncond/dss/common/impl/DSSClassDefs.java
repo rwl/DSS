@@ -106,46 +106,46 @@ public class DSSClassDefs {
 
 	public static void createDSSClasses() {
 
-		DSSGlobals.classNames = new HashListImpl(25);  // makes 5 sub lists
-		DSSGlobals.DSSClassList = new ArrayList<DSSClass>(10);  // 10 is initial size and increment
+		DSS.classNames = new HashListImpl(25);  // makes 5 sub lists
+		DSS.DSSClassList = new ArrayList<DSSClass>(10);  // 10 is initial size and increment
 		DSSClassImpl.setDSSClasses(new DSSClassesImpl());  // class to handle defining DSS classes
 
 		/* General DSS objects, not circuit elements */
-		DSSGlobals.DSSObjs = new ArrayList<DSSObject>(25);  // 25 is initial size and increment
+		DSS.DSSObjs = new ArrayList<DSSObject>(25);  // 25 is initial size and increment
 
 		/* Instantiate all intrinsic object classes */
 
 		/* Generic object classes first in case others refer to them */
 		DSSClassImpl.getDSSClasses().setNew( new SolutionImpl() );
-		DSSGlobals.solutionClass = DSSGlobals.activeDSSClass;  // this is a special class
+		DSS.solutionClass = DSS.activeDSSClass;  // this is a special class
 		DSSClassImpl.getDSSClasses().setNew( new LineCodeImpl() );
-		DSSGlobals.loadShapeClass = new LoadShapeImpl();
-		DSSClassImpl.getDSSClasses().setNew( DSSGlobals.loadShapeClass );
+		DSS.loadShapeClass = new LoadShapeImpl();
+		DSSClassImpl.getDSSClasses().setNew( DSS.loadShapeClass );
 
-		DSSGlobals.TShapeClass = new TShapeImpl();
-		DSSClassImpl.getDSSClasses().setNew( DSSGlobals.TShapeClass );
-		DSSGlobals.priceShapeClass = new PriceShapeImpl();
-		DSSClassImpl.getDSSClasses().setNew( DSSGlobals.priceShapeClass );
-		DSSGlobals.XYCurveClass = new XYCurveImpl();
-		DSSClassImpl.getDSSClasses().setNew( DSSGlobals.XYCurveClass );
+		DSS.TShapeClass = new TShapeImpl();
+		DSSClassImpl.getDSSClasses().setNew( DSS.TShapeClass );
+		DSS.priceShapeClass = new PriceShapeImpl();
+		DSSClassImpl.getDSSClasses().setNew( DSS.priceShapeClass );
+		DSS.XYCurveClass = new XYCurveImpl();
+		DSSClassImpl.getDSSClasses().setNew( DSS.XYCurveClass );
 
-		DSSGlobals.growthShapeClass = new GrowthShapeImpl();
-		DSSClassImpl.getDSSClasses().setNew( DSSGlobals.growthShapeClass );
-		DSSGlobals.TCC_CurveClass = new TCC_CurveImpl();
-		DSSClassImpl.getDSSClasses().setNew( DSSGlobals.TCC_CurveClass );
-		DSSGlobals.spectrumClass = new SpectrumImpl();
-		DSSClassImpl.getDSSClasses().setNew( DSSGlobals.spectrumClass );
-		DSSGlobals.wireDataClass = new WireDataImpl();
-		DSSClassImpl.getDSSClasses().setNew( DSSGlobals.wireDataClass );
+		DSS.growthShapeClass = new GrowthShapeImpl();
+		DSSClassImpl.getDSSClasses().setNew( DSS.growthShapeClass );
+		DSS.TCC_CurveClass = new TCC_CurveImpl();
+		DSSClassImpl.getDSSClasses().setNew( DSS.TCC_CurveClass );
+		DSS.spectrumClass = new SpectrumImpl();
+		DSSClassImpl.getDSSClasses().setNew( DSS.spectrumClass );
+		DSS.wireDataClass = new WireDataImpl();
+		DSSClassImpl.getDSSClasses().setNew( DSS.wireDataClass );
 
-		DSSGlobals.CNDataClass = new CNDataImpl();
-		DSSClassImpl.getDSSClasses().setNew( DSSGlobals.CNDataClass );
-		DSSGlobals.TSDataClass = new TSDataImpl();
-		DSSClassImpl.getDSSClasses().setNew( DSSGlobals.TSDataClass );
+		DSS.CNDataClass = new CNDataImpl();
+		DSSClassImpl.getDSSClasses().setNew( DSS.CNDataClass );
+		DSS.TSDataClass = new TSDataImpl();
+		DSSClassImpl.getDSSClasses().setNew( DSS.TSDataClass );
 
 		DSSClassImpl.getDSSClasses().setNew( new LineGeometryImpl() );
-		DSSGlobals.lineSpacingClass = new LineSpacingImpl();
-		DSSClassImpl.getDSSClasses().setNew( DSSGlobals.lineSpacingClass );
+		DSS.lineSpacingClass = new LineSpacingImpl();
+		DSSClassImpl.getDSSClasses().setNew( DSS.lineSpacingClass );
 		DSSClassImpl.getDSSClasses().setNew( new XfmrCodeImpl() );
 
 		/* Circuit element classes */
@@ -161,8 +161,8 @@ public class DSSClassDefs {
 		DSSClassImpl.getDSSClasses().setNew( new FaultImpl() );
 		DSSClassImpl.getDSSClasses().setNew( new GeneratorImpl() );
 		DSSClassImpl.getDSSClasses().setNew( new GenDispatcherImpl() );
-		DSSGlobals.storageClass = new StorageImpl();
-		DSSClassImpl.getDSSClasses().setNew( DSSGlobals.storageClass );
+		DSS.storageClass = new StorageImpl();
+		DSSClassImpl.getDSSClasses().setNew( DSS.storageClass );
 		DSSClassImpl.getDSSClasses().setNew( new StorageControllerImpl() );
 		DSSClassImpl.getDSSClasses().setNew( new RelayImpl() );
 		DSSClassImpl.getDSSClasses().setNew( new RecloserImpl() );
@@ -170,24 +170,24 @@ public class DSSClassDefs {
 //		Globals.setFeederClass(new FeederImpl());
 //		DSSClassImpl.getDSSClasses().setNew( Globals.getFeederClass() );
 		DSSClassImpl.getDSSClasses().setNew( new SwtControlImpl() );
-		DSSGlobals.PVSystemClass = new PVSystemImpl();
-		DSSClassImpl.getDSSClasses().setNew( DSSGlobals.PVSystemClass );
+		DSS.PVSystemClass = new PVSystemImpl();
+		DSSClassImpl.getDSSClasses().setNew( DSS.PVSystemClass );
 
-		DSSGlobals.VVControlClass = new VVControlImpl();
-		DSSClassImpl.getDSSClasses().setNew ( DSSGlobals.VVControlClass );
+		DSS.VVControlClass = new VVControlImpl();
+		DSSClassImpl.getDSSClasses().setNew ( DSS.VVControlClass );
 
-		DSSGlobals.monitorClass = new MonitorImpl();  // have to do this after Generator
-		DSSClassImpl.getDSSClasses().setNew( DSSGlobals.monitorClass );
-		DSSGlobals.energyMeterClass = new EnergyMeterImpl();  // have to do this after Generator
-		DSSClassImpl.getDSSClasses().setNew( DSSGlobals.energyMeterClass );
-		DSSGlobals.sensorClass = new SensorImpl();  // create state estimation sensors
-		DSSClassImpl.getDSSClasses().setNew( DSSGlobals.sensorClass );
+		DSS.monitorClass = new MonitorImpl();  // have to do this after Generator
+		DSSClassImpl.getDSSClasses().setNew( DSS.monitorClass );
+		DSS.energyMeterClass = new EnergyMeterImpl();  // have to do this after Generator
+		DSSClassImpl.getDSSClasses().setNew( DSS.energyMeterClass );
+		DSS.sensorClass = new SensorImpl();  // create state estimation sensors
+		DSSClassImpl.getDSSClasses().setNew( DSS.sensorClass );
 
 
 		/* Create classes for custom implementations */
 //		MyClassDefs.createMyDSSClasses();
 
-		numIntrinsicClasses = DSSGlobals.DSSClassList.size();
+		numIntrinsicClasses = DSS.DSSClassList.size();
 		numUserClasses = 0;
 
 		/* Add user-defined objects */
@@ -201,31 +201,31 @@ public class DSSClassDefs {
 
 		try {
 			successFree = "First Object";
-			for (int i = 0; i < DSSGlobals.DSSObjs.size(); i++) {
-				DSSObj    = DSSGlobals.DSSObjs.get(i);
+			for (int i = 0; i < DSS.DSSObjs.size(); i++) {
+				DSSObj    = DSS.DSSObjs.get(i);
 				traceName = DSSObj.getParentClass().getName() + "." + DSSObj.getName();
 				DSSObj = null;
 				successFree = traceName;
 			}
 			traceName = "(DSSObjs Class)";
-			DSSGlobals.DSSObjs = null;
+			DSS.DSSObjs = null;
 		} catch (Exception e) {
-			DSSGlobals.doSimpleMsg("Exception disposing of DSS obj \""+traceName+"\". "+DSSGlobals.CRLF+
-					"Last successful dispose was for object \"" + successFree + "\" " +DSSGlobals.CRLF+
+			DSS.doSimpleMsg("Exception disposing of DSS obj \""+traceName+"\". "+DSS.CRLF+
+					"Last successful dispose was for object \"" + successFree + "\" " +DSS.CRLF+
 					e.getMessage(), 901);
 		}
 
 		try {
-			for (int i = 0; i < DSSGlobals.DSSClassList.size(); i++)
-				DSSGlobals.DSSClassList.set(i, null);
+			for (int i = 0; i < DSS.DSSClassList.size(); i++)
+				DSS.DSSClassList.set(i, null);
 			traceName = "(DSS Class List)";
-			DSSGlobals.DSSClassList = null;
+			DSS.DSSClassList = null;
 			traceName = "(DSS Classes)";
 			DSSClassImpl.setDSSClasses(null);
 			traceName = "(ClassNames)";
-			DSSGlobals.classNames = null;
+			DSS.classNames = null;
 		} catch (Exception e) {
-			DSSGlobals.doSimpleMsg("Exception disposing of DSS class\""+traceName+"\". "+DSSGlobals.CRLF + e.getMessage(), 902);
+			DSS.doSimpleMsg("Exception disposing of DSS class\""+traceName+"\". "+DSS.CRLF + e.getMessage(), 902);
 		}
 	}
 
@@ -242,14 +242,14 @@ public class DSSClassDefs {
 	 */
 	public static boolean setObjectClass(String objType) {
 
-		int ClassRef = DSSGlobals.classNames.find(objType);
+		int ClassRef = DSS.classNames.find(objType);
 
 		switch (ClassRef) {
 		case 0:
-			DSSGlobals.doSimpleMsg("Error: Object class \"" + objType + "\" not found."+ DSSGlobals.CRLF + Parser.getInstance().getCmdString(), 903);
+			DSS.doSimpleMsg("Error: Object class \"" + objType + "\" not found."+ DSS.CRLF + Parser.getInstance().getCmdString(), 903);
 			return false;
 		default:
-			DSSGlobals.lastClassReferenced = ClassRef;
+			DSS.lastClassReferenced = ClassRef;
 			break;
 		}
 
@@ -258,7 +258,7 @@ public class DSSClassDefs {
 
 	public static DSSClass getDSSClass(String className) {
 
-		return DSSGlobals.DSSClassList.get( DSSGlobals.classNames.find(className.toLowerCase()) );
+		return DSS.DSSClassList.get( DSS.classNames.find(className.toLowerCase()) );
 	}
 
 }

@@ -2,8 +2,8 @@ package com.ncond.dss.control.impl;
 
 import com.ncond.dss.common.DSSClass;
 import com.ncond.dss.common.impl.DSSClassDefs;
-import com.ncond.dss.common.impl.DSSGlobals;
-import com.ncond.dss.common.impl.Utilities;
+import com.ncond.dss.common.impl.DSS;
+import com.ncond.dss.common.impl.Util;
 import com.ncond.dss.control.Relay;
 import com.ncond.dss.control.RelayObj;
 import com.ncond.dss.general.TCC_CurveObj;
@@ -56,10 +56,10 @@ public class RelayImpl extends ControlClassImpl implements Relay {
 		addProperty( "SwitchedTerm", 3,
 				"Number of the terminal of the controlled element in which the switch is controlled by the Relay. "+
 				"1 or 2, typically.  Default is 1.");
-		addProperty("type", 4, "One of a legal relay type:" +DSSGlobals.CRLF+
-				"Current"+DSSGlobals.CRLF+"Voltage"+DSSGlobals.CRLF+"Reversepower"+DSSGlobals.CRLF+"46 (neg seq current)"+DSSGlobals.CRLF+
-				"47 (neg seq voltage)"+DSSGlobals.CRLF+
-				"Generic (generic over/under relay)"+DSSGlobals.CRLF+DSSGlobals.CRLF+
+		addProperty("type", 4, "One of a legal relay type:" +DSS.CRLF+
+				"Current"+DSS.CRLF+"Voltage"+DSS.CRLF+"Reversepower"+DSS.CRLF+"46 (neg seq current)"+DSS.CRLF+
+				"47 (neg seq voltage)"+DSS.CRLF+
+				"Generic (generic over/under relay)"+DSS.CRLF+DSS.CRLF+
 				"Default is overcurrent relay (Current) " +
 				"Specify the curve and pickup settings appropriate for each type. "+
 				"Generic relays monitor PC Element Control variables and trip on out of over/under range in definite time.");
@@ -117,8 +117,8 @@ public class RelayImpl extends ControlClassImpl implements Relay {
 	@Override
 	public int newObject(String objName) {
 
-		DSSGlobals.activeCircuit.setActiveCktElement(new RelayObjImpl(this, objName));
-		return addObjectToList(DSSGlobals.activeDSSObject);
+		DSS.activeCircuit.setActiveCktElement(new RelayObjImpl(this, objName));
+		return addObjectToList(DSS.activeDSSObject);
 	}
 
 	public TCC_CurveObj getTccCurve(String curveName) {
@@ -126,7 +126,7 @@ public class RelayImpl extends ControlClassImpl implements Relay {
 		TCC_CurveObj result = (TCC_CurveObj) TCC_CurveClass.find(curveName);
 
 		if (result == null)
-			DSSGlobals.doSimpleMsg("TCC curve object: \""+curveName+"\" not found.", 380);
+			DSS.doSimpleMsg("TCC curve object: \""+curveName+"\" not found.", 380);
 
 		return result;
 	}
@@ -137,7 +137,7 @@ public class RelayImpl extends ControlClassImpl implements Relay {
 
 		// continue parsing with contents of parser
 		activeRelayObj = (RelayObj) elementList.getActive();
-		DSSGlobals.activeCircuit.setActiveCktElement(activeRelayObj);
+		DSS.activeCircuit.setActiveCktElement(activeRelayObj);
 
 		int result = 0;
 
@@ -156,14 +156,14 @@ public class RelayImpl extends ControlClassImpl implements Relay {
 			if (paramPointer >= 0 && paramPointer < numProperties) {
 				ar.setPropertyValue(propertyIdxMap[paramPointer], param);
 			} else {
-				DSSGlobals.doSimpleMsg("Unknown parameter \""+paramName+"\" for relay \""+ar.getName()+"\"", 381);
+				DSS.doSimpleMsg("Unknown parameter \""+paramName+"\" for relay \""+ar.getName()+"\"", 381);
 			}
 
 			if (paramPointer >= 0) {
 				switch (propertyIdxMap[paramPointer]) {
 				/* internal relay property commands */
 				case -1:
-					DSSGlobals.doSimpleMsg("Unknown parameter \"" + paramName + "\" for object \"" + getName() +"."+ ar.getName() + "\"", 382);
+					DSS.doSimpleMsg("Unknown parameter \"" + paramName + "\" for object \"" + getName() +"."+ ar.getName() + "\"", 382);
 					break;
 				case 0:
 					ar.setMonitoredElementName(param.toLowerCase());
@@ -281,9 +281,9 @@ public class RelayImpl extends ControlClassImpl implements Relay {
 						ar.setPropertyValue(13, "(5.0)");
 						break;
 					}
-					DSSGlobals.auxParser.setCmdString(ar.getPropertyValue(13));
-					paramName = DSSGlobals.auxParser.getNextParam();
-					ar.setNumReclose(DSSGlobals.auxParser.parseAsVector(4, ar.getRecloseIntervals()));
+					DSS.auxParser.setCmdString(ar.getPropertyValue(13));
+					paramName = DSS.auxParser.getNextParam();
+					ar.setNumReclose(DSS.auxParser.parseAsVector(4, ar.getRecloseIntervals()));
 					break;
 				}
 			}
@@ -306,8 +306,8 @@ public class RelayImpl extends ControlClassImpl implements Relay {
 
 			RelayObj ar = activeRelayObj;
 
-			ar.setNPhases(otherRelay.getNPhases());
-			ar.setNConds(otherRelay.getNConds());  // force reallocation of terminal stuff
+			ar.setNumPhases(otherRelay.getNumPhases());
+			ar.setNumConds(otherRelay.getNumConds());  // force reallocation of terminal stuff
 
 			ar.setElementName(otherRelay.getElementName());
 			ar.setElementTerminal(otherRelay.getElementTerminal());
@@ -332,7 +332,7 @@ public class RelayImpl extends ControlClassImpl implements Relay {
 			ar.setDelayTime(otherRelay.getDelayTime());
 			ar.setBreakerTime(otherRelay.getBreakerTime());
 
-			ar.setRecloseIntervals( Utilities.resizeArray(ar.getRecloseIntervals(), 4) );  // always make a max of 4
+			ar.setRecloseIntervals( Util.resizeArray(ar.getRecloseIntervals(), 4) );  // always make a max of 4
 			for (int i = 0; i < ar.getNumReclose(); i++)
 				ar.getRecloseIntervals()[i] = otherRelay.getRecloseIntervals()[i];
 
@@ -362,7 +362,7 @@ public class RelayImpl extends ControlClassImpl implements Relay {
 				ar.setPropertyValue(i, otherRelay.getPropertyValue(i));
 
 		} else {
-			DSSGlobals.doSimpleMsg("Error in Relay makeLike: \"" + relayName + "\" not found.", 383);
+			DSS.doSimpleMsg("Error in Relay makeLike: \"" + relayName + "\" not found.", 383);
 		}
 
 		return result;

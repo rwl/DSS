@@ -5,8 +5,8 @@ import org.apache.commons.math.complex.Complex;
 
 import com.ncond.dss.common.impl.DSSClassDefs;
 import com.ncond.dss.common.impl.DSSClassImpl;
-import com.ncond.dss.common.impl.DSSGlobals;
-import com.ncond.dss.common.impl.Utilities;
+import com.ncond.dss.common.impl.DSS;
+import com.ncond.dss.common.impl.Util;
 import com.ncond.dss.general.LineCode;
 import com.ncond.dss.general.LineCodeObj;
 import com.ncond.dss.parser.impl.Parser;
@@ -118,8 +118,8 @@ public class LineCodeImpl extends DSSClassImpl implements LineCode {
 	 */
 	@Override
 	public int newObject(String objName) {
-		DSSGlobals.activeDSSObject = new LineCodeObjImpl(this, objName);
-		return addObjectToList(DSSGlobals.activeDSSObject);
+		DSS.activeDSSObject = new LineCodeObjImpl(this, objName);
+		return addObjectToList(DSS.activeDSSObject);
 	}
 
 	/**
@@ -190,7 +190,7 @@ public class LineCodeImpl extends DSSClassImpl implements LineCode {
 						ZValues[j] = new Complex(ZValues[j].getReal(), matBuffer[j]);
 				break;
 			case 3:  // Yc matrix
-				factor = DSSGlobals.TWO_PI * activeLineCodeObj.getBaseFrequency() * 1.0e-9;
+				factor = DSS.TWO_PI * activeLineCodeObj.getBaseFrequency() * 1.0e-9;
 				ZValues = activeLineCodeObj.getYC().asArray(nOrder);
 				if (nOrder[0] == activeLineCodeObj.getNPhases())
 					for (j = 0; j < np2; j++)
@@ -213,7 +213,7 @@ public class LineCodeImpl extends DSSClassImpl implements LineCode {
 
 		// continue parsing with contents of parser
 		activeLineCodeObj = (LineCodeObj) elementList.getActive();
-		DSSGlobals.activeDSSObject = activeLineCodeObj;
+		DSS.activeDSSObject = activeLineCodeObj;
 		symComponentsChanged = false;
 		matrixChanged = false;
 		activeLineCodeObj.setReduceByKron(false);  // allow all matrices to be computed it raw form
@@ -234,7 +234,7 @@ public class LineCodeImpl extends DSSClassImpl implements LineCode {
 
 			switch (paramPointer) {
 			case -1:
-				DSSGlobals.doSimpleMsg("Unknown parameter \"" + paramName + "\" for Object \"" + getName() +"."+ getName() + "\"", 101);
+				DSS.doSimpleMsg("Unknown parameter \"" + paramName + "\" for Object \"" + getName() +"."+ getName() + "\"", 101);
 				break;
 			case 0:
 				activeLineCodeObj.setNPhases(parser.makeInteger());  // use property value to force reallocations
@@ -288,7 +288,7 @@ public class LineCodeImpl extends DSSClassImpl implements LineCode {
 				activeLineCodeObj.setHrsToRepair(parser.makeDouble());
 				break;
 			case 17:
-				activeLineCodeObj.setReduceByKron(Utilities.interpretYesNo(param));
+				activeLineCodeObj.setReduceByKron(Util.interpretYesNo(param));
 				break;
 			case 18:
 				activeLineCodeObj.setRg(parser.makeDouble());
@@ -378,7 +378,7 @@ public class LineCodeImpl extends DSSClassImpl implements LineCode {
 				activeLineCodeObj.setPropertyValue(i, otherLineCode.getPropertyValue(i));
 			result = 1;
 		} else {
-			DSSGlobals.doSimpleMsg("Error in line makeLike: \"" + lineName + "\" not found.", 102);
+			DSS.doSimpleMsg("Error in line makeLike: \"" + lineName + "\" not found.", 102);
 		}
 
 		return result;
@@ -386,7 +386,7 @@ public class LineCodeImpl extends DSSClassImpl implements LineCode {
 
 	@Override
 	public int init(int handle) {
-		DSSGlobals.doSimpleMsg("Need to implement LineCode.init()", -1);
+		DSS.doSimpleMsg("Need to implement LineCode.init()", -1);
 		return 0;
 	}
 
@@ -414,7 +414,7 @@ public class LineCodeImpl extends DSSClassImpl implements LineCode {
 			}
 		}
 
-		DSSGlobals.doSimpleMsg("LineCode: \"" + value + "\" not found.", 103);
+		DSS.doSimpleMsg("LineCode: \"" + value + "\" not found.", 103);
 	}
 
 }

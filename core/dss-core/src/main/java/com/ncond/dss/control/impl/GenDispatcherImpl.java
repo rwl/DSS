@@ -1,8 +1,8 @@
 package com.ncond.dss.control.impl;
 
 import com.ncond.dss.common.impl.DSSClassDefs;
-import com.ncond.dss.common.impl.DSSGlobals;
-import com.ncond.dss.common.impl.Utilities;
+import com.ncond.dss.common.impl.DSS;
+import com.ncond.dss.common.impl.Util;
 import com.ncond.dss.control.GenDispatcher;
 import com.ncond.dss.control.GenDispatcherObj;
 import com.ncond.dss.parser.impl.Parser;
@@ -61,8 +61,8 @@ public class GenDispatcherImpl extends ControlClassImpl implements GenDispatcher
 	@Override
 	public int newObject(String ObjName) {
 
-		DSSGlobals.activeCircuit.setActiveCktElement(new GenDispatcherObjImpl(this, ObjName));
-		return addObjectToList(DSSGlobals.activeDSSObject);
+		DSS.activeCircuit.setActiveCktElement(new GenDispatcherObjImpl(this, ObjName));
+		return addObjectToList(DSS.activeDSSObject);
 	}
 
 	@Override
@@ -71,7 +71,7 @@ public class GenDispatcherImpl extends ControlClassImpl implements GenDispatcher
 
 		// continue parsing with contents of parser
 		activeGenDispatcherObj = (GenDispatcherObj) elementList.getActive();
-		DSSGlobals.activeCircuit.setActiveCktElement(activeGenDispatcherObj);
+		DSS.activeCircuit.setActiveCktElement(activeGenDispatcherObj);
 
 		int result = 0;
 
@@ -92,7 +92,7 @@ public class GenDispatcherImpl extends ControlClassImpl implements GenDispatcher
 
 			switch (paramPointer) {
 			case -1:
-				DSSGlobals.doSimpleMsg("Unknown parameter \"" + paramName + "\" for object \"" + getName() +"."+ agd.getName() + "\"", 364);
+				DSS.doSimpleMsg("Unknown parameter \"" + paramName + "\" for object \"" + getName() +"."+ agd.getName() + "\"", 364);
 				break;
 			case 0:
 				agd.setElementName(param.toLowerCase());
@@ -110,14 +110,14 @@ public class GenDispatcherImpl extends ControlClassImpl implements GenDispatcher
 				agd.setKVArLimit(parser.makeDouble());
 				break;
 			case 5:
-				Utilities.interpretStringListArray(param, agd.getGeneratorNameList());
+				Util.interpretStringListArray(param, agd.getGeneratorNameList());
 				break;
 			case 6:
 				agd.setListSize(agd.getGeneratorNameList().size());
 				if (agd.getListSize() > 0) {
-					agd.setWeights( Utilities.resizeArray(agd.getWeights(), agd.getListSize()) );
+					agd.setWeights( Util.resizeArray(agd.getWeights(), agd.getListSize()) );
 
-					Utilities.interpretDblArray(param, agd.getListSize(), agd.getWeights());
+					Util.interpretDblArray(param, agd.getListSize(), agd.getWeights());
 				}
 				break;
 			default:
@@ -133,7 +133,7 @@ public class GenDispatcherImpl extends ControlClassImpl implements GenDispatcher
 			case 5:  // levelize the list
 				agd.getGenPointerList().clear();  // clear this for resetting on first sample
 				agd.setListSize(agd.getGeneratorNameList().size());
-				agd.setWeights( Utilities.resizeArray(agd.getWeights(), agd.getListSize()) );
+				agd.setWeights( Util.resizeArray(agd.getWeights(), agd.getListSize()) );
 				for (int i = 0; i < agd.getListSize(); i++)
 					agd.getWeights()[i] = 1.0;
 				break;
@@ -157,8 +157,8 @@ public class GenDispatcherImpl extends ControlClassImpl implements GenDispatcher
 		if (otherGenDispatcher != null) {
 			GenDispatcherObj agd = activeGenDispatcherObj;
 
-			agd.setNPhases(otherGenDispatcher.getNPhases());
-			agd.setNConds(otherGenDispatcher.getNConds());  // force reallocation of terminal stuff
+			agd.setNumPhases(otherGenDispatcher.getNumPhases());
+			agd.setNumConds(otherGenDispatcher.getNumConds());  // force reallocation of terminal stuff
 
 			agd.setElementName(otherGenDispatcher.getElementName());
 			agd.setControlledElement(otherGenDispatcher.getControlledElement());  // pointer to target circuit element
@@ -169,7 +169,7 @@ public class GenDispatcherImpl extends ControlClassImpl implements GenDispatcher
 			for (int i = 0; i < agd.getParentClass().getNumProperties(); i++)
 				agd.setPropertyValue(i, otherGenDispatcher.getPropertyValue(i));
 		} else {
-			DSSGlobals.doSimpleMsg("Error in GenDispatcher makeLike: \"" + genDispatcherName + "\" not found.", 370);
+			DSS.doSimpleMsg("Error in GenDispatcher makeLike: \"" + genDispatcherName + "\" not found.", 370);
 		}
 
 		return result;

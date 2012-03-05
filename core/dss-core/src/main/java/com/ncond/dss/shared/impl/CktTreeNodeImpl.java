@@ -1,6 +1,6 @@
 package com.ncond.dss.shared.impl;
 
-import com.ncond.dss.common.impl.Utilities;
+import com.ncond.dss.common.impl.Util;
 import com.ncond.dss.general.DSSObject;
 import com.ncond.dss.shared.CktTreeNode;
 import com.ncond.dss.shared.PointerList;
@@ -102,7 +102,7 @@ public class CktTreeNodeImpl implements CktTreeNode {
 
 	public void setToBusReference(int value) {
 		numToBuses += 1;
-		toBusList = Utilities.resizeArray(toBusList, numToBuses);
+		toBusList = Util.resizeArray(toBusList, numToBuses);
 		toBusList[numToBuses] = value;
 	}
 

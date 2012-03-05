@@ -2,7 +2,7 @@ package com.ncond.dss.general.impl;
 
 import com.ncond.dss.common.impl.DSSClassDefs;
 import com.ncond.dss.common.impl.DSSClassImpl;
-import com.ncond.dss.common.impl.DSSGlobals;
+import com.ncond.dss.common.impl.DSS;
 import com.ncond.dss.general.ConductorData;
 import com.ncond.dss.general.ConductorDataObj;
 import com.ncond.dss.general.DSSObject;
@@ -140,11 +140,11 @@ public class ConductorDataImpl extends DSSClassImpl implements ConductorData {
 			switch (paramPointer) {
 			case 3:
 				if (cd.getRadius() == 0.0)
-					DSSGlobals.doSimpleMsg("Error: Radius is specified as zero for ConductorData." + cd.getName(), 999);
+					DSS.doSimpleMsg("Error: Radius is specified as zero for ConductorData." + cd.getName(), 999);
 				break;
 			case 5:
 				if (cd.getGMR60() == 0.0)
-					DSSGlobals.doSimpleMsg("Error: GMR is specified as zero for ConductorData." + cd.getName(), 999);
+					DSS.doSimpleMsg("Error: GMR is specified as zero for ConductorData." + cd.getName(), 999);
 				break;
 			}
 		}
@@ -155,7 +155,7 @@ public class ConductorDataImpl extends DSSClassImpl implements ConductorData {
 	protected void classMakeLike(DSSObject otherObj) {
 
 		ConductorDataObj otherConductorData = (ConductorDataObj) otherObj;
-		ConductorDataObj cd = (ConductorDataObj) DSSGlobals.activeDSSObject;
+		ConductorDataObj cd = (ConductorDataObj) DSS.activeDSSObject;
 
 		cd.setRDC(otherConductorData.getRDC());
 		cd.setR60(otherConductorData.getR60());

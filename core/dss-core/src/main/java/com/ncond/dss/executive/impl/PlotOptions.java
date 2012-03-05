@@ -1,7 +1,7 @@
 package com.ncond.dss.executive.impl;
 
-import com.ncond.dss.common.impl.DSSGlobals;
-import com.ncond.dss.common.impl.Utilities;
+import com.ncond.dss.common.impl.DSS;
+import com.ncond.dss.common.impl.Util;
 import com.ncond.dss.parser.impl.Parser;
 import com.ncond.dss.plot.DSSPlot;
 import com.ncond.dss.plot.impl.DSSPlotImpl;
@@ -12,7 +12,7 @@ import com.ncond.dss.shared.impl.CommandListImpl;
 
 public class PlotOptions {
 
-	private static final String CRLF = DSSGlobals.CRLF;
+	private static final String CRLF = DSS.CRLF;
 
 	private static final int NumPlotOptions = 17;
 
@@ -140,7 +140,7 @@ public class PlotOptions {
 
 		int result = 0;
 
-		if (DSSGlobals.noFormsAllowed) {
+		if (DSS.noFormsAllowed) {
 			result =1;
 			return result;
 		}
@@ -174,13 +174,13 @@ public class PlotOptions {
 				case 'M':
 				case 'P':
 				case 'Z':
-					if (Utilities.compareTextShortest("pri", param) != 0) {  // allow price shape
-						if (DSSGlobals.activeCircuit == null) {
-							DSSGlobals.doSimpleMsg("No circuit created.", 24731);
+					if (Util.compareTextShortest("pri", param) != 0) {  // allow price shape
+						if (DSS.activeCircuit == null) {
+							DSS.doSimpleMsg("No circuit created.", 24731);
 							return result;
 						}
-						if ((DSSGlobals.activeCircuit.getSolution() == null) || (DSSGlobals.activeCircuit.getSolution().getNodeV() == null)) {
-							DSSGlobals.doSimpleMsg("The circuit must be solved before you can do this.", 24732);
+						if ((DSS.activeCircuit.getSolution() == null) || (DSS.activeCircuit.getSolution().getNodeV() == null)) {
+							DSS.doSimpleMsg("The circuit must be solved before you can do this.", 24732);
 							return result;
 						}
 					}
@@ -193,7 +193,7 @@ public class PlotOptions {
 				switch (param.charAt(0)) {
 				case 'A':
 					plot.setPlotType(PlotType.AUTO_ADD_LOG_PLOT);
-					plot.setObjectName(DSSGlobals.circuitName_ + "AutoAddLog.csv");
+					plot.setObjectName(DSS.circuitName_ + "AutoAddLog.csv");
 					plot.setValueIndex(2);
 					break;
 				case 'C':
@@ -209,7 +209,7 @@ public class PlotOptions {
 					plot.setPlotType(PlotType.MONITOR_PLOT);
 					break;
 				case 'P':
-					if (Utilities.compareTextShortest("pro", param) == 0) {
+					if (Util.compareTextShortest("pro", param) == 0) {
 						plot.setPlotType(PlotType.PROFILE);
 					} else {
 						plot.setPlotType(PlotType.PRICE_SHAPE);
@@ -260,16 +260,16 @@ public class PlotOptions {
 					plot.setMaxScaleIsSpecified(true);  // Indicate the user wants a particular value
 				break;
 			case 3:
-				plot.setDots(Utilities.interpretYesNo(param));
+				plot.setDots(Util.interpretYesNo(param));
 				break;
 			case 4:
-				plot.setLabels(Utilities.interpretYesNo(param));
+				plot.setLabels(Util.interpretYesNo(param));
 				break;
 			case 5:
 				plot.setObjectName(parser.makeString());
 				break;
 			case 6:
-				plot.setShowLoops(Utilities.interpretYesNo(param));
+				plot.setShowLoops(Util.interpretYesNo(param));
 				if (plot.isShowLoops())
 					plot.setPlotType(PlotType.METER_ZONES);
 				break;
@@ -280,13 +280,13 @@ public class PlotOptions {
 				plot.setTriColorMid(parser.makeDouble());
 				break;
 			case 9:
-				plot.setColor1(Utilities.interpretColor(param));
+				plot.setColor1(Util.interpretColor(param));
 				break;
 			case 10:
-				plot.setColor2(Utilities.interpretColor(param));
+				plot.setColor2(Util.interpretColor(param));
 				break;
 			case 11:
-				plot.setColor3(Utilities.interpretColor(param));
+				plot.setColor3(Util.interpretColor(param));
 				break;
 			case 12:  // channel definitions for plot monitor
 				numChannels = parser.parseAsVector(51, dblBuffer);  // allow up to 50 channels
@@ -308,13 +308,13 @@ public class PlotOptions {
 				}
 				break;
 			case 14:
-				plot.setShowSubs( Utilities.interpretYesNo(param) );
+				plot.setShowSubs( Util.interpretYesNo(param) );
 				break;
 			case 15:
 				plot.setMaxLineThickness( parser.makeInteger() );
 				break;
 			case 16:
-				Utilities.interpretStringListArray(param, plot.getDaisyBusList());  // read in Bus list
+				Util.interpretStringListArray(param, plot.getDaisyBusList());  // read in Bus list
 				break;
 			/*case 17:
 				plot.setMinScale(parser.makeDouble());
@@ -344,7 +344,7 @@ public class PlotOptions {
 			param = parser.makeString().toUpperCase();
 		}
 
-		if (DSSGlobals.activeCircuit.isSolved())
+		if (DSS.activeCircuit.isSolved())
 			DSSPlotImpl.getDSSPlotObj().setQuantity(PlotQuantity.NONE);
 
 		DSSPlotImpl.getDSSPlotObj().execute();  // makes a new plot based on these options

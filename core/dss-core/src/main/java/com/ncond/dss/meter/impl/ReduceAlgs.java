@@ -3,8 +3,8 @@ package com.ncond.dss.meter.impl;
 import com.ncond.dss.common.Bus;
 import com.ncond.dss.common.Circuit;
 import com.ncond.dss.common.CktElement;
-import com.ncond.dss.common.impl.DSSGlobals;
-import com.ncond.dss.common.impl.Utilities;
+import com.ncond.dss.common.impl.DSS;
+import com.ncond.dss.common.impl.Util;
 import com.ncond.dss.conversion.LoadObj;
 import com.ncond.dss.delivery.LineObj;
 import com.ncond.dss.parser.impl.Parser;
@@ -75,7 +75,7 @@ public class ReduceAlgs {
 			lineElem1 = (CktElement) branchList.goForward();  // always keep the first element
 
 			while (lineElem1 != null) {
-				if (Utilities.isLineElement(lineElem1)) {
+				if (Util.isLineElement(lineElem1)) {
 					pb = branchList.getPresentBranch();
 
 					/* If it is at the end of a section and has no load,cap, reactor,
@@ -84,7 +84,7 @@ public class ReduceAlgs {
 					if (pb.isDangling()) {
 						toBusRef = pb.getToBusReference();  // only access this property once
 						if (toBusRef >= 0) {
-							bus = DSSGlobals.activeCircuit.getBus(toBusRef);
+							bus = DSS.activeCircuit.getBus(toBusRef);
 							if (!bus.isKeep())
 								lineElem1.setEnabled(false);
 						}
@@ -104,15 +104,15 @@ public class ReduceAlgs {
 		CktTreeNode parentNode;
 		CktTreeNode pb;
 
-		Circuit ckt = DSSGlobals.activeCircuit;
+		Circuit ckt = DSS.activeCircuit;
 
 		if (branchList != null) {  /* eliminate really short lines */
 			/* First, flag all elements that need to be merged */
 			lineElement1 = (LineObj) branchList.getFirst();
 			lineElement1 = (LineObj) branchList.goForward();  // always keep the first element
 			while (lineElement1 != null) {
-				if (Utilities.isLineElement(lineElement1)) {
-					if (Utilities.isStubLine(lineElement1)) {
+				if (Util.isLineElement(lineElement1)) {
+					if (Util.isStubLine(lineElement1)) {
 						lineElement1.setFlag(true);  /* Too small: Mark for merge with something */
 					} else {
 						lineElement1.setFlag(false);
@@ -139,7 +139,7 @@ public class ReduceAlgs {
 									/* Let's consider merging */
 									lineElement2 = (LineObj) parentNode.getCktObject();
 									if (lineElement2.isEnabled())  // check to make sure it hasn't been merged out
-										if (Utilities.isLineElement(lineElement2))
+										if (Util.isLineElement(lineElement2))
 											if (lineElement2.mergeWith(lineElement1, true))
 												/* Move any loads to toBus Reference of downline branch */
 												if (parentNode.getNumObjects() > 0) {
@@ -157,7 +157,7 @@ public class ReduceAlgs {
 						if (!ckt.getBus( pb.getToBusReference() ).isKeep()) {
 							/* Let's consider merging */
 							lineElement2 = (LineObj) pb.getFirstChild().getCktObject();
-							if (Utilities.isLineElement(lineElement2))
+							if (Util.isLineElement(lineElement2))
 								if (lineElement2.mergeWith(lineElement1, true))
 									if (pb.getFirstChild().getNumObjects() > 0) {
 										/* Redefine bus connection to upline bus */
@@ -189,7 +189,7 @@ public class ReduceAlgs {
 			while (lineElement1 != null) {
 
 				if (lineElement1.isEnabled()) {  // maybe we threw it away already
-					if (Utilities.isLineElement(lineElement1))
+					if (Util.isLineElement(lineElement1))
 						if (lineElement1.isSwitch()) {
 							pb = branchList.getPresentBranch();
 							/* See if eligble for merging */
@@ -201,10 +201,10 @@ public class ReduceAlgs {
 
 							case 1:
 								if (pb.getNumObjects() == 0)
-									if (!DSSGlobals.activeCircuit.getBus(pb.getToBusReference()).isKeep()) {
+									if (!DSS.activeCircuit.getBus(pb.getToBusReference()).isKeep()) {
 										/* Let's consider merging */
 										lineElement2 = (LineObj) pb.getFirstChild().getCktObject();
-										if (Utilities.isLineElement(lineElement2))
+										if (Util.isLineElement(lineElement2))
 											if (!lineElement2.isSwitch())
 												lineElement2.mergeWith(lineElement1, true);  /* Series Merge */
 									}
@@ -227,17 +227,17 @@ public class ReduceAlgs {
 			lineElement1 = (LineObj) branchList.getFirst();
 			lineElement1 = (LineObj) branchList.goForward();  // always keep the first element
 			while (lineElement1 != null) {
-				if (Utilities.isLineElement(lineElement1))
+				if (Util.isLineElement(lineElement1))
 					if (!lineElement1.isSwitch())
 						if (lineElement1.isEnabled()) {  // maybe we threw it away already
 							pb = branchList.getPresentBranch();
 							/* see if eligble for merging */
 							if (pb.getNumChildren() == 1)
 								if (pb.getNumObjects() == 0)
-									if (!DSSGlobals.activeCircuit.getBus(pb.getToBusReference()).isKeep()) {
+									if (!DSS.activeCircuit.getBus(pb.getToBusReference()).isKeep()) {
 										/* Let's consider merging */
 										lineElement2 = (LineObj) pb.getFirstChild().getCktObject();
-										if (Utilities.isLineElement(lineElement2))
+										if (Util.isLineElement(lineElement2))
 											if (!lineElement2.isSwitch())
 												lineElement2.mergeWith(lineElement1, true);  /* Series merge */
 									}

@@ -1,9 +1,9 @@
 package com.ncond.dss.executive.impl;
 
 import com.ncond.dss.common.impl.CIMProfileChoice;
-import com.ncond.dss.common.impl.DSSGlobals;
+import com.ncond.dss.common.impl.DSS;
 import com.ncond.dss.common.impl.ExportResults;
-import com.ncond.dss.common.impl.Utilities;
+import com.ncond.dss.common.impl.Util;
 import com.ncond.dss.meter.MonitorObj;
 import com.ncond.dss.parser.impl.Parser;
 import com.ncond.dss.shared.CommandList;
@@ -111,7 +111,7 @@ public class ExportOptions {
 		exportHelp[28] = "(Default file = CDPSM_Geographical.XML) (IEC 61968-13, CDPSM Geographical profile)";
 		exportHelp[29] = "(Default file = CDPSM_Topology.XML) (IEC 61968-13, CDPSM Topology profile)";
 		exportHelp[30] = "(Default file = CDPSM_StateVariables.XML) (IEC 61968-13, CDPSM State Variables profile)";
-		exportHelp[31] = "[Default file = EXP_Profile.CSV] Coordinates, color of each line section in Profile plot. Same options as Plot Profile Phases property." + DSSGlobals.CRLF + DSSGlobals.CRLF +
+		exportHelp[31] = "[Default file = EXP_Profile.CSV] Coordinates, color of each line section in Profile plot. Same options as Plot Profile Phases property." + DSS.CRLF + DSS.CRLF +
 			"Example:  Export Profile Phases=All [optional file name]";
 		exportHelp[32] = "(Default file = EXP_EVTLOG.CSV) All entries in the present event log.";
 		exportHelp[33] = "Exports load allocation factors. File name is assigned.";
@@ -132,19 +132,19 @@ public class ExportOptions {
 
 		/* Check commands requiring a solution and abort if no solution or circuit */
 		if ((paramPointer >= 0 && paramPointer < 24) || (paramPointer >= 27 && paramPointer < 32)) {
-			if (DSSGlobals.activeCircuit == null) {
-				DSSGlobals.doSimpleMsg("No circuit created.", 24711);
+			if (DSS.activeCircuit == null) {
+				DSS.doSimpleMsg("No circuit created.", 24711);
 				return result;
 			}
-			if ((DSSGlobals.activeCircuit.getSolution() == null) || (DSSGlobals.activeCircuit.getSolution().getNodeV() == null)) {
-				DSSGlobals.doSimpleMsg("The circuit must be solved before you can do this.", 24712);
+			if ((DSS.activeCircuit.getSolution() == null) || (DSS.activeCircuit.getSolution().getNodeV() == null)) {
+				DSS.doSimpleMsg("The circuit must be solved before you can do this.", 24712);
 				return result;
 			}
 		}
 
 		int MVAOpt = 0;
 		boolean UEOnlyOpt = false;
-		phasesToPlot = DSSGlobals.PROFILE3PH;  // init this to get rid of compiler warning
+		phasesToPlot = DSS.PROFILE3PH;  // init this to get rid of compiler warning
 
 		switch (paramPointer) {
 		case 8:  // trap export powers command and look for MVA/kVA option
@@ -178,19 +178,19 @@ public class ExportOptions {
 		case 31:  /* Get phases to plot */
 			parser.getNextParam();
 			parm2 = parser.makeString();
-			phasesToPlot = DSSGlobals.PROFILE3PH;  // the default
-			if (Utilities.compareTextShortest(parm2, "default") == 0) {
-				phasesToPlot = DSSGlobals.PROFILE3PH;
-			} else if (Utilities.compareTextShortest(parm2, "all") == 0) {
-				phasesToPlot = DSSGlobals.PROFILEALL;
-			} else if (Utilities.compareTextShortest(parm2, "primary") == 0) {
-				phasesToPlot = DSSGlobals.PROFILEALLPRI;
-			} else if (Utilities.compareTextShortest(parm2, "ll3ph") == 0) {
-				phasesToPlot = DSSGlobals.PROFILELL;
-			} else if (Utilities.compareTextShortest(parm2, "llall") == 0) {
-				phasesToPlot = DSSGlobals.PROFILELLALL;
-			} else if (Utilities.compareTextShortest(parm2, "llprimary") == 0) {
-				phasesToPlot = DSSGlobals.PROFILELLPRI;
+			phasesToPlot = DSS.PROFILE3PH;  // the default
+			if (Util.compareTextShortest(parm2, "default") == 0) {
+				phasesToPlot = DSS.PROFILE3PH;
+			} else if (Util.compareTextShortest(parm2, "all") == 0) {
+				phasesToPlot = DSS.PROFILEALL;
+			} else if (Util.compareTextShortest(parm2, "primary") == 0) {
+				phasesToPlot = DSS.PROFILEALLPRI;
+			} else if (Util.compareTextShortest(parm2, "ll3ph") == 0) {
+				phasesToPlot = DSS.PROFILELL;
+			} else if (Util.compareTextShortest(parm2, "llall") == 0) {
+				phasesToPlot = DSS.PROFILELLALL;
+			} else if (Util.compareTextShortest(parm2, "llprimary") == 0) {
+				phasesToPlot = DSS.PROFILELLPRI;
 			} else if (parm2.length() == 1) {
 				phasesToPlot = parser.makeInteger();
 			}
@@ -201,7 +201,7 @@ public class ExportOptions {
 		parser.getNextParam();
 		fileName = parser.makeString().toLowerCase();  // should be full path name to work universally
 
-		DSSGlobals.inShowResults = true;
+		DSS.inShowResults = true;
 
 		/* Assign default file name if alternate not specified */
 		if (fileName.length() == 0) {
@@ -242,7 +242,7 @@ public class ExportOptions {
 			case 33: fileName = "AllocationFactors.txt";
 			default: fileName = "EXP_VOLTAGES.csv"; break;
 			}
-			fileName = DSSGlobals.DSSDataDirectory + DSSGlobals.circuitName_ + fileName;  // explicitly define directory
+			fileName = DSS.DSSDataDirectory + DSS.circuitName_ + fileName;  // explicitly define directory
 		}
 
 		switch (paramPointer) {
@@ -262,15 +262,15 @@ public class ExportOptions {
 		case 13: ExportResults.exportMeters(fileName); break;
 		case 14:
 			if (parm2.length() > 0) {
-				pMon = (MonitorObj) DSSGlobals.monitorClass.find(parm2);
+				pMon = (MonitorObj) DSS.monitorClass.find(parm2);
 				if (pMon != null) {
 					pMon.translateToCSV(false);
-					fileName = DSSGlobals.globalResult;
+					fileName = DSS.globalResult;
 				} else {
-					DSSGlobals.doSimpleMsg("Monitor \""+parm2+"\" not found."+ DSSGlobals.CRLF + parser.getCmdString(), 250);
+					DSS.doSimpleMsg("Monitor \""+parm2+"\" not found."+ DSS.CRLF + parser.getCmdString(), 250);
 				}
 			} else {
-				DSSGlobals.doSimpleMsg("Monitor name not specified."+ DSSGlobals.CRLF + parser.getCmdString(), 251);
+				DSS.doSimpleMsg("Monitor name not specified."+ DSS.CRLF + parser.getCmdString(), 251);
 			}
 			break;
 		case 15: ExportResults.exportYprim(fileName); break;
@@ -291,14 +291,14 @@ public class ExportOptions {
 		case 30: ExportResults.exportCDPSM(fileName, CIMProfileChoice.STATE_VARIABLES); break;
 		case 31: ExportResults.exportProfile(fileName, phasesToPlot); break;
 		case 32: ExportResults.exportEventLog(fileName); break;
-		case 33: Utilities.dumpAllocationFactors(fileName); break;
+		case 33: Util.dumpAllocationFactors(fileName); break;
 		default: ExportResults.exportVoltages(fileName); break;
 		}
 
-		DSSGlobals.inShowResults = false;
+		DSS.inShowResults = false;
 
-		if (DSSGlobals.autoShowExport)
-			Utilities.fireOffEditor(fileName);
+		if (DSS.autoShowExport)
+			Util.fireOffEditor(fileName);
 
 		return result;
 	}

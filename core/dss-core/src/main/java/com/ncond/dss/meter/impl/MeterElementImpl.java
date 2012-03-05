@@ -4,13 +4,13 @@ import org.apache.commons.math.complex.Complex;
 
 import com.ncond.dss.common.CktElement;
 import com.ncond.dss.common.DSSClass;
-import com.ncond.dss.common.impl.DSSCktElement;
+import com.ncond.dss.common.impl.CktElementImpl;
 import com.ncond.dss.common.impl.DSSClassDefs;
-import com.ncond.dss.common.impl.DSSGlobals;
-import com.ncond.dss.common.impl.Utilities;
+import com.ncond.dss.common.impl.DSS;
+import com.ncond.dss.common.impl.Util;
 import com.ncond.dss.meter.MeterElement;
 
-public class MeterElementImpl extends DSSCktElement implements MeterElement {
+abstract public class MeterElementImpl extends CktElementImpl implements MeterElement {
 
 	protected String elementName;
 	protected CktElement meteredElement;
@@ -40,12 +40,12 @@ public class MeterElementImpl extends DSSCktElement implements MeterElement {
 
 	public void allocateSensorArrays() {
 		if (meteredElement != null)
-			calculatedCurrent = Utilities.resizeArray(calculatedCurrent, meteredElement.getYorder());
+			calculatedCurrent = Util.resizeArray(calculatedCurrent, meteredElement.getYorder());
 		if (meteredElement != null)
-			calculatedVoltage = Utilities.resizeArray(calculatedVoltage, meteredElement.getYorder());
-		sensorCurrent = Utilities.resizeArray(sensorCurrent, nPhases);
-		sensorVoltage = Utilities.resizeArray(sensorVoltage, nPhases);
-		phsAllocationFactor = Utilities.resizeArray(phsAllocationFactor, nPhases);
+			calculatedVoltage = Util.resizeArray(calculatedVoltage, meteredElement.getYorder());
+		sensorCurrent = Util.resizeArray(sensorCurrent, nphase);
+		sensorVoltage = Util.resizeArray(sensorVoltage, nphase);
+		phsAllocationFactor = Util.resizeArray(phsAllocationFactor, nphase);
 	}
 
 	public void calcAllocationFactors() {
@@ -56,9 +56,9 @@ public class MeterElementImpl extends DSSCktElement implements MeterElement {
 		meteredElement.getCurrents(calculatedCurrent);
 
 		// the phase allocation factor is the amount that the load must change to match the measured peak
-		iOffset = meteredTerminal * meteredElement.getNConds();
+		iOffset = meteredTerminal * meteredElement.getNumConds();
 		avgAllocFactor = 0.0;
-		for (i = 0; i < nPhases; i++) {
+		for (i = 0; i < nphase; i++) {
 			mag = calculatedCurrent[i + iOffset].abs();
 			if (mag > 0.0) {
 				phsAllocationFactor[i] = sensorCurrent[i] / mag;
@@ -67,14 +67,14 @@ public class MeterElementImpl extends DSSCktElement implements MeterElement {
 			}
 			avgAllocFactor = avgAllocFactor + phsAllocationFactor[i];
 		}
-		avgAllocFactor = avgAllocFactor / nPhases;  // factor for 2- and 3-phase loads
+		avgAllocFactor = avgAllocFactor / nphase;  // factor for 2- and 3-phase loads
 	}
 
 	/**
 	 * Sample control quantities and set action times in control queue.
 	 */
 	public void takeSample() {
-		DSSGlobals.doSimpleMsg("Programming error: Reached base MeterElement class for takeSample."+DSSGlobals.CRLF+"Device: "+getName(), 723);
+		DSS.doSimpleMsg("Programming error: Reached base MeterElement class for takeSample."+DSS.CRLF+"Device: "+getName(), 723);
 	}
 
 	public String getElementName() {

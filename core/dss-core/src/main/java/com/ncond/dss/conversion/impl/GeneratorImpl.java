@@ -5,8 +5,8 @@ import java.io.File;
 import java.io.FileWriter;
 
 import com.ncond.dss.common.impl.DSSClassDefs;
-import com.ncond.dss.common.impl.DSSGlobals;
-import com.ncond.dss.common.impl.Utilities;
+import com.ncond.dss.common.impl.DSS;
+import com.ncond.dss.common.impl.Util;
 import com.ncond.dss.conversion.Generator;
 import com.ncond.dss.conversion.GeneratorObj;
 import com.ncond.dss.general.LoadShapeObj;
@@ -55,25 +55,25 @@ public class GeneratorImpl extends PCClassImpl implements Generator {
 						"Otherwise, specify actual kV across each branch of the Generator. "+
 						"If wye (star), specify phase-neutral kV. "+
 						"If delta or phase-phase connected, specify phase-phase kV.");  // line-neutral voltage//  base voltage
-		addProperty("kW", 3, "Total base kW for the Generator.  A positive value denotes power coming OUT of the element, "+DSSGlobals.CRLF+
+		addProperty("kW", 3, "Total base kW for the Generator.  A positive value denotes power coming OUT of the element, "+DSS.CRLF+
 						"which is the opposite of a load. This value is modified depending on the dispatch mode. " +
 						"Unaffected by the global load multiplier and growth curves. " +
 						"If you want there to be more generation, you must add more generators or change this value.");
 		addProperty("pf", 4, "Generator power factor. Default is 0.80. Enter negative for leading powerfactor "+
-						"(when kW and kvar have opposite signs.)"+DSSGlobals.CRLF+
-						"A positive power factor for a generator signifies that the generator produces vars " + DSSGlobals.CRLF +
-						"as is typical for a synchronous generator.  Induction machines would be " +DSSGlobals.CRLF+
+						"(when kW and kvar have opposite signs.)"+DSS.CRLF+
+						"A positive power factor for a generator signifies that the generator produces vars " + DSS.CRLF +
+						"as is typical for a synchronous generator.  Induction machines would be " +DSS.CRLF+
 						"specified with a negative power factor.");
 		addProperty("kvar", 12,   "Specify the base kvar.  Alternative to specifying the power factor.  Side effect: "+
 							" the power factor value is altered to agree based on present value of kW.");
 		addProperty("model", 5, "Integer code for the model to use for generation variation with voltage. "+
-						"Valid values are:" +DSSGlobals.CRLF+DSSGlobals.CRLF+
-						"1:Generator injects a constant kW at specified power factor."+DSSGlobals.CRLF+
-						"2:Generator is modeled as a constant admittance."  +DSSGlobals.CRLF+
-						"3:Const kW, constant kV.  Somewhat like a conventional transmission power flow P-V generator."+DSSGlobals.CRLF+
-						"4:Const kW, Fixed Q (Q never varies)"+DSSGlobals.CRLF+
-						"5:Const kW, Fixed Q(as a constant reactance)"+DSSGlobals.CRLF+
-						"6:Compute load injection from User-written Model.(see usage of Xd, Xdp)"+DSSGlobals.CRLF+
+						"Valid values are:" +DSS.CRLF+DSS.CRLF+
+						"1:Generator injects a constant kW at specified power factor."+DSS.CRLF+
+						"2:Generator is modeled as a constant admittance."  +DSS.CRLF+
+						"3:Const kW, constant kV.  Somewhat like a conventional transmission power flow P-V generator."+DSS.CRLF+
+						"4:Const kW, Fixed Q (Q never varies)"+DSS.CRLF+
+						"5:Const kW, Fixed Q(as a constant reactance)"+DSS.CRLF+
+						"6:Compute load injection from User-written Model.(see usage of Xd, Xdp)"+DSS.CRLF+
 						"7:Constant kW, kvar, but current limited below Vminpu. Approximates a simple inverter.");
 		addProperty("Vminpu", 22,   "Default = 0.90.  Minimum per unit voltage for which the Model is assumed to apply. " +
 							"Below this value, the load model reverts to a constant impedance model.");
@@ -102,8 +102,8 @@ public class GeneratorImpl extends PCClassImpl implements Generator {
 						"In default mode, gen is either always on or follows dispatch curve as specified. "+
 						"Otherwise, the gen comes on when either the global default load level (Loadshape \"default\") or the price level "+
 						"exceeds the dispatch value."); // = 0 | >0
-		addProperty("dispvalue", 10,  "Dispatch value. "+DSSGlobals.CRLF+
-						"If = 0.0 (default) then Generator follow dispatch curves, if any. " +DSSGlobals.CRLF+
+		addProperty("dispvalue", 10,  "Dispatch value. "+DSS.CRLF+
+						"If = 0.0 (default) then Generator follow dispatch curves, if any. " +DSS.CRLF+
 						"If > 0  then Generator is ON only when either the price signal (in Price dispatch mode) "+
 						"exceeds this value or the active circuit load multiplier * \"default\" loadshape value * the default yearly growth factor " +
 						"exceeds this value.  Then the generator follows dispatch curves (duty, daily, or yearly), if any (see also Status).");  // = 0 | >0
@@ -155,8 +155,8 @@ public class GeneratorImpl extends PCClassImpl implements Generator {
 
 	@Override
 	public int newObject(String objName) {
-		DSSGlobals.activeCircuit.setActiveCktElement(new GeneratorObjImpl(this, objName));
-		return addObjectToList(DSSGlobals.activeDSSObject);
+		DSS.activeCircuit.setActiveCktElement(new GeneratorObjImpl(this, objName));
+		return addObjectToList(DSS.activeDSSObject);
 	}
 
 	private void setNcondsForConnection() {
@@ -164,18 +164,18 @@ public class GeneratorImpl extends PCClassImpl implements Generator {
 
 		switch (ag.getConnection()) {
 		case 0:
-			ag.setNConds(ag.getNPhases() + 1);
+			ag.setNumConds(ag.getNumPhases() + 1);
 			break;
 		case 1:
-			switch (ag.getNPhases()) {
+			switch (ag.getNumPhases()) {
 			case 1:
-				ag.setNConds(ag.getNPhases() + 1);  // L-L
+				ag.setNumConds(ag.getNumPhases() + 1);  // L-L
 				break;
 			case 2:
-				ag.setNConds(ag.getNPhases() + 1);  // open-delta
+				ag.setNumConds(ag.getNumPhases() + 1);  // open-delta
 				break;
 			default:
-				ag.setNConds(ag.getNPhases());
+				ag.setNumConds(ag.getNumPhases());
 				break;
 			}
 			break;
@@ -217,12 +217,12 @@ public class GeneratorImpl extends PCClassImpl implements Generator {
 		setNcondsForConnection();
 
 		/* VBase is always L-N voltage unless 1-phase device or more than 3 phases */
-		switch (ag.getNPhases()) {
+		switch (ag.getNumPhases()) {
 		case 2:
-			ag.setVBase(ag.getGenVars().kVGeneratorBase * DSSGlobals.InvSQRT3x1000);  // L-N Volts
+			ag.setVBase(ag.getGenVars().kVGeneratorBase * DSS.InvSQRT3x1000);  // L-N Volts
 			break;
 		case 3:
-			ag.setVBase(ag.getGenVars().kVGeneratorBase * DSSGlobals.InvSQRT3x1000);  // L-N Volts
+			ag.setVBase(ag.getGenVars().kVGeneratorBase * DSS.InvSQRT3x1000);  // L-N Volts
 			break;
 		default:
 			ag.setVBase(ag.getGenVars().kVGeneratorBase * 1000.0);   // just use what is supplied
@@ -231,7 +231,7 @@ public class GeneratorImpl extends PCClassImpl implements Generator {
 		ag.setVBase95(ag.getVMinPU() * ag.getVBase());
 		ag.setVBase105(ag.getVMaxPU() * ag.getVBase());
 
-		ag.setYOrder(ag.getNConds() * ag.getNTerms());
+		ag.setYOrder(ag.getNumConds() * ag.getNumTerms());
 		ag.setYPrimInvalid(true);
 	}
 
@@ -252,7 +252,7 @@ public class GeneratorImpl extends PCClassImpl implements Generator {
 
 		// continue parsing with contents of parser
 		activeGeneratorObj = (GeneratorObj) elementList.getActive();
-		DSSGlobals.activeCircuit.setActiveCktElement(activeGeneratorObj);
+		DSS.activeCircuit.setActiveCktElement(activeGeneratorObj);
 
 		int result = 0;
 		GeneratorObj ag = activeGeneratorObj;
@@ -270,16 +270,16 @@ public class GeneratorImpl extends PCClassImpl implements Generator {
 			if (paramPointer >= 0 && paramPointer < numProperties) {
 				ag.setPropertyValue(propertyIdxMap[paramPointer], param);
 			} else {
-				DSSGlobals.doSimpleMsg("Unknown parameter \""+paramName+"\" for generator \""+ag.getName()+"\"", 560);
+				DSS.doSimpleMsg("Unknown parameter \""+paramName+"\" for generator \""+ag.getName()+"\"", 560);
 			}
 
 			if (paramPointer >= 0) {
 				switch (propertyIdxMap[paramPointer]) {
 				case -1:
-					DSSGlobals.doSimpleMsg("Unknown parameter \"" + paramName + "\" for object \"" + getName() +"."+ ag.getName() + "\"", 561);
+					DSS.doSimpleMsg("Unknown parameter \"" + paramName + "\" for object \"" + getName() +"."+ ag.getName() + "\"", 561);
 					break;
 				case 0:
-					ag.setNPhases(parser.makeInteger());  // num phases
+					ag.setNumPhases(parser.makeInteger());  // num phases
 					break;
 				case 1:
 					ag.setBus(1, param);  // TODO Check zero based indexing
@@ -318,10 +318,10 @@ public class GeneratorImpl extends PCClassImpl implements Generator {
 					ag.setPresentKVAr(parser.makeDouble());
 					break;
 				case 13:
-					DSSGlobals.doSimpleMsg("Rneut property has been deleted. Use external impedance.", 5611);
+					DSS.doSimpleMsg("Rneut property has been deleted. Use external impedance.", 5611);
 					break;
 				case 14:
-					DSSGlobals.doSimpleMsg("Xneut property has been deleted. Use external impedance.", 5612);
+					DSS.doSimpleMsg("Xneut property has been deleted. Use external impedance.", 5612);
 					break;
 				case 15:
 					if (param.toLowerCase().charAt(0) == 'f') {
@@ -346,7 +346,7 @@ public class GeneratorImpl extends PCClassImpl implements Generator {
 					ag.setPVFactor(parser.makeDouble());  // declaration factor
 					break;
 				case 21:
-					ag.setDebugTrace(Utilities.interpretYesNo(param));
+					ag.setDebugTrace(Util.interpretYesNo(param));
 					break;
 				case 22:
 					ag.setVMinPU(parser.makeDouble());
@@ -355,7 +355,7 @@ public class GeneratorImpl extends PCClassImpl implements Generator {
 					ag.setVMaxPU(parser.makeDouble());
 					break;
 				case 24:
-					ag.setForcedOn(Utilities.interpretYesNo(param));
+					ag.setForcedOn(Util.interpretYesNo(param));
 					break;
 				case 25:
 					ag.getGenVars().kVARating = parser.makeDouble();
@@ -413,21 +413,21 @@ public class GeneratorImpl extends PCClassImpl implements Generator {
 				case 6:
 					/* Set shape objects; returns nil if not valid */
 					/* Sets the kW and kvar properties to match the peak kW demand from the LoadShape */
-					ag.setYearlyShapeObj( (LoadShapeObj) DSSGlobals.loadShapeClass.find(ag.getYearlyShape()) );
+					ag.setYearlyShapeObj( (LoadShapeObj) DSS.loadShapeClass.find(ag.getYearlyShape()) );
 					if (ag.getYearlyShape() != null) {
 						if (ag.getYearlyShapeObj().isUseActual())
 							ag.setKwKVAr(ag.getYearlyShapeObj().getMaxP(), ag.getYearlyShapeObj().getMaxQ());
 					}
 					break;
 				case 7:
-					ag.setDailyDispShapeObj( (LoadShapeObj) DSSGlobals.loadShapeClass.find(ag.getDailyDispShape()) );
+					ag.setDailyDispShapeObj( (LoadShapeObj) DSS.loadShapeClass.find(ag.getDailyDispShape()) );
 					if (ag.getDailyDispShapeObj() != null) {
 						if (ag.getDailyDispShapeObj().isUseActual())
 							ag.setKwKVAr(ag.getDailyDispShapeObj().getMaxP(), ag.getDailyDispShapeObj().getMaxQ());
 					}
 					break;
 				case 8:
-					ag.setDutyShapeObj( (LoadShapeObj) DSSGlobals.loadShapeClass.find(ag.getDutyShape()) );
+					ag.setDutyShapeObj( (LoadShapeObj) DSS.loadShapeClass.find(ag.getDutyShape()) );
 					if (ag.getDutyShapeObj() != null) {
 						if (ag.getDutyShapeObj().isUseActual())
 							ag.setKwKVAr(ag.getDutyShapeObj().getMaxP(), ag.getDutyShapeObj().getMaxQ());
@@ -436,17 +436,17 @@ public class GeneratorImpl extends PCClassImpl implements Generator {
 				case 21:
 					if (ag.isDebugTrace()) {
 						try {
-							File f = new File(DSSGlobals.DSSDataDirectory + "GEN_"+ag.getName()+".csv");
+							File f = new File(DSS.DSSDataDirectory + "GEN_"+ag.getName()+".csv");
 							FileWriter fw = new FileWriter(f, false);
 							BufferedWriter bw = new BufferedWriter(fw);
 
 							bw.write("t, Iteration, LoadMultiplier, Mode, LoadModel, GenModel, dQdV, Avg_Vpu, Vdiff, MQnominalperphase, MPnominalperphase, CurrentType");
 
-							for (int i = 0; i < ag.getNPhases(); i++)
+							for (int i = 0; i < ag.getNumPhases(); i++)
 								bw.write(", |Iinj" + String.valueOf(i) + "|");
-							for (int i = 0; i < ag.getNPhases(); i++)
+							for (int i = 0; i < ag.getNumPhases(); i++)
 								bw.write(", |Iterm" + String.valueOf(i) + "|");
-							for (int i = 0; i < ag.getNPhases(); i++)
+							for (int i = 0; i < ag.getNumPhases(); i++)
 								bw.write(", |Vterm" + String.valueOf(i) + "|");
 
 							bw.write(",Vthev, Theta");
@@ -488,11 +488,11 @@ public class GeneratorImpl extends PCClassImpl implements Generator {
 		if (otherGenerator != null) {
 			GeneratorObj ag = activeGeneratorObj;
 
-			if (ag.getNPhases() != otherGenerator.getNPhases()) {
-				ag.setNPhases(otherGenerator.getNPhases());
-				ag.setNConds(ag.getNPhases());  // forces reallocation of terminal stuff
+			if (ag.getNumPhases() != otherGenerator.getNumPhases()) {
+				ag.setNumPhases(otherGenerator.getNumPhases());
+				ag.setNumConds(ag.getNumPhases());  // forces reallocation of terminal stuff
 
-				ag.setYOrder(ag.getNConds() * ag.getNTerms());
+				ag.setYOrder(ag.getNumConds() * ag.getNumTerms());
 				ag.setYPrimInvalid(true);
 			}
 
@@ -552,7 +552,7 @@ public class GeneratorImpl extends PCClassImpl implements Generator {
 
 			result = 1;
 		} else {
-			DSSGlobals.doSimpleMsg("Error in Load makeLike: \"" + otherGeneratorName + "\" not found.", 562);
+			DSS.doSimpleMsg("Error in Load makeLike: \"" + otherGeneratorName + "\" not found.", 562);
 		}
 
 		return result;
@@ -573,7 +573,7 @@ public class GeneratorImpl extends PCClassImpl implements Generator {
 			p.randomize(0);
 		}
 
-		DSSGlobals.doSimpleMsg("Need to implement Generator.init()", -1);
+		DSS.doSimpleMsg("Need to implement Generator.init()", -1);
 		return 0;
 	}
 
@@ -581,7 +581,7 @@ public class GeneratorImpl extends PCClassImpl implements Generator {
 	 * Force all EnergyMeters in the circuit to reset.
 	 */
 	public void resetRegistersAll() {
-		for (GeneratorObj pGen : DSSGlobals.activeCircuit.getGenerators())
+		for (GeneratorObj pGen : DSS.activeCircuit.getGenerators())
 			pGen.resetRegisters();
 	}
 
@@ -589,7 +589,7 @@ public class GeneratorImpl extends PCClassImpl implements Generator {
 	 * Force all EnergyMeters in the circuit to take a sample.
 	 */
 	public void sampleAll() {
-		for (GeneratorObj pGen : DSSGlobals.activeCircuit.getGenerators())
+		for (GeneratorObj pGen : DSS.activeCircuit.getGenerators())
 			pGen.takeSample();
 	}
 

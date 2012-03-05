@@ -5,7 +5,7 @@ import java.io.PrintStream;
 import org.apache.commons.math.complex.Complex;
 
 import com.ncond.dss.common.DSSClass;
-import com.ncond.dss.common.impl.DSSGlobals;
+import com.ncond.dss.common.impl.DSS;
 import com.ncond.dss.general.LineCode;
 import com.ncond.dss.general.LineCodeObj;
 import com.ncond.dss.shared.CMatrix;
@@ -49,7 +49,7 @@ public class LineCodeObjImpl extends DSSObjectImpl implements LineCodeObj {
 		Z    = null;
 		Zinv = null;
 		Yc   = null;
-		baseFrequency = DSSGlobals.activeCircuit.getFundamental();
+		baseFrequency = DSS.activeCircuit.getFundamental();
 		units = LineUnits.UNITS_NONE;  // default to none (no conversion)
 		normAmps  = 400.0;
 		emergAmps = 600.0;
@@ -93,7 +93,7 @@ public class LineCodeObjImpl extends DSSObjectImpl implements LineCodeObj {
 		String result = "[";
 		for (int i = 0; i < nPhases; i++) {
 			for (int j = 0; j < nPhases; j++)
-				result = result + String.format("%12.8f ", Yc.get(i, j).getImaginary() / DSSGlobals.TWO_PI / baseFrequency * 1.e9);
+				result = result + String.format("%12.8f ", Yc.get(i, j).getImaginary() / DSS.TWO_PI / baseFrequency * 1.e9);
 			if (i < nPhases - 1)
 				result = result + "|";
 		}
@@ -134,8 +134,8 @@ public class LineCodeObjImpl extends DSSObjectImpl implements LineCodeObj {
 		Zs = Ztemp.add(new Complex(R0, X0)).multiply(oneThird);
 		Zm = new Complex(R0, X0).subtract(new Complex(R1, X1)).multiply(oneThird);
 
-		Yc1 = DSSGlobals.TWO_PI * baseFrequency * C1;
-		Yc0 = DSSGlobals.TWO_PI * baseFrequency * C0;
+		Yc1 = DSS.TWO_PI * baseFrequency * C1;
+		Yc0 = DSS.TWO_PI * baseFrequency * C0;
 
 		Ys = new Complex(0.0, Yc1).multiply(2.0).add(new Complex(0.0, Yc0)).multiply(oneThird);
 		Ym = new Complex(0.0, Yc0).subtract(new Complex(0.0, Yc1)).multiply(oneThird);
@@ -183,7 +183,7 @@ public class LineCodeObjImpl extends DSSObjectImpl implements LineCodeObj {
 		F.print("~ " + parentClass.getPropertyName()[10] + "=\"");
 		for (int i = 0; i < nPhases; i++) {
 			for (int j = 0; j < nPhases; j++)
-				F.print((Yc.get(i, j).getImaginary() / DSSGlobals.TWO_PI / baseFrequency * 1.e9) + " ");
+				F.print((Yc.get(i, j).getImaginary() / DSS.TWO_PI / baseFrequency * 1.e9) + " ");
 			F.print("|");
 		}
 		F.println("\"");
@@ -220,7 +220,7 @@ public class LineCodeObjImpl extends DSSObjectImpl implements LineCodeObj {
 		case 10:
 			return getCMatrix();
 		case 11:
-			return String.format("%.g", DSSGlobals.defaultBaseFreq);  // "baseFreq";
+			return String.format("%.g", DSS.defaultBaseFreq);  // "baseFreq";
 		case 17:
 			return reduceByKron ? "Y" : "N";
 		case 18:
@@ -250,7 +250,7 @@ public class LineCodeObjImpl extends DSSObjectImpl implements LineCodeObj {
 		setPropertyValue(8, "");     // "rmatrix"
 		setPropertyValue(9, "");     // "xmatrix"
 		setPropertyValue(10, "");     // "cmatrix"
-		setPropertyValue(11, String.format("%6.1f", DSSGlobals.defaultBaseFreq));  // "baseFreq"
+		setPropertyValue(11, String.format("%6.1f", DSS.defaultBaseFreq));  // "baseFreq"
 		setPropertyValue(12, "400");  // "normamps"
 		setPropertyValue(13, "600");  // "emergamps"
 		setPropertyValue(14, "0.1");  // "faultrate"
@@ -280,7 +280,7 @@ public class LineCodeObjImpl extends DSSObjectImpl implements LineCodeObj {
 				Yc.invert();  // Vn = 0 not In
 				newYc = Yc.kron(neutralConductor);
 			} catch (Exception e) {
-				DSSGlobals.doSimpleMsg(String.format("Kron reduction failed: LineCode.%s. Attempting to eliminate neutral conductor %d.", getName(), neutralConductor), 103);
+				DSS.doSimpleMsg(String.format("Kron reduction failed: LineCode.%s. Attempting to eliminate neutral conductor %d.", getName(), neutralConductor), 103);
 			}
 
 			// Reallocate into smaller space if Kron was successful
@@ -304,11 +304,11 @@ public class LineCodeObjImpl extends DSSObjectImpl implements LineCodeObj {
 				setPropertyValue(10, getCMatrix());
 
 			} else {
-				DSSGlobals.doSimpleMsg(String.format("Kron reduction failed: LineCode.%s. Attempting to eliminate neutral conductor %d.", getName(), neutralConductor), 103);
+				DSS.doSimpleMsg(String.format("Kron reduction failed: LineCode.%s. Attempting to eliminate neutral conductor %d.", getName(), neutralConductor), 103);
 			}
 
 		} else {
-			DSSGlobals.doSimpleMsg("Cannot perform Kron Reduction on a 1-phase LineCode: LineCode." + getName(), 103);
+			DSS.doSimpleMsg("Cannot perform Kron Reduction on a 1-phase LineCode: LineCode." + getName(), 103);
 		}
 	}
 

@@ -1,7 +1,7 @@
 package com.ncond.dss.conversion.impl;
 
 import com.ncond.dss.common.impl.DSSClassDefs;
-import com.ncond.dss.common.impl.DSSGlobals;
+import com.ncond.dss.common.impl.DSS;
 import com.ncond.dss.conversion.VSource;
 import com.ncond.dss.conversion.VSourceObj;
 import com.ncond.dss.parser.impl.Parser;
@@ -55,10 +55,10 @@ public class VSourceImpl extends PCClassImpl implements VSource {
 		propertyName[18]  = "bus2";
 
 		// define property help values
-		propertyHelp[0] = "Name of bus to which the main terminal (1) is connected."+DSSGlobals.CRLF+"bus1=busname"+DSSGlobals.CRLF+"bus1=busname.1.2.3";
+		propertyHelp[0] = "Name of bus to which the main terminal (1) is connected."+DSS.CRLF+"bus1=busname"+DSS.CRLF+"bus1=busname.1.2.3";
 		propertyHelp[1] = "Base Source kV, usually phase-phase (L-L) unless you are making a positive-sequence model or 1-phase model"+
 				"in which case, it will be phase-neutral (L-N) kV.";
-		propertyHelp[2] = "Per unit of the base voltage that the source is actually operating at."+ DSSGlobals.CRLF +
+		propertyHelp[2] = "Per unit of the base voltage that the source is actually operating at."+ DSS.CRLF +
 				"\"pu=1.05\"";
 		propertyHelp[3] = "Phase angle in degrees of first phase: e.g.,Angle=10.3";
 		propertyHelp[4] = "Source frequency.  Defaults to system default base frequency.";
@@ -72,24 +72,24 @@ public class VSourceImpl extends PCClassImpl implements VSource {
 				"Use X0R0 to define X/R ratio for 1-phase source.";
 		propertyHelp[8] = "Positive-sequence  X/R ratio. Default = 4.";
 		propertyHelp[9] = "Zero-sequence X/R ratio.Default = 3.";
-		propertyHelp[10] = "Alternate method of defining the source impedance. " + DSSGlobals.CRLF +
+		propertyHelp[10] = "Alternate method of defining the source impedance. " + DSS.CRLF +
 				"3-phase short circuit current, amps.  Default is 10000.";
-		propertyHelp[11] = "Alternate method of defining the source impedance. " + DSSGlobals.CRLF +
+		propertyHelp[11] = "Alternate method of defining the source impedance. " + DSS.CRLF +
 				"single-phase short circuit current, amps.  Default is 10500.";
-		propertyHelp[12] = "Alternate method of defining the source impedance. " + DSSGlobals.CRLF +
+		propertyHelp[12] = "Alternate method of defining the source impedance. " + DSS.CRLF +
 				"Positive-sequence resistance, ohms.  Default is 1.65.";
-		propertyHelp[13] = "Alternate method of defining the source impedance. " + DSSGlobals.CRLF +
+		propertyHelp[13] = "Alternate method of defining the source impedance. " + DSS.CRLF +
 				"Positive-sequence reactance, ohms.  Default is 6.6.";
-		propertyHelp[14] = "Alternate method of defining the source impedance. " + DSSGlobals.CRLF +
+		propertyHelp[14] = "Alternate method of defining the source impedance. " + DSS.CRLF +
 				"Zero-sequence resistance, ohms.  Default is 1.9.";
-		propertyHelp[15] = "Alternate method of defining the source impedance. " + DSSGlobals.CRLF +
+		propertyHelp[15] = "Alternate method of defining the source impedance. " + DSS.CRLF +
 				"Zero-sequence reactance, ohms.  Default is 5.7.";
 		propertyHelp[16] = "{pos*| zero | none} Maintain specified sequence for harmonic solution. Default is positive sequence. "+
 				"Otherwise, angle between phases rotates with harmonic.";
 		propertyHelp[17] = "{pos*| neg | zero} Set the phase angles for the specified symmetrical component sequence for non-harmonic solution modes. "+
                  "Default is positive sequence. ";
-		propertyHelp[18] = "Name of bus to which 2nd terminal is connected."+DSSGlobals.CRLF+"bus2=busname"+DSSGlobals.CRLF+"bus2=busname.1.2.3" +
-				DSSGlobals.CRLF + DSSGlobals.CRLF +
+		propertyHelp[18] = "Name of bus to which 2nd terminal is connected."+DSS.CRLF+"bus2=busname"+DSS.CRLF+"bus2=busname.1.2.3" +
+				DSS.CRLF + DSS.CRLF +
 				"Default is Bus1.0.0.0 (grounded wye connection)";
 
 		activeProperty = VSource.NumPropsThisClass - 1;
@@ -101,8 +101,8 @@ public class VSourceImpl extends PCClassImpl implements VSource {
 
 	@Override
 	public int newObject(String objName) {
-		DSSGlobals.activeCircuit.setActiveCktElement(new VSourceObjImpl(this, objName));
-		return addObjectToList(DSSGlobals.activeDSSObject);
+		DSS.activeCircuit.setActiveCktElement(new VSourceObjImpl(this, objName));
+		return addObjectToList(DSS.activeDSSObject);
 	}
 
 	private void vSourceSetBus1(String s) {
@@ -125,7 +125,7 @@ public class VSourceImpl extends PCClassImpl implements VSource {
 		} else {
 			s2 = s.substring(0);  // copy up to dot
 		}
-		for (i = 0; i < avs.getNPhases(); i++)
+		for (i = 0; i < avs.getNumPhases(); i++)
 			s2 = s2 + ".0";  // append series of ".0"'s
 
 		avs.setBus(1, s2);  // default setting for bus2
@@ -138,7 +138,7 @@ public class VSourceImpl extends PCClassImpl implements VSource {
 
 		// continue parsing with contents of parser
 		activeVSourceObj = (VSourceObj) elementList.getActive();
-		DSSGlobals.activeCircuit.setActiveCktElement(activeVSourceObj);
+		DSS.activeCircuit.setActiveCktElement(activeVSourceObj);
 
 		int result = 0;
 
@@ -159,7 +159,7 @@ public class VSourceImpl extends PCClassImpl implements VSource {
 
 			switch (paramPointer) {
 			case -1:
-				DSSGlobals.doSimpleMsg("Unknown parameter \"" + paramName + "\" for object \"VSource."+avs.getName()+"\"", 320);
+				DSS.doSimpleMsg("Unknown parameter \"" + paramName + "\" for object \"VSource."+avs.getName()+"\"", 320);
 				break;
 			case 0:
 				vSourceSetBus1(param);  // special handling of bus 1
@@ -177,8 +177,8 @@ public class VSourceImpl extends PCClassImpl implements VSource {
 				avs.setSrcFrequency(parser.makeDouble());  // freq
 				break;
 			case 5:
-				avs.setNPhases(parser.makeInteger());  // num phases
-				avs.setNConds(avs.getNPhases());  // force reallocation of terminal info
+				avs.setNumPhases(parser.makeInteger());  // num phases
+				avs.setNumConds(avs.getNumPhases());  // force reallocation of terminal info
 				break;
 			case 6:
 				avs.setMVAsc3(parser.makeDouble());  // MVAsc3
@@ -222,7 +222,7 @@ public class VSourceImpl extends PCClassImpl implements VSource {
 					avs.setScanType(-1);
 					break;
 				default:
-					DSSGlobals.doSimpleMsg("Unknown scan type for \"" + getName() +"."+ avs.getName() + "\": "+param, 321);
+					DSS.doSimpleMsg("Unknown scan type for \"" + getName() +"."+ avs.getName() + "\": "+param, 321);
 					break;
 				}
 				break;
@@ -238,7 +238,7 @@ public class VSourceImpl extends PCClassImpl implements VSource {
 					avs.setSequenceType(-1);
 					break;
 				default:
-					DSSGlobals.doSimpleMsg("Unknown sequence type for \"" + getName() +"."+ getName() + "\": "+param, 321);
+					DSS.doSimpleMsg("Unknown sequence type for \"" + getName() +"."+ getName() + "\": "+param, 321);
 					break;
 				}
 				break;
@@ -298,15 +298,15 @@ public class VSourceImpl extends PCClassImpl implements VSource {
 		if (otherVSource != null) {
 			VSourceObj avs = activeVSourceObj;
 
-			if (avs.getNPhases() != otherVSource.getNPhases()) {
-				avs.setNPhases(otherVSource.getNPhases());
-				avs.setNConds(avs.getNPhases());  // forces reallocation of terminal stuff
+			if (avs.getNumPhases() != otherVSource.getNumPhases()) {
+				avs.setNumPhases(otherVSource.getNumPhases());
+				avs.setNumConds(avs.getNumPhases());  // forces reallocation of terminal stuff
 
-				avs.setYOrder(avs.getNConds() * avs.getNTerms());
+				avs.setYOrder(avs.getNumConds() * avs.getNumTerms());
 				avs.setYPrimInvalid(true);
 
-				avs.setZ( new CMatrixImpl(avs.getNPhases()) );
-				avs.setZinv( new CMatrixImpl(avs.getNPhases()) );
+				avs.setZ( new CMatrixImpl(avs.getNumPhases()) );
+				avs.setZinv( new CMatrixImpl(avs.getNumPhases()) );
 			}
 
 			avs.getZ().copyFrom(otherVSource.getZ());
@@ -330,7 +330,7 @@ public class VSourceImpl extends PCClassImpl implements VSource {
 
 			result = 1;
 		} else {
-			DSSGlobals.doSimpleMsg("Error in VSource makeLike: \"" + otherSource + "\" not found.", 322);
+			DSS.doSimpleMsg("Error in VSource makeLike: \"" + otherSource + "\" not found.", 322);
 		}
 
 		return result;
@@ -338,7 +338,7 @@ public class VSourceImpl extends PCClassImpl implements VSource {
 
 	@Override
 	public int init(int handle) {
-		DSSGlobals.doSimpleMsg("Need to implement VSource.init", -1);
+		DSS.doSimpleMsg("Need to implement VSource.init", -1);
 		return 0;
 	}
 

@@ -1,8 +1,8 @@
 package com.ncond.dss.control.impl;
 
 import com.ncond.dss.common.impl.DSSClassDefs;
-import com.ncond.dss.common.impl.DSSGlobals;
-import com.ncond.dss.common.impl.Utilities;
+import com.ncond.dss.common.impl.DSS;
+import com.ncond.dss.common.impl.Util;
 import com.ncond.dss.control.SwtControl;
 import com.ncond.dss.control.SwtControlObj;
 import com.ncond.dss.parser.impl.Parser;
@@ -56,8 +56,8 @@ public class SwtControlImpl extends ControlClassImpl implements SwtControl {
 	@Override
 	public int newObject(String objName) {
 
-		DSSGlobals.activeCircuit.setActiveCktElement(new SwtControlObjImpl(this, objName));
-		return addObjectToList(DSSGlobals.activeDSSObject);
+		DSS.activeCircuit.setActiveCktElement(new SwtControlObjImpl(this, objName));
+		return addObjectToList(DSS.activeDSSObject);
 	}
 
 	@Override
@@ -66,7 +66,7 @@ public class SwtControlImpl extends ControlClassImpl implements SwtControl {
 
 		// continue parsing with contents of parser
 		activeSwtControlObj = (SwtControlObj) elementList.getActive();
-		DSSGlobals.activeCircuit.setActiveCktElement(activeSwtControlObj);
+		DSS.activeCircuit.setActiveCktElement(activeSwtControlObj);
 
 		int result = 0;
 
@@ -87,7 +87,7 @@ public class SwtControlImpl extends ControlClassImpl implements SwtControl {
 
 			switch (paramPointer) {
 			case -1:
-				DSSGlobals.doSimpleMsg("Unknown parameter \"" + paramName + "\" for object \"" + getName() +"."+ asc.getName() + "\"", 382);
+				DSS.doSimpleMsg("Unknown parameter \"" + paramName + "\" for object \"" + getName() +"."+ asc.getName() + "\"", 382);
 				break;
 			case 0:
 				asc.setElementName(param.toLowerCase());
@@ -99,7 +99,7 @@ public class SwtControlImpl extends ControlClassImpl implements SwtControl {
 				asc.interpretSwitchAction(param);
 				break;
 			case 3:
-				asc.setLocked( Utilities.interpretYesNo(param) );
+				asc.setLocked( Util.interpretYesNo(param) );
 				break;
 			case 4:
 				asc.setTimeDelay(parser.makeDouble());
@@ -128,8 +128,8 @@ public class SwtControlImpl extends ControlClassImpl implements SwtControl {
 		if (otherSwtControl != null) {
 			SwtControlObj asc = activeSwtControlObj;
 
-			asc.setNPhases(otherSwtControl.getNPhases());
-			asc.setNConds(otherSwtControl.getNConds());  // force reallocation of terminal stuff
+			asc.setNumPhases(otherSwtControl.getNumPhases());
+			asc.setNumConds(otherSwtControl.getNumConds());  // force reallocation of terminal stuff
 
 			asc.setElementName(otherSwtControl.getElementName());
 			asc.setElementTerminal(otherSwtControl.getElementTerminal());
@@ -142,7 +142,7 @@ public class SwtControlImpl extends ControlClassImpl implements SwtControl {
 			for (int i = 0; i < asc.getParentClass().getNumProperties(); i++)
 				asc.setPropertyValue(i, otherSwtControl.getPropertyValue(i));
 		} else {
-			DSSGlobals.doSimpleMsg("Error in SwtControl makeLike: \"" + swtControlName + "\" not found.", 383);
+			DSS.doSimpleMsg("Error in SwtControl makeLike: \"" + swtControlName + "\" not found.", 383);
 		}
 
 		return result;

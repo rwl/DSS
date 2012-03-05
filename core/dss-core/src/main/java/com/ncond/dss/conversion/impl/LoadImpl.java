@@ -1,7 +1,7 @@
 package com.ncond.dss.conversion.impl;
 
 import com.ncond.dss.common.impl.DSSClassDefs;
-import com.ncond.dss.common.impl.DSSGlobals;
+import com.ncond.dss.common.impl.DSS;
 import com.ncond.dss.conversion.Load;
 import com.ncond.dss.conversion.LoadObj;
 import com.ncond.dss.general.GrowthShapeObj;
@@ -81,24 +81,24 @@ public class LoadImpl extends PCClassImpl implements Load {
 				"If wye (star), specify phase-neutral kV. "+
 				"If delta or phase-phase connected, specify phase-phase kV.";  // line-neutral voltage
 		propertyHelp[3] = "Total base kW for the load.  Normally, you would enter the maximum kW for the load for the first year "+
-				"and allow it to be adjusted by the load shapes, growth shapes, and global load multiplier."+DSSGlobals.CRLF+DSSGlobals.CRLF+
-				"Legal ways to define base load:"+DSSGlobals.CRLF+
-				"kW, PF"+DSSGlobals.CRLF+
-				"kW, kvar"+DSSGlobals.CRLF+
-				"kVA, PF" +DSSGlobals.CRLF+
-				"XFKVA * Allocationfactor, PF" +DSSGlobals.CRLF+
+				"and allow it to be adjusted by the load shapes, growth shapes, and global load multiplier."+DSS.CRLF+DSS.CRLF+
+				"Legal ways to define base load:"+DSS.CRLF+
+				"kW, PF"+DSS.CRLF+
+				"kW, kvar"+DSS.CRLF+
+				"kVA, PF" +DSS.CRLF+
+				"XFKVA * Allocationfactor, PF" +DSS.CRLF+
 				"kWh/(kWhdays*24) * Cfactor, PF";
 		propertyHelp[4] = "Load power factor.  Enter negative for leading powerfactor (when kW and kvar have opposite signs.)";
 		propertyHelp[5] = "Integer code for the model to use for load variation with voltage. "+
-				"Valid values are:" +DSSGlobals.CRLF+DSSGlobals.CRLF+
-				"1:Standard constant P+jQ load. (Default)"+DSSGlobals.CRLF+
-				"2:Constant impedance load. "+DSSGlobals.CRLF+
-				"3:Const P, Quadratic Q (like a motor)."+DSSGlobals.CRLF+
-				"4:Nominal Linear P, Quadratic Q (feeder mix). Use this with CVRfactor."+DSSGlobals.CRLF+
-				"5:Constant Current Magnitude"+DSSGlobals.CRLF+
-				"6:Const P, Fixed Q"+DSSGlobals.CRLF+
-				"7:Const P, Fixed Impedance Q"+DSSGlobals.CRLF+
-				"8:ZIPV (7 values)"+DSSGlobals.CRLF+DSSGlobals.CRLF+
+				"Valid values are:" +DSS.CRLF+DSS.CRLF+
+				"1:Standard constant P+jQ load. (Default)"+DSS.CRLF+
+				"2:Constant impedance load. "+DSS.CRLF+
+				"3:Const P, Quadratic Q (like a motor)."+DSS.CRLF+
+				"4:Nominal Linear P, Quadratic Q (feeder mix). Use this with CVRfactor."+DSS.CRLF+
+				"5:Constant Current Magnitude"+DSS.CRLF+
+				"6:Const P, Fixed Q"+DSS.CRLF+
+				"7:Const P, Fixed Impedance Q"+DSS.CRLF+
+				"8:ZIPV (7 values)"+DSS.CRLF+DSS.CRLF+
 				"For Types 6 and 7, only the P is modified by load multipliers.";
 		propertyHelp[6] = "Load shape to use for yearly simulations.  Must be previously defined "+
 				"as a Loadshape object. Defaults to Daily load shape " +
@@ -153,20 +153,20 @@ public class LoadImpl extends PCClassImpl implements Load {
 				"at a bus. Side effect:  kW, PF, and kvar are modified. See help on kVA.";
 		propertyHelp[21] = "Default = 0.5.  Allocation factor for allocating loads based on connected kVA " +
 				"at a bus. Side effect:  kW, PF, and kvar are modified by multiplying this factor times the XFKVA (if > 0).";
-		propertyHelp[22] = "Specify base Load in kVA (and power factor)"+DSSGlobals.CRLF+DSSGlobals.CRLF+
-				"Legal ways to define base load:"+DSSGlobals.CRLF+
-				"kW, PF"+DSSGlobals.CRLF+
-				"kW, kvar"+DSSGlobals.CRLF+
-				"kVA, PF" +DSSGlobals.CRLF+
-				"XFKVA * Allocationfactor, PF" +DSSGlobals.CRLF+
+		propertyHelp[22] = "Specify base Load in kVA (and power factor)"+DSS.CRLF+DSS.CRLF+
+				"Legal ways to define base load:"+DSS.CRLF+
+				"kW, PF"+DSS.CRLF+
+				"kW, kvar"+DSS.CRLF+
+				"kVA, PF" +DSS.CRLF+
+				"XFKVA * Allocationfactor, PF" +DSS.CRLF+
 				"kWh/(kWhdays*24) * Cfactor, PF";
 		propertyHelp[23] = "Percent mean value for load to use for monte carlo studies if no loadshape is assigned to this load. Default is 50.";
 		propertyHelp[24] = "Percent Std deviation value for load to use for monte carlo studies if no loadshape is assigned to this load. Default is 10.";
-		propertyHelp[25] = "Percent reduction in active power (watts) per 1% reduction in voltage from 100% rated. Default=1. " +DSSGlobals.CRLF +
-				" Typical values range from 0.4 to 0.8. Applies to Model=4 only." + DSSGlobals.CRLF +
+		propertyHelp[25] = "Percent reduction in active power (watts) per 1% reduction in voltage from 100% rated. Default=1. " +DSS.CRLF +
+				" Typical values range from 0.4 to 0.8. Applies to Model=4 only." + DSS.CRLF +
 				" Intended to represent conservation voltage reduction or voltage optimization measures.";
-		propertyHelp[26] = "Percent reduction in reactive power (vars) per 1% reduction in voltage from 100% rated. Default=2. " +DSSGlobals.CRLF +
-				" Typical values range from 2 to 3. Applies to Model=4 only." + DSSGlobals.CRLF +
+		propertyHelp[26] = "Percent reduction in reactive power (vars) per 1% reduction in voltage from 100% rated. Default=2. " +DSS.CRLF +
+				" Typical values range from 2 to 3. Applies to Model=4 only." + DSS.CRLF +
 				" Intended to represent conservation voltage reduction or voltage optimization measures.";
 		propertyHelp[27] = "kWh billed for this period. Default is 0. See help on kVA and Cfactor and kWhDays.";
 		propertyHelp[28] = "Length of kWh billing period in days (24 hr days). Default is 30. Average demand is computed using this value.";   // kwh billing period (24-hr days)
@@ -176,10 +176,10 @@ public class LoadImpl extends PCClassImpl implements Load {
 				"Define a Loadshape to agree with yearly or daily curve according to the type of analysis being done. " +
 				"If NONE, the CVRwatts and CVRvars factors are used and assumed constant.";
 		propertyHelp[31] = "Number of customers, this load. Default is 1.";
-		propertyHelp[32] = "Array of 7 coefficients:" + DSSGlobals.CRLF +
-				" First 3 are ZIP weighting factors for real power (should sum to 1)" + DSSGlobals.CRLF +
-				" Next 3 are ZIP weighting factors for reactive power (should sum to 1)" + DSSGlobals.CRLF +
-				" Last 1 is cut-off voltage in p.u. of base kV; load is 0 below this cut-off" + DSSGlobals.CRLF +
+		propertyHelp[32] = "Array of 7 coefficients:" + DSS.CRLF +
+				" First 3 are ZIP weighting factors for real power (should sum to 1)" + DSS.CRLF +
+				" Next 3 are ZIP weighting factors for reactive power (should sum to 1)" + DSS.CRLF +
+				" Last 1 is cut-off voltage in p.u. of base kV; load is 0 below this cut-off" + DSS.CRLF +
 				" No defaults; all coefficients must be specified if using model=8.";
 
 
@@ -192,8 +192,8 @@ public class LoadImpl extends PCClassImpl implements Load {
 	@Override
 	public int newObject(String objName) {
 
-		DSSGlobals.activeCircuit.setActiveCktElement(new LoadObjImpl(this, objName));
-		return addObjectToList(DSSGlobals.activeDSSObject);
+		DSS.activeCircuit.setActiveCktElement(new LoadObjImpl(this, objName));
+		return addObjectToList(DSS.activeDSSObject);
 	}
 
 	private void setNcondsForConnection() {
@@ -201,18 +201,18 @@ public class LoadImpl extends PCClassImpl implements Load {
 
 		switch (al.getConnection()) {
 		case 0:
-			al.setNConds(al.getNPhases() + 1);
+			al.setNumConds(al.getNumPhases() + 1);
 			break;
 		case 1:
-			switch (al.getNPhases()) {
+			switch (al.getNumPhases()) {
 			case 1:
-				al.setNConds(al.getNPhases() + 1);  // L-L
+				al.setNumConds(al.getNumPhases() + 1);  // L-L
 				break;
 			case 2:
-				al.setNConds(al.getNPhases() + 1);  // open-delta
+				al.setNumConds(al.getNumPhases() + 1);  // open-delta
 				break;
 			default:
-				al.setNConds(al.getNPhases());
+				al.setNumConds(al.getNumPhases());
 				break;
 			}
 			break;
@@ -256,12 +256,12 @@ public class LoadImpl extends PCClassImpl implements Load {
 		case 1:
 			al.setVBase(al.getKVLoadBase() * 1000.0);
 		default:
-			switch (al.getNPhases()) {
+			switch (al.getNumPhases()) {
 			case 2:
-				al.setVBase(al.getKVLoadBase() * DSSGlobals.InvSQRT3x1000);
+				al.setVBase(al.getKVLoadBase() * DSS.InvSQRT3x1000);
 				break;
 			case 3:
-				al.setVBase(al.getKVLoadBase() * DSSGlobals.InvSQRT3x1000);
+				al.setVBase(al.getKVLoadBase() * DSS.InvSQRT3x1000);
 				break;
 			default:
 				al.setVBase(al.getKVLoadBase() * 1000.0);
@@ -272,7 +272,7 @@ public class LoadImpl extends PCClassImpl implements Load {
 		al.setVBase95(al.getVMinPU() * al.getVBase());
 		al.setVBase105(al.getVMaxPU() * al.getVBase());
 
-		al.setYOrder(al.getNConds() * al.getNTerms());
+		al.setYOrder(al.getNumConds() * al.getNumTerms());
 		al.setYPrimInvalid(true);
 	}
 
@@ -282,7 +282,7 @@ public class LoadImpl extends PCClassImpl implements Load {
 
 		// continue parsing with contents of parser
 		activeLoadObj = (LoadObj) elementList.getActive();
-		DSSGlobals.activeCircuit.setActiveCktElement(activeLoadObj);
+		DSS.activeCircuit.setActiveCktElement(activeLoadObj);
 
 		int result = 0;
 
@@ -303,10 +303,10 @@ public class LoadImpl extends PCClassImpl implements Load {
 
 			switch (paramPointer) {
 			case -1:
-				DSSGlobals.doSimpleMsg("Unknown parameter \"" + paramName + "\" for object \"" + getName() +"."+ al.getName() + "\"", 580);
+				DSS.doSimpleMsg("Unknown parameter \"" + paramName + "\" for object \"" + getName() +"."+ al.getName() + "\"", 580);
 				break;
 			case 0:
-				al.setNPhases(parser.makeInteger()); // num phases
+				al.setNumPhases(parser.makeInteger()); // num phases
 				break;
 			case 1:
 				al.setBus(1, param);  // TODO: Check zero based indexing
@@ -442,13 +442,13 @@ public class LoadImpl extends PCClassImpl implements Load {
 			case 6:
 				/* Set shape objects; returns nil if not valid */
 				/* Sets the kW and kvar properties to match the peak kW demand from the LoadShape */
-				al.setYearlyShapeObj((LoadShapeObj) DSSGlobals.loadShapeClass.find(al.getYearlyShape()));
+				al.setYearlyShapeObj((LoadShapeObj) DSS.loadShapeClass.find(al.getYearlyShape()));
 				if (al.getYearlyShapeObj() != null)
 					if (al.getYearlyShapeObj().isUseActual())
 						al.setKW_KVAr(al.getYearlyShapeObj().getMaxP(), al.getYearlyShapeObj().getMaxQ());
 				break;
 			case 7:
-				al.setDailyShapeObj((LoadShapeObj) DSSGlobals.loadShapeClass.find(al.getDailyShape()));
+				al.setDailyShapeObj((LoadShapeObj) DSS.loadShapeClass.find(al.getDailyShape()));
 				if (al.getDailyShapeObj() != null)
 					if (al.getDailyShapeObj().isUseActual())
 						al.setKW_KVAr(al.getDailyShapeObj().getMaxP(), al.getDailyShapeObj().getMaxQ());
@@ -457,13 +457,13 @@ public class LoadImpl extends PCClassImpl implements Load {
 					al.setYearlyShapeObj(al.getDailyShapeObj());
 				break;
 			case 8:
-				al.setDutyShapeObj((LoadShapeObj) DSSGlobals.loadShapeClass.find(al.getDutyShape()));
+				al.setDutyShapeObj((LoadShapeObj) DSS.loadShapeClass.find(al.getDutyShape()));
 				if (al.getDutyShapeObj() != null)
 					if (al.getDutyShapeObj().isUseActual())
 						al.setKW_KVAr(al.getDutyShapeObj().getMaxP(), al.getDutyShapeObj().getMaxQ());
 				break;
 			case 9:
-				al.setGrowthShapeObj((GrowthShapeObj) DSSGlobals.growthShapeClass.find(al.getGrowthShape()));
+				al.setGrowthShapeObj((GrowthShapeObj) DSS.growthShapeClass.find(al.getGrowthShape()));
 				break;
 			case 11:
 				al.setLoadSpecType(1);  // kW, kvar
@@ -474,7 +474,7 @@ public class LoadImpl extends PCClassImpl implements Load {
 				break;
 			/*** see set_kwh, etc           28..30: LoadSpecType = 4;  // kWh, days, cfactor, PF */
 			case 30:
-				al.setCVRShapeObj((LoadShapeObj) DSSGlobals.loadShapeClass.find(al.getCVRShape()));
+				al.setCVRShapeObj((LoadShapeObj) DSS.loadShapeClass.find(al.getCVRShape()));
 				break;
 			}
 
@@ -497,10 +497,10 @@ public class LoadImpl extends PCClassImpl implements Load {
 		if (otherLoad != null) {
 			LoadObj al = activeLoadObj;
 
-			if (al.getNPhases() != otherLoad.getNPhases()) {
-				al.setNPhases(otherLoad.getNPhases());
-				al.setNConds(al.getNPhases());  // forces reallocation of terminal stuff
-				al.setYOrder(al.getNConds() * al.getNTerms());
+			if (al.getNumPhases() != otherLoad.getNumPhases()) {
+				al.setNumPhases(otherLoad.getNumPhases());
+				al.setNumConds(al.getNumPhases());  // forces reallocation of terminal stuff
+				al.setYOrder(al.getNumConds() * al.getNumTerms());
 				al.setYPrimInvalid(true);
 			}
 
@@ -555,7 +555,7 @@ public class LoadImpl extends PCClassImpl implements Load {
 
 			result = 1;
 		} else {
-			DSSGlobals.doSimpleMsg("Error in Load makeLike: \"" + otherLoadName + "\" not found.", 581);
+			DSS.doSimpleMsg("Error in Load makeLike: \"" + otherLoadName + "\" not found.", 581);
 		}
 
 		return result;
@@ -575,7 +575,7 @@ public class LoadImpl extends PCClassImpl implements Load {
 			pLoad.randomize(0);
 		}
 
-		DSSGlobals.doSimpleMsg("Need to finish implementation Load.init", -1);
+		DSS.doSimpleMsg("Need to finish implementation Load.init", -1);
 		return 0;
 	}
 

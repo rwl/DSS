@@ -56,7 +56,7 @@ public class ExportResults {
 		Complex Vresidual;
 		double V_NEMA;
 
-		Circuit ckt = DSSGlobals.activeCircuit;
+		Circuit ckt = DSS.activeCircuit;
 		SolutionObj sol = ckt.getSolution();
 
 		try {
@@ -113,11 +113,11 @@ public class ExportResults {
 					Vresidual = Vresidual.add( sol.getNodeV( ckt.getBus(i).getRef(j) ));
 
 				writer.printf("\"%s\", %10.6g, %9.5g, %8.2f, %10.6g, %8.4g, %10.6g, %8.4g, %10.6g, %8.4g",
-						ckt.getBusList().get(i).toUpperCase(), V1, Vpu, (ckt.getBus(i).getKVBase() * DSSGlobals.SQRT3), V2, V2V1, V0, V0V1, Vresidual.abs(), V_NEMA);
+						ckt.getBusList().get(i).toUpperCase(), V1, Vpu, (ckt.getBus(i).getKVBase() * DSS.SQRT3), V2, V2V1, V0, V0V1, Vresidual.abs(), V_NEMA);
 
 			}
 
-			DSSGlobals.globalResult = fileName;
+			DSS.globalResult = fileName;
 
 			writer.close();
 			f.close();
@@ -141,7 +141,7 @@ public class ExportResults {
 		double Vmag, Vpu;
 		Bus bus;
 
-		Circuit ckt = DSSGlobals.activeCircuit;
+		Circuit ckt = DSS.activeCircuit;
 		SolutionObj sol = ckt.getSolution();
 
 		/* Find max nodes at a bus */
@@ -160,7 +160,7 @@ public class ExportResults {
 
 			for (i = 0; i < ckt.getNumBuses(); i++) {
 				busName = ckt.getBusList().get(i);
-				writer.printf("\"%s\", %.5g", busName.toUpperCase(), ckt.getBus(i).getKVBase() * DSSGlobals.SQRT3);
+				writer.printf("\"%s\", %.5g", busName.toUpperCase(), ckt.getBus(i).getKVBase() * DSS.SQRT3);
 
 				jj = 0;
 				bus = ckt.getBus(i);
@@ -187,7 +187,7 @@ public class ExportResults {
 				writer.println();
 			}
 
-			DSSGlobals.globalResult = fileName;
+			DSS.globalResult = fileName;
 
 			writer.close();
 			f.close();
@@ -206,8 +206,8 @@ public class ExportResults {
 		Complex IResidual;
 		double I_NEMA;
 
-		nCond = pElem.getNConds();
-		if (pElem.getNPhases() >= 3) {
+		nCond = pElem.getNumConds();
+		if (pElem.getNumPhases() >= 3) {
 
 			for (i = 0; i < 3; i++) {  // TODO Check one based indexing
 				k = (j - 1) * nCond + i;
@@ -226,7 +226,7 @@ public class ExportResults {
 			I1 = 0.0;
 			I2 = 0.0;
 			I_NEMA = 0.0;
-			if (DSSGlobals.activeCircuit.isPositiveSequence())
+			if (DSS.activeCircuit.isPositiveSequence())
 				I1 = Iph[0].abs();  // use phase 1 only
 		}
 
@@ -262,7 +262,7 @@ public class ExportResults {
 		int j;
 		Complex[] cBuffer;  // allocate to max total conductors
 
-		Circuit ckt = DSSGlobals.activeCircuit;
+		Circuit ckt = DSS.activeCircuit;
 
 		try {
 			f = new FileWriter(fileName);
@@ -272,13 +272,13 @@ public class ExportResults {
 			writer.println("Element, Terminal,  I1, %Normal, %Emergency, I2, %I2/I1, I0, %I0/I1, Iresidual, %NEMA");
 
 			/* Allocate cBuffer big enough for largest circuit element */
-			cBuffer = new Complex[Utilities.getMaxCktElementSize()];
+			cBuffer = new Complex[Util.getMaxCktElementSize()];
 
 			// sources first
 			for (CktElement pElem : ckt.getSources()) {
 				if (pElem.isEnabled()) {
 					pElem.getCurrents(cBuffer);
-					for (j = 0; j < pElem.getNTerms(); j++)
+					for (j = 0; j < pElem.getNumTerms(); j++)
 						calcAndWriteSeqCurrents(writer, j, pElem, cBuffer, false);
 				}
 			}
@@ -288,7 +288,7 @@ public class ExportResults {
 			for (PDElement PDElem : ckt.getPDElements()) {
 				if (PDElem.isEnabled())
 					PDElem.getCurrents(cBuffer);
-				for (j = 0; j < PDElem.getNTerms(); j++)
+				for (j = 0; j < PDElem.getNumTerms(); j++)
 					calcAndWriteSeqCurrents(writer, j, PDElem, cBuffer, true);
 			}
 
@@ -296,7 +296,7 @@ public class ExportResults {
 			for (PCElement PCElem : ckt.getPCElements()) {
 				if (PCElem.isEnabled()) {
 					PCElem.getCurrents(cBuffer);
-					for (j = 0; j < PCElem.getNTerms(); j++)
+					for (j = 0; j < PCElem.getNumTerms(); j++)
 						calcAndWriteSeqCurrents(writer, j, PCElem, cBuffer, false);
 				}
 			}
@@ -305,11 +305,11 @@ public class ExportResults {
 			for (CktElement pElem : ckt.getFaults()) {
 				if (pElem.isEnabled())
 					pElem.getCurrents(cBuffer);
-				for (j = 0; j < pElem.getNTerms(); j++)
+				for (j = 0; j < pElem.getNumTerms(); j++)
 					calcAndWriteSeqCurrents(writer, j, pElem, cBuffer, false);
 			}
 
-			DSSGlobals.globalResult = fileName;
+			DSS.globalResult = fileName;
 
 			writer.close();
 			f.close();
@@ -325,20 +325,20 @@ public class ExportResults {
 
 		k = 0;
 		writer.printf("%s", pElem.getDSSClassName()+"."+pElem.getName().toUpperCase());
-		for (j = 0; j < pElem.getNTerms(); j++) {
+		for (j = 0; j < pElem.getNumTerms(); j++) {
 			IResid = Complex.ZERO;
-			for (i = 0; i < pElem.getNConds(); i++) {
+			for (i = 0; i < pElem.getNumConds(); i++) {
 				k += 1;
 				writer.printf(", %10.6g, %8.2f", cBuffer[k].abs(), ComplexUtil.degArg(cBuffer[k]));
 				IResid = IResid.add(cBuffer[k]);
 			}
-			for (i = pElem.getNConds(); i < condWidth; i++)  // TODO Check zero based indexing
+			for (i = pElem.getNumConds(); i < condWidth; i++)  // TODO Check zero based indexing
 				writer.printf(", %10.6g, %8.2f", 0.0, 0.0);
 			writer.printf(", %10.6g, %8.2f", IResid.abs(), ComplexUtil.degArg(IResid));
 		}
 
 		/* Filler if no. terms less than termwidth */
-		for (j = pElem.getNTerms(); j < termWidth; j++)
+		for (j = pElem.getNumTerms(); j < termWidth; j++)
 			for (i = 0; i < condWidth + 1; i++)
 				writer.printf(", %10.6g, %8.2f", 0.0, 0.0);
 		writer.println();
@@ -351,7 +351,7 @@ public class ExportResults {
 
 		writer.printf("%s.%s", pElem.getDSSClassName(), pElem.getName().toUpperCase());
 		maxCurrent = 0.0;
-		for (i = 0; i < pElem.getNPhases(); i++) {
+		for (i = 0; i < pElem.getNumPhases(); i++) {
 			currMag = cBuffer[i].abs();
 			if (currMag  > maxCurrent)
 				maxCurrent = currMag;
@@ -363,8 +363,8 @@ public class ExportResults {
 		} else {
 			writer.printf(", %10.6g, %8.2f, %8.2f", maxCurrent, maxCurrent / pElem.getNormAmps() * 100.0, maxCurrent / pElem.getEmergAmps() * 100.0);
 		}
-		writer.printf(", %10.6g, %10.6g, %d, %d, %d", localPower.getReal(), localPower.getImaginary(), pElem.getNumCustomers(), pElem.getTotalCustomers(), pElem.getNPhases());
-		Circuit ckt = DSSGlobals.activeCircuit;
+		writer.printf(", %10.6g, %10.6g, %d, %d, %d", localPower.getReal(), localPower.getImaginary(), pElem.getNumCustomers(), pElem.getTotalCustomers(), pElem.getNumPhases());
+		Circuit ckt = DSS.activeCircuit;
 		writer.printf(", %-.3g ", ckt.getBus( ckt.getMapNodeToBus()[pElem.getNodeRef()[0]].busRef ).getKVBase());
 		writer.println();
 	}
@@ -376,20 +376,20 @@ public class ExportResults {
 		int maxCond, maxTerm;
 		int i, j;
 
-		Circuit ckt = DSSGlobals.activeCircuit;
+		Circuit ckt = DSS.activeCircuit;
 
 		try {
 			f = new FileWriter(fileName);
 			writer = new PrintWriter(f);
 
-			cBuffer = new Complex[Utilities.getMaxCktElementSize()];
+			cBuffer = new Complex[Util.getMaxCktElementSize()];
 
 			/* Calculate the width of the file */
 			maxCond = 1;
 			maxTerm = 2;
 			for (CktElement pElem : ckt.getCktElements()) {
-				if (pElem.getNTerms() > maxTerm) maxTerm = pElem.getNTerms();
-				if (pElem.getNConds() > maxCond) maxCond = pElem.getNConds();
+				if (pElem.getNumTerms() > maxTerm) maxTerm = pElem.getNumTerms();
+				if (pElem.getNumConds() > maxCond) maxCond = pElem.getNumConds();
 			}
 
 			/* Branch currents */
@@ -433,7 +433,7 @@ public class ExportResults {
 				}
 			}
 
-			DSSGlobals.globalResult = fileName;
+			DSS.globalResult = fileName;
 
 			writer.close();
 			f.close();
@@ -454,7 +454,7 @@ public class ExportResults {
 		Complex S;
 		String sep = ", ";
 
-		Circuit ckt = DSSGlobals.activeCircuit;
+		Circuit ckt = DSS.activeCircuit;
 
 		try {
 			f = new FileWriter(fileName);
@@ -472,10 +472,10 @@ public class ExportResults {
 			// PD elements first
 			for (PDElement PDElem : ckt.getPDElements()) {
 				if (PDElem.isEnabled()) {
-					Nterm = PDElem.getNTerms();
+					Nterm = PDElem.getNumTerms();
 
 					for (j = 0; j < Nterm; j++) {
-						writer.print(Utilities.pad("\""+PDElem.getDSSClassName() + "." + PDElem.getName().toUpperCase()+"\"", 24) + sep + j);
+						writer.print(Util.pad("\""+PDElem.getDSSClassName() + "." + PDElem.getName().toUpperCase()+"\"", 24) + sep + j);
 
 						S = PDElem.getPower(j);
 						if (opt == 1) S = S.multiply(0.001);
@@ -499,10 +499,10 @@ public class ExportResults {
 			// PC elements next
 			for (PCElement PCElem : ckt.getPCElements()) {
 				if (PCElem.isEnabled()) {
-					Nterm = PCElem.getNTerms();
+					Nterm = PCElem.getNumTerms();
 
 					for (j = 0; j < Nterm; j++) {
-						writer.print(Utilities.pad("\""+PCElem.getDSSClassName() + "." + PCElem.getName().toUpperCase()+"\"", 24) + sep + j);
+						writer.print(Util.pad("\""+PCElem.getDSSClassName() + "." + PCElem.getName().toUpperCase()+"\"", 24) + sep + j);
 						S = PCElem.getPower(j);
 						if (opt == 1) S = S.multiply(0.001);
 						writer.print(sep + S.getReal() * 0.001);
@@ -512,7 +512,7 @@ public class ExportResults {
 				}
 			}
 
-			DSSGlobals.globalResult = fileName;
+			DSS.globalResult = fileName;
 
 			writer.close();
 			f.close();
@@ -524,9 +524,9 @@ public class ExportResults {
 	public static void exportLosses(String fileName) {
 		FileWriter f;
 		PrintWriter writer;
-		double[] S_total = new double[2];
-		double[] S_Load = new double[2];
-		double[] S_NoLoad = new double[2];
+		Complex[] Stot = new Complex[1];
+		Complex[] Sload = new Complex[1];
+		Complex[] S_noload = new Complex[1];
 
 
 		try {
@@ -534,15 +534,20 @@ public class ExportResults {
 			writer = new PrintWriter(f);
 
 			writer.println("Element,  Total(W), Total(var),  I2R(W), I2X(var), No-load(W), No-load(var)");
-			for (PDElement PDElem : DSSGlobals.activeCircuit.getPDElements()) {
+			for (PDElement PDElem : DSS.activeCircuit.getPDElements()) {
 				if (PDElem.isEnabled()) {
-					PDElem.getLosses(S_total, S_Load, S_NoLoad);
-					writer.printf("%s.%s, %.7g, %.7g, %.7g, %.7g, %.7g, %.7g", PDElem.getParentClass().getName(), PDElem.getName().toUpperCase(), S_total[0], S_total[1], S_Load[0], S_Load[1], S_NoLoad[0], S_NoLoad[1]);
+					PDElem.getLosses(Stot, Sload, S_noload);
+					writer.printf("%s.%s, %.7g, %.7g, %.7g, %.7g, %.7g, %.7g",
+							PDElem.getParentClass().getName(),
+							PDElem.getName().toUpperCase(),
+							Stot[0].getReal(), Stot[0].getImaginary(),
+							Sload[0].getReal(), Sload[0].getImaginary(),
+							S_noload[0].getReal(), S_noload[0].getImaginary());
 					writer.println();
 				}
 			}
 
-			DSSGlobals.globalResult = fileName;
+			DSS.globalResult = fileName;
 
 			writer.close();
 			f.close();
@@ -578,11 +583,11 @@ public class ExportResults {
 			}
 
 			// PD elements first
-			for (PDElement PDElem : DSSGlobals.activeCircuit.getPDElements()) {
+			for (PDElement PDElem : DSS.activeCircuit.getPDElements()) {
 				if (PDElem.isEnabled()) {
 					PDElem.computeITerminal();
 					PDElem.computeVTerminal();
-					writer.printf("\"%s.%s\", %d, %d, %d", PDElem.getDSSClassName(), PDElem.getName().toUpperCase(), PDElem.getNTerms(), PDElem.getNConds(), PDElem.getNPhases());
+					writer.printf("\"%s.%s\", %d, %d, %d", PDElem.getDSSClassName(), PDElem.getName().toUpperCase(), PDElem.getNumTerms(), PDElem.getNumConds(), PDElem.getNumPhases());
 					for (i = 0; i < PDElem.getYorder(); i++) {
 						S = PDElem.getVTerminal()[i].multiply( PDElem.getITerminal()[i].conjugate() ).multiply(0.001);
 						if (opt == 1) S = S.multiply(0.001);  // convert to MVA
@@ -593,11 +598,11 @@ public class ExportResults {
 			}
 
 			// PC elements next
-			for (PCElement PCElem : DSSGlobals.activeCircuit.getPCElements()) {
+			for (PCElement PCElem : DSS.activeCircuit.getPCElements()) {
 				if (PCElem.isEnabled()) {
 					PCElem.computeITerminal();
 					PCElem.computeVTerminal();
-					writer.printf("\"%s.%s\", %d, %d, %d", PCElem.getDSSClassName(), PCElem.getName().toUpperCase(), PCElem.getNTerms(), PCElem.getNConds(), PCElem.getNPhases());
+					writer.printf("\"%s.%s\", %d, %d, %d", PCElem.getDSSClassName(), PCElem.getName().toUpperCase(), PCElem.getNumTerms(), PCElem.getNumConds(), PCElem.getNumPhases());
 					for (i = 0; i < PCElem.getYorder(); i++) {
 						S = PCElem.getVTerminal()[i].multiply( PCElem.getITerminal()[i].conjugate() ).multiply(0.001);
 						if (opt == 1) S = S.multiply(0.001);  // convert to MVA
@@ -607,7 +612,7 @@ public class ExportResults {
 				}
 			}
 
-			DSSGlobals.globalResult = fileName;
+			DSS.globalResult = fileName;
 
 			writer.close();
 			f.close();
@@ -634,13 +639,13 @@ public class ExportResults {
 		Complex[] I012 = new Complex[3];
 		String sep = ", ";
 
-		Circuit ckt = DSSGlobals.activeCircuit;
+		Circuit ckt = DSS.activeCircuit;
 
 		try {
 			f = new FileWriter(fileName);
 			writer = new PrintWriter(f);
 
-			cBuffer = new Complex[Utilities.getMaxCktElementSize()];
+			cBuffer = new Complex[Util.getMaxCktElementSize()];
 
 			switch (opt) {
 			case 1:
@@ -654,20 +659,20 @@ public class ExportResults {
 			// PD elements first
 			for (PDElement PDElem : ckt.getPDElements()) {
 				if (PDElem.isEnabled()) {
-					NCond = PDElem.getNConds();
-					nTerm = PDElem.getNTerms();
+					NCond = PDElem.getNumConds();
+					nTerm = PDElem.getNumTerms();
 					PDElem.getCurrents(cBuffer);
 
 					for (j = 0; j < nTerm; j++) {
-						writer.print(Utilities.pad("\""+PDElem.getDSSClassName() + "." + PDElem.getName().toUpperCase()+"\"", 24) + sep + j);
-						for (i = 0; i < PDElem.getNPhases(); i++) {
+						writer.print(Util.pad("\""+PDElem.getDSSClassName() + "." + PDElem.getName().toUpperCase()+"\"", 24) + sep + j);
+						for (i = 0; i < PDElem.getNumPhases(); i++) {
 							k = (j - 1) * NCond + i;
 							nref = PDElem.getNodeRef()[k];
 							volts = ckt.getSolution().getNodeV(nref);
 							Iph[i] = cBuffer[k];
 							Vph[i] = volts;
 						}
-						if (PDElem.getNPhases() >= 3) {
+						if (PDElem.getNumPhases() >= 3) {
 							MathUtil.phase2SymComp(Iph, I012);
 							MathUtil.phase2SymComp(Vph, V012);
 						} else {
@@ -717,20 +722,20 @@ public class ExportResults {
 			// PC elements next
 			for (PCElement PCElem : ckt.getPCElements()) {
 				if (PCElem.isEnabled()) {
-					NCond = PCElem.getNConds();
-					nTerm = PCElem.getNTerms();
+					NCond = PCElem.getNumConds();
+					nTerm = PCElem.getNumTerms();
 					PCElem.getCurrents(cBuffer);
 
 					for (j = 0; j < nTerm; j++) {
-						writer.print(Utilities.pad("\""+PCElem.getDSSClassName() + "." + PCElem.getName().toUpperCase()+"\"", 24) + sep + j);
-						for (i = 0; i < PCElem.getNPhases(); i++) {
+						writer.print(Util.pad("\""+PCElem.getDSSClassName() + "." + PCElem.getName().toUpperCase()+"\"", 24) + sep + j);
+						for (i = 0; i < PCElem.getNumPhases(); i++) {
 							k = (j - 1) * NCond + i;
 							nref = PCElem.getNodeRef()[k];
 							volts = ckt.getSolution().getNodeV(nref);
 							Iph[i] = cBuffer[k];
 							Vph[i] = volts;
 						}
-						if (PCElem.getNPhases() >= 3) {
+						if (PCElem.getNumPhases() >= 3) {
 							MathUtil.phase2SymComp(Iph, I012);
 							MathUtil.phase2SymComp(Vph, V012);
 						} else {
@@ -767,7 +772,7 @@ public class ExportResults {
 				}
 			}
 
-			DSSGlobals.globalResult = fileName;
+			DSS.globalResult = fileName;
 
 			writer.close();
 			f.close();
@@ -787,7 +792,7 @@ public class ExportResults {
 		double maxCurr, currMag;
 		Bus bus;
 
-		Circuit ckt = DSSGlobals.activeCircuit;
+		Circuit ckt = DSS.activeCircuit;
 
 		try {
 			f = new FileWriter(fileName);
@@ -800,7 +805,7 @@ public class ExportResults {
 			for (iBus = 0; iBus < ckt.getNumBuses(); iBus++) {
 				/* Bus Norton equivalent current, Isc has been previously computed */
 				bus = ckt.getBus(iBus);
-				writer.print(Utilities.pad(ckt.getBusList().get(iBus).toUpperCase(), 12));
+				writer.print(Util.pad(ckt.getBusList().get(iBus).toUpperCase(), 12));
 				maxCurr = 0.0;
 				for (i = 0; i < bus.getNumNodesThisBus(); i++) {
 					if (maxCurr < bus.getBusCurrent()[i].abs())
@@ -873,7 +878,7 @@ public class ExportResults {
 				writer.println();
 			}
 
-			DSSGlobals.globalResult = fileName;
+			DSS.globalResult = fileName;
 
 			writer.close();
 			f.close();
@@ -892,7 +897,7 @@ public class ExportResults {
 		int i;
 		double[] tempX = new double[3];  // temp number buffer
 
-		Circuit ckt = DSSGlobals.activeCircuit;
+		Circuit ckt = DSS.activeCircuit;
 
 		try {
 			f = new FileWriter(fileName);
@@ -907,18 +912,18 @@ public class ExportResults {
 					writer.printf("\"Energymeter.%s\"", pEnergyMeterObj.getName().toUpperCase());
 					/* Sensor currents (target) */
 					zeroTempXArray(tempX);
-					for (i = 0; i < pEnergyMeterObj.getNPhases(); i++)
+					for (i = 0; i < pEnergyMeterObj.getNumPhases(); i++)
 						tempX[i] = pEnergyMeterObj.getSensorCurrent()[i];
 					for (i = 0; i < 3; i++)
 						writer.printf(", %.6g", tempX[i]);
 					/* Calculated currents */
 					zeroTempXArray(tempX);
-					for (i = 0; i < pEnergyMeterObj.getNPhases(); i++)
+					for (i = 0; i < pEnergyMeterObj.getNumPhases(); i++)
 						tempX[i] = pEnergyMeterObj.getCalculatedCurrent()[i].abs();
 					for (i = 0; i < 3; i++)
 						writer.printf(", %.6g", tempX[i]);
 					/* Percent error */
-					for (i = 0; i < pEnergyMeterObj.getNPhases(); i++)
+					for (i = 0; i < pEnergyMeterObj.getNumPhases(); i++)
 						tempX[i] = (1.0 - tempX[i] / Math.max(0.001, pEnergyMeterObj.getSensorCurrent()[i])) * 100.0;
 					for (i = 0; i < 3; i++)
 						writer.printf(", %.6g", tempX[i]);
@@ -947,35 +952,35 @@ public class ExportResults {
 					writer.printf("\"Sensor.%s\"", pSensorObj.getName().toUpperCase());
 					/* Sensor currents (target) */
 					zeroTempXArray(tempX);
-					for (i = 0; i < pSensorObj.getNPhases(); i++)
+					for (i = 0; i < pSensorObj.getNumPhases(); i++)
 						tempX[i] = pSensorObj.getSensorCurrent()[i];
 					for (i = 0; i < 3; i++)
 						writer.printf(", %.6g", tempX[i]);
 					/* Calculated currents */
 					zeroTempXArray(tempX);
-					for (i = 0; i < pSensorObj.getNPhases(); i++)
+					for (i = 0; i < pSensorObj.getNumPhases(); i++)
 						tempX[i] = pSensorObj.getCalculatedCurrent()[i].abs();
 					for (i = 0; i < 3; i++)
 						writer.printf(", %.6g", tempX[i]);
 					/* Percent error */
-					for (i = 0; i < pSensorObj.getNPhases(); i++)
+					for (i = 0; i < pSensorObj.getNumPhases(); i++)
 						tempX[i] = (1.0 - tempX[i] / Math.max(0.001, pSensorObj.getSensorCurrent()[i])) * 100.0;
 					for (i = 0; i < 3; i++)
 						writer.printf(", %.6g", tempX[i]);
 					/* Sensor voltage (target) */
 					zeroTempXArray(tempX);
-					for (i = 0; i < pSensorObj.getNPhases(); i++)
+					for (i = 0; i < pSensorObj.getNumPhases(); i++)
 						tempX[i] = pSensorObj.getSensorVoltage()[i];
 					for (i = 0; i < 3; i++)
 						writer.printf(", %.6g", tempX[i]);
 					/* Calculated voltage */
 					zeroTempXArray(tempX);
-					for (i = 0; i < pSensorObj.getNPhases(); i++)
+					for (i = 0; i < pSensorObj.getNumPhases(); i++)
 						tempX[i] = pSensorObj.getCalculatedVoltage()[i].abs();
 					for (i = 0; i < 3; i++)
 						writer.printf(", %.6g", tempX[i]);
 					/* Percent error */
-					for (i = 0; i < pSensorObj.getNPhases(); i++)
+					for (i = 0; i < pSensorObj.getNumPhases(); i++)
 						tempX[i] = (1.0 - tempX[i] / Math.max(0.001, pSensorObj.getSensorVoltage()[i])) * 100.0;
 					for (i = 0; i < 3; i++)
 						writer.printf(", %.6g", tempX[i]);
@@ -987,7 +992,7 @@ public class ExportResults {
 				}
 			}
 
-			DSSGlobals.globalResult = fileName;
+			DSS.globalResult = fileName;
 
 			writer.close();
 			f.close();
@@ -1004,7 +1009,7 @@ public class ExportResults {
 		String fileName;
 		final String sep = ", ";
 
-		Circuit ckt = DSSGlobals.activeCircuit;
+		Circuit ckt = DSS.activeCircuit;
 
 		meterClass = ((EnergyMeter) DSSClassDefs.getDSSClass("EnergyMeter"));
 		if (meterClass == null) return;
@@ -1012,7 +1017,7 @@ public class ExportResults {
 		for (EnergyMeterObj pElem : ckt.getEnergyMeters()) {
 			if (pElem.isEnabled()) {
 				try {
-					fileName = DSSGlobals.DSSDataDirectory + "EXP_MTR_"+pElem.getName().toUpperCase()+".csv";
+					fileName = DSS.DSSDataDirectory + "EXP_MTR_"+pElem.getName().toUpperCase()+".csv";
 
 					if (!new File(fileName).exists()) {
 						f = new FileWriter(fileName);
@@ -1034,12 +1039,12 @@ public class ExportResults {
 					writer.print(ckt.getSolution().getYear() + sep);
 					writer.print(ckt.getLoadDurCurve() + sep);
 					writer.print(ckt.getSolution().getIntHour() + sep);
-					writer.print(Utilities.pad("\""+pElem.getName().toUpperCase()+"\"", 14));
+					writer.print(Util.pad("\""+pElem.getName().toUpperCase()+"\"", 14));
 					for (j = 0; j < EnergyMeter.NUM_EM_REGISTERS; j++)
 						writer.print(sep + pElem.getRegister(j));
 					writer.println();
 
-					DSSGlobals.globalResult = fileName;
+					DSS.globalResult = fileName;
 
 					writer.close();
 					f.close();
@@ -1058,7 +1063,7 @@ public class ExportResults {
 		final String sep = ", ";
 		boolean rewriteFile;
 
-		Circuit ckt = DSSGlobals.activeCircuit;
+		Circuit ckt = DSS.activeCircuit;
 
 		try {
 			if (new File(fileName).exists()) {
@@ -1103,14 +1108,14 @@ public class ExportResults {
 					writer.print(ckt.getSolution().getYear() + sep);
 					writer.print(ckt.getLoadDurCurve() + sep);
 					writer.print(ckt.getSolution().getIntHour() + sep);
-					writer.print(Utilities.pad("\""+pElem.getName().toUpperCase()+"\"", 14));
+					writer.print(Util.pad("\""+pElem.getName().toUpperCase()+"\"", 14));
 					for (j = 0; j < EnergyMeter.NUM_EM_REGISTERS; j++)
 						writer.printf(sep + pElem.getRegister(j));
 					writer.println();
 				}
 			}
 
-			DSSGlobals.globalResult = fileName;
+			DSS.globalResult = fileName;
 
 			writer.close();
 			f.close();
@@ -1142,7 +1147,7 @@ public class ExportResults {
 		String fileName;
 		final String sep = ", ";
 
-		Circuit ckt = DSSGlobals.activeCircuit;
+		Circuit ckt = DSS.activeCircuit;
 
 		generatorClass = (Generator) DSSClassDefs.getDSSClass("generator");
 		if (generatorClass == null)
@@ -1151,7 +1156,7 @@ public class ExportResults {
 		for (GeneratorObj pElem : ckt.getGenerators()) {
 			if (pElem.isEnabled()) {
 				try {
-					fileName = DSSGlobals.DSSDataDirectory + "EXP_GEN_" + pElem.getName().toUpperCase() + ".csv";
+					fileName = DSS.DSSDataDirectory + "EXP_GEN_" + pElem.getName().toUpperCase() + ".csv";
 
 					if (!new File(fileName).exists()) {
 						f = new FileWriter(fileName);
@@ -1171,12 +1176,12 @@ public class ExportResults {
 					writer.print(ckt.getSolution().getYear() + sep);
 					writer.print(ckt.getLoadDurCurve() + sep);
 					writer.print(ckt.getSolution().getIntHour() + sep);
-					writer.print(Utilities.pad("\""+pElem.getName().toUpperCase()+"\"", 14));
+					writer.print(Util.pad("\""+pElem.getName().toUpperCase()+"\"", 14));
 					for (j = 0; j < Generator.NumGenRegisters; j++)
 						writer.print(sep + pElem.getRegisters()[j]);
 					writer.println();
 
-					DSSGlobals.globalResult = fileName;
+					DSS.globalResult = fileName;
 
 					writer.close();
 					f.close();
@@ -1196,7 +1201,7 @@ public class ExportResults {
 		final String sep = ", ";
 		boolean rewriteFile;
 
-		Circuit ckt = DSSGlobals.activeCircuit;
+		Circuit ckt = DSS.activeCircuit;
 
 		generatorClass = (Generator) DSSClassDefs.getDSSClass("generator");
 		if (generatorClass == null)
@@ -1244,14 +1249,14 @@ public class ExportResults {
 					writer.print(ckt.getSolution().getYear() + sep);
 					writer.print(ckt.getLoadDurCurve() + sep);
 					writer.print(ckt.getSolution().getIntHour() + sep);
-					writer.print(Utilities.pad("\""+pElem.getName().toUpperCase()+"\"", 14));
+					writer.print(Util.pad("\""+pElem.getName().toUpperCase()+"\"", 14));
 					for (j = 0; j < Generator.NumGenRegisters; j++)
 						writer.print(sep + pElem.getRegisters()[j]);
 					writer.println();
 				}
 			}
 
-			DSSGlobals.globalResult = fileName;
+			DSS.globalResult = fileName;
 
 			writer.close();
 			f.close();
@@ -1281,7 +1286,7 @@ public class ExportResults {
 		PrintWriter writer;
 		final String sep = ", ";
 
-		Circuit ckt = DSSGlobals.activeCircuit;
+		Circuit ckt = DSS.activeCircuit;
 
 		try {
 			f = new FileWriter(fileName);
@@ -1294,7 +1299,7 @@ public class ExportResults {
 					writer.print(pElem.getName().toUpperCase());
 					writer.print(sep + pElem.getConnectedKVA());
 					writer.print(sep + pElem.getKVAAllocationFactor());
-					writer.print(sep + pElem.getNPhases());
+					writer.print(sep + pElem.getNumPhases());
 					writer.print(sep + pElem.getKWBase());
 					writer.print(sep + pElem.getKVArBase());
 					writer.print(sep + pElem.getPFNominal());
@@ -1303,7 +1308,7 @@ public class ExportResults {
 				writer.println();
 			}
 
-			DSSGlobals.globalResult = fileName;
+			DSS.globalResult = fileName;
 
 			writer.close();
 			f.close();
@@ -1321,13 +1326,13 @@ public class ExportResults {
 		PrintWriter writer;
 		Complex[] cBuffer;
 
-		Circuit ckt = DSSGlobals.activeCircuit;
+		Circuit ckt = DSS.activeCircuit;
 
 		try {
 			f = new FileWriter(fileNm);
 			writer = new PrintWriter(f);
 
-			cBuffer = new Complex[Utilities.getMaxCktElementSize()];
+			cBuffer = new Complex[Util.getMaxCktElementSize()];
 
 			writer.println("Name, Imax, %normal, %emergency, kW, kvar, NumCustomers, TotalCustomers, NumPhases, kVBase");
 
@@ -1339,7 +1344,7 @@ public class ExportResults {
 				}
 			}
 
-			DSSGlobals.globalResult = fileNm;
+			DSS.globalResult = fileNm;
 
 			writer.close();
 			f.close();
@@ -1359,14 +1364,14 @@ public class ExportResults {
 		double INormal, IEmerg, CMax;
 		final String Separator = ", ";
 
-		Circuit ckt = DSSGlobals.activeCircuit;
+		Circuit ckt = DSS.activeCircuit;
 
 		try {
 			f = new FileWriter(fileName);
 			writer = new PrintWriter(f);
 
 			/* Allocate cBuffer big enough for largest circuit element */
-			cBuffer = new Complex[Utilities.getMaxCktElementSize()];
+			cBuffer = new Complex[Util.getMaxCktElementSize()];
 
 			/* Sequence currents */
 			writer.println("Element, Terminal,  I1, %Normal, %Emergency, I2, %I2/I1, I0, %I0/I1");
@@ -1375,16 +1380,16 @@ public class ExportResults {
 			for (PDElement PDElem : ckt.getPDElements()) {
 				if (PDElem.isEnabled()) {
 					if ((DSSClassDefs.CLASSMASK & PDElem.getDSSObjType()) != DSSClassDefs.CAP_ELEMENT) {  // ignore caps
-						NCond = PDElem.getNConds();
+						NCond = PDElem.getNumConds();
 						PDElem.getCurrents(cBuffer);
 
 						for (j = 0; j < 1; j++) {  // only for terminal 1
 							CMax = 0.0;
-							for (i = 0; i < Math.min(PDElem.getNPhases(), 3); i++) {  // check only first 3 phases
+							for (i = 0; i < Math.min(PDElem.getNumPhases(), 3); i++) {  // check only first 3 phases
 								Iph[i] = cBuffer[(j - 1) * NCond + i];
 								CMax = Math.max(CMax, Iph[i].abs());
 							}
-							if (PDElem.getNPhases() >= 3) {
+							if (PDElem.getNumPhases() >= 3) {
 								// Report symmetrical component currents for
 								MathUtil.phase2SymComp(Iph, I012);
 								I0 = I012[0].abs();  // Get abs values to report
@@ -1400,7 +1405,7 @@ public class ExportResults {
 
 							if ((PDElem.getNormAmps() > 0.0) || (PDElem.getEmergAmps() > 0.0)) {
 								if ((CMax > PDElem.getNormAmps()) || (CMax > PDElem.getEmergAmps())) {
-									writer.print(Utilities.pad("\""+PDElem.getDSSClassName() + "." + PDElem.getName().toUpperCase()+"\"", 22) + Separator + j);
+									writer.print(Util.pad("\""+PDElem.getDSSClassName() + "." + PDElem.getName().toUpperCase()+"\"", 22) + Separator + j);
 									writer.print(Separator + I1);
 									if (j == 0) {  // Only for 1st Terminal
 										INormal = PDElem.getNormAmps();
@@ -1438,7 +1443,7 @@ public class ExportResults {
 				}
 			}
 
-			DSSGlobals.globalResult = fileName;
+			DSS.globalResult = fileName;
 
 			writer.close();
 			f.close();
@@ -1452,7 +1457,7 @@ public class ExportResults {
 		PrintWriter writer;
 		boolean doIt;
 
-		Circuit ckt = DSSGlobals.activeCircuit;
+		Circuit ckt = DSS.activeCircuit;
 
 		try {
 			f = new FileWriter(fileName);
@@ -1481,7 +1486,7 @@ public class ExportResults {
 				}
 			}
 
-			DSSGlobals.globalResult = fileName;
+			DSS.globalResult = fileName;
 
 			writer.close();
 			f.close();
@@ -1500,7 +1505,7 @@ public class ExportResults {
 		Complex[] cValues;
 		CktElement cktElem;
 
-		Circuit ckt = DSSGlobals.activeCircuit;
+		Circuit ckt = DSS.activeCircuit;
 
 		if (ckt == null) return;
 
@@ -1514,7 +1519,7 @@ public class ExportResults {
 					if ((ckt.getActiveCktElement() instanceof PDElement) || (ckt.getActiveCktElement() instanceof PCElement)) {
 						cktElem = ckt.getActiveCktElement();
 						writer.println(cktElem.getParentClass().getName() + "." + cktElem.getName().toUpperCase());
-						cValues = cktElem.getYPrimValues(DSSGlobals.ALL_YPRIM);
+						cValues = cktElem.getYPrimValues(DSS.ALL_YPRIM);
 						for (i = 0; i < cktElem.getYorder(); i++) {
 							for (j = 0; j < cktElem.getYorder(); j++)
 								writer.printf("%-13.10g, %-13.10g, ", cValues[i + (j - 1) * cktElem.getYorder()].getReal(), cValues[i + (j - 1) * cktElem.getYorder()].getImaginary());
@@ -1524,7 +1529,7 @@ public class ExportResults {
 				}
 			}
 
-			DSSGlobals.globalResult = fileName;
+			DSS.globalResult = fileName;
 
 			writer.close();
 			f.close();
@@ -1547,12 +1552,12 @@ public class ExportResults {
 		Complex[] cVals;
 		double re, im;
 
-		Circuit ckt = DSSGlobals.activeCircuit;
+		Circuit ckt = DSS.activeCircuit;
 
 		if (ckt == null) return;
 		Y = ckt.getSolution().getY();
 		if (Y == null) {
-			DSSGlobals.doSimpleMsg("Y Matrix not built.", 222);
+			DSS.doSimpleMsg("Y Matrix not built.", 222);
 			return;
 		}
 		// this compresses the entries if necessary - no extra work if already solved
@@ -1599,7 +1604,7 @@ public class ExportResults {
 				writer.println();
 			}
 
-			DSSGlobals.globalResult = fileName;
+			DSS.globalResult = fileName;
 
 			writer.close();
 			f.close();
@@ -1618,7 +1623,7 @@ public class ExportResults {
 		Complex Z1, Z0;
 		double X1R1, X0R0;
 
-		Circuit ckt = DSSGlobals.activeCircuit;
+		Circuit ckt = DSS.activeCircuit;
 
 		try {
 			f = new FileWriter(fileName);
@@ -1646,7 +1651,7 @@ public class ExportResults {
 				writer.println();
 			}
 
-			DSSGlobals.globalResult = fileName;
+			DSS.globalResult = fileName;
 
 			writer.close();
 			f.close();
@@ -1664,13 +1669,13 @@ public class ExportResults {
 		XfmrCode clsXfmr;
 		NamedObject pName;
 
-		Circuit ckt = DSSGlobals.activeCircuit;
+		Circuit ckt = DSS.activeCircuit;
 
 		try {
-			clsCode = (LineCode)     DSSGlobals.DSSClassList.get(DSSGlobals.classNames.find("linecode"));
-			clsWire = (WireData)     DSSGlobals.DSSClassList.get(DSSGlobals.classNames.find("wiredata"));
-			clsGeom = (LineGeometry) DSSGlobals.DSSClassList.get(DSSGlobals.classNames.find("linegeometry"));
-			clsXfmr = (XfmrCode)     DSSGlobals.DSSClassList.get(DSSGlobals.classNames.find("xfmrcode"));
+			clsCode = (LineCode)     DSS.DSSClassList.get(DSS.classNames.find("linecode"));
+			clsWire = (WireData)     DSS.DSSClassList.get(DSS.classNames.find("wiredata"));
+			clsGeom = (LineGeometry) DSS.DSSClassList.get(DSS.classNames.find("linegeometry"));
+			clsXfmr = (XfmrCode)     DSS.DSSClassList.get(DSS.classNames.find("xfmrcode"));
 
 			f = new FileWriter(fileName);
 			writer = new PrintWriter(f);
@@ -1729,7 +1734,7 @@ public class ExportResults {
 
 			writer.println("Format: DSS Class Name = Instance Count");
 			writer.println();
-			for (DSSClass cls : DSSGlobals.DSSClassList) {
+			for (DSSClass cls : DSS.DSSClassList) {
 				writer.printf("%s = %d", cls.getName(), cls.getElementCount());
 				writer.println();
 			}
@@ -1746,7 +1751,7 @@ public class ExportResults {
 		PrintWriter writer;
 		Complex cPower, cLosses;
 
-		Circuit ckt = DSSGlobals.activeCircuit;
+		Circuit ckt = DSS.activeCircuit;
 
 		try {
 			if (new File(fileName).exists()) {
@@ -1785,23 +1790,23 @@ public class ExportResults {
 				writer.print("UnSolved");
 			}
 
-			writer.printf(", %s",    Utilities.getSolutionModeID());
+			writer.printf(", %s",    Util.getSolutionModeID());
 			writer.printf(", %d",    ckt.getSolution().getNumberOfTimes());
 			writer.printf(", %8.3f", ckt.getLoadMultiplier());
 			writer.printf(", %d",    ckt.getNumDevices());
 			writer.printf(", %d",    ckt.getNumBuses());
 			writer.printf(", %d",    ckt.getNumNodes());
 			writer.printf(", %d",    ckt.getSolution().getIteration());
-			writer.printf(", %s",    Utilities.getControlModeID());
+			writer.printf(", %s",    Util.getControlModeID());
 			writer.printf(", %d",    ckt.getSolution().getControlIteration());
 			writer.printf(", %d",    ckt.getSolution().getMostIterationsDone());
 			if (ckt != null) {
 				if (ckt.isSolved() && !ckt.isBusNameRedefined()) {
 					writer.printf(", %d",    ckt.getSolution().getYear());
 					writer.printf(", %d",    ckt.getSolution().getIntHour());
-					writer.printf(", %-.5g", Utilities.getMaxPUVoltage());
-					writer.printf(", %-.5g", Utilities.getMinPUVoltage(true));
-					cPower = Utilities.getTotalPowerFromSources().multiply(0.000001);  // MVA
+					writer.printf(", %-.5g", Util.getMaxPUVoltage());
+					writer.printf(", %-.5g", Util.getMinPUVoltage(true));
+					cPower = Util.getTotalPowerFromSources().multiply(0.000001);  // MVA
 					writer.printf(", %-.6g", cPower.getReal());
 					writer.printf(", %-.6g", cPower.getImaginary());
 					cLosses = ckt.getLosses().multiply(0.000001);
@@ -1817,7 +1822,7 @@ public class ExportResults {
 
 			writer.println();
 
-			DSSGlobals.globalResult = fileName;
+			DSS.globalResult = fileName;
 
 			writer.close();
 			f.close();
@@ -1834,7 +1839,7 @@ public class ExportResults {
 		PrintWriter writer;
 		int i;
 
-		Circuit ckt = DSSGlobals.activeCircuit;
+		Circuit ckt = DSS.activeCircuit;
 
 		try {
 			f = new FileWriter(fileName);
@@ -1842,12 +1847,12 @@ public class ExportResults {
 
 			for (i = 0; i < ckt.getNumBuses(); i++) {
 				if (ckt.getBus(i).isCoordDefined()) {
-					writer.printf("%s, %-13.11g, %-13.11g", Utilities.checkForBlanks(ckt.getBusList().get(i).toUpperCase()), ckt.getBus(i).getX(), ckt.getBus(i).getY());
+					writer.printf("%s, %-13.11g, %-13.11g", Util.checkForBlanks(ckt.getBusList().get(i).toUpperCase()), ckt.getBus(i).getX(), ckt.getBus(i).getY());
 					writer.println();
 				}
 			}
 
-			DSSGlobals.globalResult = fileName;
+			DSS.globalResult = fileName;
 
 			writer.close();
 			f.close();
@@ -1887,7 +1892,7 @@ public class ExportResults {
 		PrintWriter writer;
 		int Linetype = 0;
 
-		Circuit ckt = DSSGlobals.activeCircuit;
+		Circuit ckt = DSS.activeCircuit;
 
 		try {
 			f = new FileWriter(fileName);
@@ -1897,13 +1902,13 @@ public class ExportResults {
 
 			/* New graph created before this routine is entered */
 			switch (phasesToPlot) {
-			case DSSGlobals.PROFILELL:
+			case DSS.PROFILELL:
 				s  = "L-L Voltage Profile";
 				break;
-			case DSSGlobals.PROFILELLALL:
+			case DSS.PROFILELLALL:
 				s  = "L-L Voltage Profile";
 				break;
-			case DSSGlobals.PROFILELLPRI:
+			case DSS.PROFILELLPRI:
 				s  = "L-L Voltage Profile";
 				break;
 			default:
@@ -1913,22 +1918,22 @@ public class ExportResults {
 
 			writer.println("Title=" + s + ", Distance in km");
 
-			iEnergyMeter = DSSGlobals.energyMeterClass.getFirst();
+			iEnergyMeter = DSS.energyMeterClass.getFirst();
 			while (iEnergyMeter >= 0) {
 
-				activeEnergyMeter = (EnergyMeterObj) DSSGlobals.energyMeterClass.getActiveObj();
+				activeEnergyMeter = (EnergyMeterObj) DSS.energyMeterClass.getActiveObj();
 				/* Go down each branch list and draw a line */
 				presentCktElement = (CktElement) activeEnergyMeter.getBranchList().getFirst();
 				while (presentCktElement != null) {
-					if (Utilities.isLineElement(presentCktElement)) {
+					if (Util.isLineElement(presentCktElement)) {
 						bus1 = ckt.getBus(presentCktElement.getTerminal(0).getBusRef());
 						bus2 = ckt.getBus(presentCktElement.getTerminal(1).getBusRef());
 						/* Now determin which phase to plot */
 						if ((bus1.getKVBase() > 0.0) && (bus2.getKVBase() > 0.0)) {
 							switch (phasesToPlot) {
 							/* 3ph only */
-							case DSSGlobals.PROFILE3PH:
-								if ((presentCktElement.getNPhases() >= 3) && (bus1.getKVBase() > 1.0))
+							case DSS.PROFILE3PH:
+								if ((presentCktElement.getNumPhases() >= 3) && (bus1.getKVBase() > 1.0))
 									for (iphs = 0; iphs < 3; iphs++) {
 										puV1 = ckt.getSolution().getNodeV( bus1.getRef(bus1.findIdx(iphs)) ).abs() / bus1.getKVBase() / 1000.0;
 										puV2 = ckt.getSolution().getNodeV( bus2.getRef(bus2.findIdx(iphs)) ).abs() / bus2.getKVBase() / 1000.0;
@@ -1937,7 +1942,7 @@ public class ExportResults {
 									}
 								break;
 							/* Plot all phases present (between 1 and 3) */
-							case DSSGlobals.PROFILEALL:
+							case DSS.PROFILEALL:
 								for (iphs = 0; iphs < 3; iphs++)
 									if ((bus1.findIdx(iphs) >= 0) && (bus2.findIdx(iphs) >= 0)) {
 										if (bus1.getKVBase() < 1.0) {
@@ -1952,7 +1957,7 @@ public class ExportResults {
 									}
 								break;
 							/* Plot all phases present (between 1 and 3) for Primary only */
-							case DSSGlobals.PROFILEALLPRI:
+							case DSS.PROFILEALLPRI:
 								if (bus1.getKVBase() > 1.0)
 									for (iphs = 0; iphs < 3; iphs++)
 										if ((bus1.findIdx(iphs) >= 0) && (bus2.findIdx(iphs) >= 0)) {
@@ -1967,8 +1972,8 @@ public class ExportResults {
 		                                    		iphs, 2, Linetype, 0, 0, ckt.getNodeMarkerCode(), ckt.getNodeMarkerWidth());
 										}
 								break;
-							case DSSGlobals.PROFILELL:
-								if (presentCktElement.getNPhases() >= 3)
+							case DSS.PROFILELL:
+								if (presentCktElement.getNumPhases() >= 3)
 									for (iphs = 0; iphs < 3; iphs++) {
 										iphs2 = iphs + 1;
 										if (iphs2 >= 3) iphs2 = 1;  // TODO Check zero based indexing
@@ -1987,7 +1992,7 @@ public class ExportResults {
 												iphs, 2, Linetype, 0, 0, ckt.getNodeMarkerCode(), ckt.getNodeMarkerWidth());
 									}
 								break;
-							case DSSGlobals.PROFILELLALL:
+							case DSS.PROFILELLALL:
 								for (iphs = 0; iphs < 3; iphs++) {
 									iphs2 = iphs + 1;
 									if (iphs2 >= 3) iphs2 = 0;  // TODO Check zero based indexing
@@ -2006,7 +2011,7 @@ public class ExportResults {
 											iphs, 2, Linetype, 0, 0, ckt.getNodeMarkerCode(), ckt.getNodeMarkerWidth());
 								}
 								break;
-							case DSSGlobals.PROFILELLPRI:
+							case DSS.PROFILELLPRI:
 								if (bus1.getKVBase() > 1.0)
 									for (iphs = 0; iphs < 3; iphs++) {
 										iphs2 = iphs + 1;
@@ -2045,10 +2050,10 @@ public class ExportResults {
 					}
 					presentCktElement = (CktElement) activeEnergyMeter.getBranchList().goForward();
 				}
-				iEnergyMeter = DSSGlobals.energyMeterClass.getNext();
+				iEnergyMeter = DSS.energyMeterClass.getNext();
 			}
 
-			DSSGlobals.globalResult = fileName;
+			DSS.globalResult = fileName;
 
 			f.close();
 			writer.close();
@@ -2063,12 +2068,12 @@ public class ExportResults {
 		// export the present set of eventStrings
 		try {
 			writer = new PrintWriter(fileNm);
-			writer.println( DSSGlobals.eventStrings );
+			writer.println( DSS.eventStrings );
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		DSSGlobals.globalResult = fileNm;
+		DSS.globalResult = fileNm;
 	}
 
 }

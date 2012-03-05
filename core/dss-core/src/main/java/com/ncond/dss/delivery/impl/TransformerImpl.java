@@ -1,8 +1,8 @@
 package com.ncond.dss.delivery.impl;
 
 import com.ncond.dss.common.impl.DSSClassDefs;
-import com.ncond.dss.common.impl.DSSGlobals;
-import com.ncond.dss.common.impl.Utilities;
+import com.ncond.dss.common.impl.DSS;
+import com.ncond.dss.common.impl.Util;
 import com.ncond.dss.delivery.Transformer;
 import com.ncond.dss.delivery.TransformerObj;
 import com.ncond.dss.delivery.Winding;
@@ -108,15 +108,15 @@ public class TransformerImpl extends PDClassImpl implements Transformer {
 		propertyHelp[10] = "Neutral reactance of wye(star)-connected winding in actual ohms.  May be + or -.";
 
 		// general data
-		propertyHelp[11] = "Use this to specify all the bus connections at once using an array. Example:"+DSSGlobals.CRLF+DSSGlobals.CRLF+
+		propertyHelp[11] = "Use this to specify all the bus connections at once using an array. Example:"+DSS.CRLF+DSS.CRLF+
 							"New Transformer.T1 buses=\"Hibus, lowbus\"";
-		propertyHelp[12] = "Use this to specify all the Winding connections at once using an array. Example:"+DSSGlobals.CRLF+DSSGlobals.CRLF+
+		propertyHelp[12] = "Use this to specify all the Winding connections at once using an array. Example:"+DSS.CRLF+DSS.CRLF+
 							"New Transformer.T1 buses=\"Hibus, lowbus\" "+
 							"~ conns=(delta, wye)";
-		propertyHelp[13] = "Use this to specify the kV ratings of all windings at once using an array. Example:"+DSSGlobals.CRLF+DSSGlobals.CRLF+
-							"New Transformer.T1 buses=\"Hibus, lowbus\" "+DSSGlobals.CRLF+
-							"~ conns=(delta, wye)"+DSSGlobals.CRLF+
-							"~ kvs=(115, 12.47)"+DSSGlobals.CRLF+DSSGlobals.CRLF+
+		propertyHelp[13] = "Use this to specify the kV ratings of all windings at once using an array. Example:"+DSS.CRLF+DSS.CRLF+
+							"New Transformer.T1 buses=\"Hibus, lowbus\" "+DSS.CRLF+
+							"~ conns=(delta, wye)"+DSS.CRLF+
+							"~ kvs=(115, 12.47)"+DSS.CRLF+DSS.CRLF+
 							"See kV= property for voltage rules.";
 		propertyHelp[14] = "Use this to specify the kVA ratings of all windings at once using an array.";
 		propertyHelp[15] = "Use this to specify the p.u. tap of all windings at once using an array.";
@@ -127,8 +127,8 @@ public class TransformerImpl extends PDClassImpl implements Transformer {
 		propertyHelp[18] = "Use this to specify the percent reactance, L-T (winding 2 to winding 3).  Use "+
 							"for 3-winding transformers only. On the kVA base of winding 1.";
 		propertyHelp[19] = "Use this to specify the percent reactance between all pairs of windings as an array. "+
-							"All values are on the kVA base of winding 1.  The order of the values is as follows:"+DSSGlobals.CRLF+DSSGlobals.CRLF+
-							"(x12 13 14... 23 24.. 34 ..)  "+DSSGlobals.CRLF+DSSGlobals.CRLF+
+							"All values are on the kVA base of winding 1.  The order of the values is as follows:"+DSS.CRLF+DSS.CRLF+
+							"(x12 13 14... 23 24.. 34 ..)  "+DSS.CRLF+DSS.CRLF+
 							"There will be n(n-1)/2 values, where n=number of windings.";
 		propertyHelp[20] = "Thermal time constant of the transformer in hours.  Typically about 2.";
 		propertyHelp[21] = "n Exponent for thermal properties in IEEE C57.  Typically 0.8.";
@@ -151,7 +151,7 @@ public class TransformerImpl extends PDClassImpl implements Transformer {
 		propertyHelp[34] = "Percent magnetizing current. Default=0.0. Magnetizing branch is in parallel with windings in each phase. Also, see \"ppm_antifloat\".";
 		propertyHelp[35] = "Default=1 ppm.  Parts per million of transformer winding VA rating connected to ground to protect against accidentally floating a winding without a reference. " +
 							"If positive then the effect is adding a very large reactance to ground.  If negative, then a capacitor.";
-		propertyHelp[36] = "Use this property to specify all the winding %resistances using an array. Example:"+DSSGlobals.CRLF+DSSGlobals.CRLF+
+		propertyHelp[36] = "Use this property to specify all the winding %resistances using an array. Example:"+DSS.CRLF+DSS.CRLF+
 							"New Transformer.T1 buses=\"Hibus, lowbus\" "+
 							"~ %Rs=(0.2  0.3)";
 		propertyHelp[37] = "Name of the bank this transformer is part of, for CIM, MultiSpeak, and other interfaces.";
@@ -163,8 +163,8 @@ public class TransformerImpl extends PDClassImpl implements Transformer {
 
 	@Override
 	public int newObject(String objName) {
-		DSSGlobals.activeCircuit.setActiveCktElement(new TransformerObjImpl(this, objName));
-		return addObjectToList(DSSGlobals.activeDSSObject);
+		DSS.activeCircuit.setActiveCktElement(new TransformerObjImpl(this, objName));
+		return addObjectToList(DSS.activeDSSObject);
 	}
 
 	/**
@@ -177,7 +177,7 @@ public class TransformerImpl extends PDClassImpl implements Transformer {
 
 		/* Make this object the active circuit element */
 		activeTransfObj = (TransformerObj) elementList.getActive();
-		DSSGlobals.activeCircuit.setActiveCktElement(activeTransfObj);  // use property to set this value
+		DSS.activeCircuit.setActiveCktElement(activeTransfObj);  // use property to set this value
 
 		int result = 0;
 
@@ -199,10 +199,10 @@ public class TransformerImpl extends PDClassImpl implements Transformer {
 
 			switch (paramPointer) {
 			case -1:
-				DSSGlobals.doSimpleMsg("Unknown parameter \"" + paramName + "\" for object \"Transformer." + at.getName() + "\"", 110);
+				DSS.doSimpleMsg("Unknown parameter \"" + paramName + "\" for object \"Transformer." + at.getName() + "\"", 110);
 				break;
 			case 0:
-				at.setNPhases(parser.makeInteger());
+				at.setNumPhases(parser.makeInteger());
 				break;
 			case 1:
 				at.setNumWindings(parser.makeInteger());  // reallocate stuff if bigger
@@ -289,7 +289,7 @@ public class TransformerImpl extends PDClassImpl implements Transformer {
 				at.setEmergMaxHKVA(parser.makeDouble());
 				break;
 			case 29:
-				at.setSubstation(Utilities.interpretYesNo(param));
+				at.setSubstation(Util.interpretYesNo(param));
 				break;
 			case 30:
 				at.getWinding()[at.getActiveWinding()].setMaxTap(parser.makeDouble());
@@ -328,7 +328,7 @@ public class TransformerImpl extends PDClassImpl implements Transformer {
 			switch (paramPointer) {
 			case 0:
 				// force redefinition of number of conductors and reallocation of matrices
-				at.setNConds(at.getNPhases() + 1);
+				at.setNumConds(at.getNumPhases() + 1);
 				break;
 			case 6:
 				// default all winding kVAs to first winding so latter do not have to be specified
@@ -401,7 +401,7 @@ public class TransformerImpl extends PDClassImpl implements Transformer {
 		if (w >= 0 && w < at.getNumWindings()) {
 			at.setActiveWinding(w);
 		} else {
-			DSSGlobals.doSimpleMsg("Wdg parameter invalid for \"" + at.getName() + "\"", 112);
+			DSS.doSimpleMsg("Wdg parameter invalid for \"" + at.getName() + "\"", 112);
 		}
 	}
 
@@ -436,7 +436,7 @@ public class TransformerImpl extends PDClassImpl implements Transformer {
 			break;
 		}
 
-		at.setYOrder(at.getNConds() * at.getNTerms());
+		at.setYOrder(at.getNumConds() * at.getNumTerms());
 		at.setYPrimInvalid(true);
 	}
 
@@ -446,14 +446,14 @@ public class TransformerImpl extends PDClassImpl implements Transformer {
 	private void interpretAllConns(String s) {
 		String s2;
 
-		DSSGlobals.auxParser.setCmdString(s);  // load up parser
+		DSS.auxParser.setCmdString(s);  // load up parser
 
 		/* Loop for no more than the expected number of windings */
 		TransformerObj at = activeTransfObj;
 		for (int i = 0; i < at.getNumWindings(); i++) {
 			at.setActiveWinding(i);
-			DSSGlobals.auxParser.getNextParam();  // ignore any parameter name not expecting any
-			s2 = DSSGlobals.auxParser.makeString();
+			DSS.auxParser.getNextParam();  // ignore any parameter name not expecting any
+			s2 = DSS.auxParser.makeString();
 			if (s2.length() > 0)
 				interpretConnection(s2);
 		}
@@ -465,14 +465,14 @@ public class TransformerImpl extends PDClassImpl implements Transformer {
 	private void interpretAllBuses(String s) {
 		String busName;
 
-		DSSGlobals.auxParser.setCmdString(s);  // load up parser
+		DSS.auxParser.setCmdString(s);  // load up parser
 
 		/* Loop for no more than the expected number of windings; Ignore omitted values */
 		TransformerObj at = activeTransfObj;
 		for (int i = 0; i < at.getNumWindings(); i++) {
 			at.setActiveWinding(i);
-			DSSGlobals.auxParser.getNextParam();  // ignore any parameter name  not expecting any
-			busName = DSSGlobals.auxParser.makeString();
+			DSS.auxParser.getNextParam();  // ignore any parameter name  not expecting any
+			busName = DSS.auxParser.makeString();
 			if (busName.length() > 0)
 				at.setBus(at.getActiveWinding(), busName);
 		}
@@ -484,16 +484,16 @@ public class TransformerImpl extends PDClassImpl implements Transformer {
 	private void interpretAllkVRatings(String s) {
 		String dataStr;
 
-		DSSGlobals.auxParser.setCmdString(s);  // load up parser
+		DSS.auxParser.setCmdString(s);  // load up parser
 
 		/* Loop for no more than the expected number of windings; ignore omitted values */
 		TransformerObj at = activeTransfObj;
 		for (int i = 0; i < at.getNumWindings(); i++) {
 			at.setActiveWinding(i);
-			DSSGlobals.auxParser.getNextParam();  // ignore any parameter name  not expecting any
-			dataStr = DSSGlobals.auxParser.makeString();
+			DSS.auxParser.getNextParam();  // ignore any parameter name  not expecting any
+			dataStr = DSS.auxParser.makeString();
 			if (dataStr.length() > 0)
-				at.getWinding()[at.getActiveWinding()].setKVLL(DSSGlobals.auxParser.makeDouble());
+				at.getWinding()[at.getActiveWinding()].setKVLL(DSS.auxParser.makeDouble());
 		}
 	}
 
@@ -503,16 +503,16 @@ public class TransformerImpl extends PDClassImpl implements Transformer {
 	private void interpretAllkVARatings(String s) {
 		String dataStr;
 
-		DSSGlobals.auxParser.setCmdString(s);  // load up parser
+		DSS.auxParser.setCmdString(s);  // load up parser
 
 		/* Loop for no more than the expected number of windings; ignore omitted values */
 		TransformerObj at = activeTransfObj;
 		for (int i = 0; i < at.getNumWindings(); i++) {
 			at.setActiveWinding(i);
-			DSSGlobals.auxParser.getNextParam();  // ignore any parameter name not expecting any
-			dataStr = DSSGlobals.auxParser.makeString();
+			DSS.auxParser.getNextParam();  // ignore any parameter name not expecting any
+			dataStr = DSS.auxParser.makeString();
 			if (dataStr.length() > 0)
-				at.getWinding()[at.getActiveWinding()].setKVA(DSSGlobals.auxParser.makeDouble());
+				at.getWinding()[at.getActiveWinding()].setKVA(DSS.auxParser.makeDouble());
 		}
 	}
 
@@ -522,16 +522,16 @@ public class TransformerImpl extends PDClassImpl implements Transformer {
 	private void interpretAllRs(String s) {
 		String dataStr;
 
-		DSSGlobals.auxParser.setCmdString(s);  // load up parser
+		DSS.auxParser.setCmdString(s);  // load up parser
 
 		/* Loop for no more than the expected number of windings; ignore omitted values */
 		TransformerObj at = activeTransfObj;
 		for (int i = 0; i < at.getNumWindings(); i++) {
 			at.setActiveWinding(i);
-			DSSGlobals.auxParser.getNextParam();  // ignore any parameter name not expecting any
-			dataStr = DSSGlobals.auxParser.makeString();
+			DSS.auxParser.getNextParam();  // ignore any parameter name not expecting any
+			dataStr = DSS.auxParser.makeString();
 			if (dataStr.length() > 0)
-				at.getWinding()[at.getActiveWinding()].setRpu(DSSGlobals.auxParser.makeDouble() * 0.01);
+				at.getWinding()[at.getActiveWinding()].setRpu(DSS.auxParser.makeDouble() * 0.01);
 		}
 	}
 
@@ -541,16 +541,16 @@ public class TransformerImpl extends PDClassImpl implements Transformer {
 	private void interpretAllTaps(String s) {
 		String dataStr;
 
-		DSSGlobals.auxParser.setCmdString(s);  // load up parser
+		DSS.auxParser.setCmdString(s);  // load up parser
 
 		/* Loop for no more than the expected number of windings; ignore omitted values */
 		TransformerObj at = activeTransfObj;
 		for (int i = 0; i < at.getNumWindings(); i++) {
 			at.setActiveWinding(i);
-			DSSGlobals.auxParser.getNextParam();  // ignore any parameter name, not expecting any
-			dataStr = DSSGlobals.auxParser.makeString();
+			DSS.auxParser.getNextParam();  // ignore any parameter name, not expecting any
+			dataStr = DSS.auxParser.makeString();
 			if (dataStr.length() > 0)
-				at.getWinding()[at.getActiveWinding()].setPUTap(DSSGlobals.auxParser.makeDouble());
+				at.getWinding()[at.getActiveWinding()].setPUTap(DSS.auxParser.makeDouble());
 		}
 	}
 
@@ -564,11 +564,11 @@ public class TransformerImpl extends PDClassImpl implements Transformer {
 		if (otherTransf != null) {
 			TransformerObj at = activeTransfObj;
 
-			at.setNPhases(otherTransf.getNPhases());
+			at.setNumPhases(otherTransf.getNumPhases());
 			at.setNumWindings(otherTransf.getNumWindings());
-			at.setNConds(at.getNPhases() + 1);  // forces reallocation of terminals and conductors
+			at.setNumConds(at.getNumPhases() + 1);  // forces reallocation of terminals and conductors
 
-			at.setYOrder(at.getNConds() * at.getNTerms());
+			at.setYOrder(at.getNumConds() * at.getNumTerms());
 			at.setYPrimInvalid(true);
 
 			for (i = 0; i < at.getNumWindings(); i++) {
@@ -622,7 +622,7 @@ public class TransformerImpl extends PDClassImpl implements Transformer {
 				at.setPropertyValue(i, otherTransf.getPropertyValue(i));
 			result = 1;
 		} else {
-			DSSGlobals.doSimpleMsg("Error in Transf makeLike: \"" + transfName + "\" not found.", 113);
+			DSS.doSimpleMsg("Error in Transf makeLike: \"" + transfName + "\" not found.", 113);
 		}
 
 		return result;
@@ -630,7 +630,7 @@ public class TransformerImpl extends PDClassImpl implements Transformer {
 
 	@Override
 	public int init(int handle) {
-		DSSGlobals.doSimpleMsg("Need to implement Transformer.init()", -1);
+		DSS.doSimpleMsg("Need to implement Transformer.init()", -1);
 		return 0;
 	}
 

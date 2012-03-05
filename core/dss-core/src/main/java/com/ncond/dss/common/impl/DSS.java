@@ -36,7 +36,7 @@ import com.ncond.dss.meter.Sensor;
 import com.ncond.dss.parser.impl.Parser;
 import com.ncond.dss.shared.HashList;
 
-public class DSSGlobals {
+public class DSS {
 
 	public static final String CRLF = System.getProperty("line.separator");
 	public static final double PI = 3.14159265359;
@@ -274,7 +274,7 @@ public class DSSGlobals {
 					break;
 				default:
 					// for circuit types, set active circuit element too
-					activeCircuit.setActiveCktElement((DSSCktElement) activeDSSClass.getActiveObj());
+					activeCircuit.setActiveCktElement((CktElementImpl) activeDSSClass.getActiveObj());
 					break;
 				}
 			}

@@ -5,7 +5,7 @@ import java.io.PrintStream;
 import org.apache.commons.math.complex.Complex;
 
 import com.ncond.dss.common.DSSClass;
-import com.ncond.dss.common.impl.Utilities;
+import com.ncond.dss.common.impl.Util;
 import com.ncond.dss.general.LoadShape;
 import com.ncond.dss.general.LoadShapeObj;
 import com.ncond.dss.shared.impl.MathUtil;
@@ -394,7 +394,7 @@ public class LoadShapeObjImpl extends DSSObjectImpl implements LoadShapeObj {
 
 	// FIXME Private method in OpenDSS
 	public void setMaxPandQ() {
-		iMaxP = Utilities.iMaxAbsdblArrayValue(numPoints, PMultipliers);
+		iMaxP = Util.iMaxAbsdblArrayValue(numPoints, PMultipliers);
 
 		if (iMaxP >= 0) {
 			maxP = PMultipliers[iMaxP];

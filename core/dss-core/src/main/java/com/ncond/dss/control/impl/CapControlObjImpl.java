@@ -9,13 +9,13 @@ import com.ncond.dss.common.Circuit;
 import com.ncond.dss.common.CktElement;
 import com.ncond.dss.common.SolutionObj;
 import com.ncond.dss.common.impl.DSSClassImpl;
-import com.ncond.dss.common.impl.DSSGlobals;
-import com.ncond.dss.common.impl.Utilities;
+import com.ncond.dss.common.impl.DSS;
+import com.ncond.dss.common.impl.Util;
 import com.ncond.dss.control.CapControl;
 import com.ncond.dss.control.CapControlObj;
 import com.ncond.dss.delivery.CapacitorObj;
 
-public class CapControlObjImpl extends ControlElemImpl implements CapControlObj {
+abstract public class CapControlObjImpl extends ControlElemImpl implements CapControlObj {
 
 	public enum CapControlType {
 		CURRENT, VOLTAGE, KVAR, TIME, PF, SRP
@@ -64,9 +64,9 @@ public class CapControlObjImpl extends ControlElemImpl implements CapControlObj 
 		setName(capControlName.toLowerCase());
 		objType = parClass.getDSSClassType();
 
-		setNPhases(3);  // directly set conds and phases
-		nConds = 3;
-		setNTerms(1);   // this forces allocation of terminals and conductors in base class
+		setNumPhases(3);  // directly set conds and phases
+		ncond = 3;
+		setNumTerms(1);   // this forces allocation of terminals and conductors in base class
 
 		CTPhase = 1;
 		PTPhase = 1;
@@ -117,17 +117,17 @@ public class CapControlObjImpl extends ControlElemImpl implements CapControlObj 
 
 	@Override
 	public void recalcElementData() {
-		Circuit ckt = DSSGlobals.activeCircuit;
+		Circuit ckt = DSS.activeCircuit;
 
 		/* Check for existence of capacitor */
 
-		int devIndex = Utilities.getCktElementIndex(capacitorName);
+		int devIndex = Util.getCktElementIndex(capacitorName);
 		if (devIndex >= 0) {
 			// both capacitor and monitored element must already exist
 			setControlledElement(ckt.getCktElements().get(devIndex));
 			controlledCapacitor = getCapacitor();
-			setNPhases( getControlledElement().getNPhases() );  // force number of phases to be same
-			setNConds(nPhases);
+			setNumPhases( getControlledElement().getNumPhases() );  // force number of phases to be same
+			setNumConds(nphase);
 			getControlledElement().setActiveTerminalIdx(0);  // make the 1st terminal active
 			// get control synched up with capacitor
 
@@ -136,14 +136,14 @@ public class CapControlObjImpl extends ControlElemImpl implements CapControlObj 
 			} else {
 				getControlledElement().setConductorClosed(-1, true);  // -1 sets all conductors
 			}
-			if (getControlledElement().getConductorClosed(-1)) {  // check state of phases of active terminal
+			if (getControlledElement().isConductorClosed(-1)) {  // check state of phases of active terminal
 				presentState = ControlAction.CLOSE;
 			} else {
 				presentState = ControlAction.OPEN;
 			}
 		} else {
 			setControlledElement(null);  // element not found
-			DSSGlobals.doErrorMsg("CapControl." + getName() + ":", "Capacitor Element \""+ capacitorName + "\" Not Found.",
+			DSS.doErrorMsg("CapControl." + getName() + ":", "Capacitor Element \""+ capacitorName + "\" Not Found.",
 					"Element must be defined previously.", 361);
 		}
 
@@ -151,30 +151,30 @@ public class CapControlObjImpl extends ControlElemImpl implements CapControlObj 
 
 		/* Check for existence of monitored element */
 
-		devIndex = Utilities.getCktElementIndex(elementName);
+		devIndex = Util.getCktElementIndex(elementName);
 		if (devIndex >= 0) {
 			monitoredElement = ckt.getCktElements().get(devIndex);
-			if (elementTerminal >= monitoredElement.getNTerms()) {
-				DSSGlobals.doErrorMsg("CapControl: \"" + getName() + "\"",
+			if (elementTerminal >= monitoredElement.getNumTerms()) {
+				DSS.doErrorMsg("CapControl: \"" + getName() + "\"",
 						"Terminal no. \"" +"\" does not exist.", "Re-specify terminal no.", 362);
 			} else {
 				// sets name of i-th terminal's connected bus in CapControl's bus list
 				setBus(0, monitoredElement.getBus(elementTerminal));
 
 				// allocate a buffer big enough to hold everything from the monitored element
-				cBuffer = Utilities.resizeArray(cBuffer, monitoredElement.getYorder());
+				cBuffer = Util.resizeArray(cBuffer, monitoredElement.getYorder());
 
-				condOffset = elementTerminal * monitoredElement.getNConds();  // for speedy sampling
+				condOffset = elementTerminal * monitoredElement.getNumConds();  // for speedy sampling
 			}
 		} else {
-			DSSGlobals.doSimpleMsg("Monitored Element in CapControl."+getName()+ " does not exist:\""+elementName+"\"", 363);
+			DSS.doSimpleMsg("Monitored Element in CapControl."+getName()+ " does not exist:\""+elementName+"\"", 363);
 		}
 
 		/* alternative override bus */
 		if (VOverrideBusSpecified) {
 			VOverrideBusIndex = ckt.getBusList().find(VOverrideBusName);
 			if (VOverrideBusIndex == -1) {
-				DSSGlobals.doSimpleMsg(String.format("CapControl.%s: Voltage override Bus \"%s\" not found. Did you wait until buses were defined? Reverting to default.", getName(), VOverrideBusName), 10361);
+				DSS.doSimpleMsg(String.format("CapControl.%s: Voltage override Bus \"%s\" not found. Did you wait until buses were defined? Reverting to default.", getName(), VOverrideBusName), 10361);
 				VOverrideBusSpecified = false;
 			}
 		}
@@ -187,17 +187,17 @@ public class CapControlObjImpl extends ControlElemImpl implements CapControlObj 
 	public void makePosSequence() {
 		if (getControlledElement() != null) {
 			setEnabled(getControlledElement().isEnabled());
-			setNPhases( getControlledElement().getNPhases() );
-			setNConds(nPhases);
+			setNumPhases( getControlledElement().getNumPhases() );
+			setNumConds(nphase);
 		}
 
 		if (monitoredElement != null) {
 			setBus(0, monitoredElement.getBus(elementTerminal));
 
 			// allocate a buffer big enough to hold everything from the monitored element
-			cBuffer = Utilities.resizeArray(cBuffer, monitoredElement.getYorder());
+			cBuffer = Util.resizeArray(cBuffer, monitoredElement.getYorder());
 
-			condOffset = elementTerminal * monitoredElement.getNConds();  // for speedy sampling
+			condOffset = elementTerminal * monitoredElement.getNumConds();  // for speedy sampling
 		}
 		super.makePosSequence();
 	}
@@ -212,8 +212,8 @@ public class CapControlObjImpl extends ControlElemImpl implements CapControlObj 
 		int j;
 
 		if (pBus.getVBus() != null)  // uses nPhases from CapControlObj
-			for (j = 0; j < nPhases; j++)
-				buff[j] = DSSGlobals.activeCircuit.getSolution().getNodeV( pBus.getRef(j) );
+			for (j = 0; j < nphase; j++)
+				buff[j] = DSS.activeCircuit.getSolution().getNodeV( pBus.getRef(j) );
 	}
 
 
@@ -227,19 +227,19 @@ public class CapControlObjImpl extends ControlElemImpl implements CapControlObj 
 		switch (CTPhase) {
 		case CapControl.AVGPHASES:
 			controlCurrent = 0.0;  // get avg of all phases
-			for (i = (1 + condOffset); i < (nPhases + condOffset); i++)  // TODO Check zero based indexing
+			for (i = (1 + condOffset); i < (nphase + condOffset); i++)  // TODO Check zero based indexing
 				controlCurrent += cBuffer[i].abs();
-			controlCurrent = controlCurrent / nPhases / CTRatio;
+			controlCurrent = controlCurrent / nphase / CTRatio;
 			break;
 		case CapControl.MAXPHASE:
 			controlCurrent = 0.0;  // get max of all phases
-			for (i = (1 + condOffset); i < (nPhases + condOffset); i++)
+			for (i = (1 + condOffset); i < (nphase + condOffset); i++)
 				controlCurrent = Math.max(controlCurrent, cBuffer[i].abs());
 			controlCurrent = controlCurrent / CTRatio;
 			break;
 		case CapControl.MINPHASE:
 			controlCurrent = 1.0e50;  // get min of all phases
-			for (i = (1 + condOffset); i < (nPhases + condOffset); i++)
+			for (i = (1 + condOffset); i < (nphase + condOffset); i++)
 				controlCurrent = Math.min(controlCurrent, cBuffer[i].abs());
 			controlCurrent = controlCurrent / CTRatio;
 			break;
@@ -254,13 +254,13 @@ public class CapControlObjImpl extends ControlElemImpl implements CapControlObj 
 
 	@Override
 	public void getCurrents(Complex[] curr) {
-		for (int i = 0; i < nConds; i++)
+		for (int i = 0; i < ncond; i++)
 			curr[i] = Complex.ZERO;
 	}
 
 	@Override
 	public void getInjCurrents(Complex[] curr) {
-		for (int i = 0; i < nConds; i++)
+		for (int i = 0; i < ncond; i++)
 			curr[i] = Complex.ZERO;
 	}
 
@@ -306,7 +306,7 @@ public class CapControlObjImpl extends ControlElemImpl implements CapControlObj 
 				if ((code == ControlAction.OPEN.code()) || (code == ControlAction.CLOSE.code())) {  // skip NONE
 					/* We'll switch capacitor this time, but then not again until inhibit released */
 					SRPInhibit = true;  // prevent further switching until inhibit released  in 15 min
-					ckt = DSSGlobals.activeCircuit;
+					ckt = DSS.activeCircuit;
 					SRPControlActionHandle = ckt.getControlQueue().push(ckt.getSolution().getIntHour(),
 							ckt.getSolution().getDynaVars().t + 900.0 , CapControl.SRPINHIBITRELEASE, 0, this);
 				}
@@ -321,10 +321,10 @@ public class CapControlObjImpl extends ControlElemImpl implements CapControlObj 
 					getControlledElement().setConductorClosed(0, false);  // open all phases of active terminal
 
 					if (showEventLog)
-						Utilities.appendToEventLog("Capacitor." + getControlledElement().getName(), "**Opened**");
+						Util.appendToEventLog("Capacitor." + getControlledElement().getName(), "**Opened**");
 					presentState = ControlAction.OPEN;
 
-					SolutionObj sol = DSSGlobals.activeCircuit.getSolution();
+					SolutionObj sol = DSS.activeCircuit.getSolution();
 
 					LastOpenTime = sol.getDynaVars().t + 3600.0 * sol.getIntHour();
 				}
@@ -335,10 +335,10 @@ public class CapControlObjImpl extends ControlElemImpl implements CapControlObj 
 						presentState = ControlAction.OPEN;
 						getControlledElement().setConductorClosed(0, false);  // open all phases of active terminal
 						if (showEventLog)
-							Utilities.appendToEventLog("Capacitor." + getControlledElement().getName(), "**Opened**");
+							Util.appendToEventLog("Capacitor." + getControlledElement().getName(), "**Opened**");
 					} else {
 						if (showEventLog)
-							Utilities.appendToEventLog("Capacitor." + getControlledElement().getName(), "**Step Down**");
+							Util.appendToEventLog("Capacitor." + getControlledElement().getName(), "**Step Down**");
 					}
 				break;
 			}
@@ -347,13 +347,13 @@ public class CapControlObjImpl extends ControlElemImpl implements CapControlObj 
 			if (presentState == ControlAction.OPEN) {
 				getControlledElement().setConductorClosed(0, true);  // close all phases of active terminal
 				if (showEventLog)
-					Utilities.appendToEventLog("Capacitor." + getControlledElement().getName(), "**Closed**");
+					Util.appendToEventLog("Capacitor." + getControlledElement().getName(), "**Closed**");
 				presentState = ControlAction.CLOSE;
 				controlledCapacitor.addStep();
 			} else {
 				if (controlledCapacitor.addStep())
 					if (showEventLog)
-						Utilities.appendToEventLog("Capacitor." + getControlledElement().getName(), "**Step Up**");
+						Util.appendToEventLog("Capacitor." + getControlledElement().getName(), "**Step Up**");
 			}
 			break;
 		default:
@@ -376,19 +376,19 @@ public class CapControlObjImpl extends ControlElemImpl implements CapControlObj 
 		switch (PTPhase) {
 		case CapControl.AVGPHASES:
 			controlVoltage = 0.0;
-			for (i = 0; i < monitoredElement.getNPhases(); i++)
+			for (i = 0; i < monitoredElement.getNumPhases(); i++)
 				controlVoltage += cBuffer[i].abs();
-			controlVoltage = controlVoltage / monitoredElement.getNPhases() / PTRatio;
+			controlVoltage = controlVoltage / monitoredElement.getNumPhases() / PTRatio;
 			break;
 		case CapControl.MAXPHASE:
 			controlVoltage = 0.0;
-			for (i = 0; i < monitoredElement.getNPhases(); i++)
+			for (i = 0; i < monitoredElement.getNumPhases(); i++)
 				controlVoltage = Math.max(controlVoltage, cBuffer[i].abs());
 			controlVoltage = controlVoltage / PTRatio;
 			break;
 		case CapControl.MINPHASE:
 			controlVoltage = 1.0e50;
-			for (i = 0; i < monitoredElement.getNPhases(); i++)
+			for (i = 0; i < monitoredElement.getNumPhases(); i++)
 				controlVoltage = Math.min(controlVoltage, cBuffer[i].abs());
 			controlVoltage = controlVoltage / PTRatio;
 			break;
@@ -412,7 +412,7 @@ public class CapControlObjImpl extends ControlElemImpl implements CapControlObj 
 
 	private int nextDeltaPhase(int iphs) {
 		int result = iphs + 1;
-		if (result >= nPhases)
+		if (result >= nphase)
 			result = 0;
 		return result;
 	}
@@ -445,7 +445,7 @@ public class CapControlObjImpl extends ControlElemImpl implements CapControlObj 
 		double normalizedTime, Q, PF, currTest, VTest;
 
 		getControlledElement().setActiveTerminalIdx(0);
-		if (getControlledElement().getConductorClosed(-1)) {  // check state of phases of active terminal
+		if (getControlledElement().isConductorClosed(-1)) {  // check state of phases of active terminal
 			presentState = ControlAction.CLOSE;
 		} else {
 			presentState = ControlAction.OPEN;
@@ -457,7 +457,7 @@ public class CapControlObjImpl extends ControlElemImpl implements CapControlObj 
 			if (controlType != CapControlType.VOLTAGE) {  // don't bother for voltage control
 
 				if (VOverrideBusSpecified) {
-					getBusVoltages(DSSGlobals.activeCircuit.getBus(VOverrideBusIndex), cBuffer);
+					getBusVoltages(DSS.activeCircuit.getBus(VOverrideBusIndex), cBuffer);
 				} else {
 					monitoredElement.getTermVoltages(elementTerminal, cBuffer);
 				}
@@ -471,7 +471,7 @@ public class CapControlObjImpl extends ControlElemImpl implements CapControlObj 
 						shouldSwitch = true;
 						VOverrideEvent = true;
 						if (showEventLog)
-							Utilities.appendToEventLog("Capacitor." + getControlledElement().getName(),
+							Util.appendToEventLog("Capacitor." + getControlledElement().getName(),
 									String.format("Low Voltage Override: %.8g V", VTest));
 					}
 					break;
@@ -481,7 +481,7 @@ public class CapControlObjImpl extends ControlElemImpl implements CapControlObj 
 						shouldSwitch = true;
 						VOverrideEvent = true;
 						if (showEventLog)
-							Utilities.appendToEventLog("Capacitor." + getControlledElement().getName(),
+							Util.appendToEventLog("Capacitor." + getControlledElement().getName(),
 									String.format("High Voltage Override: %.8g V", VTest));
 					}
 					break;
@@ -619,7 +619,7 @@ public class CapControlObjImpl extends ControlElemImpl implements CapControlObj 
 				}
 				break;
 			case TIME:
-				SolutionObj sol = DSSGlobals.activeCircuit.getSolution();
+				SolutionObj sol = DSS.activeCircuit.getSolution();
 				normalizedTime = normalizeToTOD(sol.getIntHour(), sol.getDynaVars().t);
 
 				switch (presentState) {
@@ -711,7 +711,7 @@ public class CapControlObjImpl extends ControlElemImpl implements CapControlObj 
 
 		}
 
-		Circuit ckt = DSSGlobals.activeCircuit;
+		Circuit ckt = DSS.activeCircuit;
 		SolutionObj sol = ckt.getSolution();
 
 		if (shouldSwitch && !armed) {
@@ -728,14 +728,14 @@ public class CapControlObjImpl extends ControlElemImpl implements CapControlObj 
 			controlActionHandle = ckt.getControlQueue().push(sol.getIntHour(), sol.getDynaVars().t + timeDelay , pendingChange, 0, this);
 			armed = true;
 			if (showEventLog)
-				Utilities.appendToEventLog("Capacitor." + getControlledElement().getName(), String.format("**Armed**, Delay= %.5g sec", timeDelay));
+				Util.appendToEventLog("Capacitor." + getControlledElement().getName(), String.format("**Armed**, Delay= %.5g sec", timeDelay));
 		}
 
 		if (armed && pendingChange == ControlAction.NONE) {
 			ckt.getControlQueue().delete(controlActionHandle);
 			armed = false;
 			if (showEventLog)
-				Utilities.appendToEventLog("Capacitor." + getControlledElement().getName(), "**Reset**");
+				Util.appendToEventLog("Capacitor." + getControlledElement().getName(), "**Reset**");
 		}
 	}
 
@@ -760,7 +760,7 @@ public class CapControlObjImpl extends ControlElemImpl implements CapControlObj 
 		result = hourOfDay + sec / 3600.0;
 
 		// if the TOD is at least slightly greater than 24:00 wrap around to 0:00
-		if (result - 24.0 > DSSGlobals.EPSILON)
+		if (result - 24.0 > DSS.EPSILON)
 			result = result - 24.0;  // wrap around
 
 		return result;

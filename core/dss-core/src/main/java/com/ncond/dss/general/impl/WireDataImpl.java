@@ -1,7 +1,7 @@
 package com.ncond.dss.general.impl;
 
 import com.ncond.dss.common.impl.DSSClassDefs;
-import com.ncond.dss.common.impl.DSSGlobals;
+import com.ncond.dss.common.impl.DSS;
 import com.ncond.dss.general.ConductorDataObj;
 import com.ncond.dss.general.WireData;
 import com.ncond.dss.general.WireDataObj;
@@ -37,8 +37,8 @@ public class WireDataImpl extends ConductorDataImpl implements WireData {
 	@Override
 	public int newObject(String objName) {
 
-		DSSGlobals.activeDSSObject = new WireDataObjImpl(this, objName);
-		return addObjectToList(DSSGlobals.activeDSSObject);
+		DSS.activeDSSObject = new WireDataObjImpl(this, objName);
+		return addObjectToList(DSS.activeDSSObject);
 	}
 
 	@Override
@@ -46,7 +46,7 @@ public class WireDataImpl extends ConductorDataImpl implements WireData {
 		int result = 0;
 		// continue parsing with contents of parser
 		activeConductorDataObj = (ConductorDataObj) elementList.getActive();
-		DSSGlobals.activeDSSObject = activeConductorDataObj;
+		DSS.activeDSSObject = activeConductorDataObj;
 
 		Parser parser = Parser.getInstance();
 
@@ -67,7 +67,7 @@ public class WireDataImpl extends ConductorDataImpl implements WireData {
 
 			switch (paramPointer) {
 			case -1:
-				DSSGlobals.doSimpleMsg("Unknown parameter \"" + paramName + "\" for object \"" + getName() +'.'+ acd.getName() + "\"", 101);
+				DSS.doSimpleMsg("Unknown parameter \"" + paramName + "\" for object \"" + getName() +'.'+ acd.getName() + "\"", 101);
 				break;
 			default:
 				// inherited parameters
@@ -97,14 +97,14 @@ public class WireDataImpl extends ConductorDataImpl implements WireData {
 				awo.setPropertyValue(i, otherWireData.getPropertyValue(i));
 			result = 1;
 		} else {
-			DSSGlobals.doSimpleMsg("Error in WireData.makeLike: \"" + name + "\" not found.", 102);
+			DSS.doSimpleMsg("Error in WireData.makeLike: \"" + name + "\" not found.", 102);
 		}
 		return result;
 	}
 
 	@Override
 	public int init(int handle) {
-		DSSGlobals.doSimpleMsg("Need to implement WireData.init()", -1);
+		DSS.doSimpleMsg("Need to implement WireData.init()", -1);
 		return 0;
 	}
 
@@ -125,7 +125,7 @@ public class WireDataImpl extends ConductorDataImpl implements WireData {
 			}
 		}
 
-		DSSGlobals.doSimpleMsg("WireData: \"" + value + "\" not found.", 103);
+		DSS.doSimpleMsg("WireData: \"" + value + "\" not found.", 103);
 	}
 
 }

@@ -2,7 +2,7 @@ package com.ncond.dss.delivery.impl;
 
 import com.ncond.dss.common.DSSClass;
 import com.ncond.dss.common.impl.DSSClassDefs;
-import com.ncond.dss.common.impl.DSSGlobals;
+import com.ncond.dss.common.impl.DSS;
 import com.ncond.dss.control.impl.ControlClassImpl;
 import com.ncond.dss.delivery.Fuse;
 import com.ncond.dss.delivery.FuseObj;
@@ -40,7 +40,7 @@ public class FuseImpl extends ControlClassImpl implements Fuse {
 		TCC_CurveObj result = (TCC_CurveObj) TCC_CurveClass.find(curveName);
 
 		if (result == null)
-			DSSGlobals.doSimpleMsg("TCC Curve object: \"" + curveName + "\" not found.", 401);
+			DSS.doSimpleMsg("TCC Curve object: \"" + curveName + "\" not found.", 401);
 
 		return result;
 	}
@@ -87,8 +87,8 @@ public class FuseImpl extends ControlClassImpl implements Fuse {
 
 	@Override
 	public int newObject(String objName) {
-		DSSGlobals.activeCircuit.setActiveCktElement(new FuseObjImpl(this, objName));
-		return addObjectToList(DSSGlobals.activeDSSObject);
+		DSS.activeCircuit.setActiveCktElement(new FuseObjImpl(this, objName));
+		return addObjectToList(DSS.activeDSSObject);
 	}
 
 	@Override
@@ -97,7 +97,7 @@ public class FuseImpl extends ControlClassImpl implements Fuse {
 
 		// continue parsing with contents of parser
 		activeFuseObj = (FuseObj) elementList.getActive();
-		DSSGlobals.activeCircuit.setActiveCktElement(activeFuseObj);
+		DSS.activeCircuit.setActiveCktElement(activeFuseObj);
 
 		int result = 0;
 
@@ -118,7 +118,7 @@ public class FuseImpl extends ControlClassImpl implements Fuse {
 
 			switch (paramPointer) {
 			case -1:
-				DSSGlobals.doSimpleMsg("Unknown parameter \"" + paramName + "\" for object \"" + getName() + "." + getName() + "\"", 402);
+				DSS.doSimpleMsg("Unknown parameter \"" + paramName + "\" for object \"" + getName() + "." + getName() + "\"", 402);
 				break;
 			case 0:
 				af.setMonitoredElementName(param.toLowerCase());
@@ -179,8 +179,8 @@ public class FuseImpl extends ControlClassImpl implements Fuse {
 		if (otherFuse != null) {
 			FuseObj af = activeFuseObj;
 
-			af.setNPhases(otherFuse.getNPhases());
-			af.setNConds(otherFuse.getNConds()); // force reallocation of terminal stuff
+			af.setNumPhases(otherFuse.getNumPhases());
+			af.setNumConds(otherFuse.getNumConds()); // force reallocation of terminal stuff
 
 			af.setElementName(otherFuse.getElementName());
 			af.setElementTerminal(otherFuse.getElementTerminal());
@@ -201,7 +201,7 @@ public class FuseImpl extends ControlClassImpl implements Fuse {
 				af.setPropertyValue(i, otherFuse.getPropertyValue(i));
 
 		} else {
-			DSSGlobals.doSimpleMsg("Error in Fuse makeLike: \"" + fuseName + "\" not found.", 403);
+			DSS.doSimpleMsg("Error in Fuse makeLike: \"" + fuseName + "\" not found.", 403);
 		}
 
 		return result;

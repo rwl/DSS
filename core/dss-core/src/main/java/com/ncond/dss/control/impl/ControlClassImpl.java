@@ -35,7 +35,7 @@ public abstract class ControlClassImpl extends CktElementClassImpl implements Co
 	}
 
 	protected void classMakeLike(DSSClass otherObj) {
-		new ControlElemImpl(otherObj);
+//		new ControlElemImpl(otherObj);
 	}
 
 	public int getNumControlClassProps() {

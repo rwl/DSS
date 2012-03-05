@@ -7,7 +7,7 @@ import java.util.ArrayList;
 
 import com.ncond.dss.common.Circuit;
 import com.ncond.dss.common.impl.DSSClassDefs;
-import com.ncond.dss.common.impl.DSSGlobals;
+import com.ncond.dss.common.impl.DSS;
 import com.ncond.dss.executive.Executive;
 import com.ncond.dss.parser.impl.Parser;
 import com.ncond.dss.shared.impl.CommandListImpl;
@@ -34,9 +34,9 @@ public class DSSExecutive implements Executive {
 		DSSClassDefs.createDSSClasses();
 
 		// default buffer for 2 active circuits
-		DSSGlobals.circuits = new ArrayList<Circuit>(2);
-		DSSGlobals.numCircuits = 0;
-		DSSGlobals.activeCircuit = null;
+		DSS.circuits = new ArrayList<Circuit>(2);
+		DSS.numCircuits = 0;
+		DSS.activeCircuit = null;
 
 		Parser.getInstance();  // create global parser object
 
@@ -62,13 +62,13 @@ public class DSSExecutive implements Executive {
 	}
 
 	protected void finalize() throws Throwable {
-		DSSGlobals.writeDSS_Registry();
+		DSS.writeDSS_Registry();
 
-		DSSGlobals.clearAllCircuits();
+		DSS.clearAllCircuits();
 
 		ExecCommands.getInstance().setCommandList(null);
 		ExecOptions.getInstance().setOptionList(null);
-		DSSGlobals.circuits = null;
+		DSS.circuits = null;
 
 		Parser.getInstance();
 
@@ -76,11 +76,11 @@ public class DSSExecutive implements Executive {
 	}
 
 	public String getLastError() {
-		return DSSGlobals.lastErrorMessage;
+		return DSS.lastErrorMessage;
 	}
 
 	public int getErrorResult() {
-		return DSSGlobals.errorNumber;
+		return DSS.errorNumber;
 	}
 
 	/**
@@ -90,7 +90,7 @@ public class DSSExecutive implements Executive {
 	public void createDefaultDSSItems() {
 		/* this load shape used for generator dispatching, etc. loads may refer to it, also. */
 		setCommand("new loadshape.default npts=24 1.0 mult=(.677 .6256 .6087 .5833 .58028 .6025 .657 .7477 .832 .88 .94 .989 .985 .98 .9898 .999 1 .958 .936 .913 .876 .876 .828 .756)");
-		if (DSSGlobals.cmdResult == 0) {
+		if (DSS.cmdResult == 0) {
 			setCommand("new growthshape.default 2 year=\"1 20\" mult=(1.025 1.025)");  // 20 years at 2.5%
 			setCommand("new spectrum.default 7 harmonic=(1 3 5 7 9 11 13) %mag=(100 33 20 14 11 9 7) angle=(0 0 0 0 0 0 0)");
 			setCommand("new spectrum.defaultload 7 harmonic=(1 3 5 7 9 11 13) %mag=(100 1.5 20 14 1 9 7) angle=(0 180 180 180 180 180 180)");
@@ -115,15 +115,15 @@ public class DSSExecutive implements Executive {
 	}
 
 	public void clear() {
-		if (DSSGlobals.numCircuits > 0) {
+		if (DSS.numCircuits > 0) {
 			/* First get rid of all existing stuff */
-			DSSGlobals.clearAllCircuits();
+			DSS.clearAllCircuits();
 			DSSClassDefs.disposeDSSClasses();
 
 			/* Start over */
 			DSSClassDefs.createDSSClasses();
 			createDefaultDSSItems();
-			DSSGlobals.forms.setRebuildHelpForm(true);  // because class strings have changed
+			DSS.forms.setRebuildHelpForm(true);  // because class strings have changed
 		}
 	}
 
@@ -131,17 +131,17 @@ public class DSSExecutive implements Executive {
 		try {
 			if (value) {
 				if (!recorderOn) {
-					recorderFile = DSSGlobals.DSSDataDirectory + "DSSRecorder.dss";
+					recorderFile = DSS.DSSDataDirectory + "DSSRecorder.dss";
 					recorderFileWriter = new FileWriter(recorderFile);
 				}
 			} else if (recorderOn) {
 				recorderFileWriter.close();
 			}
 		} catch (IOException e) {
-			DSSGlobals.doErrorMsg("setRecorderOn", e.getMessage(),
+			DSS.doErrorMsg("setRecorderOn", e.getMessage(),
 					"Lack of write access", 678);
 		}
-		DSSGlobals.globalResult = recorderFile;
+		DSS.globalResult = recorderFile;
 		recorderOn = value;
 	}
 

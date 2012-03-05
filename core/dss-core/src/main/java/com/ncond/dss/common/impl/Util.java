@@ -53,14 +53,14 @@ import com.ncond.dss.shared.HashList;
 import com.ncond.dss.shared.impl.ComplexUtil;
 import com.ncond.dss.shared.impl.HashListImpl;
 
-public class Utilities {
+public class Util {
 
 	private static final String PAD_STRING =
 			"                                                  "; // 50 blanks
 	private static final String PAD_DOTS_STRING =
 			" ................................................."; // 50 dots
 
-	private Utilities() {
+	private Util() {
 
 	}
 
@@ -72,7 +72,7 @@ public class Utilities {
 			return child;
 
 		try {
-			return new File(DSSGlobals.currentDirectory, child).getCanonicalPath();
+			return new File(DSS.currentDirectory, child).getCanonicalPath();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -389,13 +389,13 @@ public class Utilities {
 
 		switch (slc.charAt(0)) {
 		case 'o':
-			return DSSGlobals.CONTROLSOFF;
+			return DSS.CONTROLSOFF;
 		case 'e':
-			return DSSGlobals.EVENTDRIVEN;  // "event"
+			return DSS.EVENTDRIVEN;  // "event"
 		case 't':
-			return DSSGlobals.TIMEDRIVEN;   // "time"
+			return DSS.TIMEDRIVEN;   // "time"
 		default:
-			return DSSGlobals.CTRLSTATIC;
+			return DSS.CTRLSTATIC;
 		}
 	}
 
@@ -405,18 +405,18 @@ public class Utilities {
 
 		switch (s2.charAt(0)) {
 		case 'a':
-			result = DSSGlobals.ADMITTANCE;
+			result = DSS.ADMITTANCE;
 			break;
 		case 'p':
-			result = DSSGlobals.POWERFLOW;
+			result = DSS.POWERFLOW;
 			break;
 		default:
-			result = DSSGlobals.ADMITTANCE;
+			result = DSS.ADMITTANCE;
 			break;
 		}
 
 		/* If this represents a change, invalidate all the PC Yprims */
-		Circuit ckt = DSSGlobals.activeCircuit;
+		Circuit ckt = DSS.activeCircuit;
 		if (result != ckt.getSolution().getLoadModel())
 			ckt.invalidateAllPCElements();
 
@@ -451,11 +451,11 @@ public class Utilities {
 
 		switch (slc.charAt(0)) {
 		case 'g':
-			return DSSGlobals.GAUSSIAN;
+			return DSS.GAUSSIAN;
 		case 'u':
-			return DSSGlobals.UNIFORM;
+			return DSS.UNIFORM;
 		case 'l':
-			return DSSGlobals.LOGNORMAL;
+			return DSS.LOGNORMAL;
 		default:
 			return 0;  // no variation for any other entry
 		}
@@ -468,9 +468,9 @@ public class Utilities {
 		String slc = s.toLowerCase();
 		switch (slc.charAt(0)) {
 		case 'g':
-			return DSSGlobals.GENADD;
+			return DSS.GENADD;
 		default:
-			return DSSGlobals.CAPADD;
+			return DSS.CAPADD;
 		}
 	}
 
@@ -551,9 +551,9 @@ public class Utilities {
 		String inputLine;
 		int iskip;
 
-		DSSGlobals.auxParser.setCmdString(s);
-		String parmName = DSSGlobals.auxParser.getNextParam();
-		String param = DSSGlobals.auxParser.makeString();
+		DSS.auxParser.setCmdString(s);
+		String parmName = DSS.auxParser.getNextParam();
+		String param = DSS.auxParser.makeString();
 		int result = maxValues;  // default return value
 
 		/* Syntax can be either a list of numeric values or a file specification: File= ... */
@@ -561,13 +561,13 @@ public class Utilities {
 		if (parmName.equalsIgnoreCase("file")) {
 			/* Default values */
 			if (param.equals("%%result%%")) {
-				csvFileName = DSSGlobals.lastResultFile;
+				csvFileName = DSS.lastResultFile;
 			} else {
 				csvFileName = param;
 			}
 
 			if (!new File(csvFileName).exists()) {
-				DSSGlobals.doSimpleMsg(String.format("CSV file \"%s\" does not exist", csvFileName), 70401);
+				DSS.doSimpleMsg(String.format("CSV file \"%s\" does not exist", csvFileName), 70401);
 				return result;
 			}
 
@@ -576,15 +576,15 @@ public class Utilities {
 			csvHeader = false;
 
 			// look for other options  (may be in either order)
-			parmName = DSSGlobals.auxParser.getNextParam();
-			param = DSSGlobals.auxParser.makeString();
+			parmName = DSS.auxParser.getNextParam();
+			param = DSS.auxParser.makeString();
 			while (param.length() > 0) {
-				if (Utilities.compareTextShortest(parmName, "column") == 0)
-					csvColumn = DSSGlobals.auxParser.makeInteger();
-				if (Utilities.compareTextShortest(parmName, "header") == 0)
-					csvHeader = Utilities.interpretYesNo(param);
-				parmName = DSSGlobals.auxParser.getNextParam();
-				param = DSSGlobals.auxParser.makeString();
+				if (Util.compareTextShortest(parmName, "column") == 0)
+					csvColumn = DSS.auxParser.makeInteger();
+				if (Util.compareTextShortest(parmName, "header") == 0)
+					csvHeader = Util.interpretYesNo(param);
+				parmName = DSS.auxParser.getNextParam();
+				param = DSS.auxParser.makeString();
 			}
 
 			// load the list from a file
@@ -600,17 +600,17 @@ public class Utilities {
 					try {
 						if (dis.available() != 0) {
 							inputLine = dis.readLine();
-							DSSGlobals.auxParser.setCmdString(inputLine);
+							DSS.auxParser.setCmdString(inputLine);
 							for (iskip = 0; iskip < csvColumn; iskip++) {
-								parmName = DSSGlobals.auxParser.getNextParam();
-								resultArray[i] = DSSGlobals.auxParser.makeDouble();
+								parmName = DSS.auxParser.getNextParam();
+								resultArray[i] = DSS.auxParser.makeDouble();
 							}
 						} else {
 							result = i - 1;  // this will be different if less found;  TODO Check zero based indexing
 							break;
 						}
 					} catch (Exception e) {
-						DSSGlobals.doSimpleMsg(String.format("Error reading %d-th numeric array value from file: \"%s\" Error is:", i, param, e.getMessage()), 705);
+						DSS.doSimpleMsg(String.format("Error reading %d-th numeric array value from file: \"%s\" Error is:", i, param, e.getMessage()), 705);
 						result = i - 1;
 						break;
 					}
@@ -638,8 +638,8 @@ public class Utilities {
 
 			// parse Values of array list
 			for (int i = 0; i < maxValues; i++) {
-				resultArray[i] = DSSGlobals.auxParser.makeDouble();  // fills array with zeros if we run out of numbers
-				DSSGlobals.auxParser.getNextParam();
+				resultArray[i] = DSS.auxParser.makeDouble();  // fills array with zeros if we run out of numbers
+				DSS.auxParser.getNextParam();
 			}
 		}
 		return result;
@@ -655,9 +655,9 @@ public class Utilities {
 		BufferedInputStream bis = null;
 		DataInputStream dis = null;
 
-		DSSGlobals.auxParser.setCmdString(s);
-		String parmName = DSSGlobals.auxParser.getNextParam();
-		String param = DSSGlobals.auxParser.makeString();
+		DSS.auxParser.setCmdString(s);
+		String parmName = DSS.auxParser.getNextParam();
+		String param = DSS.auxParser.makeString();
 		int result = maxValues;  // default return value
 
 		/* Syntax can be either a list of numeric values or a file specification: File= ... */
@@ -679,7 +679,7 @@ public class Utilities {
 							break;
 						}
 					} catch (Exception e) {
-						DSSGlobals.doSimpleMsg(String.format("Error trying to read numeric array values from file: \""+param +"\"  Error is: "+e.getMessage()), 706);
+						DSS.doSimpleMsg(String.format("Error trying to read numeric array values from file: \""+param +"\"  Error is: "+e.getMessage()), 706);
 						result = i - 1;
 						break;
 					}
@@ -699,8 +699,8 @@ public class Utilities {
 
 			// parse values of array list
 			for (int i = 0; i < maxValues; i++) {
-				resultArray[i] = DSSGlobals.auxParser.makeInteger();  // fills array with zeros if we run out of numbers
-				DSSGlobals.auxParser.getNextParam();
+				resultArray[i] = DSS.auxParser.makeInteger();  // fills array with zeros if we run out of numbers
+				DSS.auxParser.getNextParam();
 			}
 		}
 		return result;
@@ -734,13 +734,13 @@ public class Utilities {
 					// do nothing
 					break;
 				default:
-					result = DSSGlobals.activeCircuit.getSolution().getDynaVars().h;  // don't change it
-					DSSGlobals.doSimpleMsg("Error in specification of stepSize: \"" + s +"\" Units can only be h, m, or s (single char only) ", 99934);
+					result = DSS.activeCircuit.getSolution().getDynaVars().h;  // don't change it
+					DSS.doSimpleMsg("Error in specification of stepSize: \"" + s +"\" Units can only be h, m, or s (single char only) ", 99934);
 					break;
 				}
 			} catch (NumberFormatException ee) {
-				result = DSSGlobals.activeCircuit.getSolution().getDynaVars().h; // don't change it
-				DSSGlobals.doSimpleMsg("Error in specification of stepSize: " + s, 99933);
+				result = DSS.activeCircuit.getSolution().getDynaVars().h; // don't change it
+				DSS.doSimpleMsg("Error in specification of stepSize: " + s, 99933);
 				return result;
 			}
 		}
@@ -763,9 +763,9 @@ public class Utilities {
 		size = 0;
 		resultArray = new String[maxSize];
 
-		DSSGlobals.auxParser.setCmdString(s);
-		String parmName = DSSGlobals.auxParser.getNextParam();
-		String param = DSSGlobals.auxParser.makeString();
+		DSS.auxParser.setCmdString(s);
+		String parmName = DSS.auxParser.getNextParam();
+		String param = DSS.auxParser.makeString();
 
 		/* Syntax can be either a list of string values or a file specification:  File= ... */
 		if (parmName.equalsIgnoreCase("file")) {
@@ -789,7 +789,7 @@ public class Utilities {
 				dataStream.close();
 				reader.close();
 			} catch (Exception e) {
-				DSSGlobals.doSimpleMsg("Error trying to read numeric array values from a file. Error is: "+e.getMessage(), 707);
+				DSS.doSimpleMsg("Error trying to read numeric array values from a file. Error is: "+e.getMessage(), 707);
 			}
 
 		} else {  // parse list of values off input string
@@ -802,8 +802,8 @@ public class Utilities {
 					resultArray = resizeArray(resultArray, maxSize);
 				}
 				resultArray[size] = param;
-				parmName = DSSGlobals.auxParser.getNextParam();
-				param = DSSGlobals.auxParser.makeString();
+				parmName = DSS.auxParser.getNextParam();
+				param = DSS.auxParser.makeString();
 			}
 		}
 
@@ -822,9 +822,9 @@ public class Utilities {
 		// throw away any previous allocation
 		resultList.clear();
 
-		DSSGlobals.auxParser.setCmdString(s);
-		String parmName = DSSGlobals.auxParser.getNextParam();
-		String param = DSSGlobals.auxParser.makeString();
+		DSS.auxParser.setCmdString(s);
+		String parmName = DSS.auxParser.getNextParam();
+		String param = DSS.auxParser.makeString();
 
 		/* Syntax can be either a list of string values or a file specification:  File= ... */
 
@@ -836,9 +836,9 @@ public class Utilities {
 				BufferedReader reader = new BufferedReader(new InputStreamReader(dataStream));
 
 				while ((param = reader.readLine()) != null) {
-					DSSGlobals.auxParser.setCmdString(param);
-					parmName = DSSGlobals.auxParser.getNextParam();
-					nextParam = DSSGlobals.auxParser.makeString();
+					DSS.auxParser.setCmdString(param);
+					parmName = DSS.auxParser.getNextParam();
+					nextParam = DSS.auxParser.makeString();
 					if (nextParam.length() > 0)  // Ignore Blank Lines in File
 						resultList.add(nextParam);
 				}
@@ -846,15 +846,15 @@ public class Utilities {
 				dataStream.close();
 				reader.close();
 			} catch (Exception e) {
-				DSSGlobals.doSimpleMsg("Error trying to read numeric array values from a file. Error is: "+e.getMessage(), 708);
+				DSS.doSimpleMsg("Error trying to read numeric array values from a file. Error is: "+e.getMessage(), 708);
 			}
 		} else {  // parse list of values off input string
 
 			// parse values of array list
 			while (param != "") {
 				resultList.add(param);
-				parmName = DSSGlobals.auxParser.getNextParam();
-				param = DSSGlobals.auxParser.makeString();
+				parmName = DSS.auxParser.getNextParam();
+				param = DSS.auxParser.makeString();
 			}
 		}
 	}
@@ -921,7 +921,7 @@ public class Utilities {
 	}
 
 	public static String getSolutionModeID() {
-		Circuit ckt = DSSGlobals.activeCircuit;
+		Circuit ckt = DSS.activeCircuit;
 		if (ckt != null) {
 			return getSolutionModeIDName(ckt.getSolution().getMode());
 		} else {
@@ -930,16 +930,16 @@ public class Utilities {
 	}
 
 	public static String getControlModeID() {
-		Circuit ckt = DSSGlobals.activeCircuit;
+		Circuit ckt = DSS.activeCircuit;
 		if (ckt != null) {
 			switch (ckt.getSolution().getControlMode()) {
-			case DSSGlobals.CTRLSTATIC:
+			case DSS.CTRLSTATIC:
 				return "STATIC";
-			case DSSGlobals.EVENTDRIVEN:
+			case DSS.EVENTDRIVEN:
 				return "EVENT";
-			case DSSGlobals.TIMEDRIVEN:
+			case DSS.TIMEDRIVEN:
 				return "TIME";
-			case DSSGlobals.CONTROLSOFF:
+			case DSS.CONTROLSOFF:
 				return "OFF";
 			default:
 				return "UNKNOWN";
@@ -950,16 +950,16 @@ public class Utilities {
 	}
 
 	public static String getRandomModeID() {
-		Circuit ckt = DSSGlobals.activeCircuit;
+		Circuit ckt = DSS.activeCircuit;
 		if (ckt != null) {
 			switch (ckt.getSolution().getRandomType()) {
 			case 0:
 				return "None";
-			case DSSGlobals.GAUSSIAN:
+			case DSS.GAUSSIAN:
 				return "Gaussian";
-			case DSSGlobals.UNIFORM:
+			case DSS.UNIFORM:
 				return "Uniform";
-			case DSSGlobals.LOGNORMAL:
+			case DSS.LOGNORMAL:
 				return "LogNormal";
 			default:
 				return "Unknown";
@@ -970,10 +970,10 @@ public class Utilities {
 	}
 
 	public static String getLoadModel() {
-		Circuit ckt = DSSGlobals.activeCircuit;
+		Circuit ckt = DSS.activeCircuit;
 
 		switch (ckt.getSolution().getLoadModel()) {
-		case DSSGlobals.ADMITTANCE:
+		case DSS.ADMITTANCE:
 			return "Admittance";
 		default:
 			return "PowerFlow";
@@ -984,11 +984,11 @@ public class Utilities {
 		String param = " ";
 
 		// parse the line once to get the count of tokens on string, S
-		DSSGlobals.auxParser.setCmdString(s);
+		DSS.auxParser.setCmdString(s);
 		count[0] = 0;
 		while (param.length() > 0) {
-			DSSGlobals.auxParser.getNextParam();
-			param     = DSSGlobals.auxParser.makeString();
+			DSS.auxParser.getNextParam();
+			param     = DSS.auxParser.makeString();
 			if (param.length() > 0)
 				count[0]++;
 		}
@@ -997,10 +997,10 @@ public class Utilities {
 		iarray = resizeArray(iarray, count[0]);
 
 		// Parse again for real
-		DSSGlobals.auxParser.setCmdString(s);
+		DSS.auxParser.setCmdString(s);
 		for (int i = 0; i < count[0]; i++) {
-			DSSGlobals.auxParser.getNextParam();
-			iarray[i] = DSSGlobals.auxParser.makeInteger();
+			DSS.auxParser.getNextParam();
+			iarray[i] = DSS.auxParser.makeInteger();
 		}
 
 		return iarray;
@@ -1042,14 +1042,14 @@ public class Utilities {
 			ZTest = new Complex(lineElement.getR1(), lineElement.getX1()).abs() * lineElement.getLen();
 		} else {
 			/* Get impedance from Z matrix */   /* Zs - Zm */
-			if (lineElement.getNPhases() > 1) {
+			if (lineElement.getNumPhases() > 1) {
 				ZTest = lineElement.getZ().get(0, 0).subtract(lineElement.getZ().get(0, 1)).abs() * lineElement.getLen();
 			} else {
 				ZTest = lineElement.getZ().get(0, 0).abs() * lineElement.getLen();
 			}
 		}
 
-		if (ZTest <= DSSGlobals.activeCircuit.getReductionZmag()) {
+		if (ZTest <= DSS.activeCircuit.getReductionZmag()) {
 			return true;
 		} else {
 			return false;
@@ -1068,13 +1068,13 @@ public class Utilities {
 
 		int result = -1;  // default return value
 		parseObjectClassandName(fullObjName, devClassName, devName);
-		devClassIndex = DSSGlobals.classNames.find(devClassName.toString());
+		devClassIndex = DSS.classNames.find(devClassName.toString());
 		if (devClassIndex == -1)
-			devClassIndex = DSSGlobals.lastClassReferenced;
+			devClassIndex = DSS.lastClassReferenced;
 
 		// since there could be devices of the same name of different classes,
 		// loop until we find one of the correct class
-		Circuit ckt = DSSGlobals.activeCircuit;
+		Circuit ckt = DSS.activeCircuit;
 		devIndex = ckt.getDeviceList().find(devName.toString());
 		while (devIndex > -1) {
 			if (ckt.getDeviceRef()[devIndex].cktElementClass == devClassIndex)  // we got a match
@@ -1104,11 +1104,11 @@ public class Utilities {
 			FileWriter fw = new FileWriter(fileName);
 			pw = new PrintWriter(fw);
 		} catch (IOException e) {
-			DSSGlobals.doErrorMsg("Error opening "+fileName+" for writing.", e.getMessage(), " File protected or other file error.", 709);
+			DSS.doErrorMsg("Error opening "+fileName+" for writing.", e.getMessage(), " File protected or other file error.", 709);
 			return;
 		}
 
-		for (LoadObj pLoad : DSSGlobals.activeCircuit.getLoads()) {
+		for (LoadObj pLoad : DSS.activeCircuit.getLoads()) {
 			switch (pLoad.getLoadSpecType()) {
 			case 3:
 				pw.println("Load."+pLoad.getName()+".AllocationFactor=" + String.format("%-.5g", pLoad.getKVAAllocationFactor()));
@@ -1121,18 +1121,18 @@ public class Utilities {
 
 		pw.close();
 
-		DSSGlobals.globalResult = fileName;
+		DSS.globalResult = fileName;
 	}
 
 	public static void dumpAllDSSCommands(String fileName) {
 		PrintWriter pw;
 
 		try {
-			fileName = DSSGlobals.DSSDataDirectory + "AllocationFactors.txt";
+			fileName = DSS.DSSDataDirectory + "AllocationFactors.txt";
 			FileWriter fw = new FileWriter(fileName);
 			pw = new PrintWriter(fw);
 		} catch (IOException e) {
-			DSSGlobals.doErrorMsg("Error opening "+fileName+" for writing.", e.getMessage(), "Disk protected or other file error", 710);
+			DSS.doErrorMsg("Error opening "+fileName+" for writing.", e.getMessage(), "Disk protected or other file error", 710);
 			return;
 		}
 
@@ -1147,7 +1147,7 @@ public class Utilities {
 			pw.println(i + ", \"" + ExecOptions.getInstance().getExecOption(i) + "\", \"" + ExecOptions.getInstance().getOptionHelp(i) + "\"");
 
 		// dump all present DSSClasses
-		for (DSSClass pClass : DSSGlobals.DSSClassList) {
+		for (DSSClass pClass : DSS.DSSClassList) {
 			pw.println("[" + pClass.getName() + "]");
 			for (int i = 0; i < pClass.getNumProperties(); i++)
 				pw.println(i + ", \"" + pClass.getPropertyName()[i] + "\" \"" + pClass.getPropertyHelp()[i] + "\"");
@@ -1162,7 +1162,7 @@ public class Utilities {
 	public static double nearestBasekV(double kV) {
 		double diff;
 
-		Circuit ckt = DSSGlobals.activeCircuit;
+		Circuit ckt = DSS.activeCircuit;
 
 		int count = 0;
 		double testKV = ckt.getLegalVoltageBases()[count];
@@ -1187,15 +1187,15 @@ public class Utilities {
 		double dNumNodes;
 
 		try {
-			FileWriter fw = new FileWriter(DSSGlobals.DSSDataDirectory + DSSGlobals.circuitName_ + "SavedVoltages.dbl");
+			FileWriter fw = new FileWriter(DSS.DSSDataDirectory + DSS.circuitName_ + "SavedVoltages.dbl");
 			pw = new PrintWriter(fw);
 		} catch (Exception e) {
-			DSSGlobals.doSimpleMsg("Error opening/creating file to save voltages: " + e.getMessage(), 711);
+			DSS.doSimpleMsg("Error opening/creating file to save voltages: " + e.getMessage(), 711);
 			return false;
 		}
 
 		try {
-			Circuit ckt = DSSGlobals.activeCircuit;
+			Circuit ckt = DSS.activeCircuit;
 			SolutionObj sol = ckt.getSolution();
 
 			dNumNodes = ckt.getNumNodes();
@@ -1206,7 +1206,7 @@ public class Utilities {
 
 			pw.close();
 		} catch (Exception e) {
-			DSSGlobals.doSimpleMsg("Error writing file to save voltages: " + e.getMessage(), 712);
+			DSS.doSimpleMsg("Error writing file to save voltages: " + e.getMessage(), 712);
 			return false;
 		}
 
@@ -1223,7 +1223,7 @@ public class Utilities {
 	 */
 	public static boolean initializeForHarmonics() {
 		if (savePresentVoltages()) {  // zap voltage vector to disk
-			for (PCElement pcElem : DSSGlobals.activeCircuit.getPCElements())
+			for (PCElement pcElem : DSS.activeCircuit.getPCElements())
 				pcElem.initHarmonics();
 			return true;
 		} else {
@@ -1237,7 +1237,7 @@ public class Utilities {
 	 * If state variables not defined for a PC class, does nothing.
 	 */
 	public static void calcInitialMachineStates() {
-		for (PCElement pcElem : DSSGlobals.activeCircuit.getPCElements()) {
+		for (PCElement pcElem : DSS.activeCircuit.getPCElements()) {
 			if (pcElem.isEnabled())
 				pcElem.initStateVars();
 		}
@@ -1247,24 +1247,24 @@ public class Utilities {
 	 * For now, just does generators.
 	 */
 	public static void invalidateAllPCElements() {
-		for (PCElement pElem : DSSGlobals.activeCircuit.getPCElements())
+		for (PCElement pElem : DSS.activeCircuit.getPCElements())
 			if (pElem.isEnabled())
 				pElem.setYPrimInvalid(true);
 	}
 
 	public static double presentTimeInSec() {
-		SolutionObj sol = DSSGlobals.activeCircuit.getSolution();
+		SolutionObj sol = DSS.activeCircuit.getSolution();
 		return sol.getDynaVars().t + sol.getIntHour() * 3600.0;
 	}
 
 	public static int doResetFaults() {
-		for (FaultObj fElem : DSSGlobals.activeCircuit.getFaults())
+		for (FaultObj fElem : DSS.activeCircuit.getFaults())
 			fElem.reset();
 		return 0;
 	}
 
 	public static int doResetControls() {
-		for (ControlElem cElem : DSSGlobals.activeCircuit.getDSSControls()) {
+		for (ControlElem cElem : DSS.activeCircuit.getDSSControls()) {
 			if (cElem.isEnabled())
 				cElem.reset();
 		}
@@ -1275,7 +1275,7 @@ public class Utilities {
 		if (nodeRef == -1) {
 			return 0;
 		} else {
-			return DSSGlobals.activeCircuit.getMapNodeToBus()[nodeRef].nodeNum;
+			return DSS.activeCircuit.getMapNodeToBus()[nodeRef].nodeNum;
 		}
 	}
 
@@ -1373,26 +1373,26 @@ public class Utilities {
 
 	public static void clearEventLog() {
 		try {
-			DSSGlobals.eventStrings.clear();
+			DSS.eventStrings.clear();
 		} catch (Exception e) {
-			DSSGlobals.doSimpleMsg(String.format("Exception clearing event log: %s, @EventStrings=%s", e.getMessage(), DSSGlobals.eventStrings.toString()), 7151);
+			DSS.doSimpleMsg(String.format("Exception clearing event log: %s, @EventStrings=%s", e.getMessage(), DSS.eventStrings.toString()), 7151);
 		}
 	}
 
 	public static void logThisEvent(String eventName) {
-		SolutionObj sol = DSSGlobals.activeCircuit.getSolution();
+		SolutionObj sol = DSS.activeCircuit.getSolution();
 
-		DSSGlobals.eventStrings.add(String.format("Hour=%d, Sec=%-.8g, Iteration=%d, ControlIter=%d, Event=%s",
+		DSS.eventStrings.add(String.format("Hour=%d, Sec=%-.8g, Iteration=%d, ControlIter=%d, Event=%s",
 				sol.getIntHour(), sol.getDynaVars().t, sol.getIteration(), sol.getControlIteration(), eventName));
 	}
 
 	public static void appendToEventLog(String opDev, String action) {
-		SolutionObj sol = DSSGlobals.activeCircuit.getSolution();
+		SolutionObj sol = DSS.activeCircuit.getSolution();
 
 		String S = String.format("Hour=%d, Sec=%-.5g, ControlIter=%d, Element=%s, Action=%s",
 				sol.getIntHour(), sol.getDynaVars().t, sol.getControlIteration(), opDev, action.toUpperCase());
 
-		DSSGlobals.eventStrings.add(S);
+		DSS.eventStrings.add(S);
 	}
 
 	public static void dumpComplexMatrix(PrintStream f, CMatrix aMatrix) {
@@ -1415,7 +1415,7 @@ public class Utilities {
 				}
 			}
 		} catch (Exception e) {
-			DSSGlobals.doSimpleMsg("Error in dump complex matrix: "+e.getMessage()+"  Write aborted.", 716);
+			DSS.doSimpleMsg("Error in dump complex matrix: "+e.getMessage()+"  Write aborted.", 716);
 		}
 	}
 
@@ -1425,11 +1425,11 @@ public class Utilities {
 	 */
 	public static boolean allTerminalsClosed(CktElement thisElement) {
 		boolean result = false;
-		for (int i = 0; i < thisElement.getNTerms(); i++) {
+		for (int i = 0; i < thisElement.getNumTerms(); i++) {
 			result = false;
 			thisElement.setActiveTerminalIdx(i);
-			for (int j = 0; j < thisElement.getNPhases(); j++)
-				if (thisElement.getConductorClosed(j)) {
+			for (int j = 0; j < thisElement.getNumPhases(); j++)
+				if (thisElement.isConductorClosed(j)) {
 					result = true;
 					break;
 				}
@@ -1458,13 +1458,13 @@ public class Utilities {
 			FileWriter fw = new FileWriter(clsName + ".dss");
 			pw = new PrintWriter(fw);
 
-			DSSGlobals.savedFileList.add(clsName + ".dss");
+			DSS.savedFileList.add(clsName + ".dss");
 			cls.getFirst();  // sets activeDSSObject
 			writeActiveDSSObject(pw, "Edit");  // write first Vsource out as an edit
 			while (cls.getNext() >= 0) {
 				// skip cktElements that have been checked before and written out by
 				// something else
-				elem = (CktElement) DSSGlobals.activeDSSObject;
+				elem = (CktElement) DSS.activeDSSObject;
 				if (elem.isHasBeenSaved())
 					continue;
 				// skip disabled circuit elements; write all general DSS objects
@@ -1473,7 +1473,7 @@ public class Utilities {
 			pw.close();
 			cls.setSaved(true);
 		} catch (Exception e) {
-			DSSGlobals.doSimpleMsg("WriteClassFile error: "+e.getMessage(), 717);
+			DSS.doSimpleMsg("WriteClassFile error: "+e.getMessage(), 717);
 			result = false;
 		}
 
@@ -1508,7 +1508,7 @@ public class Utilities {
 				// skip cktElements that have been checked before and written out by
 				// something else
 				if (isCktElement) {
-					elem = (CktElement) DSSGlobals.activeDSSObject;
+					elem = (CktElement) DSS.activeDSSObject;
 					if (elem.isHasBeenSaved() || (!elem.isEnabled()))
 						continue;
 				}
@@ -1520,14 +1520,14 @@ public class Utilities {
 			pw.close();
 
 			if (nRecords > 0) {
-				DSSGlobals.savedFileList.add(fileName);
+				DSS.savedFileList.add(fileName);
 			} else {
 				new File(fileName).delete();
 			}
 
 			cls.setSaved(true);
 		} catch (Exception e) {
-			DSSGlobals.doSimpleMsg("WriteClassFile error: "+e.getMessage(), 718);
+			DSS.doSimpleMsg("WriteClassFile error: "+e.getMessage(), 718);
 			result = false;
 		}
 		return result;
@@ -1548,24 +1548,24 @@ public class Utilities {
 
 	public static void writeActiveDSSObject(PrintWriter pw, String newOrEdit) {
 
-		DSSClass parClass = DSSGlobals.activeDSSObject.getParentClass();
-		pw.write(newOrEdit + " \"" + parClass.getName() + "." + DSSGlobals.activeDSSObject.getName() + "\"");
+		DSSClass parClass = DSS.activeDSSObject.getParentClass();
+		pw.write(newOrEdit + " \"" + parClass.getName() + "." + DSS.activeDSSObject.getName() + "\"");
 
-		DSSGlobals.activeDSSObject.saveWrite(pw);
+		DSS.activeDSSObject.saveWrite(pw);
 
 		// handle disabled circuit elements; modified to allow applets to save disabled elements 12-28-06
-		if ((DSSGlobals.activeDSSObject.getDSSObjType() & DSSClassDefs.CLASSMASK) != DSSClassDefs.DSS_OBJECT) {
-			CktElement elem = (CktElement) DSSGlobals.activeDSSObject;
+		if ((DSS.activeDSSObject.getDSSObjType() & DSSClassDefs.CLASSMASK) != DSSClassDefs.DSS_OBJECT) {
+			CktElement elem = (CktElement) DSS.activeDSSObject;
 			if (!elem.isEnabled())
 				pw.write(" ENABLED=NO");
 		}
 		pw.println();  // terminate line
 
-		DSSGlobals.activeDSSObject.setHasBeenSaved(true);
+		DSS.activeDSSObject.setHasBeenSaved(true);
 	}
 
 	public static void doResetKeepList() {
-		Circuit ckt = DSSGlobals.activeCircuit;
+		Circuit ckt = DSS.activeCircuit;
 		for (int i = 0; i < ckt.getNumBuses(); i++)
 			ckt.getBus(i).setKeep(false);
 	}
@@ -1594,7 +1594,7 @@ public class Utilities {
 			dis = new DataInputStream(fis);
 			br = new BufferedReader(new InputStreamReader(dis));
 		} catch (Exception e) {
-			DSSGlobals.doSimpleMsg("Error opening file: "+fileName+", "+e.getMessage(), 719);
+			DSS.doSimpleMsg("Error opening file: "+fileName+", "+e.getMessage(), 719);
 			return false;
 		}
 
@@ -1603,7 +1603,7 @@ public class Utilities {
 			fw = new FileWriter(alignedFile);
 			pw = new PrintWriter(fw);
 		} catch (Exception e) {
-			DSSGlobals.doSimpleMsg("Error opening file: "+ alignedFile +", "+e.getMessage(), 720);
+			DSS.doSimpleMsg("Error opening file: "+ alignedFile +", "+e.getMessage(), 720);
 
 			try {
 				fis.close();
@@ -1616,19 +1616,19 @@ public class Utilities {
 			return false;
 		}
 
-		saveDelims = DSSGlobals.auxParser.getDelimChars();
-		DSSGlobals.auxParser.setDelimChars(",");
+		saveDelims = DSS.auxParser.getDelimChars();
+		DSS.auxParser.setDelimChars(",");
 		arraySize = 10;
 		fieldLength = new int[arraySize];
 
 		try {
 			/* Scan once to set field lengths */
 			while ((line = br.readLine()) != null) {
-				DSSGlobals.auxParser.setCmdString(line);  // load the parser
+				DSS.auxParser.setCmdString(line);  // load the parser
 				fieldNum = 0;
 				while (fieldLen > 0) {
-					DSSGlobals.auxParser.getNextParam();
-					field = DSSGlobals.auxParser.makeString();
+					DSS.auxParser.getNextParam();
+					field = DSS.auxParser.makeString();
 					fieldLen = field.length();
 					if (field.indexOf(' ') >= 0)
 						fieldLen = fieldLen + 2;
@@ -1649,11 +1649,11 @@ public class Utilities {
 			br.reset();
 
 			while ((line = br.readLine()) != null) {
-				DSSGlobals.auxParser.setCmdString(line);  // load the parser
+				DSS.auxParser.setCmdString(line);  // load the parser
 				fieldNum = 0;
 				while (fieldLen > 0) {
-					DSSGlobals.auxParser.getNextParam();
-					field = DSSGlobals.auxParser.makeString();
+					DSS.auxParser.getNextParam();
+					field = DSS.auxParser.makeString();
 					if (field.indexOf(' ') >= 0)
 						field = "\"" + field + "\"";  // add quotes if a space in field
 					fieldLen = field.length();
@@ -1686,10 +1686,10 @@ public class Utilities {
 			}
 
 			fieldLength = null;
-			DSSGlobals.auxParser.setDelimChars(saveDelims);
+			DSS.auxParser.setDelimChars(saveDelims);
 		}
 
-		DSSGlobals.globalResult = alignedFile;
+		DSS.globalResult = alignedFile;
 
 		return result;
 	}
@@ -1719,7 +1719,7 @@ public class Utilities {
 		int nRef;
 		double result = -1.0;
 
-		Circuit ckt = DSSGlobals.activeCircuit;
+		Circuit ckt = DSS.activeCircuit;
 
 		for (int i = 0; i < ckt.getNumBuses(); i++) {
 			if (ckt.getBus(i).getKVBase() > 0.0)
@@ -1740,7 +1740,7 @@ public class Utilities {
 		double result    = 1.0e50;  // start with big number
 		boolean minFound = false;
 
-		Circuit ckt = DSSGlobals.activeCircuit;
+		Circuit ckt = DSS.activeCircuit;
 
 		for (int i = 0; i < ckt.getNumBuses(); i++) {
 			Bus bus = ckt.getBus(i);
@@ -1771,7 +1771,7 @@ public class Utilities {
 	}
 
 	public static Complex getTotalPowerFromSources() {
-		Circuit ckt = DSSGlobals.activeCircuit;
+		Circuit ckt = DSS.activeCircuit;
 
 		Complex result = Complex.ZERO;
 
@@ -1788,7 +1788,7 @@ public class Utilities {
 	private static void writeUniformGenerators(PrintWriter pw, double kW, double PF) {
 		LoadObj pLoad;
 
-		Circuit ckt = DSSGlobals.activeCircuit;
+		Circuit ckt = DSS.activeCircuit;
 
 		DSSClass loadClass = DSSClassDefs.getDSSClass("load");
 		int count = loadClass.getElementList().size();
@@ -1801,7 +1801,7 @@ public class Utilities {
 			pLoad = (LoadObj) loadClass.getElementList().get(i);
 			if (pLoad.isEnabled()) {
 				pw.printf("new generator.DG_%d  bus1=%s", i, pLoad.getBus(0));
-				pw.printf(" phases=%d kV=%-g", pLoad.getNPhases(), pLoad.getKVLoadBase());
+				pw.printf(" phases=%d kV=%-g", pLoad.getNumPhases(), pLoad.getKVLoadBase());
 				pw.printf(" kW=%-g", kWEach);
 				pw.printf(" PF=%-.3g", PF);
 				pw.print(" model=1");
@@ -1816,7 +1816,7 @@ public class Utilities {
 	private static void writeRandomGenerators(PrintWriter pw, double kW, double PF) {
 		LoadObj pLoad;
 
-		Circuit ckt = DSSGlobals.activeCircuit;
+		Circuit ckt = DSS.activeCircuit;
 
 		DSSClass loadClass = DSSClassDefs.getDSSClass("load");
 
@@ -1839,7 +1839,7 @@ public class Utilities {
 			pLoad = (LoadObj) loadClass.getElementList().get(i);
 			if (pLoad.isEnabled()) {
 				pw.printf("new generator.DG_%d  bus1=%s", i, pLoad.getBus(0));
-				pw.printf(" phases=%d kV=%-g", pLoad.getNPhases(), pLoad.getKVLoadBase());
+				pw.printf(" phases=%d kV=%-g", pLoad.getNumPhases(), pLoad.getKVLoadBase());
 				pw.printf(" kW=%-g", kWEach * Math.random() * 2.0);
 				pw.printf(" PF=%-.3g", PF);
 				pw.print(" model=1");
@@ -1857,7 +1857,7 @@ public class Utilities {
 		double kWEach;
 		LoadObj pLoad;
 
-		Circuit ckt = DSSGlobals.activeCircuit;
+		Circuit ckt = DSS.activeCircuit;
 
 		DSSClass loadClass = DSSClassDefs.getDSSClass("load");
 		int count = loadClass.getElementList().size();
@@ -1888,7 +1888,7 @@ public class Utilities {
 			if (pLoad.isEnabled())
 				if (skipCount == 0) {
 					pw.printf("new generator.DG_%d  bus1=%s", i, pLoad.getBus(0));
-					pw.printf(" phases=%d kV=%-g", pLoad.getNPhases(), pLoad.getKVLoadBase());
+					pw.printf(" phases=%d kV=%-g", pLoad.getNumPhases(), pLoad.getKVLoadBase());
 					pw.printf(" kW=%-g ", kWEach * pLoad.getKWBase());
 					pw.printf(" PF=%-.3g", PF);
 					pw.print(" model=1");
@@ -1907,7 +1907,7 @@ public class Utilities {
 		double kWEach;
 		LoadObj pLoad;
 
-		Circuit ckt = DSSGlobals.activeCircuit;
+		Circuit ckt = DSS.activeCircuit;
 
 		DSSClass loadClass = DSSClassDefs.getDSSClass("load");
 		int count = loadClass.getElementList().size();
@@ -1930,7 +1930,7 @@ public class Utilities {
 			pLoad = (LoadObj) loadClass.getElementList().get(i);
 			if (pLoad.isEnabled()) {
 				pw.printf("new generator.DG_%d  bus1=%s", i, pLoad.getBus(0));
-				pw.printf(" phases=%d kV=%-g", pLoad.getNPhases(), pLoad.getKVLoadBase());
+				pw.printf(" phases=%d kV=%-g", pLoad.getNumPhases(), pLoad.getKVLoadBase());
 				pw.printf(" kW=%-g", kWEach * pLoad.getKWBase());
 				pw.printf(" PF=%-.3g", PF);
 				pw.print(" model=1");
@@ -1949,11 +1949,11 @@ public class Utilities {
 
 		try {
 			if (new File(fname).exists())
-				DSSGlobals.doSimpleMsg("File \""+fname+"\" is about to be overwritten. Rename it now before continuing if you wish to keep it.", 721);
+				DSS.doSimpleMsg("File \""+fname+"\" is about to be overwritten. Rename it now before continuing if you wish to keep it.", 721);
 			fw = new FileWriter(fname);
 			pw = new PrintWriter(fw);
 		} catch (Exception e) {
-			DSSGlobals.doSimpleMsg("Error opening \"" + fname + "\" for writing. Aborting.", 722);
+			DSS.doSimpleMsg("Error opening \"" + fname + "\" for writing. Aborting.", 722);
 			return;
 		}
 
@@ -1978,7 +1978,7 @@ public class Utilities {
 				writeProportionalGenerators(pw, kW, PF);
 				break;
 			}
-			DSSGlobals.globalResult = fname;
+			DSS.globalResult = fname;
 		} finally {
 			pw.println("set allowduplicates=no");
 			try {
@@ -1997,13 +1997,13 @@ public class Utilities {
 	 * Feeder could have been dumped in meantime by setting Feeder=false in EnergyMeter.
 	 */
 	public static void enableFeeders() {
-		Circuit ckt = DSSGlobals.activeCircuit;
+		Circuit ckt = DSS.activeCircuit;
 		for (EnergyMeterObj pMeter : ckt.getEnergyMeters())
 			pMeter.enableFeeder();
 	}
 
 	public static void disableFeeders() {
-		Circuit ckt = DSSGlobals.activeCircuit;
+		Circuit ckt = DSS.activeCircuit;
 		for (FeederObj pFeeder : ckt.getFeeders()) {
 			pFeeder.setEnabled(false);
 			pFeeder.setCktElementFeederFlags(false);
@@ -2052,7 +2052,7 @@ public class Utilities {
 	}
 
 	public static int getMaxCktElementSize() {
-		Circuit ckt = DSSGlobals.activeCircuit;
+		Circuit ckt = DSS.activeCircuit;
 
 		int result = 0;
 		for (int i = 0; i < ckt.getNumDevices(); i++)
@@ -2065,7 +2065,7 @@ public class Utilities {
 	 * node number that is not being used, starting at the startNode value.
 	 */
 	public static int getUniqueNodeNumber(String sBusName, int startNode) {
-		Circuit ckt = DSSGlobals.activeCircuit;
+		Circuit ckt = DSS.activeCircuit;
 
 		int result = startNode;
 		int iBusIdx = ckt.getBusList().find(sBusName);
@@ -2079,7 +2079,7 @@ public class Utilities {
 
 	public static void showMessageBeep(String s) {
 		Toolkit.getDefaultToolkit().beep();
-		DSSGlobals.forms.infoMessageDlg(s);
+		DSS.forms.infoMessageDlg(s);
 	}
 
 	public static boolean isPathBetween(PDElement fromLine, PDElement toLine) {
@@ -2098,7 +2098,7 @@ public class Utilities {
 	public static void traceAndEdit(PDElement fromLine, PDElement toLine, int nPhases, String editStr) {
 		PDElement pLine = fromLine;
 		while (pLine != null) {
-			if ((pLine.getNPhases() == nPhases) || (nPhases == 0)) {
+			if ((pLine.getNumPhases() == nPhases) || (nPhases == 0)) {
 				Parser.getInstance().setCmdString(editStr);
 				pLine.edit();  // uses parser
 			}
@@ -2134,13 +2134,13 @@ public class Utilities {
 
 		/* Error check */
 		if (pPDelem == null) {
-			DSSGlobals.doSimpleMsg(fromLine.getParentClass().getName() + "." + fromLine.getName() + " not found in meter zone.", 723);
+			DSS.doSimpleMsg(fromLine.getParentClass().getName() + "." + fromLine.getName() + " not found in meter zone.", 723);
 			return;
 		}
 
 		try {
-			fileName = DSSGlobals.DSSDataDirectory + DSSGlobals.circuitName_ + scriptFileName;
-			DSSGlobals.globalResult = fileName;
+			fileName = DSS.DSSDataDirectory + DSS.circuitName_ + scriptFileName;
+			DSS.globalResult = fileName;
 
 			fw = new FileWriter(fileName);
 			pw = new PrintWriter(fw);
@@ -2156,7 +2156,7 @@ public class Utilities {
 
 				if (isLineElement(pPDelem)) {
 
-					for (i = 0; i < pPDelem.getNTerms(); i++) {
+					for (i = 0; i < pPDelem.getNumTerms(); i++) {
 						s = s + String.format(" Bus%d=%s%s", i, stripExtension(pPDelem.getBus(i)), phaseString);
 						//Parser.getInstance().setCmdString(String.format("Bus$d=%s%s", i, StripExtension(pPDelem.getBus(i)), PhaseString));
 						//pPDelem.edit();
@@ -2255,23 +2255,23 @@ public class Utilities {
 
 	public static int interpretLoadShapeClass(String s) {
 		String ss = s.toLowerCase();
-		int result = DSSGlobals.USENONE;
+		int result = DSS.USENONE;
 
 		switch (ss.charAt(0)) {
 		case 'd':
 			switch (ss.charAt(1)) {
 			case 'a':
-				result = DSSGlobals.USEDAILY;
+				result = DSS.USEDAILY;
 				break;
 			case 'u':
-				result = DSSGlobals.USEDUTY;
+				result = DSS.USEDUTY;
 				break;
 			}
 		case 'y':
-			result = DSSGlobals.USEYEARLY;
+			result = DSS.USEYEARLY;
 			break;
 		case 'n':
-			result = DSSGlobals.USENONE;
+			result = DSS.USENONE;
 			break;
 		}
 		return result;
@@ -2279,30 +2279,30 @@ public class Utilities {
 
 	public static int interpretEarthModel(String s) {
 		String ss = s.toLowerCase();
-		int result = DSSGlobals.SIMPLECARSON;
+		int result = DSS.SIMPLECARSON;
 		switch (ss.charAt(0)) {
 		case 'c':
-			result = DSSGlobals.SIMPLECARSON;
+			result = DSS.SIMPLECARSON;
 			break;
 		case 'f':
-			result = DSSGlobals.FULLCARSON;
+			result = DSS.FULLCARSON;
 			break;
 		case 'd':
-			result = DSSGlobals.DERI;
+			result = DSS.DERI;
 			break;
 		}
 		return result;
 	}
 
 	public static String getActiveLoadShapeClass() {
-		switch (DSSGlobals.activeCircuit.getActiveLoadShapeClass()) {
-		case DSSGlobals.USEDAILY:
+		switch (DSS.activeCircuit.getActiveLoadShapeClass()) {
+		case DSS.USEDAILY:
 			return "Daily";
-		case DSSGlobals.USEYEARLY:
+		case DSS.USEYEARLY:
 			return "Yearly";
-		case DSSGlobals.USEDUTY:
+		case DSS.USEDUTY:
 			return "Duty";
-		case DSSGlobals.USENONE:
+		case DSS.USENONE:
 			return "None";
 		default:
 			return "None";
@@ -2311,11 +2311,11 @@ public class Utilities {
 
 	public static String getEarthModel(int n) {
 		switch (n) {
-		case DSSGlobals.SIMPLECARSON:
+		case DSS.SIMPLECARSON:
 			return "Carson";
-		case DSSGlobals.FULLCARSON:
+		case DSS.FULLCARSON:
 			return "FullCarson";
-		case DSSGlobals.DERI:
+		case DSS.DERI:
 			return "Deri";
 		default:
 			return "Carson";
@@ -2366,7 +2366,7 @@ public class Utilities {
 				return Integer.parseInt(s);
 			}
 		} catch (Exception e) {
-			DSSGlobals.doSimpleMsg("Invalid Color Specification: \"" + s + "\".", 724);
+			DSS.doSimpleMsg("Invalid Color Specification: \"" + s + "\".", 724);
 		}
 		return result;
 	}
@@ -2376,8 +2376,8 @@ public class Utilities {
 	}
 
 	public static String makeNewCktElemName(final String oldName) {
-		DSSGlobals.setObject(oldName);  // set object active
-		DSSObject obj = DSSGlobals.activeDSSObject;
+		DSS.setObject(oldName);  // set object active
+		DSSObject obj = DSS.activeDSSObject;
 		return String.format("%s.%s%d", obj.getParentClass().getName(),
 				obj.getParentClass().getName().substring(0, 3),
 				obj.getClassIndex());
@@ -2388,7 +2388,7 @@ public class Utilities {
 				pElem.getParentClass().getName().substring(0, 3),
 				pElem.getClassIndex()) );
 		// make a new device list corresponding to the CktElements list
-		DSSGlobals.activeCircuit.getDeviceList().add(pElem.getName());
+		DSS.activeCircuit.getDeviceList().add(pElem.getName());
 		pElem.setChecked(true);
 	}
 
@@ -2414,12 +2414,12 @@ public class Utilities {
 
 		/* Make sure buslist exists */
 
-		if (DSSGlobals.activeCircuit == null)
+		if (DSS.activeCircuit == null)
 			return;
-		if (DSSGlobals.activeCircuit.getBusList().listSize() <= 0)
+		if (DSS.activeCircuit.getBusList().listSize() <= 0)
 			return;
 
-		Circuit ckt = DSSGlobals.activeCircuit;
+		Circuit ckt = DSS.activeCircuit;
 
 		tempBusList = new HashListImpl(ckt.getBusList().listSize());
 
@@ -2437,7 +2437,7 @@ public class Utilities {
 			if ((baseClass == DSSClassDefs.PC_ELEMENT) ||
 					(baseClass == DSSClassDefs.PD_ELEMENT)) {
 				s = "";
-				for (i = 0; i < pCktElem.getNTerms(); i++) {
+				for (i = 0; i < pCktElem.getNumTerms(); i++) {
 					oldBusName = pCktElem.getBus(i);
 					dotpos     = oldBusName.indexOf('.');
 					if (dotpos == -1) {

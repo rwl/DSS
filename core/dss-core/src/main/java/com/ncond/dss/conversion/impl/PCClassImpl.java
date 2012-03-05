@@ -2,7 +2,7 @@ package com.ncond.dss.conversion.impl;
 
 import com.ncond.dss.common.impl.CktElementClassImpl;
 import com.ncond.dss.common.impl.DSSClassDefs;
-import com.ncond.dss.common.impl.DSSGlobals;
+import com.ncond.dss.common.impl.DSS;
 import com.ncond.dss.conversion.PCClass;
 import com.ncond.dss.conversion.PCElement;
 import com.ncond.dss.parser.impl.Parser;
@@ -61,7 +61,7 @@ public class PCClassImpl extends CktElementClassImpl implements PCClass {
 	protected void classMakeLike(Object otherObj) {
 		PCElement otherPCObj = (PCElement) otherObj;
 
-		PCElement pElem = (PCElement) DSSGlobals.activeDSSObject;
+		PCElement pElem = (PCElement) DSS.activeDSSObject;
 
 		pElem.setSpectrum(otherPCObj.getSpectrum());
 		pElem.setSpectrumObj(otherPCObj.getSpectrumObj());

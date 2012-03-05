@@ -4,8 +4,8 @@ package com.ncond.dss.delivery.impl;
 import org.apache.commons.math.complex.Complex;
 
 import com.ncond.dss.common.impl.DSSClassDefs;
-import com.ncond.dss.common.impl.DSSGlobals;
-import com.ncond.dss.common.impl.Utilities;
+import com.ncond.dss.common.impl.DSS;
+import com.ncond.dss.common.impl.Util;
 import com.ncond.dss.delivery.Line;
 import com.ncond.dss.delivery.LineObj;
 import com.ncond.dss.general.LineCode;
@@ -73,12 +73,12 @@ public class LineImpl extends PDClassImpl implements Line {
 		propertyName[24] = "tscables";
 
 		// define property help values
-		propertyHelp[0] = "Name of bus to which first terminal is connected."+ DSSGlobals.CRLF+
-					"Example:"+DSSGlobals.CRLF+
-					"bus1=busname   (assumes all terminals connected in normal phase order)"+DSSGlobals.CRLF+
+		propertyHelp[0] = "Name of bus to which first terminal is connected."+ DSS.CRLF+
+					"Example:"+DSS.CRLF+
+					"bus1=busname   (assumes all terminals connected in normal phase order)"+DSS.CRLF+
 					"bus1=busname.3.1.2.0 (specify terminal to node connections explicitly)";
 		propertyHelp[1] = "Name of bus to which 2nd terminal is connected.";
-		propertyHelp[2] = "Name of linecode object describing line impedances."+DSSGlobals.CRLF+
+		propertyHelp[2] = "Name of linecode object describing line impedances."+DSS.CRLF+
 					"If you use a line code, you do not need to specify the impedances here. "+
 					"The line code must have been PREVIOUSLY defined. " +
 					"The values specified last will prevail over those specified earlier (left-to-right " +
@@ -108,7 +108,7 @@ public class LineImpl extends PDClassImpl implements Line {
 						"May be used to specify the shunt capacitance of any line configuration. Using any of Rmatrix, Xmatrix, Cmatrix " +
 						"forces program to use the matrix values for line impedance definition.  For balanced line models, you may "+
 						"use the standard symmetrical component data definition instead.";
-		propertyHelp[14] = "{y/n | T/F}  Default= no/false.  Designates this line as a switch for graphics and algorithmic purposes. " +DSSGlobals.CRLF+
+		propertyHelp[14] = "{y/n | T/F}  Default= no/false.  Designates this line as a switch for graphics and algorithmic purposes. " +DSS.CRLF+
 							"SIDE EFFECT: Sets r1 = 1.0; x1 = 1.0; r0 = 1.0; x0 = 1.0; c1 = 1.1 ; c0 = 1.0;  length = 0.001; You must reset if you want something different.";
 		propertyHelp[15] = "Carson earth return resistance per unit length used to compute impedance values at base frequency. " +
 							"Default is 0.01805 = 60 Hz value in ohms per kft (matches default line impedances). " +
@@ -123,23 +123,23 @@ public class LineImpl extends PDClassImpl implements Line {
 							"Line constants are computed for each frequency change or rho change. CAUTION: may alter number of phases. "+
 							"You cannot subsequently change the number of phases unless you change how the line impedance is defined.";
 		propertyHelp[19] = "Length Units = {none | mi|kft|km|m|Ft|in|cm } Default is None - assumes length units match impedance units.";
-		propertyHelp[20] = "Reference to a LineSpacing for use in a line constants calculation." + DSSGlobals.CRLF +
-							"Must be used in conjunction with the Wires property." + DSSGlobals.CRLF +
+		propertyHelp[20] = "Reference to a LineSpacing for use in a line constants calculation." + DSS.CRLF +
+							"Must be used in conjunction with the Wires property." + DSS.CRLF +
 							"Specify this before the wires property.";
-		propertyHelp[21] = "Array of WireData names for use in a line constants calculation." + DSSGlobals.CRLF +
-				"Must be used in conjunction with the Spacing property." + DSSGlobals.CRLF +
-				"Specify the Spacing first, and \"ncond\" wires." + DSSGlobals.CRLF +
+		propertyHelp[21] = "Array of WireData names for use in a line constants calculation." + DSS.CRLF +
+				"Must be used in conjunction with the Spacing property." + DSS.CRLF +
+				"Specify the Spacing first, and \"ncond\" wires." + DSS.CRLF +
 				"May also be used to specify bare neutrals with cables, using \"ncond-nphase\" wires.";
 		propertyHelp[22] = "One of {Carson | FullCarson | Deri}. Default is the global value established with the Set EarthModel command. " +
 							"See the Options Help on EarthModel option. This is used to override the global value for this line. This " +
 							"option applies only when the \"geometry\" property is used.";
-		propertyHelp[23] = "Array of CNData names for use in a cable constants calculation." + DSSGlobals.CRLF +
-				"Must be used in conjunction with the Spacing property." + DSSGlobals.CRLF +
-				"Specify the Spacing first, using \"nphases\" cncables." + DSSGlobals.CRLF +
+		propertyHelp[23] = "Array of CNData names for use in a cable constants calculation." + DSS.CRLF +
+				"Must be used in conjunction with the Spacing property." + DSS.CRLF +
+				"Specify the Spacing first, using \"nphases\" cncables." + DSS.CRLF +
 				"You may later specify \"nconds-nphases\" wires for separate neutrals";
-		propertyHelp[24] = "Array of TSData names for use in a cable constants calculation." + DSSGlobals.CRLF +
-				"Must be used in conjunction with the Spacing property." + DSSGlobals.CRLF +
-				"Specify the Spacing first, using \"nphases\" tscables." + DSSGlobals.CRLF +
+		propertyHelp[24] = "Array of TSData names for use in a cable constants calculation." + DSS.CRLF +
+				"Must be used in conjunction with the Spacing property." + DSS.CRLF +
+				"Specify the Spacing first, using \"nphases\" tscables." + DSS.CRLF +
 				"You may later specify \"nconds-nphases\" wires for separate neutrals";
 
 		activeProperty = Line.NumPropsThisClass - 1;
@@ -148,8 +148,8 @@ public class LineImpl extends PDClassImpl implements Line {
 
 	@Override
 	public int newObject(String objName) {
-		DSSGlobals.activeCircuit.setActiveCktElement(new LineObjImpl(this, objName));
-		return addObjectToList(DSSGlobals.activeDSSObject);
+		DSS.activeCircuit.setActiveCktElement(new LineObjImpl(this, objName));
+		return addObjectToList(DSS.activeDSSObject);
 	}
 
 	private void doRmatrix() {
@@ -158,14 +158,14 @@ public class LineImpl extends PDClassImpl implements Line {
 
 		LineObj al = activeLineObj;
 
-		double[] matBuffer = new double[al.getNPhases() * al.getNPhases()];
-		int orderFound = Parser.getInstance().parseAsSymMatrix(al.getNPhases(), matBuffer);
+		double[] matBuffer = new double[al.getNumPhases() * al.getNumPhases()];
+		int orderFound = Parser.getInstance().parseAsSymMatrix(al.getNumPhases(), matBuffer);
 
 		if (orderFound > 0) {  // parse was successful
 			/* R */
 			ZValues = al.getZ().asArray(nOrder);
-			if (nOrder[0] == al.getNPhases())
-				for (int j = 0; j < al.getNPhases() * al.getNPhases(); j++)
+			if (nOrder[0] == al.getNumPhases())
+				for (int j = 0; j < al.getNumPhases() * al.getNumPhases(); j++)
 					ZValues[j] = new Complex(matBuffer[j], ZValues[j].getImaginary());
 		}
 
@@ -178,14 +178,14 @@ public class LineImpl extends PDClassImpl implements Line {
 
 		LineObj al = activeLineObj;
 
-		double[] matBuffer = new double[al.getNPhases() * al.getNPhases()];
-		int orderFound = Parser.getInstance().parseAsSymMatrix(al.getNPhases(), matBuffer);
+		double[] matBuffer = new double[al.getNumPhases() * al.getNumPhases()];
+		int orderFound = Parser.getInstance().parseAsSymMatrix(al.getNumPhases(), matBuffer);
 
 		if (orderFound > 0) {  // parse was successful
 			/* X */
 			ZValues = al.getZ().asArray(nOrder);
-			if (nOrder[0] == al.getNPhases())
-				for (int j = 0; j < al.getNPhases() * al.getNPhases(); j++)
+			if (nOrder[0] == al.getNumPhases())
+				for (int j = 0; j < al.getNumPhases() * al.getNumPhases(); j++)
 					ZValues[j] = new Complex(ZValues[j].getReal(), matBuffer[j]);
 		}
 
@@ -199,15 +199,15 @@ public class LineImpl extends PDClassImpl implements Line {
 
 		LineObj al = activeLineObj;
 
-		double[] matBuffer = new double[al.getNPhases() * al.getNPhases()];
-		int orderFound = Parser.getInstance().parseAsSymMatrix(al.getNPhases(), matBuffer);
+		double[] matBuffer = new double[al.getNumPhases() * al.getNumPhases()];
+		int orderFound = Parser.getInstance().parseAsSymMatrix(al.getNumPhases(), matBuffer);
 
 		if (orderFound > 0) {  // parse was successful
 			/* X */
-			factor = DSSGlobals.TWO_PI * al.getBaseFrequency() * 1.0e-9;
+			factor = DSS.TWO_PI * al.getBaseFrequency() * 1.0e-9;
 			YValues = al.getYc().asArray(nOrder);
-			if (nOrder[0] == al.getNPhases())
-				for (int j = 0; j < al.getNPhases() * al.getNPhases(); j++)
+			if (nOrder[0] == al.getNumPhases())
+				for (int j = 0; j < al.getNumPhases() * al.getNumPhases(); j++)
 					YValues[j] = new Complex(YValues[j].getReal(), factor * matBuffer[j]);
 		}
 
@@ -242,7 +242,7 @@ public class LineImpl extends PDClassImpl implements Line {
 		int result = 0;
 		// continue parsing with contents of parser
 		activeLineObj = (LineObj) elementList.getActive();
-		DSSGlobals.activeCircuit.setActiveCktElement(activeLineObj);  // use property to set this value
+		DSS.activeCircuit.setActiveCktElement(activeLineObj);  // use property to set this value
 
 		LineObj al = activeLineObj;
 
@@ -261,7 +261,7 @@ public class LineImpl extends PDClassImpl implements Line {
 
 			switch (paramPointer) {
 			case -1:
-				DSSGlobals.doSimpleMsg("Unknown parameter \"" + paramName + "\" for object \"Line." + al.getName() + "\"", 181);
+				DSS.doSimpleMsg("Unknown parameter \"" + paramName + "\" for object \"Line." + al.getName() + "\"", 181);
 				break;
 			case 0:
 				al.setBus(0, param);
@@ -306,7 +306,7 @@ public class LineImpl extends PDClassImpl implements Line {
 				doCmatrix();
 				break;
 			case 14:
-				al.setSwitch(Utilities.interpretYesNo(param));
+				al.setSwitch(Util.interpretYesNo(param));
 				break;
 			case 15:
 				al.setRg(parser.makeDouble());
@@ -337,7 +337,7 @@ public class LineImpl extends PDClassImpl implements Line {
 				al.fetchWireList(param);
 				break;
 			case 22:
-				al.setEarthModel(Utilities.interpretEarthModel(param));
+				al.setEarthModel(Util.interpretEarthModel(param));
 				break;
 			case 24:
 				al.fetchCNCableList(param);
@@ -360,15 +360,15 @@ public class LineImpl extends PDClassImpl implements Line {
 				al.setGeometrySpecified(false);
 				break;
 			case 4:  /* Change the number of phases ... only valid if symComponentsModel=true */
-				if (al.getNPhases() != parser.makeInteger())
+				if (al.getNumPhases() != parser.makeInteger())
 					if (!al.isGeometrySpecified() && al.isSymComponentsModel()) {  // ignore change of nPhases if geometry used
-						al.setNPhases(parser.makeInteger());
-						al.setNConds(al.getNPhases());  // force reallocation of terminal info
-						al.setYOrder(al.getNTerms() * al.getNConds());
+						al.setNumPhases(parser.makeInteger());
+						al.setNumConds(al.getNumPhases());  // force reallocation of terminal info
+						al.setYOrder(al.getNumTerms() * al.getNumConds());
 						/*al.setYprimInvalid(true);*/  // now set below
 						al.recalcElementData();  // reallocate Z, etc.
 					} else {
-						DSSGlobals.doSimpleMsg("Illegal change of number of phases for Line."+al.getName(), 181);
+						DSS.doSimpleMsg("Illegal change of number of phases for Line."+al.getName(), 181);
 					}
 				break;
 			case 5:
@@ -524,17 +524,17 @@ public class LineImpl extends PDClassImpl implements Line {
 		if (otherLine != null) {
 			LineObj al = activeLineObj;
 
-			if (al.getNPhases() != otherLine.getNPhases()) {
-				al.setNPhases(otherLine.getNPhases());
-				al.setNConds(al.getNPhases());  // force reallocation of terminals and conductors
+			if (al.getNumPhases() != otherLine.getNumPhases()) {
+				al.setNumPhases(otherLine.getNumPhases());
+				al.setNumConds(al.getNumPhases());  // force reallocation of terminals and conductors
 
-				al.setYOrder(al.getNConds() * al.getNTerms());
+				al.setYOrder(al.getNumConds() * al.getNumTerms());
 				al.setYPrimInvalid(true);
 
 				// for a line, nPhases = nCond, for now
-				al.setZ(new CMatrixImpl(al.getNPhases()));
-				al.setZInv(new CMatrixImpl(al.getNPhases()));
-				al.setYc(new CMatrixImpl(al.getNPhases()));
+				al.setZ(new CMatrixImpl(al.getNumPhases()));
+				al.setZInv(new CMatrixImpl(al.getNumPhases()));
+				al.setYc(new CMatrixImpl(al.getNumPhases()));
 			}
 
 			al.getZ().copyFrom(otherLine.getZ());
@@ -556,7 +556,7 @@ public class LineImpl extends PDClassImpl implements Line {
 				al.setPropertyValue(i, otherLine.getPropertyValue(i));
 			result = 1;
 		} else {
-			DSSGlobals.doSimpleMsg("Error in Line makeLike: \"" + lineName + "\" not found.", 182);
+			DSS.doSimpleMsg("Error in Line makeLike: \"" + lineName + "\" not found.", 182);
 		}
 
 		return result;
@@ -564,7 +564,7 @@ public class LineImpl extends PDClassImpl implements Line {
 
 	@Override
 	public int init(int handle) {
-		DSSGlobals.doSimpleMsg("Need to implement Line.init()", -1);
+		DSS.doSimpleMsg("Need to implement Line.init()", -1);
 		return 0;
 	}
 

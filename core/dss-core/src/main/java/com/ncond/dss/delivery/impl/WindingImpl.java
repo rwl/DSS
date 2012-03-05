@@ -1,6 +1,6 @@
 package com.ncond.dss.delivery.impl;
 
-import com.ncond.dss.common.impl.DSSGlobals;
+import com.ncond.dss.common.impl.DSS;
 import com.ncond.dss.delivery.Winding;
 
 public class WindingImpl implements Winding {
@@ -25,7 +25,7 @@ public class WindingImpl implements Winding {
 		super();
 		connection = 0;
 		kVLL       = 12.47;
-		VBase      = kVLL / DSSGlobals.SQRT3 * 1000.0;
+		VBase      = kVLL / DSS.SQRT3 * 1000.0;
 		kVA        = 1000.0;
 		puTap      = 1.0;
 		Rpu        = 0.002;

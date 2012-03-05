@@ -50,7 +50,7 @@ public class SolutionImpl extends DSSClassImpl implements Solution {
 	}
 
 	public int edit() {
-		activeSolutionObj = DSSGlobals.activeCircuit.getSolution();
+		activeSolutionObj = DSS.activeCircuit.getSolution();
 
 		// This is all we do here now...
 		activeSolutionObj.solve();
@@ -59,7 +59,7 @@ public class SolutionImpl extends DSSClassImpl implements Solution {
 	}
 
 	public int init(int handle) {
-		DSSGlobals.doSimpleMsg("Need to implement Solution.init()", -1);
+		DSS.doSimpleMsg("Need to implement Solution.init()", -1);
 		return 0;
 	}
 

@@ -5,8 +5,8 @@ import java.io.PrintStream;
 import org.apache.commons.math.complex.Complex;
 
 import com.ncond.dss.common.DSSClass;
-import com.ncond.dss.common.impl.DSSGlobals;
-import com.ncond.dss.common.impl.Utilities;
+import com.ncond.dss.common.impl.DSS;
+import com.ncond.dss.common.impl.Util;
 import com.ncond.dss.general.Spectrum;
 import com.ncond.dss.general.SpectrumObj;
 import com.ncond.dss.shared.impl.ComplexUtil;
@@ -171,13 +171,13 @@ public class SpectrumObjImpl extends DSSObjectImpl implements SpectrumObj {
 				}
 			}
 
-			multArray = Utilities.resizeArray(multArray, numHarm);
+			multArray = Util.resizeArray(multArray, numHarm);
 			for (i = 0; i < numHarm; i++)
 				multArray[i] = ComplexUtil.polarDeg2Complex(puMagArray[i], (angleArray[i] - harmArray[i] * fundAngle));
 		} catch (Exception e) {
-			DSSGlobals.doSimpleMsg("Exception while computing spectrum."+getName()+". Check definition. Aborting", 655);
-			if (DSSGlobals.inRedirect)
-				DSSGlobals.redirectAbort = true;
+			DSS.doSimpleMsg("Exception while computing spectrum."+getName()+". Check definition. Aborting", 655);
+			if (DSS.inRedirect)
+				DSS.redirectAbort = true;
 		}
 	}
 

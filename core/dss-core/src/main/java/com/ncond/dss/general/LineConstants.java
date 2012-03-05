@@ -1,6 +1,6 @@
 package com.ncond.dss.general;
 
-import com.ncond.dss.common.impl.DSSGlobals;
+import com.ncond.dss.common.impl.DSS;
 import com.ncond.dss.shared.CMatrix;
 
 import org.apache.commons.math.complex.Complex;
@@ -27,7 +27,7 @@ public interface LineConstants {
 
 	static final double E0 = 8.854e-12;  // dielectric constant  F/m
 	static final double MU0 = 12.56637e-7; // hy/m
-	static final double TWO_PI = DSSGlobals.TWO_PI;
+	static final double TWO_PI = DSS.TWO_PI;
 
 	static final Complex C1_j1 = new Complex(1, 1);
 	static final double B1 = 1.0 / (3.0 * Math.sqrt(2.0));;

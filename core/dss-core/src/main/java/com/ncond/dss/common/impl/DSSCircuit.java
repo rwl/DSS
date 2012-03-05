@@ -16,7 +16,7 @@ import com.ncond.dss.common.ControlQueue;
 import com.ncond.dss.common.DSSClass;
 import com.ncond.dss.common.FeederObj;
 import com.ncond.dss.common.SolutionObj;
-import com.ncond.dss.common.impl.DSSGlobals;
+import com.ncond.dss.common.impl.DSS;
 import com.ncond.dss.common.impl.DSSBus.NodeBus;
 import com.ncond.dss.control.CapControlObj;
 import com.ncond.dss.control.ControlElem;
@@ -200,14 +200,14 @@ public class DSSCircuit extends NamedObjectImpl implements Circuit {
 		super("Circuit");
 
 		isSolved = false;
-		DSSGlobals.solutionClass.newObject(getName());
+		DSS.solutionClass.newObject(getName());
 		solution = SolutionImpl.activeSolutionObj;
 
 		setLocalName(aName.toLowerCase());
 
 		setCaseName(aName);  // default case name to "circuitname"; sets circuitName_
 
-		fundamental = DSSGlobals.defaultBaseFreq;
+		fundamental = DSS.defaultBaseFreq;
 		setActiveCktElement(null);
 		activeBusIndex = 0;  // always a bus
 
@@ -324,8 +324,8 @@ public class DSSCircuit extends NamedObjectImpl implements Circuit {
 		defaultGrowthRate = 1.025;
 		defaultGrowthFactor = 1.0;
 
-		defaultDailyShapeObj  = (LoadShapeObj) DSSGlobals.loadShapeClass.find("default");
-		defaultYearlyShapeObj = (LoadShapeObj) DSSGlobals.loadShapeClass.find("default");
+		defaultDailyShapeObj  = (LoadShapeObj) DSS.loadShapeClass.find("default");
+		defaultYearlyShapeObj = (LoadShapeObj) DSS.loadShapeClass.find("default");
 
 		currentDirectory = "";
 
@@ -349,25 +349,25 @@ public class DSSCircuit extends NamedObjectImpl implements Circuit {
 	private void addDeviceHandle(int handle) {
 		if (numDevices > maxDevices) {
 			maxDevices = maxDevices + incDevices;
-			deviceRef = Utilities.resizeArray(deviceRef, maxDevices);
+			deviceRef = Util.resizeArray(deviceRef, maxDevices);
 		}
 		if (deviceRef[numDevices - 1] == null)
 			deviceRef[numDevices - 1] = new CktElementDef();
 		deviceRef[numDevices - 1].devHandle = handle;  // index into CktElements
-		deviceRef[numDevices - 1].cktElementClass = DSSGlobals.lastClassReferenced;
+		deviceRef[numDevices - 1].cktElementClass = DSS.lastClassReferenced;
 	}
 
 	private void addABus() {
 		if (numBuses > maxBuses) {
 			maxBuses += incBuses;
-			buses = Utilities.resizeArray(buses, maxBuses);
+			buses = Util.resizeArray(buses, maxBuses);
 		}
 	}
 
 	private void addANodeBus() {
 		if (numNodes > maxNodes) {
 			maxNodes += incNodes;
-			mapNodeToBus = Utilities.resizeArray(mapNodeToBus, maxNodes);
+			mapNodeToBus = Util.resizeArray(mapNodeToBus, maxNodes);
 		}
 	}
 
@@ -375,9 +375,9 @@ public class DSSCircuit extends NamedObjectImpl implements Circuit {
 		int result;
 
 		if (busName.length() == 0) {  // error in busname
-			DSSGlobals.doErrorMsg("DSSCircuit.addBus", "BusName for object \"" + activeCktElement.getName() + "\" is null.",
+			DSS.doErrorMsg("DSSCircuit.addBus", "BusName for object \"" + activeCktElement.getName() + "\" is null.",
 					"Error in definition of object.", 424);
-			for (int i = 0; i < activeCktElement.getNConds(); i++)
+			for (int i = 0; i < activeCktElement.getNumConds(); i++)
 				nodeBuffer[i] = 0;
 			return -1;
 		}
@@ -407,7 +407,7 @@ public class DSSCircuit extends NamedObjectImpl implements Circuit {
 
 	public void setActiveCktElement(CktElement value) {
 		activeCktElement = value;
-		DSSGlobals.activeDSSObject = value;
+		DSS.activeDSSObject = value;
 	}
 
 	public CktElement getActiveCktElement() {
@@ -446,7 +446,7 @@ public class DSSCircuit extends NamedObjectImpl implements Circuit {
 		if (value != loadMultiplier) {
 			// may have to change the Y matrix if the load multiplier has changed
 			switch (solution.getLoadModel()) {
-			case DSSGlobals.ADMITTANCE:
+			case DSS.ADMITTANCE:
 				invalidateAllPCElements();
 				break;
 			}
@@ -520,8 +520,8 @@ public class DSSCircuit extends NamedObjectImpl implements Circuit {
 			f.println();
 
 			// write redirect for all populated DSS classes except solution class
-			for (int i = 0; i < DSSGlobals.savedFileList.size(); i++)
-				f.println("redirect " + DSSGlobals.savedFileList.get(i));
+			for (int i = 0; i < DSS.savedFileList.size(); i++)
+				f.println("redirect " + DSS.savedFileList.get(i));
 
 			if (new File("BusCoords.dss").exists()) {
 				f.println("makeBusList");
@@ -531,7 +531,7 @@ public class DSSCircuit extends NamedObjectImpl implements Circuit {
 			f.close();
 			result = true;
 		} catch (Exception e) {
-			DSSGlobals.doSimpleMsg("Error saving master file: " + e.getMessage(), 435);
+			DSS.doSimpleMsg("Error saving master file: " + e.getMessage(), 435);
 		}
 
 		return result;
@@ -539,11 +539,11 @@ public class DSSCircuit extends NamedObjectImpl implements Circuit {
 
 	private boolean saveDSSObjects() {
 		// write files for all populated DSS classes except solution class
-		for (DSSClass DSS_Class : DSSGlobals.DSSClassList) {
-			if (DSS_Class == DSSGlobals.solutionClass || DSS_Class.isSaved())
+		for (DSSClass DSS_Class : DSS.DSSClassList) {
+			if (DSS_Class == DSS.solutionClass || DSS_Class.isSaved())
 				continue;  // cycle to next
 			/* use default filename=classname */
-			if (!Utilities.writeClassFile(DSS_Class, "", DSS_Class instanceof CktElementClass))
+			if (!Util.writeClassFile(DSS_Class, "", DSS_Class instanceof CktElementClass))
 				return false;
 			DSS_Class.setSaved(true);
 		}
@@ -555,17 +555,17 @@ public class DSSCircuit extends NamedObjectImpl implements Circuit {
 
 		boolean result = true;
 		/* Write out all energy meter zones to separate subdirectories */
-		saveDir = DSSGlobals.currentDirectory;
+		saveDir = DSS.currentDirectory;
 		for (EnergyMeterObj Meter : energyMeters) {
 			currDir = Meter.getName();
 			if (new File(currDir).mkdir()) {
-				DSSGlobals.currentDirectory = currDir;
+				DSS.currentDirectory = currDir;
 				Meter.saveZone(currDir);
-				DSSGlobals.currentDirectory = saveDir;
+				DSS.currentDirectory = saveDir;
 			} else {
-				DSSGlobals.doSimpleMsg("Cannot create directory: " + currDir, 436);
+				DSS.doSimpleMsg("Cannot create directory: " + currDir, 436);
 				result = false;
-				DSSGlobals.currentDirectory = saveDir;
+				DSS.currentDirectory = saveDir;
 				break;
 			}
 		}
@@ -581,13 +581,13 @@ public class DSSCircuit extends NamedObjectImpl implements Circuit {
 
 			for (int i = 0; i < numBuses; i++)
 				if (buses[i].isCoordDefined())
-					f.println(Utilities.checkForBlanks(busList.get(i)) + String.format(", %-g, %-g", buses[i].getX(), buses[i].getY()));
+					f.println(Util.checkForBlanks(busList.get(i)) + String.format(", %-g, %-g", buses[i].getX(), buses[i].getY()));
 
 			f.close();
 
 			result = true;
 		} catch (Exception e) {
-			DSSGlobals.doSimpleMsg("Error creating BusCoords.dss.", 437);
+			DSS.doSimpleMsg("Error creating BusCoords.dss.", 437);
 		}
 
 		return result;
@@ -596,7 +596,7 @@ public class DSSCircuit extends NamedObjectImpl implements Circuit {
 	/* Reallocate the device list to improve the performance of searches */
 	private void reallocDeviceList() {
 		if (logEvents)
-			Utilities.logThisEvent("Reallocating device list");
+			Util.logThisEvent("Reallocating device list");
 		HashListImpl tempList = new HashListImpl(2 * numDevices);
 
 		for (int i = 0; i < deviceList.listSize(); i++)
@@ -607,7 +607,7 @@ public class DSSCircuit extends NamedObjectImpl implements Circuit {
 
 	public void setCaseName(String value) {
 		caseName = value;
-		DSSGlobals.circuitName_ = value + "_";
+		DSS.circuitName_ = value + "_";
 	}
 
 	public String getCaseName() {
@@ -705,12 +705,12 @@ public class DSSCircuit extends NamedObjectImpl implements Circuit {
 		boolean capacityFound;
 
 		if (energyMeters.size() == 0) {
-			DSSGlobals.doSimpleMsg("Cannot compute system capacity with no EnergyMeter objects!", 430);
+			DSS.doSimpleMsg("Cannot compute system capacity with no EnergyMeter objects!", 430);
 			return result;
 		}
 
 		if (numUERegs == 0) {
-			DSSGlobals.doSimpleMsg("Cannot compute system capacity with no UE resisters defined. Use \"set UERegs=(...)\" command.", 431);
+			DSS.doSimpleMsg("Cannot compute system capacity with no UE resisters defined. Use \"set UERegs=(...)\" command.", 431);
 			return result;
 		}
 
@@ -719,9 +719,9 @@ public class DSSCircuit extends NamedObjectImpl implements Circuit {
 		capacityFound = false;
 
 		while (loadMultiplier <= 1.0 && !capacityFound) {
-			DSSGlobals.energyMeterClass.resetAll();
+			DSS.energyMeterClass.resetAll();
 			solution.solve();
-			DSSGlobals.energyMeterClass.sampleAll();
+			DSS.energyMeterClass.sampleAll();
 			totalizeMeters();
 
 			// check for non-zero in UEregs
@@ -751,7 +751,7 @@ public class DSSCircuit extends NamedObjectImpl implements Circuit {
 
 		// make a new subfolder in the present folder based on the circuit
 		// name and a unique sequence number
-		saveDir = DSSGlobals.currentDirectory;
+		saveDir = DSS.currentDirectory;
 
 		boolean success = false;
 		if (dir.length() == 0) {
@@ -762,7 +762,7 @@ public class DSSCircuit extends NamedObjectImpl implements Circuit {
 				File F = new File(currDir);
 				if (!F.exists()) {
 					if (F.mkdir()) {
-						DSSGlobals.currentDirectory = currDir;
+						DSS.currentDirectory = currDir;
 						success = true;
 						break;
 					}
@@ -775,62 +775,62 @@ public class DSSCircuit extends NamedObjectImpl implements Circuit {
 				currDir = dir;
 				F = new File(currDir);
 				if (F.mkdir()) {
-					DSSGlobals.currentDirectory = currDir;
+					DSS.currentDirectory = currDir;
 					success = true;
 				}
 			} else {  // exists - overwrite
 				currDir = dir;
-				DSSGlobals.currentDirectory = currDir;
+				DSS.currentDirectory = currDir;
 				success = true;
 			}
 		}
 
 		if (!success) {
-			DSSGlobals.doSimpleMsg("Could not create a folder \"" + dir + "\" for saving the circuit.", 432);
+			DSS.doSimpleMsg("Could not create a folder \"" + dir + "\" for saving the circuit.", 432);
 			return result;
 		}
 
 		// this list keeps track of all files saved
-		DSSGlobals.savedFileList = new ArrayList<String>();
+		DSS.savedFileList = new ArrayList<String>();
 
 		// initialize so we will know when we have saved the circuit elements
 		for (CktElement elem : cktElements)
 			elem.setHasBeenSaved(false);
 
 		// initialize so we don't save a class twice
-		for (DSSClass cls : DSSGlobals.DSSClassList)
+		for (DSSClass cls : DSS.DSSClassList)
 			cls.setSaved(false);
 
 		// ignore feeder class -- gets saved with EnergyMeters
 		//Globals.getFeederClass().setSaved(true);
 
 		// Define voltage sources first
-		success = Utilities.writeVSourceClassFile(DSSClassDefs.getDSSClass("vsource"), true);
+		success = Util.writeVSourceClassFile(DSSClassDefs.getDSSClass("vsource"), true);
 		// write library files so that they will be available to lines, loads, etc
 		/* Use default filename=classname */
-		if (success) success = Utilities.writeClassFile(DSSClassDefs.getDSSClass("wiredata"), "", false);
-		if (success) success = Utilities.writeClassFile(DSSClassDefs.getDSSClass("cndata"), "", false);
-		if (success) success = Utilities.writeClassFile(DSSClassDefs.getDSSClass("tsdata"), "", false);
-		if (success) success = Utilities.writeClassFile(DSSClassDefs.getDSSClass("linegeometry"), "", false);
-		if (success) success = Utilities.writeClassFile(DSSClassDefs.getDSSClass("linecode"), "", false);
-		if (success) success = Utilities.writeClassFile(DSSClassDefs.getDSSClass("linespacing"), "", false);
-		if (success) success = Utilities.writeClassFile(DSSClassDefs.getDSSClass("linecode"), "", false);
-		if (success) success = Utilities.writeClassFile(DSSClassDefs.getDSSClass("xfmrcode"), "", false);
-		if (success) success = Utilities.writeClassFile(DSSClassDefs.getDSSClass("growthshape"), "", false);
-		if (success) success = Utilities.writeClassFile(DSSClassDefs.getDSSClass("TCC_Curve"), "", false);
-		if (success) success = Utilities.writeClassFile(DSSClassDefs.getDSSClass("Spectrum"), "", false);
+		if (success) success = Util.writeClassFile(DSSClassDefs.getDSSClass("wiredata"), "", false);
+		if (success) success = Util.writeClassFile(DSSClassDefs.getDSSClass("cndata"), "", false);
+		if (success) success = Util.writeClassFile(DSSClassDefs.getDSSClass("tsdata"), "", false);
+		if (success) success = Util.writeClassFile(DSSClassDefs.getDSSClass("linegeometry"), "", false);
+		if (success) success = Util.writeClassFile(DSSClassDefs.getDSSClass("linecode"), "", false);
+		if (success) success = Util.writeClassFile(DSSClassDefs.getDSSClass("linespacing"), "", false);
+		if (success) success = Util.writeClassFile(DSSClassDefs.getDSSClass("linecode"), "", false);
+		if (success) success = Util.writeClassFile(DSSClassDefs.getDSSClass("xfmrcode"), "", false);
+		if (success) success = Util.writeClassFile(DSSClassDefs.getDSSClass("growthshape"), "", false);
+		if (success) success = Util.writeClassFile(DSSClassDefs.getDSSClass("TCC_Curve"), "", false);
+		if (success) success = Util.writeClassFile(DSSClassDefs.getDSSClass("Spectrum"), "", false);
 		if (success) success = saveFeeders();  // save feeders first
 		if (success) success = saveDSSObjects();  // save rest to the objects
 		if (success) success = saveBusCoords();
 		if (success) success = saveMasterFile();
 
 		if (success) {
-			DSSGlobals.doSimpleMsg("Circuit saved in directory: " + DSSGlobals.currentDirectory, 433);
+			DSS.doSimpleMsg("Circuit saved in directory: " + DSS.currentDirectory, 433);
 		} else {
-			DSSGlobals.doSimpleMsg("Error attempting to save circuit in " + DSSGlobals.currentDirectory, 434);
+			DSS.doSimpleMsg("Error attempting to save circuit in " + DSS.currentDirectory, 434);
 		}
 		// return to original directory
-		DSSGlobals.currentDirectory = saveDir;
+		DSS.currentDirectory = saveDir;
 
 		return true;
 	}
@@ -839,13 +839,13 @@ public class DSSCircuit extends NamedObjectImpl implements Circuit {
 		int i, j, iTerm;
 		String busName;
 		int[] nNodes = new int[1];
-		int np = activeCktElement.getNPhases();
-		int nCond = activeCktElement.getNConds();
+		int np = activeCktElement.getNumPhases();
+		int nCond = activeCktElement.getNumConds();
 
 		// use parser functions to decode
 		Parser.getInstance().setToken(activeCktElement.getFirstBus());
 
-		for (iTerm = 0; iTerm < activeCktElement.getNTerms(); iTerm++) {
+		for (iTerm = 0; iTerm < activeCktElement.getNumTerms(); iTerm++) {
 			boolean nodesOK = true;
 			// assume normal phase rotation for default
 			for (i = 0; i < np; i++)
@@ -862,13 +862,13 @@ public class DSSCircuit extends NamedObjectImpl implements Circuit {
 			// check for error in node specification
 			for (j = 0; j < nNodes[0]; j++) {
 				if (nodeBuffer[j] < 0) {
-					int retval = DSSGlobals.forms.messageDlg("Error in node specification for element: \""
-						+ activeCktElement.getParentClass().getName() + "." + activeCktElement.getName() + "\"" + DSSGlobals.CRLF +
+					int retval = DSS.forms.messageDlg("Error in node specification for element: \""
+						+ activeCktElement.getParentClass().getName() + "." + activeCktElement.getName() + "\"" + DSS.CRLF +
 						"Bus Spec: \"" + Parser.getInstance().getToken() + "\"", false);
 					nodesOK = false;
 					if (retval == -1) {
 						abortBusProcess = true;
-						DSSGlobals.appendGlobalResult("Aborted bus process.");
+						DSS.appendGlobalResult("Aborted bus process.");
 						return;
 					}
 					break;
@@ -892,7 +892,7 @@ public class DSSCircuit extends NamedObjectImpl implements Circuit {
 	 */
 	public void reProcessBusDefs() {
 		if (logEvents)
-			Utilities.logThisEvent("Reprocessing bus definitions");
+			Util.logThisEvent("Reprocessing bus definitions");
 
 		abortBusProcess = false;
 		saveBusInfo();  // so we don't have to keep re-doing this
@@ -934,11 +934,11 @@ public class DSSCircuit extends NamedObjectImpl implements Circuit {
 		 * the lists */
 		if (!meterZonesComputed || !zonesLocked) {
 			if (logEvents)
-				Utilities.logThisEvent("Resetting meter zones");
-			DSSGlobals.energyMeterClass.resetMeterZonesAll();
+				Util.logThisEvent("Resetting meter zones");
+			DSS.energyMeterClass.resetMeterZonesAll();
 			meterZonesComputed = true;
 			if (logEvents)
-				Utilities.logThisEvent("Done resetting meter zones");
+				Util.logThisEvent("Done resetting meter zones");
 		}
 
 		freeTopology();
@@ -949,15 +949,15 @@ public class DSSCircuit extends NamedObjectImpl implements Circuit {
 		StringBuffer devType = new StringBuffer();
 		StringBuffer devName = new StringBuffer();
 
-		Utilities.parseObjectClassandName(fullObjectName, devType, devName);
-		devClassIndex = DSSGlobals.classNames.find(devType.toString());
+		Util.parseObjectClassandName(fullObjectName, devType, devName);
+		devClassIndex = DSS.classNames.find(devType.toString());
 		if (devClassIndex == -1)
-			devClassIndex = DSSGlobals.lastClassReferenced;
+			devClassIndex = DSS.lastClassReferenced;
 		devIndex = deviceList.find(devName.toString());
 		while (devIndex >= 0) {
 			if (deviceRef[devIndex].cktElementClass == devClassIndex) {  // we got a match
-				DSSGlobals.activeDSSClass = DSSGlobals.DSSClassList.get(devClassIndex);
-				DSSGlobals.lastClassReferenced = devClassIndex;
+				DSS.activeDSSClass = DSS.DSSClassList.get(devClassIndex);
+				DSS.lastClassReferenced = devClassIndex;
 				result = deviceRef[devIndex].devHandle;
 				// activeDSSClass.active = result;
 				// activeCktElement = activeDSSClass.getActiveObj;
@@ -967,7 +967,7 @@ public class DSSCircuit extends NamedObjectImpl implements Circuit {
 			devIndex = deviceList.findNext();  // could be duplicates
 		}
 
-		DSSGlobals.cmdResult = result;
+		DSS.cmdResult = result;
 
 		return result;
 	}
@@ -995,7 +995,7 @@ public class DSSCircuit extends NamedObjectImpl implements Circuit {
 		}
 		f.println("DeviceList:");
 		for (i = 0; i < numDevices; i++) {
-			f.printf("  %12s%s", deviceList.get(i), DSSGlobals.CRLF);
+			f.printf("  %12s%s", deviceList.get(i), DSS.CRLF);
 			setActiveCktElement( cktElements.get(i) );
 			if (!activeCktElement.isEnabled())
 				f.print("  DISABLED");
@@ -1018,7 +1018,7 @@ public class DSSCircuit extends NamedObjectImpl implements Circuit {
 			/* Initialize all circuit elements and buses to not checked, then build a new tree */
 			for (CktElement elem : cktElements) {
 				elem.setChecked(false);
-				for (i = 0; i < elem.getNTerms(); i++)
+				for (i = 0; i < elem.getNumTerms(); i++)
 					elem.getTerminal(i).setChecked(false);
 				elem.setIsolated(true);  // till proven otherwise
 			}

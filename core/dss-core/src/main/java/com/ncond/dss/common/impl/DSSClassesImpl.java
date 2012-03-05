@@ -7,9 +7,9 @@ public class DSSClassesImpl implements DSSClasses {
 
 	public void setNew(DSSClass value) {
 
-		DSSGlobals.DSSClassList.add(value);  // add to class list
-		DSSGlobals.activeDSSClass = value;      // declare to be active
-		DSSGlobals.classNames.add(DSSGlobals.activeDSSClass.getName());  // add to classname list
+		DSS.DSSClassList.add(value);  // add to class list
+		DSS.activeDSSClass = value;      // declare to be active
+		DSS.classNames.add(DSS.activeDSSClass.getName());  // add to classname list
 	}
 
 }

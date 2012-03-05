@@ -4,8 +4,8 @@ import java.io.PrintStream;
 import java.io.PrintWriter;
 
 import com.ncond.dss.common.DSSClass;
-import com.ncond.dss.common.impl.DSSGlobals;
-import com.ncond.dss.common.impl.Utilities;
+import com.ncond.dss.common.impl.DSS;
+import com.ncond.dss.common.impl.Util;
 import com.ncond.dss.general.CNDataObj;
 import com.ncond.dss.general.CNLineConstants;
 import com.ncond.dss.general.ConductorDataObj;
@@ -185,7 +185,7 @@ public class LineGeometryObjImpl extends DSSObjectImpl implements LineGeometryOb
 				e.printStackTrace();
 			}
 		}
-		if (!DSSGlobals.solutionAbort)
+		if (!DSS.solutionAbort)
 			result = lineData.getYcMatrix(f, length, units);
 		return result;
 	}
@@ -200,7 +200,7 @@ public class LineGeometryObjImpl extends DSSObjectImpl implements LineGeometryOb
 				e.printStackTrace();
 			}
 		}
-		if (!DSSGlobals.solutionAbort)
+		if (!DSS.solutionAbort)
 			result = lineData.getZMatrix(f, length, units);
 		return result;
 	}
@@ -275,7 +275,7 @@ public class LineGeometryObjImpl extends DSSObjectImpl implements LineGeometryOb
 				break;
 			default:
 				f.println(String.format("~ %s=%s",
-						parentClass.getPropertyName()[parentClass.getRevPropertyIdxMap()[iProp]], Utilities.checkForBlanks(propertyValue[iProp])));
+						parentClass.getPropertyName()[parentClass.getRevPropertyIdxMap()[iProp]], Util.checkForBlanks(propertyValue[iProp])));
 				break;
 			}
 			iProp = getNextPropertySet(iProp);
@@ -405,7 +405,7 @@ public class LineGeometryObjImpl extends DSSObjectImpl implements LineGeometryOb
 		/* Before we calc, check for bad conductor definitions */
 		StringBuffer lineGeomErrMsg = new StringBuffer();
 		if (lineData.conductorsInSameSpace(lineGeomErrMsg)) {
-			DSSGlobals.solutionAbort = true;
+			DSS.solutionAbort = true;
 			throw new LineGeometryProblem("Error in LineGeometry." + getName() + ": " + lineGeomErrMsg.toString());
 		} else {
 			lineData.calc(f);
@@ -452,7 +452,7 @@ public class LineGeometryObjImpl extends DSSObjectImpl implements LineGeometryOb
 		emergAmps   = wires[0].getEmergAmps();
 
 		try {
-			updateLineGeometryData(DSSGlobals.activeCircuit.getSolution().getFrequency());
+			updateLineGeometryData(DSS.activeCircuit.getSolution().getFrequency());
 		} catch (LineGeometryProblem e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

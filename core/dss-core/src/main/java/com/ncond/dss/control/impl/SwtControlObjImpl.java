@@ -5,8 +5,8 @@ import java.io.PrintStream;
 import org.apache.commons.math.complex.Complex;
 
 import com.ncond.dss.common.impl.DSSClassImpl;
-import com.ncond.dss.common.impl.DSSGlobals;
-import com.ncond.dss.common.impl.Utilities;
+import com.ncond.dss.common.impl.DSS;
+import com.ncond.dss.common.impl.Util;
 import com.ncond.dss.control.SwtControl;
 import com.ncond.dss.control.SwtControlObj;
 
@@ -21,9 +21,9 @@ public class SwtControlObjImpl extends ControlElemImpl implements SwtControlObj 
 		setName(swtControlName.toLowerCase());
 		objType = parClass.getDSSClassType();
 
-		setNPhases(3);  // directly set conds and phases
-		nConds = 3;
-		setNTerms(1);   // this forces allocation of terminals and conductors in base class
+		setNumPhases(3);  // directly set conds and phases
+		ncond = 3;
+		setNumTerms(1);   // this forces allocation of terminals and conductors in base class
 
 		elementName   = "";
 		setControlledElement(null);
@@ -38,11 +38,11 @@ public class SwtControlObjImpl extends ControlElemImpl implements SwtControlObj 
 	@Override
 	public void recalcElementData() {
 
-		int devIndex = Utilities.getCktElementIndex(elementName);
+		int devIndex = Util.getCktElementIndex(elementName);
 		if (devIndex >= 0) {
-			setControlledElement(DSSGlobals.activeCircuit.getCktElements().get(devIndex));
-			setNPhases( getControlledElement().getNPhases() );
-			setNConds(nPhases);
+			setControlledElement(DSS.activeCircuit.getCktElements().get(devIndex));
+			setNumPhases( getControlledElement().getNumPhases() );
+			setNumConds(nphase);
 			getControlledElement().setActiveTerminalIdx(elementTerminal);
 			if (!locked) {
 				switch (presentState) {
@@ -58,7 +58,7 @@ public class SwtControlObjImpl extends ControlElemImpl implements SwtControlObj 
 			setBus(0, getControlledElement().getBus(elementTerminal));
 		} else {
 			setControlledElement(null);  // element not found
-			DSSGlobals.doErrorMsg("SwtControl: \"" + getName() + "\"", "CktElement Element \""+ elementName + "\" not found.",
+			DSS.doErrorMsg("SwtControl: \"" + getName() + "\"", "CktElement Element \""+ elementName + "\" not found.",
 					" Element must be defined previously.", 387);
 		}
 	}
@@ -69,8 +69,8 @@ public class SwtControlObjImpl extends ControlElemImpl implements SwtControlObj 
 	@Override
 	public void makePosSequence() {
 		if (getControlledElement() != null) {
-			setNPhases( getControlledElement().getNPhases() );
-			setNConds(nPhases);
+			setNumPhases( getControlledElement().getNumPhases() );
+			setNumConds(nphase);
 			setBus(0, getControlledElement().getBus(elementTerminal));
 		}
 		super.makePosSequence();
@@ -83,13 +83,13 @@ public class SwtControlObjImpl extends ControlElemImpl implements SwtControlObj 
 
 	@Override
 	public void getCurrents(Complex[] curr) {
-		for (int i = 0; i < nConds; i++)
+		for (int i = 0; i < ncond; i++)
 			curr[i] = Complex.ZERO;
 	}
 
 	@Override
 	public void getInjCurrents(Complex[] curr) {
-		for (int i = 0; i < nConds; i++)
+		for (int i = 0; i < ncond; i++)
 			curr[i] = Complex.ZERO;
 	}
 
@@ -102,11 +102,11 @@ public class SwtControlObjImpl extends ControlElemImpl implements SwtControlObj 
 			getControlledElement().setActiveTerminalIdx(elementTerminal);
 			if (code == ControlAction.OPEN.code() && presentState == ControlAction.CLOSE) {
 				getControlledElement().setConductorClosed(-1, false);  // open all phases of active terminal
-				Utilities.appendToEventLog("SwtControl."+getName(), "Opened");
+				Util.appendToEventLog("SwtControl."+getName(), "Opened");
 			}
 			if (code == ControlAction.CLOSE.code() && presentState == ControlAction.OPEN) {
 				getControlledElement().setConductorClosed(-1, true);  // close all phases of active terminal
-				Utilities.appendToEventLog("SwtControl."+getName(), "Closed");
+				Util.appendToEventLog("SwtControl."+getName(), "Closed");
 			}
 		}
 	}
@@ -143,7 +143,7 @@ public class SwtControlObjImpl extends ControlElemImpl implements SwtControlObj 
 	@Override
 	public void sample() {
 		getControlledElement().setActiveTerminalIdx(elementTerminal);
-		if (getControlledElement().getConductorClosed(-1)) {  // check state of phases of active terminal
+		if (getControlledElement().isConductorClosed(-1)) {  // check state of phases of active terminal
 			presentState = ControlAction.CLOSE;
 		} else {
 			presentState = ControlAction.OPEN;
@@ -193,6 +193,11 @@ public class SwtControlObjImpl extends ControlElemImpl implements SwtControlObj 
 
 	public boolean isLocked() {
 		return locked;
+	}
+
+	@Override
+	public int injCurrents() {
+		throw new UnsupportedOperationException();
 	}
 
 	// FIXME Private members in OpenDSS

@@ -9,8 +9,8 @@ import org.apache.commons.math.complex.Complex;
 import com.ncond.dss.common.CktElement;
 import com.ncond.dss.common.DSSClass;
 import com.ncond.dss.common.impl.DSSClassDefs;
-import com.ncond.dss.common.impl.DSSGlobals;
-import com.ncond.dss.common.impl.Utilities;
+import com.ncond.dss.common.impl.DSS;
+import com.ncond.dss.common.impl.Util;
 import com.ncond.dss.control.VVControl;
 import com.ncond.dss.control.VVControlObj;
 import com.ncond.dss.conversion.GeneratorObj;
@@ -57,9 +57,9 @@ public class VVControlObjImpl extends ControlElemImpl implements VVControlObj {
 		setName(VVCControlName.toLowerCase());
 		objType = parClass.getDSSClassType();
 
-		setNPhases(1);  // directly set conds and phases
-		nConds = 3;
-		setNTerms(1);  // this forces allocation of terminals and conductors in base class
+		setNumPhases(1);  // directly set conds and phases
+		ncond = 3;
+		setNumTerms(1);  // this forces allocation of terminals and conductors in base class
 
 		elementName = "";
 		setControlledElement(null);
@@ -104,39 +104,39 @@ public class VVControlObjImpl extends ControlElemImpl implements VVControlObj {
 
 		/* Check for existence of monitored element */
 
-		devIndex = Utilities.getCktElementIndex(elementName);
+		devIndex = Util.getCktElementIndex(elementName);
 		if (devIndex >= 0) {
-			monitoredElement = DSSGlobals.activeCircuit.getCktElements().get(devIndex);
-			if (elementTerminal > monitoredElement.getNTerms()) {
-				DSSGlobals.doErrorMsg("VVCControl: \"" + getName() + "\"",
+			monitoredElement = DSS.activeCircuit.getCktElements().get(devIndex);
+			if (elementTerminal > monitoredElement.getNumTerms()) {
+				DSS.doErrorMsg("VVCControl: \"" + getName() + "\"",
 						"Terminal no. \"" + String.format("%-d", elementTerminal)
 						+ "\" does not exist.", "Re-specify terminal no.", 371);
 			} else {
 				// sets name of i-th terminal's connected bus in VVCControl's buslist
 				setBus(0, monitoredElement.getBus( elementTerminal ));
 			}
-			Utilities.resizeArray(cBuffer, monitoredElement.getYorder());
-			condOffset = (elementTerminal - 1) * monitoredElement.getNConds();
+			Util.resizeArray(cBuffer, monitoredElement.getYorder());
+			condOffset = (elementTerminal - 1) * monitoredElement.getNumConds();
 			// for speedy sampling
 		} else {
-			DSSGlobals.doSimpleMsg("Monitored Element in VVCControl." + getName() +
+			DSS.doSimpleMsg("Monitored Element in VVCControl." + getName() +
 					" does not exist:\"" + elementName + "\"", 372);
 		}
 
 		if (genPointerList.size() == 0)
 			makeGenList();
 
-		devIndex = Utilities.getCktElementIndex("generator." + generatorNameList.get(0));
+		devIndex = Util.getCktElementIndex("generator." + generatorNameList.get(0));
 
 		if (devIndex >= 0) {
 			// right now we only support one controlled element (generator) per vvcontrol
 			// controlled element must already exist
-			setControlledElement(DSSGlobals.activeCircuit.getCktElements().get( devIndex ));
+			setControlledElement(DSS.activeCircuit.getCktElements().get( devIndex ));
 			getControlledElement().setActiveTerminalIdx(0);  // make the 1 st terminal active
 			// get control synched up with capacitor
 		} else {
 			setControlledElement(null);  // element not found
-			DSSGlobals.doErrorMsg("VVControl: \"" + getName() + "\"",
+			DSS.doErrorMsg("VVControl: \"" + getName() + "\"",
 					"Controlled Element \"" + generatorNameList.get(0) + "\" Not Found.",
 					" Element must be defined previously.", 361);
 		}
@@ -149,8 +149,8 @@ public class VVControlObjImpl extends ControlElemImpl implements VVControlObj {
 	public void makePosSequence() {
 		if (getControlledElement() != null) {
 			setEnabled( getControlledElement().isEnabled() );
-			setNPhases( getControlledElement().getNPhases() );
-			setNConds( getNPhases() );
+			setNumPhases( getControlledElement().getNumPhases() );
+			setNumConds( getNumPhases() );
 		}
 
 		if (monitoredElement != null) {
@@ -176,7 +176,7 @@ public class VVControlObjImpl extends ControlElemImpl implements VVControlObj {
 	 */
 	@Override
 	public void getCurrents(Complex[] curr) {
-		for (int i = 0; i < nConds; i++)
+		for (int i = 0; i < ncond; i++)
 			curr[i] = Complex.ZERO;
 	}
 
@@ -185,7 +185,7 @@ public class VVControlObjImpl extends ControlElemImpl implements VVControlObj {
 	 */
 	@Override
 	public void getInjCurrents(Complex[] curr) {
-		for (int i = 0; i < nConds; i++)
+		for (int i = 0; i < ncond; i++)
 			curr[i] = Complex.ZERO;
 	}
 
@@ -260,14 +260,14 @@ public class VVControlObjImpl extends ControlElemImpl implements VVControlObj {
 						if (genKVAr != gen.getKVArBase())
 							gen.setPresentKVAr(genKVAr);
 					}
-					Utilities.appendToEventLog("VoltVarControl." + getName(),
+					Util.appendToEventLog("VoltVarControl." + getName(),
 							String.format("**Set var output level to**, kvar= %.5g", genKVAr));
 				}  // end for loop  (number of generators under this control)
 			}  // end if vars needed is not equal to zero
 
 			QOldDeliver = QNew;
 			VAvgPuPrior = VAvgPu;
-			DSSGlobals.activeCircuit.getSolution().setLoadsNeedUpdating(true);
+			DSS.activeCircuit.getSolution().setLoadsNeedUpdating(true);
 			// force recalc of power parms
 			setPendingChange(NONE);
 		} else {  // end if pendingChange = CHANGEVARLEVEL
@@ -298,15 +298,15 @@ public class VVControlObjImpl extends ControlElemImpl implements VVControlObj {
 			cBuffer = monitoredElement.getVTerminal();
 
 			// get the basekV for the monitored bus
-			baseKV = DSSGlobals.activeCircuit.getBus( terminals[elementTerminal].getBusRef() ).getKVBase();
+			baseKV = DSS.activeCircuit.getBus( terminals[elementTerminal].getBusRef() ).getKVBase();
 			VAvg = 0;
 
 			// calculate the average voltage
-			for (i = 0; i < monitoredElement.getNPhases(); i++)
+			for (i = 0; i < monitoredElement.getNumPhases(); i++)
 				VAvg = VAvg + cBuffer[i].abs();
 
 			// and convert to pu
-			VAvgPu = (VAvg / monitoredElement.getNPhases()) / (baseKV * 1000.0);
+			VAvgPu = (VAvg / monitoredElement.getNumPhases()) / (baseKV * 1000.0);
 
 			timeDelay = delay;
 			// and
@@ -315,16 +315,16 @@ public class VVControlObjImpl extends ControlElemImpl implements VVControlObj {
 			if ((Math.abs(VAvgPu - VAvgPuPrior) > deltaVTolerance) || (Math.abs(Math.abs(QDeliver) - Math.abs(QNew)) > 0.5)) {
 				setPendingChange(CHANGEVARLEVEL);
 				// ActiveCircuit.Solution.LoadsNeedUpdating = TRUE; // Force recalc of power parms
-				controlActionHandle = DSSGlobals.activeCircuit.getControlQueue().push(DSSGlobals.activeCircuit.getSolution().getIntHour(),
-						DSSGlobals.activeCircuit.getSolution().getDynaVars().t + timeDelay, pendingChange, 0, this);
-				Utilities.appendToEventLog("VoltVarControl." + getName(), String.format
+				controlActionHandle = DSS.activeCircuit.getControlQueue().push(DSS.activeCircuit.getSolution().getIntHour(),
+						DSS.activeCircuit.getSolution().getDynaVars().t + timeDelay, pendingChange, 0, this);
+				Util.appendToEventLog("VoltVarControl." + getName(), String.format
 						("**Ready to change var output**, Vavgpu= %.5g sec,", VAvgPu));
 			} else {
-				DSSGlobals.activeCircuit.getControlQueue().delete( controlActionHandle );
-				Utilities.appendToEventLog("VoltVarControl." + getName(), "**DONE**");
+				DSS.activeCircuit.getControlQueue().delete( controlActionHandle );
+				Util.appendToEventLog("VoltVarControl." + getName(), "**DONE**");
 			}
 		} else {
-			DSSGlobals.doSimpleMsg("Could not find any generators, or the vvc curve size is zero.  Please correct in your script.", 1234);
+			DSS.doSimpleMsg("Could not find any generators, or the vvc curve size is zero.  Please correct in your script.", 1234);
 		}
 	}
 
@@ -428,7 +428,7 @@ public class VVControlObjImpl extends ControlElemImpl implements VVControlObj {
 
 			/* Allocate uniform weights */
 			listSize = genPointerList.size();
-			Utilities.resizeArray(weights, listSize);
+			Util.resizeArray(weights, listSize);
 			for (i = 0; i < listSize; i++)
 				weights[i] = 1.0;
 		}
@@ -505,6 +505,11 @@ public class VVControlObjImpl extends ControlElemImpl implements VVControlObj {
 	public void setPendingChange(final int Value) {
 		pendingChange = Value;
 		setDblTraceParameter(Value);
+	}
+
+	@Override
+	public int injCurrents() {
+		throw new UnsupportedOperationException();
 	}
 
 	// FIXME Private members in OpenDSS

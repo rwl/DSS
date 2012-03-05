@@ -2,7 +2,7 @@ package com.ncond.dss.general.impl;
 
 import org.apache.commons.math.complex.Complex;
 
-import com.ncond.dss.common.impl.DSSGlobals;
+import com.ncond.dss.common.impl.DSS;
 import com.ncond.dss.general.LineConstants;
 import com.ncond.dss.shared.CMatrix;
 import com.ncond.dss.shared.impl.CMatrixImpl;
@@ -253,11 +253,11 @@ public class LineConstantsImpl implements LineConstants {
 		Yi = Math.abs(Y[i]);
 		Yj = Math.abs(Y[j]);
 
-		switch (DSSGlobals.activeEarthModel) {
-		case DSSGlobals.SIMPLECARSON:
+		switch (DSS.activeEarthModel) {
+		case DSS.SIMPLECARSON:
 			result = new Complex(w * MU0 / 8.0, (w * MU0 / TWO_PI) * Math.log(658.5 * Math.sqrt(rhoEarth / frequency)));
 			break;
-		case DSSGlobals.FULLCARSON:
+		case DSS.FULLCARSON:
 			/* notation from Tleis book Power System Modelling and Fault Analysis */
 			if (i == j) {
 				thetaij = 0.0;
@@ -283,7 +283,7 @@ public class LineConstantsImpl implements LineConstants {
 			result = result.multiply(w * MU0 / Math.PI);
 			break;
 
-		case DSSGlobals.DERI:
+		case DSS.DERI:
 			if (i != j) {
 				hterm  = new Complex(Yi + Yj, 0.0).add( ComplexUtil.invert(me).multiply(2.0) );
 				xterm  = new Complex(X[i] - X[j], 0.0);
@@ -305,14 +305,14 @@ public class LineConstantsImpl implements LineConstants {
 	public Complex getZint(int i) {
 		Complex alpha, I0I1, result = null;
 
-		switch (DSSGlobals.activeEarthModel) {
-		case DSSGlobals.SIMPLECARSON:
+		switch (DSS.activeEarthModel) {
+		case DSS.SIMPLECARSON:
 			result = new Complex(Rac[i], w * MU0/ (8 * Math.PI));
 			break;
-		case DSSGlobals.FULLCARSON:  // no skin effect
+		case DSS.FULLCARSON:  // no skin effect
 			result = new Complex(Rac[i], w * MU0 / (8 * Math.PI));
 			break;
-		case DSSGlobals.DERI:  // with skin effect model
+		case DSS.DERI:  // with skin effect model
 			/* Assume round conductor */
 			alpha = C1_j1.multiply( Math.sqrt(frequency * MU0 / Rdc[i]) );
 			if (alpha.abs() > 35.0) {

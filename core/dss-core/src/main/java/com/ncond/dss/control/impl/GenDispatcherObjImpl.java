@@ -12,8 +12,8 @@ import com.ncond.dss.common.DSSClass;
 import com.ncond.dss.common.SolutionObj;
 import com.ncond.dss.common.impl.DSSClassDefs;
 import com.ncond.dss.common.impl.DSSClassImpl;
-import com.ncond.dss.common.impl.DSSGlobals;
-import com.ncond.dss.common.impl.Utilities;
+import com.ncond.dss.common.impl.DSS;
+import com.ncond.dss.common.impl.Util;
 import com.ncond.dss.control.GenDispatcher;
 import com.ncond.dss.control.GenDispatcherObj;
 import com.ncond.dss.conversion.GeneratorObj;
@@ -38,9 +38,9 @@ public class GenDispatcherObjImpl extends ControlElemImpl implements GenDispatch
 		setName(genDispatcherName.toLowerCase());
 		objType = parClass.getDSSClassType();
 
-		setNPhases(3);  // directly set conds and phases
-		nConds = 3;
-		setNTerms(1);   // this forces allocation of terminals and conductors in base class
+		setNumPhases(3);  // directly set conds and phases
+		ncond = 3;
+		setNumTerms(1);   // this forces allocation of terminals and conductors in base class
 
 
 		elementName   = "";
@@ -67,11 +67,11 @@ public class GenDispatcherObjImpl extends ControlElemImpl implements GenDispatch
 
 		/* Check for existence of monitored element */
 
-		int devIndex = Utilities.getCktElementIndex(elementName);
+		int devIndex = Util.getCktElementIndex(elementName);
 		if (devIndex >= 0) {
-			monitoredElement = DSSGlobals.activeCircuit.getCktElements().get(devIndex);
-			if (elementTerminal > monitoredElement.getNTerms()) {
-				DSSGlobals.doErrorMsg("GenDispatcher: \"" + getName() + "\"",
+			monitoredElement = DSS.activeCircuit.getCktElements().get(devIndex);
+			if (elementTerminal > monitoredElement.getNumTerms()) {
+				DSS.doErrorMsg("GenDispatcher: \"" + getName() + "\"",
 						"Terminal no. \"" +"\" does not exist.",
 						"Re-specify terminal no.", 371);
 			} else {
@@ -79,7 +79,7 @@ public class GenDispatcherObjImpl extends ControlElemImpl implements GenDispatch
 				setBus(0, monitoredElement.getBus(elementTerminal));
 			}
 		} else {
-			DSSGlobals.doSimpleMsg("Monitored Element in GenDispatcher."+getName()+" does not exist:\""+elementName+"\"", 372);
+			DSS.doSimpleMsg("Monitored Element in GenDispatcher."+getName()+" does not exist:\""+elementName+"\"", 372);
 		}
 	}
 
@@ -89,8 +89,8 @@ public class GenDispatcherObjImpl extends ControlElemImpl implements GenDispatch
 	@Override
 	public void makePosSequence() {
 		if (monitoredElement != null) {
-			setNPhases(getControlledElement().getNPhases());
-			setNConds(nPhases);
+			setNumPhases(getControlledElement().getNumPhases());
+			setNumConds(nphase);
 			setBus(0, monitoredElement.getBus(elementTerminal));
 		}
 		super.makePosSequence();
@@ -103,13 +103,13 @@ public class GenDispatcherObjImpl extends ControlElemImpl implements GenDispatch
 
 	@Override
 	public void getCurrents(Complex[] curr) {
-		for (int i = 0; i < nConds; i++)
+		for (int i = 0; i < ncond; i++)
 			curr[i] = Complex.ZERO;
 	}
 
 	@Override
 	public void getInjCurrents(Complex[] curr) {
-		for (int i = 0; i < nConds; i++)
+		for (int i = 0; i < ncond; i++)
 			curr[i] = Complex.ZERO;
 	}
 
@@ -189,7 +189,7 @@ public class GenDispatcherObjImpl extends ControlElemImpl implements GenDispatch
 			}
 
 			if (genKWChanged || genKVArChanged) {  // only push onto control queue if there has been a change
-				Circuit ckt = DSSGlobals.activeCircuit;
+				Circuit ckt = DSS.activeCircuit;
 				SolutionObj sol = ckt.getSolution();
 
 				sol.setLoadsNeedUpdating(true);  // force recalc of power parms
@@ -239,7 +239,7 @@ public class GenDispatcherObjImpl extends ControlElemImpl implements GenDispatch
 
 			/* Allocate uniform weights */
 			listSize = genPointerList.size();
-			weights = Utilities.resizeArray(weights, listSize);
+			weights = Util.resizeArray(weights, listSize);
 			for (i = 0; i < listSize; i++)
 				weights[i] = 1.0;
 		}
@@ -261,6 +261,11 @@ public class GenDispatcherObjImpl extends ControlElemImpl implements GenDispatch
 	@Override
 	public void reset() {
 		//super.reset();
+	}
+
+	@Override
+	public int injCurrents() {
+		throw new UnsupportedOperationException();
 	}
 
 	// FIXME Private members in OpenDSS

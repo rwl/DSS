@@ -55,8 +55,8 @@ public class DSSBus extends NamedObjectImpl implements Bus {
 		numNodesThisBus += 1;
 		if (numNodesThisBus > allocation) {
 			allocation = allocation + 1;
-			nodes = Utilities.resizeArray(nodes, allocation);
-			refNo = Utilities.resizeArray(refNo, allocation);
+			nodes = Util.resizeArray(nodes, allocation);
+			refNo = Util.resizeArray(refNo, allocation);
 		}
 	}
 
@@ -72,7 +72,7 @@ public class DSSBus extends NamedObjectImpl implements Bus {
 				addANode();
 				nodes[numNodesThisBus] = nodeNum;
 
-				Circuit ckt = DSSGlobals.activeCircuit;
+				Circuit ckt = DSS.activeCircuit;
 
 				ckt.setNumNodes(ckt.getNumNodes() + 1);  // global node number for circuit
 				refNo[numNodesThisBus] = ckt.getNumNodes() - 1;
@@ -158,13 +158,13 @@ public class DSSBus extends NamedObjectImpl implements Bus {
 	}
 
 	public void allocateBusVoltages() {
-		VBus = Utilities.resizeArray(VBus, numNodesThisBus);
+		VBus = Util.resizeArray(VBus, numNodesThisBus);
 		for (int i = 0; i < numNodesThisBus; i++)
 			VBus[i] = Complex.ZERO;
 	}
 
 	public void allocateBusCurrents() {
-		busCurrent = Utilities.resizeArray(busCurrent, numNodesThisBus);
+		busCurrent = Util.resizeArray(busCurrent, numNodesThisBus);
 		for (int i = 0; i < numNodesThisBus; i++)
 			busCurrent[i] = Complex.ZERO;
 	}

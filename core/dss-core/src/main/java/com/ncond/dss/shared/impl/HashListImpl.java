@@ -4,7 +4,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 
-import com.ncond.dss.common.impl.Utilities;
+import com.ncond.dss.common.impl.Util;
 import com.ncond.dss.shared.HashList;
 
 public class HashListImpl implements HashList {
@@ -77,8 +77,8 @@ public class HashListImpl implements HashList {
 		// resize by reasonable amount
 		int oldAllocation = subList.nAllocated;
 		subList.nAllocated = oldAllocation + allocationInc;
-		subList.str = Utilities.resizeArray(subList.str, subList.nAllocated);
-		subList.idx = Utilities.resizeArray(subList.idx, subList.nAllocated);
+		subList.str = Util.resizeArray(subList.str, subList.nAllocated);
+		subList.idx = Util.resizeArray(subList.idx, subList.nAllocated);
 	}
 
 	private int hash(String s) {
@@ -94,7 +94,7 @@ public class HashListImpl implements HashList {
 	/** Makes the linear string list larger. */
 	private void resizeStrArray() {
 		numElementsAllocated += allocationInc * numLists;
-		stringArray = Utilities.resizeArray(stringArray, numElementsAllocated);
+		stringArray = Util.resizeArray(stringArray, numElementsAllocated);
 	}
 
 	public int add(String s) {

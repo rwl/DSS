@@ -1,7 +1,7 @@
 package com.ncond.dss.general.impl;
 
 import com.ncond.dss.common.impl.DSSClassDefs;
-import com.ncond.dss.common.impl.DSSGlobals;
+import com.ncond.dss.common.impl.DSS;
 import com.ncond.dss.general.ConductorDataObj;
 import com.ncond.dss.general.TSData;
 import com.ncond.dss.general.TSDataObj;
@@ -44,8 +44,8 @@ public class TSDataImpl extends CableDataImpl implements TSData {
 
 	@Override
 	public int newObject(String objName) {
-		DSSGlobals.activeDSSObject = new TSDataObjImpl(this, objName);
-		return addObjectToList(DSSGlobals.activeDSSObject);
+		DSS.activeDSSObject = new TSDataObjImpl(this, objName);
+		return addObjectToList(DSS.activeDSSObject);
 	}
 
 	/**
@@ -58,7 +58,7 @@ public class TSDataImpl extends CableDataImpl implements TSData {
 		int result = 0;
 		// continue parsing with contents of parser
 		ConductorDataImpl.activeConductorDataObj = (ConductorDataObj) elementList.getActive();
-		DSSGlobals.activeDSSObject = ConductorDataImpl.activeConductorDataObj;
+		DSS.activeDSSObject = ConductorDataImpl.activeConductorDataObj;
 
 		TSDataObj tsd = (TSDataObj) ConductorDataImpl.activeConductorDataObj;
 
@@ -77,7 +77,7 @@ public class TSDataImpl extends CableDataImpl implements TSData {
 
 			switch (paramPointer) {
 			case -1:
-				DSSGlobals.doSimpleMsg("Unknown parameter \"" + paramName + "\" for object \"" + getName() +"."+ tsd.getName() + "\"", 101);
+				DSS.doSimpleMsg("Unknown parameter \"" + paramName + "\" for object \"" + getName() +"."+ tsd.getName() + "\"", 101);
 				break;
 			case 0:
 				tsd.setDiaShield(parser.makeDouble());
@@ -98,15 +98,15 @@ public class TSDataImpl extends CableDataImpl implements TSData {
 			switch (paramPointer) {
 			case 0:
 				if (tsd.getDiaShield() <= 0.0)
-					DSSGlobals.doSimpleMsg("Error: Diameter over shield must be positive for TapeShieldData " + tsd.getName(), 999);
+					DSS.doSimpleMsg("Error: Diameter over shield must be positive for TapeShieldData " + tsd.getName(), 999);
 				break;
 			case 1:
 				if (tsd.getTapeLayer() <= 0.0)
-					DSSGlobals.doSimpleMsg("Error: Tape shield thickness must be positive for TapeShieldData " + tsd.getName(), 999);
+					DSS.doSimpleMsg("Error: Tape shield thickness must be positive for TapeShieldData " + tsd.getName(), 999);
 				break;
 			case 2:
 				if ((tsd.getTapeLap() < 0.0) || (tsd.getTapeLap() > 100.0))
-					DSSGlobals.doSimpleMsg("Error: Tap lap must range from 0 to 100 for TapeShieldData " + tsd.getName(), 999);
+					DSS.doSimpleMsg("Error: Tap lap must range from 0 to 100 for TapeShieldData " + tsd.getName(), 999);
 				break;
 			}
 
@@ -132,14 +132,14 @@ public class TSDataImpl extends CableDataImpl implements TSData {
 				tsd.setPropertyValue(i, otherData.getPropertyValue(i));
 			result = 1;
 		} else {
-			DSSGlobals.doSimpleMsg("Error in TapeShield makeLike: \"" + TSName + "\" not found.", 102);
+			DSS.doSimpleMsg("Error in TapeShield makeLike: \"" + TSName + "\" not found.", 102);
 		}
 		return result;
 	}
 
 	@Override
 	public int init(int handle) {
-		DSSGlobals.doSimpleMsg("Need to implement TSData.init", -1);
+		DSS.doSimpleMsg("Need to implement TSData.init", -1);
 		return 0;
 	}
 
@@ -157,7 +157,7 @@ public class TSDataImpl extends CableDataImpl implements TSData {
 			}
 			pTSDataObj = (TSDataObj) elementList.getNext();
 		}
-		DSSGlobals.doSimpleMsg("TSData: \"" + value + "\" not found.", 103);
+		DSS.doSimpleMsg("TSData: \"" + value + "\" not found.", 103);
 	}
 
 }

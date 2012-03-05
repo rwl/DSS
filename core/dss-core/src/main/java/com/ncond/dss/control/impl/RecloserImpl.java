@@ -2,8 +2,8 @@ package com.ncond.dss.control.impl;
 
 import com.ncond.dss.common.DSSClass;
 import com.ncond.dss.common.impl.DSSClassDefs;
-import com.ncond.dss.common.impl.DSSGlobals;
-import com.ncond.dss.common.impl.Utilities;
+import com.ncond.dss.common.impl.DSS;
+import com.ncond.dss.common.impl.Util;
 import com.ncond.dss.control.Recloser;
 import com.ncond.dss.control.RecloserObj;
 import com.ncond.dss.general.TCC_CurveObj;
@@ -35,7 +35,7 @@ public class RecloserImpl extends ControlClassImpl implements Recloser {
 		TCC_CurveObj result = (TCC_CurveObj) TCC_CurveClass.find(curveName);
 
 		if (result == null)
-			DSSGlobals.doSimpleMsg("TCC curve object: \""+curveName+"\" not found.", 388);
+			DSS.doSimpleMsg("TCC curve object: \""+curveName+"\" not found.", 388);
 
 		return result;
 	}
@@ -119,8 +119,8 @@ public class RecloserImpl extends ControlClassImpl implements Recloser {
 	@Override
 	public int newObject(String objName) {
 
-		DSSGlobals.activeCircuit.setActiveCktElement(new RecloserObjImpl(this, objName));
-		return addObjectToList(DSSGlobals.activeDSSObject);
+		DSS.activeCircuit.setActiveCktElement(new RecloserObjImpl(this, objName));
+		return addObjectToList(DSS.activeDSSObject);
 	}
 
 	@Override
@@ -129,7 +129,7 @@ public class RecloserImpl extends ControlClassImpl implements Recloser {
 
 		// continue parsing with contents of parser
 		activeRecloserObj = (RecloserObj) elementList.getActive();
-		DSSGlobals.activeCircuit.setActiveCktElement(activeRecloserObj);
+		DSS.activeCircuit.setActiveCktElement(activeRecloserObj);
 
 		int result = 0;
 
@@ -150,7 +150,7 @@ public class RecloserImpl extends ControlClassImpl implements Recloser {
 
 			switch (paramPointer) {
 			case -1:
-				DSSGlobals.doSimpleMsg("Unknown parameter \"" + paramName + "\" for object \"" + getName() +"."+ ar.getName() +"\"", 390);
+				DSS.doSimpleMsg("Unknown parameter \"" + paramName + "\" for object \"" + getName() +"."+ ar.getName() +"\"", 390);
 				break;
 			case 0:
 				ar.setMonitoredElementName(param.toLowerCase());
@@ -252,8 +252,8 @@ public class RecloserImpl extends ControlClassImpl implements Recloser {
 		if (otherRecloser != null) {
 			RecloserObj ar = activeRecloserObj;
 
-			ar.setNPhases(otherRecloser.getNPhases());
-			ar.setNConds(otherRecloser.getNConds());  // force reallocation of terminal stuff
+			ar.setNumPhases(otherRecloser.getNumPhases());
+			ar.setNumConds(otherRecloser.getNumConds());  // force reallocation of terminal stuff
 
 			ar.setElementName(otherRecloser.getElementName());
 			ar.setElementTerminal(otherRecloser.getElementTerminal());
@@ -275,7 +275,7 @@ public class RecloserImpl extends ControlClassImpl implements Recloser {
 			ar.setNumReclose(otherRecloser.getNumReclose());
 			ar.setNumFast(otherRecloser.getNumFast());
 
-			ar.setRecloseIntervals( Utilities.resizeArray(ar.getRecloseIntervals(), 4) );  // always make a max of 4
+			ar.setRecloseIntervals( Util.resizeArray(ar.getRecloseIntervals(), 4) );  // always make a max of 4
 			for (i = 0; i < ar.getNumReclose(); i++)
 				ar.getRecloseIntervals()[i] = otherRecloser.getRecloseIntervals()[i];
 
@@ -287,7 +287,7 @@ public class RecloserImpl extends ControlClassImpl implements Recloser {
 			for (i = 0; i < ar.getParentClass().getNumProperties(); i++)
 				ar.setPropertyValue(i, otherRecloser.getPropertyValue(i));
 		} else {
-			DSSGlobals.doSimpleMsg("Error in Recloser makeLike: \"" + recloserName + "\" not found.", 391);
+			DSS.doSimpleMsg("Error in Recloser makeLike: \"" + recloserName + "\" not found.", 391);
 		}
 
 		return result;

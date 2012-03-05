@@ -1,7 +1,7 @@
 package com.ncond.dss.conversion.impl;
 
 import com.ncond.dss.common.impl.DSSClassDefs;
-import com.ncond.dss.common.impl.DSSGlobals;
+import com.ncond.dss.common.impl.DSS;
 import com.ncond.dss.conversion.Equivalent;
 import com.ncond.dss.conversion.EquivalentObj;
 import com.ncond.dss.parser.impl.Parser;
@@ -48,10 +48,10 @@ public class EquivalentImpl extends PCClassImpl implements Equivalent {
 
 		// define property help values
 		propertyHelp[0] = "Number of terminals.  Default =1. Set this BEFORE defining matrices.";
-		propertyHelp[1] = "Array of Bus Names to which equivalent source is connected."+DSSGlobals.CRLF+"buses=(b1 b2 b3)";
+		propertyHelp[1] = "Array of Bus Names to which equivalent source is connected."+DSS.CRLF+"buses=(b1 b2 b3)";
 		propertyHelp[2] = "Base Source kV, usually L-L unless you are making a positive-sequence model"+
 					"in which case, it will be L-N.";
-		propertyHelp[3] = "Per unit of the base voltage that the source is actually operating at."+ DSSGlobals.CRLF +
+		propertyHelp[3] = "Per unit of the base voltage that the source is actually operating at."+ DSS.CRLF +
 						"\"pu=1.05\"";
 		propertyHelp[4] = "Phase angle in degrees of first phase: e.g.,Angle=10.3";
 		propertyHelp[5] = "Source frequency.  Defaults to  60 Hz.";
@@ -70,8 +70,8 @@ public class EquivalentImpl extends PCClassImpl implements Equivalent {
 
 	@Override
 	public int newObject(String objName) {
-		DSSGlobals.activeCircuit.setActiveCktElement(new EquivalentObjImpl(this, objName));
-		return addObjectToList(DSSGlobals.activeDSSObject);
+		DSS.activeCircuit.setActiveCktElement(new EquivalentObjImpl(this, objName));
+		return addObjectToList(DSS.activeDSSObject);
 	}
 
 	@Override
@@ -80,7 +80,7 @@ public class EquivalentImpl extends PCClassImpl implements Equivalent {
 
 		// continue parsing with contents of parser
 		activeEquivalentObj = (EquivalentObj) elementList.getActive();
-		DSSGlobals.activeCircuit.setActiveCktElement(activeEquivalentObj);
+		DSS.activeCircuit.setActiveCktElement(activeEquivalentObj);
 
 		int result = 0;
 
@@ -101,10 +101,10 @@ public class EquivalentImpl extends PCClassImpl implements Equivalent {
 
 			switch (paramPointer) {
 			case -1:
-				DSSGlobals.doSimpleMsg("Unknown parameter \"" + paramName + "\" for object \"Equivalent."+ae.getName()+"\"", 800);
+				DSS.doSimpleMsg("Unknown parameter \"" + paramName + "\" for object \"Equivalent."+ae.getName()+"\"", 800);
 				break;
 			case 0:
-				ae.setNTerms(ae.doTerminalsDef(parser.makeInteger()));
+				ae.setNumTerms(ae.doTerminalsDef(parser.makeInteger()));
 				break;
 			case 1:
 				interpretAllBuses(param);
@@ -122,8 +122,8 @@ public class EquivalentImpl extends PCClassImpl implements Equivalent {
 				ae.setEquivFrequency(parser.makeDouble());  // freq
 				break;
 			case 6:
-				ae.setNPhases(parser.makeInteger());  // num phases
-				ae.setNConds(ae.getNPhases());  // force reallocation of terminal info
+				ae.setNumPhases(parser.makeInteger());  // num phases
+				ae.setNumConds(ae.getNumPhases());  // force reallocation of terminal info
 				break;
 			case 7:
 				ae.parseDblMatrix(ae.getR1());
@@ -165,24 +165,24 @@ public class EquivalentImpl extends PCClassImpl implements Equivalent {
 		if (otherEquivalent != null) {
 			EquivalentObj ae = activeEquivalentObj;
 
-			if ((ae.getNPhases() != otherEquivalent.getNPhases()) ||
-					(ae.getNTerms() != otherEquivalent.getNTerms())) {
+			if ((ae.getNumPhases() != otherEquivalent.getNumPhases()) ||
+					(ae.getNumTerms() != otherEquivalent.getNumTerms())) {
 
-				ae.setNTerms( ae.doTerminalsDef(otherEquivalent.getNTerms()) );
-				ae.setNPhases(otherEquivalent.getNPhases());
-				ae.setNConds(ae.getNPhases());  // forces reallocation of terminal stuff
+				ae.setNumTerms( ae.doTerminalsDef(otherEquivalent.getNumTerms()) );
+				ae.setNumPhases(otherEquivalent.getNumPhases());
+				ae.setNumConds(ae.getNumPhases());  // forces reallocation of terminal stuff
 
-				ae.setYOrder(ae.getNConds() * ae.getNTerms());
+				ae.setYOrder(ae.getNumConds() * ae.getNumTerms());
 				ae.setYPrimInvalid(true);
 
-				for (i = 0; i < ae.getNTerms(); i++)
+				for (i = 0; i < ae.getNumTerms(); i++)
 					ae.getR1()[i] = otherEquivalent.getR1()[i];
-				for (i = 0; i < ae.getNTerms(); i++)
+				for (i = 0; i < ae.getNumTerms(); i++)
 					ae.getR0()[i] = otherEquivalent.getR0()[i];
 
-				for (i = 0; i < ae.getNTerms(); i++)
+				for (i = 0; i < ae.getNumTerms(); i++)
 					ae.getX1()[i] = otherEquivalent.getX1()[i];
-				for (i = 0; i < ae.getNTerms(); i++)
+				for (i = 0; i < ae.getNumTerms(); i++)
 					ae.getX0()[i] = otherEquivalent.getX0()[i];
 
 				if (ae.getZ() != null)
@@ -190,8 +190,8 @@ public class EquivalentImpl extends PCClassImpl implements Equivalent {
 				if (ae.getZinv() != null)
 					ae.setZInv(null);
 
-				ae.setZ(new CMatrixImpl(ae.getNPhases()));
-				ae.setZInv(new CMatrixImpl(ae.getNPhases()));
+				ae.setZ(new CMatrixImpl(ae.getNumPhases()));
+				ae.setZInv(new CMatrixImpl(ae.getNumPhases()));
 			}
 
 			ae.getZ().copyFrom(otherEquivalent.getZ());
@@ -208,7 +208,7 @@ public class EquivalentImpl extends PCClassImpl implements Equivalent {
 				ae.setPropertyValue(i, otherEquivalent.getPropertyValue(i));
 			result = 1;
 		} else {
-			DSSGlobals.doSimpleMsg("Error in Equivalent makeLike: \"" + OtherSource + "\" not found.", 801);
+			DSS.doSimpleMsg("Error in Equivalent makeLike: \"" + OtherSource + "\" not found.", 801);
 		}
 
 		return result;
@@ -216,7 +216,7 @@ public class EquivalentImpl extends PCClassImpl implements Equivalent {
 
 	@Override
 	public int init(int Handle) {
-		DSSGlobals.doSimpleMsg("Need to implement Equivalent.init", -1);
+		DSS.doSimpleMsg("Need to implement Equivalent.init", -1);
 		return 0;
 	}
 
@@ -226,13 +226,13 @@ public class EquivalentImpl extends PCClassImpl implements Equivalent {
 	public void interpretAllBuses(String s) {
 		String busName;
 
-		DSSGlobals.auxParser.setCmdString(s);  // load up parser
+		DSS.auxParser.setCmdString(s);  // load up parser
 
 		/* Loop for no more than the expected number of windings; ignore omitted values */
 		EquivalentObj ae = activeEquivalentObj;
-		for (int i = 0; i < ae.getNTerms(); i++) {
-			DSSGlobals.auxParser.getNextParam();  // ignore any parameter name  not expecting any
-			busName = DSSGlobals.auxParser.makeString();
+		for (int i = 0; i < ae.getNumTerms(); i++) {
+			DSS.auxParser.getNextParam();  // ignore any parameter name  not expecting any
+			busName = DSS.auxParser.makeString();
 			if (busName.length() > 0)
 				ae.setBus(i, busName);
 		}

@@ -1,8 +1,8 @@
 package com.ncond.dss.delivery.impl;
 
 import com.ncond.dss.common.impl.DSSClassDefs;
-import com.ncond.dss.common.impl.DSSGlobals;
-import com.ncond.dss.common.impl.Utilities;
+import com.ncond.dss.common.impl.DSS;
+import com.ncond.dss.common.impl.Util;
 import com.ncond.dss.delivery.Reactor;
 import com.ncond.dss.delivery.ReactorObj;
 import com.ncond.dss.parser.impl.Parser;
@@ -48,11 +48,11 @@ public class ReactorImpl extends PDClassImpl implements Reactor {
 		propertyName[11] = "Rp";
 
 		// define property help values
-		propertyHelp[0] = "Name of first bus. Examples:"+DSSGlobals.CRLF+
-							"bus1=busname"+DSSGlobals.CRLF+
+		propertyHelp[0] = "Name of first bus. Examples:"+DSS.CRLF+
+							"bus1=busname"+DSS.CRLF+
 							"bus1=busname.1.2.3";
 		propertyHelp[1] = "Name of 2nd bus. Defaults to all phases connected "+
-							"to first bus, node 0. (Shunt Wye Connection)"+DSSGlobals.CRLF+
+							"to first bus, node 0. (Shunt Wye Connection)"+DSS.CRLF+
 							"Not necessary to specify for delta (LL) connection";
 		propertyHelp[2] = "Number of phases.";
 		propertyHelp[3] = "Total kvar, all phases.  Evenly divided among phases. Only determines X. Specify R separately";
@@ -74,20 +74,20 @@ public class ReactorImpl extends PDClassImpl implements Reactor {
 
 	@Override
 	public int newObject(String objName) {
-		DSSGlobals.activeCircuit.setActiveCktElement(new ReactorObjImpl(this, objName));
-		return addObjectToList(DSSGlobals.activeDSSObject);
+		DSS.activeCircuit.setActiveCktElement(new ReactorObjImpl(this, objName));
+		return addObjectToList(DSS.activeDSSObject);
 	}
 
 	private void doMatrix(double[] matrix) {
 		ReactorObj ar = activeReactorObj;
 
-		double[] matBuffer = new double[ar.getNPhases() * ar.getNPhases()];
-		int orderFound = Parser.getInstance().parseAsSymMatrix(ar.getNPhases(), matBuffer);
+		double[] matBuffer = new double[ar.getNumPhases() * ar.getNumPhases()];
+		int orderFound = Parser.getInstance().parseAsSymMatrix(ar.getNumPhases(), matBuffer);
 
 		if (orderFound > 0) {  // Parse was successful Else don't change Matrix
 			/* X */
-			matrix = Utilities.resizeArray(matrix, ar.getNPhases() * ar.getNPhases());
-			for (int j = 0; j < ar.getNPhases() * ar.getNPhases(); j++)
+			matrix = Util.resizeArray(matrix, ar.getNumPhases() * ar.getNumPhases());
+			for (int j = 0; j < ar.getNumPhases() * ar.getNumPhases(); j++)
 				matrix[j] = matBuffer[j];
 
 			matBuffer = null;
@@ -127,11 +127,11 @@ public class ReactorImpl extends PDClassImpl implements Reactor {
 
 		switch (ar.getConnection()) {
 		case 1:
-			ar.setNTerms(1);  // force reallocation of terminals
+			ar.setNumTerms(1);  // force reallocation of terminals
 			break;
 		case 0:
-			if (ar.getNTerms() != 2)
-				ar.setNTerms(2);
+			if (ar.getNumTerms() != 2)
+				ar.setNumTerms(2);
 			break;
 		}
 	}
@@ -157,7 +157,7 @@ public class ReactorImpl extends PDClassImpl implements Reactor {
 			s2 = s.substring(0, s.length());
 		}
 
-		for (i = 0; i < ar.getNPhases(); i++)
+		for (i = 0; i < ar.getNumPhases(); i++)
 			s2 = s2 + ".0";
 
 		ar.setBus(1, s2);
@@ -171,7 +171,7 @@ public class ReactorImpl extends PDClassImpl implements Reactor {
 		int result = 0;
 		// continue parsing with contents of parser
 		activeReactorObj = (ReactorObj) elementList.getActive();
-		DSSGlobals.activeCircuit.setActiveCktElement(activeReactorObj);
+		DSS.activeCircuit.setActiveCktElement(activeReactorObj);
 
 		ReactorObj ar = activeReactorObj;
 
@@ -191,7 +191,7 @@ public class ReactorImpl extends PDClassImpl implements Reactor {
 
 			switch (paramPointer) {
 			case -1:
-				DSSGlobals.doSimpleMsg("Unknown parameter \"" + paramName + "\" for object \"" + getName() +"."+ ar.getName() + "\"", 230);
+				DSS.doSimpleMsg("Unknown parameter \"" + paramName + "\" for object \"" + getName() +"."+ ar.getName() + "\"", 230);
 				break;
 			case 0:
 				reactorSetBus1(param);
@@ -218,7 +218,7 @@ public class ReactorImpl extends PDClassImpl implements Reactor {
 				doMatrix(ar.getXMatrix());
 				break;
 			case 8:
-				ar.setParallel(Utilities.interpretYesNo(param));
+				ar.setParallel(Util.interpretYesNo(param));
 				break;
 			case 9:
 				ar.setR(parser.makeDouble());
@@ -242,14 +242,14 @@ public class ReactorImpl extends PDClassImpl implements Reactor {
 				ar.getPrpSequence()[1] = 0;            // reset this for save function
 				break;
 			case 1:
-				if (!Utilities.stripExtension(ar.getBus(0)).equalsIgnoreCase( Utilities.stripExtension(ar.getBus(1)) ))
+				if (!Util.stripExtension(ar.getBus(0)).equalsIgnoreCase( Util.stripExtension(ar.getBus(1)) ))
 					ar.setShunt(false);
 				break;
 			case 2:
-				if (ar.getNPhases() != parser.makeInteger()) {
-					ar.setNPhases(parser.makeInteger());
-					ar.setNConds(ar.getNPhases());  // force reallocation of terminal info
-					ar.setYOrder(ar.getNTerms() * ar.getNConds());
+				if (ar.getNumPhases() != parser.makeInteger()) {
+					ar.setNumPhases(parser.makeInteger());
+					ar.setNumConds(ar.getNumPhases());  // force reallocation of terminal info
+					ar.setYOrder(ar.getNumTerms() * ar.getNumConds());
 				}
 				break;
 			case 3:
@@ -292,11 +292,11 @@ public class ReactorImpl extends PDClassImpl implements Reactor {
 		if (otherReactor != null) {
 			ReactorObj ar = activeReactorObj;
 
-			if (ar.getNPhases() != otherReactor.getNPhases()) {
-				ar.setNPhases(otherReactor.getNPhases());
-				ar.setNConds(ar.getNPhases());  // force reallocation of terminals and conductors
+			if (ar.getNumPhases() != otherReactor.getNumPhases()) {
+				ar.setNumPhases(otherReactor.getNumPhases());
+				ar.setNumConds(ar.getNumPhases());  // force reallocation of terminals and conductors
 
-				ar.setYOrder(ar.getNConds() * ar.getNTerms());
+				ar.setYOrder(ar.getNumConds() * ar.getNumTerms());
 				ar.setYPrimInvalid(true);
 			}
 
@@ -314,16 +314,16 @@ public class ReactorImpl extends PDClassImpl implements Reactor {
 			if (otherReactor.getRMatrix() == null) {
 				ar.setRMatrix(new double[0]);
 			} else {
-				ar.setRMatrix( (double[]) Utilities.resizeArray(ar.getRMatrix(), ar.getNPhases() * ar.getNPhases()) );
-				for (i = 0; i < ar.getNPhases() * ar.getNPhases(); i++)
+				ar.setRMatrix( (double[]) Util.resizeArray(ar.getRMatrix(), ar.getNumPhases() * ar.getNumPhases()) );
+				for (i = 0; i < ar.getNumPhases() * ar.getNumPhases(); i++)
 					ar.getRMatrix()[i] = otherReactor.getRMatrix()[i];
 			}
 
 			if (otherReactor.getXMatrix() == null) {
 				ar.setXMatrix(new double[0]);
 			} else {
-				ar.setXMatrix( (double[]) Utilities.resizeArray(ar.getXMatrix(), ar.getNPhases() * ar.getNPhases()) );
-				for (i = 0; i < ar.getNPhases() * ar.getNPhases(); i++)
+				ar.setXMatrix( (double[]) Util.resizeArray(ar.getXMatrix(), ar.getNumPhases() * ar.getNumPhases()) );
+				for (i = 0; i < ar.getNumPhases() * ar.getNumPhases(); i++)
 					ar.getXMatrix()[i] = otherReactor.getXMatrix()[i];
 			}
 
@@ -334,7 +334,7 @@ public class ReactorImpl extends PDClassImpl implements Reactor {
 			}
 			result = 1;
 		} else {
-			DSSGlobals.doSimpleMsg("Error in Reactor makeLike: \"" + reactorName + "\" not found.", 231);
+			DSS.doSimpleMsg("Error in Reactor makeLike: \"" + reactorName + "\" not found.", 231);
 		}
 
 		return result;
@@ -342,7 +342,7 @@ public class ReactorImpl extends PDClassImpl implements Reactor {
 
 	@Override
 	public int init(int handle) {
-		DSSGlobals.doSimpleMsg("Need to implement Reactor.init()", -1);
+		DSS.doSimpleMsg("Need to implement Reactor.init()", -1);
 		return 0;
 	}
 

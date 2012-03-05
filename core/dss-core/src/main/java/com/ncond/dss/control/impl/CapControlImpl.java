@@ -1,8 +1,8 @@
 package com.ncond.dss.control.impl;
 
 import com.ncond.dss.common.impl.DSSClassDefs;
-import com.ncond.dss.common.impl.DSSGlobals;
-import com.ncond.dss.common.impl.Utilities;
+import com.ncond.dss.common.impl.DSS;
+import com.ncond.dss.common.impl.Util;
 import com.ncond.dss.control.CapControl;
 import com.ncond.dss.control.CapControlObj;
 import com.ncond.dss.control.impl.CapControlObjImpl.CapControlType;
@@ -60,7 +60,7 @@ public class CapControlImpl extends ControlClassImpl implements CapControl {
 				"1 or 2, typically.  Default is 1.";
 		propertyHelp[2] = "Name of Capacitor element which the CapControl controls. No Default; Must be specified."+
 				"Do not specify the full object name; \"Capacitor\" is assumed for "  +
-				"the object class.  Example:"+DSSGlobals.CRLF+DSSGlobals.CRLF+
+				"the object class.  Example:"+DSS.CRLF+DSS.CRLF+
 				"Capacitor=cap1";
 		propertyHelp[3] = "{Current | voltage | kvar | PF | time } Control type.  Specify the ONsetting and OFFsetting " +
 				"appropriately with the type of control. (See help for ONsetting)";
@@ -68,12 +68,12 @@ public class CapControlImpl extends ControlClassImpl implements CapControl {
 				"Default is 60.  If the capacitor is Wye, the 1st phase line-to-neutral voltage is monitored.  Else, the line-to-line " +
 				"voltage (1st - 2nd phase) is monitored.";
 		propertyHelp[5] = "Ratio of the CT from line amps to control ampere setting for current and kvar control types. ";
-		propertyHelp[6] = "Value at which the control arms to switch the capacitor ON (or ratchet up a step).  " + DSSGlobals.CRLF+DSSGlobals.CRLF +
-				"Type of Control:"+DSSGlobals.CRLF+DSSGlobals.CRLF+
-				"Current: Line Amps / CTratio"+DSSGlobals.CRLF+
-				"Voltage: Line-Neutral (or Line-Line for delta) Volts / PTratio" +DSSGlobals.CRLF+
-				"kvar:    Total kvar, all phases (3-phase for pos seq model). This is directional. " + DSSGlobals.CRLF +
-				"PF:      Power Factor, Total power in monitored terminal. Negative for Leading. " + DSSGlobals.CRLF +
+		propertyHelp[6] = "Value at which the control arms to switch the capacitor ON (or ratchet up a step).  " + DSS.CRLF+DSS.CRLF +
+				"Type of Control:"+DSS.CRLF+DSS.CRLF+
+				"Current: Line Amps / CTratio"+DSS.CRLF+
+				"Voltage: Line-Neutral (or Line-Line for delta) Volts / PTratio" +DSS.CRLF+
+				"kvar:    Total kvar, all phases (3-phase for pos seq model). This is directional. " + DSS.CRLF +
+				"PF:      Power Factor, Total power in monitored terminal. Negative for Leading. " + DSS.CRLF +
 				"Time:    Hrs from Midnight as a floating point number (decimal). 7:30am would be entered as 7.5.";
 		propertyHelp[7] = "Value at which the control arms to switch the capacitor OFF. (See help for ONsetting)" +
 				"For Time control, is OK to have Off time the next day ( < On time)";
@@ -105,12 +105,12 @@ public class CapControlImpl extends ControlClassImpl implements CapControl {
 		super.defineProperties();  // add defs of inherited properties to bottom of list
 	}
 
-	@Override
-	public int newObject(String ObjName) {
-
-		DSSGlobals.activeCircuit.setActiveCktElement(new CapControlObjImpl(this, ObjName));
-		return addObjectToList(DSSGlobals.activeDSSObject);
-	}
+//	@Override
+//	public int newObject(String ObjName) {
+//
+//		DSS.activeCircuit.setActiveCktElement(new CapControlObjImpl(this, ObjName));
+//		return addObjectToList(DSS.activeDSSObject);
+//	}
 
 	@Override
 	public int edit() {
@@ -118,7 +118,7 @@ public class CapControlImpl extends ControlClassImpl implements CapControl {
 
 		// continue parsing with contents of parser
 		activeCapControlObj = (CapControlObj) elementList.getActive();
-		DSSGlobals.activeCircuit.setActiveCktElement(activeCapControlObj);
+		DSS.activeCircuit.setActiveCktElement(activeCapControlObj);
 
 		int result = 0;
 
@@ -139,7 +139,7 @@ public class CapControlImpl extends ControlClassImpl implements CapControl {
 
 			switch (paramPointer) {
 			case -1:
-				DSSGlobals.doSimpleMsg("Unknown parameter \"" + paramName + "\" for object \"" + getName() +"."+ acc.getName() + "\"", 352);
+				DSS.doSimpleMsg("Unknown parameter \"" + paramName + "\" for object \"" + getName() +"."+ acc.getName() + "\"", 352);
 				break;
 			case 0:
 				acc.setElementName(param.toLowerCase());
@@ -171,7 +171,7 @@ public class CapControlImpl extends ControlClassImpl implements CapControl {
 					acc.setControlType(CapControlType.SRP);
 					break;
 				default:
-					DSSGlobals.doSimpleMsg(String.format("Unrecognized CapControl type: \"%s\" (CapControl.%s)", param, acc.getName()), 352);
+					DSS.doSimpleMsg(String.format("Unrecognized CapControl type: \"%s\" (CapControl.%s)", param, acc.getName()), 352);
 					break;
 				}
 				break;
@@ -191,7 +191,7 @@ public class CapControlImpl extends ControlClassImpl implements CapControl {
 				acc.setOnDelay(parser.makeDouble());
 				break;
 			case 9:
-				acc.setVOverride(Utilities.interpretYesNo(param));
+				acc.setVOverride(Util.interpretYesNo(param));
 				break;
 			case 10:
 				acc.setVMax(parser.makeDouble());
@@ -206,22 +206,22 @@ public class CapControlImpl extends ControlClassImpl implements CapControl {
 				acc.setDeadTime(parser.makeDouble());
 				break;
 			case 14:
-				if (Utilities.compareTextShortest(param, "avg") == 0) {
+				if (Util.compareTextShortest(param, "avg") == 0) {
 					acc.setCTPhase(CapControl.AVGPHASES);
-				} else if (Utilities.compareTextShortest(param, "max") == 0) {
+				} else if (Util.compareTextShortest(param, "max") == 0) {
 					acc.setCTPhase(CapControl.MAXPHASE);
-				} else if (Utilities.compareTextShortest(param, "min") == 0) {
+				} else if (Util.compareTextShortest(param, "min") == 0) {
 					acc.setCTPhase(CapControl.MINPHASE);
 				} else {
 					acc.setCTPhase( Math.max(1, parser.makeInteger()) );
 				}
 				break;
 			case 15:
-				if (Utilities.compareTextShortest(param, "avg") == 0) {
+				if (Util.compareTextShortest(param, "avg") == 0) {
 					acc.setPTPhase(CapControl.AVGPHASES);
-				} else if (Utilities.compareTextShortest(param, "max") == 0) {
+				} else if (Util.compareTextShortest(param, "max") == 0) {
 					acc.setPTPhase(CapControl.MAXPHASE);
-				} else if (Utilities.compareTextShortest(param, "min") == 0) {
+				} else if (Util.compareTextShortest(param, "min") == 0) {
 					acc.setPTPhase(CapControl.MINPHASE);
 				} else {
 					acc.setPTPhase( Math.max(1, parser.makeInteger()) );
@@ -231,7 +231,7 @@ public class CapControlImpl extends ControlClassImpl implements CapControl {
 				acc.setVOverrideBusSpecified(true);
 				acc.setVOverrideBusName(param);
 			case 17:
-				acc.setShowEventLog( Utilities.interpretYesNo(param) );
+				acc.setShowEventLog( Util.interpretYesNo(param) );
 			default:
 				// inherited parameters
 				classEdit(activeCapControlObj, paramPointer - CapControl.NumPropsThisClass);
@@ -254,7 +254,7 @@ public class CapControlImpl extends ControlClassImpl implements CapControl {
 							acc.setPFOnValue(acc.getOnValue());
 						}
 					} else {
-						DSSGlobals.doSimpleMsg("Invalid PF on value for CapControl."+acc.getName(), 353);
+						DSS.doSimpleMsg("Invalid PF on value for CapControl."+acc.getName(), 353);
 					}
 					break;
 				case 7:
@@ -265,18 +265,18 @@ public class CapControlImpl extends ControlClassImpl implements CapControl {
 							acc.setPFOffValue(acc.getOffValue());
 						}
 					} else {
-						DSSGlobals.doSimpleMsg("Invalid PF off value for CapControl."+acc.getName(), 35301);
+						DSS.doSimpleMsg("Invalid PF off value for CapControl."+acc.getName(), 35301);
 					}
 					break;
 				case 14:
-					if (acc.getCTPhase() > acc.getNPhases()) {
-						DSSGlobals.doSimpleMsg(String.format("Error: Monitored phase(%d) must be less than or equal to number of phases(%d). ", acc.getCTPhase(), acc.getNPhases()), 35302);
+					if (acc.getCTPhase() > acc.getNumPhases()) {
+						DSS.doSimpleMsg(String.format("Error: Monitored phase(%d) must be less than or equal to number of phases(%d). ", acc.getCTPhase(), acc.getNumPhases()), 35302);
 						acc.setCTPhase(1);
 					}
 					break;
 				case 15:
-					if (acc.getPTPhase() > acc.getNPhases()) {
-						DSSGlobals.doSimpleMsg(String.format("Error: Monitored phase(%d) must be less than or equal to number of phases(%d). ", acc.getPTPhase(), acc.getNPhases()), 35303);
+					if (acc.getPTPhase() > acc.getNumPhases()) {
+						DSS.doSimpleMsg(String.format("Error: Monitored phase(%d) must be less than or equal to number of phases(%d). ", acc.getPTPhase(), acc.getNumPhases()), 35303);
 						acc.setPTPhase(1);
 					}
 					break;
@@ -301,8 +301,8 @@ public class CapControlImpl extends ControlClassImpl implements CapControl {
 		if (otherCapControl != null) {
 			CapControlObj acc = activeCapControlObj;
 
-			acc.setNPhases(otherCapControl.getNPhases());
-			acc.setNConds(otherCapControl.getNConds());  // force reallocation of terminal stuff
+			acc.setNumPhases(otherCapControl.getNumPhases());
+			acc.setNumConds(otherCapControl.getNumConds());  // force reallocation of terminal stuff
 
 			acc.setElementName(otherCapControl.getElementName());
 			acc.setCapacitorName(otherCapControl.getCapacitorName());
@@ -335,7 +335,7 @@ public class CapControlImpl extends ControlClassImpl implements CapControl {
 				acc.setPropertyValue(i, otherCapControl.getPropertyValue(i));
 
 		} else {
-			DSSGlobals.doSimpleMsg("Error in CapControl makeLike: \"" + capControlName + "\" not found.", 360);
+			DSS.doSimpleMsg("Error in CapControl makeLike: \"" + capControlName + "\" not found.", 360);
 		}
 
 		return result;

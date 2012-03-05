@@ -2,7 +2,7 @@ package com.ncond.dss.delivery.impl;
 
 import com.ncond.dss.common.impl.CktElementClassImpl;
 import com.ncond.dss.common.impl.DSSClassDefs;
-import com.ncond.dss.common.impl.DSSGlobals;
+import com.ncond.dss.common.impl.DSS;
 import com.ncond.dss.delivery.PDClass;
 import com.ncond.dss.delivery.PDElement;
 import com.ncond.dss.parser.impl.Parser;
@@ -76,7 +76,7 @@ public class PDClassImpl extends CktElementClassImpl implements PDClass {
 
 	protected void classMakeLike(Object otherObj) {
 		PDElement otherPDObj = (PDElement) otherObj;
-		PDElement PDElem = (PDElement) DSSGlobals.activeDSSObject;
+		PDElement PDElem = (PDElement) DSS.activeDSSObject;
 
 		PDElem.setNormAmps(otherPDObj.getNormAmps());
 		PDElem.setEmergAmps(otherPDObj.getEmergAmps());

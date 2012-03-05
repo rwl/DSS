@@ -1,12 +1,11 @@
 package com.ncond.dss.meter.impl;
 
-import com.ncond.dss.common.DSSClass;
 import com.ncond.dss.common.impl.CktElementClassImpl;
 import com.ncond.dss.common.impl.DSSClassDefs;
-import com.ncond.dss.common.impl.DSSGlobals;
+import com.ncond.dss.common.impl.DSS;
 import com.ncond.dss.meter.MeterClass;
 
-public class MeterClassImpl extends CktElementClassImpl implements MeterClass {
+abstract public class MeterClassImpl extends CktElementClassImpl implements MeterClass {
 
 	private int numMeterClassProps;
 
@@ -34,25 +33,25 @@ public class MeterClassImpl extends CktElementClassImpl implements MeterClass {
 	}
 
 	protected void classMakeLike(Object otherObj) {
-		new MeterElementImpl((DSSClass) otherObj);
+//		new MeterElementImpl((DSSClass) otherObj);
 	}
 
 	public void resetAll() {
-		DSSGlobals.doSimpleMsg("Programming Error: Base MeterClass.resetAll reached for class: "+getName(), 760);
+		DSS.doSimpleMsg("Programming Error: Base MeterClass.resetAll reached for class: "+getName(), 760);
 	}
 
 	/**
 	 * Force all monitors to take a sample.
 	 */
 	public void sampleAll() {
-		DSSGlobals.doSimpleMsg("Programming Error: Base MeterClass.sampleAll reached for class: "+getName(), 761);
+		DSS.doSimpleMsg("Programming Error: Base MeterClass.sampleAll reached for class: "+getName(), 761);
 	}
 
 	/**
 	 * Force all monitors to save their buffers to disk.
 	 */
 	public void saveAll() {
-		DSSGlobals.doSimpleMsg("Programming Error: Base MeterClass.saveAll reached for Class: "+getName(), 762);
+		DSS.doSimpleMsg("Programming Error: Base MeterClass.saveAll reached for Class: "+getName(), 762);
 	}
 
 	public int getNumMeterClassProps() {

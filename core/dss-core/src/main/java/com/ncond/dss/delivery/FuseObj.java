@@ -1,6 +1,6 @@
 package com.ncond.dss.delivery;
 
-import com.ncond.dss.common.impl.DSSCktElement;
+import com.ncond.dss.common.impl.CktElementImpl;
 import com.ncond.dss.control.ControlElem;
 import com.ncond.dss.control.impl.ControlAction;
 import com.ncond.dss.general.TCC_CurveObj;
@@ -42,9 +42,9 @@ public interface FuseObj extends ControlElem {
 
 	void setMonitoredElementTerminal(int monitoredElementTerminal);
 
-	DSSCktElement getMonitoredElement();
+	CktElementImpl getMonitoredElement();
 
-	void setMonitoredElement(DSSCktElement monitoredElement);
+	void setMonitoredElement(CktElementImpl monitoredElement);
 
 	int[] getHAction();
 

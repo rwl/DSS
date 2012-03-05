@@ -58,14 +58,14 @@ public class FeederImpl extends PCClassImpl implements Feeder {
 		// first see if this one already exists; if so, just reinitialize
 		FeederObj obj = (FeederObj) find(objName);
 
-		Circuit ckt = DSSGlobals.activeCircuit;
+		Circuit ckt = DSS.activeCircuit;
 
 		if (obj != null) {
-			ckt.setActiveCktElement((DSSCktElement) obj);
+			ckt.setActiveCktElement((CktElementImpl) obj);
 			result = -1;
 		} else {
 			ckt.setActiveCktElement(new FeederObjImpl(this, objName));
-			result = addObjectToList(DSSGlobals.activeDSSObject);
+			result = addObjectToList(DSS.activeDSSObject);
 			ckt.addCktElement(result);
 			// done here because feeder objects are instantiated from energy meters
 		}
@@ -77,7 +77,7 @@ public class FeederImpl extends PCClassImpl implements Feeder {
 	public int edit() {
 		// continue parsing with contents of parser
 		activeFeederObj = (FeederObj) elementList.getActive();
-		DSSGlobals.activeCircuit.setActiveCktElement((DSSCktElement) activeFeederObj);
+		DSS.activeCircuit.setActiveCktElement((CktElementImpl) activeFeederObj);
 
 		int result = 0;
 
@@ -96,7 +96,7 @@ public class FeederImpl extends PCClassImpl implements Feeder {
 
 			switch (paramPointer) {
 			case -1:
-				DSSGlobals.doSimpleMsg("Unknown parameter \"" + paramName + "\" for object \"" + getName() +"."+ activeFeederObj.getName() + "\"", 630);
+				DSS.doSimpleMsg("Unknown parameter \"" + paramName + "\" for object \"" + getName() +"."+ activeFeederObj.getName() + "\"", 630);
 				break;
 			default:
 				classEdit(activeFeederObj, paramPointer - NumPropsThisClass);
@@ -120,11 +120,11 @@ public class FeederImpl extends PCClassImpl implements Feeder {
 		/* See if we can find this name in the present collection */
 		FeederObj otherFeeder = (FeederObj) find(otherFeederName);
 		if (otherFeeder != null) {
-			if (activeFeederObj.getNPhases() != otherFeeder.getNPhases()) {
-				activeFeederObj.setNPhases(otherFeeder.getNPhases());
-				activeFeederObj.setNConds(activeFeederObj.getNPhases());  // forces reallocation of terminal stuff
+			if (activeFeederObj.getNumPhases() != otherFeeder.getNumPhases()) {
+				activeFeederObj.setNumPhases(otherFeeder.getNumPhases());
+				activeFeederObj.setNumConds(activeFeederObj.getNumPhases());  // forces reallocation of terminal stuff
 
-				activeFeederObj.setYOrder(activeFeederObj.getNConds() * activeFeederObj.getNTerms());
+				activeFeederObj.setYOrder(activeFeederObj.getNumConds() * activeFeederObj.getNumTerms());
 				activeFeederObj.setYPrimInvalid(true);
 			}
 
@@ -137,7 +137,7 @@ public class FeederImpl extends PCClassImpl implements Feeder {
 			}
 			result = 1;
 		} else {
-			DSSGlobals.doSimpleMsg("Error in Feeder makeLike: \"" + otherFeederName + "\" not found.", 631);
+			DSS.doSimpleMsg("Error in Feeder makeLike: \"" + otherFeederName + "\" not found.", 631);
 		}
 
 		return result;
@@ -145,7 +145,7 @@ public class FeederImpl extends PCClassImpl implements Feeder {
 
 	@Override
 	public int init(int handle) {
-		DSSGlobals.doSimpleMsg("Need to implement Feeder.init()", -1);
+		DSS.doSimpleMsg("Need to implement Feeder.init()", -1);
 		return 0;
 	}
 
