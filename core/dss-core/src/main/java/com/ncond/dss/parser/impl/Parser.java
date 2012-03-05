@@ -331,7 +331,7 @@ public class Parser {
 					tokenBuffer = getToken(nodeBuffer, nodeBufferPos);
 				}
 			} catch (Exception e) {
-				DSSGlobals.DSSForms.messageDlg("Node buffer too small: " + e.getMessage(), true);
+				DSSGlobals.forms.messageDlg("Node buffer too small: " + e.getMessage(), true);
 			}
 
 			delimChars = delimSave;  // restore to original delimiters
@@ -374,7 +374,7 @@ public class Parser {
 
 			result = numElements;
 		} catch (Exception e) {
-			DSSGlobals.DSSForms.messageDlg("Vector buffer in parseAsVector probably too small: " + e.getMessage(), true);
+			DSSGlobals.forms.messageDlg("Vector buffer in parseAsVector probably too small: " + e.getMessage(), true);
 		}
 
 		delimChars  = delimSave;  // restore to original delimiters
@@ -409,7 +409,7 @@ public class Parser {
 				}
 			}
 		} catch (Exception e) {
-			DSSGlobals.DSSForms.messageDlg("Matrix buffer in parseAsMatrix probably too small: " + e.getMessage(), true);
+			DSSGlobals.forms.messageDlg("Matrix buffer in parseAsMatrix probably too small: " + e.getMessage(), true);
 		}
 
 		if (rowBuf != null)
@@ -450,7 +450,7 @@ public class Parser {
 			}
 
 		} catch (Exception e) {
-			DSSGlobals.DSSForms.messageDlg("Matrix buffer in parseAsSymMatrix() probably too small: " + e.getMessage(), true);
+			DSSGlobals.forms.messageDlg("Matrix buffer in parseAsSymMatrix() probably too small: " + e.getMessage(), true);
 		}
 
 		if (rowBuf != null)

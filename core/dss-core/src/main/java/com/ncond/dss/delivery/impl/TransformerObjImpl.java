@@ -635,7 +635,7 @@ public class TransformerObjImpl extends PDElementImpl implements TransformerObj 
 			sol = DSSGlobals.activeCircuit.getSolution();
 
 			for (i = 0; i < YOrder; i++)
-				VTerminal[i] = sol.getNodeV()[nodeRef[i]];
+				VTerminal[i] = sol.getNodeV(nodeRef[i]);
 
 			k = iWind * nConds;  // offset for winding
 			neutTerm = nPhases + k + 1;

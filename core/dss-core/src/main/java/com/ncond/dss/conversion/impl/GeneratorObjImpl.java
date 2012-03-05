@@ -1559,10 +1559,10 @@ public class GeneratorObjImpl extends PCElementImpl implements GeneratorObj {
 
 			switch (connection) {
 			case 0:  /* Wye - neutral is explicit */
-				Va = sol.getNodeV()[nodeRef[0]].subtract( sol.getNodeV()[nodeRef[nConds]] );
+				Va = sol.getNodeV(nodeRef[0]).subtract( sol.getNodeV(nodeRef[nConds]) );
 				break;
 			case 1:  /* Delta -- assume neutral is at zero */
-				Va = sol.getNodeV()[nodeRef[0]];
+				Va = sol.getNodeV(nodeRef[0]);
 				break;
 			}
 
@@ -1653,7 +1653,7 @@ public class GeneratorObjImpl extends PCElementImpl implements GeneratorObj {
 
 			switch (nPhases) {
 			case 1:
-				Edp = sol.getNodeV()[nodeRef[0]].subtract( sol.getNodeV()[nodeRef[1]] ).subtract( getITerminal()[0].multiply(Zthev) );
+				Edp = sol.getNodeV(nodeRef[0]).subtract( sol.getNodeV(nodeRef[1]) ).subtract( getITerminal()[0].multiply(Zthev) );
 				VThevMag = Edp.abs();
 
 				break;
@@ -1663,7 +1663,7 @@ public class GeneratorObjImpl extends PCElementImpl implements GeneratorObj {
 				// voltage behind Xdp  (transient reactance), volts
 
 				for (i = 0; i < nPhases; i++)
-					Vabc[i] = sol.getNodeV()[nodeRef[i]];  // wye voltage
+					Vabc[i] = sol.getNodeV(nodeRef[i]);  // wye voltage
 				MathUtil.phase2SymComp(Vabc, V012);
 				Edp      = V012[1].subtract( I012[1].multiply(Zthev) );  // pos sequence
 				VThevMag = Edp.abs();

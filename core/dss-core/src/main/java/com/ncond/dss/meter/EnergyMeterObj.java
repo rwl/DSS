@@ -56,11 +56,15 @@ public interface EnergyMeterObj extends MeterElement {
 
 	double[] getRegisters();
 
+	double getRegister(int idx);
+
 	void setRegisters(double[] registers);
 
 	double[] getDerivatives();
 
 	void setDerivatives(double[] derivatives);
+
+	double getTotalsMask(int idx);
 
 	double[] getTotalsMask();
 

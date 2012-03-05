@@ -632,7 +632,7 @@ public class LineObjImpl extends PDElementImpl implements LineObj {
 			for (int i = 0; i < 2; i++) {
 				k = i * nPhases;
 				for (int j = 0; j < 3; j++)
-					Vph[j] = DSSGlobals.activeCircuit.getSolution().getNodeV()[nodeRef[k + j]];
+					Vph[j] = DSSGlobals.activeCircuit.getSolution().getNodeV(nodeRef[k + j]);
 				MathUtil.phase2SymComp(Vph, V012);
 				MathUtil.phase2SymComp(ITerminal[k], I012);
 				posSeqLosses = posSeqLosses.add( V012[1].multiply(I012[1].conjugate()) );

@@ -293,7 +293,7 @@ public class ShowOptions {
 			}
 			break;
 		case 10:
-			DSSGlobals.DSSForms.showControlPanel();
+			DSSGlobals.forms.showControlPanel();
 			break;
 		case 11:
 			showOptionCode = 0;
@@ -382,7 +382,7 @@ public class ShowOptions {
 			}
 			break;
 		case 17:
-			DSSGlobals.DSSForms.showMessageForm(DSSGlobals.eventStrings);
+			DSSGlobals.forms.showMessageForm(DSSGlobals.eventStrings);
 			break;
 		case 18:
 			ShowResults.showVariables(DSSGlobals.DSSDataDirectory + DSSGlobals.circuitName_ + "Variables.txt");

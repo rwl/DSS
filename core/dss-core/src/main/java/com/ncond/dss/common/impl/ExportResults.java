@@ -73,7 +73,7 @@ public class ExportResults {
 					if ((ckt.getBus(i).getNumNodesThisBus() == 1) && ckt.isPositiveSequence()) {
 						// first node
 						nref = ckt.getBus(i).getRef(0);  // TODO Check zero based indexing
-						Vph[0] = ckt.getSolution().getNodeV()[nref];
+						Vph[0] = ckt.getSolution().getNodeV(nref);
 						V1 = Vph[0].abs();
 					} else {
 						V1 = 0.0;
@@ -82,7 +82,7 @@ public class ExportResults {
 					Bus bus = ckt.getBus(i);
 					for (j = 1; j < 4; j++) {
 						// first nodes named  1, 2, 3  TODO Check zero based indexing
-						Vph[j] = sol.getNodeV()[ bus.getRef(bus.findIdx(j)) ];
+						Vph[j] = sol.getNodeV( bus.getRef(bus.findIdx(j)) );
 					}
 
 					MathUtil.phase2SymComp(Vph, V012);
@@ -110,7 +110,7 @@ public class ExportResults {
 
 				Vresidual = Complex.ZERO;
 				for (j = 0; j < ckt.getBus(i).getNumNodesThisBus(); j++)
-					Vresidual = Vresidual.add( sol.getNodeV()[ ckt.getBus(i).getRef(j) ]);
+					Vresidual = Vresidual.add( sol.getNodeV( ckt.getBus(i).getRef(j) ));
 
 				writer.printf("\"%s\", %10.6g, %9.5g, %8.2f, %10.6g, %8.4g, %10.6g, %8.4g, %10.6g, %8.4g",
 						ckt.getBusList().get(i).toUpperCase(), V1, Vpu, (ckt.getBus(i).getKVBase() * DSSGlobals.SQRT3), V2, V2V1, V0, V0V1, Vresidual.abs(), V_NEMA);
@@ -170,7 +170,7 @@ public class ExportResults {
 						jj += 1;
 					}
 					nref = bus.getRef(nodeIdx);
-					volts = sol.getNodeV()[nref];
+					volts = sol.getNodeV(nref);
 					Vmag = volts.abs();
 					if (bus.getKVBase() != 0.0) {
 						Vpu = 0.001 * Vmag / bus.getKVBase();
@@ -663,7 +663,7 @@ public class ExportResults {
 						for (i = 0; i < PDElem.getNPhases(); i++) {
 							k = (j - 1) * NCond + i;
 							nref = PDElem.getNodeRef()[k];
-							volts = ckt.getSolution().getNodeV()[nref];
+							volts = ckt.getSolution().getNodeV(nref);
 							Iph[i] = cBuffer[k];
 							Vph[i] = volts;
 						}
@@ -726,7 +726,7 @@ public class ExportResults {
 						for (i = 0; i < PCElem.getNPhases(); i++) {
 							k = (j - 1) * NCond + i;
 							nref = PCElem.getNodeRef()[k];
-							volts = ckt.getSolution().getNodeV()[nref];
+							volts = ckt.getSolution().getNodeV(nref);
 							Iph[i] = cBuffer[k];
 							Vph[i] = volts;
 						}
@@ -1036,7 +1036,7 @@ public class ExportResults {
 					writer.print(ckt.getSolution().getIntHour() + sep);
 					writer.print(Utilities.pad("\""+pElem.getName().toUpperCase()+"\"", 14));
 					for (j = 0; j < EnergyMeter.NUM_EM_REGISTERS; j++)
-						writer.print(sep + pElem.getRegisters()[j]);
+						writer.print(sep + pElem.getRegister(j));
 					writer.println();
 
 					DSSGlobals.globalResult = fileName;
@@ -1105,7 +1105,7 @@ public class ExportResults {
 					writer.print(ckt.getSolution().getIntHour() + sep);
 					writer.print(Utilities.pad("\""+pElem.getName().toUpperCase()+"\"", 14));
 					for (j = 0; j < EnergyMeter.NUM_EM_REGISTERS; j++)
-						writer.printf(sep + pElem.getRegisters()[j]);
+						writer.printf(sep + pElem.getRegister(j));
 					writer.println();
 				}
 			}
@@ -1921,8 +1921,8 @@ public class ExportResults {
 				presentCktElement = (CktElement) activeEnergyMeter.getBranchList().getFirst();
 				while (presentCktElement != null) {
 					if (Utilities.isLineElement(presentCktElement)) {
-						bus1 = ckt.getBus(presentCktElement.getTerminal(0).busRef);
-						bus2 = ckt.getBus(presentCktElement.getTerminal(1).busRef);
+						bus1 = ckt.getBus(presentCktElement.getTerminal(0).getBusRef());
+						bus2 = ckt.getBus(presentCktElement.getTerminal(1).getBusRef());
 						/* Now determin which phase to plot */
 						if ((bus1.getKVBase() > 0.0) && (bus2.getKVBase() > 0.0)) {
 							switch (phasesToPlot) {
@@ -1930,8 +1930,8 @@ public class ExportResults {
 							case DSSGlobals.PROFILE3PH:
 								if ((presentCktElement.getNPhases() >= 3) && (bus1.getKVBase() > 1.0))
 									for (iphs = 0; iphs < 3; iphs++) {
-										puV1 = ckt.getSolution().getNodeV()[bus1.getRef(bus1.findIdx(iphs))].abs() / bus1.getKVBase() / 1000.0;
-										puV2 = ckt.getSolution().getNodeV()[bus2.getRef(bus2.findIdx(iphs))].abs() / bus2.getKVBase() / 1000.0;
+										puV1 = ckt.getSolution().getNodeV( bus1.getRef(bus1.findIdx(iphs)) ).abs() / bus1.getKVBase() / 1000.0;
+										puV2 = ckt.getSolution().getNodeV( bus2.getRef(bus2.findIdx(iphs)) ).abs() / bus2.getKVBase() / 1000.0;
 										writeNewLine(writer, presentCktElement.getName(), bus1.getDistFromMeter(), puV1, bus2.getDistFromMeter(), puV2,
 												iphs, 2, 0, 0, 0, ckt.getNodeMarkerCode(), ckt.getNodeMarkerWidth());
 									}
@@ -1945,8 +1945,8 @@ public class ExportResults {
 										} else {
 											Linetype = 0;
 										}
-										puV1 = ckt.getSolution().getNodeV()[bus1.getRef(bus1.findIdx(iphs))].abs() / bus1.getKVBase() / 1000.0;
-										puV2 = ckt.getSolution().getNodeV()[bus2.getRef(bus2.findIdx(iphs))].abs() / bus2.getKVBase() / 1000.0;
+										puV1 = ckt.getSolution().getNodeV( bus1.getRef(bus1.findIdx(iphs)) ).abs() / bus1.getKVBase() / 1000.0;
+										puV2 = ckt.getSolution().getNodeV( bus2.getRef(bus2.findIdx(iphs)) ).abs() / bus2.getKVBase() / 1000.0;
 										writeNewLine(writer, presentCktElement.getName(), bus1.getDistFromMeter(), puV1, bus2.getDistFromMeter(), puV2,
 												iphs, 2, Linetype, 0, 0, ckt.getNodeMarkerCode(), ckt.getNodeMarkerWidth());
 									}
@@ -1961,8 +1961,8 @@ public class ExportResults {
 											} else {
 												Linetype = 0;
 											}
-											puV1 = ckt.getSolution().getNodeV()[bus1.getRef(bus1.findIdx(iphs))].abs() / bus1.getKVBase() / 1000.0;
-		                                    puV2 = ckt.getSolution().getNodeV()[bus2.getRef(bus2.findIdx(iphs))].abs() / bus2.getKVBase() / 1000.0;
+											puV1 = ckt.getSolution().getNodeV( bus1.getRef(bus1.findIdx(iphs)) ).abs() / bus1.getKVBase() / 1000.0;
+		                                    puV2 = ckt.getSolution().getNodeV( bus2.getRef(bus2.findIdx(iphs)) ).abs() / bus2.getKVBase() / 1000.0;
 		                                    writeNewLine(writer, presentCktElement.getName(), bus1.getDistFromMeter(), puV1, bus2.getDistFromMeter(), puV2,
 		                                    		iphs, 2, Linetype, 0, 0, ckt.getNodeMarkerCode(), ckt.getNodeMarkerWidth());
 										}
@@ -1980,8 +1980,8 @@ public class ExportResults {
 												Linetype = 0;
 											}
 											SolutionObj sol = ckt.getSolution();
-											puV1 = sol.getNodeV()[bus1.getRef(bus1.findIdx(iphs))].subtract( sol.getNodeV()[bus1.getRef(bus1.findIdx(iphs2))] ).abs() / bus1.getKVBase() / 1732.0;
-											puV2 = sol.getNodeV()[bus2.getRef(bus2.findIdx(iphs))].subtract( sol.getNodeV()[bus2.getRef(bus2.findIdx(iphs2))] ).abs() / bus2.getKVBase() / 1732.0;
+											puV1 = sol.getNodeV( bus1.getRef(bus1.findIdx(iphs)) ).subtract( sol.getNodeV(bus1.getRef(bus1.findIdx(iphs2))) ).abs() / bus1.getKVBase() / 1732.0;
+											puV2 = sol.getNodeV( bus2.getRef(bus2.findIdx(iphs)) ).subtract( sol.getNodeV(bus2.getRef(bus2.findIdx(iphs2))) ).abs() / bus2.getKVBase() / 1732.0;
 										}
 										writeNewLine(writer, presentCktElement.getName(), bus1.getDistFromMeter(), puV1, bus2.getDistFromMeter(), puV2,
 												iphs, 2, Linetype, 0, 0, ckt.getNodeMarkerCode(), ckt.getNodeMarkerWidth());
@@ -1999,8 +1999,8 @@ public class ExportResults {
 											Linetype = 0;
 										}
 										SolutionObj sol = ckt.getSolution();
-										puV1 = sol.getNodeV()[bus1.getRef(bus1.findIdx(iphs))].subtract( sol.getNodeV()[bus1.getRef(bus1.findIdx(iphs2))] ).abs() / bus1.getKVBase() / 1732.0;
-										puV2 = sol.getNodeV()[bus2.getRef(bus2.findIdx(iphs))].subtract( sol.getNodeV()[bus2.getRef(bus2.findIdx(iphs2))] ).abs() / bus2.getKVBase() / 1732.0;
+										puV1 = sol.getNodeV( bus1.getRef(bus1.findIdx(iphs)) ).subtract( sol.getNodeV(bus1.getRef(bus1.findIdx(iphs2))) ).abs() / bus1.getKVBase() / 1732.0;
+										puV2 = sol.getNodeV( bus2.getRef(bus2.findIdx(iphs)) ).subtract( sol.getNodeV(bus2.getRef(bus2.findIdx(iphs2))) ).abs() / bus2.getKVBase() / 1732.0;
 									}
 									writeNewLine(writer, presentCktElement.getName(), bus1.getDistFromMeter(), puV1, bus2.getDistFromMeter(), puV2,
 											iphs, 2, Linetype, 0, 0, ckt.getNodeMarkerCode(), ckt.getNodeMarkerWidth());
@@ -2019,8 +2019,8 @@ public class ExportResults {
 												Linetype = 0;
 											}
 											SolutionObj sol = ckt.getSolution();
-											puV1 = sol.getNodeV()[bus1.getRef(bus1.findIdx(iphs))].subtract( sol.getNodeV()[bus1.getRef(bus1.findIdx(iphs2))] ).abs() / bus1.getKVBase() / 1732.0;
-											puV2 = sol.getNodeV()[bus2.getRef(bus2.findIdx(iphs))].subtract( sol.getNodeV()[bus2.getRef(bus2.findIdx(iphs2))] ).abs() / bus2.getKVBase() / 1732.0;
+											puV1 = sol.getNodeV( bus1.getRef(bus1.findIdx(iphs)) ).subtract( sol.getNodeV(bus1.getRef(bus1.findIdx(iphs2))) ).abs() / bus1.getKVBase() / 1732.0;
+											puV2 = sol.getNodeV( bus2.getRef(bus2.findIdx(iphs)) ).subtract( sol.getNodeV(bus2.getRef(bus2.findIdx(iphs2))) ).abs() / bus2.getKVBase() / 1732.0;
 										}
 										writeNewLine(writer, presentCktElement.getName(), bus1.getDistFromMeter(), puV1, bus2.getDistFromMeter(), puV2,
 												iphs, 2, Linetype, 0, 0, ckt.getNodeMarkerCode(), ckt.getNodeMarkerWidth());
@@ -2034,8 +2034,8 @@ public class ExportResults {
 									} else {
 										Linetype = 0;
 									}
-									puV1 = ckt.getSolution().getNodeV()[bus1.getRef(bus1.findIdx(iphs))].abs() / bus1.getKVBase() / 1000.0;
-									puV2 = ckt.getSolution().getNodeV()[bus2.getRef(bus2.findIdx(iphs))].abs() / bus2.getKVBase() / 1000.0;
+									puV1 = ckt.getSolution().getNodeV( bus1.getRef(bus1.findIdx(iphs)) ).abs() / bus1.getKVBase() / 1000.0;
+									puV2 = ckt.getSolution().getNodeV( bus2.getRef(bus2.findIdx(iphs)) ).abs() / bus2.getKVBase() / 1000.0;
 									writeNewLine(writer, presentCktElement.getName(), bus1.getDistFromMeter(), puV1, bus2.getDistFromMeter(), puV2,
 											iphs, 2, Linetype, 0, 0, ckt.getNodeMarkerCode(), ckt.getNodeMarkerWidth());
 								}

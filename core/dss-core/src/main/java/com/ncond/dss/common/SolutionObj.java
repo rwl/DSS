@@ -206,6 +206,8 @@ public interface SolutionObj extends DSSObject {
 
 	void setVoltageBaseChanged(boolean voltageBaseChanged);
 
+	Complex getNodeV(int idx);
+
 	Complex[] getNodeV();
 
 	void setNodeV(Complex[] nodeV);

@@ -334,7 +334,7 @@ public class VSourceObjImpl extends PCElementImpl implements VSourceObj {
 			SolutionObj sol = DSSGlobals.activeCircuit.getSolution();
 
 			for (int i = 0; i < YOrder; i++)
-				VTerminal[i] = sol.getNodeV()[nodeRef[i]];
+				VTerminal[i] = sol.getNodeV(nodeRef[i]);
 
 			YPrim.vMult(curr, VTerminal);  // current from elements in system Y
 

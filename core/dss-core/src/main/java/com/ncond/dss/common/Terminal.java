@@ -6,6 +6,8 @@ public interface Terminal {
 
 	void setBusRef(int busRef);
 
+	int getTermNodeRef(int idx);
+
 	int[] getTermNodeRef();
 
 	void setTermNodeRef(int[] termNodeRef);

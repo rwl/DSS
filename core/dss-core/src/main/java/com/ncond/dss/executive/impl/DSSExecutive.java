@@ -123,7 +123,7 @@ public class DSSExecutive implements Executive {
 			/* Start over */
 			DSSClassDefs.createDSSClasses();
 			createDefaultDSSItems();
-			DSSGlobals.DSSForms.setRebuildHelpForm(true);  // because class strings have changed
+			DSSGlobals.forms.setRebuildHelpForm(true);  // because class strings have changed
 		}
 	}
 

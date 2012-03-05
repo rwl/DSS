@@ -696,7 +696,7 @@ public class DSSCircuit extends NamedObjectImpl implements Circuit {
 		for (i = 0; i < energyMeters.size(); i++) {
 			meter = energyMeters.get(i);
 			for (j = 0; j < EnergyMeterObj.NumEMRegisters; i++)
-				registerTotals[i] += meter.getRegisters()[i] * meter.getTotalsMask()[i];
+				registerTotals[i] += meter.getRegister(i) * meter.getTotalsMask(i);
 		}
 	}
 
@@ -862,7 +862,7 @@ public class DSSCircuit extends NamedObjectImpl implements Circuit {
 			// check for error in node specification
 			for (j = 0; j < nNodes[0]; j++) {
 				if (nodeBuffer[j] < 0) {
-					int retval = DSSGlobals.DSSForms.messageDlg("Error in node specification for element: \""
+					int retval = DSSGlobals.forms.messageDlg("Error in node specification for element: \""
 						+ activeCktElement.getParentClass().getName() + "." + activeCktElement.getName() + "\"" + DSSGlobals.CRLF +
 						"Bus Spec: \"" + Parser.getInstance().getToken() + "\"", false);
 					nodesOK = false;

@@ -74,7 +74,7 @@ public abstract class ShowResults {
 		if (ckt.getBus(i).getNumNodesThisBus() >= 3) {
 
 			for (j = 0; j < 3; j++)
-				Vph[j] = ckt.getSolution().getNodeV()[ ckt.getBus(i).getRef(j) ];
+				Vph[j] = ckt.getSolution().getNodeV( ckt.getBus(i).getRef(j) );
 
 			if (LL) {
 				for (j = 0; j < 3; j++) {
@@ -91,7 +91,7 @@ public abstract class ShowResults {
 			V1 = V012[1].abs();
 			V2 = V012[2].abs();
 		} else {
-			Vph[0] = ckt.getSolution().getNodeV()[ ckt.getBus(i).getRef(0) ];
+			Vph[0] = ckt.getSolution().getNodeV( ckt.getBus(i).getRef(0) );
 			V0 = 0.0;
 			V1 = Vph[0].abs();  // use first phase value for non-three phase buses
 			V2 = 0.0;
@@ -131,7 +131,7 @@ public abstract class ShowResults {
 
 		for (j = 0; j < ckt.getBus(i).getNumNodesThisBus(); j++) {
 			nref = ckt.getBus(i).getRef(j);
-			volts = ckt.getSolution().getNodeV()[nref];
+			volts = ckt.getSolution().getNodeV(nref);
 
 			if (LL && (j < 4)) {  // TODO Check zero based indexing
 				// convert to line-line assuming no more than 3 phases
@@ -139,7 +139,7 @@ public abstract class ShowResults {
 				if (k > 3) k = 1;  // TODO Check zero based indexing
 				if (k <= ckt.getBus(i).getNumNodesThisBus()) {
 					nref = ckt.getBus(i).getRef(k);
-					volts = volts.subtract( ckt.getSolution().getNodeV()[nref] );
+					volts = volts.subtract( ckt.getSolution().getNodeV(nref) );
 				}
 			}
 			Vmag = volts.abs() * 0.001;
@@ -176,7 +176,7 @@ public abstract class ShowResults {
 			for (i = 0; i < nCond; i++) {
 				k++;
 				nref = pElem.getNodeRef()[k];
-				volts = ckt.getSolution().getNodeV()[nref];
+				volts = ckt.getSolution().getNodeV(nref);
 				Vmag  = volts.abs() * 0.001;
 				if (nref == 0) {
 					Vpu = 0.0;
@@ -223,8 +223,8 @@ public abstract class ShowResults {
 				bus2 = 0;
 			}
 			if ((bus1 > 0) && (bus2 > 0)) {  // TODO Check zero based indexing
-				volts1 = ckt.getSolution().getNodeV()[node1];  // OK if Node1 or Node2 = 0
-				volts2 = ckt.getSolution().getNodeV()[node2];
+				volts1 = ckt.getSolution().getNodeV(node1);  // OK if Node1 or Node2 = 0
+				volts2 = ckt.getSolution().getNodeV(node2);
 				volts1 = volts1.subtract(volts2);  // diff voltage
 
 				if (ckt.getBus(bus1).getKVBase() != ckt.getBus(bus2).getKVBase()) {
@@ -632,7 +632,7 @@ public abstract class ShowResults {
 							for (i = 0; i < Math.min(3, pElem.getNPhases()); i++) {
 								k = (j - 1) * nCond + i;
 								nref = pElem.getNodeRef()[k];
-								volts = ckt.getSolution().getNodeV()[nref];
+								volts = ckt.getSolution().getNodeV(nref);
 								Iph[i] = cBuffer[k];
 								Vph[i] = volts;
 							}
@@ -683,7 +683,7 @@ public abstract class ShowResults {
 							for (i = 0; i < Math.min(3, PDElem.getNPhases()); i++) {
 								k = (j - 1) * nCond + i;
 								nref = PDElem.getNodeRef()[k];
-								volts = ckt.getSolution().getNodeV()[nref];
+								volts = ckt.getSolution().getNodeV(nref);
 								Iph[i] = cBuffer[k];
 								Vph[i] = volts;
 							}
@@ -745,7 +745,7 @@ public abstract class ShowResults {
 							for (i = 0; i < Math.min(3, PCElem.getNPhases()); i++) {
 								k = (j - 1) * nCond + i;  // TODO Check zero based indexing
 								nref = PCElem.getNodeRef()[k];
-								volts = ckt.getSolution().getNodeV()[nref] ;
+								volts = ckt.getSolution().getNodeV(nref);
 								Iph[i] = cBuffer[k];
 								Vph[i] = volts;
 							}
@@ -818,7 +818,7 @@ public abstract class ShowResults {
 							for (i = 0; i < nCond; i++) {
 								k++;
 								nref = pElem.getNodeRef()[k];
-								volts = ckt.getSolution().getNodeV()[nref];
+								volts = ckt.getSolution().getNodeV(nref);
 								S = volts.multiply( cBuffer[k].conjugate() );
 								if (/* (pElem.getNPhases() == 1) and */ ckt.isPositiveSequence())
 									S = S.multiply(3.0);
@@ -850,7 +850,7 @@ public abstract class ShowResults {
 							for (i = 0; i < nCond; i++) {
 								k++;
 								nref = pElem.getNodeRef()[k];
-								volts = ckt.getSolution().getNodeV()[nref];
+								volts = ckt.getSolution().getNodeV(nref);
 								S = volts.multiply(cBuffer[k].conjugate());
 								if (/* (pElem.getNPhases() == 1) and */ ckt.isPositiveSequence())
 									S = S.multiply(3.0);
@@ -895,7 +895,7 @@ public abstract class ShowResults {
 							for (i = 0; i < nCond; i++) {
 								k++;
 								nref = pElem.getNodeRef()[k];
-								volts = ckt.getSolution().getNodeV()[nref];
+								volts = ckt.getSolution().getNodeV(nref);
 								S = volts.multiply(cBuffer[k].conjugate());
 								if (/* (pElem.getNPhases() == 1) and */ ckt.isPositiveSequence())
 									S = S.multiply(3.0);
@@ -936,8 +936,8 @@ public abstract class ShowResults {
 	private static boolean checkBusReference(CktElement cktElem, int busReference, int terminalIndex) {
 
 		for (int i = 0; i < cktElem.getNTerms(); i++)
-			if (cktElem.getTerminal(i).busRef == busReference) {
-				terminalIndex = i;
+			if (cktElem.getTerminal(i).getBusRef() == busReference) {
+				terminalIndex = i;  // FIXME pass by reference
 				return true;
 			}
 
@@ -965,7 +965,7 @@ public abstract class ShowResults {
 			for (i = 0; i < Math.min(cktElem.getNPhases(), 3); i++) {
 				k = (j - 1) * nCond + i;  // TODO Check zero based indexing
 				nref = cktElem.getNodeRef()[k];
-				volts = ckt.getSolution().getNodeV()[nref];
+				volts = ckt.getSolution().getNodeV(nref);
 				Iph[i] = cBuffer[k];
 				Vph[i] = volts;
 			}
@@ -1039,7 +1039,7 @@ public abstract class ShowResults {
 			for (i = 0; i < nCond; i++) {
 				k = (jTerm - 1) * nCond + i;  // TODO Check zero based indexing
 				nref = cktElem.getNodeRef()[k];
-				volts = ckt.getSolution().getNodeV()[nref];
+				volts = ckt.getSolution().getNodeV(nref);
 				S = volts.multiply( cBuffer[k].conjugate() );
 				if (/* (CktElem.getNPhases() == 1) and */ ckt.isPositiveSequence())
 					S = S.multiply(3.0);
@@ -1685,7 +1685,7 @@ public abstract class ShowResults {
 						if (pElem.isEnabled()) {
 							pw.print(Utilities.pad(pElem.getName(), 12));
 							for (j = 0; j < EnergyMeter.NUM_EM_REGISTERS; j++)
-								pw.print(pElem.getRegisters()[j] + " ");
+								pw.print(pElem.getRegister(j) + " ");
 						}
 					}
 					pw.println();
@@ -1881,7 +1881,7 @@ public abstract class ShowResults {
 				Utilities.fireOffEditor(fileName);
 				break;
 			default:
-				DSSGlobals.DSSForms.showTreeView(fileName);
+				DSSGlobals.forms.showTreeView(fileName);
 				break;
 			}
 		}
@@ -2504,7 +2504,7 @@ public abstract class ShowResults {
 			fwTree.close();
 
 			Utilities.fireOffEditor(fileName);
-			DSSGlobals.DSSForms.showTreeView(treeName);
+			DSSGlobals.forms.showTreeView(treeName);
 		} catch (IOException e) {
 			// TODO: handle exception
 		}
@@ -2972,8 +2972,8 @@ public abstract class ShowResults {
 
 			for (LoadObj pLoad : ckt.getLoads()) {
 				/* Find bus to which load connected */
-				pBus = ckt.getBus( pLoad.getTerminal(0).busRef );
-				busName = ckt.getBusList().get( pLoad.getTerminal(0).busRef );
+				pBus = ckt.getBus( pLoad.getTerminal(0).getBusRef() );
+				busName = ckt.getBusList().get( pLoad.getTerminal(0).getBusRef() );
 				if (pBus.getKVBase() != 0.0) {
 					if ((pLoad.getNPhases() == 1) && (pLoad.getConnection() == 0)) {
 						if (Math.abs(pLoad.getKVLoadBase() - pBus.getKVBase()) > 0.10 * pBus.getKVBase()) {
@@ -3003,8 +3003,8 @@ public abstract class ShowResults {
 
 			for (GeneratorObj pGen : ckt.getGenerators()) {
 				/* Find bus to which generator connected */
-				pBus = ckt.getBus( pGen.getTerminal(0).busRef );
-				busName = ckt.getBusList().get( pGen.getTerminal(0).busRef );
+				pBus = ckt.getBus( pGen.getTerminal(0).getBusRef() );
+				busName = ckt.getBusList().get( pGen.getTerminal(0).getBusRef() );
 				if (pBus.getKVBase() != 0.0) {
 					if ((pGen.getNPhases() == 1) && (pGen.getConnection() == 0)) {
 						if (Math.abs(pGen.getGenVars().kVGeneratorBase - pBus.getKVBase()) > 0.10 * pBus.getKVBase()) {

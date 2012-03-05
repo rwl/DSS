@@ -4,8 +4,6 @@ import java.io.PrintStream;
 
 import org.apache.commons.math.complex.Complex;
 
-import com.ncond.dss.common.impl.DSSCktElement;
-import com.ncond.dss.common.impl.PowerTerminal;
 import com.ncond.dss.general.DSSObject;
 import com.ncond.dss.shared.CMatrix;
 
@@ -47,9 +45,9 @@ public interface CktElement extends DSSObject {
 
 	void setPartofFeeder(boolean isPartofFeeder);
 
-	DSSCktElement getControlElement();
+	CktElement getControlElement();
 
-	void setControlElement(DSSCktElement controlElement);
+	void setControlElement(CktElement controlElement);
 
 	Complex[] getITerminal();
 
@@ -63,15 +61,15 @@ public interface CktElement extends DSSObject {
 
 	void setBaseFrequency(double baseFrequency);
 
-	PowerTerminal[] getTerminals();
+	Terminal[] getTerminals();
 
-	PowerTerminal getTerminal(int idx);
+	Terminal getTerminal(int idx);
 
-	void setTerminals(PowerTerminal[] terminals);
+	void setTerminals(Terminal[] terminals);
 
-	void setActiveTerminal(PowerTerminal activeTerminal);
+	void setActiveTerminal(Terminal activeTerminal);
 
-	PowerTerminal getActiveTerminal();
+	Terminal getActiveTerminal();
 
 	void setYPrimFreq(double Value);
 

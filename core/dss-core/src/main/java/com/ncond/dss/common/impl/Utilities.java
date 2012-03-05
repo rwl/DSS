@@ -28,6 +28,7 @@ import com.ncond.dss.common.DSSClass;
 import com.ncond.dss.common.FeederObj;
 import com.ncond.dss.common.Solution;
 import com.ncond.dss.common.SolutionObj;
+import com.ncond.dss.common.Terminal;
 import com.ncond.dss.common.impl.DSSBus.NodeBus;
 import com.ncond.dss.common.impl.DSSCircuit.CktElementDef;
 import com.ncond.dss.control.ControlElem;
@@ -173,7 +174,7 @@ public class Utilities {
 		return newArray;
 	}
 
-	public static PowerTerminal[] resizeArray(PowerTerminal[] oldArray, int newSize) {
+	public static Terminal[] resizeArray(Terminal[] oldArray, int newSize) {
 		PowerTerminal[] newArray = new PowerTerminal[newSize];
 		if (oldArray == null)
 			oldArray = newArray;
@@ -1200,7 +1201,7 @@ public class Utilities {
 			dNumNodes = ckt.getNumNodes();
 			pw.printf("%.d",  dNumNodes);
 			for (int i = 0; i < ckt.getNumNodes(); i++) {
-				pw.printf(" %.5f %.5f", sol.getNodeV()[i].getReal(), sol.getNodeV()[i].getImaginary());
+				pw.printf(" %.5f %.5f", sol.getNodeV(i).getReal(), sol.getNodeV(i).getImaginary());
 			}
 
 			pw.close();
@@ -1703,12 +1704,12 @@ public class Utilities {
 	 */
 	public static boolean checkParallel(CktElement line1, CktElement line2) {
 
-		if (line1.getTerminal(0).busRef == line2.getTerminal(0).busRef)
-			if (line1.getTerminal(1).busRef == line2.getTerminal(1).busRef)
+		if (line1.getTerminal(0).getBusRef() == line2.getTerminal(0).getBusRef())
+			if (line1.getTerminal(1).getBusRef() == line2.getTerminal(1).getBusRef())
 				return true;
 
-		if (line1.getTerminal(1).busRef == line2.getTerminal(0).busRef)
-			if (line1.getTerminal(0).busRef == line2.getTerminal(1).busRef)
+		if (line1.getTerminal(1).getBusRef() == line2.getTerminal(0).getBusRef())
+			if (line1.getTerminal(0).getBusRef() == line2.getTerminal(1).getBusRef())
 				return true;
 
 		return false;
@@ -1725,7 +1726,7 @@ public class Utilities {
 				for (int j = 0; j < ckt.getBus(i).getNumNodesThisBus(); j++) {
 					nRef = ckt.getBus(i).getRef(j);
 					if (nRef >= 0)
-						result = Math.max(result, ckt.getSolution().getNodeV()[nRef].abs() / ckt.getBus(i).getKVBase());
+						result = Math.max(result, ckt.getSolution().getNodeV(nRef).abs() / ckt.getBus(i).getKVBase());
 				}
 		}
 
@@ -1747,7 +1748,7 @@ public class Utilities {
 				for (int j = 0; j < bus.getNumNodesThisBus(); j++) {
 					nRef = bus.getRef(j);
 					if (nRef >= 0) {
-						VMagPU = ckt.getSolution().getNodeV()[nRef].abs() / bus.getKVBase();
+						VMagPU = ckt.getSolution().getNodeV(nRef).abs() / bus.getKVBase();
 						if (ignoreNeutrals) {
 							if (VMagPU > 100.0) {  // 0.1 pu
 								result = Math.min(result, VMagPU);  // only check buses greater than 10%
@@ -2078,7 +2079,7 @@ public class Utilities {
 
 	public static void showMessageBeep(String s) {
 		Toolkit.getDefaultToolkit().beep();
-		DSSGlobals.DSSForms.infoMessageDlg(s);
+		DSSGlobals.forms.infoMessageDlg(s);
 	}
 
 	public static boolean isPathBetween(PDElement fromLine, PDElement toLine) {
@@ -2445,7 +2446,7 @@ public class Utilities {
 						// preserve node designations if any
 						nodes = oldBusName.substring(dotpos);
 					}
-					bref  = pCktElem.getTerminal(i).busRef;
+					bref  = pCktElem.getTerminal(i).getBusRef();
 					newBusName = String.format("B_%d%s", bref, nodes);
 					// check for transformer because that will be an exception
 					switch (pCktElem.getDSSObjType() & DSSClassDefs.CLASSMASK) {

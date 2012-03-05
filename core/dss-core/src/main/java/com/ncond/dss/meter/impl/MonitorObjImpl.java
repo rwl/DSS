@@ -506,7 +506,7 @@ public class MonitorObjImpl extends MeterElementImpl implements MonitorObj {
 				for (i = 0; i < nConds; i++) {
 					// nodeRef is set by the main circuit object
 					// it is the index of the terminal into the system node list
-					voltageBuffer[i] = sol.getNodeV()[ nodeRef[i] ];
+					voltageBuffer[i] = sol.getNodeV( nodeRef[i] );
 				}
 			} catch (Exception e) {
 				DSSGlobals.doSimpleMsg(e.getMessage() + DSSGlobals.CRLF + "NodeRef is invalid. Try solving a snapshot or direct before solving in a mode that takes a monitor sample.", 672);
@@ -525,7 +525,7 @@ public class MonitorObjImpl extends MeterElementImpl implements MonitorObj {
 				for (i = 0; i < nConds; i++) {
 					// nodeRef is set by the main circuit object
 					// it is the index of the terminal into the system node list
-					voltageBuffer[i] = sol.getNodeV()[nodeRef[i]];
+					voltageBuffer[i] = sol.getNodeV(nodeRef[i]);
 				}
 			} catch (Exception e) {
 				DSSGlobals.doSimpleMsg(e.getMessage() + DSSGlobals.CRLF + "NodeRef is invalid. Try solving a snapshot or direct before solving in a mode that takes a monitor sample.", 672);

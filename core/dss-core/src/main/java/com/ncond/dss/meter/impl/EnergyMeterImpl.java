@@ -784,7 +784,7 @@ public class EnergyMeterImpl extends MeterClassImpl implements EnergyMeter {
 			bus = ckt.getBus(i);
 			if (bus.getKVBase() > 0.0) {
 				for (j = 0; j < bus.getNumNodesThisBus(); j++) {
-					VMagPU = ckt.getSolution().getNodeV()[ bus.getRef(j) ].abs() / bus.getKVBase() * 0.001;
+					VMagPU = ckt.getSolution().getNodeV( bus.getRef(j) ).abs() / bus.getKVBase() * 0.001;
 					if (VMagPU > 0.1) {  // ignore neutral buses
 						underVMin = Math.min(underVMin, VMagPU);
 						overVMax  = Math.max(overVMax,  VMagPU);

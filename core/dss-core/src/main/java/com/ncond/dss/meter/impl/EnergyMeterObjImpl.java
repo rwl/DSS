@@ -630,7 +630,7 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 							for (i = 0; i < ckt.getBus(fbr).getNumNodesThisBus(); i++) {
 								j = ckt.getBus(fbr).getNum(i);
 								if (j >= 0 && j < 3) {
-									puV = ckt.getSolution().getNodeV()[ ckt.getBus(fbr).getRef(i) ].abs() / ckt.getBus(fbr).getKVBase();
+									puV = ckt.getSolution().getNodeV( ckt.getBus(fbr).getRef(i) ).abs() / ckt.getBus(fbr).getKVBase();
 									VPhaseMax[jiIndex(j, vbi)] = Math.max(VPhaseMax[jiIndex(j, vbi)], puV);
 									VPhaseMin[jiIndex(j, vbi)] = Math.min(VPhaseMin[jiIndex(j, vbi)], puV);
 									VPhaseAccum[jiIndex(j, vbi)] = VPhaseAccum[jiIndex(j, vbi)] + puV;
@@ -1796,6 +1796,14 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 
 	private String makeDIFileName() {
 		return DSSGlobals.energyMeterClass.getDI_Dir() + "/" + getName() + ".csv";
+	}
+
+	public double getRegister(int idx) {
+		return registers[idx];
+	}
+
+	public double getTotalsMask(int idx) {
+		return totalsMask[idx];
 	}
 
 	public String[] getRegisterNames() {

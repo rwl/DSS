@@ -174,7 +174,7 @@ public class SolutionObjImpl extends DSSObjectImpl implements SolutionObj {
 		DSSGlobals.activeCircuit.setIsSolved(false);
 		DSSGlobals.solutionWasAttempted = true;
 
-		DSSGlobals.DSSForms.initProgressForm();  // initialize progress form;
+		DSSGlobals.forms.initProgressForm();  // initialize progress form;
 
 		/* Check of some special conditions that must be met before executing solutions */
 
@@ -1327,6 +1327,10 @@ public class SolutionObjImpl extends DSSObjectImpl implements SolutionObj {
 
 		solveSystem(nodeV);  // solve with zero injection current
 		return 0;
+	}
+
+	public Complex getNodeV(int idx) {
+		return nodeV[idx];
 	}
 
 	public Complex getCurrent(int idx) {

@@ -54,7 +54,7 @@ public class PDElementImpl extends DSSCktElement implements PDElement {
 			if (isEnabled()) {
 				sol = DSSGlobals.activeCircuit.getSolution();
 				for (i = 0; i < YOrder; i++)
-					VTerminal[i] = sol.getNodeV()[nodeRef[i]];
+					VTerminal[i] = sol.getNodeV(nodeRef[i]);
 
 				YPrim.vMult(curr, VTerminal);
 			} else {

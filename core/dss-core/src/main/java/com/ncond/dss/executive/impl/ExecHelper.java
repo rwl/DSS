@@ -370,7 +370,7 @@ public class ExecHelper {
 	}
 
 	public static int doHelpCmd() {
-		DSSGlobals.DSSForms.showHelpForm();
+		DSSGlobals.forms.showHelpForm();
 		return 0;
 	}
 
@@ -895,7 +895,7 @@ public class ExecHelper {
 	public static void doAboutBox() {
 		if (DSSGlobals.noFormsAllowed)
 			return;
-		DSSGlobals.DSSForms.showAboutBox();
+		DSSGlobals.forms.showAboutBox();
 	}
 
 	public static int addObject(String objType, String name) {
@@ -1311,7 +1311,7 @@ public class ExecHelper {
 					for (j = 0; j < cktElem.getNTerms(); j++) {
 						k = j * cktElem.getNConds();
 						for (i = 0; i < 3; i++)
-							Vph[i] = ckt.getSolution().getNodeV()[ cktElem.getTerminal(j).getTermNodeRef()[i] ];
+							Vph[i] = ckt.getSolution().getNodeV( cktElem.getTerminal(j).getTermNodeRef(i) );
 						for (i = 0; i < 3; i++)
 							Iph[i] = cBuffer[k + i];
 						MathUtil.phase2SymComp(Iph, I012);
@@ -1364,7 +1364,7 @@ public class ExecHelper {
 
 								k = j * cktElem.getNConds();
 								for (i = 0; i < 3; i++)
-									Vph[i] = ckt.getSolution().getNodeV()[ cktElem.getNodeRef()[i + k] ];
+									Vph[i] = ckt.getSolution().getNodeV( cktElem.getNodeRef()[i + k] );
 
 								MathUtil.phase2SymComp(Vph, V012);  // compute symmetrical components
 
@@ -1406,7 +1406,7 @@ public class ExecHelper {
 				activeBus = ckt.getBus( ckt.getActiveBusIndex() );
 				DSSGlobals.globalResult = "";
 				for (int i = 0; i < activeBus.getNumNodesThisBus(); i++) {
-					volts = ckt.getSolution().getNodeV()[ activeBus.getRef(i) ];
+					volts = ckt.getSolution().getNodeV( activeBus.getRef(i) );
 					VMag = volts.abs();
 					if (perUnit && (activeBus.getKVBase() > 0.0)) {
 						VMag = VMag * 0.001 / activeBus.getKVBase();
@@ -1573,7 +1573,7 @@ public class ExecHelper {
 		doSelectCmd();  // select active object
 
 		if (DSSGlobals.activeDSSObject != null) {
-			DSSGlobals.DSSForms.showPropEditForm();
+			DSSGlobals.forms.showPropEditForm();
 		} else {
 			DSSGlobals.doSimpleMsg("Element not found.", 272);
 		}
@@ -2817,7 +2817,7 @@ public class ExecHelper {
 			return result;
 		}
 
-		V1 = DSSGlobals.activeCircuit.getSolution().getNodeV()[b1ref];
+		V1 = DSSGlobals.activeCircuit.getSolution().getNodeV(b1ref);
 
 		// get 2nd node voltage
 		DSSGlobals.auxParser.setToken(sNode2);
@@ -2831,7 +2831,7 @@ public class ExecHelper {
 			return result;
 		}
 
-		V2 = DSSGlobals.activeCircuit.getSolution().getNodeV()[b2ref];
+		V2 = DSSGlobals.activeCircuit.getSolution().getNodeV(b2ref);
 
 		VNodeDiff = V1.subtract(V2);
 		DSSGlobals.globalResult = String.format("%.7g, V,    %.7g, deg  ", VNodeDiff.abs(), ComplexUtil.degArg( VNodeDiff ));

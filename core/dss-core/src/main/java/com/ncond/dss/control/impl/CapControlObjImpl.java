@@ -213,7 +213,7 @@ public class CapControlObjImpl extends ControlElemImpl implements CapControlObj 
 
 		if (pBus.getVBus() != null)  // uses nPhases from CapControlObj
 			for (j = 0; j < nPhases; j++)
-				buff[j] = DSSGlobals.activeCircuit.getSolution().getNodeV()[ pBus.getRef(j) ];
+				buff[j] = DSSGlobals.activeCircuit.getSolution().getNodeV( pBus.getRef(j) );
 	}
 
 

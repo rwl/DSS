@@ -513,10 +513,10 @@ public class ExecCommands {
 				break;
 			case 21:
 				if (!DSSGlobals.isDLL)
-					DSSGlobals.DSSForms.exitControlPanel();
+					DSSGlobals.forms.exitControlPanel();
 				break;
 			case 24:
-				DSSGlobals.DSSForms.showControlPanel();
+				DSSGlobals.forms.showControlPanel();
 				break;
 			case 26:
 				ExecHelper.doClearCmd();

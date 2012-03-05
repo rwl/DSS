@@ -99,7 +99,7 @@ public class DSSGlobals {
 	public static final double InvSQRT3x1000 = InvSQRT3 * 1000.0;
 
 	/* DSS Forms */
-	public static DSSForms DSSForms = CommandLineDSSForms.getInstance();
+	public static DSSForms forms = CommandLineDSSForms.getInstance();
 
 	/* Variables */
 	public static boolean DLLFirstTime = true;
@@ -201,11 +201,11 @@ public class DSSGlobals {
 
 		if (!noFormsAllowed) {
 			if (inRedirect) {
-				int retVal = DSSForms.messageDlg(msg, false);
+				int retVal = forms.messageDlg(msg, false);
 				if (retVal == -1)
 					redirectAbort = true;
 			} else {
-				DSSForms.messageDlg(msg, true);
+				forms.messageDlg(msg, true);
 			}
 		}
 
@@ -217,11 +217,11 @@ public class DSSGlobals {
 	public static void doSimpleMsg(String s, int errNum) {
 		if (!noFormsAllowed) {
 			if (inRedirect) {
-				int RetVal = DSSForms.messageDlg(String.format("(%d) %s%s", errNum, CRLF, s), false);
+				int RetVal = forms.messageDlg(String.format("(%d) %s%s", errNum, CRLF, s), false);
 				if (RetVal == -1)
 					redirectAbort = true;
 			} else {
-				DSSForms.infoMessageDlg(String.format("(%d) %s%s", errNum, CRLF, s));
+				forms.infoMessageDlg(String.format("(%d) %s%s", errNum, CRLF, s));
 			}
 		}
 

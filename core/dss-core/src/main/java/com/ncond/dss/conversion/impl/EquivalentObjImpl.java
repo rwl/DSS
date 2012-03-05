@@ -236,7 +236,7 @@ public class EquivalentObjImpl extends PCElementImpl implements EquivalentObj {
 		try {
 			sol = DSSGlobals.activeCircuit.getSolution();
 			for (i = 0; i < YOrder; i++)
-				VTerminal[i] = sol.getNodeV()[nodeRef[i]];
+				VTerminal[i] = sol.getNodeV(nodeRef[i]);
 
 			YPrim.vMult(curr, VTerminal);
 

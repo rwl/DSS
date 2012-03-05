@@ -7,6 +7,7 @@ import org.apache.commons.math.complex.Complex;
 import com.ncond.dss.common.CktElement;
 import com.ncond.dss.common.DSSClass;
 import com.ncond.dss.common.SolutionObj;
+import com.ncond.dss.common.Terminal;
 import com.ncond.dss.general.impl.DSSObjectImpl;
 import com.ncond.dss.shared.CMatrix;
 
@@ -46,16 +47,16 @@ public class DSSCktElement extends DSSObjectImpl implements CktElement {
 	protected boolean checked, hasEnergyMeter, hasSensorObj, isIsolated,
 		hasControl, isPartOfFeeder;
 
-	protected DSSCktElement controlElement;
+	protected CktElement controlElement;
 
 	protected Complex[] ITerminal;
 	protected Complex[] VTerminal;
 
 	protected double baseFrequency;
 
-	protected PowerTerminal[] terminals;
+	protected Terminal[] terminals;
 
-	protected PowerTerminal activeTerminal;
+	protected Terminal activeTerminal;
 
 	public DSSCktElement(DSSClass parClass) {
 		super(parClass);
@@ -367,7 +368,7 @@ public class DSSCktElement extends DSSObjectImpl implements CktElement {
 		size2 = nConds;  // size for one terminal
 		nodeRef = Utilities.resizeArray(nodeRef, size);  // doesn't do anything if already properly allocated
 		System.arraycopy(nodeRefArray[0], 0, nodeRef[iTerm * nConds], 0, size2);
-		System.arraycopy(nodeRefArray[0], 0, terminals[iTerm].termNodeRef[0], 0, size2);  // copy in terminal as well
+		System.arraycopy(nodeRefArray[0], 0, terminals[iTerm].getTermNodeRef(0), 0, size2);  // copy in terminal as well
 
 		// allocate temp array used to hold voltages and currents for calcs
 		VTerminal = Utilities.resizeArray(VTerminal, YOrder);
@@ -485,9 +486,9 @@ public class DSSCktElement extends DSSObjectImpl implements CktElement {
 		sol = DSSGlobals.activeCircuit.getSolution();
 		k = idxTerm * nConds;
 		for (i = 0; i < nConds; i++) {  // 11-7-08 changed from nPhases - was not accounting for all conductors
-			n = activeTerminal.getTermNodeRef()[i];  // don't bother for grounded node
+			n = activeTerminal.getTermNodeRef(i);  // don't bother for grounded node
 			if (n >= 0)
-				cPower = cPower.add( sol.getNodeV()[n].multiply( ITerminal[k + i].conjugate() ) );
+				cPower = cPower.add( sol.getNodeV(n).multiply( ITerminal[k + i].conjugate() ) );
 		}
 
 		/* If this is a positive sequence circuit, then we need to multiply by 3 to get the 3-phase power */
@@ -516,9 +517,9 @@ public class DSSCktElement extends DSSObjectImpl implements CktElement {
 				n = nodeRef[k];
 				if (n >= 0)
 					if (DSSGlobals.activeCircuit.isPositiveSequence()) {
-						cLoss = cLoss.add( sol.getNodeV()[n].multiply(ITerminal[k].conjugate()).multiply(3.0) );
+						cLoss = cLoss.add( sol.getNodeV(n).multiply(ITerminal[k].conjugate()).multiply(3.0) );
 					} else {
-						cLoss = cLoss.add( sol.getNodeV()[n].multiply(ITerminal[k].conjugate()) );
+						cLoss = cLoss.add( sol.getNodeV(n).multiply(ITerminal[k].conjugate()) );
 					}
 			}
 		}
@@ -543,9 +544,9 @@ public class DSSCktElement extends DSSObjectImpl implements CktElement {
 				n = nodeRef[i];  // increment through terminals
 				if (n >= 0) {
 					if (DSSGlobals.activeCircuit.isPositiveSequence()) {
-						powerBuffer[i] = sol.getNodeV()[n].multiply( ITerminal[i].conjugate() ).multiply(3.0);
+						powerBuffer[i] = sol.getNodeV(n).multiply( ITerminal[i].conjugate() ).multiply(3.0);
 					} else {
-						powerBuffer[i] = sol.getNodeV()[n].multiply( ITerminal[i].conjugate() );
+						powerBuffer[i] = sol.getNodeV(n).multiply( ITerminal[i].conjugate() );
 					}
 				}
 			}
@@ -579,9 +580,9 @@ public class DSSCktElement extends DSSObjectImpl implements CktElement {
 					n = nodeRef[k];  // increment through terminals
 					if (n >= 0) {
 						if (DSSGlobals.activeCircuit.isPositiveSequence()) {
-							cLoss = cLoss.add( sol.getNodeV()[n].multiply( ITerminal[k].conjugate() ).multiply(3.0) );
+							cLoss = cLoss.add( sol.getNodeV(n).multiply( ITerminal[k].conjugate() ).multiply(3.0) );
 						} else {
-							cLoss = cLoss.add( sol.getNodeV()[n].multiply( ITerminal[k].conjugate() ) );
+							cLoss = cLoss.add( sol.getNodeV(n).multiply( ITerminal[k].conjugate() ) );
 						}
 					}
 				}
@@ -681,7 +682,7 @@ public class DSSCktElement extends DSSObjectImpl implements CktElement {
 			sol = DSSGlobals.activeCircuit.getSolution();
 
 			for (i = 0; i < ncond; i++)
-				VBuffer[i] = sol.getNodeV()[ terminals[iTerm].getTermNodeRef()[i] ];
+				VBuffer[i] = sol.getNodeV( terminals[iTerm].getTermNodeRef(i) );
 		} catch (Exception e) {
 			DSSGlobals.doSimpleMsg("Error filling voltage buffer in getTermVoltages for circuit element:"+getDSSClassName()+"."+getName()+DSSGlobals.CRLF+
 					"Probable cause: Invalid definition of element."+DSSGlobals.CRLF+
@@ -763,7 +764,7 @@ public class DSSCktElement extends DSSObjectImpl implements CktElement {
 	public void computeVTerminal() {
 		SolutionObj sol = DSSGlobals.activeCircuit.getSolution();
 		for (int i = 0; i < YOrder; i++)
-			VTerminal[i] = sol.getNodeV()[nodeRef[i]];
+			VTerminal[i] = sol.getNodeV(nodeRef[i]);
 	}
 
 	public void zeroITerminal() {
@@ -771,7 +772,7 @@ public class DSSCktElement extends DSSObjectImpl implements CktElement {
 			ITerminal[i] = Complex.ZERO;
 	}
 
-	public PowerTerminal getTerminal(int idx) {
+	public Terminal getTerminal(int idx) {
 		return terminals[idx];
 	}
 
@@ -847,11 +848,11 @@ public class DSSCktElement extends DSSObjectImpl implements CktElement {
 		isPartOfFeeder = isPart;
 	}
 
-	public DSSCktElement getControlElement() {
+	public CktElement getControlElement() {
 		return controlElement;
 	}
 
-	public void setControlElement(DSSCktElement element) {
+	public void setControlElement(CktElement element) {
 		controlElement = element;
 	}
 
@@ -879,19 +880,19 @@ public class DSSCktElement extends DSSObjectImpl implements CktElement {
 		baseFrequency = frequency;
 	}
 
-	public PowerTerminal[] getTerminals() {
+	public Terminal[] getTerminals() {
 		return terminals;
 	}
 
-	public void setTerminals(PowerTerminal[] value) {
+	public void setTerminals(Terminal[] value) {
 		terminals = value;
 	}
 
-	public void setActiveTerminal(PowerTerminal terminal) {
+	public void setActiveTerminal(Terminal terminal) {
 		activeTerminal = terminal;
 	}
 
-	public PowerTerminal getActiveTerminal() {
+	public Terminal getActiveTerminal() {
 		return activeTerminal;
 	}
 

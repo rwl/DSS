@@ -13,6 +13,48 @@ import com.ncond.dss.common.impl.SolverError;
  */
 public interface AutoAdd {
 
+	/**
+	 * Makes a list of unique bus names.
+	 *
+	 * If autoAddBusList in activeCircuit is not null, use this list.
+	 * Otherwise, use the element lists in energy meters.
+	 * If no energy meters, use all the buses in the active circuit.
+	 */
+	void makeBusList();
+
+	/**
+	 * Returns losses in metered part of circuit + weighted EEN values.
+	 *
+	 * If no meters, returns just total losses in circuit.
+	 * Base everything on gen kW.
+	 */
+	double getWeightedLosses();
+
+	/**
+	 * Automatically add caps or generators.
+	 *
+	 * Automatically add a specified size of generator or capacitor at the location
+	 * that results in the lowest losses in either metered part of circuit or
+	 * total circuit, if no meters.
+	 *
+	 * If metered, EEN is also added in with a selected weighting factor (see
+	 * set ueweight= ... command).
+	 *
+	 * Thus, this algorithm placed generators and capacitors to minimize losses and
+	 * potential unserved energy.
+	 *
+	 * @throws ControlProblem
+	 * @throws SolverError
+	 * @throws Esolv32Problem
+	 */
+	int solve() throws SolverError, ControlProblem, Esolv32Problem;
+
+	/**
+	 * Compute injection currents for generator or capacitor and add into
+	 * system currents array.
+	 */
+	void addCurrents(int solveType);
+
 	double getGenKW();
 
 	void setGenKW(double genkW);
@@ -37,21 +79,6 @@ public interface AutoAdd {
 
 	void setModeChanged(boolean modeChanged);
 
-	void makeBusList();
-
 	void appendToFile(String whichFile, String s);
-
-	void addCurrents(int solveType);
-
-	/**
-	 * Automatically add capacitors or generators.
-	 *
-	 * @throws ControlProblem
-	 * @throws SolverError
-	 * @throws Esolv32Problem
-	 */
-	int solve() throws SolverError, ControlProblem, Esolv32Problem;
-
-	double getWeightedLosses();
 
 }

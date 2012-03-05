@@ -347,7 +347,7 @@ public class ReactorObjImpl extends PDElementImpl implements ReactorObj {
 			cNoLoadLosses = Complex.ZERO;
 			sol = DSSGlobals.activeCircuit.getSolution();
 			for (int i = 0; i < nPhases; i++) {
-				Complex V = sol.getNodeV()[nodeRef[i]];
+				Complex V = sol.getNodeV(nodeRef[i]);
 				cNoLoadLosses = cNoLoadLosses.add(new Complex((Math.pow(V.getReal(), 2) + Math.pow(V.getImaginary(), 2)) / Rp, 0.0));  // V^2/Rp
 			}
 

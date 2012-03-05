@@ -1363,10 +1363,10 @@ public class StorageObjImpl extends PCElementImpl implements StorageObj {
 
 			switch (connection) {
 			case 0:  /* wye - neutral is explicit */
-				Va = sol.getNodeV()[nodeRef[0]].subtract( sol.getNodeV()[nodeRef[nConds - 1]] );
+				Va = sol.getNodeV(nodeRef[0]).subtract( sol.getNodeV(nodeRef[nConds - 1]) );
 				break;
 			case 1:  /* delta -- assume neutral is at zero */
-				Va = sol.getNodeV()[nodeRef[0]];
+				Va = sol.getNodeV(nodeRef[0]);
 				break;
 			}
 
