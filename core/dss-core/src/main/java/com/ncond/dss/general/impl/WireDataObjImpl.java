@@ -1,5 +1,6 @@
 package com.ncond.dss.general.impl;
 
+import java.io.OutputStream;
 import java.io.PrintStream;
 
 import com.ncond.dss.common.DSSClass;
@@ -13,8 +14,8 @@ public class WireDataObjImpl extends ConductorDataObjImpl implements WireDataObj
 	}
 
 	@Override
-	public void dumpProperties(PrintStream f, boolean complete) {
-		super.dumpProperties(f, complete);
+	public void dumpProperties(OutputStream out, boolean complete) {
+		super.dumpProperties(out, complete);
 	}
 
 	@Override

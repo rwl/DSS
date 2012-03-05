@@ -1,6 +1,8 @@
 package com.ncond.dss.general.impl;
 
+import java.io.OutputStream;
 import java.io.PrintStream;
+import java.io.PrintWriter;
 
 import org.apache.commons.math.complex.Complex;
 
@@ -35,47 +37,51 @@ public class SpectrumObjImpl extends DSSObjectImpl implements SpectrumObj {
 	}
 
 	@Override
-	public void dumpProperties(PrintStream f, boolean complete) {
+	public void dumpProperties(OutputStream out, boolean complete) {
 		int i, j;
 
-		super.dumpProperties(f, complete);
+		super.dumpProperties(out, complete);
+
+		PrintWriter pw = new PrintWriter(out);
 
 		for (i = 0; i < parentClass.getNumProperties(); i++) {
 			switch (i) {
 			case 1:
-				f.print("~ " + parentClass.getPropertyName()[i] + "=(");
+				pw.print("~ " + parentClass.getPropertyName(i) + "=(");
 				for (j = 0; j < numHarm; j++)
-					f.printf("%-g, ", harmArray[j]);
-				f.println(")");
+					pw.printf("%-g, ", harmArray[j]);
+				pw.println(")");
 				break;
 			case 2:
-				f.print("~ " + parentClass.getPropertyName()[i] + "=(");
+				pw.print("~ " + parentClass.getPropertyName(i) + "=(");
 				for (j = 0; j < numHarm; j++)
-					f.printf("%-g, ", puMagArray[j] * 100.0);
-				f.println(")");
+					pw.printf("%-g, ", puMagArray[j] * 100.0);
+				pw.println(")");
 				break;
 			case 3:
-				f.print("~ " + parentClass.getPropertyName()[i] + "=(");
+				pw.print("~ " + parentClass.getPropertyName(i) + "=(");
 				for (j = 0; j < numHarm; j++)
-					f.printf("%-g, ", angleArray[j]);
-				f.println(")");
+					pw.printf("%-g, ", angleArray[j]);
+				pw.println(")");
 				break;
 			default:
-				f.println("~ " + parentClass.getPropertyName()[i] + "=" + getPropertyValue(i));
+				pw.println("~ " + parentClass.getPropertyName(i) + "=" + getPropertyValue(i));
 				break;
 			}
 		}
 
 		if (complete) {
-			f.println("Multiplier Array:");
-			f.println("Harmonic, Mult.re, Mult.im, Mag,  Angle");
+			pw.println("Multiplier Array:");
+			pw.println("Harmonic, Mult.re, Mult.im, Mag,  Angle");
 			for (i = 0; i < numHarm; i++) {
-				f.printf("%-g, ", harmArray[i]);
-				f.printf("%-g, %-g, ", multArray[i].getReal(), multArray[i].getImaginary());
-				f.printf("%-g, %-g", multArray[i].abs(), ComplexUtil.degArg( multArray[i] ));
-				f.println();
+				pw.printf("%-g, ", harmArray[i]);
+				pw.printf("%-g, %-g, ", multArray[i].getReal(), multArray[i].getImaginary());
+				pw.printf("%-g, %-g", multArray[i].abs(), ComplexUtil.degArg( multArray[i] ));
+				pw.println();
 			}
 		}
+
+		pw.close();
 	}
 
 	public Complex getMult(double h) {

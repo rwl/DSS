@@ -1,6 +1,8 @@
 package com.ncond.dss.conversion.impl;
 
+import java.io.OutputStream;
 import java.io.PrintStream;
+import java.io.PrintWriter;
 
 
 import org.apache.commons.math.complex.Complex;
@@ -367,27 +369,30 @@ public class VSourceObjImpl extends PCElementImpl implements VSourceObj {
 	}
 
 	@Override
-	public void dumpProperties(PrintStream f, boolean complete) {
+	public void dumpProperties(OutputStream out, boolean complete) {
 		Complex c;
 
-		super.dumpProperties(f, complete);
+		super.dumpProperties(out, complete);
+
+		PrintWriter pw = new PrintWriter(out);
 
 		for (int i = 0; i < getParentClass().getNumProperties(); i++)
-			f.println("~ " + getParentClass().getPropertyName()[i] + "=" + propertyValue[i]);
+			pw.println("~ " + getParentClass().getPropertyName(i) + "=" + getPropertyValue(i));
 
 		if (complete) {
-			f.println();
-			f.println("baseFrequency=" + baseFrequency);
-			f.println("vMag=" + VMag);
-			f.println("zMatrix=");
+			pw.println();
+			pw.println("baseFrequency=" + baseFrequency);
+			pw.println("vMag=" + VMag);
+			pw.println("zMatrix=");
 			for (int i = 0; i < nphase; i++) {
 				for (int j = 0; j < i; j++) {
 					c = Z.get(i, j);
-					f.printf("%.8g +j %.8g ", c.getReal(), c.getImaginary());
+					pw.printf("%.8g +j %.8g ", c.getReal(), c.getImaginary());
 				}
-				f.println();
+				pw.println();
 			}
 		}
+		pw.close();
 	}
 
 	@Override

@@ -1,6 +1,8 @@
 package com.ncond.dss.general.impl;
 
+import java.io.OutputStream;
 import java.io.PrintStream;
+import java.io.PrintWriter;
 
 import com.ncond.dss.common.DSSClass;
 import com.ncond.dss.general.ConductorDataObj;
@@ -38,43 +40,46 @@ public class ConductorDataObjImpl extends DSSObjectImpl implements ConductorData
 	}
 
 	@Override
-	public void dumpProperties(PrintStream f, boolean complete) {
-		super.dumpProperties(f, complete);
+	public void dumpProperties(OutputStream out, boolean complete) {
+		super.dumpProperties(out, complete);
+
+		PrintWriter pw = new PrintWriter(out);
 
 		for (int i = 0; i < getParentClass().getNumProperties(); i++) {
-			f.print("~ " + getParentClass().getPropertyName()[i] + "=");
+			pw.print("~ " + getParentClass().getPropertyName(i) + "=");
 			switch (i) {
 			case 0:
-				f.println(String.format("%.6g", getRDC()));
+				pw.printf("%.6g", getRDC());
 				break;
 			case 1:
-				f.println(String.format("%.6g", getR60()));
+				pw.printf("%.6g", getR60());
 				break;
 			case 2:
-				f.println(String.format("%s", LineUnits.lineUnitsStr(getResistanceUnits())));
+				pw.printf("%s", LineUnits.lineUnitsStr(getResistanceUnits()));
 				break;
 			case 3:
-				f.println(String.format("%.6g", getGMR60()));
+				pw.printf("%.6g", getGMR60());
 				break;
 			case 4:
-				f.println(String.format("%s", LineUnits.lineUnitsStr(getGMRUnits())));
+				pw.printf("%s", LineUnits.lineUnitsStr(getGMRUnits()));
 				break;
 			case 5:
-				f.println(String.format("%.6g", getRadius()));
+				pw.printf("%.6g", getRadius());
 				break;
 			case 6:
-				f.println(String.format("%s", LineUnits.lineUnitsStr(getRadiusUnits())));
+				pw.printf("%s", LineUnits.lineUnitsStr(getRadiusUnits()));
 				break;
 			case 7:
-				f.println(String.format("%.6g", getNormAmps()));
+				pw.printf("%.6g", getNormAmps());
 				break;
 			case 8:
-				f.println(String.format("%.6g", getEmergAmps()));
+				pw.printf("%.6g", getEmergAmps());
 				break;
 			case 9:
-				f.println(String.format("%.6g", getRadius() * 2.0));
+				pw.printf("%.6g", getRadius() * 2.0);
 				break;
 			}
+			pw.println();
 		}
 	}
 

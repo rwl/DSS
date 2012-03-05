@@ -1,6 +1,8 @@
 package com.ncond.dss.meter.impl;
 
+import java.io.OutputStream;
 import java.io.PrintStream;
+import java.io.PrintWriter;
 
 import org.apache.commons.math.complex.Complex;
 
@@ -232,14 +234,19 @@ public class SensorObjImpl extends MeterElementImpl implements SensorObj {
 	}
 
 	@Override
-	public void dumpProperties(PrintStream f, boolean complete) {
-		super.dumpProperties(f, complete);
+	public void dumpProperties(OutputStream out, boolean complete) {
+		super.dumpProperties(out, complete);
 
-		for (int i = 0; i < getParentClass().getNumProperties(); i++)
-			f.println("~ " + getParentClass().getPropertyName()[i] + "=" + getPropertyValue(i));
+		PrintWriter pw = new PrintWriter(out);
 
-		if (complete)
-			f.println();
+		for (int i = 0; i < getParentClass().getNumProperties(); i++) {
+			pw.println("~ " + getParentClass().getPropertyName(i) +
+				"=" + getPropertyValue(i));
+		}
+
+		if (complete) pw.println();
+
+		pw.close();
 	}
 
 	// FIXME Private method in OpenDSS

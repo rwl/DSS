@@ -1,6 +1,8 @@
 package com.ncond.dss.general.impl;
 
+import java.io.OutputStream;
 import java.io.PrintStream;
+import java.io.PrintWriter;
 
 import com.ncond.dss.common.DSSClass;
 import com.ncond.dss.general.TCC_Curve;
@@ -154,11 +156,15 @@ public class TCC_CurveObjImpl extends DSSObjectImpl implements TCC_CurveObj {
 	}
 
 	@Override
-	public void dumpProperties(PrintStream f, boolean complete) {
-		super.dumpProperties(f, complete);
+	public void dumpProperties(OutputStream out, boolean complete) {
+		super.dumpProperties(out, complete);
+
+		PrintWriter pw = new PrintWriter(out);
 
 		for (int i = 0; i < parentClass.getNumProperties(); i++)
-			f.println("~ " + parentClass.getPropertyName()[i] + "=" + propertyValue[i]);
+			pw.println("~ " + parentClass.getPropertyName(i) + "=" + propertyValue[i]);
+
+		pw.close();
 	}
 
 	@Override

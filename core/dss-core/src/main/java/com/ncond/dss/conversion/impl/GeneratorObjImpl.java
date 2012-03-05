@@ -4,7 +4,9 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.io.PrintStream;
+import java.io.PrintWriter;
 
 import org.apache.commons.math.complex.Complex;
 import org.apache.commons.math.complex.ComplexUtils;
@@ -1512,29 +1514,35 @@ public class GeneratorObjImpl extends PCElementImpl implements GeneratorObj {
 	}
 
 	@Override
-	public void dumpProperties(PrintStream F, boolean Complete) {
+	public void dumpProperties(OutputStream out, boolean Complete) {
 		int i, idx;
 
-		super.dumpProperties(F, Complete);
+		super.dumpProperties(out, Complete);
 
-		F.println("!dQdV=" + dQdV);
+		PrintWriter pw = new PrintWriter(out);
+
+		pw.println("!dQdV=" + dQdV);
 
 		for (i = 0; i < getParentClass().getNumProperties(); i++) {
-			idx = getParentClass().getPropertyIdxMap()[i];
+			idx = getParentClass().getPropertyIdxMap(i);
 			switch (idx) {
 			case 33:
-				F.println("~ " + getParentClass().getPropertyName()[i] + "=(" + propertyValue[idx] + ")");
+				pw.println("~ " + getParentClass().getPropertyName(i) +
+					"=(" + getPropertyValue(idx) + ")");
 				break;
 			case 35:
-				F.println("~ " + getParentClass().getPropertyName()[i] + "=(" + propertyValue[idx] + ")");
+				pw.println("~ " + getParentClass().getPropertyName(i) +
+					"=(" + getPropertyValue(idx) + ")");
 				break;
 			default:
-				F.println("~ " + getParentClass().getPropertyName()[i] + "=" + propertyValue[idx]);
+				pw.println("~ " + getParentClass().getPropertyName(i) +
+					"=" + getPropertyValue(idx));
 				break;
 			}
 		}
+		pw.println();
 
-		F.println();
+		pw.close();
 	}
 
 	/*

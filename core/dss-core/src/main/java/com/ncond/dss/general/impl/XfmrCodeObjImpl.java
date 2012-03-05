@@ -1,6 +1,8 @@
 package com.ncond.dss.general.impl;
 
+import java.io.OutputStream;
 import java.io.PrintStream;
+import java.io.PrintWriter;
 
 import com.ncond.dss.common.DSSClass;
 import com.ncond.dss.common.impl.DSS;
@@ -133,58 +135,62 @@ public class XfmrCodeObjImpl extends DSSObjectImpl implements XfmrCodeObj {
 	}
 
 	@Override
-	public void dumpProperties(PrintStream f, boolean complete) {
-		super.dumpProperties(f, complete);
+	public void dumpProperties(OutputStream out, boolean complete) {
+		super.dumpProperties(out, complete);
+
+		PrintWriter pw = new PrintWriter(out);
 
 		/* Basic property dump */
-		f.println("~ " + "numWindings=" + numWindings);
-		f.println("~ " + "phases=" + nPhases);
+		pw.println("~ " + "numWindings=" + numWindings);
+		pw.println("~ " + "phases=" + nPhases);
 
 		for (int i = 0; i < numWindings; i++) {
 			Winding wdg = winding[i];
 			if (i == 0) {
-				f.println("~ " + "Wdg=" + i);
+				pw.println("~ " + "Wdg=" + i);
 			} else {
-				f.println("~ " + "Wdg=" + i);
+				pw.println("~ " + "Wdg=" + i);
 			}
 			switch (wdg.getConnection()) {
 			case 0:
-				f.println("~ conn=wye");
+				pw.println("~ conn=wye");
 				break;
 			case 1:
-				f.println("~ conn=delta");
+				pw.println("~ conn=delta");
 				break;
 			}
-			f.println("~ kv=" + wdg.getKVLL());
-			f.println("~ kva=" + wdg.getKVA());
-			f.println("~ tap=" + wdg.getPUTap());
-			f.println("~ %r=" + wdg.getRpu() * 100.0);
-			f.println("~ rneut=" + wdg.getRNeut());
-			f.println("~ xneut=" + wdg.getXNeut());
+			pw.println("~ kv=" + wdg.getKVLL());
+			pw.println("~ kva=" + wdg.getKVA());
+			pw.println("~ tap=" + wdg.getPUTap());
+			pw.println("~ %r=" + wdg.getRpu() * 100.0);
+			pw.println("~ rneut=" + wdg.getRNeut());
+			pw.println("~ xneut=" + wdg.getXNeut());
 		}
 
-		f.println("~ " + "xhl=" + XHL * 100.0);
-		f.println("~ " + "xht=" + XHT * 100.0);
-		f.println("~ " + "xlt=" + XLT * 100.0);
-		f.print("~ Xscmatrix= \"");
+		pw.println("~ " + "xhl=" + XHL * 100.0);
+		pw.println("~ " + "xht=" + XHT * 100.0);
+		pw.println("~ " + "xlt=" + XLT * 100.0);
+		pw.print("~ Xscmatrix= \"");
 		for (int i = 0; i < (numWindings - 1) * numWindings / 2; i++)
-			f.print(XSC[i] * 100.0 + " ");
-		f.println("\"");
-		f.println("~ " + "NormMAxHkVA=" + normMaxHKVA);
-		f.println("~ " + "EmergMAxHkVA=" + emergMaxHKVA);
-		f.println("~ " + "thermal=" + thermalTimeConst);
-		f.println("~ " + "n=" + nThermal);
-		f.println("~ " + "m=" + mThermal);
-		f.println("~ " + "flrise=" + LRise);
-		f.println("~ " + "hsrise=" + HSRise);
-		f.println("~ " + "%loadloss=" + pctLoadLoss);
-		f.println("~ " + "%noloadloss=" + pctNoLoadLoss);
+			pw.print(XSC[i] * 100.0 + " ");
+		pw.println("\"");
+		pw.println("~ " + "NormMAxHkVA=" + normMaxHKVA);
+		pw.println("~ " + "EmergMAxHkVA=" + emergMaxHKVA);
+		pw.println("~ " + "thermal=" + thermalTimeConst);
+		pw.println("~ " + "n=" + nThermal);
+		pw.println("~ " + "m=" + mThermal);
+		pw.println("~ " + "flrise=" + LRise);
+		pw.println("~ " + "hsrise=" + HSRise);
+		pw.println("~ " + "%loadloss=" + pctLoadLoss);
+		pw.println("~ " + "%noloadloss=" + pctNoLoadLoss);
 
 		for (int i = 27; i < XfmrCode.NumPropsThisClass; i++)
-			f.println("~ " + parentClass.getPropertyName()[i] + "=" + getPropertyValue(i));
+			pw.println("~ " + parentClass.getPropertyName(i) + "=" + getPropertyValue(i));
 
 		for (int i = XfmrCode.NumPropsThisClass; i < parentClass.getNumProperties(); i++)
-			f.println("~ " + parentClass.getPropertyName()[i] + "=" + getPropertyValue(i));
+			pw.println("~ " + parentClass.getPropertyName(i) + "=" + getPropertyValue(i));
+
+		pw.close();
 	}
 
 	/**

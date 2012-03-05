@@ -1,5 +1,6 @@
 package com.ncond.dss.general;
 
+import java.io.OutputStream;
 import java.io.PrintStream;
 
 public interface GrowthShapeObj extends DSSObject {
@@ -11,7 +12,7 @@ public interface GrowthShapeObj extends DSSObject {
 
 	void initPropertyValues(int arrayOffset);
 
-	void dumpProperties(PrintStream f, boolean complete);
+	void dumpProperties(OutputStream out, boolean complete);
 
 	/**
 	 * Get multiplier for specified year.

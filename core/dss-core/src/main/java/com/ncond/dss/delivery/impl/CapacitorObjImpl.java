@@ -1,6 +1,8 @@
 package com.ncond.dss.delivery.impl;
 
+import java.io.OutputStream;
 import java.io.PrintStream;
+import java.io.PrintWriter;
 
 import com.ncond.dss.common.DSSClass;
 import com.ncond.dss.common.impl.DSS;
@@ -214,49 +216,52 @@ public class CapacitorObjImpl extends PDElementImpl implements CapacitorObj {
 	}
 
 	@Override
-	public void dumpProperties(PrintStream f, boolean complete) {
-		super.dumpProperties(f, complete);
+	public void dumpProperties(OutputStream out, boolean complete) {
+		super.dumpProperties(out, complete);
 
-		f.println("~ " + parentClass.getPropertyName()[0] + "=" + getFirstBus());
-		f.println("~ " + parentClass.getPropertyName()[1] + "=" + getNextBus());
+		PrintWriter pw = new PrintWriter(out);
 
-		f.println("~ " + parentClass.getPropertyName()[2] + "=" + getNumPhases());
-		f.println("~ " + parentClass.getPropertyName()[3] + "=" + getPropertyValue(3));
+		pw.println("~ " + parentClass.getPropertyName(0) + "=" + getFirstBus());
+		pw.println("~ " + parentClass.getPropertyName(1) + "=" + getNextBus());
 
-		f.println("~ " + parentClass.getPropertyName()[4] + "=" + getKVRating());
+		pw.println("~ " + parentClass.getPropertyName(2) + "=" + getNumPhases());
+		pw.println("~ " + parentClass.getPropertyName(3) + "=" + getPropertyValue(3));
+
+		pw.println("~ " + parentClass.getPropertyName(4) + "=" + getKVRating());
 		switch (getConnection()) {
 		case 0:
-			f.println("~ " + parentClass.getPropertyName()[5] + "=wye");
+			pw.println("~ " + parentClass.getPropertyName(5) + "=wye");
 			break;
 		case 1:
-			f.println("~ " + parentClass.getPropertyName()[6] + "=delta");
+			pw.println("~ " + parentClass.getPropertyName(6) + "=delta");
 			break;
 		}
 		if (getCMatrix() != null) {
-			f.print(parentClass.getPropertyName()[6] + "= (");
+			pw.print(parentClass.getPropertyName(6) + "= (");
 			for (int i = 0; i < getNumPhases(); i++) {
 				for (int j = 0; j < i; j++)
-					f.print((getCMatrix()[i * getNumPhases() + j] * 1.0e6) + " ");
+					pw.print((getCMatrix()[i * getNumPhases() + j] * 1.0e6) + " ");
 				if (i != getNumPhases())
-					f.print("|");
+					pw.print("|");
 			}
-			f.println(")");
+			pw.println(")");
 		}
 
-		f.println("~ " + parentClass.getPropertyName()[7] + "=" + getPropertyValue(7));
-		f.println("~ " + parentClass.getPropertyName()[8] + "=" + getPropertyValue(8));
-		f.println("~ " + parentClass.getPropertyName()[9] + "=" + getPropertyValue(9));
-		f.println("~ " + parentClass.getPropertyName()[10] + "=" + getPropertyValue(10));
-		f.println("~ " + parentClass.getPropertyName()[11] + "=" + getNumSteps());
-		f.println("~ " + parentClass.getPropertyName()[12] + "=" + getPropertyValue(12));
+		pw.println("~ " + parentClass.getPropertyName(7) + "=" + getPropertyValue(7));
+		pw.println("~ " + parentClass.getPropertyName(8) + "=" + getPropertyValue(8));
+		pw.println("~ " + parentClass.getPropertyName(9) + "=" + getPropertyValue(9));
+		pw.println("~ " + parentClass.getPropertyName(10) + "=" + getPropertyValue(10));
+		pw.println("~ " + parentClass.getPropertyName(11) + "=" + getNumSteps());
+		pw.println("~ " + parentClass.getPropertyName(12) + "=" + getPropertyValue(12));
 
 		for (int i = Capacitor.NumPropsThisClass; i < parentClass.getNumProperties(); i++) {
-			f.println("~ " + parentClass.getPropertyName()[i] + "=" + getPropertyValue(i));
+			pw.println("~ " + parentClass.getPropertyName(i) + "=" + getPropertyValue(i));
 		}
 
-		if (complete) {
-			f.println("SpecType=" + getSpecType());
-		}
+		if (complete)
+			pw.println("SpecType=" + getSpecType());
+
+		pw.close();
 	}
 
 	@Override

@@ -3,7 +3,9 @@ package com.ncond.dss.conversion.impl;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
+import java.io.OutputStream;
 import java.io.PrintStream;
+import java.io.PrintWriter;
 
 
 import org.apache.commons.math.complex.Complex;
@@ -1071,23 +1073,28 @@ public class PVSystemObjImpl extends PCElementImpl implements PVSystemObj {
 	}
 
 	@Override
-	public void dumpProperties(PrintStream f, boolean complete) {
+	public void dumpProperties(OutputStream out, boolean complete) {
 		int i, idx;
 
-		super.dumpProperties(f, complete);
+		super.dumpProperties(out, complete);
+
+		PrintWriter pw = new PrintWriter(out);
 
 		for (i = 0; i < getParentClass().getNumProperties(); i++) {
-			idx = getParentClass().getPropertyIdxMap()[i];
+			idx = getParentClass().getPropertyIdxMap(i);
 			switch (idx) {
 			case PVSystem.USER_DATA:
-				f.println("~ " + getParentClass().getPropertyName()[i] + "=(" + getPropertyValue(idx) + ")");
+				pw.println("~ " + getParentClass().getPropertyName(i) +
+					"=(" + getPropertyValue(idx) + ")");
 				break;
 			default:
-				f.println("~ " + getParentClass().getPropertyName()[i] + "=" + getPropertyValue(idx));
+				pw.println("~ " + getParentClass().getPropertyName(i) +
+					"=" + getPropertyValue(idx));
 				break;
 			}
 		}
-		f.println();
+		pw.println();
+		pw.close();
 	}
 
 	/**

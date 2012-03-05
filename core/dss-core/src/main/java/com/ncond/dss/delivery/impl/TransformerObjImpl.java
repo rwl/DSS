@@ -1,5 +1,6 @@
 package com.ncond.dss.delivery.impl;
 
+import java.io.OutputStream;
 import java.io.PrintStream;
 import java.io.PrintWriter;
 
@@ -283,10 +284,10 @@ public class TransformerObjImpl extends PDElementImpl implements TransformerObj 
 		int iProp = getNextPropertySet(-1);  // works on ActiveDSSObject
 		while (iProp >= 0) {
 			/* Trap wdg= and write out array properties instead */
-			switch (parentClass.getRevPropertyIdxMap()[iProp]) {
+			switch (parentClass.getRevPropertyIdxMap(iProp)) {
 			case 2:  // if wdg= was ever used write out arrays ...
 				for (i = 11; i < 16; i++)
-					f.printf(" %s=%s", parentClass.getPropertyName()[i], getPropertyValue(i));
+					f.printf(" %s=%s", parentClass.getPropertyName(i), getPropertyValue(i));
 				for (i = 0; i < numWindings; i++)
 					f.printf(" wdg=%d %sR=%.7g", i, "%", winding[i].getRpu() * 100.0);
 				break;
@@ -309,7 +310,7 @@ public class TransformerObjImpl extends PDElementImpl implements TransformerObj 
 				/* do nothing; */
 				break;
 			default:
-				f.printf(" %s=%s", parentClass.getPropertyName()[ parentClass.getRevPropertyIdxMap()[iProp] ],
+				f.printf(" %s=%s", parentClass.getPropertyName( parentClass.getRevPropertyIdxMap(iProp) ),
 						Util.checkForBlanks( getPropertyValue(iProp) ));
 				break;
 			}
@@ -399,108 +400,111 @@ public class TransformerObjImpl extends PDElementImpl implements TransformerObj 
 	}
 
 	@Override
-	public void dumpProperties(PrintStream f, boolean complete) {
+	public void dumpProperties(OutputStream out, boolean complete) {
 		int i, j;
 
-		super.dumpProperties(f, complete);
+		super.dumpProperties(out, complete);
+
+		PrintWriter pw = new PrintWriter(out);
 
 		/* Basic property dump */
 
-		f.println("~ " + "numWindings=" + numWindings);
-		f.println("~ " + "phases=" + nphase);
+		pw.println("~ " + "numWindings=" + numWindings);
+		pw.println("~ " + "phases=" + nphase);
 
 		for (i = 0; i < numWindings; i++) {
 			Winding W = winding[i];
 			if (i == 0) {
-				f.println("~ " + "wdg=" + i + " bus=" + getFirstBus());
+				pw.println("~ " + "wdg=" + i + " bus=" + getFirstBus());
 			} else {
-				f.println("~ " + "wdg=" + i + " bus=" + getNextBus());
+				pw.println("~ " + "wdg=" + i + " bus=" + getNextBus());
 			}
 
 			switch (W.getConnection()) {
 			case 0:
-				f.println("~ conn=wye");
+				pw.println("~ conn=wye");
 				break;
 			case 1:
-				f.println("~ conn=delta");
+				pw.println("~ conn=delta");
 				break;
 			}
-			f.println("~ kv=" + W.getKVLL());
-			f.println("~ kva=" + W.getKVA());
-			f.println("~ tap=" + W.getPUTap());
-			f.println("~ %r=" + (W.getRpu() * 100.0));
-			f.println("~ rneut=" + W.getRNeut());
-			f.println("~ xneut=" + W.getXNeut());
+			pw.println("~ kv=" + W.getKVLL());
+			pw.println("~ kva=" + W.getKVA());
+			pw.println("~ tap=" + W.getPUTap());
+			pw.println("~ %r=" + (W.getRpu() * 100.0));
+			pw.println("~ rneut=" + W.getRNeut());
+			pw.println("~ xneut=" + W.getXNeut());
 		}
 
-		f.println("~ " + "xhl=" + XHL * 100.0);
-		f.println("~ " + "xht=" + XHT * 100.0);
-		f.println("~ " + "xlt=" + XLT * 100.0);
-		f.print("~ Xscmatrix= \"");
+		pw.println("~ " + "xhl=" + XHL * 100.0);
+		pw.println("~ " + "xht=" + XHT * 100.0);
+		pw.println("~ " + "xlt=" + XLT * 100.0);
+		pw.print("~ Xscmatrix= \"");
 		for (i = 0; i < (numWindings - 1) * numWindings / 2; i++)
-			f.print(XSC[i] * 100.0 + " ");
-		f.println("\"");
-		f.println("~ " + "NormMAxHkVA=" + normMaxHKVA);
-		f.println("~ " + "EmergMAxHkVA=" + emergMaxHKVA);
-		f.println("~ " + "thermal=" + thermalTimeConst);
-		f.println("~ " + "n=" + nThermal);
-		f.println("~ " + "m=" + mThermal);
-		f.println("~ " + "flrise=" + FLRise);
-		f.println("~ " + "hsrise=" + HSRise);
-		f.println("~ " + "%loadloss=" + pctLoadLoss);
-		f.println("~ " + "%noloadloss=" + pctNoLoadLoss);
+			pw.print(XSC[i] * 100.0 + " ");
+		pw.println("\"");
+		pw.println("~ " + "NormMAxHkVA=" + normMaxHKVA);
+		pw.println("~ " + "EmergMAxHkVA=" + emergMaxHKVA);
+		pw.println("~ " + "thermal=" + thermalTimeConst);
+		pw.println("~ " + "n=" + nThermal);
+		pw.println("~ " + "m=" + mThermal);
+		pw.println("~ " + "flrise=" + FLRise);
+		pw.println("~ " + "hsrise=" + HSRise);
+		pw.println("~ " + "%loadloss=" + pctLoadLoss);
+		pw.println("~ " + "%noloadloss=" + pctNoLoadLoss);
 
 		for (i = 27; i < Transformer.NumPropsThisClass; i++)
-			f.println("~ " + parentClass.getPropertyName()[i] + "=" + getPropertyValue(i));
+			pw.println("~ " + parentClass.getPropertyName(i) + "=" + getPropertyValue(i));
 
 		for (i = Transformer.NumPropsThisClass; i < parentClass.getNumProperties(); i++)
-			f.println("~ " + parentClass.getPropertyName()[i] + "=" + getPropertyValue(i));
+			pw.println("~ " + parentClass.getPropertyName(i) + "=" + getPropertyValue(i));
 
 		if (complete) {
-			f.println();
-			f.println("ZB: (inverted)");
+			pw.println();
+			pw.println("ZB: (inverted)");
 			for (i = 0; i < numWindings - 1; i++) {
 				for (j = 0; j < i; j++)
-					f.print(ZB.get(i, j).getReal() + " ");
-				f.println();
+					pw.print(ZB.get(i, j).getReal() + " ");
+				pw.println();
 			}
 			for (i = 0; i < numWindings - 1; i++) {
 				for (j = 0; j < i; j++)
-					f.print(ZB.get(i, j).getImaginary() + " ");
-				f.println();
+					pw.print(ZB.get(i, j).getImaginary() + " ");
+				pw.println();
 			}
 
-			f.println();
-			f.println("Y_OneVolt");
+			pw.println();
+			pw.println("Y_OneVolt");
 			for (i = 0; i < numWindings; i++) {
 				for (j = 0; j < i; j++)
-					f.print(Y_1Volt.get(i, j).getReal() + " ");
-				f.println();
+					pw.print(Y_1Volt.get(i, j).getReal() + " ");
+				pw.println();
 			}
 			for (i = 0; i < numWindings; i++) {
 				for (j = 0; j < i; j++)
-					f.print(Y_1Volt.get(i, j).getImaginary() + " ");
-				f.println();
+					pw.print(Y_1Volt.get(i, j).getImaginary() + " ");
+				pw.println();
 			}
 
-			f.println();
-			f.println("Y_Terminal");
+			pw.println();
+			pw.println("Y_Terminal");
 			for (i = 0; i < 2 * numWindings; i++) {
 				for (j = 0; j < i; j++)
-					f.print(Y_Term.get(i, j).getReal() + " ");
-				f.println();
+					pw.print(Y_Term.get(i, j).getReal() + " ");
+				pw.println();
 			}
 			for (i = 0; i < 2 * numWindings; i++) {
 				for (j = 0; j < i; j++)
-					f.print(Y_Term.get(i, j).getImaginary() + " ");
-				f.println();
+					pw.print(Y_Term.get(i, j).getImaginary() + " ");
+				pw.println();
 			}
-			f.println();
-			f.print("TermRef= ");
+			pw.println();
+			pw.print("TermRef= ");
 			for (i = 0; i < 2 * numWindings * nphase; i++)
-				f.print(termRef[i] + " ");
-			f.println();
+				pw.print(termRef[i] + " ");
+			pw.println();
 		}
+		pw.close();
 	}
 
 	public void setPresentTap(int i, double value) {

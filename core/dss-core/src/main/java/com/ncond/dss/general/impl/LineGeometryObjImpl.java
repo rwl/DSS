@@ -1,5 +1,6 @@
 package com.ncond.dss.general.impl;
 
+import java.io.OutputStream;
 import java.io.PrintStream;
 import java.io.PrintWriter;
 
@@ -79,23 +80,27 @@ public class LineGeometryObjImpl extends DSSObjectImpl implements LineGeometryOb
 	}
 
 	@Override
-	public void dumpProperties(PrintStream f, boolean complete) {
-		super.dumpProperties(f, complete);
+	public void dumpProperties(OutputStream out, boolean complete) {
+		super.dumpProperties(out, complete);
+
+		PrintWriter pw = new PrintWriter(out);
 
 		for (int i = 0; i < 2; i++)
-			f.println("~ " + parentClass.getPropertyName()[i] + "=" + getPropertyValue(i));
+			pw.println("~ " + parentClass.getPropertyName(i) + "=" + getPropertyValue(i));
 
 		for (int j = 0; j < nConds; j++) {
 			setActiveCond(j);
-			f.println("~ " + parentClass.getPropertyName()[2] + "=" + getPropertyValue(2));
-			f.println("~ " + parentClass.getPropertyName()[3] + "=" + getPropertyValue(3));
-			f.println("~ " + parentClass.getPropertyName()[4] + "=" + getPropertyValue(4));
-			f.println("~ " + parentClass.getPropertyName()[5] + "=" + getPropertyValue(5));
-			f.println("~ " + parentClass.getPropertyName()[6] + "=" + getPropertyValue(6));
+			pw.println("~ " + parentClass.getPropertyName(2) + "=" + getPropertyValue(2));
+			pw.println("~ " + parentClass.getPropertyName(3) + "=" + getPropertyValue(3));
+			pw.println("~ " + parentClass.getPropertyName(4) + "=" + getPropertyValue(4));
+			pw.println("~ " + parentClass.getPropertyName(5) + "=" + getPropertyValue(5));
+			pw.println("~ " + parentClass.getPropertyName(6) + "=" + getPropertyValue(6));
 		}
 
 		for (int i = 7; i < parentClass.getNumProperties(); i++)
-			f.println("~ " + parentClass.getPropertyName()[i] + "=" + getPropertyValue(i));
+			pw.println("~ " + parentClass.getPropertyName(i) + "=" + getPropertyValue(i));
+
+		pw.close();
 	}
 
 	@Override
@@ -235,7 +240,7 @@ public class LineGeometryObjImpl extends DSSObjectImpl implements LineGeometryOb
 			f.println();
 
 		while (iProp >= 0) {
-			switch (parentClass.getRevPropertyIdxMap()[iProp]) {
+			switch (parentClass.getRevPropertyIdxMap(iProp)) {
 			case 2:  // if cond=, spacing, or wires were ever used write out arrays ...
 				for (int i = 0; i < nConds; i++)
 					f.println(String.format("~ Cond=%d wire=%s X=%.7g h=%.7g units=%s",
@@ -275,7 +280,7 @@ public class LineGeometryObjImpl extends DSSObjectImpl implements LineGeometryOb
 				break;
 			default:
 				f.println(String.format("~ %s=%s",
-						parentClass.getPropertyName()[parentClass.getRevPropertyIdxMap()[iProp]], Util.checkForBlanks(propertyValue[iProp])));
+						parentClass.getPropertyName(parentClass.getRevPropertyIdxMap(iProp)), Util.checkForBlanks(propertyValue[iProp])));
 				break;
 			}
 			iProp = getNextPropertySet(iProp);

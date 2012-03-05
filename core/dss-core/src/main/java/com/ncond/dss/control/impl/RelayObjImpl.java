@@ -1,6 +1,8 @@
 package com.ncond.dss.control.impl;
 
+import java.io.OutputStream;
 import java.io.PrintStream;
+import java.io.PrintWriter;
 
 import org.apache.commons.math.complex.Complex;
 
@@ -372,36 +374,39 @@ public class RelayObjImpl extends ControlElemImpl implements RelayObj {
 	}
 
 	@Override
-	public void dumpProperties(PrintStream f, boolean complete) {
-		super.dumpProperties(f, complete);
+	public void dumpProperties(OutputStream out, boolean complete) {
+		super.dumpProperties(out, complete);
+
+		PrintWriter pw = new PrintWriter(out);
 
 		for (int i = 0; i < getParentClass().getNumProperties(); i++)
-			f.println("~ " + getParentClass().getPropertyName()[i] + "=" + getPropertyValue( getParentClass().getPropertyIdxMap()[i] ));
+			pw.println("~ " + getParentClass().getPropertyName(i) + "=" + getPropertyValue( getParentClass().getPropertyIdxMap(i) ));
 
-		if (complete)
-		f.println();
+		if (complete) pw.println();
+
+		pw.close();
 	}
 
 	@Override
 	public String getPropertyValue(int index) {
-		String result = "";
+		String val = "";
 
-		switch (getParentClass().getPropertyIdxMap()[index]) {
+		switch (getParentClass().getPropertyIdxMap(index)) {
 		case 13:
-			result = "(";
+			val = "(";
 			if (numReclose == 0) {
-				result = result + "NONE";
+				val = val + "NONE";
 			} else {
 				for (int i = 0; i < numReclose; i++)
-					result = result + String.format("%-g, " , recloseIntervals[i]);
-				result = result + ")";
+					val = val + String.format("%-g, " , recloseIntervals[i]);
+				val = val + ")";
 			}
 			break;
 		default:
-			result = super.getPropertyValue(index);
+			val = super.getPropertyValue(index);
 			break;
 		}
-		return result;
+		return val;
 	}
 
 	/**

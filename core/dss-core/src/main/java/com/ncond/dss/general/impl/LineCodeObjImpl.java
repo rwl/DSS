@@ -1,6 +1,8 @@
 package com.ncond.dss.general.impl;
 
+import java.io.OutputStream;
 import java.io.PrintStream;
+import java.io.PrintWriter;
 
 import org.apache.commons.math.complex.Complex;
 
@@ -153,45 +155,49 @@ public class LineCodeObjImpl extends DSSObjectImpl implements LineCodeObj {
 	}
 
 	@Override
-	public void dumpProperties(PrintStream F, boolean Complete) {
-		super.dumpProperties(F, Complete);
+	public void dumpProperties(OutputStream out, boolean Complete) {
+		super.dumpProperties(out, Complete);
 
-		F.println("~ " + parentClass.getPropertyName()[0] + "=" + nPhases);
-		F.println("~ " + parentClass.getPropertyName()[1] + "=" + R1);
-		F.println("~ " + parentClass.getPropertyName()[2] + "=" + X1);
-		F.println("~ " + parentClass.getPropertyName()[3] + "=" + R0);
-		F.println("~ " + parentClass.getPropertyName()[4] + "=" + X0);
-		F.println("~ " + parentClass.getPropertyName()[5] + "=" + C1 * 1.0e9);
-		F.println("~ " + parentClass.getPropertyName()[6] + "=" + C0 * 1.0e9);
-		F.println("~ " + parentClass.getPropertyName()[7] + "=" + propertyValue[8]);
-		F.print("~ " + parentClass.getPropertyName()[8] + "=\"");
+		PrintWriter pw = new PrintWriter(out);
+
+		pw.println("~ " + parentClass.getPropertyName(0) + "=" + nPhases);
+		pw.println("~ " + parentClass.getPropertyName(1) + "=" + R1);
+		pw.println("~ " + parentClass.getPropertyName(2) + "=" + X1);
+		pw.println("~ " + parentClass.getPropertyName(3) + "=" + R0);
+		pw.println("~ " + parentClass.getPropertyName(4) + "=" + X0);
+		pw.println("~ " + parentClass.getPropertyName(5) + "=" + C1 * 1.0e9);
+		pw.println("~ " + parentClass.getPropertyName(6) + "=" + C0 * 1.0e9);
+		pw.println("~ " + parentClass.getPropertyName(7) + "=" + propertyValue[8]);
+		pw.print("~ " + parentClass.getPropertyName(8) + "=\"");
 		for (int i = 0; i < nPhases; i++) {
 			for (int j = 0; j < nPhases; j++)
-				F.print(Z.get(i, j).getReal() + " ");
-			F.print("|");
+				pw.print(Z.get(i, j).getReal() + " ");
+			pw.print("|");
 		}
-		F.println("\"");
+		pw.println("\"");
 
-		F.print("~ " + parentClass.getPropertyName()[9] + "=\"");
+		pw.print("~ " + parentClass.getPropertyName(9) + "=\"");
 		for (int i = 0; i < nPhases; i++) {
 			for (int j = 0; j < nPhases; j++)
-				F.print(Z.get(i, j).getImaginary() + " ");
-			F.print("|");
+				pw.print(Z.get(i, j).getImaginary() + " ");
+			pw.print("|");
 		}
-		F.println("\"");
+		pw.println("\"");
 
-		F.print("~ " + parentClass.getPropertyName()[10] + "=\"");
+		pw.print("~ " + parentClass.getPropertyName(10) + "=\"");
 		for (int i = 0; i < nPhases; i++) {
 			for (int j = 0; j < nPhases; j++)
-				F.print((Yc.get(i, j).getImaginary() / DSS.TWO_PI / baseFrequency * 1.e9) + " ");
-			F.print("|");
+				pw.print((Yc.get(i, j).getImaginary() / DSS.TWO_PI / baseFrequency * 1.e9) + " ");
+			pw.print("|");
 		}
-		F.println("\"");
+		pw.println("\"");
 
 		for (int i = 11; i < 21; i++)
-			F.println("~ " + parentClass.getPropertyName()[i] + "=" + propertyValue[i]);
+			pw.println("~ " + parentClass.getPropertyName(i) + "=" + propertyValue[i]);
 
-		F.println(String.format("~ %s=%d", parentClass.getPropertyName()[22], neutralConductor));
+		pw.println(String.format("~ %s=%d", parentClass.getPropertyName(22), neutralConductor));
+
+		pw.close();
 	}
 
 	@Override

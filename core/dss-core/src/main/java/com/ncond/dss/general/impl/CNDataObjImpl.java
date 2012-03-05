@@ -1,6 +1,8 @@
 package com.ncond.dss.general.impl;
 
+import java.io.OutputStream;
 import java.io.PrintStream;
+import java.io.PrintWriter;
 
 import com.ncond.dss.common.DSSClass;
 import com.ncond.dss.general.CNData;
@@ -27,26 +29,30 @@ public class CNDataObjImpl extends CableDataObjImpl implements CNDataObj {
 	}
 
 	@Override
-	public void dumpProperties(PrintStream f, boolean complete) {
-		super.dumpProperties(f, complete);
+	public void dumpProperties(OutputStream out, boolean complete) {
+		super.dumpProperties(out, complete);
+
+		PrintWriter pw = new PrintWriter(out);
 
 		for (int i = 0; i < getParentClass().getNumProperties(); i++) {
-			f.print("~ " + getParentClass().getPropertyName()[i] + "=");
+			pw.print("~ " + getParentClass().getPropertyName(i) + "=");
 			switch (i) {
 			case 0:
-				f.println(String.format("%d", kStrand));
+				pw.printf("%d", kStrand);
 				break;
 			case 1:
-				f.println(String.format("%.6g", diaStrand));
+				pw.printf("%.6g", diaStrand);
 				break;
 			case 2:
-				f.println(String.format("%.6g", gmrStrand));
+				pw.printf("%.6g", gmrStrand);
 				break;
 			case 3:
-				f.println(String.format("%.6g", rStrand));
+				pw.printf("%.6g", rStrand);
 				break;
 			}
+			pw.println();
 		}
+		pw.close();
 	}
 
 	@Override

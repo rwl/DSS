@@ -269,7 +269,7 @@ public class EquivalentObjImpl extends PCElementImpl implements EquivalentObj {
 
 		DSSClass pc = getParentClass();
 		for (i = 0; i < pc.getNumProperties(); i++)
-			f.println("~ " + pc.getPropertyName()[i] + "=" + getPropertyValue(i));
+			f.println("~ " + pc.getPropertyName(i) + "=" + getPropertyValue(i));
 
 		if (complete) {
 			f.println();

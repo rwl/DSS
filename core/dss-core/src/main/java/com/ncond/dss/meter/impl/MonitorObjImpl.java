@@ -4,7 +4,9 @@ import java.io.BufferedWriter;
 import java.io.CharArrayWriter;
 import java.io.File;
 import java.io.FileWriter;
+import java.io.OutputStream;
 import java.io.PrintStream;
+import java.io.PrintWriter;
 
 import org.apache.commons.math.complex.Complex;
 
@@ -771,31 +773,36 @@ public class MonitorObjImpl extends MeterElementImpl implements MonitorObj {
 	}
 
 	@Override
-	public void dumpProperties(PrintStream f, boolean complete) {
-		super.dumpProperties(f, complete);
+	public void dumpProperties(OutputStream out, boolean complete) {
+		super.dumpProperties(out, complete);
 
-		for (int i = 0; i < getParentClass().getNumProperties(); i++)
-			f.println("~ " + getParentClass().getPropertyName()[i] + "=" + getPropertyValue(i));
+		PrintWriter pw = new PrintWriter(out);
+
+		for (int i = 0; i < getParentClass().getNumProperties(); i++) {
+			pw.println("~ " + getParentClass().getPropertyName(i) +
+				"=" + getPropertyValue(i));
+		}
 
 		if (complete) {
-			f.println();
-			f.println("// bufferSize=" + bufferSize);
-			f.println("// hour=" + hour);
-			f.println("// sec=" + sec);
-			f.println("// baseFrequency=" + baseFrequency);
-			f.println("// bufptr=" + bufPtr);
-			f.println("// buffer=");
+			pw.println();
+			pw.println("// bufferSize=" + bufferSize);
+			pw.println("// hour=" + hour);
+			pw.println("// sec=" + sec);
+			pw.println("// baseFrequency=" + baseFrequency);
+			pw.println("// bufptr=" + bufPtr);
+			pw.println("// buffer=");
 			int k = 0;
 			for (int i = 0; i < bufPtr; i++) {
-				f.print(monBuffer[i] + ", ");
+				pw.print(monBuffer[i] + ", ");
 				k += 1;
 				if (k == (2 + ncond * 4)) {
-					f.println();
+					pw.println();
 					k = 0;
 				}
 			}
-			f.println();
+			pw.println();
 		}
+		pw.close();
 	}
 
 	@Override

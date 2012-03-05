@@ -4,6 +4,7 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.io.PrintStream;
 import java.io.PrintWriter;
 import java.util.List;
@@ -1027,63 +1028,66 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 	}
 
 	@Override
-	public void dumpProperties(PrintStream f, boolean complete) {
+	public void dumpProperties(OutputStream out, boolean complete) {
 		int i;
 		PDElement pd;
 		CktElement load;
 
-		super.dumpProperties(f, complete);
+		super.dumpProperties(out, complete);
+
+		PrintWriter pw = new PrintWriter(out);
 
 		for (i = 0; i < getParentClass().getNumProperties(); i++) {
 			switch (i) {
 			case 3:  // option
-				f.print("~ " + getParentClass().getPropertyName()[i] + "=(");
+				pw.print("~ " + getParentClass().getPropertyName(i) + "=(");
 				if (excessFlag) {
-					f.print("E,");
+					pw.print("E,");
 				} else {
-					f.print("T,");
+					pw.print("T,");
 				}
 				if (zoneIsRadial) {
-					f.print(" R,");
+					pw.print(" R,");
 				} else {
-					f.print(" M,");
+					pw.print(" M,");
 				}
 				if (voltageUEOnly) {
-					f.print(" V");
+					pw.print(" V");
 				} else {
-					f.print(" C");
+					pw.print(" C");
 				}
-				f.println(")");
+				pw.println(")");
 				break;
 			case 6:
-				f.println("~ " + getParentClass().getPropertyName()[i] + "=(" + getPropertyValue(i) + ")");
+				pw.println("~ " + getParentClass().getPropertyName(i) + "=(" + getPropertyValue(i) + ")");
 				break;
 			default:
-				f.println("~ " + getParentClass().getPropertyName()[i] + "=" + getPropertyValue(i));
+				pw.println("~ " + getParentClass().getPropertyName(i) + "=" + getPropertyValue(i));
 				break;
 			}
 		}
 
 		if (complete) {
-			f.println("Registers");
+			pw.println("Registers");
 			for (i = 0; i < EnergyMeter.NUM_EM_REGISTERS; i++)
-				f.println("\"" + registerNames[i] + "\" = " + registers[i]);
-			f.println();
+				pw.println("\"" + registerNames[i] + "\" = " + registers[i]);
+			pw.println();
 
-			f.println("Branch List:");
+			pw.println("Branch List:");
 			if (branchList != null) {
 				pd = (PDElement) branchList.getFirst();
 				while (pd != null) {
-					f.println("Circuit Element = " + pd.getName());
+					pw.println("Circuit Element = " + pd.getName());
 					load = (CktElement) branchList.getFirstObject();
 					while (load != null) {
-						f.println("   Shunt Element = " + load.getParentClass().getName() + "." + load.getName());
+						pw.println("   Shunt Element = " + load.getParentClass().getName() + "." + load.getName());
 						load = (CktElement) branchList.getNextObject();
 					}
 					pd = (PDElement) branchList.goForward();
 				}
 			}
 		}
+		pw.close();
 	}
 
 	/**

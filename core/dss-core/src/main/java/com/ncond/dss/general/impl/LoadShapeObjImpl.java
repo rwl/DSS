@@ -1,6 +1,8 @@
 package com.ncond.dss.general.impl;
 
+import java.io.OutputStream;
 import java.io.PrintStream;
+import java.io.PrintWriter;
 
 import org.apache.commons.math.complex.Complex;
 
@@ -254,22 +256,28 @@ public class LoadShapeObjImpl extends DSSObjectImpl implements LoadShapeObj {
 		}
 	}
 
-	public void dumpProperties(PrintStream f, boolean complete) {
-		super.dumpProperties(f, complete);
+	public void dumpProperties(OutputStream out, boolean complete) {
+		super.dumpProperties(out, complete);
+
+		PrintWriter pw = new PrintWriter(out);
 
 		for (int i = 0; i < parentClass.getNumProperties(); i++) {
 			switch (i) {
 			case 2:
-				f.println("~ " + parentClass.getPropertyName()[i] + "=(" + propertyValue[i] + ")");
+				pw.println("~ " + parentClass.getPropertyName(i) +
+					"=(" + propertyValue[i] + ")");
 				break;
 			case 3:
-				f.println("~ " + parentClass.getPropertyName()[i] + "=(" + propertyValue[i] + ")");
+				pw.println("~ " + parentClass.getPropertyName(i) +
+					"=(" + propertyValue[i] + ")");
 				break;
 			default:
-				f.println("~ " + parentClass.getPropertyName()[i] + "=" + propertyValue[i]);
+				pw.println("~ " + parentClass.getPropertyName(i) +
+					"=" + propertyValue[i]);
 				break;
 			}
 		}
+		pw.close();
 	}
 
 	public String getPropertyValue(int index) {

@@ -1,6 +1,6 @@
 package com.ncond.dss.general;
 
-import java.io.PrintStream;
+import java.io.OutputStream;
 import java.io.PrintWriter;
 
 import com.ncond.dss.common.DSSClass;
@@ -54,7 +54,7 @@ public interface DSSObject extends NamedObject {
 
 	void initPropertyValues(int arrayOffset);
 
-	void dumpProperties(PrintStream f, boolean complete);
+	void dumpProperties(OutputStream f, boolean complete);
 
 	void saveWrite(PrintWriter f);
 

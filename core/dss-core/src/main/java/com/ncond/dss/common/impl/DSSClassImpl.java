@@ -318,6 +318,18 @@ public class DSSClassImpl implements DSSClass {
 		return elementList.size();
 	}
 
+	public String getPropertyName(int idx) {
+		return propertyName[idx];
+	}
+
+	public int getPropertyIdxMap(int idx) {
+		return propertyIdxMap[idx];
+	}
+
+	public int getRevPropertyIdxMap(int idx) {
+		return revPropertyIdxMap[idx];
+	}
+
 	public int getNumProperties() {
 		return numProperties;
 	}

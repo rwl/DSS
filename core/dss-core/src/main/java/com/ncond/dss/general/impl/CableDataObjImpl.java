@@ -1,6 +1,8 @@
 package com.ncond.dss.general.impl;
 
+import java.io.OutputStream;
 import java.io.PrintStream;
+import java.io.PrintWriter;
 
 import com.ncond.dss.common.DSSClass;
 import com.ncond.dss.general.CableDataObj;
@@ -26,26 +28,29 @@ public class CableDataObjImpl extends ConductorDataObjImpl implements CableDataO
 	}
 
 	@Override
-	public void dumpProperties(PrintStream f, boolean complete) {
-		super.dumpProperties(f, complete);
+	public void dumpProperties(OutputStream out, boolean complete) {
+		super.dumpProperties(out, complete);
+
+		PrintWriter pw = new PrintWriter(out);
 
 		for (int i = 0; i < getParentClass().getNumProperties(); i++) {
-			f.print("~ " + getParentClass().getPropertyName()[i] + "=");
+			pw.print("~ " + getParentClass().getPropertyName(i) + "=");
 			switch (i) {
 			case 0:
-				f.println(String.format("%.3g", epsR));
+				pw.println(String.format("%.3g", epsR));
 				break;
 			case 1:
-				f.println(String.format("%.6g", insLayer));
+				pw.println(String.format("%.6g", insLayer));
 				break;
 			case 2:
-				f.println(String.format("%.6g", diaIns));
+				pw.println(String.format("%.6g", diaIns));
 				break;
 			case 3:
-				f.println(String.format("%.6g", diaCable));
+				pw.println(String.format("%.6g", diaCable));
 				break;
 			}
 		}
+		pw.close();
 	}
 
 	@Override

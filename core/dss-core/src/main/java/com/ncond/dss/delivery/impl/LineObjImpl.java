@@ -1,6 +1,8 @@
 package com.ncond.dss.delivery.impl;
 
+import java.io.OutputStream;
 import java.io.PrintStream;
+import java.io.PrintWriter;
 
 
 import org.apache.commons.math.complex.Complex;
@@ -409,55 +411,56 @@ public class LineObjImpl extends PDElementImpl implements LineObj {
 	}
 
 	@Override
-	public void dumpProperties(PrintStream f, boolean complete) {
-		super.dumpProperties(f, complete);
+	public void dumpProperties(OutputStream out, boolean complete) {
+		super.dumpProperties(out, complete);
+
+		PrintWriter pw = new PrintWriter(out);
 
 		DSSClass pc = getParentClass();
 
-		f.println("~ " + pc.getPropertyName()[0] + "=" + getFirstBus());
-		f.println("~ " + pc.getPropertyName()[1] + "=" + getNextBus());
+		pw.println("~ " + pc.getPropertyName(0) + "=" + getFirstBus());
+		pw.println("~ " + pc.getPropertyName(1) + "=" + getNextBus());
 
-		f.println("~ " + pc.getPropertyName()[2] + "=" + getCondCode());
-		f.println("~ " + pc.getPropertyName()[3] + "=" + getLen());
-		f.println("~ " + pc.getPropertyName()[4] + "=" + getNumPhases());
-		f.println("~ " + pc.getPropertyName()[5] + "=" + getR1());
-		f.println("~ " + pc.getPropertyName()[6] + "=" + getX1());
-		f.println("~ " + pc.getPropertyName()[7] + "=" + getR0());
-		f.println("~ " + pc.getPropertyName()[8] + "=" + getX0());
-		f.println("~ " + pc.getPropertyName()[9] + "=" + getC1() * 1.0e9);
-		f.println("~ " + pc.getPropertyName()[10] + "=" + getC0() * 1.0e9);
-		f.print("~ " + pc.getPropertyName()[11] + "=" + "\"");
+		pw.println("~ " + pc.getPropertyName(2) + "=" + getCondCode());
+		pw.println("~ " + pc.getPropertyName(3) + "=" + getLen());
+		pw.println("~ " + pc.getPropertyName(4) + "=" + getNumPhases());
+		pw.println("~ " + pc.getPropertyName(5) + "=" + getR1());
+		pw.println("~ " + pc.getPropertyName(6) + "=" + getX1());
+		pw.println("~ " + pc.getPropertyName(7) + "=" + getR0());
+		pw.println("~ " + pc.getPropertyName(8) + "=" + getX0());
+		pw.println("~ " + pc.getPropertyName(9) + "=" + getC1() * 1.0e9);
+		pw.println("~ " + pc.getPropertyName(10) + "=" + getC0() * 1.0e9);
+		pw.print("~ " + pc.getPropertyName(11) + "=" + "\"");
 		for (int i = 0; i < getNumPhases(); i++) {
 			for (int j = 0; j < getNumPhases(); j++)
-				f.print(Z.get(i, j).getReal() + " ");
-			f.print("|");
+				pw.print(Z.get(i, j).getReal() + " ");
+			pw.print("|");
 		}
-		f.println("\"");
-		f.print("~ " + pc.getPropertyName()[12] + "=" + "\"");
+		pw.println("\"");
+		pw.print("~ " + pc.getPropertyName(12) + "=" + "\"");
 		for (int i = 0; i < getNumPhases(); i++) {
 			for (int j = 0; j < getNumPhases(); j++)
-				f.print(Z.get(i, j).getImaginary() + " ");
-			f.print("|");
+				pw.print(Z.get(i, j).getImaginary() + " ");
+			pw.print("|");
 		}
-		f.println("\"");
-		f.print("~ " + pc.getPropertyName()[13] + "=" + "\"");
+		pw.println("\"");
+		pw.print("~ " + pc.getPropertyName(13) + "=" + "\"");
 		for (int i = 0; i < getNumPhases(); i++) {
 			for (int j = 0; j < getNumPhases(); j++)
-				f.print((Yc.get(i, j).getImaginary() / DSS.TWO_PI / baseFrequency * 1.e9) + " ");
-			f.print("|");
+				pw.print((Yc.get(i, j).getImaginary() / DSS.TWO_PI / baseFrequency * 1.e9) + " ");
+			pw.print("|");
 		}
-		f.println("\"");
+		pw.println("\"");
 
-		f.print("~ " + pc.getPropertyName()[13] + "=");
-		if (isSwitch) {
-			f.println("true");
-		} else {
-			f.println("false");
-		}
+		pw.print("~ " + pc.getPropertyName(13) + "=");
+
+		pw.println(isSwitch ? "true" : "false");
 
 		/* Dump the rest by default */
 		for (int i = 14; i < pc.getNumProperties(); i++)
-			f.println("~ " + pc.getPropertyName()[i] + "=" + getPropertyValue(i));
+			pw.println("~ " + pc.getPropertyName(i) + "=" + getPropertyValue(i));
+
+		pw.close();
 	}
 
 	@Override

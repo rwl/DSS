@@ -1,6 +1,8 @@
 package com.ncond.dss.control.impl;
 
+import java.io.OutputStream;
 import java.io.PrintStream;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -190,14 +192,17 @@ public class VVControlObjImpl extends ControlElemImpl implements VVControlObj {
 	}
 
 	@Override
-	public void dumpProperties(PrintStream f, boolean complete) {
-		super.dumpProperties(f, complete);
+	public void dumpProperties(OutputStream out, boolean complete) {
+		super.dumpProperties(out, complete);
+
+		PrintWriter pw = new PrintWriter(out);
 
 		for (int i = 0; i < getParentClass().getNumProperties(); i++)
-			f.println("~ " + getParentClass().getPropertyName()[i] + "=" + getPropertyValue(i));
+			pw.println("~ " + getParentClass().getPropertyName(i) + "=" + getPropertyValue(i));
 
-		if (complete)
-			f.println();
+		if (complete) pw.println();
+
+		pw.close();
 	}
 
 	/**

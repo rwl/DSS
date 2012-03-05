@@ -1150,7 +1150,7 @@ public class Util {
 		for (DSSClass pClass : DSS.DSSClassList) {
 			pw.println("[" + pClass.getName() + "]");
 			for (int i = 0; i < pClass.getNumProperties(); i++)
-				pw.println(i + ", \"" + pClass.getPropertyName()[i] + "\" \"" + pClass.getPropertyHelp()[i] + "\"");
+				pw.println(i + ", \"" + pClass.getPropertyName(i) + "\" \"" + pClass.getPropertyHelp()[i] + "\"");
 		}
 
 		pw.close();

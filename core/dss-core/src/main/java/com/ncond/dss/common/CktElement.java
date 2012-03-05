@@ -141,6 +141,9 @@ public interface CktElement extends DSSObject {
 	 */
 	void computeITerminal();
 
+	/**
+	 * Put terminal voltages in an array.
+	 */
 	void computeVTerminal();
 
 	void zeroITerminal();
@@ -185,6 +188,11 @@ public interface CktElement extends DSSObject {
 	 */
 	void makePosSequence();
 
+	/**
+	 * Bus voltages at indicated terminal.
+	 *
+	 * Fills VBuffer array which must be adequately allocated by calling routine.
+	 */
 	void getTermVoltages(int iTerm, Complex[] VBuffer);
 
 	/**
@@ -204,6 +212,11 @@ public interface CktElement extends DSSObject {
 	void getLosses(Complex[] totalLosses, Complex[] loadLosses,
 			Complex[] noLoadLosses);
 
+	/**
+	 * For the base class, just return complex zero.
+	 *
+	 * Derived classes have to supply appropriate function.
+	 */
 	void getSeqLosses(Complex[] posSeqLosses, Complex[] negSeqLosses,
 			Complex[] zeroModeLosses);
 
@@ -213,6 +226,11 @@ public interface CktElement extends DSSObject {
 
 	void dumpProperties(OutputStream f, boolean complete);
 
+	/**
+	 * Sum terminal currents into system currents array.
+	 *
+	 * Primarily for Newton iteration.
+	 */
 	void sumCurrents();
 
 }

@@ -1,6 +1,8 @@
 package com.ncond.dss.control.impl;
 
+import java.io.OutputStream;
 import java.io.PrintStream;
+import java.io.PrintWriter;
 
 import org.apache.commons.math.complex.Complex;
 
@@ -151,12 +153,18 @@ public class SwtControlObjImpl extends ControlElemImpl implements SwtControlObj 
 	}
 
 	@Override
-	public void dumpProperties(PrintStream f, boolean complete) {
-		super.dumpProperties(f, complete);
+	public void dumpProperties(OutputStream out, boolean complete) {
+		super.dumpProperties(out, complete);
+
+		PrintWriter pw = new PrintWriter(out);
+
 		for (int i = 0; i < getParentClass().getNumProperties(); i++)
-			f.println("~ " + getParentClass().getPropertyName()[i] + "=" + getPropertyValue(getParentClass().getPropertyIdxMap()[i]));
-		if (complete)
-			f.println();
+			pw.println("~ " + getParentClass().getPropertyName(i) +
+				"=" + getPropertyValue(getParentClass().getPropertyIdxMap(i)));
+
+		if (complete) pw.println();
+
+		pw.close();
 	}
 
 	@Override

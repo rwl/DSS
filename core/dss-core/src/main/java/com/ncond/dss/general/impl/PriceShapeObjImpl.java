@@ -1,6 +1,8 @@
 package com.ncond.dss.general.impl;
 
+import java.io.OutputStream;
 import java.io.PrintStream;
+import java.io.PrintWriter;
 
 import com.ncond.dss.common.DSSClass;
 import com.ncond.dss.general.PriceShape;
@@ -158,22 +160,29 @@ public class PriceShapeObjImpl extends DSSObjectImpl implements PriceShapeObj {
 	}
 
 	@Override
-	public void dumpProperties(PrintStream f, boolean complete) {
-		super.dumpProperties(f, complete);
+	public void dumpProperties(OutputStream out, boolean complete) {
+		super.dumpProperties(out, complete);
+
+		PrintWriter pw = new PrintWriter(out);
 
 		for (int i = 0; i < getParentClass().getNumProperties(); i++) {
 			switch (i) {
 			case 2:
-				f.println("~ " + getParentClass().getPropertyName()[i] + "=(" + getPropertyValue(i) + ")");
+				pw.println("~ " + getParentClass().getPropertyName(i) +
+					"=(" + getPropertyValue(i) + ")");
 				break;
 			case 3:
-				f.println("~ " + getParentClass().getPropertyName()[i] + "=(" + getPropertyValue(i) + ")");
+				pw.println("~ " + getParentClass().getPropertyName(i) +
+					"=(" + getPropertyValue(i) + ")");
 				break;
 			default:
-				f.println("~ " + getParentClass().getPropertyName()[i] + "=" + getPropertyValue(i));
+				pw.println("~ " + getParentClass().getPropertyName(i) +
+					"=" + getPropertyValue(i));
 				break;
 			}
 		}
+
+		pw.close();
 	}
 
 	@Override

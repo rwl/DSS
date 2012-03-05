@@ -7,6 +7,7 @@
 
 package com.ncond.dss.general.impl;
 
+import java.io.OutputStream;
 import java.io.PrintStream;
 import java.io.PrintWriter;
 
@@ -55,9 +56,11 @@ public class DSSObjectImpl extends NamedObjectImpl implements DSSObject {
 		hasBeenSaved = false;
 	}
 
-	public void dumpProperties(PrintStream f, boolean complete) {
-		f.println();
-		f.println("new " + getDSSClassName() + '.' + getName());
+	public void dumpProperties(OutputStream out, boolean complete) {
+		PrintWriter pw = new PrintWriter(out);
+		pw.println();
+		pw.println("new " + getDSSClassName() + '.' + getName());
+		pw.close();
 	}
 
 	/**
@@ -90,7 +93,7 @@ public class DSSObjectImpl extends NamedObjectImpl implements DSSObject {
 		int iProp = getNextPropertySet(0); // works on activeDSSObject
 		while (iProp >= 0) {
 			DSSClass pc = parentClass;
-			f.print(" " + pc.getPropertyName()[ pc.getRevPropertyIdxMap()[iProp] ]);
+			f.print(" " + pc.getPropertyName( pc.getRevPropertyIdxMap(iProp) ));
 			f.print("=" + Util.checkForBlanks( propertyValue[iProp] ));
 			iProp = getNextPropertySet(iProp);
 		}

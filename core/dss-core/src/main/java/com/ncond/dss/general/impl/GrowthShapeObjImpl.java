@@ -1,6 +1,8 @@
 package com.ncond.dss.general.impl;
 
+import java.io.OutputStream;
 import java.io.PrintStream;
+import java.io.PrintWriter;
 
 import com.ncond.dss.common.DSSClass;
 import com.ncond.dss.common.impl.Util;
@@ -82,22 +84,28 @@ public class GrowthShapeObjImpl extends DSSObjectImpl implements GrowthShapeObj 
 		}
 	}
 
-	public void dumpProperties(PrintStream f, boolean complete) {
-		super.dumpProperties(f, complete);
+	public void dumpProperties(OutputStream out, boolean complete) {
+		super.dumpProperties(out, complete);
+
+		PrintWriter pw = new PrintWriter(out);
 
 		for (int i = 0; i < parentClass.getNumProperties(); i++) {
 			switch (i) {
 			case 1:
-				f.println("~ " + parentClass.getPropertyName()[i] + "=(" + getPropertyValue(i) + ")");
+				pw.println("~ " + parentClass.getPropertyName(i) +
+					"=(" + getPropertyValue(i) + ")");
 				break;
 			case 2:
-				f.println("~ " + parentClass.getPropertyName()[i] + "=(" + getPropertyValue(i) + ")");
+				pw.println("~ " + parentClass.getPropertyName(i) +
+					"=(" + getPropertyValue(i) + ")");
 				break;
 			default:
-				f.println("~ " + parentClass.getPropertyName()[i] + "=" + getPropertyValue(i));
+				pw.println("~ " + parentClass.getPropertyName(i) +
+					"=" + getPropertyValue(i));
 				break;
 			}
 		}
+		pw.close();
 	}
 
 	public String getPropertyValue(int index) {

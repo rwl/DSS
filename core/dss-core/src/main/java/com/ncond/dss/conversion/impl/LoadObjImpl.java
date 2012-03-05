@@ -1,6 +1,8 @@
 package com.ncond.dss.conversion.impl;
 
+import java.io.OutputStream;
 import java.io.PrintStream;
+import java.io.PrintWriter;
 
 
 import org.apache.commons.math.complex.Complex;
@@ -1238,37 +1240,41 @@ public class LoadObjImpl extends PCElementImpl implements LoadObj {
 		return false;
 	}
 
-	public void dumpProperties(PrintStream f, boolean complete) {
-		super.dumpProperties(f, complete);
+	public void dumpProperties(OutputStream out, boolean complete) {
+		int j;
+
+		super.dumpProperties(out, complete);
+
+		PrintWriter pw = new PrintWriter(out);
 
 		for (int i = 0; i < getParentClass().getNumProperties(); i++) {
 			switch (i) {
 			case 3:
-				f.println("~ " + getParentClass().getPropertyName()[i] + "=" + kWBase);
+				pw.println("~ " + getParentClass().getPropertyName(i) + "=" + kWBase);
 				break;
 			case 4:
-				f.println("~ " + getParentClass().getPropertyName()[i] + "=" + PFNominal);
+				pw.println("~ " + getParentClass().getPropertyName(i) + "=" + PFNominal);
 				break;
 			case 11:
-				f.println("~ " + getParentClass().getPropertyName()[i] + "=" + kVArBase);
+				pw.println("~ " + getParentClass().getPropertyName(i) + "=" + kVArBase);
 				break;
 			case 21:
-				f.println("~ " + getParentClass().getPropertyName()[i] + "=" + kVAAllocationFactor);
+				pw.println("~ " + getParentClass().getPropertyName(i) + "=" + kVAAllocationFactor);
 				break;
 			case 22:
-				f.println("~ " + getParentClass().getPropertyName()[i] + "=" + kVABase);
+				pw.println("~ " + getParentClass().getPropertyName(i) + "=" + kVABase);
 				break;
 			case 32:
-				f.print("~ " + getParentClass().getPropertyName()[i] + "=");
-				for (int j = 0; j < nZIPV; j++)
-					f.print(ZIPV[j] + " ");
-				f.println("\"");
+				pw.print("~ " + getParentClass().getPropertyName(i) + "=");
+				for (j = 0; j < nZIPV; j++) pw.print(ZIPV[j] + " ");
+				pw.println("\"");
 				break;
 			default:
-				f.println("~ " + getParentClass().getPropertyName()[i] + "=" + getPropertyValue(i));
+				pw.println("~ " + getParentClass().getPropertyName(i) + "=" + getPropertyValue(i));
 				break;
 			}
 		}
+		pw.close();
 	}
 
 	/**

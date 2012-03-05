@@ -1329,13 +1329,15 @@ public class StorageObjImpl extends PCElementImpl implements StorageObj {
 		super.dumpProperties(f, complete);
 
 		for (i = 0; i < getParentClass().getNumProperties(); i++) {
-			idx = getParentClass().getPropertyIdxMap()[i] ;
+			idx = getParentClass().getPropertyIdxMap(i);
 			switch (idx) {
 			case Storage.USER_DATA:
-				f.println("~ " + getParentClass().getPropertyName()[i] + "=(" + propertyValue[idx] + ")");
+				f.println("~ " + getParentClass().getPropertyName(i) +
+					"=(" + getPropertyValue(idx) + ")");
 				break;
 			default:
-				f.println("~ " + getParentClass().getPropertyName()[i] + "=" + propertyValue[idx]);
+				f.println("~ " + getParentClass().getPropertyName(i) +
+					"=" + getPropertyValue(idx));
 				break;
 			}
 		}

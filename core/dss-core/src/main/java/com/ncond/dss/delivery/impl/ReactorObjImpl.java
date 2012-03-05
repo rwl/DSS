@@ -1,6 +1,8 @@
 package com.ncond.dss.delivery.impl;
 
+import java.io.OutputStream;
 import java.io.PrintStream;
+import java.io.PrintWriter;
 
 
 import org.apache.commons.math.complex.Complex;
@@ -294,41 +296,45 @@ public class ReactorObjImpl extends PDElementImpl implements ReactorObj {
 	}
 
 	@Override
-	public void dumpProperties(PrintStream f, boolean complete) {
+	public void dumpProperties(OutputStream out, boolean complete) {
 		int i, j, k;
 
-		super.dumpProperties(f, complete);
+		super.dumpProperties(out, complete);
+
+		PrintWriter pw = new PrintWriter(out);
 
 		for (k = 0; k < parentClass.getNumProperties(); k++) {
 			switch (k) {
 			case 6:
 				if (RMatrix != null) {
-					f.print(parentClass.getPropertyName()[k] + "= (");
+					pw.print(parentClass.getPropertyName(k) + "= (");
 					for (i = 0; i < nphase; i++) {
 						for (j = 0; j < i; j++)
-							f.printf("%-.5g", RMatrix[i * nphase + j] + " ");
+							pw.printf("%-.5g", RMatrix[i * nphase + j] + " ");
 						if (i != nphase - 1)
-							f.print("|");
+							pw.print("|");
 					}
-					f.println(")");
+					pw.println(")");
 				}
 				break;
 			case 7:
 				if (XMatrix != null) {
-					f.print(parentClass.getPropertyName()[k] + "= (");
+					pw.print(parentClass.getPropertyName(k) + "= (");
 					for (i = 0; i < nphase; i++) {
 						for (j = 0; j < i; j++)
-							f.printf("%-.5g", XMatrix[i * nphase + j] + " ");
+							pw.printf("%-.5g", XMatrix[i * nphase + j] + " ");
 						if (i != nphase - 1)
-							f.print("|");
+							pw.print("|");
 					}
-					f.println(")");
+					pw.println(")");
 				} else {
-					f.println("~ " + parentClass.getPropertyName()[k] + "=" + getPropertyValue(k));
+					pw.println("~ " + parentClass.getPropertyName(k) + "=" + getPropertyValue(k));
 				}
 				break;
 			}
 		}
+
+		pw.close();
 	}
 
 	@Override

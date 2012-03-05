@@ -8,6 +8,8 @@ public interface DSSClass {
 
 	void setNumProperties(int numProperties);
 
+	String getPropertyName(int idx);
+
 	String[] getPropertyName();
 
 	void setPropertyName(String[] propertyName);
@@ -16,9 +18,13 @@ public interface DSSClass {
 
 	void setPropertyHelp(String[] propertyHelp);
 
+	int getPropertyIdxMap(int idx);
+
 	int[] getPropertyIdxMap();
 
 	void setPropertyIdxMap(int[] propertyIdxMap);
+
+	int getRevPropertyIdxMap(int idx);
 
 	int[] getRevPropertyIdxMap();
 

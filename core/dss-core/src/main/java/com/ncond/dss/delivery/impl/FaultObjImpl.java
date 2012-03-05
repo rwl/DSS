@@ -1,6 +1,8 @@
 package com.ncond.dss.delivery.impl;
 
+import java.io.OutputStream;
 import java.io.PrintStream;
+import java.io.PrintWriter;
 
 import org.apache.commons.math.complex.Complex;
 
@@ -177,43 +179,47 @@ public class FaultObjImpl extends PDElementImpl implements FaultObj {
 	}
 
 	@Override
-	public void dumpProperties(PrintStream f, boolean complete) {
+	public void dumpProperties(OutputStream out, boolean complete) {
 		int i, j;
 
-		super.dumpProperties(f, complete);
+		super.dumpProperties(out, complete);
+
+		PrintWriter pw = new PrintWriter(out);
 
 		DSSClass pc = getParentClass();
 
-		f.println("~ " + pc.getPropertyName()[0] + "=" + getFirstBus());
-		f.println("~ " + pc.getPropertyName()[1] + "=" + getNextBus());
+		pw.println("~ " + pc.getPropertyName(0) + "=" + getFirstBus());
+		pw.println("~ " + pc.getPropertyName(1) + "=" + getNextBus());
 
-		f.println("~ " + pc.getPropertyName()[2] + "=" + nphase);
-		f.println("~ " + pc.getPropertyName()[3] + "=" + (1.0 / G));
-		f.println("~ " + pc.getPropertyName()[4] + "=" + (stdDev * 100.0));
+		pw.println("~ " + pc.getPropertyName(2) + "=" + nphase);
+		pw.println("~ " + pc.getPropertyName(3) + "=" + (1.0 / G));
+		pw.println("~ " + pc.getPropertyName(4) + "=" + (stdDev * 100.0));
 		if (GMatrix != null) {
-			f.print("~ " + pc.getPropertyName()[5] + "= (");
+			pw.print("~ " + pc.getPropertyName(5) + "= (");
 			for (i = 0; i < nphase; i++) {
 				for (j = 0; j < i; j++)
-					f.print(GMatrix[i * nphase + j] + " ");
+					pw.print(GMatrix[i * nphase + j] + " ");
 				if (i != nphase)
-					f.print("|");
+					pw.print("|");
 			}
-			f.println(")");
+			pw.println(")");
 		}
-		f.println("~ " + pc.getPropertyName()[6] + "=" + onTime);
+		pw.println("~ " + pc.getPropertyName(6) + "=" + onTime);
 		if (isTemporary) {
-			f.println("~ " + pc.getPropertyName()[7] + "= Yes");
+			pw.println("~ " + pc.getPropertyName(7) + "= Yes");
 		} else {
-			f.println("~ " + pc.getPropertyName()[7] + "= No");
+			pw.println("~ " + pc.getPropertyName(7) + "= No");
 		}
-		f.println("~ " + pc.getPropertyName()[8] + "=" + minAmps);
+		pw.println("~ " + pc.getPropertyName(8) + "=" + minAmps);
 
 
 		for (i = Fault.NumPropsThisClass; i < pc.getNumProperties(); i++)
-			f.println("~ " + pc.getPropertyName()[i] + "=" + getPropertyValue(i));
+			pw.println("~ " + pc.getPropertyName(i) + "=" + getPropertyValue(i));
 
 		if (complete)
-			f.println("// SpecType=" + specType);
+			pw.println("// SpecType=" + specType);
+
+		pw.close();
 	}
 
 	public void checkStatus(int controlMode) {
