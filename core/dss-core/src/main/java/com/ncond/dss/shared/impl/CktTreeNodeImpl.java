@@ -48,23 +48,28 @@ public class CktTreeNodeImpl implements CktTreeNode {
 		loopLineObj = null;
 	}
 
+	@Override
 	public void addChild(CktTreeNode value) {
 		childBranches.add(value);
 		childAdded = true;
 	}
 
+	@Override
 	public void addObject(DSSObject value) {
 		shuntObjects.add(value);
 	}
 
+	@Override
 	public CktTreeNode getFirstChild() {
 		return (CktTreeNode) childBranches.getFirst();
 	}
 
+	@Override
 	public CktTreeNode getNextChild() {
 		return (CktTreeNode) childBranches.getNext();
 	}
 
+	@Override
 	public CktTreeNode getParent() {
 		return parentBranch;
 	}
@@ -72,6 +77,7 @@ public class CktTreeNodeImpl implements CktTreeNode {
 	/**
 	 * Number of children at present node.
 	 */
+	@Override
 	public int getNumChildren() {
 		return childBranches.size();
 	}
@@ -79,6 +85,7 @@ public class CktTreeNodeImpl implements CktTreeNode {
 	/**
 	 * Number of objects at present node.
 	 */
+	@Override
 	public int getNumObjects() {
 		return shuntObjects.size();
 	}
@@ -86,6 +93,7 @@ public class CktTreeNodeImpl implements CktTreeNode {
 	/**
 	 * Sequentially access the toBus list if more than one with each invocation of the property.
 	 */
+	@Override
 	public int getToBusReference() {
 		if (numToBuses == 1)  {
 			return toBusList[0];  // always return the first
@@ -100,102 +108,126 @@ public class CktTreeNodeImpl implements CktTreeNode {
 		}
 	}
 
+	@Override
 	public void setToBusReference(int value) {
 		numToBuses += 1;
 		toBusList = Util.resizeArray(toBusList, numToBuses);
 		toBusList[numToBuses] = value;
 	}
 
+	@Override
 	public void resetToBusList() {
 		toBusPtr = -1;
 	}
 
+	@Override
 	public DSSObject getFirstObject() {
 		return (DSSObject) shuntObjects.getFirst();
 	}
 
+	@Override
 	public DSSObject getNextObject() {
 		return (DSSObject) shuntObjects.getNext();
 	}
 
+	@Override
 	public DSSObject getCktObject() {
 		return (DSSObject) cktObject;
 	}
 
+	@Override
 	public void setCktObject(DSSObject ckt) {
 		cktObject = ckt;
 	}
 
+	@Override
 	public int getFromBusReference() {
 		return fromBusReference;
 	}
 
+	@Override
 	public void setFromBusReference(int reference) {
 		fromBusReference = reference;
 	}
 
+	@Override
 	public int getVoltBaseIndex() {
 		return voltBaseIndex;
 	}
 
+	@Override
 	public void setVoltBaseIndex(int index) {
 		voltBaseIndex = index;
 	}
 
+	@Override
 	public int getFromTerminal() {
 		return fromTerminal;
 	}
 
+	@Override
 	public void setFromTerminal(int terminal) {
 		fromTerminal = terminal;
 	}
 
+	@Override
 	public boolean isLoopedHere() {
 		return isLoopedHere;
 	}
 
+	@Override
 	public void setLoopedHere(boolean value) {
 		isLoopedHere = value;
 	}
 
+	@Override
 	public boolean isParallel() {
 		return isParallel;
 	}
 
+	@Override
 	public void setParallel(boolean value) {
 		isParallel = value;
 	}
 
+	@Override
 	public boolean isDangling() {
 		return isDangling;
 	}
 
+	@Override
 	public void setDangling(boolean value) {
 		isDangling = value;
 	}
 
+	@Override
 	public Object getLoopLineObj() {
 		return loopLineObj;
 	}
 
+	@Override
 	public void setLoopLineObj(Object lineObj) {
 		loopLineObj = lineObj;
 	}
 
 	// FIXME Protected members in OpenDSS
 
+	@Override
 	public boolean isChildAdded() {
 		return childAdded;
 	}
 
+	@Override
 	public void setChildAdded(boolean added) {
 		childAdded = added;
 	}
 
+	@Override
 	public int getLexicalLevel() {
 		return lexicalLevel;
 	}
 
+	@Override
 	public void setLexicalLevel(int level) {
 		lexicalLevel = level;
 	}

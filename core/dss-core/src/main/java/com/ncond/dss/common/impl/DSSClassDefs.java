@@ -71,7 +71,7 @@ public class DSSClassDefs {
 	public static final int CAP_CONTROL  = 11 * 8;
 	public static final int REG_CONTROL  = 12 * 8;
 	public static final int CAP_ELEMENT  = 13 * 8;
-	public static final int RELAY_CONTROL = 14 * 8;
+	public static final int RELAY_CONTROL    = 14 * 8;
 	public static final int RECLOSER_CONTROL = 15 * 8;
 	public static final int FUSE_CONTROL     = 16 * 8;
 	public static final int REACTOR_ELEMENT  = 17 * 8;
@@ -87,6 +87,7 @@ public class DSSClassDefs {
 
 	private static int numIntrinsicClasses;
 	private static int numUserClasses;
+
 
 	public static int getNumIntrinsicClasses() {
 		return numIntrinsicClasses;
@@ -167,8 +168,8 @@ public class DSSClassDefs {
 		DSSClassImpl.getDSSClasses().setNew( new RelayImpl() );
 		DSSClassImpl.getDSSClasses().setNew( new RecloserImpl() );
 		DSSClassImpl.getDSSClasses().setNew( new FuseImpl() );
-//		Globals.setFeederClass(new FeederImpl());
-//		DSSClassImpl.getDSSClasses().setNew( Globals.getFeederClass() );
+		//Globals.setFeederClass(new FeederImpl());
+		//DSSClassImpl.getDSSClasses().setNew( Globals.getFeederClass() );
 		DSSClassImpl.getDSSClasses().setNew( new SwtControlImpl() );
 		DSS.PVSystemClass = new PVSystemImpl();
 		DSSClassImpl.getDSSClasses().setNew( DSS.PVSystemClass );
@@ -185,7 +186,7 @@ public class DSSClassDefs {
 
 
 		/* Create classes for custom implementations */
-//		MyClassDefs.createMyDSSClasses();
+		//MyClassDefs.createMyDSSClasses();
 
 		numIntrinsicClasses = DSS.DSSClassList.size();
 		numUserClasses = 0;
@@ -195,16 +196,15 @@ public class DSSClassDefs {
 	}
 
 	public static void disposeDSSClasses() {
-		DSSObject DSSObj;
+		DSSObject obj;
 		String traceName = "";
 		String successFree = "";
 
 		try {
 			successFree = "First Object";
 			for (int i = 0; i < DSS.DSSObjs.size(); i++) {
-				DSSObj    = DSS.DSSObjs.get(i);
-				traceName = DSSObj.getParentClass().getName() + "." + DSSObj.getName();
-				DSSObj = null;
+				obj = DSS.DSSObjs.get(i);
+				traceName = obj.getParentClass().getName() + "." + obj.getName();
 				successFree = traceName;
 			}
 			traceName = "(DSSObjs Class)";
@@ -225,31 +225,24 @@ public class DSSClassDefs {
 			traceName = "(ClassNames)";
 			DSS.classNames = null;
 		} catch (Exception e) {
-			DSS.doSimpleMsg("Exception disposing of DSS class\""+traceName+"\". "+DSS.CRLF + e.getMessage(), 902);
+			DSS.doSimpleMsg("Exception disposing of DSS class\"" + traceName +
+					"\". " + DSS.CRLF + e.getMessage(), 902);
 		}
-	}
-
-	public static void addUserClass() {
-		throw new UnsupportedOperationException();
-	}
-
-	public static void loadUserClasses() {
-		throw new UnsupportedOperationException();
 	}
 
 	/**
 	 * Set lastClassReferenced variable by class name.
 	 */
 	public static boolean setObjectClass(String objType) {
+		int classRef = DSS.classNames.find(objType);
 
-		int ClassRef = DSS.classNames.find(objType);
-
-		switch (ClassRef) {
+		switch (classRef) {
 		case 0:
-			DSS.doSimpleMsg("Error: Object class \"" + objType + "\" not found."+ DSS.CRLF + Parser.getInstance().getCmdString(), 903);
+			DSS.doSimpleMsg("Error: Object class \"" + objType + "\" not found." +
+					DSS.CRLF + Parser.getInstance().getCmdString(), 903);
 			return false;
 		default:
-			DSS.lastClassReferenced = ClassRef;
+			DSS.lastClassReferenced = classRef;
 			break;
 		}
 
@@ -257,8 +250,15 @@ public class DSSClassDefs {
 	}
 
 	public static DSSClass getDSSClass(String className) {
-
 		return DSS.DSSClassList.get( DSS.classNames.find(className.toLowerCase()) );
 	}
+
+//	public static void addUserClass() {
+//		throw new UnsupportedOperationException();
+//	}
+//
+//	public static void loadUserClasses() {
+//		throw new UnsupportedOperationException();
+//	}
 
 }

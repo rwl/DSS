@@ -22,28 +22,34 @@ public class TSLineConstantsImpl extends CableConstantsImpl implements TSLineCon
 		tapeLap   = new double[numConds];
 	}
 
+	@Override
 	public double getDiaShield(int i, int units) {
 		return diaShield[i] * LineUnits.fromMeters(units);
 	}
 
+	@Override
 	public double getTapeLayer(int i, int units) {
 		return tapeLayer[i] * LineUnits.fromMeters(units);
 	}
 
+	@Override
 	public double getTapeLap(int i) {
 		return tapeLap[i];
 	}
 
+	@Override
 	public void setDiaShield(int i, int units, double shield) {
 		if (i >= 0 && i < numConds)
 			diaShield[i] = shield * LineUnits.toMeters(units);
 	}
 
+	@Override
 	public void setTapeLayer(int i, int units, double layer) {
 		if (i >= 0 && i < numConds)
 			tapeLayer[i] = layer * LineUnits.toMeters(units);
 	}
 
+	@Override
 	public void setTapeLap(int i, double lap) {
 		if (i >= 0 && i < numConds)
 			tapeLap[i] = lap;

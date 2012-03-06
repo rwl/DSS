@@ -67,6 +67,7 @@ abstract public class PDElementImpl extends CktElementImpl implements PDElement 
 		}
 	}
 
+	@Override
 	public Complex getExcessKVANorm (int idxTerm) {
 		double factor;
 		Complex result, kVA;
@@ -94,6 +95,7 @@ abstract public class PDElementImpl extends CktElementImpl implements PDElement 
 		return result;
 	}
 
+	@Override
 	public Complex getExcessKVAEmerg(int idxTerm) {
 		double factor;
 		Complex result, kVA;
@@ -130,122 +132,152 @@ abstract public class PDElementImpl extends CktElementImpl implements PDElement 
 		super.initPropertyValues(arrayOffset + 5);
 	}
 
+	@Override
 	public double getNormAmps() {
 		return normAmps;
 	}
 
+	@Override
 	public void setNormAmps(double amps) {
 		normAmps = amps;
 	}
 
+	@Override
 	public double getEmergAmps() {
 		return emergAmps;
 	}
 
+	@Override
 	public void setEmergAmps(double amps) {
 		emergAmps = amps;
 	}
 
+	@Override
 	public double getFaultRate() {
 		return faultRate;
 	}
 
+	@Override
 	public void setFaultRate(double rate) {
 		faultRate = rate;
 	}
 
+	@Override
 	public double getPctPerm() {
 		return pctPerm;
 	}
 
+	@Override
 	public void setPctPerm(double pct) {
 		pctPerm = pct;
 	}
 
+	@Override
 	public double getHrsToRepair() {
 		return hrsToRepair;
 	}
 
+	@Override
 	public void setHrsToRepair(double hrs) {
 		hrsToRepair = hrs;
 	}
 
+	@Override
 	public int getFromTerminal() {
 		return fromTerminal;
 	}
 
+	@Override
 	public void setFromTerminal(int terminal) {
 		fromTerminal = terminal;
 	}
 
+	@Override
 	public int getToTerminal() {
 		return toTerminal;
 	}
 
+	@Override
 	public void setToTerminal(int terminal) {
 		toTerminal = terminal;
 	}
 
+	@Override
 	public boolean isShunt() {
 		return isShunt;
 	}
 
+	@Override
 	public void setShunt(boolean value) {
 		isShunt = value;
 	}
 
+	@Override
 	public int getNumCustomers() {
 		return numCustomers;
 	}
 
+	@Override
 	public void setNumCustomers(int num) {
 		numCustomers = num;
 	}
 
+	@Override
 	public int getTotalCustomers() {
 		return totalCustomers;
 	}
 
+	@Override
 	public void setTotalCustomers(int total) {
 		totalCustomers = total;
 	}
 
+	@Override
 	public PDElement getParentPDElement() {
 		return parentPDElement;
 	}
 
+	@Override
 	public void setParentPDElement(PDElement parent) {
 		parentPDElement = parent;
 	}
 
+	@Override
 	public MeterElement getMeterObj() {
 		return meterObj;
 	}
 
+	@Override
 	public void setMeterObj(MeterElement meter) {
 		meterObj = meter;
 	}
 
+	@Override
 	public MeterElement getSensorObj() {
 		return sensorObj;
 	}
 
+	@Override
 	public void setSensorObj(MeterElement sensor) {
 		sensorObj = sensor;
 	}
 
+	@Override
 	public double getOverloadUE() {
 		return overloadUE;
 	}
 
+	@Override
 	public void setOverload_UE(double overload) {
 		overloadUE = overload;
 	}
 
+	@Override
 	public double getOverloadEEN() {
 		return overloadEEN;
 	}
 
+	@Override
 	public void setOverloadEEN(double overload) {
 		overloadEEN = overload;
 	}

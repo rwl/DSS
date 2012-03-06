@@ -1,7 +1,6 @@
 package com.ncond.dss.control.impl;
 
 import java.io.OutputStream;
-import java.io.PrintStream;
 import java.io.PrintWriter;
 
 import org.apache.commons.math.complex.Complex;
@@ -17,7 +16,7 @@ import com.ncond.dss.control.CapControl;
 import com.ncond.dss.control.CapControlObj;
 import com.ncond.dss.delivery.CapacitorObj;
 
-abstract public class CapControlObjImpl extends ControlElemImpl implements CapControlObj {
+public class CapControlObjImpl extends ControlElemImpl implements CapControlObj {
 
 	public enum CapControlType {
 		CURRENT, VOLTAGE, KVAR, TIME, PF, SRP
@@ -264,6 +263,11 @@ abstract public class CapControlObjImpl extends ControlElemImpl implements CapCo
 	public void getInjCurrents(Complex[] curr) {
 		for (int i = 0; i < nConds; i++)
 			curr[i] = Complex.ZERO;
+	}
+
+	@Override
+	public int injCurrents() {
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
@@ -744,6 +748,7 @@ abstract public class CapControlObjImpl extends ControlElemImpl implements CapCo
 		}
 	}
 
+	@Override
 	public CapacitorObj getCapacitor() {
 		return (CapacitorObj) getControlledElement();
 	}
@@ -816,245 +821,305 @@ abstract public class CapControlObjImpl extends ControlElemImpl implements CapCo
 		super.initPropertyValues(CapControl.NumPropsThisClass - 1);
 	}
 
+	@Override
 	public void setPendingChange(ControlAction value) {
 		pendingChange = value;
 		dblTraceParameter = value.code();
 	}
 
+	@Override
 	public ControlAction getPendingChange() {
 		return pendingChange;
 	}
 
+	@Override
 	public CapControlType getControlType() {
 		return controlType;
 	}
 
+	@Override
 	public void setControlType(CapControlType type) {
 		controlType = type;
 	}
 
+	@Override
 	public double getOnValue() {
 		return onValue;
 	}
 
+	@Override
 	public double getOffValue() {
 		return offValue;
 	}
 
+	@Override
 	public double getPFOnValue() {
 		return PFOnValue;
 	}
 
+	@Override
 	public double getPFOffValue() {
 		return PFOffValue;
 	}
 
+	@Override
 	public double getCTRatio() {
 		return CTRatio;
 	}
 
+	@Override
 	public double getPTRatio() {
 		return PTRatio;
 	}
 
+	@Override
 	public double getOnDelay() {
 		return OnDelay;
 	}
 
+	@Override
 	public double getOffDelay() {
 		return OffDelay;
 	}
 
+	@Override
 	public double getDeadTime() {
 		return DeadTime;
 	}
 
+	@Override
 	public boolean isVOverride() {
 		return VOverride;
 	}
 
+	@Override
 	public double getVMax() {
 		return VMax;
 	}
 
+	@Override
 	public double getVMin() {
 		return VMin;
 	}
 
 	// FIXME Private properties in OpenDSS
 
+	@Override
 	public int getCTPhase() {
 		return CTPhase;
 	}
 
+	@Override
 	public void setCTPhase(int phase) {
 		CTPhase = phase;
 	}
 
+	@Override
 	public int getPTPhase() {
 		return PTPhase;
 	}
 
+	@Override
 	public void setPTPhase(int phase) {
 		PTPhase = phase;
 	}
 
+	@Override
 	public double getLastOpenTime() {
 		return LastOpenTime;
 	}
 
+	@Override
 	public void setLastOpenTime(double time) {
 		LastOpenTime = time;
 	}
 
+	@Override
 	public String getCapacitorName() {
 		return capacitorName;
 	}
 
+	@Override
 	public void setCapacitorName(String name) {
 		capacitorName = name;
 	}
 
+	@Override
 	public CktElement getMonitoredElement() {
 		return monitoredElement;
 	}
 
+	@Override
 	public void setMonitoredElement(CktElement element) {
 		monitoredElement = element;
 	}
 
+	@Override
 	public CapacitorObj getControlledCapacitor() {
 		return controlledCapacitor;
 	}
 
+	@Override
 	public void setControlledCapacitor(CapacitorObj capacitor) {
 		controlledCapacitor = capacitor;
 	}
 
+	@Override
 	public boolean isShouldSwitch() {
 		return shouldSwitch;
 	}
 
+	@Override
 	public void setShouldSwitch(boolean value) {
 		shouldSwitch = value;
 	}
 
+	@Override
 	public boolean isArmed() {
 		return armed;
 	}
 
+	@Override
 	public void setArmed(boolean value) {
 		armed = value;
 	}
 
+	@Override
 	public ControlAction getPresentState() {
 		return presentState;
 	}
 
+	@Override
 	public void setPresentState(ControlAction state) {
 		presentState = state;
 	}
 
+	@Override
 	public ControlAction getInitialState() {
 		return initialState;
 	}
 
+	@Override
 	public void setInitialState(ControlAction state) {
 		initialState = state;
 	}
 
+	@Override
 	public int getControlActionHandle() {
 		return controlActionHandle;
 	}
 
+	@Override
 	public void setControlActionHandle(int handle) {
 		controlActionHandle = handle;
 	}
 
+	@Override
 	public int getCondOffset() {
 		return condOffset;
 	}
 
+	@Override
 	public void setCondOffset(int offset) {
 		condOffset = offset;
 	}
 
+	@Override
 	public Complex[] getCBuffer() {
 		return cBuffer;
 	}
 
+	@Override
 	public void setCBuffer(Complex[] buffer) {
 		cBuffer = buffer;
 	}
 
+	@Override
 	public void setOnValue(double value) {
 		onValue = value;
 	}
 
+	@Override
 	public void setOffValue(double value) {
 		offValue = value;
 	}
 
+	@Override
 	public void setPFOnValue(double value) {
 		PFOnValue = value;
 	}
 
+	@Override
 	public void setPFOffValue(double value) {
 		PFOffValue = value;
 	}
 
+	@Override
 	public void setCTRatio(double ratio) {
 		CTRatio = ratio;
 	}
 
+	@Override
 	public void setPTRatio(double ratio) {
 		PTRatio = ratio;
 	}
 
+	@Override
 	public void setOnDelay(double delay) {
 		OnDelay = delay;
 	}
 
+	@Override
 	public void setOffDelay(double delay) {
 		OffDelay = delay;
 	}
 
+	@Override
 	public void setDeadTime(double time) {
 		DeadTime = time;
 	}
 
+	@Override
 	public void setVOverride(boolean vOverride) {
 		VOverride = vOverride;
 	}
 
+	@Override
 	public void setVMax(double vmax) {
 		VMax = vmax;
 	}
 
+	@Override
 	public void setVMin(double vmin) {
 		VMin = vmin;
 	}
 
+	@Override
 	public boolean isVOverrideBusSpecified() {
 		return VOverrideBusSpecified;
 	}
 
+	@Override
 	public void setVOverrideBusSpecified(boolean vOverrideBusSpecified) {
 		VOverrideBusSpecified = vOverrideBusSpecified;
 	}
 
+	@Override
 	public String getVOverrideBusName() {
 		return VOverrideBusName;
 	}
 
+	@Override
 	public void setVOverrideBusName(String vOverrideBusName) {
 		VOverrideBusName = vOverrideBusName;
 	}
 
+	@Override
 	public int getVOverrideBusIndex() {
 		return VOverrideBusIndex;
 	}
 
+	@Override
 	public void setVOverrideBusIndex(int vOverrideBusIndex) {
 		VOverrideBusIndex = vOverrideBusIndex;
 	}

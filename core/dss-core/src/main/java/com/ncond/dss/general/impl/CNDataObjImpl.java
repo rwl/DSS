@@ -1,7 +1,6 @@
 package com.ncond.dss.general.impl;
 
 import java.io.OutputStream;
-import java.io.PrintStream;
 import java.io.PrintWriter;
 
 import com.ncond.dss.common.DSSClass;
@@ -64,36 +63,44 @@ public class CNDataObjImpl extends CableDataObjImpl implements CNDataObj {
 		super.initPropertyValues(arrayOffset + CNData.NumPropsThisClass);
 	}
 
+	@Override
 	public int getkStrand() {
 		return kStrand;
 	}
 
+	@Override
 	public double getDiaStrand() {
 		return diaStrand;
 	}
 
+	@Override
 	public double getGmrStrand() {
 		return gmrStrand;
 	}
 
+	@Override
 	public double getRStrand() {
 		return rStrand;
 	}
 
 	// FIXME: Private members in OpenDSS
 
+	@Override
 	public void setkStrand(int kstrand) {
 		this.kStrand = kstrand;
 	}
 
+	@Override
 	public void setDiaStrand(double diastrand) {
 		diaStrand = diastrand;
 	}
 
+	@Override
 	public void setGmrStrand(double gmrstrand) {
 		gmrStrand = gmrstrand;
 	}
 
+	@Override
 	public void setRStrand(double rstrand) {
 		rStrand = rstrand;
 	}

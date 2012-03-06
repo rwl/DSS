@@ -4,7 +4,6 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.OutputStream;
-import java.io.PrintStream;
 import java.io.PrintWriter;
 
 import org.apache.commons.math.complex.Complex;
@@ -580,6 +579,7 @@ public class RegControlObjImpl extends ControlElemImpl implements RegControlObj 
 	/**
 	 * Controlled transformer.
 	 */
+	@Override
 	public TransformerObj getTransformer() {
 		return (TransformerObj) getControlledElement();
 	}
@@ -587,22 +587,27 @@ public class RegControlObjImpl extends ControlElemImpl implements RegControlObj 
 	/**
 	 * Report tapped winding.
 	 */
+	@Override
 	public int getWinding() {
 		return tapWinding;
 	}
 
+	@Override
 	public double getMinTap() {
 		return getTransformer().getMinTap(tapWinding);
 	}
 
+	@Override
 	public double getMaxTap() {
 		return getTransformer().getMaxTap(tapWinding);
 	}
 
+	@Override
 	public double getTapIncrement() {
 		return getTransformer().getTapIncrement(tapWinding);
 	}
 
+	@Override
 	public int getNumTaps() {
 		return getTransformer().getNumTaps(tapWinding);
 	}
@@ -702,6 +707,7 @@ public class RegControlObjImpl extends ControlElemImpl implements RegControlObj 
 		super.initPropertyValues(RegControl.NumPropsThisClass - 1);
 	}
 
+	@Override
 	public void setPendingTapChange(double value) {
 		pendingTapChange = value;
 		setDblTraceParameter(value);
@@ -749,180 +755,224 @@ public class RegControlObjImpl extends ControlElemImpl implements RegControlObj 
 		throw new UnsupportedOperationException();
 	}
 
+	@Override
 	public double getPendingTapChange() {
 		return pendingTapChange;
 	}
 
+	@Override
 	public double getTargetVoltage() {
 		return Vreg;
 	}
 
+	@Override
 	public double getBandwidth() {
 		return bandwidth;
 	}
 
+	@Override
 	public double getPTRatio() {
 		return PTRatio;
 	}
 
+	@Override
 	public double getCTRating() {
 		return CTRating;
 	}
 
+	@Override
 	public double getLineDropR() {
 		return R;
 	}
 
+	@Override
 	public double getLineDropX() {
 		return X;
 	}
 
+	@Override
 	public double getRevTargetVoltage() {
 		return revVreg;
 	}
 
+	@Override
 	public double getRevBandwidth() {
 		return revBandwidth;
 	}
 
+	@Override
 	public double getRevR() {
 		return revR;
 	}
 
+	@Override
 	public double getRevX() {
 		return revX;
 	}
 
+	@Override
 	public boolean useReverseDrop() {
 		return isReversible;
 	}
 
+	@Override
 	public boolean useLineDrop() {
 		return LDCActive;
 	}
 
+	@Override
 	public double getTapDelay() {
 		return tapDelay;
 	}
 
+	@Override
 	public int getMaxTapChange() {
 		return tapLimitPerChange;
 	}
 
+	@Override
 	public boolean isInverseTime() {
 		return inverseTime;
 	}
 
+	@Override
 	public double getVoltageLimit() {
 		return VLimit;
 	}
 
+	@Override
 	public boolean useLimit() {
 		return VLimitActive;
 	}
 
 	// FIXME Private members in OpenDSS
 
+	@Override
 	public double getVReg() {
 		return Vreg;
 	}
 
+	@Override
 	public void setVReg(double value) {
 		Vreg = value;
 	}
 
+	@Override
 	public double getR() {
 		return R;
 	}
 
+	@Override
 	public void setR(double value) {
 		R = value;
 	}
 
+	@Override
 	public double getX() {
 		return X;
 	}
 
+	@Override
 	public void setX(double value) {
 		X = value;
 	}
 
+	@Override
 	public double getRevVReg() {
 		return revVreg;
 	}
 
+	@Override
 	public void setRevVReg(double value) {
 		this.revVreg = value;
 	}
 
+	@Override
 	public String getRegulatedBus() {
 		return regulatedBus;
 	}
 
+	@Override
 	public void setRegulatedBus(String bus) {
 		regulatedBus = bus;
 	}
 
+	@Override
 	public boolean isReversible() {
 		return isReversible;
 	}
 
+	@Override
 	public void setReversible(boolean value) {
 		isReversible = value;
 	}
 
+	@Override
 	public boolean isLDCActive() {
 		return LDCActive;
 	}
 
+	@Override
 	public void setLDCActive(boolean active) {
 		LDCActive = active;
 	}
 
+	@Override
 	public boolean isUsingRegulatedBus() {
 		return usingRegulatedBus;
 	}
 
+	@Override
 	public void setUsingRegulatedBus(boolean value) {
 		usingRegulatedBus = value;
 	}
 
+	@Override
 	public boolean isDebugTrace() {
 		return debugTrace;
 	}
 
+	@Override
 	public void setDebugTrace(boolean value) {
 		debugTrace = value;
 	}
 
+	@Override
 	public boolean isArmed() {
 		return armed;
 	}
 
+	@Override
 	public void setArmed(boolean value) {
 		armed = value;
 	}
 
+	@Override
 	public File getTraceFile() {
 		return traceFile;
 	}
 
+	@Override
 	public void setTraceFile(File tracefile) {
 		traceFile = tracefile;
 	}
 
+	@Override
 	public int getTapLimitPerChange() {
 		return tapLimitPerChange;
 	}
 
+	@Override
 	public void setTapLimitPerChange(int tapLimit) {
 		tapLimitPerChange = tapLimit;
 	}
 
+	@Override
 	public int getTapWinding() {
 		return tapWinding;
 	}
 
+	@Override
 	public void setTapWinding(int winding) {
 		tapWinding = winding;
 	}
@@ -931,114 +981,142 @@ public class RegControlObjImpl extends ControlElemImpl implements RegControlObj 
 		return inverseTime;
 	}
 
+	@Override
 	public void setInverseTime(boolean time) {
 		inverseTime = time;
 	}
 
+	@Override
 	public double getVLimit() {
 		return VLimit;
 	}
 
+	@Override
 	public void setVLimit(double limit) {
 		VLimit = limit;
 	}
 
+	@Override
 	public boolean isVLimitActive() {
 		return VLimitActive;
 	}
 
+	@Override
 	public void setVLimitActive(boolean limitActive) {
 		VLimitActive = limitActive;
 	}
 
+	@Override
 	public int getPTPhase() {
 		return PTPhase;
 	}
 
+	@Override
 	public void setPTPhase(int phase) {
 		PTPhase = phase;
 	}
 
+	@Override
 	public int getControlledPhase() {
 		return controlledPhase;
 	}
 
+	@Override
 	public void setControlledPhase(int phase) {
 		controlledPhase = phase;
 	}
 
+	@Override
 	public Complex[] getVBuffer() {
 		return VBuffer;
 	}
 
+	@Override
 	public void setVBuffer(Complex[] buffer) {
 		VBuffer = buffer;
 	}
 
+	@Override
 	public Complex[] getCBuffer() {
 		return CBuffer;
 	}
 
+	@Override
 	public void setCBuffer(Complex[] buffer) {
 		CBuffer = buffer;
 	}
 
+	@Override
 	public void setBandwidth(double value) {
 		bandwidth = value;
 	}
 
+	@Override
 	public void setPTRatio(double ratio) {
 		PTRatio = ratio;
 	}
 
+	@Override
 	public void setCTRating(double rating) {
 		CTRating = rating;
 	}
 
+	@Override
 	public void setRevBandwidth(double bandwidth) {
 		this.revBandwidth = bandwidth;
 	}
 
+	@Override
 	public void setRevR(double value) {
 		this.revR = value;
 	}
 
+	@Override
 	public void setRevX(double value) {
 		this.revX = value;
 	}
 
+	@Override
 	public void setTapDelay(double delay) {
 		tapDelay = delay;
 	}
 
+	@Override
 	public double getKWRevPowerThreshold() {
 		return kWRevPowerThreshold;
 	}
 
+	@Override
 	public void setKWRevPowerThreshold(double threshold) {
 		this.kWRevPowerThreshold = threshold;
 	}
 
+	@Override
 	public void setRevDelay(double delay) {
 		this.revDelay = delay;
 	}
 
+	@Override
 	public void setReverseNeutral(boolean value) {
 		reverseNeutral = value;
 	}
 
+	@Override
 	public void setRevPowerThreshold(double threshold) {
 		revPowerThreshold = threshold;
 	}
 
+	@Override
 	public double getRevPowerThreshold() {
 		return revPowerThreshold;
 	}
 
+	@Override
 	public double getRevDelay() {
 		return revDelay;
 	}
 
+	@Override
 	public boolean isReverseNeutral() {
 		return reverseNeutral;
 	}

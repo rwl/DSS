@@ -32,6 +32,7 @@ public class TransformerImpl extends PDClassImpl implements Transformer {
 		commandList.setAbbrevAllowed(true);  // allow property list abbreviations
 	}
 
+	@Override
 	protected void defineProperties() {
 
 		numProperties = Transformer.NumPropsThisClass;

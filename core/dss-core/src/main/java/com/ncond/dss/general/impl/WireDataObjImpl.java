@@ -1,8 +1,6 @@
 package com.ncond.dss.general.impl;
 
 import java.io.OutputStream;
-import java.io.PrintStream;
-
 import com.ncond.dss.common.DSSClass;
 import com.ncond.dss.general.WireData;
 import com.ncond.dss.general.WireDataObj;

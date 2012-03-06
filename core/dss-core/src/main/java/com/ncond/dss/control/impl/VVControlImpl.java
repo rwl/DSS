@@ -31,6 +31,7 @@ public class VVControlImpl extends ControlClassImpl implements VVControl {
 		XY_CurveClass = DSSClassDefs.getDSSClass("XYCurve");
 	}
 
+	@Override
 	protected void defineProperties() {
 
 		numProperties = NumPropsThisClass;
@@ -271,6 +272,12 @@ public class VVControlImpl extends ControlClassImpl implements VVControl {
 				  "\" Not Found.", 370);
 		}
 		return result;
+	}
+
+	@Override
+	public int init(int handle) {
+		DSS.doSimpleMsg("Need to implement VVControl.init", -1);
+		return 0;
 	}
 
 }

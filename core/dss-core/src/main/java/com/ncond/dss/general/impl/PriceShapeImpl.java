@@ -10,6 +10,7 @@ import com.ncond.dss.common.impl.DSSClassDefs;
 import com.ncond.dss.common.impl.DSSClassImpl;
 import com.ncond.dss.common.impl.DSS;
 import com.ncond.dss.common.impl.Util;
+import com.ncond.dss.general.DSSObject;
 import com.ncond.dss.general.PriceShape;
 import com.ncond.dss.general.PriceShapeObj;
 import com.ncond.dss.parser.impl.Parser;
@@ -34,6 +35,7 @@ public class PriceShapeImpl extends DSSClassImpl implements PriceShape {
 		commandList.setAbbrevAllowed(true);
 	}
 
+	@Override
 	protected void defineProperties() {
 		final String CRLF = DSS.CRLF;
 
@@ -219,7 +221,7 @@ public class PriceShapeImpl extends DSSClassImpl implements PriceShape {
 	}
 
 	@Override
-	public Object find(String objName) {
+	public DSSObject find(String objName) {
 		if (objName.length() == 0 || objName.equalsIgnoreCase("none")) {
 			return null;
 		} else {
@@ -267,10 +269,12 @@ public class PriceShapeImpl extends DSSClassImpl implements PriceShape {
 		return 0;
 	}
 
+	@Override
 	public String getCode() {
 		return ((PriceShapeObj) elementList.getActive()).getName();
 	}
 
+	@Override
 	public void setCode(String value) {
 		activePriceShapeObj = null;
 		PriceShapeObj pPriceShapeObj = (PriceShapeObj) elementList.getFirst();

@@ -1,7 +1,5 @@
 package com.ncond.dss.common;
 
-import java.io.OutputStream;
-
 import org.apache.commons.math.complex.Complex;
 
 import com.ncond.dss.general.DSSObject;
@@ -219,12 +217,6 @@ public interface CktElement extends DSSObject {
 	 */
 	void getSeqLosses(Complex[] posSeqLosses, Complex[] negSeqLosses,
 			Complex[] zeroModeLosses);
-
-	String getPropertyValue(int index);
-
-	void initPropertyValues(int arrayOffset);
-
-	void dumpProperties(OutputStream f, boolean complete);
 
 	/**
 	 * Sum terminal currents into system currents array.

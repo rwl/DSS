@@ -4,6 +4,7 @@ import com.ncond.dss.common.DSSClass;
 import com.ncond.dss.common.impl.CktElementClassImpl;
 import com.ncond.dss.common.impl.DSSClassDefs;
 import com.ncond.dss.control.ControlClass;
+import com.ncond.dss.general.DSSObject;
 
 public abstract class ControlClassImpl extends CktElementClassImpl implements ControlClass {
 
@@ -15,18 +16,21 @@ public abstract class ControlClassImpl extends CktElementClassImpl implements Co
 		classType = DSSClassDefs.CTRL_ELEMENT;
 	}
 
+	@Override
 	protected void countProperties() {
 		numProperties = numProperties + numControlClassProps;
 		super.countProperties();
 	}
 
+	@Override
 	protected void defineProperties() {
 		activeProperty = activeProperty + numControlClassProps;
 
 		super.defineProperties();
 	}
 
-	protected int classEdit(Object activeControlObj, int paramPointer) {
+	@Override
+	protected int classEdit(DSSObject activeControlObj, int paramPointer) {
 
 		if (paramPointer >= 0)
 			super.classEdit(activeControlObj, paramPointer - numControlClassProps);
@@ -38,10 +42,12 @@ public abstract class ControlClassImpl extends CktElementClassImpl implements Co
 //		new ControlElemImpl(otherObj);
 	}
 
+	@Override
 	public int getNumControlClassProps() {
 		return numControlClassProps;
 	}
 
+	@Override
 	public void setNumControlClassProps(int num) {
 		numControlClassProps = num;
 	}

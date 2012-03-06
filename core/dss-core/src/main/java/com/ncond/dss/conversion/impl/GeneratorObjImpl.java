@@ -5,7 +5,6 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.io.PrintStream;
 import java.io.PrintWriter;
 
 import org.apache.commons.math.complex.Complex;
@@ -236,6 +235,7 @@ public class GeneratorObjImpl extends PCElementImpl implements GeneratorObj {
 	/**
 	 * 0 = reset to 1.0; 1 = Gaussian around mean and std Dev; 2 = uniform
 	 */
+	@Override
 	public void randomize(int opt) {
 		switch (opt) {
 		case 0:
@@ -281,6 +281,7 @@ public class GeneratorObjImpl extends PCElementImpl implements GeneratorObj {
 		}
 	}
 
+	@Override
 	public void setNominalGeneration() {
 		double factor;
 		boolean genOnSaved;
@@ -1388,6 +1389,7 @@ public class GeneratorObjImpl extends PCElementImpl implements GeneratorObj {
 		}
 	}
 
+	@Override
 	public void resetRegisters() {
 		for (int i = 0; i < NumGenRegisters; i++)
 			registers[i] = 0.0;
@@ -1412,6 +1414,7 @@ public class GeneratorObjImpl extends PCElementImpl implements GeneratorObj {
 	/**
 	 * Update energy from metered zone.
 	 */
+	@Override
 	public void takeSample() {
 		Complex S;
 		double SMag;
@@ -1451,14 +1454,17 @@ public class GeneratorObjImpl extends PCElementImpl implements GeneratorObj {
 		}
 	}
 
+	@Override
 	public double getPresentKW() {
 		return genVars.PNominalPerPhase * 0.001 * nPhases;
 	}
 
+	@Override
 	public double getPresentKV() {
 		return genVars.kVGeneratorBase;
 	}
 
+	@Override
 	public double getPresentKVAr() {
 		return genVars.QNominalPerPhase * 0.001 * nPhases;
 	}
@@ -1466,6 +1472,7 @@ public class GeneratorObjImpl extends PCElementImpl implements GeneratorObj {
 	/**
 	 * Procedures for setting the dQdV used by the solution object.
 	 */
+	@Override
 	public void initDQDVCalc() {
 		dQdV = 0.0;
 		genVars.QNominalPerPhase = 0.5 * (varMax + varMin);  // avg of the limits
@@ -1474,10 +1481,12 @@ public class GeneratorObjImpl extends PCElementImpl implements GeneratorObj {
 	/**
 	 * Bump up vars by 10% of range for next calc.
 	 */
+	@Override
 	public void bumpUpQ() {
 		genVars.QNominalPerPhase = genVars.QNominalPerPhase + 0.1 * (varMax - varMin);
 	}
 
+	@Override
 	public void rememberQV() {
 		varRemembered = genVars.QNominalPerPhase;
 		calcVterminal();
@@ -1488,6 +1497,7 @@ public class GeneratorObjImpl extends PCElementImpl implements GeneratorObj {
 		VRemembered = VAvg;
 	}
 
+	@Override
 	public void calcDQDV() {
 		double VDiff;
 		int i;
@@ -1509,6 +1519,7 @@ public class GeneratorObjImpl extends PCElementImpl implements GeneratorObj {
 		dQdVSaved = dQdV;  // save for next time; allows generator to be enabled/disabled during simulation
 	}
 
+	@Override
 	public void resetStartPoint() {
 		genVars.QNominalPerPhase = 1000.0 * kVArBase / nPhases;
 	}
@@ -2053,11 +2064,13 @@ public class GeneratorObjImpl extends PCElementImpl implements GeneratorObj {
 		}
 	}
 
+	@Override
 	public void setPowerFactor(double value) {
 		PFNominal = value;
 		syncUpPowerQuantities();
 	}
 
+	@Override
 	public void setPresentKV(double value) {
 		genVars.kVGeneratorBase = value;
 
@@ -2074,6 +2087,7 @@ public class GeneratorObjImpl extends PCElementImpl implements GeneratorObj {
 		}
 	}
 
+	@Override
 	public void setPresentKVAr(double value) {
 		double kVA_Gen;
 
@@ -2093,12 +2107,14 @@ public class GeneratorObjImpl extends PCElementImpl implements GeneratorObj {
 		kVArMin = -kVArMax;
 	}
 
+	@Override
 	public void setPresentKW(double value) {
 		kWBase = value;
 		syncUpPowerQuantities();
 	}
 
 	// FIXME Private method in OpenDSS
+	@Override
 	public void syncUpPowerQuantities() {
 		// keep kvar nominal up to date with kW and PF
 		if (PFNominal != 0.0) {
@@ -2120,6 +2136,7 @@ public class GeneratorObjImpl extends PCElementImpl implements GeneratorObj {
 	}
 
 	// FIXME Private method in OpenDSS
+	@Override
 	public void setKwKVAr(double PkW, double QkVar) {
 		setKWBase(PkW);
 		setPresentKVAr(QkVar);
@@ -2142,560 +2159,699 @@ public class GeneratorObjImpl extends PCElementImpl implements GeneratorObj {
 		VThev = ComplexUtil.pclx(VThevMag, V.getArgument());
 	}
 
+	@Override
 	public boolean isForcedOn() {
 		return forcedON;
 	}
 
+	@Override
 	public void setForcedOn(boolean forced) {
 		forcedON = forced;
 	}
 
+	@Override
 	public double getPowerFactor() {
 		return PFNominal;
 	}
 
+	@Override
 	public int getConnection() {
 		return connection;
 	}
 
+	@Override
 	public void setConnection(int conn) {
 		connection = conn;
 	}
 
+	@Override
 	public String getDailyDispShape() {
 		return dailyDispShape;
 	}
 
+	@Override
 	public void setDailyDispShape(String shape) {
 		dailyDispShape = shape;
 	}
 
+	@Override
 	public LoadShapeObj getDailyDispShapeObj() {
 		return dailyDispShapeObj;
 	}
 
+	@Override
 	public void setDailyDispShapeObj(LoadShapeObj shapeObj) {
 		dailyDispShapeObj = shapeObj;
 	}
 
+	@Override
 	public String getDutyShape() {
 		return dutyShape;
 	}
 
+	@Override
 	public void setDutyShape(String shape) {
 		dutyShape = shape;
 	}
 
+	@Override
 	public LoadShapeObj getDutyShapeObj() {
 		return dutyShapeObj;
 	}
 
+	@Override
 	public void setDutyShapeObj(LoadShapeObj shapeObj) {
 		dutyShapeObj = shapeObj;
 	}
 
+	@Override
 	public int getGenClass() {
 		return genClass;
 	}
 
+	@Override
 	public void setGenClass(int cls) {
 		genClass = cls;
 	}
 
+	@Override
 	public int getGenModel() {
 		return genModel;
 	}
 
+	@Override
 	public void setGenModel(int model) {
 		genModel = model;
 	}
 
+	@Override
 	public GeneratorVars getGenVars() {
 		return genVars;
 	}
 
+	@Override
 	public void setGenVars(GeneratorVars vars) {
 		genVars = vars;
 	}
 
+	@Override
 	public double getKVArBase() {
 		return kVArBase;
 	}
 
+	@Override
 	public void setKVArBase(double base) {
 		this.kVArBase = base;
 	}
 
+	@Override
 	public double getKVArMax() {
 		return kVArMax;
 	}
 
+	@Override
 	public void setKVArMax(double max) {
 		kVArMax = max;
 	}
 
+	@Override
 	public double getKVArMin() {
 		return kVArMin;
 	}
 
+	@Override
 	public void setKVArMin(double min) {
 		kVArMin = min;
 	}
 
+	@Override
 	public double getKWBase() {
 		return kWBase;
 	}
 
+	@Override
 	public void setKWBase(double base) {
 		kWBase = base;
 	}
 
+	@Override
 	public double getVpu() {
 		return Vpu;
 	}
 
+	@Override
 	public void setVpu(double vpu) {
 		Vpu = vpu;
 	}
 
+	@Override
 	public double getVTarget() {
 		return VTarget;
 	}
 
+	@Override
 	public void setVTarget(double target) {
 		VTarget = target;
 	}
 
+	@Override
 	public String getYearlyShape() {
 		return yearlyShape;
 	}
 
+	@Override
 	public void setYearlyShape(String shape) {
 		yearlyShape = shape;
 	}
 
+	@Override
 	public LoadShapeObj getYearlyShapeObj() {
 		return yearlyShapeObj;
 	}
 
+	@Override
 	public void setYearlyShapeObj(LoadShapeObj shapeObj) {
 		yearlyShapeObj = shapeObj;
 	}
 
+	@Override
 	public double[] getRegisters() {
 		return registers;
 	}
 
+	@Override
 	public void setRegisters(double[] values) {
 		registers = values;
 	}
 
+	@Override
 	public double[] getDerivatives() {
 		return derivatives;
 	}
 
+	@Override
 	public void setDerivatives(double[] values) {
 		derivatives = values;
 	}
 
 	// FIXME Private members in OpenDSS
 
+	@Override
 	public Complex getYeq() {
 		return Yeq;
 	}
 
+	@Override
 	public void setYeq(Complex yeq) {
 		Yeq = yeq;
 	}
 
+	@Override
 	public Complex getYeq95() {
 		return Yeq95;
 	}
 
+	@Override
 	public void setYeq95(Complex yeq95) {
 		Yeq95 = yeq95;
 	}
 
+	@Override
 	public Complex getYeq105() {
 		return Yeq105;
 	}
 
+	@Override
 	public void setYeq105(Complex yeq105) {
 		Yeq105 = yeq105;
 	}
 
+	@Override
 	public Complex getCurrentLimit() {
 		return currentLimit;
 	}
 
+	@Override
 	public void setCurrentLimit(Complex limit) {
 		currentLimit = limit;
 	}
 
+	@Override
 	public boolean isDebugTrace() {
 		return debugTrace;
 	}
 
+	@Override
 	public void setDebugTrace(boolean debug) {
 		debugTrace = debug;
 	}
 
+	@Override
 	public double getDeltaQMax() {
 		return deltaQMax;
 	}
 
+	@Override
 	public void setDeltaQMax(double delta) {
 		deltaQMax = delta;
 	}
 
+	@Override
 	public int getDispatchMode() {
 		return dispatchMode;
 	}
 
+	@Override
 	public void setDispatchMode(int mode) {
 		dispatchMode = mode;
 	}
 
+	@Override
 	public double getDispatchValue() {
 		return dispatchValue;
 	}
 
+	@Override
 	public void setDispatchValue(double value) {
 		dispatchValue = value;
 	}
 
+	@Override
 	public double getDQDV() {
 		return dQdV;
 	}
 
+	@Override
 	public void setDQDV(double value) {
 		this.dQdV = value;
 	}
 
+	@Override
 	public double getDQDVSaved() {
 		return dQdVSaved;
 	}
 
+	@Override
 	public void setDQDVSaved(double value) {
 		this.dQdVSaved = value;
 	}
 
+	@Override
 	public boolean isFirstSampleAfterReset() {
 		return firstSampleAfterReset;
 	}
 
+	@Override
 	public void setFirstSampleAfterReset(boolean firstSample) {
 		firstSampleAfterReset = firstSample;
 	}
 
+	@Override
 	public boolean isFixed() {
 		return fixed;
 	}
 
+	@Override
 	public void setFixed(boolean value) {
 		fixed = value;
 	}
 
+	@Override
 	public int getGeneratorSolutionCount() {
 		return generatorSolutionCount;
 	}
 
+	@Override
 	public void setGeneratorSolutionCount(int count) {
 		generatorSolutionCount = count;
 	}
 
+	@Override
 	public double getGenFundamental() {
 		return genFundamental;
 	}
 
+	@Override
 	public void setGenFundamental(double fundamental) {
 		genFundamental = fundamental;
 	}
 
+	@Override
 	public boolean isGenOn() {
 		return genOn;
 	}
 
+	@Override
 	public void setGenOn(boolean on) {
 		genOn = on;
 	}
 
+	@Override
 	public boolean isGenSwitchOpen() {
 		return genSwitchOpen;
 	}
 
+	@Override
 	public void setGenSwitchOpen(boolean open) {
 		genSwitchOpen = open;
 	}
 
+	@Override
 	public boolean iskVANotSet() {
 		return kVANotSet;
 	}
 
+	@Override
 	public void setkVANotSet(boolean value) {
 		this.kVANotSet = value;
 	}
 
+	@Override
 	public double getLastGrowthFactor() {
 		return lastGrowthFactor;
 	}
 
+	@Override
 	public void setLastGrowthFactor(double factor) {
 		lastGrowthFactor = factor;
 	}
 
+	@Override
 	public int getLastYear() {
 		return lastYear;
 	}
 
+	@Override
 	public void setLastYear(int year) {
 		lastYear = year;
 	}
 
+	@Override
 	public int getOpenGeneratorSolutionCount() {
 		return openGeneratorSolutionCount;
 	}
 
+	@Override
 	public void setOpenGeneratorSolutionCount(int count) {
 		openGeneratorSolutionCount = count;
 	}
 
+	@Override
 	public double getPVFactor() {
 		return PVFactor;
 	}
 
+	@Override
 	public void setPVFactor(double factor) {
 		PVFactor = factor;
 	}
 
+	@Override
 	public double getRandomMult() {
 		return randomMult;
 	}
 
+	@Override
 	public void setRandomMult(double mult) {
 		randomMult = mult;
 	}
 
+	@Override
 	public int getRegHours() {
 		return regHours;
 	}
 
+	@Override
 	public void setRegHours(int hours) {
 		regHours = hours;
 	}
 
+	@Override
 	public int getRegKVArh() {
 		return regKVArh;
 	}
 
+	@Override
 	public void setRegKVArh(int kvarh) {
 		regKVArh = kvarh;
 	}
 
+	@Override
 	public int getRegKWh() {
 		return regKWh;
 	}
 
+	@Override
 	public void setRegKWh(int value) {
 		regKWh = value;
 	}
 
+	@Override
 	public int getRegMaxKVA() {
 		return regMaxKVA;
 	}
 
+	@Override
 	public void setReg_MaxkVA(int maxKVA) {
 		regMaxKVA = maxKVA;
 	}
 
+	@Override
 	public int getReg_MaxkW() {
 		return regMaxKW;
 	}
 
+	@Override
 	public void setRegMaxKW(int maxKW) {
 		regMaxKW = maxKW;
 	}
 
+	@Override
 	public int getRegPrice() {
 		return regPrice;
 	}
 
+	@Override
 	public void setRegPrice(int price) {
 		regPrice = price;
 	}
 
+	@Override
 	public Complex getShapeFactor() {
 		return shapeFactor;
 	}
 
+	@Override
 	public void setShapeFactor(Complex factor) {
 		shapeFactor = factor;
 	}
 
+	@Override
 	public double getThetaHarm() {
 		return thetaHarm;
 	}
 
+	@Override
 	public void setThetaHarm(double theta) {
 		thetaHarm = theta;
 	}
 
+	@Override
 	public File getTraceFile() {
 		return traceFile;
 	}
 
+	@Override
 	public void setTraceFile(File file) {
 		traceFile = file;
 	}
 
+	@Override
 	public double getV_Avg() {
 		return VAvg;
 	}
 
+	@Override
 	public void setV_Avg(double value) {
 		VAvg = value;
 	}
 
+	@Override
 	public double getVRemembered() {
 		return VRemembered;
 	}
 
+	@Override
 	public void setVRemembered(double value) {
 		VRemembered = value;
 	}
 
+	@Override
 	public double getVArRemembered() {
 		return varRemembered;
 	}
 
+	@Override
 	public void setVArRemembered(double value) {
 		this.varRemembered = value;
 	}
 
+	@Override
 	public double getVArBase() {
 		return varBase;
 	}
 
+	@Override
 	public void setVArBase(double base) {
 		this.varBase = base;
 	}
 
+	@Override
 	public double getVArMax() {
 		return varMax;
 	}
 
+	@Override
 	public void setVArMax(double max) {
 		this.varMax = max;
 	}
 
+	@Override
 	public double getVArMin() {
 		return varMin;
 	}
 
+	@Override
 	public void setVArMin(double min) {
 		this.varMin = min;
 	}
 
+	@Override
 	public double getVBase() {
 		return VBase;
 	}
 
+	@Override
 	public void setVBase(double value) {
 		VBase = value;
 	}
 
+	@Override
 	public double getVBase105() {
 		return VBase105;
 	}
 
+	@Override
 	public void setVBase105(double value) {
 		VBase105 = value;
 	}
 
+	@Override
 	public double getVBase95() {
 		return VBase95;
 	}
 
+	@Override
 	public void setVBase95(double value) {
 		VBase95 = value;
 	}
 
+	@Override
 	public double getVMaxPU() {
 		return VMaxPU;
 	}
 
+	@Override
 	public void setVMaxPU(double value) {
 		VMaxPU = value;
 	}
 
+	@Override
 	public double getVMinPU() {
 		return VMinPU;
 	}
 
+	@Override
 	public void setVMinPU(double value) {
 		VMinPU = value;
 	}
 
+	@Override
 	public Complex getVThev() {
 		return VThev;
 	}
 
+	@Override
 	public void setVThev(Complex value) {
 		VThev = value;
 	}
 
+	@Override
 	public double getVThevHarm() {
 		return VThevHarm;
 	}
 
+	@Override
 	public void setVThevHarm(double value) {
 		VThevHarm = value;
 	}
 
+	@Override
 	public double getVThevMag() {
 		return VThevMag;
 	}
 
+	@Override
 	public void setVThevMag(double mag) {
 		VThevMag = mag;
 	}
 
+	@Override
 	public CMatrix getYPrimOpenCond() {
 		return YPrimOpenCond;
 	}
 
+	@Override
 	public void setYPrimOpenCond(CMatrix value) {
 		YPrimOpenCond = value;
 	}
 
+	@Override
 	public double getYQFixed() {
 		return YQFixed;
 	}
 
+	@Override
 	public void setYQFixed(double value) {
 		YQFixed = value;
 	}
 
+	@Override
 	public boolean isShapeIsActual() {
 		return shapeIsActual;
 	}
 
+	@Override
 	public void setShapeIsActual(boolean model) {
 		shapeIsActual = model;
 	}
 
+	@Override
 	public GenUserModel getUserModel() {
 		return userModel;
 	}
 
+	@Override
 	public void setUserModel(GenUserModel model) {
 		userModel = model;
 	}
 
+	@Override
 	public GenUserModel getShaftModel() {
 		return shaftModel;
 	}
 
+	@Override
 	public void setShaftModel(GenUserModel model) {
 		shaftModel = model;
 	}

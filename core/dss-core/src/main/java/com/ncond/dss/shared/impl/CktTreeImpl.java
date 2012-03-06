@@ -69,12 +69,14 @@ public class CktTreeImpl implements CktTree {
 	/**
 	 * Adds child and makes it present.
 	 */
+	@Override
 	public void setNew(DSSObject value) {
 		presentBranch = new CktTreeNodeImpl(presentBranch, value);
 		if (firstNode == null)
 			firstNode = presentBranch;
 	}
 
+	@Override
 	public void addNewChild(DSSObject value, int busRef, int terminalNo) {
 		CktTreeNode tempNode;
 
@@ -93,6 +95,7 @@ public class CktTreeImpl implements CktTree {
 	/**
 	 * Adds a pointer to an object to be associated with the current node.
 	 */
+	@Override
 	public void setNewObject(DSSObject value) {
 		if (presentBranch != null)
 			presentBranch.addObject(value);
@@ -115,6 +118,7 @@ public class CktTreeImpl implements CktTree {
 	/**
 	 * Move forward from present node.
 	 */
+	@Override
 	public DSSObject goForward() {
 		// if we have added children to the present node since we opened it push them on
 		if (presentBranch != null)
@@ -137,6 +141,7 @@ public class CktTreeImpl implements CktTree {
 	/**
 	 * Move backward from present node and reset forward stack.
 	 */
+	@Override
 	public DSSObject goBackward() {
 		presentBranch = presentBranch.getParent();
 		forwardStack.clear();
@@ -147,6 +152,7 @@ public class CktTreeImpl implements CktTree {
 		}
 	}
 
+	@Override
 	public Object getParent() {
 		if (presentBranch.getParent() != null) {
 			return presentBranch.getParent().getCktObject();
@@ -160,6 +166,7 @@ public class CktTreeImpl implements CktTree {
 	 *
 	 * Go to beginning and reset forward stack.
 	 */
+	@Override
 	public DSSObject getFirst() {
 		presentBranch = firstNode;
 		forwardStack.clear();
@@ -171,6 +178,7 @@ public class CktTreeImpl implements CktTree {
 		}
 	}
 
+	@Override
 	public Object getFirstObject() {
 		if (presentBranch != null) {
 			return presentBranch.getFirstObject();
@@ -179,6 +187,7 @@ public class CktTreeImpl implements CktTree {
 		}
 	}
 
+	@Override
 	public Object getNextObject() {
 		if (presentBranch != null) {
 			return presentBranch.getNextObject();
@@ -187,6 +196,7 @@ public class CktTreeImpl implements CktTree {
 		}
 	}
 
+	@Override
 	public Object getActive() {
 		if (presentBranch != null) {
 			return presentBranch.getCktObject();
@@ -195,6 +205,7 @@ public class CktTreeImpl implements CktTree {
 		}
 	}
 
+	@Override
 	public void setActive(DSSObject p) {
 		DSSObject temp = getFirst();
 		while (temp != null) {
@@ -208,6 +219,7 @@ public class CktTreeImpl implements CktTree {
 	/**
 	 * Start forward search at the present location (can also use active).
 	 */
+	@Override
 	public void startHere() {
 		forwardStack.clear();
 		if (presentBranch != null)
@@ -217,6 +229,7 @@ public class CktTreeImpl implements CktTree {
 	/**
 	 * Get lexical level of present node.
 	 */
+	@Override
 	public int getLevel() {
 		if (presentBranch != null) {
 			return presentBranch.getLexicalLevel();
@@ -429,18 +442,22 @@ public class CktTreeImpl implements CktTree {
 		lstPC = null;
 	}
 
+	@Override
 	public CktTreeNode getPresentBranch() {
 		return presentBranch;
 	}
 
+	@Override
 	public void setPresentBranch(CktTreeNode branch) {
 		presentBranch = branch;
 	}
 
+	@Override
 	public ZoneEndsList getZoneEndsList() {
 		return zoneEndsList;
 	}
 
+	@Override
 	public void setZoneEndsList(ZoneEndsList list) {
 		zoneEndsList = list;
 	}

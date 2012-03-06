@@ -5,9 +5,10 @@ import com.ncond.dss.common.impl.DSSClassDefs;
 import com.ncond.dss.common.impl.DSS;
 import com.ncond.dss.conversion.PCClass;
 import com.ncond.dss.conversion.PCElement;
+import com.ncond.dss.general.DSSObject;
 import com.ncond.dss.parser.impl.Parser;
 
-public class PCClassImpl extends CktElementClassImpl implements PCClass {
+abstract public class PCClassImpl extends CktElementClassImpl implements PCClass {
 
 	int numPCClassProps;
 
@@ -20,6 +21,7 @@ public class PCClassImpl extends CktElementClassImpl implements PCClass {
 	/**
 	 * Add no. of intrinsic properties.
 	 */
+	@Override
 	protected void countProperties() {
 		numProperties = numProperties + numPCClassProps;
 		super.countProperties();
@@ -30,6 +32,7 @@ public class PCClassImpl extends CktElementClassImpl implements PCClass {
 	 *
 	 * Define the properties for the base power delivery element class.
 	 */
+	@Override
 	protected void defineProperties() {
 		propertyName[activeProperty + 1] = "spectrum";
 
@@ -40,7 +43,8 @@ public class PCClassImpl extends CktElementClassImpl implements PCClass {
 		super.defineProperties();
 	}
 
-	protected int classEdit(Object activePCObj, int paramPointer) {
+	@Override
+	protected int classEdit(DSSObject activePCObj, int paramPointer) {
 		int result = 0;
 		// continue parsing with contents of parser
 		if (paramPointer >= 0) {
@@ -58,7 +62,8 @@ public class PCClassImpl extends CktElementClassImpl implements PCClass {
 		return result;
 	}
 
-	protected void classMakeLike(Object otherObj) {
+	@Override
+	protected void classMakeLike(DSSObject otherObj) {
 		PCElement otherPCObj = (PCElement) otherObj;
 
 		PCElement pElem = (PCElement) DSS.activeDSSObject;

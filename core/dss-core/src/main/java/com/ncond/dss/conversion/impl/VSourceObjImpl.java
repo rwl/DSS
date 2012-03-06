@@ -1,7 +1,6 @@
 package com.ncond.dss.conversion.impl;
 
 import java.io.OutputStream;
-import java.io.PrintStream;
 import java.io.PrintWriter;
 
 
@@ -466,164 +465,204 @@ public class VSourceObjImpl extends PCElementImpl implements VSourceObj {
 		super.makePosSequence();
 	}
 
+	@Override
 	public CMatrix getZ() {
 		return Z;
 	}
 
+	@Override
 	public void setZ(CMatrix z) {
 		Z = z;
 	}
 
+	@Override
 	public CMatrix getZinv() {
 		return ZInv;
 	}
 
+	@Override
 	public void setZinv(CMatrix zinv) {
 		ZInv = zinv;
 	}
 
+	@Override
 	public double getVMag() {
 		return VMag;
 	}
 
+	@Override
 	public void setVMag(double mag) {
 		VMag = mag;
 	}
 
+	@Override
 	public double getKVBase() {
 		return kVBase;
 	}
 
+	@Override
 	public void setKVBase(double base) {
 		this.kVBase = base;
 	}
 
+	@Override
 	public double getPerUnit() {
 		return perUnit;
 	}
 
+	@Override
 	public void setPerUnit(double pu) {
 		perUnit = pu;
 	}
 
+	@Override
 	public double getAngle() {
 		return angle;
 	}
 
+	@Override
 	public void setAngle(double ang) {
 		angle = ang;
 	}
 
+	@Override
 	public double getSrcFrequency() {
 		return srcFrequency;
 	}
 
+	@Override
 	public void setSrcFrequency(double frequency) {
 		srcFrequency = frequency;
 	}
 
 	// FIXME Private members in OpenDSS
 
+	@Override
 	public double getMVAsc3() {
 		return MVAsc3;
 	}
 
+	@Override
 	public void setMVAsc3(double mvasc3) {
 		MVAsc3 = mvasc3;
 	}
 
+	@Override
 	public double getMVAsc1() {
 		return MVAsc1;
 	}
 
+	@Override
 	public void setMVAsc1(double mvasc1) {
 		MVAsc1 = mvasc1;
 	}
 
+	@Override
 	public double getIsc3() {
 		return Isc3;
 	}
 
+	@Override
 	public void setIsc3(double isc3) {
 		Isc3 = isc3;
 	}
 
+	@Override
 	public double getIsc1() {
 		return Isc1;
 	}
 
+	@Override
 	public void setIsc1(double isc1) {
 		Isc1 = isc1;
 	}
 
+	@Override
 	public int getZSpecType() {
 		return ZSpecType;
 	}
 
+	@Override
 	public void setZSpecType(int specType) {
 		ZSpecType = specType;
 	}
 
+	@Override
 	public double getR1() {
 		return R1;
 	}
 
+	@Override
 	public void setR1(double r1) {
 		R1 = r1;
 	}
 
+	@Override
 	public double getX1() {
 		return X1;
 	}
 
+	@Override
 	public void setX1(double x1) {
 		X1 = x1;
 	}
 
+	@Override
 	public double getR0() {
 		return R0;
 	}
 
+	@Override
 	public void setR0(double r0) {
 		R0 = r0;
 	}
 
+	@Override
 	public double getX0() {
 		return X0;
 	}
 
+	@Override
 	public void setX0(double x0) {
 		X0 = x0;
 	}
 
+	@Override
 	public double getX1R1() {
 		return X1R1;
 	}
 
+	@Override
 	public void setX1R1(double x1r1) {
 		X1R1 = x1r1;
 	}
 
+	@Override
 	public double getX0R0() {
 		return X0R0;
 	}
 
+	@Override
 	public void setX0R0(double x0r0) {
 		X0R0 = x0r0;
 	}
 
+	@Override
 	public int getScanType() {
 		return scanType;
 	}
 
+	@Override
 	public void setScanType(int type) {
 		scanType = type;
 	}
 
+	@Override
 	public int getSequenceType() {
 		return sequenceType;
 	}
 
+	@Override
 	public void setSequenceType(int type) {
 		sequenceType = type;
 	}

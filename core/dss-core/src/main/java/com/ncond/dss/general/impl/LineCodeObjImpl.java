@@ -1,7 +1,6 @@
 package com.ncond.dss.general.impl;
 
 import java.io.OutputStream;
-import java.io.PrintStream;
 import java.io.PrintWriter;
 
 import org.apache.commons.math.complex.Complex;
@@ -106,6 +105,7 @@ public class LineCodeObjImpl extends DSSObjectImpl implements LineCodeObj {
 	 * Set the number of phases and reallocate phase-sensitive arrays.
 	 * Need to preserve values in Z matrices.
 	 */
+	@Override
 	public void setNPhases(int value) {
 		if (value > 0)
 			if (nPhases != value) {  // if size is no different, we don't need to do anything
@@ -116,10 +116,12 @@ public class LineCodeObjImpl extends DSSObjectImpl implements LineCodeObj {
 			}
 	}
 
+	@Override
 	public int getNPhases() {
 		return nPhases;
 	}
 
+	@Override
 	public void calcMatricesFromZ1Z0() {
 		Complex Zs, Zm, Ys, Ym, Ztemp;
 		int i, j;
@@ -272,6 +274,7 @@ public class LineCodeObjImpl extends DSSObjectImpl implements LineCodeObj {
 	}
 
 	// FIXME Private method in OpenDSS
+	@Override
 	public void doKronReduction() {
 		if (neutralConductor == -1)
 			return;
@@ -318,170 +321,212 @@ public class LineCodeObjImpl extends DSSObjectImpl implements LineCodeObj {
 		}
 	}
 
+	@Override
 	public boolean isSymComponentsModel() {
 		return symComponentsModel;
 	}
 
+	@Override
 	public void setSymComponentsModel(boolean model) {
 		symComponentsModel = model;
 	}
 
+	@Override
 	public boolean isReduceByKron() {
 		return reduceByKron;
 	}
 
+	@Override
 	public void setReduceByKron(boolean reduce) {
 		reduceByKron = reduce;
 	}
 
+	@Override
 	public CMatrix getZ() {
 		return Z;
 	}
 
+	@Override
 	public void setZ(CMatrix z) {
 		Z = z;
 	}
 
+	@Override
 	public CMatrix getZinv() {
 		return Zinv;
 	}
 
+	@Override
 	public void setZinv(CMatrix zinv) {
 		Zinv = zinv;
 	}
 
+	@Override
 	public CMatrix getYC() {
 		return Yc;
 	}
 
+	@Override
 	public void setYc(CMatrix Yc) {
 		this.Yc = Yc;
 	}
 
+	@Override
 	public double getBaseFrequency() {
 		return baseFrequency;
 	}
 
+	@Override
 	public void setBaseFrequency(double frequency) {
 		baseFrequency = frequency;
 	}
 
+	@Override
 	public double getR1() {
 		return R1;
 	}
 
+	@Override
 	public void setR1(double r1) {
 		R1 = r1;
 	}
 
+	@Override
 	public double getX1() {
 		return X1;
 	}
 
+	@Override
 	public void setX1(double x1) {
 		X1 = x1;
 	}
 
+	@Override
 	public double getR0() {
 		return R0;
 	}
 
+	@Override
 	public void setR0(double r0) {
 		R0 = r0;
 	}
 
+	@Override
 	public double getX0() {
 		return X0;
 	}
 
+	@Override
 	public void setX0(double x0) {
 		X0 = x0;
 	}
 
+	@Override
 	public double getC1() {
 		return C1;
 	}
 
+	@Override
 	public void setC1(double c1) {
 		C1 = c1;
 	}
 
+	@Override
 	public double getC0() {
 		return C0;
 	}
 
+	@Override
 	public void setC0(double c0) {
 		C0 = c0;
 	}
 
+	@Override
 	public double getNormAmps() {
 		return normAmps;
 	}
 
+	@Override
 	public void setNormAmps(double amps) {
 		normAmps = amps;
 	}
 
+	@Override
 	public double getEmergAmps() {
 		return emergAmps;
 	}
 
+	@Override
 	public void setEmergAmps(double amps) {
 		emergAmps = amps;
 	}
 
+	@Override
 	public double getFaultRate() {
 		return faultRate;
 	}
 
+	@Override
 	public void setFaultRate(double rate) {
 		faultRate = rate;
 	}
 
+	@Override
 	public double getPctPerm() {
 		return pctPerm;
 	}
 
+	@Override
 	public void setPctPerm(double pct) {
 		pctPerm = pct;
 	}
 
+	@Override
 	public double getHrsToRepair() {
 		return hrsToRepair;
 	}
 
+	@Override
 	public void setHrsToRepair(double hrs) {
 		hrsToRepair = hrs;
 	}
 
+	@Override
 	public double getRg() {
 		return Rg;
 	}
 
+	@Override
 	public void setRg(double rg) {
 		Rg = rg;
 	}
 
+	@Override
 	public double getXg() {
 		return Xg;
 	}
 
+	@Override
 	public void setXg(double xg) {
 		Xg = xg;
 	}
 
+	@Override
 	public double getRho() {
 		return rho;
 	}
 
+	@Override
 	public void setRho(double r) {
 		this.rho = r;
 	}
 
+	@Override
 	public int getUnits() {
 		return units;
 	}
 
+	@Override
 	public void setUnits(int u) {
 		units = u;
 	}
@@ -489,10 +534,12 @@ public class LineCodeObjImpl extends DSSObjectImpl implements LineCodeObj {
 
 	// FIXME Private members in OpenDSS
 
+	@Override
 	public int getNeutralConductor() {
 		return neutralConductor;
 	}
 
+	@Override
 	public void setNeutralConductor(int neutral) {
 		neutralConductor = neutral;
 	}

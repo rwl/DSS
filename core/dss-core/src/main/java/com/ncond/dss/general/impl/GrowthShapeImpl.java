@@ -34,6 +34,7 @@ public class GrowthShapeImpl extends DSSClassImpl implements GrowthShape {
 		commandList.setAbbrevAllowed(false);
 	}
 
+	@Override
 	protected void defineProperties() {
 		final String CRLF = DSS.CRLF;
 
@@ -70,12 +71,14 @@ public class GrowthShapeImpl extends DSSClassImpl implements GrowthShape {
 		super.defineProperties();  // add defs of inherited properties to bottom of list
 	}
 
+	@Override
 	public int newObject(String objName) {
 		// create a new object of this class and add to list.
 		DSS.activeDSSObject = new GrowthShapeObjImpl(this, objName);
 		return addObjectToList(DSS.activeDSSObject);
 	}
 
+	@Override
 	public int edit() {
 		double[] YrBuffer;
 		int result = 0;
@@ -144,6 +147,7 @@ public class GrowthShapeImpl extends DSSClassImpl implements GrowthShape {
 		return result;
 	}
 
+	@Override
 	protected int makeLike(String shapeName) {
 		GrowthShapeObj pShape, otherGrowthShape;
 
@@ -167,6 +171,7 @@ public class GrowthShapeImpl extends DSSClassImpl implements GrowthShape {
 		return 0;
 	}
 
+	@Override
 	public int init(int handle) {
 		DSS.doSimpleMsg("Need to implement GrowthShape.init()", -1);
 		return 0;
@@ -175,6 +180,7 @@ public class GrowthShapeImpl extends DSSClassImpl implements GrowthShape {
 	/**
 	 * Returns active GrowthShape string.
 	 */
+	@Override
 	public String getCode() {
 		return ((GrowthShapeObj) elementList.getActive()).getName();
 	}
@@ -182,6 +188,7 @@ public class GrowthShapeImpl extends DSSClassImpl implements GrowthShape {
 	/**
 	 * Sets the active GrowthShape.
 	 */
+	@Override
 	public void setCode(String value) {
 		GrowthShapeObj pShape;
 		activeGrowthShapeObj = null;

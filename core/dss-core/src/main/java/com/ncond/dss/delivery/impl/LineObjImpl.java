@@ -1,7 +1,6 @@
 package com.ncond.dss.delivery.impl;
 
 import java.io.OutputStream;
-import java.io.PrintStream;
 import java.io.PrintWriter;
 
 
@@ -133,6 +132,7 @@ public class LineObjImpl extends PDElementImpl implements LineObj {
 		recalcElementData();
 	}
 
+	@Override
 	public void fetchLineCode(String code) {
 
 		if (LineImpl.lineCodeClass == null)
@@ -607,6 +607,7 @@ public class LineObjImpl extends PDElementImpl implements LineObj {
 	 * Only consider 3-phase branches with pos seq >> neg seq
 	 * Otherwise, we don't know whether it is a 3-phase line or just a line with 3 phases
 	 */
+	@Override
 	public void getSeqLosses(Complex posSeqLosses, Complex negSeqLosses, Complex zeroSeqLosses) {
 		int k;
 
@@ -736,6 +737,7 @@ public class LineObjImpl extends PDElementImpl implements LineObj {
 	/**
 	 * Merge this line with another line and disble the other line.
 	 */
+	@Override
 	public boolean mergeWith(LineObj otherLine, boolean series) {
 		Complex[] values1, values2;
 		int[] order1 = new int[1];
@@ -936,6 +938,7 @@ public class LineObjImpl extends PDElementImpl implements LineObj {
 		return result;
 	}
 
+	@Override
 	public void updateControlElements(String newName, String oldName) {
 		Circuit ckt = DSS.activeCircuit;
 		for (ControlElem pControlElem : ckt.getDSSControls())
@@ -945,6 +948,7 @@ public class LineObjImpl extends PDElementImpl implements LineObj {
 			}
 	}
 
+	@Override
 	public void fetchLineSpacing(String code) {
 
 		if (DSS.lineSpacingClass.setActive(code)) {
@@ -963,6 +967,7 @@ public class LineObjImpl extends PDElementImpl implements LineObj {
 		}
 	}
 
+	@Override
 	public void fetchWireList(String code) {
 		int i, istart;
 
@@ -991,6 +996,7 @@ public class LineObjImpl extends PDElementImpl implements LineObj {
 		}
 	}
 
+	@Override
 	public void fetchCNCableList(String code) {
 		int i;
 
@@ -1013,6 +1019,7 @@ public class LineObjImpl extends PDElementImpl implements LineObj {
 		}
 	}
 
+	@Override
 	public void fetchTSCableList(String code) {
 		int i;
 
@@ -1035,6 +1042,7 @@ public class LineObjImpl extends PDElementImpl implements LineObj {
 		}
 	}
 
+	@Override
 	public void fetchGeometryCode(String code) {
 
 		if (LineImpl.lineGeometryClass == null)
@@ -1129,6 +1137,7 @@ public class LineObjImpl extends PDElementImpl implements LineObj {
 	 * Indicate no line geometry specification if this is called.
 	 */
 	// FIXME Private method in OpenDSS
+	@Override
 	public void killGeometrySpecified() {
 		if (geometrySpecified) {
 			lineGeometryObj = null;
@@ -1138,6 +1147,7 @@ public class LineObjImpl extends PDElementImpl implements LineObj {
 	}
 
 	// FIXME Private method in OpenDSS
+	@Override
 	public void killSpacingSpecified() {
 		if (spacingSpecified) {
 			lineSpacingObj = null;
@@ -1165,6 +1175,7 @@ public class LineObjImpl extends PDElementImpl implements LineObj {
 	 * If specify the impedances always assume the length units match.
 	 */
 	// FIXME Private method in OpenDSS
+	@Override
 	public void resetLengthUnits() {
 		unitsConvert = 1.0;
 		lengthUnits = LineUnits.UNITS_NONE;
@@ -1207,288 +1218,359 @@ public class LineObjImpl extends PDElementImpl implements LineObj {
 		throw new UnsupportedOperationException();
 	}
 
+	@Override
 	public CMatrix getZ() {
 		return Z;
 	}
 
+	@Override
 	public void setZ(CMatrix z) {
 		Z = z;
 	}
 
+	@Override
 	public CMatrix getYc() {
 		return Yc;
 	}
 
+	@Override
 	public void setYc(CMatrix yc) {
 		Yc = yc;
 	}
 
+	@Override
 	public double getR1() {
 		return R1;
 	}
 
+	@Override
 	public void setR1(double r1) {
 		R1 = r1;
 	}
 
+	@Override
 	public double getX1() {
 		return X1;
 	}
 
+	@Override
 	public void setX1(double x1) {
 		X1 = x1;
 	}
 
+	@Override
 	public double getR0() {
 		return R0;
 	}
 
+	@Override
 	public void setR0(double r0) {
 		R0 = r0;
 	}
 
+	@Override
 	public double getX0() {
 		return X0;
 	}
 
+	@Override
 	public void setX0(double x0) {
 		X0 = x0;
 	}
 
+	@Override
 	public double getC1() {
 		return C1;
 	}
 
+	@Override
 	public void setC1(double c1) {
 		C1 = c1;
 	}
 
+	@Override
 	public double getC0() {
 		return C0;
 	}
 
+	@Override
 	public void setC0(double c0) {
 		C0 = c0;
 	}
 
+	@Override
 	public double getLen() {
 		return len;
 	}
 
+	@Override
 	public void setLen(double value) {
 		len = value;
 	}
 
+	@Override
 	public int getLengthUnits() {
 		return lengthUnits;
 	}
 
+	@Override
 	public void setLengthUnits(int units) {
 		lengthUnits = units;
 	}
 
+	@Override
 	public double getRg() {
 		return Rg;
 	}
 
+	@Override
 	public void setRg(double rg) {
 		Rg = rg;
 	}
 
+	@Override
 	public double getXg() {
 		return Xg;
 	}
 
+	@Override
 	public void setXg(double xg) {
 		Xg = xg;
 	}
 
+	@Override
 	public double getKXg() {
 		return KXg;
 	}
 
+	@Override
 	public void setKXg(double kxg) {
 		KXg = kxg;
 	}
 
+	@Override
 	public double getRho() {
 		return rho;
 	}
 
+	@Override
 	public void setRho(double rho) {
 		this.rho = rho;
 	}
 
+	@Override
 	public double getGeneralPlotQuantity() {
 		return generalPlotQuantity;
 	}
 
+	@Override
 	public void setGeneralPlotQuantity(double quantity) {
 		generalPlotQuantity = quantity;
 	}
 
+	@Override
 	public String getCondCode() {
 		return condCode;
 	}
 
+	@Override
 	public void setCondCode(String code) {
 		condCode = code;
 	}
 
+	@Override
 	public String getGeometryCode() {
 		return geometryCode;
 	}
 
+	@Override
 	public void setGeometryCode(String code) {
 		geometryCode = code;
 	}
 
+	@Override
 	public String getSpacingCode() {
 		return spacingCode;
 	}
 
+	@Override
 	public void setSpacingCode(String code) {
 		spacingCode = code;
 	}
 
+	@Override
 	public boolean isGeometrySpecified() {
 		return geometrySpecified;
 	}
 
+	@Override
 	public void setGeometrySpecified(boolean specified) {
 		geometrySpecified = specified;
 	}
 
+	@Override
 	public boolean isSpacingSpecified() {
 		return spacingSpecified;
 	}
 
+	@Override
 	public void setSpacingSpecified(boolean specified) {
 		spacingSpecified = specified;
 	}
 
+	@Override
 	public boolean isSymComponentsChanged() {
 		return symComponentsChanged;
 	}
 
+	@Override
 	public void setSymComponentsChanged(boolean changed) {
 		symComponentsChanged = changed;
 	}
 
+	@Override
 	public boolean isSymComponentsModel() {
 		return symComponentsModel;
 	}
 
+	@Override
 	public void setSymComponentsModel(boolean model) {
 		symComponentsModel = model;
 	}
 
+	@Override
 	public boolean isSwitch() {
 		return isSwitch;
 	}
 
+	@Override
 	public void setSwitch(boolean value) {
 		isSwitch = value;
 	}
 
+	@Override
 	public boolean isLineCodeSpecified() {
 		return lineCodeSpecified;
 	}
 
+	@Override
 	public ConductorChoice getPhaseChoice() {
 		return phaseChoice;
 	}
 
+	@Override
 	public int numConductorsAvailable() {
 		return numConductorData();
 	}
 
+	@Override
 	public ConductorDataObj getConductorData(int i) {
 		return fetchConductorData(i);
 	}
 
 	// FIXME Private members in OpenDSS
 
+	@Override
 	public double getZFrequency() {
 		return ZFrequency;
 	}
 
+	@Override
 	public void setZFrequency(double frequency) {
 		ZFrequency = frequency;
 	}
 
+	@Override
 	public int getLineCodeUnits() {
 		return lineCodeUnits;
 	}
 
+	@Override
 	public void setLineCodeUnits(int units) {
 		lineCodeUnits = units;
 	}
 
+	@Override
 	public double getUnitsConvert() {
 		return unitsConvert;
 	}
 
+	@Override
 	public void setUnitsConvert(double units) {
 		unitsConvert = units;
 	}
 
+	@Override
 	public LineGeometryObj getLineGeometryObj() {
 		return lineGeometryObj;
 	}
 
+	@Override
 	public void setLineGeometryObj(LineGeometryObj obj) {
 		lineGeometryObj = obj;
 	}
 
+	@Override
 	public LineSpacingObj getLineSpacingObj() {
 		return lineSpacingObj;
 	}
 
+	@Override
 	public void setLineSpacingObj(LineSpacingObj obj) {
 		lineSpacingObj = obj;
 	}
 
+	@Override
 	public ConductorDataObj[] getWireData() {
 		return wireData;
 	}
 
+	@Override
 	public void setWireData(ConductorDataObj[] data) {
 		wireData = data;
 	}
 
+	@Override
 	public boolean getRhoSpecified() {
 		return rhoSpecified;
 	}
 
+	@Override
 	public void setRhoSpecified(boolean value) {
 		this.rhoSpecified = value;
 	}
 
+	@Override
 	public int getEarthModel() {
 		return earthModel;
 	}
 
+	@Override
 	public void setEarthModel(int model) {
 		earthModel = model;
 	}
 
+	@Override
 	public void setLineCodeSpecified(boolean value) {
 		lineCodeSpecified = value;
 	}
 
+	@Override
 	public CMatrix getZInv() {
 		return ZInv;
 	}
 
+	@Override
 	public void setZInv(CMatrix zinv) {
 		ZInv = zinv;
 	}
 
+	@Override
 	public boolean isCapSpecified() {
 		return capSpecified;
 	}
 
+	@Override
 	public void setCapSpecified(boolean value) {
 		capSpecified = value;
 	}

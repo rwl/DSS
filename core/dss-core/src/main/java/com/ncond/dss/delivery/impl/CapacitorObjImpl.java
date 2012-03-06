@@ -1,7 +1,6 @@
 package com.ncond.dss.delivery.impl;
 
 import java.io.OutputStream;
-import java.io.PrintStream;
 import java.io.PrintWriter;
 
 import com.ncond.dss.common.DSSClass;
@@ -346,10 +345,12 @@ public class CapacitorObjImpl extends PDElementImpl implements CapacitorObj {
 		super.makePosSequence();
 	}
 
+	@Override
 	public int getStates(int idx) {
 		return getStates()[idx];
 	}
 
+	@Override
 	public void setStates(int idx, int value) {
 		if (getStates()[idx] != value) {
 			getStates()[idx] = value;
@@ -362,6 +363,7 @@ public class CapacitorObjImpl extends PDElementImpl implements CapacitorObj {
 	 *
 	 * 1=kvar, 2=Cuf, 3=Cmatrix
 	 */
+	@Override
 	public void setNumSteps(int value) {
 		double stepSize, RStep, XLStep;
 		int i;
@@ -440,12 +442,14 @@ public class CapacitorObjImpl extends PDElementImpl implements CapacitorObj {
 	}
 
 	// FIXME Private member in OpenDSS
+	@Override
 	public void processHarmonicSpec(String param) {
 		Util.interpretDblArray(param, getNumSteps(), getHarm());
 		setDoHarmonicRecalc(true);
 	}
 
 	// FIXME Private member in OpenDSS
+	@Override
 	public void processStatesSpec(String param) {
 		Util.interpretIntArray(param, getNumSteps(), getStates());
 
@@ -642,6 +646,7 @@ public class CapacitorObjImpl extends PDElementImpl implements CapacitorObj {
 		return result;
 	}
 
+	@Override
 	public boolean addStep() {
 		// start with last step in service and see if we can add more; if not return false.
 
@@ -654,6 +659,7 @@ public class CapacitorObjImpl extends PDElementImpl implements CapacitorObj {
 		}
 	}
 
+	@Override
 	public boolean subtractStep() {
 		if (lastStepInService == -1) {
 			return false;
@@ -678,116 +684,144 @@ public class CapacitorObjImpl extends PDElementImpl implements CapacitorObj {
 		throw new UnsupportedOperationException();
 	}
 
+	@Override
 	public int availableSteps() {
 		return getNumSteps() - lastStepInService;
 	}
 
+	@Override
 	public int getNumSteps() {
 		return numSteps;
 	}
 
+	@Override
 	public int getConnection() {
 		return connection;
 	}
 
+	@Override
 	public void setConnection(int conn) {
 		connection = conn;
 	}
 
+	@Override
 	public double getTotalKVAr() {
 		return totalKVAr;
 	}
 
+	@Override
 	public double getKVRating() {
 		return kVRating;
 	}
 
 	// FIXME Private members in OpenDSS
 
+	@Override
 	public double[] getC() {
 		return C;
 	}
 
+	@Override
 	public void setC(double[] value) {
 		C = value;
 	}
 
+	@Override
 	public double[] getXL() {
 		return XL;
 	}
 
+	@Override
 	public void setXL(double[] xl) {
 		XL = xl;
 	}
 
+	@Override
 	public double[] getKVArRating() {
 		return kVArRating;
 	}
 
+	@Override
 	public void setKVArRating(double[] rating) {
 		this.kVArRating = rating;
 	}
 
+	@Override
 	public double[] getR() {
 		return R;
 	}
 
+	@Override
 	public void setR(double[] r) {
 		R = r;
 	}
 
+	@Override
 	public double[] getHarm() {
 		return harm;
 	}
 
+	@Override
 	public void setHarm(double[] values) {
 		harm = values;
 	}
 
+	@Override
 	public int[] getStates() {
 		return states;
 	}
 
+	@Override
 	public void setStates(int[] values) {
 		states = values;
 	}
 
+	@Override
 	public int getLastStepInService() {
 		return lastStepInService;
 	}
 
+	@Override
 	public void setLastStepInService(int lastStep) {
 		lastStepInService = lastStep;
 	}
 
+	@Override
 	public double[] getCMatrix() {
 		return CMatrix;
 	}
 
+	@Override
 	public void setCMatrix(double[] cmatrix) {
 		CMatrix = cmatrix;
 	}
 
+	@Override
 	public boolean isDoHarmonicRecalc() {
 		return doHarmonicRecalc;
 	}
 
+	@Override
 	public void setDoHarmonicRecalc(boolean value) {
 		this.doHarmonicRecalc = value;
 	}
 
+	@Override
 	public int getSpecType() {
 		return specType;
 	}
 
+	@Override
 	public void setSpecType(int type) {
 		specType = type;
 	}
 
+	@Override
 	public void setTotalKVAr(double total) {
 		this.totalKVAr = total;
 	}
 
+	@Override
 	public void setKVARating(double rating) {
 		this.kVRating = rating;
 	}

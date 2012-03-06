@@ -1,7 +1,6 @@
 package com.ncond.dss.general.impl;
 
 import java.io.OutputStream;
-import java.io.PrintStream;
 import java.io.PrintWriter;
 
 import org.apache.commons.math.complex.Complex;
@@ -76,6 +75,7 @@ public class LoadShapeObjImpl extends DSSObjectImpl implements LoadShapeObj {
 	 * The value returned is the nearest to the interval requested.  Thus if you request
 	 * hour=12.25 and the interval is 1.0, you will get interval 12.
 	 */
+	@Override
 	public Complex getMult(double hr) {
 		int index;
 
@@ -178,6 +178,7 @@ public class LoadShapeObjImpl extends DSSObjectImpl implements LoadShapeObj {
 	/**
 	 * Normalize the curve presently in memory.
 	 */
+	@Override
 	public void normalize() {
 		doNormalize(PMultipliers);
 		if (QMultipliers != null) {
@@ -187,6 +188,7 @@ public class LoadShapeObjImpl extends DSSObjectImpl implements LoadShapeObj {
 		useActual = false;  // not likely that you would want to use the actual if you normalized it
 	}
 
+	@Override
 	public void calcMeanAndStdDev() {
 		if (numPoints > 0) {
 			if (interval > 0.0) {
@@ -203,6 +205,7 @@ public class LoadShapeObjImpl extends DSSObjectImpl implements LoadShapeObj {
 		/* No action is taken on Q multipliers */
 	}
 
+	@Override
 	public double getInterval() {
 		if (interval > 0.0) {
 			return interval;
@@ -215,12 +218,14 @@ public class LoadShapeObjImpl extends DSSObjectImpl implements LoadShapeObj {
 		}
 	}
 
+	@Override
 	public double getMean() {
 		if (!stdDevCalculated)
 			calcMeanAndStdDev();
 		return mean[0];
 	}
 
+	@Override
 	public double getStdDev() {
 		if (!stdDevCalculated)
 			calcMeanAndStdDev();
@@ -230,6 +235,7 @@ public class LoadShapeObjImpl extends DSSObjectImpl implements LoadShapeObj {
 	/**
 	 * Get multiplier by index.
 	 */
+	@Override
 	public double mult(int i) {
 		if (i < numPoints && i >= 0) {
 			lastValueAccessed = i;
@@ -242,6 +248,7 @@ public class LoadShapeObjImpl extends DSSObjectImpl implements LoadShapeObj {
 	/**
 	 * Get hour corresponding to point index.
 	 */
+	@Override
 	public double hour(int i) {
 		if (interval == 0) {
 			if (i < numPoints & i >= 0) {
@@ -256,6 +263,7 @@ public class LoadShapeObjImpl extends DSSObjectImpl implements LoadShapeObj {
 		}
 	}
 
+	@Override
 	public void dumpProperties(OutputStream out, boolean complete) {
 		super.dumpProperties(out, complete);
 
@@ -280,6 +288,7 @@ public class LoadShapeObjImpl extends DSSObjectImpl implements LoadShapeObj {
 		pw.close();
 	}
 
+	@Override
 	public String getPropertyValue(int index) {
 		String result;
 
@@ -364,6 +373,7 @@ public class LoadShapeObjImpl extends DSSObjectImpl implements LoadShapeObj {
 		return result;
 	}
 
+	@Override
 	public void initPropertyValues(int arrayOffset) {
 
 		setPropertyValue(0, "0");  // number of points to expect
@@ -389,18 +399,21 @@ public class LoadShapeObjImpl extends DSSObjectImpl implements LoadShapeObj {
 	// TODO Implement TOPExport method
 
 	// FIXME Private method in OpenDSS
+	@Override
 	public void saveToDblFile() {
 		// FIXME Implement this method
 		throw new UnsupportedOperationException();
 	}
 
 	// FIXME Private method in OpenDSS
+	@Override
 	public void saveToSngFile() {
 		// FIXME Implement this method
 		throw new UnsupportedOperationException();
 	}
 
 	// FIXME Private method in OpenDSS
+	@Override
 	public void setMaxPandQ() {
 		iMaxP = Util.iMaxAbsdblArrayValue(numPoints, PMultipliers);
 
@@ -414,11 +427,13 @@ public class LoadShapeObjImpl extends DSSObjectImpl implements LoadShapeObj {
 		}
 	}
 
+	@Override
 	public void setMean(double value) {
 		stdDevCalculated = true;
 		mean[0] = value;
 	}
 
+	@Override
 	public void setNumPoints(int value) {
 
 		setPropertyValue(0, String.valueOf(value));  // update property list variable
@@ -433,94 +448,116 @@ public class LoadShapeObjImpl extends DSSObjectImpl implements LoadShapeObj {
 		numPoints = value;  // now assign the value
 	}
 
+	@Override
 	public void setStdDev(double stddev) {
 		stdDevCalculated = true;
 		stdDev[0] = stddev;
 	}
 
+	@Override
 	public int getNumPoints() {
 		return numPoints;
 	}
 
+	@Override
 	public double[] getHours() {
 		return hours;
 	}
 
+	@Override
 	public void setHours(double[] values) {
 		hours = values;
 	}
 
+	@Override
 	public double[] getPMultipliers() {
 		return PMultipliers;
 	}
 
+	@Override
 	public void setPMultipliers(double[] values) {
 		PMultipliers = values;
 	}
 
+	@Override
 	public double[] getQMultipliers() {
 		return QMultipliers;
 	}
 
+	@Override
 	public void setQMultipliers(double[] values) {
 		QMultipliers = values;
 	}
 
+	@Override
 	public void setInterval(double value) {
 		interval = value;
 	}
 
+	@Override
 	public double getMaxP() {
 		return maxP;
 	}
 
+	@Override
 	public void setMaxP(double max) {
 		maxP = max;
 	}
 
+	@Override
 	public double getMaxQ() {
 		return maxQ;
 	}
 
+	@Override
 	public void setMaxQ(double max) {
 		maxQ = max;
 	}
 
+	@Override
 	public boolean isUseActual() {
 		return useActual;
 	}
 
+	@Override
 	public void setUseActual(boolean value) {
 		useActual = value;
 	}
 
 	// Protected member in OpenDSS.
 
+	@Override
 	public boolean isStdDevCalculated() {
 		return stdDevCalculated;
 	}
 
+	@Override
 	public void setStdDevCalculated(boolean calculated) {
 		stdDevCalculated = calculated;
 	}
 
 	// Private member in OpenDSS.
+	@Override
 	public void setArrayPropertyIndex(int i) {
 		arrayPropertyIndex = i;
 	}
 
+	@Override
 	public double getBaseP() {
 		return baseP;
 	}
 
+	@Override
 	public void setBaseP(double baseP) {
 		this.baseP = baseP;
 	}
 
+	@Override
 	public double getBaseQ() {
 		return baseQ;
 	}
 
+	@Override
 	public void setBaseQ(double baseQ) {
 		this.baseQ = baseQ;
 	}

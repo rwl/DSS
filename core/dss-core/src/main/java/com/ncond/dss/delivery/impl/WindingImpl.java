@@ -39,110 +39,137 @@ public class WindingImpl implements Winding {
 		minTap       = 0.90;
 	}
 
+	@Override
 	public void computeAntiFloatAdder(double PPM_Factor, double VABase1ph) {
 		Y_PPM = -PPM_Factor / (Math.pow(VBase, 2) / VABase1ph);
 	}
 
+	@Override
 	public int getConnection() {
 		return connection;
 	}
 
+	@Override
 	public void setConnection(int conn) {
 		connection = conn;
 	}
 
+	@Override
 	public double getKVLL() {
 		return kVLL;
 	}
 
+	@Override
 	public void setKVLL(double kvll) {
 		kVLL = kvll;
 	}
 
+	@Override
 	public double getVBase() {
 		return VBase;
 	}
 
+	@Override
 	public void setVBase(double base) {
 		VBase = base;
 	}
 
+	@Override
 	public double getKVA() {
 		return kVA;
 	}
 
+	@Override
 	public void setKVA(double kva) {
 		kVA = kva;
 	}
 
+	@Override
 	public double getPUTap() {
 		return puTap;
 	}
 
+	@Override
 	public void setPUTap(double tap) {
 		puTap = tap;
 	}
 
+	@Override
 	public double getRpu() {
 		return Rpu;
 	}
 
+	@Override
 	public void setRpu(double rpu) {
 		Rpu = rpu;
 	}
 
+	@Override
 	public double getRNeut() {
 		return RNeut;
 	}
 
+	@Override
 	public void setRNeut(double rneut) {
 		RNeut = rneut;
 	}
 
+	@Override
 	public double getXNeut() {
 		return XNeut;
 	}
 
+	@Override
 	public void setXNeut(double xneut) {
 		XNeut = xneut;
 	}
 
+	@Override
 	public double getY_PPM() {
 		return Y_PPM;
 	}
 
+	@Override
 	public void setY_PPM(double y) {
 		Y_PPM = y;
 	}
 
+	@Override
 	public double getTapIncrement() {
 		return tapIncrement;
 	}
 
+	@Override
 	public void setTapIncrement(double increment) {
 		tapIncrement = increment;
 	}
 
+	@Override
 	public double getMinTap() {
 		return minTap;
 	}
 
+	@Override
 	public void setMinTap(double min) {
 		minTap = min;
 	}
 
+	@Override
 	public double getMaxTap() {
 		return maxTap;
 	}
 
+	@Override
 	public void setMaxTap(double max) {
 		maxTap = max;
 	}
 
+	@Override
 	public int getNumTaps() {
 		return numTaps;
 	}
 
+	@Override
 	public void setNumTaps(int num) {
 		numTaps = num;
 	}

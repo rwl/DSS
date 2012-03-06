@@ -27,6 +27,7 @@ public class ReactorImpl extends PDClassImpl implements Reactor {
 		commandList.setAbbrevAllowed(true);
 	}
 
+	@Override
 	protected void defineProperties() {
 
 		numProperties = Reactor.NumPropsThisClass;

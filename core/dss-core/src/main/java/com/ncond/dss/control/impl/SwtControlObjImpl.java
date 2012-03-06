@@ -1,7 +1,6 @@
 package com.ncond.dss.control.impl;
 
 import java.io.OutputStream;
-import java.io.PrintStream;
 import java.io.PrintWriter;
 
 import org.apache.commons.math.complex.Complex;
@@ -114,6 +113,7 @@ public class SwtControlObjImpl extends ControlElemImpl implements SwtControlObj 
 	}
 
 	// FIXME Private method in OpenDSS
+	@Override
 	public void interpretSwitchAction(String action) {
 		if (!locked) {
 			switch (action.toLowerCase().charAt(0)) {
@@ -195,10 +195,12 @@ public class SwtControlObjImpl extends ControlElemImpl implements SwtControlObj 
 		super.initPropertyValues(SwtControl.NumPropsThisClass - 1);
 	}
 
+	@Override
 	public ControlAction getPresentState() {
 		return presentState;
 	}
 
+	@Override
 	public boolean isLocked() {
 		return locked;
 	}
@@ -210,10 +212,12 @@ public class SwtControlObjImpl extends ControlElemImpl implements SwtControlObj 
 
 	// FIXME Private members in OpenDSS
 
+	@Override
 	public void setPresentState(ControlAction state) {
 		presentState = state;
 	}
 
+	@Override
 	public void setLocked(boolean value) {
 		locked = value;
 	}

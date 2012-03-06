@@ -42,6 +42,7 @@ public class GeneratorImpl extends PCClassImpl implements Generator {
 		commandList.setAbbrevAllowed(true);
 	}
 
+	@Override
 	protected void defineProperties() {
 
 		numProperties = Generator.NumPropsThisClass;
@@ -580,6 +581,7 @@ public class GeneratorImpl extends PCClassImpl implements Generator {
 	/**
 	 * Force all EnergyMeters in the circuit to reset.
 	 */
+	@Override
 	public void resetRegistersAll() {
 		for (GeneratorObj pGen : DSS.activeCircuit.getGenerators())
 			pGen.resetRegisters();
@@ -588,15 +590,18 @@ public class GeneratorImpl extends PCClassImpl implements Generator {
 	/**
 	 * Force all EnergyMeters in the circuit to take a sample.
 	 */
+	@Override
 	public void sampleAll() {
 		for (GeneratorObj pGen : DSS.activeCircuit.getGenerators())
 			pGen.takeSample();
 	}
 
+	@Override
 	public String[] getRegisterNames() {
 		return registerNames;
 	}
 
+	@Override
 	public void setRegisterNames(String[] names) {
 		registerNames = names;
 	}

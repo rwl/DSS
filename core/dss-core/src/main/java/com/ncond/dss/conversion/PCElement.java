@@ -42,16 +42,21 @@ public interface PCElement extends CktElement {
 
 	void zeroInjCurrent();
 
+	@Override
 	void initPropertyValues(int arrayOffset);
 
 	/** Get present values of terminal */
+	@Override
 	void getCurrents(Complex[] curr);
 
 	/** Get present values of terminal */
+	@Override
 	void getInjCurrents(Complex[] curr);
 
+	@Override
 	void computeITerminal();
 
+	@Override
 	int injCurrents();
 
 	void calcYPrimContribution(Complex[] curr);

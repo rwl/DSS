@@ -74,7 +74,6 @@ public interface Bus extends NamedObject {
 	void allocateBusCurrents();
 
 	/**
-	 *
 	 * @param nodeNum
 	 * @return global node number
 	 */

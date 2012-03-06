@@ -38,6 +38,7 @@ public class FeederObjImpl extends PCElementImpl implements FeederObj {
 		initPropertyValues(0);
 	}
 
+	@Override
 	public void initializeFeeder(CktTree branchList) {
 		int bref;
 		CktElement pElement, pShunt;
@@ -163,6 +164,7 @@ public class FeederObjImpl extends PCElementImpl implements FeederObj {
 		// do nothing
 	}
 
+	@Override
 	public void setCktElementFeederFlags(boolean value) {
 		for (int i = 0; i < shuntList.size(); i++)
 			shuntList.get(i).setPartofFeeder(value);
@@ -171,10 +173,12 @@ public class FeederObjImpl extends PCElementImpl implements FeederObj {
 			sequenceList.get(i).setPartofFeeder(value);
 	}
 
+	@Override
 	public boolean isSynched() {
 		return isSynched;
 	}
 
+	@Override
 	public void setSynched(boolean synched) {
 		isSynched = synched;
 	}

@@ -1,7 +1,6 @@
 package com.ncond.dss.control.impl;
 
 import java.io.OutputStream;
-import java.io.PrintStream;
 import java.io.PrintWriter;
 
 import org.apache.commons.math.complex.Complex;
@@ -247,6 +246,7 @@ public class RecloserObjImpl extends ControlElemImpl implements RecloserObj {
 	}
 
 	// FIXME Private method in OpenDSS
+	@Override
 	public void interpretRecloserAction(String action) {
 
 		if (getControlledElement() != null) {
@@ -476,234 +476,292 @@ public class RecloserObjImpl extends ControlElemImpl implements RecloserObj {
 
 	// FIXME Private members in Open DSS
 
+	@Override
 	public TCC_CurveObj getPhaseDelayed() {
 		return phaseDelayed;
 	}
 
+	@Override
 	public void setPhaseDelayed(TCC_CurveObj value) {
 		phaseDelayed = value;
 	}
 
+	@Override
 	public TCC_CurveObj getGroundDelayed() {
 		return groundDelayed;
 	}
 
+	@Override
 	public void setGroundDelayed(TCC_CurveObj value) {
 		groundDelayed = value;
 	}
 
+	@Override
 	public TCC_CurveObj getPhaseFast() {
 		return phaseFast;
 	}
 
+	@Override
 	public void setPhaseFast(TCC_CurveObj value) {
 		phaseFast = value;
 	}
 
+	@Override
 	public TCC_CurveObj getGroundFast() {
 		return groundFast;
 	}
 
+	@Override
 	public void setGroundFast(TCC_CurveObj value) {
 		groundFast = value;
 	}
 
+	@Override
 	public double getPhaseTrip() {
 		return phaseTrip;
 	}
 
+	@Override
 	public void setPhaseTrip(double value) {
 		phaseTrip = value;
 	}
 
+	@Override
 	public double getGroundTrip() {
 		return groundTrip;
 	}
 
+	@Override
 	public void setGroundTrip(double value) {
 		groundTrip = value;
 	}
 
+	@Override
 	public double getPhaseInst() {
 		return phaseInst;
 	}
 
+	@Override
 	public void setPhaseInst(double value) {
 		phaseInst = value;
 	}
 
+	@Override
 	public double getGroundInst() {
 		return groundInst;
 	}
 
+	@Override
 	public void setGroundInst(double value) {
 		groundInst = value;
 	}
 
+	@Override
 	public double[] getRecloseIntervals() {
 		return recloseIntervals;
 	}
 
+	@Override
 	public void setRecloseIntervals(double[] intervals) {
 		recloseIntervals = intervals;
 	}
 
+	@Override
 	public int getNumFast() {
 		return numFast;
 	}
 
+	@Override
 	public void setNumFast(int num) {
 		numFast = num;
 	}
 
+	@Override
 	public int getNumReclose() {
 		return numReclose;
 	}
 
+	@Override
 	public void setNumReclose(int num) {
 		numReclose = num;
 	}
 
+	@Override
 	public double getResetTime() {
 		return resetTime;
 	}
 
+	@Override
 	public void setResetTime(double time) {
 		resetTime = time;
 	}
 
+	@Override
 	public double getDelayTime() {
 		return delayTime;
 	}
 
+	@Override
 	public void setDelayTime(double time) {
 		delayTime = time;
 	}
 
+	@Override
 	public double getTDGrDelayed() {
 		return TDGrDelayed;
 	}
 
+	@Override
 	public void setTDGrDelayed(double value) {
 		TDGrDelayed = value;
 	}
 
+	@Override
 	public double getTDPhDelayed() {
 		return TDPhDelayed;
 	}
 
+	@Override
 	public void setTDPhDelayed(double value) {
 		TDPhDelayed = value;
 	}
 
+	@Override
 	public double getTDGrFast() {
 		return TDGrFast;
 	}
 
+	@Override
 	public void setTDGrFast(double value) {
 		TDGrFast = value;
 	}
 
+	@Override
 	public double getTDPhFast() {
 		return TDPhFast;
 	}
 
+	@Override
 	public void setTDPhFast(double value) {
 		TDPhFast = value;
 	}
 
+	@Override
 	public String getMonitoredElementName() {
 		return monitoredElementName;
 	}
 
+	@Override
 	public void setMonitoredElementName(String name) {
 		monitoredElementName = name;
 	}
 
+	@Override
 	public int getMonitoredElementTerminal() {
 		return monitoredElementTerminal;
 	}
 
+	@Override
 	public void setMonitoredElementTerminal(int terminal) {
 		monitoredElementTerminal = terminal;
 	}
 
+	@Override
 	public CktElement getMonitoredElement() {
 		return monitoredElement;
 	}
 
+	@Override
 	public void setMonitoredElement(CktElement element) {
 		monitoredElement = element;
 	}
 
+	@Override
 	public ControlAction getPresentState() {
 		return presentState;
 	}
 
+	@Override
 	public void setPresentState(ControlAction state) {
 		presentState = state;
 	}
 
+	@Override
 	public int getOperationCount() {
 		return operationCount;
 	}
 
+	@Override
 	public void setOperationCount(int count) {
 		operationCount = count;
 	}
 
+	@Override
 	public boolean isLockedOut() {
 		return lockedOut;
 	}
 
+	@Override
 	public void setLockedOut(boolean locked) {
 		lockedOut = locked;
 	}
 
+	@Override
 	public boolean isArmedForClose() {
 		return armedForClose;
 	}
 
+	@Override
 	public void setArmedForClose(boolean armed) {
 		armedForClose = armed;
 	}
 
+	@Override
 	public boolean isArmedForOpen() {
 		return armedForOpen;
 	}
 
+	@Override
 	public void setArmedForOpen(boolean armed) {
 		armedForOpen = armed;
 	}
 
+	@Override
 	public boolean isGroundTarget() {
 		return groundTarget;
 	}
 
+	@Override
 	public void setGroundTarget(boolean target) {
 		groundTarget = target;
 	}
 
+	@Override
 	public boolean isPhaseTarget() {
 		return phaseTarget;
 	}
 
+	@Override
 	public void setPhaseTarget(boolean target) {
 		phaseTarget = target;
 	}
 
+	@Override
 	public int getCondOffset() {
 		return condOffset;
 	}
 
+	@Override
 	public void setCondOffset(int offset) {
 		condOffset = offset;
 	}
 
+	@Override
 	public Complex[] getCBuffer() {
 		return cBuffer;
 	}
 
+	@Override
 	public void setCBuffer(Complex[] buffer) {
 		this.cBuffer = buffer;
 	}

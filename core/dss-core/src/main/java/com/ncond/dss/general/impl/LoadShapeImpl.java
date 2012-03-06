@@ -10,6 +10,7 @@ import com.ncond.dss.common.impl.DSSClassDefs;
 import com.ncond.dss.common.impl.DSSClassImpl;
 import com.ncond.dss.common.impl.DSS;
 import com.ncond.dss.common.impl.Util;
+import com.ncond.dss.general.DSSObject;
 import com.ncond.dss.general.LoadShape;
 import com.ncond.dss.general.LoadShapeObj;
 import com.ncond.dss.parser.impl.Parser;
@@ -35,6 +36,7 @@ public class LoadShapeImpl extends DSSClassImpl implements LoadShape {
 		commandList.setAbbrevAllowed(true);
 	}
 
+	@Override
 	protected void defineProperties() {
 		final String CRLF = DSS.CRLF;
 
@@ -120,11 +122,13 @@ public class LoadShapeImpl extends DSSClassImpl implements LoadShape {
 		super.defineProperties();  // add defs of inherited properties to bottom of list
 	}
 
+	@Override
 	public int newObject(String objName) {
 		DSS.activeDSSObject = new LoadShapeObjImpl(this, objName);
 		return addObjectToList(DSS.activeDSSObject);
 	}
 
+	@Override
 	public int edit() {
 		Parser parser = Parser.getInstance();
 
@@ -269,7 +273,8 @@ public class LoadShapeImpl extends DSSClassImpl implements LoadShape {
 	/**
 	 * Find an obj of this class by name.
 	 */
-	public Object find(String objName) {
+	@Override
+	public DSSObject find(String objName) {
 		if (objName.length() == 0 || objName.equalsIgnoreCase("none")) {
 			return null;
 		} else {
@@ -277,6 +282,7 @@ public class LoadShapeImpl extends DSSClassImpl implements LoadShape {
 		}
 	}
 
+	@Override
 	protected int makeLike(String shapeName) {
 		int result = 0;
 		/* See if we can find this line code in the present collection */
@@ -320,6 +326,7 @@ public class LoadShapeImpl extends DSSClassImpl implements LoadShape {
 		return result;
 	}
 
+	@Override
 	public int init(int handle) {
 		DSS.doSimpleMsg("Need to implement LoadShape.init()", -1);
 		return 0;
@@ -328,6 +335,7 @@ public class LoadShapeImpl extends DSSClassImpl implements LoadShape {
 	/**
 	 * Returns active LoadShape string.
 	 */
+	@Override
 	public String getCode() {
 		return ((LoadShapeObj) elementList.getActive()).getName();
 	}
@@ -335,6 +343,7 @@ public class LoadShapeImpl extends DSSClassImpl implements LoadShape {
 	/**
 	 * Sets the active LoadShape.
 	 */
+	@Override
 	public void setCode(String value) {
 		activeLoadShapeObj = null;
 
@@ -407,6 +416,7 @@ public class LoadShapeImpl extends DSSClassImpl implements LoadShape {
 		throw new UnsupportedOperationException();
 	}
 
+	@Override
 	public void TOPExport(String objName) {
 		// FIXME Implement this method
 		throw new UnsupportedOperationException();

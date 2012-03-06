@@ -4,7 +4,6 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.OutputStream;
-import java.io.PrintStream;
 import java.io.PrintWriter;
 
 
@@ -291,6 +290,7 @@ public class PVSystemObjImpl extends PCElementImpl implements PVSystemObj {
 	/**
 	 * 0 = reset to 1.0; 1 = Gaussian around mean and std dev; 2 = uniform
 	 */
+	@Override
 	public void randomize(int opt) {
 		switch (opt) {
 		case 0:
@@ -356,6 +356,7 @@ public class PVSystemObjImpl extends PCElementImpl implements PVSystemObj {
 		}
 	}
 
+	@Override
 	public void setNominalPVSystemOuput() {
 		shapeFactor = CDOUBLEONE;  // init here; changed by curve routine
 		TShapeValue = 25.0;  // init here; changed by curve routine
@@ -987,6 +988,7 @@ public class PVSystemObjImpl extends PCElementImpl implements PVSystemObj {
 		}
 	}
 
+	@Override
 	public void resetRegisters() {
 		int i;
 		for (i = 0; i < PVSystem.NumPVSystemRegisters; i++)
@@ -1013,6 +1015,7 @@ public class PVSystemObjImpl extends PCElementImpl implements PVSystemObj {
 	/**
 	 * Update energy from metered zone
 	 */
+	@Override
 	public void takeSample() {
 		Complex S;
 		double SMag;
@@ -1052,22 +1055,27 @@ public class PVSystemObjImpl extends PCElementImpl implements PVSystemObj {
 	 * Update PVSystem elements based on present kW and IntervalHrs variable.
 	 */
 	// FIXME Private method in OpenDSS
+	@Override
 	public void updatePVSystem() {
 		// do nothing
 	}
 
+	@Override
 	public double getPresentKW() {
 		return PNominalPerPhase * 0.001 * nPhases;
 	}
 
+	@Override
 	public double getPresentIrradiance() {
 		return irradiance * shapeFactor.getReal();
 	}
 
+	@Override
 	public double getPresentKV() {
 		return kVPVSystemBase;
 	}
 
+	@Override
 	public double getPresentKVAr() {
 		return QNominalPerPhase * 0.001 * nPhases;
 	}
@@ -1300,15 +1308,18 @@ public class PVSystemObjImpl extends PCElementImpl implements PVSystemObj {
 		}
 	}
 
+	@Override
 	public void setPowerFactor(double value) {
 		PFNominal = value;
 		PFSpecified = true;
 	}
 
+	@Override
 	public void setPresentIrradiance(double value) {
 		irradiance = value;
 	}
 
+	@Override
 	public void setPresentKV(double value) {
 		kVPVSystemBase = value;
 		switch (nPhases) {
@@ -1324,6 +1335,7 @@ public class PVSystemObjImpl extends PCElementImpl implements PVSystemObj {
 		}
 	}
 
+	@Override
 	public void setPresentKVAr(double value) {
 		kVArRequested = value;
 	}
@@ -1333,174 +1345,217 @@ public class PVSystemObjImpl extends PCElementImpl implements PVSystemObj {
 			registers[reg] = value;
 	}
 
+	@Override
 	public double getPowerFactor() {
 		return PFNominal;
 	}
 
+	@Override
 	public int getConnection() {
 		return connection;
 	}
 
+	@Override
 	public void setConnection(int conn) {
 		connection = conn;
 	}
 
+	@Override
 	public String getDailyShape() {
 		return dailyShape;
 	}
 
+	@Override
 	public void setDailyShape(String shape) {
 		dailyShape = shape;
 	}
 
+	@Override
 	public LoadShapeObj getDailyShapeObj() {
 		return dailyShapeObj;
 	}
 
+	@Override
 	public void setDailyShapeObj(LoadShapeObj shapeObj) {
 		dailyShapeObj = shapeObj;
 	}
 
+	@Override
 	public String getDutyShape() {
 		return dutyShape;
 	}
 
+	@Override
 	public void setDutyShape(String shape) {
 		dutyShape = shape;
 	}
 
+	@Override
 	public LoadShapeObj getDutyShapeObj() {
 		return dutyShapeObj;
 	}
 
+	@Override
 	public void setDutyShapeObj(LoadShapeObj shapeObj) {
 		dutyShapeObj = shapeObj;
 	}
 
+	@Override
 	public String getYearlyShape() {
 		return yearlyShape;
 	}
 
+	@Override
 	public void setYearlyShape(String shape) {
 		yearlyShape = shape;
 	}
 
+	@Override
 	public LoadShapeObj getYearlyShapeObj() {
 		return yearlyShapeObj;
 	}
 
+	@Override
 	public void setYearlyShapeObj(LoadShapeObj shapeObj) {
 		yearlyShapeObj = shapeObj;
 	}
 
+	@Override
 	public String getDailyTShape() {
 		return dailyTShape;
 	}
 
+	@Override
 	public void setDailyTShape(String shape) {
 		dailyTShape = shape;
 	}
 
+	@Override
 	public TShapeObj getDailyTShapeObj() {
 		return dailyTShapeObj;
 	}
 
+	@Override
 	public void setDailyTShapeObj(TShapeObj shapeObj) {
 		dailyTShapeObj = shapeObj;
 	}
 
+	@Override
 	public String getDutyTShape() {
 		return dutyTShape;
 	}
 
+	@Override
 	public void setDutyTShape(String shape) {
 		dutyTShape = shape;
 	}
 
+	@Override
 	public TShapeObj getDutyTShapeObj() {
 		return dutyTShapeObj;
 	}
 
+	@Override
 	public void setDutyTShapeObj(TShapeObj shapeObj) {
 		dutyTShapeObj = shapeObj;
 	}
 
+	@Override
 	public String getYearlyTShape() {
 		return yearlyTShape;
 	}
 
+	@Override
 	public void setYearlyTShape(String shape) {
 		yearlyTShape = shape;
 	}
 
+	@Override
 	public TShapeObj getYearlyTShapeObj() {
 		return yearlyTShapeObj;
 	}
 
+	@Override
 	public void setYearlyTShapeObj(TShapeObj shapeObj) {
 		yearlyTShapeObj = shapeObj;
 	}
 
+	@Override
 	public String getInverterCurve() {
 		return inverterCurve;
 	}
 
+	@Override
 	public void setInverterCurve(String curve) {
 		inverterCurve = curve;
 	}
 
+	@Override
 	public XYCurveObj getInverterCurveObj() {
 		return inverterCurveObj;
 	}
 
+	@Override
 	public void setInverterCurveObj(XYCurveObj curveObj) {
 		inverterCurveObj = curveObj;
 	}
 
+	@Override
 	public String getPowerTempCurve() {
 		return powerTempCurve;
 	}
 
+	@Override
 	public void setPowerTempCurve(String tempCurve) {
 		powerTempCurve = tempCurve;
 	}
 
+	@Override
 	public XYCurveObj getPowerTempCurveObj() {
 		return powerTempCurveObj;
 	}
 
+	@Override
 	public void setPowerTempCurveObj(XYCurveObj curveObj) {
 		powerTempCurveObj = curveObj;
 	}
 
+	@Override
 	public int getFClass() {
 		return FClass;
 	}
 
+	@Override
 	public void setFClass(int cls) {
 		FClass = cls;
 	}
 
+	@Override
 	public int getVoltageModel() {
 		return voltageModel;
 	}
 
+	@Override
 	public void setVoltageModel(int model) {
 		voltageModel = model;
 	}
 
+	@Override
 	public double[] getRegisters() {
 		return registers;
 	}
 
+	@Override
 	public void setRegisters(double[] values) {
 		registers = values;
 	}
 
+	@Override
 	public double[] getDerivatives() {
 		return derivatives;
 	}
 
+	@Override
 	public void setDerivatives(double[] values) {
 		derivatives = values;
 	}
@@ -1508,426 +1563,532 @@ public class PVSystemObjImpl extends PCElementImpl implements PVSystemObj {
 
 	// FIXME Private members in OpenDSS.
 
+	@Override
 	public Complex getYeq() {
 		return Yeq;
 	}
 
+	@Override
 	public void setYeq(Complex value) {
 		Yeq = value;
 	}
 
+	@Override
 	public Complex getYeq95() {
 		return Yeq95;
 	}
 
+	@Override
 	public void setYeq95(Complex value) {
 		Yeq95 = value;
 	}
 
+	@Override
 	public Complex getYeq105() {
 		return Yeq105;
 	}
 
+	@Override
 	public void setYeq105(Complex value) {
 		Yeq105 = value;
 	}
 
+	@Override
 	public boolean isDebugTrace() {
 		return debugTrace;
 	}
 
+	@Override
 	public void setDebugTrace(boolean debug) {
 		debugTrace = debug;
 	}
 
+	@Override
 	public int getPVSystemSolutionCount() {
 		return PVSystemSolutionCount;
 	}
 
+	@Override
 	public void setPVSystemSolutionCount(int count) {
 		PVSystemSolutionCount = count;
 	}
 
+	@Override
 	public double getPVSystemFundamental() {
 		return PVSystemFundamental;
 	}
 
+	@Override
 	public void setPVSystemFundamental(double fundamental) {
 		PVSystemFundamental = fundamental;
 	}
 
+	@Override
 	public boolean isPVSystemObjSwitchOpen() {
 		return PVSystemObjSwitchOpen;
 	}
 
+	@Override
 	public void setPVSystemObjSwitchOpen(boolean value) {
 		PVSystemObjSwitchOpen = value;
 	}
 
+	@Override
 	public boolean isFirstSampleAfterReset() {
 		return firstSampleAfterReset;
 	}
 
+	@Override
 	public void setFirstSampleAfterReset(boolean value) {
 		firstSampleAfterReset = value;
 	}
 
+	@Override
 	public boolean isPFSpecified() {
 		return PFSpecified;
 	}
 
+	@Override
 	public void setPFSpecified(boolean specified) {
 		PFSpecified = specified;
 	}
 
+	@Override
 	public boolean isKVArSpecified() {
 		return kVArSpecified;
 	}
 
+	@Override
 	public void setKVArSpecified(boolean specified) {
 		kVArSpecified = specified;
 	}
 
+	@Override
 	public double getKVARating() {
 		return kVARating;
 	}
 
+	@Override
 	public void setKVArating(double rating) {
 		kVARating = rating;
 	}
 
+	@Override
 	public double getKVPVSystemBase() {
 		return kVPVSystemBase;
 	}
 
+	@Override
 	public void setKVPVSystemBase(double base) {
 		kVPVSystemBase = base;
 	}
 
+	@Override
 	public double getKVArOut() {
 		return kVArOut;
 	}
 
+	@Override
 	public void setKVArOut(double kvar) {
 		kVArOut = kvar;
 	}
 
+	@Override
 	public double getKWOut() {
 		return kWOut;
 	}
 
+	@Override
 	public void setKWOut(double kW) {
 		kWOut = kW;
 	}
 
+	@Override
 	public double getPanelKW() {
 		return panelKW;
 	}
 
+	@Override
 	public void setPanelKW(double kW) {
 		panelKW = kW;
 	}
 
+	@Override
 	public double getIrradiance() {
 		return irradiance;
 	}
 
+	@Override
 	public void setIrradiance(double value) {
 		irradiance = value;
 	}
 
+	@Override
 	public double getKVArRequested() {
 		return kVArRequested;
 	}
 
+	@Override
 	public void setKVArRequested(double requested) {
 		this.kVArRequested = requested;
 	}
 
+	@Override
 	public double getTemperature() {
 		return temperature;
 	}
 
+	@Override
 	public void setTemperature(double temp) {
 		temperature = temp;
 	}
 
+	@Override
 	public double getPmpp() {
 		return Pmpp;
 	}
 
+	@Override
 	public void setPmpp(double value) {
 		Pmpp = value;
 	}
 
+	@Override
 	public double getEffFactor() {
 		return effFactor;
 	}
 
+	@Override
 	public void setEffFactor(double factor) {
 		effFactor = factor;
 	}
 
+	@Override
 	public double getTempFactor() {
 		return tempFactor;
 	}
 
+	@Override
 	public void setTempFactor(double factor) {
 		tempFactor = factor;
 	}
 
+	@Override
 	public boolean isInverterOn() {
 		return inverterON;
 	}
 
+	@Override
 	public void setInverterOn(boolean on) {
 		inverterON = on;
 	}
 
+	@Override
 	public double getPctCutIn() {
 		return pctCutIn;
 	}
 
+	@Override
 	public void setPctCutIn(double pct) {
 		pctCutIn = pct;
 	}
 
+	@Override
 	public double getPctCutOut() {
 		return pctCutOut;
 	}
 
+	@Override
 	public void setPctCutOut(double pct) {
 		pctCutOut = pct;
 	}
 
+	@Override
 	public double getCutInKW() {
 		return cutInKW;
 	}
 
+	@Override
 	public void setCutInKW(double value) {
 		cutInKW = value;
 	}
 
+	@Override
 	public double getCutOutKW() {
 		return cutOutKW;
 	}
 
+	@Override
 	public void setCutOutKW(double value) {
 		cutOutKW = value;
 	}
 
+	@Override
 	public double getPctR() {
 		return pctR;
 	}
 
+	@Override
 	public void setPctR(double pct) {
 		pctR = pct;
 	}
 
+	@Override
 	public double getPctX() {
 		return pctX;
 	}
 
+	@Override
 	public void setPctX(double pct) {
 		pctX = pct;
 	}
 
+	@Override
 	public int getOpenPVSystemSolutionCount() {
 		return openPVSystemSolutionCount;
 	}
 
+	@Override
 	public void setOpenPVSystemSolutionCount(int count) {
 		openPVSystemSolutionCount = count;
 	}
 
+	@Override
 	public double getPNominalPerPhase() {
 		return PNominalPerPhase;
 	}
 
+	@Override
 	public void setPNominalPerPhase(double value) {
 		PNominalPerPhase = value;
 	}
 
+	@Override
 	public double getQNominalPerPhase() {
 		return QNominalPerPhase;
 	}
 
+	@Override
 	public void setQNominalPerPhase(double value) {
 		QNominalPerPhase = value;
 	}
 
+	@Override
 	public double getRandomMult() {
 		return randomMult;
 	}
 
+	@Override
 	public void setRandomMult(double mult) {
 		randomMult = mult;
 	}
 
+	@Override
 	public int getRegHours() {
 		return regHours;
 	}
 
+	@Override
 	public void setRegHours(int hours) {
 		regHours = hours;
 	}
 
+	@Override
 	public int getRegKVArh() {
 		return regKVArh;
 	}
 
+	@Override
 	public void setRegKVArh(int kvarh) {
 		regKVArh = kvarh;
 	}
 
+	@Override
 	public int getRegKWh() {
 		return regKWh;
 	}
 
+	@Override
 	public void setRegKWh(int kwh) {
 		regKWh = kwh;
 	}
 
+	@Override
 	public int getRegMaxKVA() {
 		return regMaxKVA;
 	}
 
+	@Override
 	public void setRegMaxKVA(int maxkva) {
 		regMaxKVA = maxkva;
 	}
 
+	@Override
 	public int getRegMaxKW() {
 		return regMaxKW;
 	}
 
+	@Override
 	public void setRegMaxKW(int maxkw) {
 		regMaxKW = maxkw;
 	}
 
+	@Override
 	public int getRegPrice() {
 		return regPrice;
 	}
 
+	@Override
 	public void setRegPrice(int price) {
 		regPrice = price;
 	}
 
+	@Override
 	public Complex getShapeFactor() {
 		return shapeFactor;
 	}
 
+	@Override
 	public void setShapeFactor(Complex factor) {
 		shapeFactor = factor;
 	}
 
+	@Override
 	public double getTShapeValue() {
 		return TShapeValue;
 	}
 
+	@Override
 	public void setTShapeValue(double value) {
 		TShapeValue = value;
 	}
 
+	@Override
 	public double getThetaHarm() {
 		return thetaHarm;
 	}
 
+	@Override
 	public void setThetaHarm(double thetaharm) {
 		thetaHarm = thetaharm;
 	}
 
+	@Override
 	public File getTraceFile() {
 		return traceFile;
 	}
 
+	@Override
 	public void setTraceFile(File tracefile) {
 		traceFile = tracefile;
 	}
 
+	@Override
 	public PVSystemUserModel getUserModel() {
 		return userModel;
 	}
 
+	@Override
 	public void setUserModel(PVSystemUserModel model) {
 		userModel = model;
 	}
 
+	@Override
 	public double getVArBase() {
 		return varBase;
 	}
 
+	@Override
 	public void setVArBase(double base) {
 		this.varBase = base;
 	}
 
+	@Override
 	public double getVBase() {
 		return VBase;
 	}
 
+	@Override
 	public void setVBase(double vBase) {
 		VBase = vBase;
 	}
 
+	@Override
 	public double getVBase105() {
 		return VBase105;
 	}
 
+	@Override
 	public void setVBase105(double vBase105) {
 		VBase105 = vBase105;
 	}
 
+	@Override
 	public double getVBase95() {
 		return VBase95;
 	}
 
+	@Override
 	public void setVBase95(double vBase95) {
 		VBase95 = vBase95;
 	}
 
+	@Override
 	public double getVMaxPU() {
 		return VMaxPU;
 	}
 
+	@Override
 	public void setVMaxPU(double vmaxpu) {
 		VMaxPU = vmaxpu;
 	}
 
+	@Override
 	public double getVMinPU() {
 		return VMinPU;
 	}
 
+	@Override
 	public void setVMinPU(double vminpu) {
 		VMinPU = vminpu;
 	}
 
+	@Override
 	public double getVThevHarm() {
 		return VThevHarm;
 	}
 
+	@Override
 	public void setVThevHarm(double vthevharm) {
 		VThevHarm = vthevharm;
 	}
 
+	@Override
 	public CMatrix getYPrimOpenCond() {
 		return YPrimOpenCond;
 	}
 
+	@Override
 	public void setYPrimOpenCond(CMatrix value) {
 		YPrimOpenCond = value;
 	}
 
+	@Override
 	public double getRThev() {
 		return RThev;
 	}
 
+	@Override
 	public void setRThev(double rthev) {
 		RThev = rthev;
 	}
 
+	@Override
 	public double getXThev() {
 		return XThev;
 	}
 
+	@Override
 	public void setXThev(double xthev) {
 		XThev = xthev;
 	}

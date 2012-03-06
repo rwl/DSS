@@ -365,6 +365,7 @@ public class StorageObjImpl extends PCElementImpl implements StorageObj {
 	/**
 	 * 0 = reset to 1.0; 1 = Gaussian around mean and std dev; 2 = uniform
 	 */
+	@Override
 	public void randomize(int opt) {
 		switch (opt) {
 		case 0:
@@ -462,6 +463,7 @@ public class StorageObjImpl extends PCElementImpl implements StorageObj {
 		if (oldState != state) stateChanged = true;
 	}
 
+	@Override
 	public void setNominalStorageOuput() {
 		Circuit ckt = DSS.activeCircuit;
 		SolutionObj sol = ckt.getSolution();
@@ -1179,6 +1181,7 @@ public class StorageObjImpl extends PCElementImpl implements StorageObj {
 		}
 	}
 
+	@Override
 	public void resetRegisters() {
 		int i;
 		for (i = 0; i < Storage.NumStorageRegisters; i++)
@@ -1205,6 +1208,7 @@ public class StorageObjImpl extends PCElementImpl implements StorageObj {
 	/**
 	 * Update energy from metered zone.
 	 */
+	@Override
 	public void takeSample() {
 		Complex S;
 		double SMag;
@@ -1251,6 +1255,7 @@ public class StorageObjImpl extends PCElementImpl implements StorageObj {
 	 * Update storage elements based on present kW and intervalHrs variable.
 	 */
 	// FIXME Private method in OpenDSS
+	@Override
 	public void updateStorage() {
 		SolutionObj sol = DSS.activeCircuit.getSolution();
 
@@ -1283,10 +1288,12 @@ public class StorageObjImpl extends PCElementImpl implements StorageObj {
 		if (stateChanged) setYPrimInvalid(true);
 	}
 
+	@Override
 	public double getPresentKW() {
 		return kWOut; //PNominalPerPhase * 0.001 * nPhases;
 	}
 
+	@Override
 	public double getKWTotalLosses() {
 		switch (getState()) {
 		case Storage.CHARGING:
@@ -1299,6 +1306,7 @@ public class StorageObjImpl extends PCElementImpl implements StorageObj {
 		return 0;
 	}
 
+	@Override
 	public double getKWIdlingLosses() {
 		int i;
 
@@ -1314,10 +1322,12 @@ public class StorageObjImpl extends PCElementImpl implements StorageObj {
 		return result;
 	}
 
+	@Override
 	public double getPresentKV() {
 		return kVStorageBase;
 	}
 
+	@Override
 	public double getPresentKVAr() {
 		return kVArOut;  // QNominalPerPhase * 0.001 * nPhases;
 	}
@@ -1398,6 +1408,7 @@ public class StorageObjImpl extends PCElementImpl implements StorageObj {
 	}
 
 	// FIXME Private method in OpenDSS
+	@Override
 	public int interpretState(String s) {
 
 		switch (s.toLowerCase().charAt(0)) {
@@ -1605,22 +1616,26 @@ public class StorageObjImpl extends PCElementImpl implements StorageObj {
 		}
 	}
 
+	@Override
 	public void setPctKVArOut(double value) {
 		pctKVArOut = value;
 		// force recompute of target PF and requested kVAr
 		setPresentKVAr( kWRating * Math.sqrt(1.0 / Math.pow(PFNominal, 2) - 1.0) * pctKVArOut / 100.0 );
 	}
 
+	@Override
 	public void setPctKWOut(double value) {
 		pctKWout = value;
 		kWOut = pctKWout * kWRating / 100.0;
 	}
 
+	@Override
 	public void setPowerFactor(double value) {
 		PFNominal = value;
 		syncUpPowerQuantities();
 	}
 
+	@Override
 	public void setPresentKV(double value) {
 		kVStorageBase = value;
 		switch (nPhases) {
@@ -1639,6 +1654,7 @@ public class StorageObjImpl extends PCElementImpl implements StorageObj {
 	/**
 	 * Set the kvar to requested value within rating of inverter
 	 */
+	@Override
 	public void setPresentKVAr(double value) {
 		double kVA_Gen;
 
@@ -1657,18 +1673,21 @@ public class StorageObjImpl extends PCElementImpl implements StorageObj {
 			setPowerFactor(-PFNominal);
 	}
 
+	@Override
 	public void setPresentKW(double value) {
 		setPctKWOut( value / kWhRating * 100.0 );
 		kWOut = value;
 		//syncUpPowerQuantities();
 	}
 
+	@Override
 	public void setStorageState(int value) {
 		if (value != state) stateChanged = true;
 		state = value;
 	}
 
 	// FIXME Private method in OpenDSS
+	@Override
 	public void syncUpPowerQuantities() {
 		if (kVANotSet)
 			kVARating = kWRating;
@@ -1686,580 +1705,724 @@ public class StorageObjImpl extends PCElementImpl implements StorageObj {
 			registers[reg] = value;
 	}
 
+	@Override
 	public double getPowerFactor() {
 		return PFNominal;
 	}
 
+	@Override
 	public int getState() {
 		return state;
 	}
 
+	@Override
 	public double getPctKVArOut() {
 		return pctKVArOut;
 	}
 
+	@Override
 	public double getPctKWOut() {
 		return pctKWout;
 	}
 
+	@Override
 	public int getConnection() {
 		return connection;
 	}
 
+	@Override
 	public void setConnection(int conn) {
 		connection = conn;
 	}
 
+	@Override
 	public String getDailyShape() {
 		return dailyShape;
 	}
 
+	@Override
 	public void setDailyShape(String shape) {
 		dailyShape = shape;
 	}
 
+	@Override
 	public LoadShapeObj getDailyShapeObj() {
 		return dailyShapeObj;
 	}
 
+	@Override
 	public void setDailyShapeObj(LoadShapeObj shapeObj) {
 		dailyShapeObj = shapeObj;
 	}
 
+	@Override
 	public String getDutyShape() {
 		return dutyShape;
 	}
 
+	@Override
 	public void setDutyShape(String shape) {
 		dutyShape = shape;
 	}
 
+	@Override
 	public LoadShapeObj getDutyShapeObj() {
 		return dutyShapeObj;
 	}
 
+	@Override
 	public void setDutyShapeObj(LoadShapeObj shapeObj) {
 		dutyShapeObj = shapeObj;
 	}
 
+	@Override
 	public int getStorageClass() {
 		return storageClass;
 	}
 
+	@Override
 	public void setStorageClass(int cls) {
 		storageClass = cls;
 	}
 
+	@Override
 	public int getVoltageModel() {
 		return voltageModel;
 	}
 
+	@Override
 	public void setVoltageModel(int model) {
 		voltageModel = model;
 	}
 
+	@Override
 	public String getYearlyShape() {
 		return yearlyShape;
 	}
 
+	@Override
 	public void setYearlyShape(String shape) {
 		yearlyShape = shape;
 	}
 
+	@Override
 	public LoadShapeObj getYearlyShapeObj() {
 		return yearlyShapeObj;
 	}
 
+	@Override
 	public void setYearlyShapeObj(LoadShapeObj shapeObj) {
 		yearlyShapeObj = shapeObj;
 	}
 
+	@Override
 	public double getKWRating() {
 		return kWRating;
 	}
 
+	@Override
 	public void setKWRating(double kw) {
 		this.kWRating = kw;
 	}
 
+	@Override
 	public double getKWhRating() {
 		return kWhRating;
 	}
 
+	@Override
 	public void setKWhRating(double kwh) {
 		this.kWhRating = kwh;
 	}
 
+	@Override
 	public double getKWhStored() {
 		return kWhStored;
 	}
 
+	@Override
 	public void setKWhStored(double kwh) {
 		this.kWhStored = kwh;
 	}
 
+	@Override
 	public double getKWhReserve() {
 		return kWhReserve;
 	}
 
+	@Override
 	public void setKWhReserve(double kwh) {
 		this.kWhReserve = kwh;
 	}
 
+	@Override
 	public double getPctKWin() {
 		return pctKWIn;
 	}
 
+	@Override
 	public void setPctKWin(double pct) {
 		this.pctKWIn = pct;
 	}
 
+	@Override
 	public double getPctReserve() {
 		return pctReserve;
 	}
 
+	@Override
 	public void setPctReserve(double pct) {
 		this.pctReserve = pct;
 	}
 
+	@Override
 	public int getDispatchMode() {
 		return dispatchMode;
 	}
 
+	@Override
 	public void setDispatchMode(int mode) {
 		dispatchMode = mode;
 	}
 
+	@Override
 	public double[] getRegisters() {
 		return registers;
 	}
 
+	@Override
 	public void setRegisters(double[] values) {
 		registers = values;
 	}
 
+	@Override
 	public double[] getDerivatives() {
 		return derivatives;
 	}
 
+	@Override
 	public void setDerivatives(double[] values) {
 		derivatives = values;
 	}
 
 	// FIXME Private members in OpenDSS
 
+	@Override
 	public Complex getYeq() {
 		return Yeq;
 	}
 
+	@Override
 	public void setYeq(Complex yeq) {
 		Yeq = yeq;
 	}
 
+	@Override
 	public Complex getYeq95() {
 		return Yeq95;
 	}
 
+	@Override
 	public void setYeq95(Complex yeq95) {
 		Yeq95 = yeq95;
 	}
 
+	@Override
 	public Complex getYeq105() {
 		return Yeq105;
 	}
 
+	@Override
 	public void setYeq105(Complex yeq105) {
 		Yeq105 = yeq105;
 	}
 
+	@Override
 	public Complex getYeqIdling() {
 		return YeqIdling;
 	}
 
+	@Override
 	public void setYeqIdling(Complex value) {
 		YeqIdling = value;
 	}
 
+	@Override
 	public boolean isDebugTrace() {
 		return debugTrace;
 	}
 
+	@Override
 	public void setDebugTrace(boolean debug) {
 		debugTrace = debug;
 	}
 
+	@Override
 	public boolean isStateChanged() {
 		return stateChanged;
 	}
 
+	@Override
 	public void setStateChanged(boolean value) {
 		stateChanged = value;
 	}
 
+	@Override
 	public boolean isFirstSampleAfterReset() {
 		return firstSampleAfterReset;
 	}
 
+	@Override
 	public void setFirstSampleAfterReset(boolean value) {
 		firstSampleAfterReset = value;
 	}
 
+	@Override
 	public int getStorageSolutionCount() {
 		return storageSolutionCount;
 	}
 
+	@Override
 	public void setStorageSolutionCount(int count) {
 		storageSolutionCount = count;
 	}
 
+	@Override
 	public double getStorageFundamental() {
 		return storageFundamental;
 	}
 
+	@Override
 	public void setStorageFundamental(double fundamental) {
 		storageFundamental = fundamental;
 	}
 
+	@Override
 	public boolean isStorageObjSwitchOpen() {
 		return storageObjSwitchOpen;
 	}
 
+	@Override
 	public void setStorageObjSwitchOpen(boolean value) {
 		storageObjSwitchOpen = value;
 	}
 
+	@Override
 	public boolean isKVANotSet() {
 		return kVANotSet;
 	}
 
+	@Override
 	public void setKVANotSet(boolean value) {
 		kVANotSet = value;
 	}
 
+	@Override
 	public double getKVArating() {
 		return kVARating;
 	}
 
+	@Override
 	public void setKVA_Rating(double rating) {
 		kVARating = rating;
 	}
 
+	@Override
 	public double getKVStorageBase() {
 		return kVStorageBase;
 	}
 
+	@Override
 	public void setKVStorageBase(double base) {
 		kVStorageBase = base;
 	}
 
+	@Override
 	public double getKVArOut() {
 		return kVArOut;
 	}
 
+	@Override
 	public void setKVArOut(double kvar) {
 		kVArOut = kvar;
 	}
 
+	@Override
 	public double getKWOut() {
 		return kWOut;
 	}
 
+	@Override
 	public void setKWOut(double kW) {
 		kWOut = kW;
 	}
 
+	@Override
 	public double getKVArRequested() {
 		return kVArRequested;
 	}
 
+	@Override
 	public void setKVArRequested(double kvar) {
 		kVArRequested = kvar;
 	}
 
+	@Override
 	public double getPctIdleKW() {
 		return pctIdleKW;
 	}
 
+	@Override
 	public void setPctIdleKW(double pct) {
 		pctIdleKW = pct;
 	}
 
+	@Override
 	public double getPctIdleKVAr() {
 		return pctIdleKVAr;
 	}
 
+	@Override
 	public void setPctIdleKVAr(double pct) {
 		pctIdleKVAr = pct;
 	}
 
+	@Override
 	public double getPctChargeEff() {
 		return pctChargeEff;
 	}
 
+	@Override
 	public void setPctChargeEff(double pct) {
 		pctChargeEff = pct;
 	}
 
+	@Override
 	public double getPctDischargeEff() {
 		return pctDischargeEff;
 	}
 
+	@Override
 	public void setPctDischargeEff(double pct) {
 		pctDischargeEff = pct;
 	}
 
+	@Override
 	public double getChargeEff() {
 		return chargeEff;
 	}
 
+	@Override
 	public void setChargeEff(double eff) {
 		chargeEff = eff;
 	}
 
+	@Override
 	public double getDischargeEff() {
 		return dischargeEff;
 	}
 
+	@Override
 	public void setDischargeEff(double eff) {
 		dischargeEff = eff;
 	}
 
+	@Override
 	public double getDischargeTrigger() {
 		return dischargeTrigger;
 	}
 
+	@Override
 	public void setDischargeTrigger(double trigger) {
 		dischargeTrigger = trigger;
 	}
 
+	@Override
 	public double getChargeTrigger() {
 		return chargeTrigger;
 	}
 
+	@Override
 	public void setChargeTrigger(double trigger) {
 		chargeTrigger = trigger;
 	}
 
+	@Override
 	public double getChargeTime() {
 		return chargeTime;
 	}
 
+	@Override
 	public void setChargeTime(double time) {
 		chargeTime = time;
 	}
 
+	@Override
 	public double getPctR() {
 		return pctR;
 	}
 
+	@Override
 	public void setPctR(double pct) {
 		this.pctR = pct;
 	}
 
+	@Override
 	public double getPctX() {
 		return pctX;
 	}
 
+	@Override
 	public void setPctX(double pct) {
 		this.pctX = pct;
 	}
 
+	@Override
 	public int getOpenStorageSolutionCount() {
 		return openStorageSolutionCount;
 	}
 
+	@Override
 	public void setOpenStorageSolutionCount(int count) {
 		openStorageSolutionCount = count;
 	}
 
+	@Override
 	public double getPNominalPerPhase() {
 		return PNominalPerPhase;
 	}
 
+	@Override
 	public void setPNominalPerPhase(double value) {
 		PNominalPerPhase = value;
 	}
 
+	@Override
 	public double getQNominalPerPhase() {
 		return QNominalPerPhase;
 	}
 
+	@Override
 	public void setQNominalPerPhase(double value) {
 		QNominalPerPhase = value;
 	}
 
+	@Override
 	public double getRandomMult() {
 		return randomMult;
 	}
 
+	@Override
 	public void setRandomMult(double mult) {
 		randomMult = mult;
 	}
 
+	@Override
 	public int getRegHours() {
 		return regHours;
 	}
 
+	@Override
 	public void setRegHours(int hours) {
 		regHours = hours;
 	}
 
+	@Override
 	public int getRegKVArh() {
 		return regKVArh;
 	}
 
+	@Override
 	public void setRegKVArh(int kvarh) {
 		regKVArh = kvarh;
 	}
 
+	@Override
 	public int getRegKWh() {
 		return regKWh;
 	}
 
+	@Override
 	public void setRegKWh(int kwh) {
 		regKWh = kwh;
 	}
 
+	@Override
 	public int getRegMaxKVA() {
 		return regMaxKVA;
 	}
 
+	@Override
 	public void setRegMaxKVA(int maxkva) {
 		regMaxKVA = maxkva;
 	}
 
+	@Override
 	public int getRegMaxKW() {
 		return regMaxKW;
 	}
 
+	@Override
 	public void setRegMaxKW(int maxkw) {
 		regMaxKW = maxkw;
 	}
 
+	@Override
 	public int getRegPrice() {
 		return regPrice;
 	}
 
+	@Override
 	public void setRegPrice(int price) {
 		regPrice = price;
 	}
 
+	@Override
 	public Complex getShapeFactor() {
 		return shapeFactor;
 	}
 
+	@Override
 	public void setShapeFactor(Complex factor) {
 		shapeFactor = factor;
 	}
 
+	@Override
 	public double getThetaHarm() {
 		return thetaHarm;
 	}
 
+	@Override
 	public void setThetaHarm(double theta) {
 		thetaHarm = theta;
 	}
 
+	@Override
 	public File getTraceFile() {
 		return traceFile;
 	}
 
+	@Override
 	public void setTraceFile(File file) {
 		traceFile = file;
 	}
 
+	@Override
 	public double getKVArBase() {
 		return kVArBase;
 	}
 
+	@Override
 	public void setKVArBase(double kvarBase) {
 		this.kVArBase = kvarBase;
 	}
 
+	@Override
 	public double getVBase() {
 		return VBase;
 	}
 
+	@Override
 	public void setVBase(double vBase) {
 		VBase = vBase;
 	}
 
+	@Override
 	public double getVBase105() {
 		return VBase105;
 	}
 
+	@Override
 	public void setVBase105(double vBase105) {
 		VBase105 = vBase105;
 	}
 
+	@Override
 	public double getVBase95() {
 		return VBase95;
 	}
 
+	@Override
 	public void setVBase95(double vBase95) {
 		VBase95 = vBase95;
 	}
 
+	@Override
 	public double getVMaxPU() {
 		return VMaxPU;
 	}
 
+	@Override
 	public void setVMaxPU(double vmaxpu) {
 		VMaxPU = vmaxpu;
 	}
 
+	@Override
 	public double getVMinPU() {
 		return VMinPU;
 	}
 
+	@Override
 	public void setVMinPU(double vminpu) {
 		VMinPU = vminpu;
 	}
 
+	@Override
 	public double getVThevhH() {
 		return VThevhH;
 	}
 
+	@Override
 	public void setVThevhH(double value) {
 		VThevhH = value;
 	}
 
+	@Override
 	public CMatrix getYPrimOpenCond() {
 		return YPrimOpenCond;
 	}
 
+	@Override
 	public void setYPrimOpenCond(CMatrix value) {
 		YPrimOpenCond = value;
 	}
 
+	@Override
 	public double getRThev() {
 		return RThev;
 	}
 
+	@Override
 	public void setRThev(double rthev) {
 		RThev = rthev;
 	}
 
+	@Override
 	public double getXThev() {
 		return XThev;
 	}
 
+	@Override
 	public void setXThev(double xthev) {
 		XThev = xthev;
 	}
 
+	@Override
 	public StoreUserModel getUserModel() {
 		return userModel;
 	}
 
+	@Override
 	public void setUserModel(StoreUserModel model) {
 		userModel = model;
 	}
 
+	@Override
 	public double getKWhBeforeUpdate() {
 		return kWhBeforeUpdate;
 	}
 
+	@Override
 	public void setKWhBeforeUpdate(double kWhBeforeUpdate) {
 		this.kWhBeforeUpdate = kWhBeforeUpdate;
 	}

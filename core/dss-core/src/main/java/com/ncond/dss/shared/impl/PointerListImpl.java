@@ -31,6 +31,7 @@ public class PointerListImpl implements PointerList {
 		incrementSize = maxAllocated;
 	}
 
+	@Override
 	public Object getFirst() {
 		if (numInList > 0) {
 			activeItem = 0;
@@ -41,6 +42,7 @@ public class PointerListImpl implements PointerList {
 		}
 	}
 
+	@Override
 	public Object getNext() {
 		if (numInList > 0) {
 			activeItem += 1;
@@ -56,6 +58,7 @@ public class PointerListImpl implements PointerList {
 		}
 	}
 
+	@Override
 	public Object getActive() {
 		if (activeItem >= 0 && activeItem < numInList) {
 			return get(activeItem);
@@ -64,12 +67,14 @@ public class PointerListImpl implements PointerList {
 		}
 	}
 
+	@Override
 	public void clear() {
 		activeItem = -1;
 		numInList = 0;
 	}
 
 	/** Returns index of item */
+	@Override
 	public int add(Object p) {
 		Object[] newList;
 
@@ -85,6 +90,7 @@ public class PointerListImpl implements PointerList {
 		return numInList;
 	}
 
+	@Override
 	public Object get(int i) {
 		if (i < 0 || i >= numInList) {
 			return null;
@@ -94,10 +100,12 @@ public class PointerListImpl implements PointerList {
 		}
 	}
 
+	@Override
 	public int size() {
 		return numInList;
 	}
 
+	@Override
 	public int getActiveIndex() {
 		return activeItem;
 	}

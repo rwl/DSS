@@ -27,6 +27,7 @@ public class SolutionImpl extends DSSClassImpl implements Solution {
 		commandList.setAbbrevAllowed(true);
 	}
 
+	@Override
 	protected void defineProperties() {
 		numProperties = NumPropsThisClass;
 		countProperties();  // get inherited property count
@@ -42,6 +43,7 @@ public class SolutionImpl extends DSSClassImpl implements Solution {
 		super.defineProperties();  // add defs of inherited properties to bottom of list
 	}
 
+	@Override
 	public int newObject(String objName) {
 		// make a new solution object and add it to solution class list
 		activeSolutionObj = new SolutionObjImpl(this, objName);
@@ -49,6 +51,7 @@ public class SolutionImpl extends DSSClassImpl implements Solution {
 		return addObjectToList(activeSolutionObj);
 	}
 
+	@Override
 	public int edit() {
 		activeSolutionObj = DSS.activeCircuit.getSolution();
 
@@ -58,8 +61,15 @@ public class SolutionImpl extends DSSClassImpl implements Solution {
 		return 0;
 	}
 
+	@Override
 	public int init(int handle) {
 		DSS.doSimpleMsg("Need to implement Solution.init()", -1);
+		return 0;
+	}
+
+	@Override
+	protected int makeLike(String objName) {
+		DSS.doSimpleMsg("Need to implement Solution.makeLike()", -1);
 		return 0;
 	}
 

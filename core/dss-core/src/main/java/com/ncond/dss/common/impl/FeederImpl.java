@@ -28,6 +28,7 @@ public class FeederImpl extends PCClassImpl implements Feeder {
 		commandList.setAbbrevAllowed(true);
 	}
 
+	@Override
 	protected void defineProperties() {
 		NumPropsThisClass = 0;
 

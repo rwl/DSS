@@ -87,10 +87,13 @@ public interface EnergyMeter extends MeterClass {
 
 	void setVoltageFileIsOpen(boolean voltageFileIsOpen);
 
+	@Override
 	int edit();
 
+	@Override
 	int init(int handle);
 
+	@Override
 	int newObject(String objName);
 
 	void resetMeterZonesAll();

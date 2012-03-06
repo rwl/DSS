@@ -3,8 +3,6 @@ package com.ncond.dss.common.impl;
 import java.util.List;
 import java.util.Scanner;
 
-import javax.swing.JOptionPane;
-
 import com.ncond.dss.common.DSSForms;
 
 public class CommandLineDSSForms implements DSSForms {
@@ -28,54 +26,67 @@ public class CommandLineDSSForms implements DSSForms {
 		return DSSFormsHolder.INSTANCE;
 	}
 
+	@Override
 	public void createControlPanel() {
 
 	}
 
+	@Override
 	public void exitControlPanel() {
 
 	}
 
+	@Override
 	public void initProgressForm() {
 
 	}
 
+	@Override
 	public void progressCaption(String s) {
 
 	}
 
+	@Override
 	public void progressFormCaption(String s) {
 
 	}
 
+	@Override
 	public void progressHide() {
 
 	}
 
+	@Override
 	public void showControlPanel() {
 
 	}
 
+	@Override
 	public void showHelpForm() {
 
 	}
 
+	@Override
 	public void showAboutBox() {
 
 	}
 
+	@Override
 	public void showPropEditForm() {
 
 	}
 
+	@Override
 	public void showPctProgress(int count) {
 
 	}
 
+	@Override
 	public void showMessageForm(List<String> s) {
 
 	}
 
+	@Override
 	public int messageDlg(String msg, boolean err) {
 		int Result;
 		if (err) {
@@ -101,30 +112,37 @@ public class CommandLineDSSForms implements DSSForms {
 		return Result;
 	}
 
+	@Override
 	public void infoMessageDlg(String msg) {
 		System.out.println(msg);
 	}
 
+	@Override
 	public String getDSSExeFile() {
 		return null;
 	}
 
+	@Override
 	public void closeDownForms() {
 
 	}
 
+	@Override
 	public void showTreeView(String fname) {
 
 	}
 
+	@Override
 	public boolean makeChannelSelection(int numFieldsToSkip, String filename) {
 		return false;
 	}
 
+	@Override
 	public boolean isRebuildHelpForm() {
 		return rebuildHelpForm;
 	}
 
+	@Override
 	public void setRebuildHelpForm(boolean rebuild) {
 		rebuildHelpForm = rebuild;
 	}

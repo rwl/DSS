@@ -1,10 +1,10 @@
 package com.ncond.dss.common.impl;
 
-public class Esolv32Problem extends Exception {
+public class SolveProblem extends Exception {
 
 	private static final long serialVersionUID = -2686189062049376595L;
 
-	public Esolv32Problem(String string) {
+	public SolveProblem(String string) {
 		// TODO Auto-generated constructor stub
 	}
 

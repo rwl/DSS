@@ -39,6 +39,7 @@ public class NamedObjectImpl implements NamedObject {
 		uuid = null;
 	}
 
+	@Override
 	public String getDisplayName() {
 		if (this.displayName == "") {
 			return pathName + "_" + localName;
@@ -47,10 +48,12 @@ public class NamedObjectImpl implements NamedObject {
 		}
 	}
 
+	@Override
 	public void setDisplayName(String value) {
 		displayName = value;
 	}
 
+	@Override
 	public String getQualifiedName() {
 		return pathName + "." + localName;
 	}
@@ -61,37 +64,45 @@ public class NamedObjectImpl implements NamedObject {
 		return uuid;
 	}
 
+	@Override
 	public void setUUID(UUID value) {
 		//if (pGuid == null) {}
 		uuid = value;
 	}
 
+	@Override
 	public String getID() {
 		return getUUID().toString();
 	}
 
+	@Override
 	public String getCIM_ID() {
 		return UUIDToCIMString(getUUID());
 	}
 
 
+	@Override
 	public String getDSSClassName() {
 		return pathName;
 	}
 
+	@Override
 	public void setDSSClassName(String value) {
 		pathName = value;
 	}
 
+	@Override
 	public String getLocalName() {
 		return localName;
 	}
 
+	@Override
 	public void setLocalName(String value) {
 		localName = value;
 	}
 
 
+	@Override
 	public String UUIDToCIMString(UUID uUID) {
 		String s;
 		s = uUID.toString();

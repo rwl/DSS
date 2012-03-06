@@ -39,6 +39,7 @@ public class LineImpl extends PDClassImpl implements Line {
 		commandList.setAbbrevAllowed(true);
 	}
 
+	@Override
 	protected void defineProperties() {
 
 		numProperties = Line.NumPropsThisClass;

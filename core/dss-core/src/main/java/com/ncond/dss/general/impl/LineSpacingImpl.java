@@ -30,6 +30,7 @@ public class LineSpacingImpl extends DSSClassImpl implements LineSpacing {
 		commandList.setAbbrevAllowed(true);
 	}
 
+	@Override
 	protected void defineProperties() {
 		numProperties = NumPropsThisClass;
 		countProperties();   // get inherited property count
@@ -192,6 +193,7 @@ public class LineSpacingImpl extends DSSClassImpl implements LineSpacing {
 	/**
 	 * Returns active line code string.
 	 */
+	@Override
 	public String getCode() {
 		LineSpacingObj active = (LineSpacingObj) elementList.getActive();
 		return active.getName();
@@ -200,6 +202,7 @@ public class LineSpacingImpl extends DSSClassImpl implements LineSpacing {
 	/**
 	 * Sets the active LineSpacing.
 	 */
+	@Override
 	public void setCode(String value) {
 		LineSpacingObj pSpacing;
 

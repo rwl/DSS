@@ -333,6 +333,7 @@ public class EquivalentObjImpl extends PCElementImpl implements EquivalentObj {
 	}
 
 	// Private method in OpenDSS
+	@Override
 	public int doTerminalsDef(int n) {
 		int result = nTerms;
 
@@ -347,6 +348,7 @@ public class EquivalentObjImpl extends PCElementImpl implements EquivalentObj {
 	 * Parse input string as an array.
 	 */
 	// Private method in OpenDSS
+	@Override
 	public void parseDblMatrix(double[] mat) {
 		Parser.getInstance().parseAsSymMatrix(nTerms, mat);
 	}
@@ -358,100 +360,124 @@ public class EquivalentObjImpl extends PCElementImpl implements EquivalentObj {
 		X0 = Util.resizeArray(X0, (int) Math.pow(nTerms, 2));
 	}
 
+	@Override
 	public CMatrix getZ() {
 		return Z;
 	}
 
+	@Override
 	public void setZ(CMatrix z) {
 		Z = z;
 	}
 
+	@Override
 	public CMatrix getZinv() {
 		return ZInv;
 	}
 
+	@Override
 	public void setZInv(CMatrix zinv) {
 		ZInv = zinv;
 	}
 
 	// FIXME Private members in OpenDSS
 
+	@Override
 	public double getKvBase() {
 		return kVBase;
 	}
 
+	@Override
 	public void setKvBase(double base) {
 		this.kVBase = base;
 	}
 
+	@Override
 	public double getVMag() {
 		return VMag;
 	}
 
+	@Override
 	public void setVMag(double mag) {
 		VMag = mag;
 	}
 
+	@Override
 	public double getPerUnit() {
 		return perUnit;
 	}
 
+	@Override
 	public void setPerUnit(double pu) {
 		perUnit = pu;
 	}
 
+	@Override
 	public double getAngle() {
 		return angle;
 	}
 
+	@Override
 	public void setAngle(double ang) {
 		angle = ang;
 	}
 
+	@Override
 	public double getEquivFrequency() {
 		return equivFrequency;
 	}
 
+	@Override
 	public void setEquivFrequency(double frequency) {
 		equivFrequency = frequency;
 	}
 
+	@Override
 	public double[] getR1() {
 		return R1;
 	}
 
+	@Override
 	public void setR1(double[] r1) {
 		R1 = r1;
 	}
 
+	@Override
 	public double[] getX1() {
 		return X1;
 	}
 
+	@Override
 	public void setX1(double[] x1) {
 		X1 = x1;
 	}
 
+	@Override
 	public double[] getR0() {
 		return R0;
 	}
 
+	@Override
 	public void setR0(double[] r0) {
 		R0 = r0;
 	}
 
+	@Override
 	public double[] getX0() {
 		return X0;
 	}
 
+	@Override
 	public void setX0(double[] x0) {
 		X0 = x0;
 	}
 
+	@Override
 	public boolean isNeedToDoRecalc() {
 		return needToDoRecalc;
 	}
 
+	@Override
 	public void setNeedToDoRecalc(boolean value) {
 		needToDoRecalc = value;
 	}

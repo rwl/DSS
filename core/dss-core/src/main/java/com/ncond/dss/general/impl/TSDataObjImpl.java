@@ -1,7 +1,6 @@
 package com.ncond.dss.general.impl;
 
 import java.io.OutputStream;
-import java.io.PrintStream;
 import java.io.PrintWriter;
 
 import com.ncond.dss.common.DSSClass;
@@ -57,28 +56,34 @@ public class TSDataObjImpl extends CableDataObjImpl implements TSDataObj {
 		super.initPropertyValues(arrayOffset + TSData.NumPropsThisClass);
 	}
 
+	@Override
 	public double getDiaShield() {
 		return diaShield;
 	}
 
+	@Override
 	public double getTapeLayer() {
 		return tapeLayer;
 	}
 
+	@Override
 	public double getTapeLap() {
 		return tapeLap;
 	}
 
 	// FIXME Private members in OpenDSS
 
+	@Override
 	public void setDiaShield(double shield) {
 		diaShield = shield;
 	}
 
+	@Override
 	public void setTapeLayer(double layer) {
 		tapeLayer = layer;
 	}
 
+	@Override
 	public void setTapeLap(double lap) {
 		tapeLap = lap;
 	}

@@ -81,36 +81,44 @@ public class CableConstantsImpl extends LineConstantsImpl implements CableConsta
 		return result;
 	}
 
+	@Override
 	public double getEpsR(int i) {
 		return epsR[i];
 	}
 
+	@Override
 	public void setEpsR(int i, double epsr) {
 		epsR[i] = epsr;
 	}
 
+	@Override
 	public double getInsLayer(int i, int units) {
 		return insLayer[i] * LineUnits.fromMeters(units);
 	}
 
+	@Override
 	public void setInsLayer(int i, int units, double inslayer) {
 		if (i >= 0 && i < getNumConds())
 			insLayer[i] = inslayer * LineUnits.toMeters(units);
 	}
 
+	@Override
 	public double getDiaIns(int i, int units) {
 		return diaIns[i] * LineUnits.fromMeters(units);
 	}
 
+	@Override
 	public void setDiaIns(int i, int units, double diains) {
 		if (i >= 0 && i < getNumConds())
 			diaIns[i] = diains * LineUnits.toMeters(units);
 	}
 
+	@Override
 	public double getDiaCable(int i, int units) {
 		return diaCable[i] * LineUnits.fromMeters(units);
 	}
 
+	@Override
 	public void setDiaCable(int i, int units, double diacable) {
 		if (i >= 0 && i < getNumConds())
 			diaCable[i] = diacable * LineUnits.toMeters(units);

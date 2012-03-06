@@ -1,7 +1,6 @@
 package com.ncond.dss.control.impl;
 
 import java.io.OutputStream;
-import java.io.PrintStream;
 import java.io.PrintWriter;
 
 import org.apache.commons.math.complex.Complex;
@@ -314,6 +313,7 @@ public class RelayObjImpl extends ControlElemImpl implements RelayObj {
 	}
 
 	// FIXME Private method in OpenDSS
+	@Override
 	public void interpretRelayAction(String action) {
 
 		if (getControlledElement() != null) {
@@ -468,6 +468,7 @@ public class RelayObjImpl extends ControlElemImpl implements RelayObj {
 	}
 
 	// FIXME Private method in OpenDSS
+	@Override
 	public void interpretRelayType(String s) {
 
 		switch (s.toLowerCase().charAt(0)) {
@@ -866,330 +867,412 @@ public class RelayObjImpl extends ControlElemImpl implements RelayObj {
 
 	// FIXME Private members in OpenDSS
 
+	@Override
 	public int getControlType() {
 		return controlType;
 	}
 
+	@Override
 	public void setControlType(int type) {
 		controlType = type;
 	}
 
+	@Override
 	public TCC_CurveObj getPhaseCurve() {
 		return phaseCurve;
 	}
 
+	@Override
 	public void setPhaseCurve(TCC_CurveObj curve) {
 		phaseCurve = curve;
 	}
 
+	@Override
 	public TCC_CurveObj getGroundCurve() {
 		return groundCurve;
 	}
 
+	@Override
 	public void setGroundCurve(TCC_CurveObj curve) {
 		groundCurve = curve;
 	}
 
+	@Override
 	public double getPhaseTrip() {
 		return phaseTrip;
 	}
 
+	@Override
 	public void setPhaseTrip(double trip) {
 		phaseTrip = trip;
 	}
 
+	@Override
 	public double getGroundTrip() {
 		return groundTrip;
 	}
 
+	@Override
 	public void setGroundTrip(double trip) {
 		groundTrip = trip;
 	}
 
+	@Override
 	public double getPhaseInst() {
 		return phaseInst;
 	}
 
+	@Override
 	public void setPhaseInst(double value) {
 		phaseInst = value;
 	}
 
+	@Override
 	public double getGroundInst() {
 		return groundInst;
 	}
 
+	@Override
 	public void setGroundInst(double value) {
 		groundInst = value;
 	}
 
+	@Override
 	public double[] getRecloseIntervals() {
 		return recloseIntervals;
 	}
 
+	@Override
 	public void setRecloseIntervals(double[] intervals) {
 		recloseIntervals = intervals;
 	}
 
+	@Override
 	public int getNumReclose() {
 		return numReclose;
 	}
 
+	@Override
 	public void setNumReclose(int num) {
 		numReclose = num;
 	}
 
+	@Override
 	public double getResetTime() {
 		return resetTime;
 	}
 
+	@Override
 	public void setResetTime(double time) {
 		resetTime = time;
 	}
 
+	@Override
 	public double getDelayTime() {
 		return delayTime;
 	}
 
+	@Override
 	public void setDelayTime(double time) {
 		delayTime = time;
 	}
 
+	@Override
 	public double getBreakerTime() {
 		return breakerTime;
 	}
 
+	@Override
 	public void setBreakerTime(double time) {
 		breakerTime = time;
 	}
 
+	@Override
 	public double getTDPhase() {
 		return TDPhase;
 	}
 
+	@Override
 	public void setTDPhase(double phase) {
 		TDPhase = phase;
 	}
 
+	@Override
 	public double getTDGround() {
 		return TDGround;
 	}
 
+	@Override
 	public void setTDGround(double ground) {
 		TDGround = ground;
 	}
 
+	@Override
 	public String getRelayTarget() {
 		return relayTarget;
 	}
 
+	@Override
 	public void setRelayTarget(String target) {
 		relayTarget = target;
 	}
 
+	@Override
 	public TCC_CurveObj getOVCurve() {
 		return OVCurve;
 	}
 
+	@Override
 	public void setOVCurve(TCC_CurveObj curve) {
 		OVCurve = curve;
 	}
 
+	@Override
 	public TCC_CurveObj getUVCurve() {
 		return UVCurve;
 	}
 
+	@Override
 	public void setUVCurve(TCC_CurveObj curve) {
 		UVCurve = curve;
 	}
 
+	@Override
 	public double getVBase() {
 		return VBase;
 	}
 
+	@Override
 	public void setVBase(double base) {
 		VBase = base;
 	}
 
+	@Override
 	public double getKVBase() {
 		return kVBase;
 	}
 
+	@Override
 	public void setKVBase(double base) {
 		this.kVBase = base;
 	}
 
+	@Override
 	public double getPickupAmps46() {
 		return pickupAmps46;
 	}
 
+	@Override
 	public void setPickupAmps46(double value) {
 		pickupAmps46 = value;
 	}
 
+	@Override
 	public double getPctPickup46() {
 		return pctPickup46;
 	}
 
+	@Override
 	public void setPctPickup46(double value) {
 		pctPickup46 = value;
 	}
 
+	@Override
 	public double getBaseAmps46() {
 		return baseAmps46;
 	}
 
+	@Override
 	public void setBaseAmps46(double value) {
 		baseAmps46 = value;
 	}
 
+	@Override
 	public double getIsqt46() {
 		return isqt46;
 	}
 
+	@Override
 	public void setIsqt46(double value) {
 		isqt46 = value;
 	}
 
+	@Override
 	public double getPickupVolts47() {
 		return pickupVolts47;
 	}
 
+	@Override
 	public void setPickupVolts47(double value) {
 		pickupVolts47 = value;
 	}
 
+	@Override
 	public double getPctPickup47() {
 		return pctPickup47;
 	}
 
+	@Override
 	public void setPctPickup47(double value) {
 		pctPickup47 = value;
 	}
 
+	@Override
 	public double getOverTrip() {
 		return overTrip;
 	}
 
+	@Override
 	public void setOverTrip(double trip) {
 		overTrip = trip;
 	}
 
+	@Override
 	public double getUnderTrip() {
 		return underTrip;
 	}
 
+	@Override
 	public void setUnderTrip(double trip) {
 		underTrip = trip;
 	}
 
+	@Override
 	public String getMonitoredElementName() {
 		return monitoredElementName;
 	}
 
+	@Override
 	public void setMonitoredElementName(String name) {
 		monitoredElementName = name;
 	}
 
+	@Override
 	public int getMonitoredElementTerminal() {
 		return monitoredElementTerminal;
 	}
 
+	@Override
 	public void setMonitoredElementTerminal(int terminal) {
 		monitoredElementTerminal = terminal;
 	}
 
+	@Override
 	public CktElement getMonitoredElement() {
 		return monitoredElement;
 	}
 
+	@Override
 	public void setMonitoredElement(CktElement element) {
 		monitoredElement = element;
 	}
 
+	@Override
 	public ControlAction getPresentState() {
 		return presentState;
 	}
 
+	@Override
 	public void setPresentState(ControlAction state) {
 		presentState = state;
 	}
 
+	@Override
 	public int getOperationCount() {
 		return operationCount;
 	}
 
+	@Override
 	public void setOperationCount(int count) {
 		operationCount = count;
 	}
 
+	@Override
 	public boolean isLockedOut() {
 		return lockedOut;
 	}
 
+	@Override
 	public void setLockedOut(boolean value) {
 		lockedOut = value;
 	}
 
+	@Override
 	public boolean isArmedForClose() {
 		return armedForClose;
 	}
 
+	@Override
 	public void setArmedForClose(boolean armed) {
 		armedForClose = armed;
 	}
 
+	@Override
 	public boolean isArmedForOpen() {
 		return armedForOpen;
 	}
 
+	@Override
 	public void setArmedForOpen(boolean armed) {
 		armedForOpen = armed;
 	}
 
+	@Override
 	public boolean isPhaseTarget() {
 		return phaseTarget;
 	}
 
+	@Override
 	public void setPhaseTarget(boolean target) {
 		phaseTarget = target;
 	}
 
+	@Override
 	public boolean isGroundTarget() {
 		return groundTarget;
 	}
 
+	@Override
 	public void setGroundTarget(boolean target) {
 		groundTarget = target;
 	}
 
+	@Override
 	public double getNextTripTime() {
 		return nextTripTime;
 	}
 
+	@Override
 	public void setNextTripTime(double time) {
 		nextTripTime = time;
 	}
 
+	@Override
 	public int getLastEventHandle() {
 		return lastEventHandle;
 	}
 
+	@Override
 	public void setLastEventHandle(int handle) {
 		lastEventHandle = handle;
 	}
 
+	@Override
 	public int getCondOffset() {
 		return condOffset;
 	}
 
+	@Override
 	public void setCondOffset(int offset) {
 		condOffset = offset;
 	}
 
+	@Override
 	public Complex[] getCBuffer() {
 		return cBuffer;
 	}
 
+	@Override
 	public void setCBuffer(Complex[] buffer) {
 		this.cBuffer = buffer;
 	}

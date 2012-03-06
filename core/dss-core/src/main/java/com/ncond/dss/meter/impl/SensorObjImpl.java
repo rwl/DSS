@@ -1,7 +1,6 @@
 package com.ncond.dss.meter.impl;
 
 import java.io.OutputStream;
-import java.io.PrintStream;
 import java.io.PrintWriter;
 
 import org.apache.commons.math.complex.Complex;
@@ -128,6 +127,7 @@ public class SensorObjImpl extends MeterElementImpl implements SensorObj {
 		// leave YPrims as nil and they will be ignored
 	}
 
+	@Override
 	public void resetIt() {
 		clearSensor();
 	}
@@ -188,6 +188,7 @@ public class SensorObjImpl extends MeterElementImpl implements SensorObj {
 	 * Return the WLS Error for currents.
 	 * Get square error and weight it.
 	 */
+	@Override
 	public double getWLSCurrentError() {
 		double kVA;
 		int i;
@@ -220,6 +221,7 @@ public class SensorObjImpl extends MeterElementImpl implements SensorObj {
 	/**
 	 * Get square error and weight it.
 	 */
+	@Override
 	public double getWLSVoltageError() {
 		int i;
 		double result = 0.0;
@@ -250,6 +252,7 @@ public class SensorObjImpl extends MeterElementImpl implements SensorObj {
 	}
 
 	// FIXME Private method in OpenDSS
+	@Override
 	public void clearSensor() {
 		VSpecified = false;
 		ISpecified = false;
@@ -298,6 +301,7 @@ public class SensorObjImpl extends MeterElementImpl implements SensorObj {
 	}
 
 	// FIXME Private method in OpenDSS
+	@Override
 	public int limitToPlusMinusOne(int i) {
 		if (i >= 0) {
 			return 1;
@@ -309,6 +313,7 @@ public class SensorObjImpl extends MeterElementImpl implements SensorObj {
 	/**
 	 * Saves present buffer to file.
 	 */
+	@Override
 	public void save() {
 
 	}
@@ -316,47 +321,58 @@ public class SensorObjImpl extends MeterElementImpl implements SensorObj {
 	/**
 	 * Connection code.
 	 */
+	@Override
 	public void setConn(int value) {
 		conn = value;
 		recalcVbase();
 	}
 
+	@Override
 	public void setAction(String value) {
 
 	}
 
+	@Override
 	public int getConn() {
 		return conn;
 	}
 
+	@Override
 	public double[] getSensorKW() {
 		return sensorKW;
 	}
 
+	@Override
 	public double[] getSensorKVAr() {
 		return sensorKVAr;
 	}
 
+	@Override
 	public double getKVBase() {
 		return kVBase;
 	}
 
+	@Override
 	public int getDeltaDirection() {
 		return deltaDirection;
 	}
 
+	@Override
 	public double getPctError() {
 		return pctError;
 	}
 
+	@Override
 	public void setPctError(double pct) {
 		this.pctError = pct;
 	}
 
+	@Override
 	public double getWeight() {
 		return weight;
 	}
 
+	@Override
 	public void setWeight(double w) {
 		weight = w;
 	}
@@ -364,74 +380,92 @@ public class SensorObjImpl extends MeterElementImpl implements SensorObj {
 
 	// FIXME Private members in OpenDSS
 
+	@Override
 	public boolean isValidSensor() {
 		return validSensor;
 	}
 
+	@Override
 	public void setValidSensor(boolean valid) {
 		validSensor = valid;
 	}
 
+	@Override
 	public double getVBase() {
 		return VBase;
 	}
 
+	@Override
 	public void setVBase(double vbase) {
 		VBase = vbase;
 	}
 
+	@Override
 	public boolean isVSpecified() {
 		return VSpecified;
 	}
 
+	@Override
 	public void setVSpecified(boolean specified) {
 		VSpecified = specified;
 	}
 
+	@Override
 	public boolean isISpecified() {
 		return ISpecified;
 	}
 
+	@Override
 	public void setISpecified(boolean specified) {
 		ISpecified = specified;
 	}
 
+	@Override
 	public boolean isPSpecified() {
 		return PSpecified;
 	}
 
+	@Override
 	public void setPSpecified(boolean specified) {
 		PSpecified = specified;
 	}
 
+	@Override
 	public boolean isQSpecified() {
 		return QSpecified;
 	}
 
+	@Override
 	public void setQSpecified(boolean specified) {
 		QSpecified = specified;
 	}
 
+	@Override
 	public boolean isClearSpecified() {
 		return clearSpecified;
 	}
 
+	@Override
 	public void setClearSpecified(boolean clear) {
 		clearSpecified = clear;
 	}
 
+	@Override
 	public void setSensorKW(double[] kw) {
 		sensorKW = kw;
 	}
 
+	@Override
 	public void setSensorKVAr(double[] kvar) {
 		sensorKVAr = kvar;
 	}
 
+	@Override
 	public void setKVBase(double base) {
 		this.kVBase = base;
 	}
 
+	@Override
 	public void setDeltaDirection(int direction) {
 		deltaDirection = direction;
 	}

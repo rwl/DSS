@@ -27,6 +27,7 @@ public class FaultImpl extends PDClassImpl implements Fault {
 		commandList.setAbbrevAllowed(true);
 	}
 
+	@Override
 	protected void defineProperties() {
 
 		numProperties = Fault.NumPropsThisClass;

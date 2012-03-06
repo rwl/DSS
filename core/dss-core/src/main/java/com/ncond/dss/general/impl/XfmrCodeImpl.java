@@ -31,6 +31,7 @@ public class XfmrCodeImpl extends DSSClassImpl implements XfmrCode {
 		commandList.setAbbrevAllowed(true);
 	}
 
+	@Override
 	protected void defineProperties() {
 		final String CRLF = DSS.CRLF;
 
@@ -447,11 +448,13 @@ public class XfmrCodeImpl extends DSSClassImpl implements XfmrCode {
 		return 0;
 	}
 
+	@Override
 	public String getCode() {
 		XfmrCodeObj pXfmrCode = (XfmrCodeObj) elementList.getActive();
 		return pXfmrCode.getName();
 	}
 
+	@Override
 	public void setCode(String value) {
 		XfmrCodeObj xfmrCode;
 

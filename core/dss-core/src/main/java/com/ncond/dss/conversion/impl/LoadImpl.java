@@ -31,6 +31,7 @@ public class LoadImpl extends PCClassImpl implements Load {
 	/**
 	 * Add properties of this class to propName.
 	 */
+	@Override
 	protected void defineProperties() {
 
 		numProperties = NumPropsThisClass;

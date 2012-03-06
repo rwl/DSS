@@ -42,6 +42,7 @@ public abstract class PCElementImpl extends CktElementImpl implements PCElement 
 	/**
 	 * Add injection currents into system currents array.
 	 */
+	@Override
 	public int injCurrents() {
 		SolutionObj sol = DSS.activeCircuit.getSolution();
 
@@ -54,6 +55,7 @@ public abstract class PCElementImpl extends CktElementImpl implements PCElement 
 	/**
 	 * Get present values of terminal.
 	 */
+	@Override
 	public void getInjCurrents(Complex[] curr) {
 		DSS.doErrorMsg("PCElement.InjCurrents", ("Improper call to getInjCurrents for element: " + getName() + "."),
 			"Called PCElement class virtual function instead of actual.", 640);
@@ -83,6 +85,7 @@ public abstract class PCElementImpl extends CktElementImpl implements PCElement 
 	 *
 	 * Gets total currents going into a devices terminals.
 	 */
+	@Override
 	public void getCurrents(Complex[] curr) {
 		try {
 			SolutionObj sol = DSS.activeCircuit.getSolution();
@@ -111,6 +114,7 @@ public abstract class PCElementImpl extends CktElementImpl implements PCElement 
 		}
 	}
 
+	@Override
 	public void calcYPrimContribution(Complex[] curr) {
 		computeVTerminal();
 		// apply these voltages to Yprim
@@ -120,10 +124,12 @@ public abstract class PCElementImpl extends CktElementImpl implements PCElement 
 	/**
 	 * For harmonics mode
 	 */
+	@Override
 	public void initHarmonics() {
 		// by default do nothing in the base class
 	}
 
+	@Override
 	public void initPropertyValues(int arrayOffset) {
 		propertyValue[arrayOffset + 1] = spectrum;
 
@@ -133,22 +139,27 @@ public abstract class PCElementImpl extends CktElementImpl implements PCElement 
 	/**
 	 * For dynamics mode and control devices.
 	 */
+	@Override
 	public void initStateVars() {
 		// by default do nothing
 	}
 
+	@Override
 	public void integrateStates() {
 		// by default do nothing
 	}
 
+	@Override
 	public void getAllVariables(double[] states) {
 		/* Do nothing */
 	}
 
+	@Override
 	public int numVariables() {
 		return 0;
 	}
 
+	@Override
 	public String variableName(int i) {
 		/* Do nothing */
 		return "";
@@ -158,6 +169,7 @@ public abstract class PCElementImpl extends CktElementImpl implements PCElement 
 	 * Search through variable name list and return index if found.
 	 * Compare up to length of S.
 	 */
+	@Override
 	public int lookupVariable(String s) {
 		int result = -1;   // returns -1 for error not found
 		int testLength = s.length();
@@ -170,6 +182,7 @@ public abstract class PCElementImpl extends CktElementImpl implements PCElement 
 		return result;
 	}
 
+	@Override
 	public void dumpProperties(PrintStream f, boolean complete) {
 		super.dumpProperties(f, complete);
 
@@ -180,15 +193,18 @@ public abstract class PCElementImpl extends CktElementImpl implements PCElement 
 		}
 	}
 
+	@Override
 	public double getVariable(int i) {
 		/* Do nothing here -- up to override function */
 		return -9999.99;
 	}
 
+	@Override
 	public void setVariable(int i, double value) {
 		/* Do nothing */
 	}
 
+	@Override
 	public void computeITerminal() {
 		Circuit ckt = DSS.activeCircuit;
 
@@ -198,59 +214,72 @@ public abstract class PCElementImpl extends CktElementImpl implements PCElement 
 		}
 	}
 
+	@Override
 	public void zeroInjCurrent() {
 		for (int i = 0; i < YOrder; i++)
 			injCurrent[i] = Complex.ZERO;
 	}
 
+	@Override
 	public void setITerminalUpdated(boolean value) {
 		ITerminalUpdated = value;
 		if (value)
 			ITerminalSolutionCount = DSS.activeCircuit.getSolution().getSolutionCount();
 	}
 
+	@Override
 	public boolean getITerminalUpdated() {
 		return ITerminalUpdated;
 	}
 
+	@Override
 	public Complex[] getInjCurrent() {
 		return injCurrent;
 	}
 
+	@Override
 	public String getSpectrum() {
 		return spectrum;
 	}
 
+	@Override
 	public void setSpectrum(String value) {
 		spectrum = value;
 	}
 
 	/** Upline sensor for this element */
+	@Override
 	public SpectrumObj getSpectrumObj() {
 		return spectrumObj;
 	}
 
+	@Override
 	public void setSpectrumObj(SpectrumObj spectrum) {
 		spectrumObj = spectrum;
 	}
 
 	/** Upline energy meter */
+	@Override
 	public MeterElement getMeterObj() {
 		return meterObj;
 	}
 
+	@Override
 	public void setMeterObj(MeterElement meter) {
 		meterObj = meter;
 	}
 
+	@Override
 	public MeterElement getSensorObj() {
 		return sensorObj;
 	}
 
+	@Override
 	public void setSensorObj(MeterElement sensor) {
 		sensorObj = sensor;
 	}
 
+	@Override
 	public void setInjCurrent(Complex[] current) {
 		injCurrent = current;
 	}

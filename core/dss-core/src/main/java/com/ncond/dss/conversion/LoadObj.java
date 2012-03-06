@@ -166,17 +166,23 @@ public interface LoadObj extends PCElement {
 
 	void setKW_KVAr(double PkW, double QkVAr);
 
+	@Override
 	void recalcElementData();
 
+	@Override
 	void calcYPrim();
 
+	@Override
 	int injCurrents();
 
+	@Override
 	void getInjCurrents(Complex[] curr);
 
+	@Override
 	void initHarmonics();
 
 	/* Make a positive Sequence Model */
+	@Override
 	void makePosSequence();
 
 	void setNominalLoad();
@@ -188,10 +194,13 @@ public interface LoadObj extends PCElement {
 	 */
 	void randomize(int opt);
 
+	@Override
 	String getPropertyValue(int index);
 
+	@Override
 	void initPropertyValues(int arrayOffset);
 
+	@Override
 	void dumpProperties(PrintStream f, boolean complete);
 
 	void updateVoltageBases();

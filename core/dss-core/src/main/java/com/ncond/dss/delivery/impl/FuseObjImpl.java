@@ -1,7 +1,6 @@
 package com.ncond.dss.delivery.impl;
 
 import java.io.OutputStream;
-import java.io.PrintStream;
 import java.io.PrintWriter;
 
 import org.apache.commons.math.complex.Complex;
@@ -180,6 +179,7 @@ public class FuseObjImpl extends ControlElemImpl implements FuseObj {
 		}
 	}
 
+	@Override
 	public void interpretFuseAction(String action) {
 		if (getControlElement() != null) {
 			getControlledElement().setActiveTerminalIdx(elementTerminal);  // set active terminal
@@ -304,90 +304,112 @@ public class FuseObjImpl extends ControlElemImpl implements FuseObj {
 
 	// FIXME: Private members in OpenDSS
 
+	@Override
 	public TCC_CurveObj getFuseCurve() {
 		return fuseCurve;
 	}
 
+	@Override
 	public void setFuseCurve(TCC_CurveObj curve) {
 		fuseCurve = curve;
 	}
 
+	@Override
 	public double getRatedCurrent() {
 		return ratedCurrent;
 	}
 
+	@Override
 	public void setRatedCurrent(double current) {
 		ratedCurrent = current;
 	}
 
+	@Override
 	public double getDelayTime() {
 		return delayTime;
 	}
 
+	@Override
 	public void setDelayTime(double time) {
 		delayTime = time;
 	}
 
+	@Override
 	public String getMonitoredElementName() {
 		return monitoredElementName;
 	}
 
+	@Override
 	public void setMonitoredElementName(String name) {
 		monitoredElementName = name;
 	}
 
+	@Override
 	public int getMonitoredElementTerminal() {
 		return monitoredElementTerminal;
 	}
 
+	@Override
 	public void setMonitoredElementTerminal(int terminal) {
 		monitoredElementTerminal = terminal;
 	}
 
+	@Override
 	public CktElementImpl getMonitoredElement() {
 		return monitoredElement;
 	}
 
+	@Override
 	public void setMonitoredElement(CktElementImpl element) {
 		monitoredElement = element;
 	}
 
+	@Override
 	public int[] getHAction() {
 		return hAction;
 	}
 
+	@Override
 	public void setHAction(int[] action) {
 		this.hAction = action;
 	}
 
+	@Override
 	public ControlAction[] getPresentState() {
 		return presentState;
 	}
 
+	@Override
 	public void setPresentState(ControlAction[] state) {
 		presentState = state;
 	}
 
+	@Override
 	public boolean[] getReadyToBlow() {
 		return readyToBlow;
 	}
 
+	@Override
 	public void setReadyToBlow(boolean[] ready) {
 		readyToBlow = ready;
 	}
 
+	@Override
 	public int getCondOffset() {
 		return condOffset;
 	}
 
+	@Override
 	public void setCondOffset(int offset) {
 		condOffset = offset;
 	}
 
+	@Override
 	public Complex[] getCBuffer() {
 		return cBuffer;
 	}
 
+	@Override
 	public void setCBuffer(Complex[] buffer) {
 		cBuffer = buffer;
 	}

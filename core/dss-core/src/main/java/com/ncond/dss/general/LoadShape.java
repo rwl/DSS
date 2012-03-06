@@ -16,16 +16,20 @@ public interface LoadShape extends DSSClass {
 	 */
 	void setCode(String value);
 
+	@Override
 	int edit();
 
+	@Override
 	int init(int handle);
 
+	@Override
 	int newObject(String objName);
 
 	/**
 	 * Find an obj of this class by name.
 	 */
-	Object find(String objName);
+	@Override
+	DSSObject find(String objName);
 
 	void TOPExport(String objName);
 

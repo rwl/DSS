@@ -2,9 +2,10 @@ package com.ncond.dss.common.impl;
 
 import com.ncond.dss.common.CktElement;
 import com.ncond.dss.common.CktElementClass;
+import com.ncond.dss.general.DSSObject;
 import com.ncond.dss.parser.impl.Parser;
 
-public class CktElementClassImpl extends DSSClassImpl implements CktElementClass {
+abstract public class CktElementClassImpl extends DSSClassImpl implements CktElementClass {
 
 	private int numCktElemClassProps;
 
@@ -13,7 +14,8 @@ public class CktElementClassImpl extends DSSClassImpl implements CktElementClass
 		numCktElemClassProps = 2;
 	}
 
-	protected int classEdit(Object activeCktElemObj, int paramPointer) {
+	@Override
+	protected int classEdit(DSSObject activeCktElemObj, int paramPointer) {
 		Parser parser = Parser.getInstance();
 
 		// continue parsing with contents of parser
@@ -34,7 +36,7 @@ public class CktElementClassImpl extends DSSClassImpl implements CktElementClass
 		return 0;
 	}
 
-	protected void classMakeLike(Object otherObj) {
+	protected void classMakeLike(DSSObject otherObj) {
 		CktElement otherCktObj = (CktElement) otherObj;
 
 		CktElement cktElem = (CktElement) DSS.activeDSSObject;
@@ -45,6 +47,7 @@ public class CktElementClassImpl extends DSSClassImpl implements CktElementClass
 	/**
 	 * Add no. of intrinsic properties.
 	 */
+	@Override
 	protected void countProperties() {
 		numProperties = numProperties + numCktElemClassProps;
 		super.countProperties();
@@ -53,6 +56,7 @@ public class CktElementClassImpl extends DSSClassImpl implements CktElementClass
 	/**
 	 * Define the properties for the base power delivery element class.
 	 */
+	@Override
 	protected void defineProperties() {
 		propertyName[activeProperty + 1] = "basefreq";
 		propertyName[activeProperty + 2] = "enabled";
@@ -65,6 +69,7 @@ public class CktElementClassImpl extends DSSClassImpl implements CktElementClass
 		super.defineProperties();
 	}
 
+	@Override
 	public int getNumCktElemClassProps() {
 		return numCktElemClassProps;
 	}

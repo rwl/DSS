@@ -1,7 +1,6 @@
 package com.ncond.dss.control.impl;
 
 import java.io.OutputStream;
-import java.io.PrintStream;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
@@ -248,6 +247,7 @@ public class StorageControllerObjImpl extends ControlElemImpl implements Storage
 		}
 	}
 
+	@Override
 	public double getFleetKW() {
 		StorageObj pStorage;
 		double result = 0;
@@ -258,6 +258,7 @@ public class StorageControllerObjImpl extends ControlElemImpl implements Storage
 		return result;
 	}
 
+	@Override
 	public double getFleetkWh() {
 		StorageObj pStorage;
 		double result = 0;
@@ -268,6 +269,7 @@ public class StorageControllerObjImpl extends ControlElemImpl implements Storage
 		return result;
 	}
 
+	@Override
 	public double getFleetReserveKWh() {
 		StorageObj pStorage;
 		double result = 0;
@@ -942,11 +944,13 @@ public class StorageControllerObjImpl extends ControlElemImpl implements Storage
 		fleetState = Storage.IDLING;
 	}
 
+	@Override
 	public void setPFBand(double value) {
 		PFBand = value;
 		halfPFBand = PFBand / 2.0;
 	}
 
+	@Override
 	public double getPFBand() {
 		return PFBand;
 	}
@@ -968,6 +972,7 @@ public class StorageControllerObjImpl extends ControlElemImpl implements Storage
 //	}
 
 	// FIXME Private method in OpenDSS
+	@Override
 	public int interpretMode(int opt, String s) {
 		switch (opt) {
 		case StorageController.MODE_DISCHARGE:
@@ -1105,338 +1110,408 @@ public class StorageControllerObjImpl extends ControlElemImpl implements Storage
 
 	// FIXME Private members in OpenDSS
 
+	@Override
 	public double getKWTarget() {
 		return kWTarget;
 	}
 
+	@Override
 	public void setKWTarget(double target) {
 		this.kWTarget = target;
 	}
 
 
+	@Override
 	public void setKWThreshold(double threshold) {
 		this.kWThreshold = threshold;
 	}
 
+	@Override
 	public double getKWThreshold() {
 		return kWThreshold;
 	}
 
+	@Override
 	public double getPctKWBand() {
 		return pctkWBand;
 	}
 
 
+	@Override
 	public void setPctKWBand(double band) {
 		this.pctkWBand = band;
 	}
 
 
+	@Override
 	public double getHalfKWBand() {
 		return halfKWBand;
 	}
 
 
+	@Override
 	public void setHalfKWBand(double band) {
 		halfKWBand = band;
 	}
 
 
+	@Override
 	public double getPFTarget() {
 		return PFTarget;
 	}
 
 
+	@Override
 	public void setPFTarget(double target) {
 		PFTarget = target;
 	}
 
 
+	@Override
 	public double getTotalWeight() {
 		return totalWeight;
 	}
 
 
+	@Override
 	public void setTotalWeight(double weight) {
 		totalWeight = weight;
 	}
 
 
+	@Override
 	public double getHalfPFBand() {
 		return halfPFBand;
 	}
 
 
+	@Override
 	public void setHalfPFBand(double band) {
 		halfPFBand = band;
 	}
 
 
+	@Override
 	public double getKWNeeded() {
 		return kWNeeded;
 	}
 
 
+	@Override
 	public void setKWNeeded(double needed) {
 		this.kWNeeded = needed;
 	}
 
 
+	@Override
 	public int getFleetSize() {
 		return fleetSize;
 	}
 
 
+	@Override
 	public void setFleetSize(int size) {
 		fleetSize = size;
 	}
 
 
+	@Override
 	public int getFleetState() {
 		return fleetState;
 	}
 
 
+	@Override
 	public void setFleetState(int state) {
 		fleetState = state;
 	}
 
 
+	@Override
 	public List<String> getStorageNameList() {
 		return storageNameList;
 	}
 
 
+	@Override
 	public void setStorageNameList(List<String> list) {
 		storageNameList = list;
 	}
 
 
+	@Override
 	public List<Object> getFleetPointerList() {
 		return fleetPointerList;
 	}
 
 
+	@Override
 	public void setFleetPointerList(List<Object> list) {
 		fleetPointerList = list;
 	}
 
 
+	@Override
 	public double[] getWeights() {
 		return weights;
 	}
 
 
+	@Override
 	public void setWeights(double[] values) {
 		weights = values;
 	}
 
 
+	@Override
 	public boolean isElementListSpecified() {
 		return elementListSpecified;
 	}
 
 
+	@Override
 	public void setElementListSpecified(boolean value) {
 		elementListSpecified = value;
 	}
 
 
+	@Override
 	public int getDischargeMode() {
 		return dischargeMode;
 	}
 
 
+	@Override
 	public void setDischargeMode(int mode) {
 		dischargeMode = mode;
 	}
 
 
+	@Override
 	public int getChargeMode() {
 		return chargeMode;
 	}
 
 
+	@Override
 	public void setChargeMode(int mode) {
 		chargeMode = mode;
 	}
 
 
+	@Override
 	public double getDischargeTriggerTime() {
 		return dischargeTriggerTime;
 	}
 
 
+	@Override
 	public void setDischargeTriggerTime(double time) {
 		dischargeTriggerTime = time;
 	}
 
 
+	@Override
 	public double getChargeTriggerTime() {
 		return chargeTriggerTime;
 	}
 
 
+	@Override
 	public void setChargeTriggerTime(double time) {
 		chargeTriggerTime = time;
 	}
 
 
+	@Override
 	public double getPctKWRate() {
 		return pctKWRate;
 	}
 
 
+	@Override
 	public void setPctKWRate(double pct) {
 		this.pctKWRate = pct;
 	}
 
 
+	@Override
 	public double getPctKVArRate() {
 		return pctKVArRate;
 	}
 
 
+	@Override
 	public void setPctKVArRate(double pct) {
 		this.pctKVArRate = pct;
 	}
 
 
+	@Override
 	public double getPctChargeRate() {
 		return pctChargeRate;
 	}
 
 
+	@Override
 	public void setPctChargeRate(double pct) {
 		this.pctChargeRate = pct;
 	}
 
 
+	@Override
 	public double getPctFleetReserve() {
 		return pctFleetReserve;
 	}
 
 
+	@Override
 	public void setPctFleetReserve(double pct) {
 		this.pctFleetReserve = pct;
 	}
 
 
+	@Override
 	public boolean isFleetListChanged() {
 		return fleetListChanged;
 	}
 
 
+	@Override
 	public void setFleetListChanged(boolean changed) {
 		fleetListChanged = changed;
 	}
 
 
+	@Override
 	public boolean isChargingAllowed() {
 		return chargingAllowed;
 	}
 
 
+	@Override
 	public void setChargingAllowed(boolean allowed) {
 		chargingAllowed = allowed;
 	}
 
 
+	@Override
 	public boolean isShowEventLog() {
 		return showEventLog;
 	}
 
 
+	@Override
 	public void setShowEventLog(boolean show) {
 		showEventLog = show;
 	}
 
 
+	@Override
 	public boolean isDispatchVars() {
 		return dispatchVars;
 	}
 
 
+	@Override
 	public void setDispatchVars(boolean vars) {
 		dispatchVars = vars;
 	}
 
 
+	@Override
 	public boolean isDischargeTriggeredByTime() {
 		return dischargeTriggeredByTime;
 	}
 
 
+	@Override
 	public void setDischargeTriggeredByTime(boolean value) {
 		dischargeTriggeredByTime = value;
 	}
 
 
+	@Override
 	public boolean isDischargeInhibited() {
 		return dischargeInhibited;
 	}
 
 
+	@Override
 	public void setDischargeInhibited(boolean inhibited) {
 		dischargeInhibited = inhibited;
 	}
 
 
+	@Override
 	public boolean isOutOfEnergy() {
 		return outOfEnergy;
 	}
 
 
+	@Override
 	public void setOutOfEnergy(boolean value) {
 		outOfEnergy = value;
 	}
 
 
+	@Override
 	public int getInhibitHrs() {
 		return inhibitHrs;
 	}
 
 
+	@Override
 	public void setInhibitHrs(int hrs) {
 		inhibitHrs = hrs;
 	}
 
+	@Override
 	public double getUpRampTime() {
 		return upRampTime;
 	}
 
+	@Override
 	public void setUpRampTime(double time) {
 		upRampTime = time;
 	}
 
+	@Override
 	public double getFlatTime() {
 		return flatTime;
 	}
 
+	@Override
 	public void setFlatTime(double time) {
 		flatTime = time;
 	}
 
+	@Override
 	public double getDnRampTime() {
 		return dnRampTime;
 	}
 
+	@Override
 	public void setDnRampTime(double time) {
 		dnRampTime = time;
 	}
 
+	@Override
 	public double getUpPlusFlat() {
 		return upPlusFlat;
 	}
 
+	@Override
 	public void setUpPlusFlat(double value) {
 		upPlusFlat = value;
 	}
 
+	@Override
 	public double getUpPlusFlatPlusDn() {
 		return upPlusFlatPlusDn;
 	}
 
+	@Override
 	public void setUpPlusFlatPlusDn(double value) {
 		upPlusFlatPlusDn = value;
 	}
@@ -1449,101 +1524,121 @@ public class StorageControllerObjImpl extends ControlElemImpl implements Storage
 		lastPctDischargeRate = rate;
 	}
 
+	@Override
 	public double getTotalKWCapacity() {
 		return totalKWCapacity[0];
 	}
 
 
+	@Override
 	public void setTotalKWCapacity(double capacity) {
 		totalKWCapacity[0] = capacity;
 	}
 
 
+	@Override
 	public double getTotalKWhCapacity() {
 		return totalKWhCapacity[0];
 	}
 
 
+	@Override
 	public void setTotalKWhCapacity(double capacity) {
 		totalKWhCapacity[0] = capacity;
 	}
 
 
+	@Override
 	public String getYearlyShape() {
 		return yearlyShape;
 	}
 
 
+	@Override
 	public void setYearlyShape(String shape) {
 		yearlyShape = shape;
 	}
 
 
+	@Override
 	public LoadShapeObj getYearlyShapeObj() {
 		return yearlyShapeObj;
 	}
 
 
+	@Override
 	public void setYearlyShapeObj(LoadShapeObj yearlyShape) {
 		yearlyShapeObj = yearlyShape;
 	}
 
 
+	@Override
 	public String getDailyShape() {
 		return dailyShape;
 	}
 
 
+	@Override
 	public void setDailyShape(String shape) {
 		dailyShape = shape;
 	}
 
 
+	@Override
 	public LoadShapeObj getDailyShapeObj() {
 		return dailyShapeObj;
 	}
 
 
+	@Override
 	public void setDailyShapeObj(LoadShapeObj dailyShape) {
 		dailyShapeObj = dailyShape;
 	}
 
 
+	@Override
 	public String getDutyShape() {
 		return dutyShape;
 	}
 
 
+	@Override
 	public void setDutyShape(String shape) {
 		dutyShape = shape;
 	}
 
 
+	@Override
 	public LoadShapeObj getDutyShapeObj() {
 		return dutyShapeObj;
 	}
 
 
+	@Override
 	public void setDutyShapeObj(LoadShapeObj dutyShape) {
 		dutyShapeObj = dutyShape;
 	}
 
 
+	@Override
 	public Complex getLoadShapeMult() {
 		return loadShapeMult;
 	}
 
 
+	@Override
 	public void setLoadShapeMult(Complex mult) {
 		loadShapeMult = mult;
 	}
 
 
+	@Override
 	public CktElement getMonitoredElement() {
 		return monitoredElement;
 	}
 
 
+	@Override
 	public void setMonitoredElement(CktElement element) {
 		monitoredElement = element;
 	}

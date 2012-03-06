@@ -38,6 +38,7 @@ abstract public class MeterElementImpl extends CktElementImpl implements MeterEl
 		calculatedVoltage   = null;
 	}
 
+	@Override
 	public void allocateSensorArrays() {
 		if (meteredElement != null)
 			calculatedCurrent = Util.resizeArray(calculatedCurrent, meteredElement.getYorder());
@@ -48,6 +49,7 @@ abstract public class MeterElementImpl extends CktElementImpl implements MeterEl
 		phsAllocationFactor = Util.resizeArray(phsAllocationFactor, nPhases);
 	}
 
+	@Override
 	public void calcAllocationFactors() {
 		int iOffset;
 		int i;
@@ -73,86 +75,107 @@ abstract public class MeterElementImpl extends CktElementImpl implements MeterEl
 	/**
 	 * Sample control quantities and set action times in control queue.
 	 */
+	@Override
 	public void takeSample() {
 		DSS.doSimpleMsg("Programming error: Reached base MeterElement class for takeSample."+DSS.CRLF+"Device: "+getName(), 723);
 	}
 
+	@Override
 	public String getElementName() {
 		return elementName;
 	}
 
+	@Override
 	public void setElementName(String name) {
 		elementName = name;
 	}
 
+	@Override
 	public CktElement getMeteredElement() {
 		return meteredElement;
 	}
 
+	@Override
 	public void setMeteredElement(CktElement element) {
 		meteredElement = element;
 	}
 
+	@Override
 	public int getMeteredTerminal() {
 		return meteredTerminal;
 	}
 
+	@Override
 	public void setMeteredTerminal(int terminal) {
 		meteredTerminal = terminal;
 	}
 
+	@Override
 	public boolean isMeteredElementChanged() {
 		return meteredElementChanged;
 	}
 
+	@Override
 	public void setMeteredElementChanged(boolean changed) {
 		meteredElementChanged = changed;
 	}
 
+	@Override
 	public double[] getSensorCurrent() {
 		return sensorCurrent;
 	}
 
+	@Override
 	public void setSensorCurrent(double[] current) {
 		sensorCurrent = current;
 	}
 
+	@Override
 	public double[] getSensorVoltage() {
 		return sensorVoltage;
 	}
 
+	@Override
 	public void setSensorVoltage(double[] voltage) {
 		sensorVoltage = voltage;
 	}
 
+	@Override
 	public double[] getPhsAllocationFactor() {
 		return phsAllocationFactor;
 	}
 
+	@Override
 	public void setPhsAllocationFactor(double[] factor) {
 		phsAllocationFactor = factor;
 	}
 
+	@Override
 	public Complex[] getCalculatedCurrent() {
 		return calculatedCurrent;
 	}
 
+	@Override
 	public void setCalculatedCurrent(Complex[] current) {
 		calculatedCurrent = current;
 	}
 
+	@Override
 	public Complex[] getCalculatedVoltage() {
 		return calculatedVoltage;
 	}
 
+	@Override
 	public void setCalculatedVoltage(Complex[] voltage) {
 		calculatedVoltage = voltage;
 	}
 
+	@Override
 	public double getAvgAllocFactor() {
 		return avgAllocFactor;
 	}
 
+	@Override
 	public void setAvgAllocFactor(double factor) {
 		avgAllocFactor = factor;
 	}

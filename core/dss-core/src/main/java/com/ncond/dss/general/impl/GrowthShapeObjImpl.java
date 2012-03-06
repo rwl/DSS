@@ -1,7 +1,6 @@
 package com.ncond.dss.general.impl;
 
 import java.io.OutputStream;
-import java.io.PrintStream;
 import java.io.PrintWriter;
 
 import com.ncond.dss.common.DSSClass;
@@ -43,6 +42,7 @@ public class GrowthShapeObjImpl extends DSSObjectImpl implements GrowthShapeObj 
 	 * The first year specified in the curve is the base year.  The base value
 	 * is the beginning of the first year.
 	 */
+	@Override
 	public double getMult(int yr) {
 		int index;
 
@@ -64,6 +64,7 @@ public class GrowthShapeObjImpl extends DSSObjectImpl implements GrowthShapeObj 
 	}
 
 	/* FIXME Private procedure in OpenDSS */
+	@Override
 	public void reCalcYearMult() {
 		// fill up the yearMult array with total yearly multiplier from base year
 		double mult = multiplier[0];
@@ -84,6 +85,7 @@ public class GrowthShapeObjImpl extends DSSObjectImpl implements GrowthShapeObj 
 		}
 	}
 
+	@Override
 	public void dumpProperties(OutputStream out, boolean complete) {
 		super.dumpProperties(out, complete);
 
@@ -108,6 +110,7 @@ public class GrowthShapeObjImpl extends DSSObjectImpl implements GrowthShapeObj 
 		pw.close();
 	}
 
+	@Override
 	public String getPropertyValue(int index) {
 		int i;
 		String result;
@@ -150,6 +153,7 @@ public class GrowthShapeObjImpl extends DSSObjectImpl implements GrowthShapeObj 
 		return result;
 	}
 
+	@Override
 	public void initPropertyValues(int arrayOffset) {
 
 		propertyValue[0] = "0";  // number of points to expect
@@ -164,34 +168,42 @@ public class GrowthShapeObjImpl extends DSSObjectImpl implements GrowthShapeObj 
 
 
 	/* FIXME Private members in OpenDSS */
+	@Override
 	public int getNPts() {
 		return npts;
 	}
 
+	@Override
 	public void setNPts(int n) {
 		npts = n;
 	}
 
+	@Override
 	public int[] getYear() {
 		return year;
 	}
 
+	@Override
 	public void setYear(int[] values) {
 		year = values;
 	}
 
+	@Override
 	public double[] getMultiplier() {
 		return multiplier;
 	}
 
+	@Override
 	public void setMultiplier(double[] mult) {
 		multiplier = mult;
 	}
 
+	@Override
 	public int getBaseYear() {
 		return baseYear;
 	}
 
+	@Override
 	public void setBaseYear(int year) {
 		baseYear = year;
 	}

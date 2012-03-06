@@ -26,6 +26,7 @@ public class SwtControlImpl extends ControlClassImpl implements SwtControl {
 		commandList.setAbbrevAllowed(true);
 	}
 
+	@Override
 	protected void defineProperties() {
 
 		numProperties = SwtControl.NumPropsThisClass;
@@ -146,6 +147,12 @@ public class SwtControlImpl extends ControlClassImpl implements SwtControl {
 		}
 
 		return result;
+	}
+
+	@Override
+	public int init(int handle) {
+		DSS.doSimpleMsg("Need to implement SwtControl.init", -1);
+		return 0;
 	}
 
 }

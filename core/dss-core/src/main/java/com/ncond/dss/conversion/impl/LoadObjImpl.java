@@ -1,7 +1,6 @@
 package com.ncond.dss.conversion.impl;
 
 import java.io.OutputStream;
-import java.io.PrintStream;
 import java.io.PrintWriter;
 
 
@@ -214,6 +213,7 @@ public class LoadObjImpl extends PCElementImpl implements LoadObj {
 	}
 
 	// FIXME Private method in OpenDSS
+	@Override
 	public void setZIPVSize(int n) {
 		nZIPV = n;
 		ZIPV = Util.resizeArray(ZIPV, nZIPV);
@@ -224,6 +224,7 @@ public class LoadObjImpl extends PCElementImpl implements LoadObj {
 	 * 1 = Gaussian around mean and std dev
 	 * 2 = uniform
 	 */
+	@Override
 	public void randomize(int opt) {
 		switch (opt) {
 		case 0:
@@ -303,12 +304,14 @@ public class LoadObjImpl extends PCElementImpl implements LoadObj {
 		return lastGrowthFactor;  // for now
 	}
 
+	@Override
 	public void setKW_KVAr(double PkW, double QkVAr) {
 		kWBase = PkW;
 		kVArBase = QkVAr;
 		loadSpecType = 1;
 	}
 
+	@Override
 	public void setNominalLoad() {
 		double factor;
 
@@ -459,6 +462,7 @@ public class LoadObjImpl extends PCElementImpl implements LoadObj {
 		}
 	}
 
+	@Override
 	public void recalcElementData() {
 		VBase95  = VMinPU * VBase;
 		VBase105 = VMaxPU * VBase;
@@ -596,6 +600,7 @@ public class LoadObjImpl extends PCElementImpl implements LoadObj {
 	 * If doing an analysis that requires the load to be modeled as an impedance
 	 * then put all in.
 	 */
+	@Override
 	public void calcYPrim() {
 
 		// build only YPrim shunt for a load then copy to YPrim
@@ -651,6 +656,7 @@ public class LoadObjImpl extends PCElementImpl implements LoadObj {
 		}
 	}
 
+	@Override
 	public void updateVoltageBases() {
 
 		LoadObj al = LoadImpl.activeLoadObj;
@@ -1092,6 +1098,7 @@ public class LoadObjImpl extends PCElementImpl implements LoadObj {
 	/**
 	 * Always return total terminal currents in the curr array
 	 */
+	@Override
 	protected void getTerminalCurrents(Complex[] Curr) {
 		SolutionObj sol = DSS.activeCircuit.getSolution();
 
@@ -1104,6 +1111,7 @@ public class LoadObjImpl extends PCElementImpl implements LoadObj {
 	/**
 	 * Get the injection currents and add them directly into the currents array.
 	 */
+	@Override
 	public int injCurrents() {
 		SolutionObj sol = DSS.activeCircuit.getSolution();
 
@@ -1122,6 +1130,7 @@ public class LoadObjImpl extends PCElementImpl implements LoadObj {
 	 * Gets the injection currents for the last solution performed.
 	 * Do not call setNominalLoad, as that may change the load values.
 	 */
+	@Override
 	public void getInjCurrents(Complex[] curr) {
 		try {
 			if (isEnabled()) {
@@ -1144,6 +1153,7 @@ public class LoadObjImpl extends PCElementImpl implements LoadObj {
 	 * Assumes that low voltage is due to overloaded line.
 	 * If voltage is below emergency minimum, it is counted as unserved.
 	 */
+	@Override
 	public boolean getUnserved() {
 		double Vpu, VMag;
 		double normMinCriteria, emergMinCriteria;
@@ -1195,6 +1205,7 @@ public class LoadObjImpl extends PCElementImpl implements LoadObj {
 	 * If voltage is below normal minimum, it is counted as unserved in proportion
 	 * to the difference between the normal and emergency voltage limits.
 	 */
+	@Override
 	public boolean getExceedsNormal() {
 		double Vpu, VMag;
 		double normMinCriteria, emergMinCriteria;
@@ -1240,6 +1251,7 @@ public class LoadObjImpl extends PCElementImpl implements LoadObj {
 		return false;
 	}
 
+	@Override
 	public void dumpProperties(OutputStream out, boolean complete) {
 		int j;
 
@@ -1280,6 +1292,7 @@ public class LoadObjImpl extends PCElementImpl implements LoadObj {
 	/**
 	 * Allocate load from connected kVA or kWh billing.
 	 */
+	@Override
 	public void setKVAAllocationFactor(double value) {
 		setKVAAllocationFactor(value);
 		allocationFactor = value;
@@ -1293,6 +1306,7 @@ public class LoadObjImpl extends PCElementImpl implements LoadObj {
 	 *
 	 * This procedure is used by the EnergyMeter allocateLoad function to adjust load allocation factors.
 	 */
+	@Override
 	public void setAllocationFactor(double value) {
 		allocationFactor = value;
 		switch (loadSpecType) {
@@ -1307,6 +1321,7 @@ public class LoadObjImpl extends PCElementImpl implements LoadObj {
 		hasBeenAllocated = true;
 	}
 
+	@Override
 	public void setCFactor(double value) {
 		CFactor = value;
 		allocationFactor = value;
@@ -1315,6 +1330,7 @@ public class LoadObjImpl extends PCElementImpl implements LoadObj {
 		hasBeenAllocated = true;
 	}
 
+	@Override
 	public void setConnectedKVA(double value) {
 		connectedkVA = value;
 		loadSpecType = 3;
@@ -1322,6 +1338,7 @@ public class LoadObjImpl extends PCElementImpl implements LoadObj {
 		computeAllocatedLoad();
 	}
 
+	@Override
 	public void setKWh(double value) {
 		kWh = value;
 		loadSpecType = 4;
@@ -1329,6 +1346,7 @@ public class LoadObjImpl extends PCElementImpl implements LoadObj {
 		computeAllocatedLoad();
 	}
 
+	@Override
 	public void setKWhDays(double value) {
 		kWhDays = value;
 		loadSpecType = 4;
@@ -1361,6 +1379,7 @@ public class LoadObjImpl extends PCElementImpl implements LoadObj {
 	/**
 	 * Get the present terminal currents and store for harmonics base reference.
 	 */
+	@Override
 	public void initHarmonics() {
 		Complex[] currents;
 
@@ -1383,6 +1402,7 @@ public class LoadObjImpl extends PCElementImpl implements LoadObj {
 		currents = null;
 	}
 
+	@Override
 	public void initPropertyValues(int arrayOffset) {
 
 		setPropertyValue(0, "3");        // "phases";
@@ -1425,6 +1445,7 @@ public class LoadObjImpl extends PCElementImpl implements LoadObj {
 	/**
 	 * Make a positive sequence model.
 	 */
+	@Override
 	public void makePosSequence() {
 		double V;
 
@@ -1452,6 +1473,7 @@ public class LoadObjImpl extends PCElementImpl implements LoadObj {
 		super.makePosSequence();
 	}
 
+	@Override
 	public String getPropertyValue(int index) {
 		switch (index) {
 		case 1:
@@ -1486,516 +1508,644 @@ public class LoadObjImpl extends PCElementImpl implements LoadObj {
 		}
 	}
 
+	@Override
 	public double getKVAAllocationFactor() {
 		return kVAAllocationFactor;
 	}
 
+	@Override
 	public double getConnectedKVA() {
 		return connectedkVA;
 	}
 
+	@Override
 	public double getCFactor() {
 		return CFactor;
 	}
 
+	@Override
 	public double getKWh() {
 		return kWh;
 	}
 
+	@Override
 	public double getKWhDays() {
 		return kWhDays;
 	}
 
+	@Override
 	public double getAllocationFactor() {
 		return allocationFactor;
 	}
 
+	@Override
 	public int getConnection() {
 		return connection;
 	}
 
+	@Override
 	public void setConnection(int conn) {
 		connection = conn;
 	}
 
+	@Override
 	public String getDailyShape() {
 		return dailyShape;
 	}
 
+	@Override
 	public void setDailyShape(String shape) {
 		dailyShape = shape;
 	}
 
+	@Override
 	public LoadShapeObj getDailyShapeObj() {
 		return dailyShapeObj;
 	}
 
+	@Override
 	public void setDailyShapeObj(LoadShapeObj shapeObj) {
 		dailyShapeObj = shapeObj;
 	}
 
+	@Override
 	public String getDutyShape() {
 		return dutyShape;
 	}
 
+	@Override
 	public void setDutyShape(String shape) {
 		dutyShape = shape;
 	}
 
+	@Override
 	public LoadShapeObj getDutyShapeObj() {
 		return dutyShapeObj;
 	}
 
+	@Override
 	public void setDutyShapeObj(LoadShapeObj shapeObj) {
 		dutyShapeObj = shapeObj;
 	}
 
+	@Override
 	public double getEEN_Factor() {
 		return EEN_Factor;
 	}
 
+	@Override
 	public void setEEN_Factor(double factor) {
 		EEN_Factor = factor;
 	}
 
+	@Override
 	public String getGrowthShape() {
 		return growthShape;
 	}
 
+	@Override
 	public void setGrowthShape(String shape) {
 		growthShape = shape;
 	}
 
+	@Override
 	public GrowthShapeObj getGrowthShapeObj() {
 		return growthShapeObj;
 	}
 
+	@Override
 	public void setGrowthShapeObj(GrowthShapeObj shapeObj) {
 		growthShapeObj = shapeObj;
 	}
 
+	@Override
 	public Boolean getHasBeenAllocated() {
 		return hasBeenAllocated;
 	}
 
+	@Override
 	public void setHasBeenAllocated(Boolean allocated) {
 		hasBeenAllocated = allocated;
 	}
 
+	@Override
 	public double getKWBase() {
 		return kWBase;
 	}
 
+	@Override
 	public void setKWBase(double base) {
 		this.kWBase = base;
 	}
 
+	@Override
 	public double getKVABase() {
 		return kVABase;
 	}
 
+	@Override
 	public void setKVABase(double base) {
 		this.kVABase = base;
 	}
 
+	@Override
 	public double getKVArBase() {
 		return kVArBase;
 	}
 
+	@Override
 	public void setKVArBase(double base) {
 		this.kVArBase = base;
 	}
 
+	@Override
 	public double getKVLoadBase() {
 		return kVLoadBase;
 	}
 
+	@Override
 	public void setKVLoadBase(double base) {
 		this.kVLoadBase = base;
 	}
 
+	@Override
 	public int getLoadClass() {
 		return loadClass;
 	}
 
+	@Override
 	public void setLoadClass(int cls) {
 		loadClass = cls;
 	}
 
+	@Override
 	public int getNumCustomers() {
 		return numCustomers;
 	}
 
+	@Override
 	public void setNumCustomers(int num) {
 		numCustomers = num;
 	}
 
+	@Override
 	public int getLoadSpecType() {
 		return loadSpecType;
 	}
 
+	@Override
 	public void setLoadSpecType(int specType) {
 		loadSpecType = specType;
 	}
 
+	@Override
 	public double getPFNominal() {
 		return PFNominal;
 	}
 
+	@Override
 	public void setPFNominal(double value) {
 		PFNominal = value;
 	}
 
+	@Override
 	public double getRNeut() {
 		return RNeut;
 	}
 
+	@Override
 	public void setRNeut(double rneut) {
 		RNeut = rneut;
 	}
 
+	@Override
 	public double getUE_Factor() {
 		return UE_Factor;
 	}
 
+	@Override
 	public void setUE_Factor(double factor) {
 		UE_Factor = factor;
 	}
 
+	@Override
 	public double getXNeut() {
 		return XNeut;
 	}
 
+	@Override
 	public void setXNeut(double xneut) {
 		XNeut = xneut;
 	}
 
+	@Override
 	public String getYearlyShape() {
 		return yearlyShape;
 	}
 
+	@Override
 	public void setYearlyShape(String shape) {
 		yearlyShape = shape;
 	}
 
+	@Override
 	public LoadShapeObj getYearlyShapeObj() {
 		return yearlyShapeObj;
 	}
 
+	@Override
 	public void setYearlyShapeObj(LoadShapeObj shapeObj) {
 		yearlyShapeObj = shapeObj;
 	}
 
+	@Override
 	public String getCVRShape() {
 		return CVRshape;
 	}
 
+	@Override
 	public void setCVRShape(String shape) {
 		CVRshape = shape;
 	}
 
+	@Override
 	public LoadShapeObj getCVRShapeObj() {
 		return CVRShapeObj;
 	}
 
+	@Override
 	public void setCVRShapeObj(LoadShapeObj shapeObj) {
 		CVRShapeObj = shapeObj;
 	}
 
+	@Override
 	public int getLoadModel() {
 		return loadModel;
 	}
 
+	@Override
 	public void setLoadModel(int model) {
 		loadModel = model;
 	}
 
+	@Override
 	public double getPUMean() {
 		return puMean;
 	}
 
+	@Override
 	public double getPUStdDev() {
 		return puStdDev;
 	}
 
+	@Override
 	public double getCVRWattFactor() {
 		return CVRwattFactor;
 	}
 
+	@Override
 	public double getCVRVArFactor() {
 		return CVRvarFactor;
 	}
 
+	@Override
 	public double getVMaxPU() {
 		return VMaxPU;
 	}
 
+	@Override
 	public double getVMinEmerg() {
 		return VMinEmerg;
 	}
 
+	@Override
 	public double getVMinNormal() {
 		return VMinNormal;
 	}
 
+	@Override
 	public double getVMinPU() {
 		return VMinPU;
 	}
 
+	@Override
 	public boolean isExemptFromLDCurve() {
 		return exemptFromLDCurve;
 	}
 
+	@Override
 	public boolean isFixed() {
 		return fixed;
 	}
 
 	// FIXME Private members in OpenDSS.
 
+	@Override
 	public boolean isPFChanged() {
 		return PFChanged;
 	}
 
+	@Override
 	public void setPFChanged(boolean changed) {
 		PFChanged = changed;
 	}
 
+	@Override
 	public double getAvgKW() {
 		return avgKW;
 	}
 
+	@Override
 	public void setAvgKW(double avg) {
 		avgKW = avg;
 	}
 
+	@Override
 	public double[] getHarmAng() {
 		return harmAng;
 	}
 
+	@Override
 	public void setHarmAng(double[] ang) {
 		harmAng = ang;
 	}
 
+	@Override
 	public double[] getHarmMag() {
 		return harmMag;
 	}
 
+	@Override
 	public void setHarmMag(double[] mag) {
 		harmMag = mag;
 	}
 
+	@Override
 	public double getLastGrowthFactor() {
 		return lastGrowthFactor;
 	}
 
+	@Override
 	public void setLastGrowthFactor(double factor) {
 		lastGrowthFactor = factor;
 	}
 
+	@Override
 	public int getLastYear() {
 		return lastYear;
 	}
 
+	@Override
 	public void setLastYear(int year) {
 		lastYear = year;
 	}
 
+	@Override
 	public double getLoadFundamental() {
 		return loadFundamental;
 	}
 
+	@Override
 	public void setLoadFundamental(double fundamental) {
 		loadFundamental = fundamental;
 	}
 
+	@Override
 	public int getLoadSolutionCount() {
 		return loadSolutionCount;
 	}
 
+	@Override
 	public void setLoadSolutionCount(int count) {
 		loadSolutionCount = count;
 	}
 
+	@Override
 	public int getOpenLoadSolutionCount() {
 		return openLoadSolutionCount;
 	}
 
+	@Override
 	public void setOpenLoadSolutionCount(int count) {
 		openLoadSolutionCount = count;
 	}
 
+	@Override
 	public double getRandomMult() {
 		return randomMult;
 	}
 
+	@Override
 	public void setRandomMult(double mult) {
 		randomMult = mult;
 	}
 
+	@Override
 	public Complex getShapeFactor() {
 		return shapeFactor;
 	}
 
+	@Override
 	public void setShapeFactor(Complex factor) {
 		shapeFactor = factor;
 	}
 
+	@Override
 	public double getVArBase() {
 		return varBase;
 	}
 
+	@Override
 	public void setVArBase(double base) {
 		varBase = base;
 	}
 
+	@Override
 	public double getVArNominal() {
 		return varNominal;
 	}
 
+	@Override
 	public void setVArNominal(double value) {
 		varNominal = value;
 	}
 
+	@Override
 	public double getVBase() {
 		return VBase;
 	}
 
+	@Override
 	public void setVBase(double vBase) {
 		VBase = vBase;
 	}
 
+	@Override
 	public double getVBase105() {
 		return VBase105;
 	}
 
+	@Override
 	public void setVBase105(double vBase105) {
 		VBase105 = vBase105;
 	}
 
+	@Override
 	public double getVBase95() {
 		return VBase95;
 	}
 
+	@Override
 	public void setVBase95(double vBase95) {
 		VBase95 = vBase95;
 	}
 
+	@Override
 	public double getWNominal() {
 		return WNominal;
 	}
 
+	@Override
 	public void setWNominal(double value) {
 		WNominal = value;
 	}
 
+	@Override
 	public Complex getYeq() {
 		return Yeq;
 	}
 
+	@Override
 	public void setYeq(Complex yeq) {
 		Yeq = yeq;
 	}
 
+	@Override
 	public Complex getYeq105() {
 		return Yeq105;
 	}
 
+	@Override
 	public void setYeq105(Complex yeq105) {
 		Yeq105 = yeq105;
 	}
 
+	@Override
 	public Complex getYeq95() {
 		return Yeq95;
 	}
 
+	@Override
 	public void setYeq95(Complex yeq95) {
 		Yeq95 = yeq95;
 	}
 
+	@Override
 	public Complex getYneut() {
 		return Yneut;
 	}
 
+	@Override
 	public void setYneut(Complex value) {
 		Yneut = value;
 	}
 
+	@Override
 	public CMatrix getYPrimOpenCond() {
 		return YPrimOpenCond;
 	}
 
+	@Override
 	public void setYPrimOpenCond(CMatrix value) {
 		YPrimOpenCond = value;
 	}
 
+	@Override
 	public double getYQFixed() {
 		return YQFixed;
 	}
 
+	@Override
 	public void setYQFixed(double value) {
 		YQFixed = value;
 	}
 
+	@Override
 	public void setPUMean(double value) {
 		this.puMean = value;
 	}
 
+	@Override
 	public void setPUStdDev(double value) {
 		this.puStdDev = value;
 	}
 
+	@Override
 	public void setCVRWattFactor(double factor) {
 		CVRwattFactor = factor;
 	}
 
+	@Override
 	public void setCVRVArFactor(double factor) {
 		CVRvarFactor = factor;
 	}
 
+	@Override
 	public void setVMaxPU(double vmaxpu) {
 		VMaxPU = vmaxpu;
 	}
 
+	@Override
 	public void setVMinEmerg(double vminEmerg) {
 		VMinEmerg = vminEmerg;
 	}
 
+	@Override
 	public void setVMinNormal(double vminNormal) {
 		VMinNormal = vminNormal;
 	}
 
+	@Override
 	public void setVMinPU(double vminpu) {
 		VMinPU = vminpu;
 	}
 
+	@Override
 	public void setExemptFromLDCurve(boolean exempt) {
 		exemptFromLDCurve = exempt;
 	}
 
+	@Override
 	public void setFixed(boolean value) {
 		fixed = value;
 	}
 
+	@Override
 	public boolean shapeIsActual() {
 		return shapeIsActual;
 	}
 
+	@Override
 	public void setShapeIsActual(boolean isActual) {
 		shapeIsActual = isActual;
 	}
 
+	@Override
 	public double[] getZIPV() {
 		return ZIPV;
 	}
 
+	@Override
 	public void setZIPV(double[] zipv) {
 		ZIPV = zipv;
 	}
 
+	@Override
 	public void setNZIPV(int nzipv) {
 		nZIPV = nzipv;
 	}
 
+	@Override
 	public int getNZIPV() {
 		return nZIPV;
 	}

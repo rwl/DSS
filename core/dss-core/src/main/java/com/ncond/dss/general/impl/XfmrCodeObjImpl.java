@@ -1,7 +1,6 @@
 package com.ncond.dss.general.impl;
 
 import java.io.OutputStream;
-import java.io.PrintStream;
 import java.io.PrintWriter;
 
 import com.ncond.dss.common.DSSClass;
@@ -72,6 +71,7 @@ public class XfmrCodeObjImpl extends DSSObjectImpl implements XfmrCodeObj {
 		initPropertyValues(0);
 	}
 
+	@Override
 	public void setNumWindings(int n) {
 		int oldWdgSize;
 		int newWdgSize;
@@ -95,6 +95,7 @@ public class XfmrCodeObjImpl extends DSSObjectImpl implements XfmrCodeObj {
 		}
 	}
 
+	@Override
 	public void pullFromTransformer(TransformerObj obj) {
 		int i;
 
@@ -376,166 +377,207 @@ public class XfmrCodeObjImpl extends DSSObjectImpl implements XfmrCodeObj {
 
 	// FIXME Private members in OpenDSS
 
+	@Override
 	public int getNPhases() {
 		return nPhases;
 	}
 
+	@Override
 	public void setNPhases(int num) {
 		nPhases = num;
 	}
 
+	@Override
 	public int getActiveWinding() {
 		return activeWinding;
 	}
 
+	@Override
 	public void setActiveWinding(int winding) {
 		activeWinding = winding;
 	}
 
+	@Override
 	public int getMaxWindings() {
 		return maxWindings;
 	}
 
+	@Override
 	public void setMaxWindings(int max) {
 		maxWindings = max;
 	}
 
+	@Override
 	public double getXHL() {
 		return XHL;
 	}
 
+	@Override
 	public void setXHL(double value) {
 		XHL = value;
 	}
 
+	@Override
 	public double getXHT() {
 		return XHT;
 	}
 
+	@Override
 	public void setXHT(double value) {
 		XHT = value;
 	}
 
+	@Override
 	public double getXLT() {
 		return XLT;
 	}
 
+	@Override
 	public void setXLT(double value) {
 		XLT = value;
 	}
 
+	@Override
 	public double[] getXSC() {
 		return XSC;
 	}
 
+	@Override
 	public void setXSC(double[] value) {
 		XSC = value;
 	}
 
+	@Override
 	public double getVABase() {
 		return VABase;
 	}
 
+	@Override
 	public void setVABase(double base) {
 		VABase = base;
 	}
 
+	@Override
 	public double getNormMaxHKVA() {
 		return normMaxHKVA;
 	}
 
+	@Override
 	public void setNormMaxHKVA(double max) {
 		normMaxHKVA = max;
 	}
 
+	@Override
 	public double getEmergMaxHKVA() {
 		return emergMaxHKVA;
 	}
 
+	@Override
 	public void setEmergMaxHKVA(double max) {
 		emergMaxHKVA = max;
 	}
 
+	@Override
 	public double getThermalTimeConst() {
 		return thermalTimeConst;
 	}
 
+	@Override
 	public void setThermalTimeConst(double timeConst) {
 		thermalTimeConst = timeConst;
 	}
 
+	@Override
 	public double getNThermal() {
 		return nThermal;
 	}
 
+	@Override
 	public void setNThermal(double n) {
 		this.nThermal = n;
 	}
 
+	@Override
 	public double getMThermal() {
 		return mThermal;
 	}
 
+	@Override
 	public void setMThermal(double m) {
 		this.mThermal = m;
 	}
 
+	@Override
 	public double getLRise() {
 		return LRise;
 	}
 
+	@Override
 	public void setLRise(double rise) {
 		LRise = rise;
 	}
 
+	@Override
 	public double getHSRise() {
 		return HSRise;
 	}
 
+	@Override
 	public void setHSRise(double rise) {
 		HSRise = rise;
 	}
 
+	@Override
 	public double getPctLoadLoss() {
 		return pctLoadLoss;
 	}
 
+	@Override
 	public void setPctLoadLoss(double pct) {
 		this.pctLoadLoss = pct;
 	}
 
+	@Override
 	public double getPctNoLoadLoss() {
 		return pctNoLoadLoss;
 	}
 
+	@Override
 	public void setPctNoLoadLoss(double pct) {
 		this.pctNoLoadLoss = pct;
 	}
 
+	@Override
 	public double getPpmFloatFactor() {
 		return ppmFloatFactor;
 	}
 
+	@Override
 	public void setPpmFloatFactor(double factor) {
 		this.ppmFloatFactor = factor;
 	}
 
+	@Override
 	public double getPctImag() {
 		return pctImag;
 	}
 
+	@Override
 	public void setPctImag(double pct) {
 		this.pctImag = pct;
 	}
 
+	@Override
 	public Winding[] getWinding() {
 		return winding;
 	}
 
+	@Override
 	public void setWinding(Winding[] values) {
 		winding = values;
 	}
 
+	@Override
 	public int getNumWindings() {
 		return numWindings;
 	}

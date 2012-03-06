@@ -32,6 +32,7 @@ public class RelayImpl extends ControlClassImpl implements Relay {
 		TCC_CurveClass = DSSClassDefs.getDSSClass("TCC_Curve");
 	}
 
+	@Override
 	protected void defineProperties() {
 
 		numProperties = Relay.NumPropsThisClass;
@@ -121,6 +122,7 @@ public class RelayImpl extends ControlClassImpl implements Relay {
 		return addObjectToList(DSS.activeDSSObject);
 	}
 
+	@Override
 	public TCC_CurveObj getTccCurve(String curveName) {
 
 		TCC_CurveObj result = (TCC_CurveObj) TCC_CurveClass.find(curveName);
@@ -366,6 +368,12 @@ public class RelayImpl extends ControlClassImpl implements Relay {
 		}
 
 		return result;
+	}
+
+	@Override
+	public int init(int handle) {
+		DSS.doSimpleMsg("Need to implement Relay.init", -1);
+		return 0;
 	}
 
 }

@@ -1,17 +1,19 @@
 package com.ncond.dss.general;
 
 import java.io.OutputStream;
-import java.io.PrintStream;
 
 public interface GrowthShapeObj extends DSSObject {
 
 	/* FIXME Private method in OpenDSS */
 	void reCalcYearMult();
 
+	@Override
 	String getPropertyValue(int index);
 
+	@Override
 	void initPropertyValues(int arrayOffset);
 
+	@Override
 	void dumpProperties(OutputStream out, boolean complete);
 
 	/**

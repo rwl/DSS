@@ -1,7 +1,6 @@
 package com.ncond.dss.general.impl;
 
 import java.io.OutputStream;
-import java.io.PrintStream;
 import java.io.PrintWriter;
 
 import com.ncond.dss.common.DSSClass;
@@ -43,6 +42,7 @@ public class XYCurveObjImpl extends DSSObjectImpl implements XYCurveObj {
 	 * If Xvalue is outside the range of defined X values,
 	 * the curve is extrapolated from the ends.
 	 */
+	@Override
 	public double getYValue(double X) {
 		double result = 0.0;  // default return value if no points in curve
 
@@ -88,6 +88,7 @@ public class XYCurveObjImpl extends DSSObjectImpl implements XYCurveObj {
 	/**
 	 * Get Y value by index.
 	 */
+	@Override
 	public double getYValue(int i) {
 		if (i < numPoints && i >= 0) {
 			lastValueAccessed = i;
@@ -100,6 +101,7 @@ public class XYCurveObjImpl extends DSSObjectImpl implements XYCurveObj {
 	/**
 	 * Get X value corresponding to point index.
 	 */
+	@Override
 	public double getXValue(int i) {
 		if (i < numPoints && i >= 0) {
 			lastValueAccessed = i;
@@ -211,6 +213,7 @@ public class XYCurveObjImpl extends DSSObjectImpl implements XYCurveObj {
 	 * If Xvalue is outside the range of defined X values,
 	 * the curve is extrapolated from the Ends.
 	 */
+	@Override
 	public double getXValue(double Y) {
 		double result = 0.0;  // default return value if no points in curve
 
@@ -275,10 +278,12 @@ public class XYCurveObjImpl extends DSSObjectImpl implements XYCurveObj {
 		}
 	}
 
+	@Override
 	public int getNumPoints() {
 		return numPoints;
 	}
 
+	@Override
 	public void setNumPoints(int num) {
 		setPropertyValue(0, String.valueOf(num));  // update property list variable
 
@@ -292,50 +297,62 @@ public class XYCurveObjImpl extends DSSObjectImpl implements XYCurveObj {
 
 	// FIXME Private members in OpenDSS
 
+	@Override
 	public int getLastValueAccessed() {
 		return lastValueAccessed;
 	}
 
+	@Override
 	public void setLastValueAccessed(int lastValue) {
 		lastValueAccessed = lastValue;
 	}
 
+	@Override
 	public int getArrayPropertyIndex() {
 		return arrayPropertyIndex;
 	}
 
+	@Override
 	public void setArrayPropertyIndex(int index) {
 		arrayPropertyIndex = index;
 	}
 
+	@Override
 	public double getX() {
 		return X;
 	}
 
+	@Override
 	public void setX(double x) {
 		X = x;
 	}
 
+	@Override
 	public double getY() {
 		return Y;
 	}
 
+	@Override
 	public void setY(double y) {
 		Y = y;
 	}
 
+	@Override
 	public double[] getXValues() {
 		return XValues;
 	}
 
+	@Override
 	public void setXValues(double[] xvalues) {
 		XValues = xvalues;
 	}
 
+	@Override
 	public double[] getYValues() {
 		return YValues;
 	}
 
+	@Override
 	public void setYValues(double[] yvalues) {
 		YValues = yvalues;
 	}

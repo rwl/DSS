@@ -9,7 +9,7 @@ import com.ncond.dss.general.DSSObject;
 import com.ncond.dss.parser.impl.Parser;
 import com.ncond.dss.shared.impl.LineUnits;
 
-public class ConductorDataImpl extends DSSClassImpl implements ConductorData {
+abstract public class ConductorDataImpl extends DSSClassImpl implements ConductorData {
 
 	public static ConductorDataObj activeConductorDataObj;
 
@@ -23,11 +23,13 @@ public class ConductorDataImpl extends DSSClassImpl implements ConductorData {
 		classType = DSSClassDefs.DSS_OBJECT;
 	}
 
+	@Override
 	protected void countProperties() {
 		numProperties = numProperties + getNumConductorClassProps();
 		super.countProperties();
 	}
 
+	@Override
 	protected void defineProperties() {
 		propertyName[activeProperty + 1] = "Rdc";
 		propertyName[activeProperty + 2] = "Rac";
@@ -55,6 +57,7 @@ public class ConductorDataImpl extends DSSClassImpl implements ConductorData {
 		super.defineProperties();
 	}
 
+	@Override
 	protected int classEdit(DSSObject activeObj, int paramPointer) {
 		Parser parser = Parser.getInstance();
 
@@ -169,10 +172,12 @@ public class ConductorDataImpl extends DSSClassImpl implements ConductorData {
 		//super.classMakeLike(OtherObj);
 	}
 
+	@Override
 	public void setNumConductorClassProps(int num) {
 		numConductorClassProps = num;
 	}
 
+	@Override
 	public int getNumConductorClassProps() {
 		return numConductorClassProps;
 	}

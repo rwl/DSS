@@ -26,6 +26,7 @@ public class GenDispatcherImpl extends ControlClassImpl implements GenDispatcher
 		commandList.setAbbrevAllowed(true);
 	}
 
+	@Override
 	protected void defineProperties() {
 
 		numProperties = GenDispatcher.NumPropsThisClass;
@@ -146,6 +147,12 @@ public class GenDispatcherImpl extends ControlClassImpl implements GenDispatcher
 		agd.recalcElementData();
 
 		return result;
+	}
+
+	@Override
+	public int init(int handle) {
+		DSS.doSimpleMsg("Need to implement GenDispatcher.init", -1);
+		return 0;
 	}
 
 	@Override

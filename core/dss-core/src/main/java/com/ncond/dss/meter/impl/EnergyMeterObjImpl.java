@@ -5,7 +5,6 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.io.PrintStream;
 import java.io.PrintWriter;
 import java.util.List;
 
@@ -279,6 +278,7 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 		return DSS.energyMeterClass.getDI_Dir() + "/" + getName() + "_PhaseVoltageReport.csv";
 	}
 
+	@Override
 	public void resetRegisters() {
 		int i;
 
@@ -309,6 +309,7 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 		// YPrim is all zeros; just leave as nil so it is ignored
 	}
 
+	@Override
 	public void saveRegisters() {
 		File f;
 		FileWriter fw;
@@ -780,6 +781,7 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 	 * This gets fired off whenever the buslists are rebuilt.
 	 * Must be updated whenever there is a change in the circuit.
 	 */
+	@Override
 	public void makeMeterZoneLists() {
 		Circuit ckt = DSS.activeCircuit;
 
@@ -980,6 +982,7 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 			curr[i] = Complex.ZERO;
 	}
 
+	@Override
 	public void zoneDump() {
 		File f;
 		FileWriter fw;
@@ -1110,6 +1113,7 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 		}
 	}
 
+	@Override
 	public void allocateLoad() {
 		int connectedPhase;
 		PDElement cktElem;
@@ -1240,6 +1244,7 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 	/**
 	 * Reduce zone by eliminating buses and merging lines.
 	 */
+	@Override
 	public void reduceZone() {
 		// make sure zone list is built
 		if (branchList == null) makeMeterZoneLists();
@@ -1263,6 +1268,7 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 	 * Start at the ends of the zone and work toward the start
 	 * interpolating between known coordinates.
 	 */
+	@Override
 	public void interpolateCoordinates() {
 		int i, busRef, firstCoordRef, secondCoordRef, lineCount;
 		CktTreeNode startNode, presentNode = null;
@@ -1418,6 +1424,7 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 		return result;
 	}
 
+	@Override
 	public void saveZone(String dirname) {
 		CktElement cktElem, shuntElement;
 		LoadObj loadElement;
@@ -1592,6 +1599,7 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 	}
 
 	// FIXME Protected method in OpenDSS
+	@Override
 	public void closeDemandIntervalFile() {
 		try {
 			if (thisMeterDI_FileIsOpen) {
@@ -1614,6 +1622,7 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 	}
 
 	// FIXME Protected method in OpenDSS
+	@Override
 	public void openDemandIntervalFile() {
 		int i, j;
 		double VBase;
@@ -1707,6 +1716,7 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 	 * Only called if "SaveDemandInterval".
 	 */
 	// FIXME Protected method in OpenDSS
+	@Override
 	public void appendDemandIntervalFile() {
 		String fileName;
 
@@ -1777,6 +1787,7 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 	}
 
 	// FIXME Private method in OpenDSS
+	@Override
 	public void removeFeederObj() {
 		if (feederObj != null) {
 			feederObj.setEnabled(false);
@@ -1787,6 +1798,7 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 	/**
 	 * HasFeeder has to be true before FeederObj will be re-enabled.
 	 */
+	@Override
 	public void enableFeeder() {
 		if (hasFeeder) {
 			if (feederObj == null) {
@@ -1802,10 +1814,12 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 		return DSS.energyMeterClass.getDI_Dir() + "/" + getName() + ".csv";
 	}
 
+	@Override
 	public double getRegister(int idx) {
 		return registers[idx];
 	}
 
+	@Override
 	public double getTotalsMask(int idx) {
 		return totalsMask[idx];
 	}
@@ -1815,42 +1829,52 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 		throw new UnsupportedOperationException();
 	}
 
+	@Override
 	public String[] getRegisterNames() {
 		return registerNames;
 	}
 
+	@Override
 	public void setRegisterNames(String[] names) {
 		registerNames = names;
 	}
 
+	@Override
 	public CktTree getBranchList() {
 		return branchList;
 	}
 
+	@Override
 	public void setBranchList(CktTree list) {
 		branchList = list;
 	}
 
+	@Override
 	public double[] getRegisters() {
 		return registers;
 	}
 
+	@Override
 	public void setRegisters(double[] values) {
 		registers = values;
 	}
 
+	@Override
 	public double[] getDerivatives() {
 		return derivatives;
 	}
 
+	@Override
 	public void setDerivatives(double[] deriv) {
 		derivatives = deriv;
 	}
 
+	@Override
 	public double[] getTotalsMask() {
 		return totalsMask;
 	}
 
+	@Override
 	public void setTotalsMask(double[] totals) {
 		totalsMask = totals;
 	}
@@ -1858,274 +1882,342 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 
 	// FIXME Private members in OpenDSS
 
+	@Override
 	public boolean isFirstSampleAfterReset() {
 		return firstSampleAfterReset;
 	}
 
+	@Override
 	public void setFirstSampleAfterReset(boolean firstSample) {
 		firstSampleAfterReset = firstSample;
 	}
 
+	@Override
 	public boolean isExcessFlag() {
 		return excessFlag;
 	}
 
+	@Override
 	public void setExcessFlag(boolean excess) {
 		excessFlag = excess;
 	}
 
+	@Override
 	public boolean zoneIsRadial() {
 		return zoneIsRadial;
 	}
 
+	@Override
 	public void setZoneIsRadial(boolean isRadial) {
 		zoneIsRadial = isRadial;
 	}
 
+	@Override
 	public boolean isVoltageUEOnly() {
 		return voltageUEOnly;
 	}
 
+	@Override
 	public void setVoltageUEOnly(boolean value) {
 		voltageUEOnly = value;
 	}
 
+	@Override
 	public boolean isLocalOnly() {
 		return localOnly;
 	}
 
+	@Override
 	public void setLocalOnly(boolean local) {
 		localOnly = local;
 	}
 
+	@Override
 	public boolean hasFeeder() {
 		return hasFeeder;
 	}
 
+	@Override
 	public void setHasFeeder(boolean value) {
 		hasFeeder = value;
 	}
 
+	@Override
 	public boolean isLosses() {
 		return losses;
 	}
 
+	@Override
 	public void setLosses(boolean value) {
 		losses = value;
 	}
 
+	@Override
 	public boolean isLineLosses() {
 		return lineLosses;
 	}
 
+	@Override
 	public void setLineLosses(boolean losses) {
 		lineLosses = losses;
 	}
 
+	@Override
 	public boolean isXfmrLosses() {
 		return xfmrLosses;
 	}
 
+	@Override
 	public void setXfmrLosses(boolean losses) {
 		xfmrLosses = losses;
 	}
 
+	@Override
 	public boolean isSeqLosses() {
 		return seqLosses;
 	}
 
+	@Override
 	public void setSeqLosses(boolean losses) {
 		seqLosses = losses;
 	}
 
+	@Override
 	public boolean is3PhaseLosses() {
 		return threePhaseLosses;
 	}
 
+	@Override
 	public void set3PhaseLosses(boolean losses) {
 		threePhaseLosses = losses;
 	}
 
+	@Override
 	public boolean isVBaseLosses() {
 		return VBaseLosses;
 	}
 
+	@Override
 	public void setVBaseLosses(boolean losses) {
 		VBaseLosses = losses;
 	}
 
+	@Override
 	public boolean isPhaseVoltageReport() {
 		return phaseVoltageReport;
 	}
 
+	@Override
 	public void setPhaseVoltageReport(boolean report) {
 		phaseVoltageReport = report;
 	}
 
+	@Override
 	public FeederObj getFeederObj() {
 		return feederObj;
 	}
 
+	@Override
 	public void setFeederObj(FeederObj feeder) {
 		feederObj = feeder;
 	}
 
+	@Override
 	public String[] getDefinedZoneList() {
 		return definedZoneList;
 	}
 
+	@Override
 	public void setDefinedZoneList(String[] list) {
 		definedZoneList = list;
 	}
 
+	@Override
 	public int getDefinedZoneListSize() {
 		return definedZoneListSize;
 	}
 
+	@Override
 	public void setDefinedZoneListSize(int size) {
 		definedZoneListSize = size;
 	}
 
+	@Override
 	public double getMaxZoneKVANorm() {
 		return maxZoneKVANorm;
 	}
 
+	@Override
 	public void setMaxZoneKVANorm(double max) {
 		maxZoneKVANorm = max;
 	}
 
+	@Override
 	public double getMaxZoneKVAEmerg() {
 		return maxZoneKVAEmerg;
 	}
 
+	@Override
 	public void setMaxZoneKVAEmerg(double max) {
 		maxZoneKVAEmerg = max;
 	}
 
+	@Override
 	public double[] getVBaseTotalLosses() {
 		return VBaseTotalLosses;
 	}
 
+	@Override
 	public void setVBaseTotalLosses(double[] losses) {
 		VBaseTotalLosses = losses;
 	}
 
+	@Override
 	public double[] getVBaseLineLosses() {
 		return VBaseLineLosses;
 	}
 
+	@Override
 	public void setVBaseLineLosses(double[] losses) {
 		VBaseLineLosses = losses;
 	}
 
+	@Override
 	public double[] getVBaseLoadLosses() {
 		return VBaseLoadLosses;
 	}
 
+	@Override
 	public void setVBaseLoadLosses(double[] losses) {
 		VBaseLoadLosses = losses;
 	}
 
+	@Override
 	public double[] getVBaseNoLoadLosses() {
 		return VBaseNoLoadLosses;
 	}
 
+	@Override
 	public void setVBaseNoLoadLosses(double[] losses) {
 		VBaseNoLoadLosses = losses;
 	}
 
+	@Override
 	public double[] getVBaseLoad() {
 		return VBaseLoad;
 	}
 
+	@Override
 	public void setVBaseLoad(double[] load) {
 		VBaseLoad = load;
 	}
 
+	@Override
 	public double[] getVBaseList() {
 		return VBaseList;
 	}
 
+	@Override
 	public void setVBaseList(double[] list) {
 		VBaseList = list;
 	}
 
+	@Override
 	public int getVBaseCount() {
 		return VBaseCount;
 	}
 
+	@Override
 	public void setVBaseCount(int count) {
 		VBaseCount = count;
 	}
 
+	@Override
 	public int getMaxVBaseCount() {
 		return maxVBaseCount;
 	}
 
+	@Override
 	public void setMaxVBaseCount(int count) {
 		maxVBaseCount = count;
 	}
 
+	@Override
 	public double[] getVPhaseMax() {
 		return VPhaseMax;
 	}
 
+	@Override
 	public void setVPhaseMax(double[] max) {
 		VPhaseMax = max;
 	}
 
+	@Override
 	public double[] getVPhaseMin() {
 		return VPhaseMin;
 	}
 
+	@Override
 	public void setVPhaseMin(double[] min) {
 		VPhaseMin = min;
 	}
 
+	@Override
 	public double[] getVPhaseAccum() {
 		return VPhaseAccum;
 	}
 
+	@Override
 	public void setVPhaseAccum(double[] accum) {
 		VPhaseAccum = accum;
 	}
 
+	@Override
 	public int[] getVPhaseAccumCount() {
 		return VPhaseAccumCount;
 	}
 
+	@Override
 	public void setVPhaseAccumCount(int[] count) {
 		VPhaseAccumCount = count;
 	}
 
+	@Override
 	public FileWriter getVPhaseFile() {
 		return VPhaseFile;
 	}
 
+	@Override
 	public void setVPhaseFile(FileWriter file) {
 		VPhaseFile = file;
 	}
 
+	@Override
 	public boolean isVPhaseReportFileOpen() {
 		return VPhaseReportFileIsOpen;
 	}
 
+	@Override
 	public void setVPhaseReportFileOpen(boolean isOpen) {
 		VPhaseReportFileIsOpen = isOpen;
 	}
 
+	@Override
 	public FileWriter getDIFile() {
 		return DI_File;
 	}
 
+	@Override
 	public void setDIFile(FileWriter file) {
 		DI_File = file;
 	}
 
+	@Override
 	public boolean isThisMeterDIFileOpen() {
 		return thisMeterDI_FileIsOpen;
 	}
 
+	@Override
 	public void setThisMeterDIFileOpen(boolean isOpen) {
 		thisMeterDI_FileIsOpen = isOpen;
 	}

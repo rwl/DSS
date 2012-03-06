@@ -1,7 +1,6 @@
 package com.ncond.dss.general.impl;
 
 import java.io.OutputStream;
-import java.io.PrintStream;
 import java.io.PrintWriter;
 
 import com.ncond.dss.common.DSSClass;
@@ -38,6 +37,7 @@ public class TCC_CurveObjImpl extends DSSObjectImpl implements TCC_CurveObj {
 	 * If the value is less than the first entry, return = -1 for no operation.
 	 * Log-log interpolation is used.
 	 */
+	@Override
 	public double getTCCTime(double cValue) {
 		int i;
 		double logTest;
@@ -87,6 +87,7 @@ public class TCC_CurveObjImpl extends DSSObjectImpl implements TCC_CurveObj {
 	/**
 	 * Return operating time for over-voltage relay.
 	 */
+	@Override
 	public double getOVTime(double vValue) {
 		int i;
 		double result = -1.0;  // no op return
@@ -111,6 +112,7 @@ public class TCC_CurveObjImpl extends DSSObjectImpl implements TCC_CurveObj {
 	/**
 	 * Return operating time for under-voltage relay.
 	 */
+	@Override
 	public double getUVTime(double vValue) {
 		int i;
 		double result = -1.0;  // no op return
@@ -134,6 +136,7 @@ public class TCC_CurveObjImpl extends DSSObjectImpl implements TCC_CurveObj {
 	/**
 	 * Get C_Value by index.
 	 */
+	@Override
 	public double value(int i) {
 		if (i < npts && i >= 0) {
 			lastValueAccessed = i;
@@ -146,6 +149,7 @@ public class TCC_CurveObjImpl extends DSSObjectImpl implements TCC_CurveObj {
 	/**
 	 * Get time value (sec) corresponding to point index.
 	 */
+	@Override
 	public double time(int i) {
 		if (i <= npts && i > 0) {
 			lastValueAccessed = i;
@@ -219,54 +223,67 @@ public class TCC_CurveObjImpl extends DSSObjectImpl implements TCC_CurveObj {
 		super.initPropertyValues(TCC_Curve.NumPropsThisClass - 1);
 	}
 
+	@Override
 	public int getNumPoints() {
 		return npts;
 	}
 
+	@Override
 	public int getLastValueAccessed() {
 		return lastValueAccessed;
 	}
 
+	@Override
 	public void setLastValueAccessed(int lastValue) {
 		lastValueAccessed = lastValue;
 	}
 
+	@Override
 	public int getNPts() {
 		return npts;
 	}
 
+	@Override
 	public void setNPts(int n) {
 		npts = n;
 	}
 
+	@Override
 	public double[] getLogT() {
 		return logT;
 	}
 
+	@Override
 	public void setLogT(double[] logt) {
 		logT = logt;
 	}
 
+	@Override
 	public double[] getLogC() {
 		return logC;
 	}
 
+	@Override
 	public void setLogC(double[] logc) {
 		logC = logc;
 	}
 
+	@Override
 	public double[] getCValues() {
 		return cValues;
 	}
 
+	@Override
 	public void setCValues(double[] values) {
 		cValues = values;
 	}
 
+	@Override
 	public double[] getTValues() {
 		return tValues;
 	}
 
+	@Override
 	public void setTValues(double[] values) {
 		tValues = values;
 	}

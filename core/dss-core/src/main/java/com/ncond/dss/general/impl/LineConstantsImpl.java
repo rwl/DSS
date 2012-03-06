@@ -73,6 +73,7 @@ public class LineConstantsImpl implements LineConstants {
 	 *
 	 * Compute base Z and Yc matrices in ohms/m for this frequency and earth impedance.
 	 */
+	@Override
 	public void calc(double f) {
 		Complex Zi, ZSpacing;
 		boolean powerFreq;
@@ -155,6 +156,7 @@ public class LineConstantsImpl implements LineConstants {
 		rhoChanged = false;
 	}
 
+	@Override
 	public boolean conductorsInSameSpace(StringBuffer errorMessage) {
 		int i, j;
 		double Dij;
@@ -186,26 +188,32 @@ public class LineConstantsImpl implements LineConstants {
 		return result;
 	}
 
+	@Override
 	public double getGMR(int i, int units) {
 		return GMR[i] * LineUnits.fromMeters(units);
 	}
 
+	@Override
 	public double getRac(int i, int units) {
 		return Rac[i] * LineUnits.fromPerMeter(units);
 	}
 
+	@Override
 	public double getRadius(int i, int units) {
 		return radius[i] * LineUnits.fromMeters(units);
 	}
 
+	@Override
 	public double getRdc(int i, int units) {
 		return Rdc[i] * LineUnits.fromPerMeter(units);
 	}
 
+	@Override
 	public double getX(int i, int units) {
 		return X[i] * LineUnits.fromMeters(units);
 	}
 
+	@Override
 	public double getY(int i, int units) {
 		return Y[i] * LineUnits.fromMeters(units);
 	}
@@ -217,6 +225,7 @@ public class LineConstantsImpl implements LineConstants {
 	 * Makes a new YCmatrix and correct for lengths and units as it copies.
 	 * Uses the reduced Zmatrix by default if it exists.
 	 */
+	@Override
 	public CMatrix getYcMatrix(double f, double length, int units) {
 		int newSize;
 		double unitLengthConversion;
@@ -245,6 +254,7 @@ public class LineConstantsImpl implements LineConstants {
 	/**
 	 * Earth return impedance at present frequency for ij element.
 	 */
+	@Override
 	public Complex getZe(int i, int j) {
 		Complex lnArg, hterm, xterm, result = null;
 		double mij , thetaij, Dij, Yi, Yj;
@@ -302,6 +312,7 @@ public class LineConstantsImpl implements LineConstants {
 	/**
 	 * Internal impedance of i-th conductor for present frequency.
 	 */
+	@Override
 	public Complex getZint(int i) {
 		Complex alpha, I0I1, result = null;
 
@@ -334,6 +345,7 @@ public class LineConstantsImpl implements LineConstants {
 	 * Makes a new Zmatrix and correct for lengths and units as it copies.
 	 * Uses the reduced Zmatrix by default if it exists.
 	 */
+	@Override
 	public CMatrix getZMatrix(double f, double length, int units) {
 		int newSize, i;
 		double unitLengthConversion;
@@ -366,6 +378,7 @@ public class LineConstantsImpl implements LineConstants {
 	/**
 	 * Performs a Kron reduction leaving first nOrder rows.
 	 */
+	@Override
 	public void kron(int nOrder) {
 
 		CMatrix ZTemp  = ZMatrix;
@@ -400,6 +413,7 @@ public class LineConstantsImpl implements LineConstants {
 	/**
 	 * Kron reduce to num phases only.
 	 */
+	@Override
 	public void reduce() {
 		kron(numPhases);
 	}
@@ -410,6 +424,7 @@ public class LineConstantsImpl implements LineConstants {
 		me = new Complex(0.0, w * MU0 / rhoEarth).sqrt();
 	}
 
+	@Override
 	public void setRhoEarth(double value) {
 		if (value != rhoEarth)
 			rhoChanged = true;
@@ -418,6 +433,7 @@ public class LineConstantsImpl implements LineConstants {
 			me = new Complex(0.0, w * MU0 / rhoEarth).sqrt();
 	}
 
+	@Override
 	public void setGMR(int i, int units, double value) {
 		if (i >= 0 && i < numConds) {
 			GMR[i] = value * LineUnits.toMeters(units);
@@ -426,15 +442,18 @@ public class LineConstantsImpl implements LineConstants {
 		}
 	}
 
+	@Override
 	public void setNPhases(int value) {
 		numPhases = value;
 	}
 
+	@Override
 	public void setRac(int i, int units, double value) {
 		if (i >= 0 && i < numConds)
 			Rac[i] = value * LineUnits.toPerMeter(units);
 	}
 
+	@Override
 	public void setRadius(int i, int units, double value) {
 		if (i >= 0 && i <= numConds) {
 			radius[i] = value * LineUnits.toMeters(units);
@@ -443,25 +462,30 @@ public class LineConstantsImpl implements LineConstants {
 		}
 	}
 
+	@Override
 	public void setRdc(int i, int units, double value) {
 		if (i >= 0 && i < numConds)
 			Rdc[i] = value * LineUnits.toPerMeter(units);
 	}
 
+	@Override
 	public void setX(int i, int units, double value) {
 		if (i >= 0 && i < numConds)
 			X[i] = value * LineUnits.toMeters(units);
 	}
 
+	@Override
 	public void setY(int i, int units, double value) {
 		if (i >= 0 && i < numConds)
 			Y[i] = value * LineUnits.toMeters(units);
 	}
 
+	@Override
 	public double getRhoEarth() {
 		return rhoEarth;
 	}
 
+	@Override
 	public int getNumConds() {
 		return numConds;
 	}
@@ -470,6 +494,7 @@ public class LineConstantsImpl implements LineConstants {
 		return frequency;
 	}
 
+	@Override
 	public int getNPhases() {
 		return numPhases;
 	}

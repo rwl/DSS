@@ -5,9 +5,10 @@ import com.ncond.dss.common.impl.DSSClassDefs;
 import com.ncond.dss.common.impl.DSS;
 import com.ncond.dss.delivery.PDClass;
 import com.ncond.dss.delivery.PDElement;
+import com.ncond.dss.general.DSSObject;
 import com.ncond.dss.parser.impl.Parser;
 
-public class PDClassImpl extends CktElementClassImpl implements PDClass {
+abstract public class PDClassImpl extends CktElementClassImpl implements PDClass {
 
 	private int numPDClassProps;
 
@@ -17,6 +18,7 @@ public class PDClassImpl extends CktElementClassImpl implements PDClass {
 		classType = DSSClassDefs.PD_ELEMENT;
 	}
 
+	@Override
 	protected void countProperties() {
 		numProperties = numProperties + numPDClassProps;
 		super.countProperties();
@@ -25,6 +27,7 @@ public class PDClassImpl extends CktElementClassImpl implements PDClass {
 	/**
 	 * Define the properties for the base power delivery element class.
 	 */
+	@Override
 	protected void defineProperties() {
 		propertyName[activeProperty + 1] = "normamps";
 		propertyName[activeProperty + 2] = "emergamps";
@@ -43,7 +46,8 @@ public class PDClassImpl extends CktElementClassImpl implements PDClass {
 		super.defineProperties();
 	}
 
-	protected int classEdit(Object activePDObj, int paramPointer) {
+	@Override
+	protected int classEdit(DSSObject activePDObj, int paramPointer) {
 		// continue parsing with contents of parser
 		Parser parser = Parser.getInstance();
 
@@ -74,7 +78,8 @@ public class PDClassImpl extends CktElementClassImpl implements PDClass {
 		return 0;
 	}
 
-	protected void classMakeLike(Object otherObj) {
+	@Override
+	protected void classMakeLike(DSSObject otherObj) {
 		PDElement otherPDObj = (PDElement) otherObj;
 		PDElement PDElem = (PDElement) DSS.activeDSSObject;
 
@@ -87,10 +92,12 @@ public class PDClassImpl extends CktElementClassImpl implements PDClass {
 		super.classMakeLike(otherObj);
 	}
 
+	@Override
 	public int getNumPDClassProps() {
 		return numPDClassProps;
 	}
 
+	@Override
 	public void setNumPDClassProps(int num) {
 		numPDClassProps = num;
 	}

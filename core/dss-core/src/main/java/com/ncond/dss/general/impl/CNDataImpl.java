@@ -25,6 +25,7 @@ public class CNDataImpl extends CableDataImpl implements CNData {
 		commandList.setAbbrevAllowed(true);
 	}
 
+	@Override
 	protected void defineProperties() {
 		numProperties = CNData.NumPropsThisClass;
 		countProperties();   // get inherited property count
@@ -159,6 +160,7 @@ public class CNDataImpl extends CableDataImpl implements CNData {
 	/**
 	 * Returns active line code string.
 	 */
+	@Override
 	public String getCode() {
 		return ((CNDataObj) elementList.getActive()).getName();
 	}
@@ -166,6 +168,7 @@ public class CNDataImpl extends CableDataImpl implements CNData {
 	/**
 	 * Sets the active CNData.
 	 */
+	@Override
 	public void setCode(String value) {
 		ConductorDataImpl.activeConductorDataObj = null;
 		CNDataObj pCNDataObj = (CNDataObj) elementList.getFirst();

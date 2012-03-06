@@ -61,14 +61,17 @@ public class HashListImpl implements HashList {
 		lastSearchString = "";
 	}
 
+	@Override
 	public int getInitialAllocation() {
 		return initialAllocation;
 	}
 
+	@Override
 	public void setInitialAllocation(int allocation) {
 		initialAllocation = allocation;
 	}
 
+	@Override
 	public int listSize() {
 		return numElements;
 	}
@@ -97,6 +100,7 @@ public class HashListImpl implements HashList {
 		stringArray = Util.resizeArray(stringArray, numElementsAllocated);
 	}
 
+	@Override
 	public int add(String s) {
 		int hashNum;
 		String ss;
@@ -125,6 +129,7 @@ public class HashListImpl implements HashList {
 	/**
 	 * Repeat find for duplicate string in same hash list.
 	 */
+	@Override
 	public int find(String s) {
 
 		lastSearchString = s.toLowerCase();
@@ -145,6 +150,7 @@ public class HashListImpl implements HashList {
 	/**
 	 * Begins search in same list as last.
 	 */
+	@Override
 	public int findNext() {
 		// TODO: Check zero indexing.
 		int result = -1;  // default return
@@ -166,6 +172,7 @@ public class HashListImpl implements HashList {
 	 * Makes a linear search and tests each string until a string is found
 	 * that matches all the characters entered in s.
 	 */
+	@Override
 	public int findAbbrev(String s) {
 		String test1, test2;
 
@@ -184,6 +191,7 @@ public class HashListImpl implements HashList {
 		return result;
 	}
 
+	@Override
 	public String get(int i) {
 		// TODO: Check zero indexing
 		return ((i > 0) && (i <= numElements)) ? stringArray[i] : "";
@@ -195,6 +203,7 @@ public class HashListImpl implements HashList {
 	 * Creates a new set of string lists and copies the old strings
 	 * into the new, hashing for the new number of lists.
 	 */
+	@Override
 	public void expand(int newSize) {
 
 		String[] newStringArray;
@@ -249,6 +258,7 @@ public class HashListImpl implements HashList {
 		}
 	}
 
+	@Override
 	public void dumpToFile(String fname) {
 		File f = new File(fname);
 		try {
@@ -279,6 +289,7 @@ public class HashListImpl implements HashList {
 		}
 	}
 
+	@Override
 	public void clear() {
 		for (int i = 0; i < numLists; i++) {
 			listArray[i].nElem = 0;

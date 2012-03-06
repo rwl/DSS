@@ -1,8 +1,6 @@
 package com.ncond.dss.general;
 
 import java.io.OutputStream;
-import java.io.PrintStream;
-
 import org.apache.commons.math.complex.Complex;
 
 /**
@@ -75,10 +73,13 @@ public interface LoadShapeObj extends DSSObject {
 
 	void calcMeanAndStdDev();
 
+	@Override
 	String getPropertyValue(int index);
 
+	@Override
 	void initPropertyValues(int arrayOffset);
 
+	@Override
 	void dumpProperties(OutputStream f, boolean complete);
 
 	double[] getHours();

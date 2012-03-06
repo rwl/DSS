@@ -17,8 +17,10 @@ public interface Spectrum extends DSSClass {
 	 */
 	void setCode(String value);
 
+	@Override
 	int edit();
 
+	@Override
 	int newObject(String objName);
 
 }

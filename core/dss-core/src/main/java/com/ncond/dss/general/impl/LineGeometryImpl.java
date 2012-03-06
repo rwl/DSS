@@ -30,6 +30,7 @@ public class LineGeometryImpl extends DSSClassImpl implements LineGeometry {
 		commandList.setAbbrevAllowed(true);
 	}
 
+	@Override
 	protected void defineProperties() {
 		final String CRLF = DSS.CRLF;
 
@@ -431,11 +432,13 @@ public class LineGeometryImpl extends DSSClassImpl implements LineGeometry {
 		return 0;
 	}
 
+	@Override
 	public String getCode() {
 		LineGeometryObj active = (LineGeometryObj) elementList.getActive();
 		return active.getName();
 	}
 
+	@Override
 	public void setCode(String value) {
 		LineGeometryObj pLineGeo;
 		activeLineGeometryObj = null;

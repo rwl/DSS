@@ -1,7 +1,6 @@
 package com.ncond.dss.delivery.impl;
 
 import java.io.OutputStream;
-import java.io.PrintStream;
 import java.io.PrintWriter;
 
 
@@ -468,114 +467,142 @@ public class ReactorObjImpl extends PDElementImpl implements ReactorObj {
 		throw new UnsupportedOperationException();
 	}
 
+	@Override
 	public double getR() {
 		return R;
 	}
 
+	@Override
 	public void setR(double r) {
 		R = r;
 	}
 
+	@Override
 	public double getRp() {
 		return Rp;
 	}
 
+	@Override
 	public void setRp(double rp) {
 		Rp = rp;
 	}
 
+	@Override
 	public double getGp() {
 		return Gp;
 	}
 
+	@Override
 	public void setGp(double gp) {
 		Gp = gp;
 	}
 
+	@Override
 	public double getX() {
 		return X;
 	}
 
+	@Override
 	public void setX(double x) {
 		X = x;
 	}
 
+	@Override
 	public double getKVArRating() {
 		return kVArRating;
 	}
 
+	@Override
 	public void setKVArRating(double kvarrating) {
 		this.kVArRating = kvarrating;
 	}
 
+	@Override
 	public double getKVRating() {
 		return kVRating;
 	}
 
+	@Override
 	public void setKVRating(double kvrating) {
 		this.kVRating = kvrating;
 	}
 
+	@Override
 	public double[] getRMatrix() {
 		return RMatrix;
 	}
 
+	@Override
 	public void setRMatrix(double[] rmatrix) {
 		RMatrix = rmatrix;
 	}
 
+	@Override
 	public double[] getGMatrix() {
 		return GMatrix;
 	}
 
+	@Override
 	public void setGMatrix(double[] gmatrix) {
 		GMatrix = gmatrix;
 	}
 
+	@Override
 	public double[] getXMatrix() {
 		return XMatrix;
 	}
 
+	@Override
 	public void setXMatrix(double[] xmatrix) {
 		XMatrix = xmatrix;
 	}
 
+	@Override
 	public double[] getBMatrix() {
 		return BMatrix;
 	}
 
+	@Override
 	public void setBMatrix(double[] bmatrix) {
 		BMatrix = bmatrix;
 	}
 
+	@Override
 	public int getConnection() {
 		return connection;
 	}
 
+	@Override
 	public void setConnection(int conn) {
 		connection = conn;
 	}
 
+	@Override
 	public int getSpecType() {
 		return specType;
 	}
 
+	@Override
 	public void setSpecType(int type) {
 		specType = type;
 	}
 
+	@Override
 	public boolean isParallel() {
 		return isParallel;
 	}
 
+	@Override
 	public void setParallel(boolean parallel) {
 		isParallel = parallel;
 	}
 
+	@Override
 	public boolean isRpSpecified() {
 		return RpSpecified;
 	}
 
+	@Override
 	public void setRpSpecified(boolean specified) {
 		RpSpecified = specified;
 	}

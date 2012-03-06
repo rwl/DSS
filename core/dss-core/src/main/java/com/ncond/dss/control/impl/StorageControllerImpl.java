@@ -27,6 +27,7 @@ public class StorageControllerImpl extends ControlClassImpl implements StorageCo
 		commandList.setAbbrevAllowed(true);
 	}
 
+	@Override
 	protected void defineProperties() {
 
 		numProperties = StorageController.NumPropsThisClass;
@@ -421,6 +422,12 @@ public class StorageControllerImpl extends ControlClassImpl implements StorageCo
 		}
 
 		return result;
+	}
+
+	@Override
+	public int init(int handle) {
+		DSS.doSimpleMsg("Need to implement StorageController.init", -1);
+		return 0;
 	}
 
 }

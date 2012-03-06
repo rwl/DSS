@@ -27,6 +27,7 @@ public class VSourceImpl extends PCClassImpl implements VSource {
 		commandList.setAbbrevAllowed(true);
 	}
 
+	@Override
 	protected void defineProperties() {
 
 		numProperties = VSource.NumPropsThisClass;

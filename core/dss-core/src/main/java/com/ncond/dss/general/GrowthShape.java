@@ -49,10 +49,13 @@ public interface GrowthShape extends DSSClass {
 	 */
 	void setCode(String value);
 
+	@Override
 	int edit();
 
+	@Override
 	int init(int handle);
 
+	@Override
 	int newObject(String objName);
 
 }

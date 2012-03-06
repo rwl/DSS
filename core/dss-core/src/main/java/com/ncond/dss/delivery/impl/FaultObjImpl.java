@@ -1,7 +1,6 @@
 package com.ncond.dss.delivery.impl;
 
 import java.io.OutputStream;
-import java.io.PrintStream;
 import java.io.PrintWriter;
 
 import org.apache.commons.math.complex.Complex;
@@ -80,6 +79,7 @@ public class FaultObjImpl extends PDElementImpl implements FaultObj {
 	/**
 	 * Called from solveMontefault procedure.
 	 */
+	@Override
 	public void randomize() {
 		SolutionObj sol = DSS.activeCircuit.getSolution();
 
@@ -222,6 +222,7 @@ public class FaultObjImpl extends PDElementImpl implements FaultObj {
 		pw.close();
 	}
 
+	@Override
 	public void checkStatus(int controlMode) {
 
 		switch (controlMode) {
@@ -274,6 +275,7 @@ public class FaultObjImpl extends PDElementImpl implements FaultObj {
 		return false;
 	}
 
+	@Override
 	public void reset() {
 		setCleared(false);
 	}
@@ -347,82 +349,102 @@ public class FaultObjImpl extends PDElementImpl implements FaultObj {
 
 	// FIXME Private members in OpenDSS
 
+	@Override
 	public double getMinAmps() {
 		return minAmps;
 	}
 
+	@Override
 	public void setMinAmps(double min) {
 		minAmps = min;
 	}
 
+	@Override
 	public boolean isTemporary() {
 		return isTemporary;
 	}
 
+	@Override
 	public void setTemporary(boolean temp) {
 		isTemporary = temp;
 	}
 
+	@Override
 	public boolean isCleared() {
 		return cleared;
 	}
 
+	@Override
 	public void setCleared(boolean value) {
 		cleared = value;
 	}
 
+	@Override
 	public boolean isOn() {
 		return isOn;
 	}
 
+	@Override
 	public void setOn(boolean on) {
 		isOn = on;
 	}
 
+	@Override
 	public double getOnTime() {
 		return onTime;
 	}
 
+	@Override
 	public void setOnTime(double value) {
 		onTime = value;
 	}
 
+	@Override
 	public double getRandomMult() {
 		return randomMult;
 	}
 
+	@Override
 	public void setRandomMult(double mult) {
 		randomMult = mult;
 	}
 
+	@Override
 	public double getG() {
 		return G;
 	}
 
+	@Override
 	public void setG(double g) {
 		G = g;
 	}
 
+	@Override
 	public double[] getGMatrix() {
 		return GMatrix;
 	}
 
+	@Override
 	public void setGMatrix(double[] value) {
 		GMatrix = value;
 	}
 
+	@Override
 	public double getStdDev() {
 		return stdDev;
 	}
 
+	@Override
 	public void setStdDev(double value) {
 		stdDev = value;
 	}
 
+	@Override
 	public int getSpecType() {
 		return specType;
 	}
 
+	@Override
 	public void setSpecType(int type) {
 		specType = type;
 	}

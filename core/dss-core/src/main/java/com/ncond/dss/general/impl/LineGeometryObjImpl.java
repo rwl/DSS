@@ -1,7 +1,6 @@
 package com.ncond.dss.general.impl;
 
 import java.io.OutputStream;
-import java.io.PrintStream;
 import java.io.PrintWriter;
 
 import com.ncond.dss.common.DSSClass;
@@ -156,30 +155,37 @@ public class LineGeometryObjImpl extends DSSObjectImpl implements LineGeometryOb
 		return result;
 	}
 
+	@Override
 	public double getXCoord(int i) {
 		return i < nConds ? X[i] : 0.0;
 	}
 
+	@Override
 	public double getYCoord(int i) {
 		return i < nConds ? Y[i] : 0.0;
 	}
 
+	@Override
 	public String getConductorName(int i) {
 		return i < nConds ? condName[i] : "";
 	}
 
+	@Override
 	public ConductorDataObj getConductorData(int i) {
 		return i < nConds ? wireData[i] : null;
 	}
 
+	@Override
 	public int getNConds() {
 		return reduce ? nPhases : nConds;
 	}
 
+	@Override
 	public double getRhoEarth() {
 		return lineData.getRhoEarth();
 	}
 
+	@Override
 	public CMatrix getYcMatrix(double f, double length, int units) {
 		CMatrix result = null;
 		if (dataChanged) {
@@ -195,6 +201,7 @@ public class LineGeometryObjImpl extends DSSObjectImpl implements LineGeometryOb
 		return result;
 	}
 
+	@Override
 	public CMatrix getZMatrix(double f, double length, int units) {
 		CMatrix result = null;
 		if (dataChanged) {
@@ -287,6 +294,7 @@ public class LineGeometryObjImpl extends DSSObjectImpl implements LineGeometryOb
 		}
 	}
 
+	@Override
 	public void setActiveCond(int value) {
 		if (value > 0)
 			if (value <= nConds) {
@@ -297,6 +305,7 @@ public class LineGeometryObjImpl extends DSSObjectImpl implements LineGeometryOb
 	}
 
 	// FIXME Private method in OpenDSS
+	@Override
 	public void changeLineConstantsType(ConductorChoice newPhaseChoice) {
 		LineConstants newLineData = null;
 		boolean needNew = false;
@@ -334,6 +343,7 @@ public class LineGeometryObjImpl extends DSSObjectImpl implements LineGeometryOb
 		phaseChoice = newPhaseChoice;
 	}
 
+	@Override
 	public void setNConds(int value) {
 		nConds = value;
 		if (lineData != null)
@@ -351,15 +361,18 @@ public class LineGeometryObjImpl extends DSSObjectImpl implements LineGeometryOb
 		lastUnit = LineUnits.UNITS_FT;
 	}
 
+	@Override
 	public ConductorChoice getPhaseChoice() {
 		return phaseChoice;
 	}
 
+	@Override
 	public void setNPhases(int value) {
 		nPhases = value;
 		lineData.setNPhases(value);
 	}
 
+	@Override
 	public void setRhoEarth(double value) {
 		lineData.setRhoEarth(value);
 	}
@@ -369,6 +382,7 @@ public class LineGeometryObjImpl extends DSSObjectImpl implements LineGeometryOb
 	 * @throws LineGeometryProblem
 	 */
 	// FIXME Private method in OpenDSS
+	@Override
 	public void updateLineGeometryData(double f) throws LineGeometryProblem {
 		CNDataObj cnd;
 		TSDataObj tsd;
@@ -423,6 +437,7 @@ public class LineGeometryObjImpl extends DSSObjectImpl implements LineGeometryOb
 	 * Called from a line object that has its own spacing and wires input
 	 * automatically sets reduce=y if the spacing has more wires than phases.
 	 */
+	@Override
 	public void loadSpacingAndWires(LineSpacingObj spc, ConductorDataObj[] wires) {
 		int i;
 		ConductorChoice newPhaseChoice;
@@ -468,116 +483,144 @@ public class LineGeometryObjImpl extends DSSObjectImpl implements LineGeometryOb
 		return units[i];
 	}
 
+	@Override
 	public int getNPhases() {
 		return nPhases;
 	}
 
+	@Override
 	public int getActiveCond() {
 		return activeCond;
 	}
 
+	@Override
 	public int getNWires() {
 		return nConds;
 	}
 
+	@Override
 	public double getNormAmps() {
 		return normAmps;
 	}
 
+	@Override
 	public void setNormAmps(double amps) {
 		normAmps = amps;
 	}
 
+	@Override
 	public double getEmergAmps() {
 		return emergAmps;
 	}
 
+	@Override
 	public void setEmergAmps(double amps) {
 		emergAmps = amps;
 	}
 
 	// FIXME Private members in OpenDSS.
 
+	@Override
 	public String[] getCondName() {
 		return condName;
 	}
 
+	@Override
 	public void setCondName(String[] name) {
 		this.condName = name;
 	}
 
+	@Override
 	public ConductorDataObj[] getConductorData() {
 		return wireData;
 	}
 
+	@Override
 	public void setConductorData(ConductorDataObj[] data) {
 		wireData = data;
 	}
 
+	@Override
 	public double[] getX() {
 		return X;
 	}
 
+	@Override
 	public void setX(double[] x) {
 		X = x;
 	}
 
+	@Override
 	public double[] getY() {
 		return Y;
 	}
 
+	@Override
 	public void setY(double[] y) {
 		Y = y;
 	}
 
+	@Override
 	public int[] getUnits() {
 		return units;
 	}
 
+	@Override
 	public void setUnits(int[] value) {
 		units = value;
 	}
 
+	@Override
 	public int getLastUnit() {
 		return lastUnit;
 	}
 
+	@Override
 	public void setLastUnit(int unit) {
 		lastUnit = unit;
 	}
 
+	@Override
 	public boolean isDataChanged() {
 		return dataChanged;
 	}
 
+	@Override
 	public void setDataChanged(boolean changed) {
 		dataChanged = changed;
 	}
 
+	@Override
 	public boolean isReduce() {
 		return reduce;
 	}
 
+	@Override
 	public void setReduce(boolean value) {
 		reduce = value;
 	}
 
+	@Override
 	public String getSpacingType() {
 		return spacingType;
 	}
 
+	@Override
 	public void setSpacingType(String type) {
 		spacingType = type;
 	}
 
+	@Override
 	public LineConstants getLineData() {
 		return lineData;
 	}
 
+	@Override
 	public void setLineData(LineConstants data) {
 		lineData = data;
 	}
 
+	@Override
 	public void setPhaseChoice(ConductorChoice choice) {
 		phaseChoice = choice;
 	}

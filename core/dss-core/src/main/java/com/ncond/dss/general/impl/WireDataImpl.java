@@ -25,6 +25,7 @@ public class WireDataImpl extends ConductorDataImpl implements WireData {
 		commandList.setAbbrevAllowed(true);
 	}
 
+	@Override
 	protected void defineProperties() {
 		numProperties = WireData.NumPropsThisClass;
 		countProperties();   // get inherited property count
@@ -108,11 +109,13 @@ public class WireDataImpl extends ConductorDataImpl implements WireData {
 		return 0;
 	}
 
+	@Override
 	public String getCode() {
 		WireDataObj active = (WireDataObj) elementList.getActive();
 		return active.getName();
 	}
 
+	@Override
 	public void setCode(String value) {
 
 		activeConductorDataObj = null;

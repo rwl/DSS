@@ -25,6 +25,7 @@ public class TSDataImpl extends CableDataImpl implements TSData {
 		commandList.setAbbrevAllowed(true);
 	}
 
+	@Override
 	protected void defineProperties() {
 		numProperties = TSData.NumPropsThisClass;
 		countProperties();  // get inherited property count
@@ -143,10 +144,12 @@ public class TSDataImpl extends CableDataImpl implements TSData {
 		return 0;
 	}
 
+	@Override
 	public String getCode() {
 		return ((TSDataObj) elementList.getActive()).getName();
 	}
 
+	@Override
 	public void setCode(String value) {
 		ConductorDataImpl.activeConductorDataObj = null;
 		TSDataObj pTSDataObj = (TSDataObj) elementList.getFirst();

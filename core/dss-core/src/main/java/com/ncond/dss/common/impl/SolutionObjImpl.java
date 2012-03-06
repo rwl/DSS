@@ -2,7 +2,7 @@ package com.ncond.dss.common.impl;
 
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.PrintStream;
+import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.util.UUID;
 
@@ -18,11 +18,9 @@ import com.ncond.dss.common.SolutionObj;
 import com.ncond.dss.common.impl.BusImpl.NodeBus;
 import com.ncond.dss.control.ControlElem;
 import com.ncond.dss.conversion.GeneratorObj;
-import com.ncond.dss.conversion.LoadObj;
 import com.ncond.dss.conversion.PCElement;
 import com.ncond.dss.delivery.FaultObj;
 import com.ncond.dss.general.impl.DSSObjectImpl;
-import com.ncond.dss.shared.CMatrix;
 import com.ncond.dss.shared.Dynamics;
 import com.ncond.dss.shared.impl.ComplexUtil;
 import com.ncond.dss.shared.impl.DynamicsRec;
@@ -169,6 +167,7 @@ public class SolutionObjImpl extends DSSObjectImpl implements SolutionObj {
 	/**
 	 * Main solution dispatch.
 	 */
+	@Override
 	public void solve() {
 
 		DSS.activeCircuit.setIsSolved(false);
@@ -265,7 +264,7 @@ public class SolutionObjImpl extends DSSObjectImpl implements SolutionObj {
 				DSS.doSimpleMsg("Unknown solution mode.", 481);
 				break;
 			}
-		} catch (Esolv32Problem e) {
+		} catch (SolveProblem e) {
 			DSS.doSimpleMsg("Error encountered in Solve: " + e.getMessage(), 482);
 			DSS.solutionAbort = true;
 		} catch (SolverError e) {
@@ -351,6 +350,7 @@ public class SolutionObjImpl extends DSSObjectImpl implements SolutionObj {
 	/**
 	 * Set the global generator dispatch reference.
 	 */
+	@Override
 	public void setGeneratorDispRef() {
 		Circuit ckt = DSS.activeCircuit;
 
@@ -412,7 +412,7 @@ public class SolutionObjImpl extends DSSObjectImpl implements SolutionObj {
 		}
 	}
 
-	private void setGenerator_dQdV() throws SolverError, Esolv32Problem {
+	private void setGenerator_dQdV() throws SolverError, SolveProblem {
 		boolean didOne = false;
 		double genDispSave;
 
@@ -466,7 +466,7 @@ public class SolutionObjImpl extends DSSObjectImpl implements SolutionObj {
 		try {
 			if (didOne)  // reset initial solution
 				solveZeroLoadSnapShot();
-		} catch (Esolv32Problem e) {
+		} catch (SolveProblem e) {
 			DSS.doSimpleMsg("From setGenerator dQdV, solveZeroLoadSnapShot: " + DSS.CRLF + e.getMessage()  + YMatrix.checkYMatrixforZeroes(), 7071);
 			throw new SolverError("Aborting");
 		}
@@ -483,9 +483,9 @@ public class SolutionObjImpl extends DSSObjectImpl implements SolutionObj {
 	 * InjCurr are the current injected into the node (need to reverse
 	 * current direction for loads).
 	 *
-	 * @throws Esolv32Problem
+	 * @throws SolveProblem
 	 */
-	private void doNormalSolution() throws Esolv32Problem {
+	private void doNormalSolution() throws SolveProblem {
 		iteration = 0;
 
 		Circuit ckt = DSS.activeCircuit;
@@ -533,9 +533,9 @@ public class SolutionObjImpl extends DSSObjectImpl implements SolutionObj {
 	 * For Loads, termCurr = (Sload / V)*
 	 * For Generators, termCurr = -(Sgen / V)
 	 *
-	 * @throws Esolv32Problem *
+	 * @throws SolveProblem *
 	 */
-	private void doNewtonSolution() throws Esolv32Problem {
+	private void doNewtonSolution() throws SolveProblem {
 		Circuit ckt = DSS.activeCircuit;
 
 		dV = Util.resizeArray(dV, ckt.getNumNodes() + 1);  // make sure this is always big enough
@@ -572,7 +572,8 @@ public class SolutionObjImpl extends DSSObjectImpl implements SolutionObj {
 		}
 	}
 
-	public void doPFlowSolution() throws SolverError, Esolv32Problem {
+	@Override
+	public void doPFlowSolution() throws SolverError, SolveProblem {
 
 		solutionCount += 1;  // unique number for this solution
 
@@ -586,7 +587,7 @@ public class SolutionObjImpl extends DSSObjectImpl implements SolutionObj {
 			try {
 				//solveZeroLoadSnapShot();
 				solveYDirect();  // 8-14-06 this should give a better answer than zero load snapshot
-			} catch (Esolv32Problem e) {
+			} catch (SolveProblem e) {
 				DSS.doSimpleMsg("From doPFlowSolution().solveYDirect(): " + DSS.CRLF + e.getMessage() + YMatrix.checkYMatrixforZeroes(), 7072);
 				throw new SolverError("Aborting");
 			}
@@ -595,7 +596,7 @@ public class SolutionObjImpl extends DSSObjectImpl implements SolutionObj {
 
 			try {
 				setGenerator_dQdV();  // set dQdV for model 3 generators
-			} catch (Esolv32Problem e) {
+			} catch (SolveProblem e) {
 				DSS.doSimpleMsg("From doPFlowSolution.setGeneratordQdV(): " + DSS.CRLF + e.getMessage() + YMatrix.checkYMatrixforZeroes(), 7073);
 				throw new SolverError("Aborting");
 			}
@@ -620,9 +621,10 @@ public class SolutionObjImpl extends DSSObjectImpl implements SolutionObj {
 	/**
 	 * Solve without load for initialization purposes.
 	 *
-	 * @throws Esolv32Problem
+	 * @throws SolveProblem
 	 */
-	public int solveZeroLoadSnapShot() throws Esolv32Problem {
+	@Override
+	public int solveZeroLoadSnapShot() throws SolveProblem {
 
 		if (systemYChanged || seriesYInvalid)
 			YMatrix.buildYMatrix(YMatrix.SERIESONLY, true);  // side effect: allocates V
@@ -634,7 +636,7 @@ public class SolutionObjImpl extends DSSObjectImpl implements SolutionObj {
 
 		/* Make the series Y matrix the active matrix */
 		if (YSeries == null)
-			throw new Esolv32Problem("Series Y matrix not built yet in solveZeroLoadSnapshot().");
+			throw new SolveProblem("Series Y matrix not built yet in solveZeroLoadSnapshot().");
 		Y = YSeries;
 
 		if (DSS.activeCircuit.isLogEvents())
@@ -654,6 +656,7 @@ public class SolutionObjImpl extends DSSObjectImpl implements SolutionObj {
 	 *
 	 * @throws SolverError
 	 */
+	@Override
 	public void setVoltageBases() throws SolverError {
 		boolean bZoneCalc, bZoneLock;
 		Circuit ckt = DSS.activeCircuit;
@@ -683,12 +686,13 @@ public class SolutionObjImpl extends DSSObjectImpl implements SolutionObj {
 			ckt.setZonesLocked(bZoneLock);
 			ckt.doResetMeterZones();
 
-		} catch (Esolv32Problem e) {
+		} catch (SolveProblem e) {
 			DSS.doSimpleMsg("From setVoltageBases().solveZeroLoadSnapShot(): " + DSS.CRLF + e.getMessage() + YMatrix.checkYMatrixforZeroes(), 7075);
 			throw new SolverError("Aborting");
 		}
 	}
 
+	@Override
 	public void snapShotInit() {
 		setGeneratorDispRef();
 		controlIteration   = 0;
@@ -701,9 +705,10 @@ public class SolutionObjImpl extends DSSObjectImpl implements SolutionObj {
 	 * Snapshot checks with matrix rebuild.
 	 *
 	 * @throws ControlProblem
-	 * @throws Esolv32Problem
+	 * @throws SolveProblem
 	 */
-	public void checkControls() throws ControlProblem, Esolv32Problem {
+	@Override
+	public void checkControls() throws ControlProblem, SolveProblem {
 		if (controlIteration < maxControlIterations) {
 			if (convergedFlag) {
 				if (DSS.activeCircuit.isLogEvents())
@@ -724,9 +729,10 @@ public class SolutionObjImpl extends DSSObjectImpl implements SolutionObj {
 	 *
 	 * @throws SolverError
 	 * @throws ControlProblem
-	 * @throws Esolv32Problem
+	 * @throws SolveProblem
 	 */
-	public int solveSnap() throws SolverError, ControlProblem, Esolv32Problem {
+	@Override
+	public int solveSnap() throws SolverError, ControlProblem, SolveProblem {
 		int result = 0;
 		int totalIterations = 0;
 
@@ -771,9 +777,10 @@ public class SolutionObjImpl extends DSSObjectImpl implements SolutionObj {
 	/**
 	 * Solve for now once, direct solution.
 	 *
-	 * @throws Esolv32Problem
+	 * @throws SolveProblem
 	 */
-	public int solveDirect() throws Esolv32Problem {
+	@Override
+	public int solveDirect() throws SolveProblem {
 		loadsNeedUpdating = true;  // force possible update of loads and generators
 
 		if (systemYChanged)
@@ -805,11 +812,12 @@ public class SolutionObjImpl extends DSSObjectImpl implements SolutionObj {
 	 *
 	 * @throws SolverError
 	 */
+	@Override
 	public int solveCircuit() throws SolverError {
 		if (loadModel == DSS.ADMITTANCE) {
 			try {
 				solveDirect();  // no sense horsing around when it's all admittance
-			} catch (Esolv32Problem e) {
+			} catch (SolveProblem e) {
 				DSS.doSimpleMsg("From solveSnap().solveDirect(): " + DSS.CRLF + e.getMessage() + YMatrix.checkYMatrixforZeroes(), 7075);
 				throw new SolverError("Aborting");
 			}
@@ -818,7 +826,7 @@ public class SolutionObjImpl extends DSSObjectImpl implements SolutionObj {
 				if (systemYChanged)
 					YMatrix.buildYMatrix(YMatrix.WHOLEMATRIX, true);  // Side effect: allocates V
 				doPFlowSolution();
-			} catch (Esolv32Problem e) {
+			} catch (SolveProblem e) {
 				DSS.doSimpleMsg("From solveSnap().doPFlowSolution(): " + DSS.CRLF + e.getMessage() + YMatrix.checkYMatrixforZeroes(), 7074);
 				throw new SolverError("Aborting");
 			}
@@ -841,7 +849,8 @@ public class SolutionObjImpl extends DSSObjectImpl implements SolutionObj {
 				pElem.injCurrents();  // uses nodeRef to add current into injCurr array
 	}
 
-	public void dumpProperties(PrintStream F, boolean Complete) {
+	@Override
+	public void dumpProperties(OutputStream out, boolean complete) {
 		// TODO Translate this method
 		throw new UnsupportedOperationException();
 	}
@@ -849,10 +858,12 @@ public class SolutionObjImpl extends DSSObjectImpl implements SolutionObj {
 	/**
 	 * Difference between two node voltages.
 	 */
+	@Override
 	public Complex vDiff(int i, int j) {
 		return nodeV[i].subtract(nodeV[j]);  // V1-V2;
 	}
 
+	@Override
 	public void writeConvergenceReport(String fileName) {
 		FileWriter fw;
 		PrintWriter f;
@@ -895,6 +906,7 @@ public class SolutionObjImpl extends DSSObjectImpl implements SolutionObj {
 			pElem.sumCurrents();  // sum terminal currents into system currents array
 	}
 
+	@Override
 	public void doControlActions() {
 		boolean succ;
 		int[] mHour, xHour = new int[1];
@@ -927,6 +939,7 @@ public class SolutionObjImpl extends DSSObjectImpl implements SolutionObj {
 		}
 	}
 
+	@Override
 	public void sampleControlDevices() throws ControlProblem {
 		ControlElem controlDevice = null;
 		Circuit ckt = DSS.activeCircuit;
@@ -948,6 +961,7 @@ public class SolutionObjImpl extends DSSObjectImpl implements SolutionObj {
 	 *
 	 * @throws ControlProblem
 	 */
+	@Override
 	public void sampleDoControlActions() throws ControlProblem {
 		if (controlMode == DSS.CONTROLSOFF) {
 			controlActionsDone = true;
@@ -960,6 +974,7 @@ public class SolutionObjImpl extends DSSObjectImpl implements SolutionObj {
 		}
 	}
 
+	@Override
 	public void setMode(int value) {
 		Circuit ckt = DSS.activeCircuit;
 
@@ -1074,6 +1089,7 @@ public class SolutionObjImpl extends DSSObjectImpl implements SolutionObj {
 			ckt.getAutoAddObj().addCurrents(solveType);
 	}
 
+	@Override
 	public void zeroAuxCurrents() {
 		Circuit ckt = DSS.activeCircuit;
 
@@ -1081,6 +1097,7 @@ public class SolutionObjImpl extends DSSObjectImpl implements SolutionObj {
 			auxCurrents[i] = Complex.ZERO;
 	}
 
+	@Override
 	public void checkFaultStatus() {
 		Circuit ckt = DSS.activeCircuit;
 
@@ -1172,6 +1189,7 @@ public class SolutionObjImpl extends DSSObjectImpl implements SolutionObj {
 		return result;
 	}
 
+	@Override
 	public void setFrequency(double value) {
 		if (frequency != value) {
 			frequencyChanged = true;  // force rebuild of all Y primitives
@@ -1185,6 +1203,7 @@ public class SolutionObjImpl extends DSSObjectImpl implements SolutionObj {
 			harmonic = frequency / ckt.getFundamental();  // make sure harmonic stays in synch
 	}
 
+	@Override
 	public void incrementTime() {
 		dynaVars.t = dynaVars.t + dynaVars.h;
 		while (dynaVars.t >= 3600.0) {
@@ -1194,12 +1213,14 @@ public class SolutionObjImpl extends DSSObjectImpl implements SolutionObj {
 		updateDblHour();
 	}
 
+	@Override
 	public void initPropertyValues(int arrayOffset) {
 		setPropertyValue(0, "");
 
 		super.initPropertyValues(SolutionImpl.NumPropsThisClass - 1);
 	}
 
+	@Override
 	public void setYear(int value) {
 
 		if (DSS.DIFilesAreOpen)
@@ -1213,6 +1234,7 @@ public class SolutionObjImpl extends DSSObjectImpl implements SolutionObj {
 		DSS.energyMeterClass.resetAll();  // force any previous year data to complete
 	}
 
+	@Override
 	public void saveVoltages() {
 		FileWriter fd;
 		PrintWriter f;
@@ -1245,9 +1267,9 @@ public class SolutionObjImpl extends DSSObjectImpl implements SolutionObj {
 	/**
 	 * *************  MAIN SOLVER CALL *************
 	 *
-	 * @throws Esolv32Problem
+	 * @throws SolveProblem
 	 */
-	private int solveSystem(Complex[] V) throws Esolv32Problem {
+	private int solveSystem(Complex[] V) throws SolveProblem {
 		int retCode;
 		long iRes = 0;
 		double dRes = 0;
@@ -1274,12 +1296,13 @@ public class SolutionObjImpl extends DSSObjectImpl implements SolutionObj {
 			iRes = ip[0];
 			//YMatrix.getSingularCol(Y, iRes);
 		} catch (Exception e) {
-			throw new Esolv32Problem("Error solving system Y matrix. Sparse matrix solver reports numerical error: " + e.getMessage());
+			throw new SolveProblem("Error solving system Y matrix. Sparse matrix solver reports numerical error: " + e.getMessage());
 		}
 
 		return retCode;
 	}
 
+	@Override
 	public void updateDblHour() {
 		dblHour = intHour + dynaVars.t / 3600.0;
 	}
@@ -1287,6 +1310,7 @@ public class SolutionObjImpl extends DSSObjectImpl implements SolutionObj {
 	/**
 	 * Updates voltages for each bus from NodeV.
 	 */
+	@Override
 	public void updateVBus() {
 		Bus bus;
 		Circuit ckt = DSS.activeCircuit;
@@ -1302,6 +1326,7 @@ public class SolutionObjImpl extends DSSObjectImpl implements SolutionObj {
 	/**
 	 * Opposite of updateVBus().
 	 */
+	@Override
 	public void restoreNodeVFromVbus() {
 		Bus bus;
 		Circuit ckt = DSS.activeCircuit;
@@ -1318,9 +1343,10 @@ public class SolutionObjImpl extends DSSObjectImpl implements SolutionObj {
 	 * Similar to solveDirect(); used for initialization.
 	 * Solves present Y matrix with no injection sources except voltage and current sources.
 	 *
-	 * @throws Esolv32Problem
+	 * @throws SolveProblem
 	 */
-	public int solveYDirect() throws Esolv32Problem {
+	@Override
+	public int solveYDirect() throws SolveProblem {
 		zeroInjCurr();  // side effect: allocates injCurr
 		getSourceInjCurrents();
 		if (isDynamicModel) getPCInjCurr();  // Need this in dynamics mode to pick up additional injections
@@ -1329,402 +1355,502 @@ public class SolutionObjImpl extends DSSObjectImpl implements SolutionObj {
 		return 0;
 	}
 
+	@Override
 	public Complex getNodeV(int idx) {
 		return nodeV[idx];
 	}
 
+	@Override
 	public Complex getCurrent(int idx) {
 		return currents[idx];
 	}
 
+	@Override
 	public void setCurrent(int idx, Complex current) {
 		currents[idx] = current;
 	}
 
+	@Override
 	public double getFrequency() {
 		return frequency;
 	}
 
+	@Override
 	public int getMode() {
 		return dynaVars.solutionMode;
 	}
 
+	@Override
 	public int getYear() {
 		return year;
 	}
 
+	@Override
 	public int getAlgorithm() {
 		return algorithm;
 	}
 
+	@Override
 	public void setAlgorithm(int alg) {
 		algorithm = alg;
 	}
 
+	@Override
 	public Complex[] getAuxCurrents() {
 		return auxCurrents;
 	}
 
+	@Override
 	public void setAuxCurrents(Complex[] value) {
 		auxCurrents = value;
 	}
 
+	@Override
 	public boolean isControlActionsDone() {
 		return controlActionsDone;
 	}
 
+	@Override
 	public void setControlActionsDone(boolean value) {
 		controlActionsDone = value;
 	}
 
+	@Override
 	public int getControlIteration() {
 		return controlIteration;
 	}
 
+	@Override
 	public void setControlIteration(int iteration) {
 		controlIteration = iteration;
 	}
 
+	@Override
 	public int getControlMode() {
 		return controlMode;
 	}
 
+	@Override
 	public void setControlMode(int mode) {
 		controlMode = mode;
 	}
 
+	@Override
 	public double getConvergenceTolerance() {
 		return convergenceTolerance;
 	}
 
+	@Override
 	public void setConvergenceTolerance(double tolerance) {
 		convergenceTolerance = tolerance;
 	}
 
+	@Override
 	public boolean isConvergedFlag() {
 		return convergedFlag;
 	}
 
+	@Override
 	public void setConvergedFlag(boolean flag) {
 		convergedFlag = flag;
 	}
 
+	@Override
 	public int getDefaultControlMode() {
 		return defaultControlMode;
 	}
 
+	@Override
 	public void setDefaultControlMode(int controlMode) {
 		defaultControlMode = controlMode;
 	}
 
+	@Override
 	public int getDefaultLoadModel() {
 		return defaultLoadModel;
 	}
 
+	@Override
 	public void setDefaultLoadModel(int loadModel) {
 		defaultLoadModel = loadModel;
 	}
 
+	@Override
 	public boolean isDoAllHarmonics() {
 		return doAllHarmonics;
 	}
 
+	@Override
 	public void setDoAllHarmonics(boolean value) {
 		doAllHarmonics = value;
 	}
 
+	@Override
 	public boolean isDynamicsAllowed() {
 		return dynamicsAllowed;
 	}
 
+	@Override
 	public void setDynamicsAllowed(boolean allowed) {
 		dynamicsAllowed = allowed;
 	}
 
+	@Override
 	public DynamicsRec getDynaVars() {
 		return dynaVars;
 	}
 
+	@Override
 	public void setDynaVars(DynamicsRec vars) {
 		dynaVars = vars;
 	}
 
+	@Override
 	public double[] getErrorSaved() {
 		return errorSaved;
 	}
 
+	@Override
 	public void setErrorSaved(double[] value) {
 		errorSaved = value;
 	}
 
+	@Override
 	public boolean isFirstIteration() {
 		return firstIteration;
 	}
 
+	@Override
 	public void setFirstIteration(boolean iteration) {
 		firstIteration = iteration;
 	}
 
+	@Override
 	public boolean isFrequencyChanged() {
 		return frequencyChanged;
 	}
 
+	@Override
 	public void setFrequencyChanged(boolean value) {
 		frequencyChanged = value;
 	}
 
+	@Override
 	public double getHarmonic() {
 		return harmonic;
 	}
 
+	@Override
 	public void setHarmonic(double value) {
 		harmonic = value;
 	}
 
+	@Override
 	public double[] getHarmonicList() {
 		return harmonicList;
 	}
 
+	@Override
 	public void setHarmonicList(double[] value) {
 		harmonicList = value;
 	}
 
+	@Override
 	public int getHarmonicListSize() {
 		return harmonicListSize;
 	}
 
+	@Override
 	public void setHarmonicListSize(int size) {
 		harmonicListSize = size;
 	}
 
+	@Override
 	public int getIntHour() {
 		return intHour;
 	}
 
+	@Override
 	public void setIntHour(int hour) {
 		this.intHour = hour;
 	}
 
+	@Override
 	public double getDblHour() {
 		return dblHour;
 	}
 
+	@Override
 	public void setDblHour(double hour) {
 		this.dblHour = hour;
 	}
 
+	@Override
 	public UUID getYSystem() {
 		return YSystem;
 	}
 
+	@Override
 	public void setYSystem(UUID value) {
 		YSystem = value;
 	}
 
+	@Override
 	public UUID getYSeries() {
 		return YSeries;
 	}
 
+	@Override
 	public void setYSeries(UUID value) {
 		YSeries = value;
 	}
 
+	@Override
 	public UUID getY() {
 		return Y;
 	}
 
+	@Override
 	public void setY(UUID y) {
 		Y = y;
 	}
 
+	@Override
 	public double getIntervalHrs() {
 		return intervalHrs;
 	}
 
+	@Override
 	public void setIntervalHrs(double interval) {
 		intervalHrs = interval;
 	}
 
+	@Override
 	public boolean isDynamicModel() {
 		return isDynamicModel;
 	}
 
+	@Override
 	public void setDynamicModel(boolean isDynamic) {
 		isDynamicModel = isDynamic;
 	}
 
+	@Override
 	public boolean isHarmonicModel() {
 		return isHarmonicModel;
 	}
 
+	@Override
 	public void setHarmonicModel(boolean isHarmonic) {
 		isHarmonicModel = isHarmonic;
 	}
 
+	@Override
 	public int getIteration() {
 		return iteration;
 	}
 
+	@Override
 	public void setIteration(int iter) {
 		iteration = iter;
 	}
 
+	@Override
 	public int getLoadModel() {
 		return loadModel;
 	}
 
+	@Override
 	public void setLoadModel(int model) {
 		loadModel = model;
 	}
 
+	@Override
 	public boolean lastSolutionWasDirect() {
 		return lastSolutionWasDirect;
 	}
 
+	@Override
 	public void setLastSolutionWasDirect(boolean value) {
 		lastSolutionWasDirect = value;
 	}
 
+	@Override
 	public boolean loadsNeedUpdating() {
 		return loadsNeedUpdating;
 	}
 
+	@Override
 	public void setLoadsNeedUpdating(boolean value) {
 		loadsNeedUpdating = value;
 	}
 
+	@Override
 	public int getMaxControlIterations() {
 		return maxControlIterations;
 	}
 
+	@Override
 	public void setMaxControlIterations(int iterations) {
 		maxControlIterations = iterations;
 	}
 
+	@Override
 	public double getMaxError() {
 		return maxError;
 	}
 
+	@Override
 	public void setMaxError(double error) {
 		maxError = error;
 	}
 
+	@Override
 	public int getMaxIterations() {
 		return maxIterations;
 	}
 
+	@Override
 	public void setMaxIterations(int iterations) {
 		maxIterations = iterations;
 	}
 
+	@Override
 	public int getMostIterationsDone() {
 		return mostIterationsDone;
 	}
 
+	@Override
 	public void setMostIterationsDone(int value) {
 		mostIterationsDone = value;
 	}
 
+	@Override
 	public double[] getNodeVBase() {
 		return nodeVBase;
 	}
 
+	@Override
 	public void setNodeVBase(double[] base) {
 		nodeVBase = base;
 	}
 
+	@Override
 	public int getNumberOfTimes() {
 		return numberOfTimes;
 	}
 
+	@Override
 	public void setNumberOfTimes(int number) {
 		numberOfTimes = number;
 	}
 
+	@Override
 	public boolean isPreserveNodeVoltages() {
 		return preserveNodeVoltages;
 	}
 
+	@Override
 	public void setPreserveNodeVoltages(boolean preserve) {
 		preserveNodeVoltages = preserve;
 	}
 
+	@Override
 	public int getRandomType() {
 		return randomType;
 	}
 
+	@Override
 	public void setRandomType(int type) {
 		randomType = type;
 	}
 
+	@Override
 	public boolean isSeriesYInvalid() {
 		return seriesYInvalid;
 	}
 
+	@Override
 	public void setSeriesYInvalid(boolean invalid) {
 		seriesYInvalid = invalid;
 	}
 
+	@Override
 	public int getSolutionCount() {
 		return solutionCount;
 	}
 
+	@Override
 	public void setSolutionCount(int count) {
 		solutionCount = count;
 	}
 
+	@Override
 	public boolean isSolutionInitialized() {
 		return solutionInitialized;
 	}
 
+	@Override
 	public void setSolutionInitialized(boolean value) {
 		solutionInitialized = value;
 	}
 
+	@Override
 	public boolean isSystemYChanged() {
 		return systemYChanged;
 	}
 
+	@Override
 	public void setSystemYChanged(boolean value) {
 		systemYChanged = value;
 	}
 
+	@Override
 	public boolean useAuxCurrents() {
 		return useAuxCurrents;
 	}
 
+	@Override
 	public void setUseAuxCurrents(boolean value) {
 		useAuxCurrents = value;
 	}
 
+	@Override
 	public double[] getVMagSaved() {
 		return VMagSaved;
 	}
 
+	@Override
 	public void setVMagSaved(double[] value) {
 		VMagSaved = value;
 	}
 
+	@Override
 	public boolean isVoltageBaseChanged() {
 		return voltageBaseChanged;
 	}
 
+	@Override
 	public void setVoltageBaseChanged(boolean value) {
 		voltageBaseChanged = value;
 	}
 
+	@Override
 	public Complex[] getNodeV() {
 		return nodeV;
 	}
 
+	@Override
 	public void setNodeV(Complex[] value) {
 		nodeV = value;
 	}
 
+	@Override
 	public Complex[] getCurrents() {
 		return currents;
 	}
 
+	@Override
 	public void setCurrents(Complex[] value) {
 		currents = value;
 	}

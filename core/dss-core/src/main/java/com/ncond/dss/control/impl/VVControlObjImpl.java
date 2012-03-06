@@ -1,7 +1,6 @@
 package com.ncond.dss.control.impl;
 
 import java.io.OutputStream;
-import java.io.PrintStream;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
@@ -519,246 +518,307 @@ public class VVControlObjImpl extends ControlElemImpl implements VVControlObj {
 
 	// FIXME Private members in OpenDSS
 
+	@Override
 	public double getVvc_Vmaxpu() {
 		return vvc_VMaxPU;
 	}
 
+	@Override
 	public void setVvc_Vmaxpu(double vvc_Vmaxpu) {
 		this.vvc_VMaxPU = vvc_Vmaxpu;
 	}
 
+	@Override
 	public double getVvc_Vminpu() {
 		return vvc_VMinPU;
 	}
 
+	@Override
 	public void setVvc_Vminpu(double vvc_Vminpu) {
 		this.vvc_VMinPU = vvc_Vminpu;
 	}
 
+	@Override
 	public double getKva_rating() {
 		return kVA_Rating;
 	}
 
+	@Override
 	public void setKva_rating(double kva_rating) {
 		this.kVA_Rating = kva_rating;
 	}
 
+	@Override
 	public double getkW_rating() {
 		return kW_Rating;
 	}
 
+	@Override
 	public void setkW_rating(double kW_rating) {
 		this.kW_Rating = kW_rating;
 	}
 
+	@Override
 	public double getKvar_fulloutput() {
 		return kVAr_FullOutput;
 	}
 
+	@Override
 	public void setKvar_fulloutput(double kvar_fulloutput) {
 		this.kVAr_FullOutput = kvar_fulloutput;
 	}
 
+	@Override
 	public double getPf() {
 		return pf;
 	}
 
+	@Override
 	public void setPf(double pf) {
 		this.pf = pf;
 	}
 
+	@Override
 	public double getDelay() {
 		return delay;
 	}
 
+	@Override
 	public void setDelay(double delay) {
 		this.delay = delay;
 	}
 
+	@Override
 	public double getDelayoff() {
 		return delayOff;
 	}
 
+	@Override
 	public void setDelayoff(double delayoff) {
 		this.delayOff = delayoff;
 	}
 
+	@Override
 	public double getkW_ramp_rate() {
 		return kW_RampRate;
 	}
 
+	@Override
 	public void setkW_ramp_rate(double kW_ramp_rate) {
 		this.kW_RampRate = kW_ramp_rate;
 	}
 
+	@Override
 	public double getKvar_ramp_rate() {
 		return kVAr_RampRate;
 	}
 
+	@Override
 	public void setKvar_ramp_rate(double kvar_ramp_rate) {
 		this.kVAr_RampRate = kvar_ramp_rate;
 	}
 
+	@Override
 	public double getkW_limit() {
 		return kW_Limit;
 	}
 
+	@Override
 	public void setkW_limit(double kW_limit) {
 		this.kW_Limit = kW_limit;
 	}
 
+	@Override
 	public double getKvar_limit() {
 		return kVAr_Limit;
 	}
 
+	@Override
 	public void setKvar_limit(double kvar_limit) {
 		this.kVAr_Limit = kvar_limit;
 	}
 
+	@Override
 	public double getDeltaVTolerance() {
 		return deltaVTolerance;
 	}
 
+	@Override
 	public void setDeltaVTolerance(double deltaVTolerance) {
 		this.deltaVTolerance = deltaVTolerance;
 	}
 
+	@Override
 	public double getTotalWeight() {
 		return totalWeight;
 	}
 
+	@Override
 	public void setTotalWeight(double totalWeight) {
 		this.totalWeight = totalWeight;
 	}
 
+	@Override
 	public double getQOldDeliver() {
 		return QOldDeliver;
 	}
 
+	@Override
 	public void setQOldDeliver(double qOldDeliver) {
 		QOldDeliver = qOldDeliver;
 	}
 
+	@Override
 	public double getQdeliver() {
 		return QDeliver;
 	}
 
+	@Override
 	public void setQdeliver(double qdeliver) {
 		QDeliver = qdeliver;
 	}
 
+	@Override
 	public double getQNew() {
 		return QNew;
 	}
 
+	@Override
 	public void setQNew(double qNew) {
 		QNew = qNew;
 	}
 
+	@Override
 	public double getVavgPuPrior() {
 		return VAvgPuPrior;
 	}
 
+	@Override
 	public void setVavgPuPrior(double vavgPuPrior) {
 		VAvgPuPrior = vavgPuPrior;
 	}
 
+	@Override
 	public double getVavgPu() {
 		return VAvgPu;
 	}
 
+	@Override
 	public void setVavgPu(double vavgPu) {
 		VAvgPu = vavgPu;
 	}
 
+	@Override
 	public double getPresentHour() {
 		return presentHour;
 	}
 
+	@Override
 	public void setPresentHour(double presentHour) {
 		this.presentHour = presentHour;
 	}
 
+	@Override
 	public int getControlActionHandle() {
 		return controlActionHandle;
 	}
 
+	@Override
 	public void setControlActionHandle(int controlActionHandle) {
 		this.controlActionHandle = controlActionHandle;
 	}
 
+	@Override
 	public int getListSize() {
 		return listSize;
 	}
 
+	@Override
 	public void setListSize(int listSize) {
 		this.listSize = listSize;
 	}
 
+	@Override
 	public List<String> getGeneratorNameList() {
 		return generatorNameList;
 	}
 
+	@Override
 	public void setGeneratorNameList(List<String> generatorNameList) {
 		this.generatorNameList = generatorNameList;
 	}
 
+	@Override
 	public PointerList getGenPointerList() {
 		return genPointerList;
 	}
 
+	@Override
 	public void setGenPointerList(PointerList genPointerList) {
 		this.genPointerList = genPointerList;
 	}
 
+	@Override
 	public double[] getWeights() {
 		return weights;
 	}
 
+	@Override
 	public void setWeights(double[] weights) {
 		this.weights = weights;
 	}
 
+	@Override
 	public int getVvc_curve_size() {
 		return vvc_CurveSize;
 	}
 
+	@Override
 	public void setVvc_curve_size(int vvc_curve_size) {
 		this.vvc_CurveSize = vvc_curve_size;
 	}
 
+	@Override
 	public XYCurveObj getVvc_curve() {
 		return vvc_Curve;
 	}
 
+	@Override
 	public void setVvc_curve(XYCurveObj vvc_curve) {
 		this.vvc_Curve = vvc_curve;
 	}
 
+	@Override
 	public double getDeltaQ_factor() {
 		return deltaQFactor;
 	}
 
+	@Override
 	public void setDeltaQ_factor(double deltaQ_factor) {
 		this.deltaQFactor = deltaQ_factor;
 	}
 
+	@Override
 	public int getPendingChange() {
 		return pendingChange;
 	}
 
+	@Override
 	public CktElement getMonitoredElement() {
 		return monitoredElement;
 	}
 
+	@Override
 	public void setMonitoredElement(CktElement monitoredElement) {
 		this.monitoredElement = monitoredElement;
 	}
 
+	@Override
 	public int getCondOffset() {
 		return condOffset;
 	}
 
+	@Override
 	public void setCondOffset(int condOffset) {
 		this.condOffset = condOffset;
 	}

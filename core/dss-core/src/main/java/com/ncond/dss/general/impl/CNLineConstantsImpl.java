@@ -146,37 +146,45 @@ public class CNLineConstantsImpl extends CableConstantsImpl implements CNLineCon
 		rhoChanged = false;
 	}
 
+	@Override
 	public int getKStrand(int i) {
 		return kStrand[i];
 	}
 
+	@Override
 	public double getDiaStrand(int i) {
 		return diaStrand[i];
 	}
 
+	@Override
 	public double getGmrStrand(int i) {
 		return gmrStrand[i];
 	}
 
+	@Override
 	public double getRStrand(int i) {
 		return rStrand[i];
 	}
 
+	@Override
 	public void setKStrand(int i, int kstrand) {
 		if (i >= 0 && i <= getNumConds())
 			this.kStrand[i] = kstrand;
 	}
 
+	@Override
 	public void setDiaStrand(int i, int units, double diastrand) {
 		if (i >= 0 && i <= getNumConds())
 			diaStrand[i] = diastrand * LineUnits.toMeters(units);
 	}
 
+	@Override
 	public void setGmrStrand(int i, int units, double gmrstrand) {
 		if (i >= 0 && i <= getNumConds())
 			gmrStrand[i] = gmrstrand * LineUnits.toMeters(units);
 	}
 
+	@Override
 	public void setRStrand(int i, int units, double rstrand) {
 		if (i >= 0 && i <= getNumConds())
 			rStrand[i] = rstrand * LineUnits.toPerMeter(units);

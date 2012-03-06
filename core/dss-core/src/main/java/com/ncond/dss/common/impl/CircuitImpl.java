@@ -410,15 +410,18 @@ public class CircuitImpl extends NamedObjectImpl implements Circuit {
 		return ref;
 	}
 
+	@Override
 	public void setActiveCktElement(CktElement value) {
 		activeCktElement = value;
 		DSS.activeDSSObject = value;
 	}
 
+	@Override
 	public CktElement getActiveCktElement() {
 		return activeCktElement;
 	}
 
+	@Override
 	public void setBusNameRedefined(boolean value) {
 		busNameRedefined = value;
 
@@ -430,10 +433,12 @@ public class CircuitImpl extends NamedObjectImpl implements Circuit {
 		}
 	}
 
+	@Override
 	public boolean isBusNameRedefined() {
 		return busNameRedefined;
 	}
 
+	@Override
 	public Complex getLosses() {
 		Complex losses = Complex.ZERO;
 		for (PDElement pdElem : PDElements) {
@@ -445,6 +450,7 @@ public class CircuitImpl extends NamedObjectImpl implements Circuit {
 		return losses;
 	}
 
+	@Override
 	public void setLoadMultiplier(double value) {
 		if (value != loadMultiplier) {
 			// may have to change the Y matrix if the load multiplier has changed
@@ -457,6 +463,7 @@ public class CircuitImpl extends NamedObjectImpl implements Circuit {
 		loadMultiplier = value;
 	}
 
+	@Override
 	public double getLoadMultiplier() {
 		return 0.0;
 	}
@@ -603,20 +610,24 @@ public class CircuitImpl extends NamedObjectImpl implements Circuit {
 		deviceList = tempList;
 	}
 
+	@Override
 	public void setCaseName(String value) {
 		caseName = value;
 		DSS.circuitName_ = value + "_";
 	}
 
+	@Override
 	public String getCaseName() {
 		return caseName;
 	}
 
+	@Override
 	public String getName() {
 		return getLocalName();
 	}
 
 	/* Adds last DSS object created to circuit */
+	@Override
 	public void addCktElement(int handle) {
 		// update lists that keep track of individual circuit elements
 		numDevices += 1;
@@ -706,6 +717,7 @@ public class CircuitImpl extends NamedObjectImpl implements Circuit {
 	/**
 	 * Totalize all energy meters in the problem.
 	 */
+	@Override
 	public void totalizeMeters() {
 		int i, j;
 		EnergyMeterObj meter;
@@ -720,6 +732,7 @@ public class CircuitImpl extends NamedObjectImpl implements Circuit {
 		}
 	}
 
+	@Override
 	public boolean computeCapacity() {
 		boolean success = false;
 		boolean capacityFound;
@@ -767,6 +780,7 @@ public class CircuitImpl extends NamedObjectImpl implements Circuit {
 		return sum;
 	}
 
+	@Override
 	public boolean save(String dir) {
 		String currDir, saveDir;
 		boolean result = false;
@@ -859,6 +873,7 @@ public class CircuitImpl extends NamedObjectImpl implements Circuit {
 		return true;
 	}
 
+	@Override
 	public void processBusDefs() {
 		int i, j, iTerm, rc;
 		String busName;
@@ -913,6 +928,7 @@ public class CircuitImpl extends NamedObjectImpl implements Circuit {
 		}
 	}
 
+	@Override
 	public void reProcessBusDefs() {
 		if (logEvents)
 			Util.logThisEvent("Reprocessing bus definitions");
@@ -949,6 +965,7 @@ public class CircuitImpl extends NamedObjectImpl implements Circuit {
 		setBusNameRedefined(false);  // get ready for next time
 	}
 
+	@Override
 	public void doResetMeterZones() {
 		/* Do this only if meterZones unlocked. Normally, zones will remain
 		 * unlocked so that all changes to the circuit will result in rebuilding
@@ -962,6 +979,7 @@ public class CircuitImpl extends NamedObjectImpl implements Circuit {
 		freeTopology();
 	}
 
+	@Override
 	public int setElementActive(String fullObjectName) {
 		int devClassIndex, devIndex, handle = 0;
 		String[] devType = new String[1];
@@ -988,6 +1006,7 @@ public class CircuitImpl extends NamedObjectImpl implements Circuit {
 		return handle;
 	}
 
+	@Override
 	public void invalidateAllPCElements() {
 		for (PCElement p : PCElements) p.setYPrimInvalid(true);
 
@@ -995,6 +1014,7 @@ public class CircuitImpl extends NamedObjectImpl implements Circuit {
 		solution.setSystemYChanged(true);
 	}
 
+	@Override
 	public void debugDump(OutputStream out) {
 		int i, j;
 		PrintWriter pw = new PrintWriter(out);
@@ -1029,6 +1049,7 @@ public class CircuitImpl extends NamedObjectImpl implements Circuit {
 		pw.close();
 	}
 
+	@Override
 	public CktTree getTopology() {
 		int i;
 		if (branchList == null) {
@@ -1049,6 +1070,7 @@ public class CircuitImpl extends NamedObjectImpl implements Circuit {
 		return branchList;
 	}
 
+	@Override
 	public void freeTopology() {
 		if (branchList != null)
 			branchList = null;
@@ -1056,746 +1078,931 @@ public class CircuitImpl extends NamedObjectImpl implements Circuit {
 			CktTreeImpl.freeAndNilBusAdjacencyLists(busAdjPD, busAdjPC);
 	}
 
+	@Override
 	public List<PDElement>[] getBusAdjacentPDLists() {
 		if (busAdjPD == null)
 			CktTreeImpl.buildActiveBusAdjacencyLists(busAdjPD, busAdjPC);
 		return busAdjPD;
 	}
 
+	@Override
 	public List<PCElement>[] getBusAdjacentPCLists() {
 		if (busAdjPC == null)
 			CktTreeImpl.buildActiveBusAdjacencyLists(busAdjPD, busAdjPC);
 		return busAdjPC;
 	}
 
+	@Override
 	public Bus getBus(int idx) {
 		return buses[idx];
 	}
 
+	@Override
 	public int getActiveBusIndex() {
 		return activeBusIndex;
 	}
 
+	@Override
 	public void setActiveBusIndex(int index) {
 		activeBusIndex = index;
 	}
 
+	@Override
 	public double getFundamental() {
 		return fundamental;
 	}
 
+	@Override
 	public void setFundamental(double value) {
 		fundamental = value;
 	}
 
+	@Override
 	public boolean isControlBusNameRedefined() {
 		return controlBusNameRedefined;
 	}
 
+	@Override
 	public void setControlBusNameRedefined(boolean redefined) {
 		controlBusNameRedefined = redefined;
 	}
 
+	@Override
 	public HashList getBusList() {
 		return busList;
 	}
 
+	@Override
 	public void setBusList(HashList list) {
 		busList = list;
 	}
 
+	@Override
 	public HashList getAutoAddBusList() {
 		return autoAddBusList;
 	}
 
+	@Override
 	public void setAutoAddBusList(HashList list) {
 		autoAddBusList = list;
 	}
 
+	@Override
 	public HashList getDeviceList() {
 		return deviceList;
 	}
 
+	@Override
 	public void setDeviceList(HashList list) {
 		deviceList = list;
 	}
 
+	@Override
 	public CktElementDef[] getDeviceRef() {
 		return deviceRef;
 	}
 
+	@Override
 	public void setDeviceRef(CktElementDef[] ref) {
 		deviceRef = ref;
 	}
 
+	@Override
 	public List<FaultObj> getFaults() {
 		return faults;
 	}
 
+	@Override
 	public void setFaults(List<FaultObj> list) {
 		faults = list;
 	}
 
+	@Override
 	public List<CktElement> getCktElements() {
 		return cktElements;
 	}
 
+	@Override
 	public void setCktElements(List<CktElement> elements) {
 		cktElements = elements;
 	}
 
+	@Override
 	public List<PDElement> getPDElements() {
 		return PDElements;
 	}
 
+	@Override
 	public void setPDElements(List<PDElement> pDElements) {
 		PDElements = pDElements;
 	}
 
+	@Override
 	public List<PCElement> getPCElements() {
 		return PCElements;
 	}
 
+	@Override
 	public void setPCElements(List<PCElement> pCElements) {
 		PCElements = pCElements;
 	}
 
+	@Override
 	public List<ControlElem> getDSSControls() {
 		return controls;
 	}
 
+	@Override
 	public void setDSSControls(List<ControlElem> dSSControls) {
 		controls = dSSControls;
 	}
 
+	@Override
 	public List<PCElement> getSources() {
 		return sources;
 	}
 
+	@Override
 	public void setSources(List<PCElement> list) {
 		sources = list;
 	}
 
+	@Override
 	public List<MeterElement> getMeterElements() {
 		return meterElements;
 	}
 
+	@Override
 	public void setMeterElements(List<MeterElement> elements) {
 		meterElements = elements;
 	}
 
+	@Override
 	public List<SensorObj> getSensors() {
 		return sensors;
 	}
 
+	@Override
 	public void setSensors(List<SensorObj> list) {
 		sensors = list;
 	}
 
+	@Override
 	public List<MonitorObj> getMonitors() {
 		return monitors;
 	}
 
+	@Override
 	public void setMonitors(List<MonitorObj> list) {
 		monitors = list;
 	}
 
+	@Override
 	public List<EnergyMeterObj> getEnergyMeters() {
 		return energyMeters;
 	}
 
+	@Override
 	public void setEnergyMeters(List<EnergyMeterObj> meters) {
 		energyMeters = meters;
 	}
 
+	@Override
 	public List<GeneratorObj> getGenerators() {
 		return generators;
 	}
 
+	@Override
 	public void setGenerators(List<GeneratorObj> list) {
 		generators = list;
 	}
 
+	@Override
 	public List<StorageObj> getStorageElements() {
 		return storageElements;
 	}
 
+	@Override
 	public void setStorageElements(List<StorageObj> elements) {
 		storageElements = elements;
 	}
 
+	@Override
 	public List<PVSystemObj> getPVSystems() {
 		return PVSystems;
 	}
 
+	@Override
 	public void setPVSystems(List<PVSystemObj> pVSystems) {
 		PVSystems = pVSystems;
 	}
 
+	@Override
 	public List<DSSObject> getSubstations() {
 		return substations;
 	}
 
+	@Override
 	public void setSubstations(List<DSSObject> stations) {
 		substations = stations;
 	}
 
+	@Override
 	public List<TransformerObj> getTransformers() {
 		return transformers;
 	}
 
+	@Override
 	public void setTransformers(List<TransformerObj> trx) {
 		transformers = trx;
 	}
 
+	@Override
 	public List<CapControlObj> getCapControls() {
 		return capControls;
 	}
 
+	@Override
 	public void setCapControls(List<CapControlObj> controls) {
 		capControls = controls;
 	}
 
+	@Override
 	public List<RegControlObj> getRegControls() {
 		return regControls;
 	}
 
+	@Override
 	public void setRegControls(List<RegControlObj> controls) {
 		regControls = controls;
 	}
 
+	@Override
 	public List<LineObj> getLines() {
 		return lines;
 	}
 
+	@Override
 	public void setLines(List<LineObj> list) {
 		lines = list;
 	}
 
+	@Override
 	public List<LoadObj> getLoads() {
 		return loads;
 	}
 
+	@Override
 	public void setLoads(List<LoadObj> list) {
 		loads = list;
 	}
 
+	@Override
 	public List<CapacitorObj> getShuntCapacitors() {
 		return shuntCapacitors;
 	}
 
+	@Override
 	public void setShuntCapacitors(List<CapacitorObj> capacitors) {
 		shuntCapacitors = capacitors;
 	}
 
+	@Override
 	public List<FeederObj> getFeeders() {
 		return feeders;
 	}
 
+	@Override
 	public void setFeeders(List<FeederObj> list) {
 		feeders = list;
 	}
 
+	@Override
 	public List<SwtControlObj> getSwtControls() {
 		return swtControls;
 	}
 
+	@Override
 	public void setSwtControls(List<SwtControlObj> controls) {
 		swtControls = controls;
 	}
 
+	@Override
 	public ControlQueue getControlQueue() {
 		return controlQueue;
 	}
 
+	@Override
 	public void setControlQueue(ControlQueue queue) {
 		controlQueue = queue;
 	}
 
+	@Override
 	public SolutionObj getSolution() {
 		return solution;
 	}
 
+	@Override
 	public void setSolution(SolutionObj sol) {
 		solution = sol;
 	}
 
+	@Override
 	public AutoAdd getAutoAddObj() {
 		return autoAddObj;
 	}
 
+	@Override
 	public void setAutoAddObj(AutoAdd autoAdd) {
 		autoAddObj = autoAdd;
 	}
 
+	@Override
 	public double getUEWeight() {
 		return UEWeight;
 	}
 
+	@Override
 	public void setUEWeight(double uEWeight) {
 		UEWeight = uEWeight;
 	}
 
+	@Override
 	public double getLossWeight() {
 		return lossWeight;
 	}
 
+	@Override
 	public void setLossWeight(double weight) {
 		lossWeight = weight;
 	}
 
+	@Override
 	public int getNumUERegs() {
 		return numUERegs;
 	}
 
+	@Override
 	public void setNumUERegs(int num) {
 		numUERegs = num;
 	}
 
+	@Override
 	public int getNumLossRegs() {
 		return numLossRegs;
 	}
 
+	@Override
 	public void setNumLossRegs(int num) {
 		numLossRegs = num;
 	}
 
+	@Override
 	public int[] getUERegs() {
 		return UERegs;
 	}
 
+	@Override
 	public void setUERegs(int[] uERegs) {
 		UERegs = uERegs;
 	}
 
+	@Override
 	public int[] getLossRegs() {
 		return lossRegs;
 	}
 
+	@Override
 	public void setLossRegs(int[] regs) {
 		lossRegs = regs;
 	}
 
+	@Override
 	public double getCapacityStart() {
 		return capacityStart;
 	}
 
+	@Override
 	public void setCapacityStart(double capacity) {
 		capacityStart = capacity;
 	}
 
+	@Override
 	public double getCapacityIncrement() {
 		return capacityIncrement;
 	}
 
+	@Override
 	public void setCapacityIncrement(double increment) {
 		capacityIncrement = increment;
 	}
 
+	@Override
 	public boolean isTrapezoidalIntegration() {
 		return trapezoidalIntegration;
 	}
 
+	@Override
 	public void setTrapezoidalIntegration(boolean trapezoidal) {
 		trapezoidalIntegration = trapezoidal;
 	}
 
+	@Override
 	public boolean isLogEvents() {
 		return logEvents;
 	}
 
+	@Override
 	public void setLogEvents(boolean log) {
 		logEvents = log;
 	}
 
+	@Override
 	public String getLoadDurCurve() {
 		return loadDurCurve;
 	}
 
+	@Override
 	public void setLoadDurCurve(String curve) {
 		loadDurCurve = curve;
 	}
 
+	@Override
 	public LoadShapeObj getLoadDurCurveObj() {
 		return loadDurCurveObj;
 	}
 
+	@Override
 	public void setLoadDurCurveObj(LoadShapeObj curveObj) {
 		loadDurCurveObj = curveObj;
 	}
 
+	@Override
 	public String getPriceCurve() {
 		return priceCurve;
 	}
 
+	@Override
 	public void setPriceCurve(String curve) {
 		priceCurve = curve;
 	}
 
+	@Override
 	public PriceShapeObj getPriceCurveObj() {
 		return priceCurveObj;
 	}
 
+	@Override
 	public void setPriceCurveObj(PriceShapeObj curveObj) {
 		priceCurveObj = curveObj;
 	}
 
+	@Override
 	public int getNumDevices() {
 		return numDevices;
 	}
 
+	@Override
 	public void setNumDevices(int num) {
 		numDevices = num;
 	}
 
+	@Override
 	public int getNumBuses() {
 		return numBuses;
 	}
 
+	@Override
 	public void setNumBuses(int num) {
 		numBuses = num;
 	}
 
+	@Override
 	public int getNumNodes() {
 		return numNodes;
 	}
 
+	@Override
 	public void setNumNodes(int num) {
 		numNodes = num;
 	}
 
+	@Override
 	public int getMaxDevices() {
 		return maxDevices;
 	}
 
+	@Override
 	public void setMaxDevices(int max) {
 		maxDevices = max;
 	}
 
+	@Override
 	public int getMaxBuses() {
 		return maxBuses;
 	}
 
+	@Override
 	public void setMaxBuses(int max) {
 		maxBuses = max;
 	}
 
+	@Override
 	public int getMaxNodes() {
 		return maxNodes;
 	}
 
+	@Override
 	public void setMaxNodes(int max) {
 		maxNodes = max;
 	}
 
+	@Override
 	public int getIncDevices() {
 		return incDevices;
 	}
 
+	@Override
 	public void setIncDevices(int inc) {
 		incDevices = inc;
 	}
 
+	@Override
 	public int getIncBuses() {
 		return incBuses;
 	}
 
+	@Override
 	public void setIncBuses(int inc) {
 		incBuses = inc;
 	}
 
+	@Override
 	public int getIncNodes() {
 		return incNodes;
 	}
 
+	@Override
 	public void setIncNodes(int inc) {
 		incNodes = inc;
 	}
 
+	@Override
 	public Bus[] getBuses() {
 		return buses;
 	}
 
+	@Override
 	public void setBuses(Bus[] list) {
 		buses = list;
 	}
 
+	@Override
 	public NodeBus[] getMapNodeToBus() {
 		return mapNodeToBus;
 	}
 
+	@Override
 	public void setMapNodeToBus(NodeBus[] map) {
 		mapNodeToBus = map;
 	}
 
+	@Override
 	public boolean isSolved() {
 		return isSolved;
 	}
 
+	@Override
 	public void setIsSolved(boolean solved) {
 		isSolved = solved;
 	}
 
+	@Override
 	public boolean isDuplicatesAllowed() {
 		return duplicatesAllowed;
 	}
 
+	@Override
 	public void setDuplicatesAllowed(boolean allowed) {
 		duplicatesAllowed = allowed;
 	}
 
+	@Override
 	public boolean isZonesLocked() {
 		return zonesLocked;
 	}
 
+	@Override
 	public void setZonesLocked(boolean locked) {
 		zonesLocked = locked;
 	}
 
+	@Override
 	public boolean isMeterZonesComputed() {
 		return meterZonesComputed;
 	}
 
+	@Override
 	public void setMeterZonesComputed(boolean computed) {
 		meterZonesComputed = computed;
 	}
 
+	@Override
 	public boolean isPositiveSequence() {
 		return positiveSequence;
 	}
 
+	@Override
 	public void setPositiveSequence(boolean value) {
 		positiveSequence = value;
 	}
 
+	@Override
 	public double getNormalMinVolts() {
 		return normalMinVolts;
 	}
 
+	@Override
 	public void setNormalMinVolts(double min) {
 		normalMinVolts = min;
 	}
 
+	@Override
 	public double getNormalMaxVolts() {
 		return normalMaxVolts;
 	}
 
+	@Override
 	public void setNormalMaxVolts(double max) {
 		normalMaxVolts = max;
 	}
 
+	@Override
 	public double getEmergMaxVolts() {
 		return emergMaxVolts;
 	}
 
+	@Override
 	public void setEmergMaxVolts(double max) {
 		emergMaxVolts = max;
 	}
 
+	@Override
 	public double getEmergMinVolts() {
 		return emergMinVolts;
 	}
 
+	@Override
 	public void setEmergMinVolts(double min) {
 		emergMinVolts = min;
 	}
 
+	@Override
 	public double[] getLegalVoltageBases() {
 		return legalVoltageBases;
 	}
 
+	@Override
 	public void setLegalVoltageBases(double[] bases) {
 		legalVoltageBases = bases;
 	}
 
+	@Override
 	public double getGeneratorDispatchReference() {
 		return generatorDispatchReference;
 	}
 
+	@Override
 	public void setGeneratorDispatchReference(double reference) {
 		generatorDispatchReference = reference;
 	}
 
+	@Override
 	public double getDefaultGrowthFactor() {
 		return defaultGrowthFactor;
 	}
 
+	@Override
 	public void setDefaultGrowthFactor(double factor) {
 		defaultGrowthFactor = factor;
 	}
 
+	@Override
 	public double getDefaultGrowthRate() {
 		return defaultGrowthRate;
 	}
 
+	@Override
 	public void setDefaultGrowthRate(double rate) {
 		defaultGrowthRate = rate;
 	}
 
+	@Override
 	public double getGenMultiplier() {
 		return genMultiplier;
 	}
 
+	@Override
 	public void setGenMultiplier(double multiplier) {
 		genMultiplier = multiplier;
 	}
 
+	@Override
 	public double getHarmMult() {
 		return harmMult;
 	}
 
+	@Override
 	public void setHarmMult(double mult) {
 		harmMult = mult;
 	}
 
+	@Override
 	public Complex getDefaultHourMult() {
 		return defaultHourMult;
 	}
 
+	@Override
 	public void setDefaultHourMult(Complex mult) {
 		defaultHourMult = mult;
 	}
 
+	@Override
 	public double getPriceSignal() {
 		return priceSignal;
 	}
 
+	@Override
 	public void setPriceSignal(double signal) {
 		priceSignal = signal;
 	}
 
+	@Override
 	public double[] getRegisterTotals() {
 		return registerTotals;
 	}
 
+	@Override
 	public void setRegisterTotals(double[] totals) {
 		registerTotals = totals;
 	}
 
+	@Override
 	public LoadShapeObj getDefaultDailyShapeObj() {
 		return defaultDailyShapeObj;
 	}
 
+	@Override
 	public void setDefaultDailyShapeObj(LoadShapeObj shapeObj) {
 		defaultDailyShapeObj = shapeObj;
 	}
 
+	@Override
 	public LoadShapeObj getDefaultYearlyShapeObj() {
 		return defaultYearlyShapeObj;
 	}
 
+	@Override
 	public void setDefaultYearlyShapeObj(LoadShapeObj shapeObj) {
 		defaultYearlyShapeObj = shapeObj;
 	}
 
+	@Override
 	public String getCurrentDirectory() {
 		return currentDirectory;
 	}
 
+	@Override
 	public void setCurrentDirectory(String dir) {
 		currentDirectory = dir;
 	}
 
+	@Override
 	public ReductionStrategyType getReductionStrategy() {
 		return reductionStrategy;
 	}
 
+	@Override
 	public void setReductionStrategy(ReductionStrategyType strategy) {
 		reductionStrategy = strategy;
 	}
 
+	@Override
 	public double getReductionMaxAngle() {
 		return reductionMaxAngle;
 	}
 
+	@Override
 	public void setReductionMaxAngle(double maxAngle) {
 		reductionMaxAngle = maxAngle;
 	}
 
+	@Override
 	public double getReductionZmag() {
 		return reductionZmag;
 	}
 
+	@Override
 	public void setReductionZmag(double mag) {
 		reductionZmag = mag;
 	}
 
+	@Override
 	public String getReductionStrategyString() {
 		return reductionStrategyString;
 	}
 
+	@Override
 	public void setReductionStrategyString(String reductionStrategy) {
 		reductionStrategyString = reductionStrategy;
 	}
 
+	@Override
 	public double getPctNormalFactor() {
 		return pctNormalFactor;
 	}
 
+	@Override
 	public void setPctNormalFactor(double factor) {
 		pctNormalFactor = factor;
 	}
 
+	@Override
 	public int getNodeMarkerCode() {
 		return nodeMarkerCode;
 	}
 
+	@Override
 	public void setNodeMarkerCode(int markerCode) {
 		nodeMarkerCode = markerCode;
 	}
 
+	@Override
 	public int getNodeMarkerWidth() {
 		return nodeMarkerWidth;
 	}
 
+	@Override
 	public void setNodeMarkerWidth(int markerWidth) {
 		nodeMarkerWidth = markerWidth;
 	}
 
+	@Override
 	public int getSwitchMarkerCode() {
 		return switchMarkerCode;
 	}
 
+	@Override
 	public void setSwitchMarkerCode(int markerCode) {
 		switchMarkerCode = markerCode;
 	}
 
+	@Override
 	public int getTransMarkerSize() {
 		return transMarkerSize;
 	}
 
+	@Override
 	public void setTransMarkerSize(int markerSize) {
 		transMarkerSize = markerSize;
 	}
 
+	@Override
 	public int getTransMarkerCode() {
 		return transMarkerCode;
 	}
 
+	@Override
 	public void setTransMarkerCode(int markerCode) {
 		transMarkerCode = markerCode;
 	}
 
+	@Override
 	public boolean isMarkSwitches() {
 		return markSwitches;
 	}
 
+	@Override
 	public void setMarkSwitches(boolean mark) {
 		markSwitches = mark;
 	}
 
+	@Override
 	public boolean isMarkTransformers() {
 		return markTransformers;
 	}
 
+	@Override
 	public void setMarkTransformers(boolean mark) {
 		markTransformers = mark;
 	}
 
+	@Override
 	public int getActiveLoadShapeClass() {
 		return activeLoadShapeClass;
 	}
 
+	@Override
 	public void setActiveLoadShapeClass(int loadShapeClass) {
 		activeLoadShapeClass = loadShapeClass;
 	}

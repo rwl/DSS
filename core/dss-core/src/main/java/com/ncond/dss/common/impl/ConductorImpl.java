@@ -21,14 +21,17 @@ public class ConductorImpl implements Conductor {
 		TCCName = "";
 	}
 
+	@Override
 	public void setAmbient(double Value) {
 		ambientTemp = Value;
 	}
 
+	@Override
 	public void setTCCName(String Value) {
 		TCCName = Value.toLowerCase();
 	}
 
+	@Override
 	public String getTCCName() {
 		return TCCName;
 	}
@@ -36,6 +39,7 @@ public class ConductorImpl implements Conductor {
 	/**
 	 * Computes whether conductor has burned down.
 	 */
+	@Override
 	public void calcIsqt(double CurrentMag) {
 		DSS.doSimpleMsg("Need to implement Conductor.calcIsqt", 770);
 	}
@@ -43,22 +47,27 @@ public class ConductorImpl implements Conductor {
 	/**
 	 * Restore the conductor and reset the i2t calcs.
 	 */
+	@Override
 	public void resetIsqt() {
 		DSS.doSimpleMsg("Need to implement Conductor.resetIsqt", 771);
 	}
 
+	@Override
 	public boolean isClosed() {
 		return closed;
 	}
 
+	@Override
 	public void setClosed(boolean value) {
 		closed = value;
 	}
 
+	@Override
 	public boolean isFuseBlown() {
 		return fuseBlown;
 	}
 
+	@Override
 	public void setFuseBlown(boolean value) {
 		fuseBlown = value;
 	}

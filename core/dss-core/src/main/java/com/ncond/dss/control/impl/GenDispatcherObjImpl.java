@@ -1,7 +1,6 @@
 package com.ncond.dss.control.impl;
 
 import java.io.OutputStream;
-import java.io.PrintStream;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
@@ -218,6 +217,7 @@ public class GenDispatcherObjImpl extends ControlElemImpl implements GenDispatch
 		super.initPropertyValues(GenDispatcher.NumPropsThisClass - 1);
 	}
 
+	@Override
 	public boolean makeGenList() {
 		GeneratorObj gen;
 		int i;
@@ -275,82 +275,102 @@ public class GenDispatcherObjImpl extends ControlElemImpl implements GenDispatch
 
 	// FIXME Private members in OpenDSS
 
+	@Override
 	public double getKWLimit() {
 		return kWLimit;
 	}
 
+	@Override
 	public void setKWLimit(double limit) {
 		this.kWLimit = limit;
 	}
 
+	@Override
 	public double getKWBand() {
 		return kWBand;
 	}
 
+	@Override
 	public void setKWBand(double band) {
 		this.kWBand = band;
 	}
 
+	@Override
 	public double getHalfKWBand() {
 		return halfKWBand;
 	}
 
+	@Override
 	public void setHalfKWBand(double band) {
 		halfKWBand = band;
 	}
 
+	@Override
 	public double getKVArLimit() {
 		return kVArLimit;
 	}
 
+	@Override
 	public void setKVArLimit(double limit) {
 		kVArLimit = limit;
 	}
 
+	@Override
 	public double getTotalWeight() {
 		return totalWeight;
 	}
 
+	@Override
 	public void setTotalWeight(double total) {
 		totalWeight = total;
 	}
 
+	@Override
 	public int getListSize() {
 		return listSize;
 	}
 
+	@Override
 	public void setListSize(int size) {
 		listSize = size;
 	}
 
+	@Override
 	public List<String> getGeneratorNameList() {
 		return generatorNameList;
 	}
 
+	@Override
 	public void setGeneratorNameList(List<String> list) {
 		generatorNameList = list;
 	}
 
+	@Override
 	public List<GeneratorObj> getGenPointerList() {
 		return genPointerList;
 	}
 
+	@Override
 	public void setGenPointerList(List<GeneratorObj> list) {
 		genPointerList = list;
 	}
 
+	@Override
 	public double[] getWeights() {
 		return weights;
 	}
 
+	@Override
 	public void setWeights(double[] values) {
 		weights = values;
 	}
 
+	@Override
 	public CktElement getMonitoredElement() {
 		return monitoredElement;
 	}
 
+	@Override
 	public void setMonitoredElement(CktElement element) {
 		monitoredElement = element;
 	}

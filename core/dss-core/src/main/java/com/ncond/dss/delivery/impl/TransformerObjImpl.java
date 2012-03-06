@@ -1,7 +1,6 @@
 package com.ncond.dss.delivery.impl;
 
 import java.io.OutputStream;
-import java.io.PrintStream;
 import java.io.PrintWriter;
 
 
@@ -114,6 +113,7 @@ public class TransformerObjImpl extends PDElementImpl implements TransformerObj 
 		recalcElementData();
 	}
 
+	@Override
 	public void setNumWindings(int n) {
 		int i;
 		int oldWdgSize, newWdgSize;
@@ -323,6 +323,7 @@ public class TransformerObjImpl extends PDElementImpl implements TransformerObj 
 	 * and neutral conductors of the transformer according to the winding connection.
 	 */
 	// FIXME Protected method in OpenDSS
+	@Override
 	public void setTermRef() {
 		int i, j, k;
 
@@ -507,6 +508,7 @@ public class TransformerObjImpl extends PDElementImpl implements TransformerObj 
 		pw.close();
 	}
 
+	@Override
 	public void setPresentTap(int i, double value) {
 		double tempVal;
 
@@ -528,6 +530,7 @@ public class TransformerObjImpl extends PDElementImpl implements TransformerObj 
 		}
 	}
 
+	@Override
 	public double getWdgResistance(int i) {
 		if (i >= 0 && i < numWindings) {
 			return winding[i].getRpu();
@@ -536,6 +539,7 @@ public class TransformerObjImpl extends PDElementImpl implements TransformerObj 
 		}
 	}
 
+	@Override
 	public double getWdgKVA(int i) {
 		if (i >= 0 && i < numWindings) {
 			return winding[i].getKVA();
@@ -544,6 +548,7 @@ public class TransformerObjImpl extends PDElementImpl implements TransformerObj 
 		}
 	}
 
+	@Override
 	public double getWdgRNeutral(int i) {
 		if (i >= 0 && i < numWindings) {
 			return winding[i].getRNeut();
@@ -552,6 +557,7 @@ public class TransformerObjImpl extends PDElementImpl implements TransformerObj 
 		}
 	}
 
+	@Override
 	public double getWdgXNeutral(int i) {
 		if (i >= 0 && i < numWindings) {
 			return winding[i].getXNeut();
@@ -560,6 +566,7 @@ public class TransformerObjImpl extends PDElementImpl implements TransformerObj 
 		}
 	}
 
+	@Override
 	public double getWdgYPPM(int i) {
 		if (i >= 0 && i < numWindings) {
 			return winding[i].getY_PPM();
@@ -568,6 +575,7 @@ public class TransformerObjImpl extends PDElementImpl implements TransformerObj 
 		}
 	}
 
+	@Override
 	public double getXsc(int i) {
 		int imax = (numWindings - 1) * numWindings / 2;
 
@@ -578,6 +586,7 @@ public class TransformerObjImpl extends PDElementImpl implements TransformerObj 
 		}
 	}
 
+	@Override
 	public int getWdgConnection(int i) {
 		if (i >= 0 && i < numWindings) {
 			return winding[i].getConnection();
@@ -586,6 +595,7 @@ public class TransformerObjImpl extends PDElementImpl implements TransformerObj 
 		}
 	}
 
+	@Override
 	public double getMinTap(int i) {
 		if (i >= 0 && i < numWindings) {
 			return winding[i].getMinTap();
@@ -594,6 +604,7 @@ public class TransformerObjImpl extends PDElementImpl implements TransformerObj 
 		}
 	}
 
+	@Override
 	public double getMaxTap(int i) {
 		if (i >= 0 && i < numWindings) {
 			return winding[i].getMaxTap();
@@ -602,6 +613,7 @@ public class TransformerObjImpl extends PDElementImpl implements TransformerObj 
 		}
 	}
 
+	@Override
 	public int getNumTaps(int i) {
 		if (i >= 0 && i < numWindings) {
 			return winding[i].getNumTaps();
@@ -610,6 +622,7 @@ public class TransformerObjImpl extends PDElementImpl implements TransformerObj 
 		}
 	}
 
+	@Override
 	public double getTapIncrement(int i) {
 		if (i >= 0 && i < numWindings) {
 			return winding[i].getTapIncrement();
@@ -623,6 +636,7 @@ public class TransformerObjImpl extends PDElementImpl implements TransformerObj 
 	 * Fill VBuffer array which must be adequately allocated by calling routine
 	 * Order is number of phases.
 	 */
+	@Override
 	public void getWindingVoltages(int iWind, Complex[] VBuffer) {
 		int i, ii, k, neutTerm;
 		SolutionObj sol;
@@ -662,6 +676,7 @@ public class TransformerObjImpl extends PDElementImpl implements TransformerObj 
 		}
 	}
 
+	@Override
 	public double getBaseVoltage(int i) {
 		if (i < 0 || i >= numWindings) {
 			return winding[0].getVBase();
@@ -899,6 +914,7 @@ public class TransformerObjImpl extends PDElementImpl implements TransformerObj 
 	/**
 	 * For Delta connections or Line-Line voltages.
 	 */
+	@Override
 	public int rotatePhases(int iPhs) {
 		int result = iPhs + deltaDirection;
 
@@ -1031,6 +1047,7 @@ public class TransformerObjImpl extends PDElementImpl implements TransformerObj 
 		}
 	}
 
+	@Override
 	public double getBasekVLL(int i) {
 		return winding[i].getKVLL();
 	}
@@ -1218,6 +1235,7 @@ public class TransformerObjImpl extends PDElementImpl implements TransformerObj 
 	}
 
 	// FIXME Private method in OpenDSS
+	@Override
 	public void fetchXfmrCode(String code) {
 		XfmrCodeObj obj;
 		int i;
@@ -1284,294 +1302,366 @@ public class TransformerObjImpl extends PDElementImpl implements TransformerObj 
 		throw new UnsupportedOperationException();
 	}
 
+	@Override
 	public double getPresentTap(int i) {
 		return 0.0;
 	}
 
 	/* CIM accessors */
 
+	@Override
 	public int getNumWindings() {
 		return numWindings;
 	}
 
+	@Override
 	public int getActiveWinding() {
 		return activeWinding;
 	}
 
+	@Override
 	public void setActiveWinding(int winding) {
 		activeWinding = winding;
 	}
 
+	@Override
 	public void setSubstation(boolean value) {
 		isSubstation = value;
 	}
 
+	@Override
 	public String getSubstationName() {
 		return substationName;
 	}
 
+	@Override
 	public void setSubstationName(String name) {
 		substationName = name;
 	}
 
+	@Override
 	public Winding[] getWinding() {
 		return winding;
 	}
 
+	@Override
 	public void setWinding(Winding[] values) {
 		winding = values;
 	}
 
+	@Override
 	public String getXfmrBank() {
 		return XfmrBank;
 	}
 
+	@Override
 	public void setXfmrBank(String bank) {
 		XfmrBank = bank;
 	}
 
+	@Override
 	public String getXfmrCode() {
 		return XfmrCode;
 	}
 
+	@Override
 	public void setXfmrCode(String code) {
 		XfmrCode = code;
 	}
 
+	@Override
 	public double getPPM_FloatFactor() {
 		return ppmFloatFactor;
 	}
 
+	@Override
 	public double getPctImag() {
 		return pctImag;
 	}
 
+	@Override
 	public double getXHL() {
 		return XHL;
 	}
 
+	@Override
 	public double getXHT() {
 		return XHT;
 	}
 
+	@Override
 	public double getXLT() {
 		return XLT;
 	}
 
+	@Override
 	public double getBaseVA() {
 		return VABase;
 	}
 
+	@Override
 	public double getNormMaxHKVA() {
 		return normMaxHKVA;
 	}
 
+	@Override
 	public double getEmergMaxHKVA() {
 		return emergMaxHKVA;
 	}
 
+	@Override
 	public double getThTau() {
 		return thermalTimeConst;
 	}
 
+	@Override
 	public double getThN() {
 		return nThermal;
 	}
 
+	@Override
 	public double getThM() {
 		return mThermal;
 	}
 
+	@Override
 	public double getFLRise() {
 		return FLRise;
 	}
 
+	@Override
 	public double getHSRise() {
 		return HSRise;
 	}
 
+	@Override
 	public double getPctLoadLoss() {
 		return pctLoadLoss;
 	}
 
+	@Override
 	public double getPctNoLoadLoss() {
 		return pctNoLoadLoss;
 	}
 
 	// FIXME Private memebers in OpenDSS
 
+	@Override
 	public int getDeltaDirection() {
 		return deltaDirection;
 	}
 
+	@Override
 	public void setDeltaDirection(int direction) {
 		deltaDirection = direction;
 	}
 
+	@Override
 	public int getMaxWindings() {
 		return maxWindings;
 	}
 
+	@Override
 	public void setMaxWindings(int max) {
 		maxWindings = max;
 	}
 
+	@Override
 	public int[] getTermRef() {
 		return termRef;
 	}
 
+	@Override
 	public void setTermRef(int[] ref) {
 		termRef = ref;
 	}
 
+	@Override
 	public double getZBase() {
 		return ZBase;
 	}
 
+	@Override
 	public void setZBase(double zbase) {
 		ZBase = zbase;
 	}
 
+	@Override
 	public double[] getXSC() {
 		return XSC;
 	}
 
+	@Override
 	public void setXSC(double[] xsc) {
 		XSC = xsc;
 	}
 
+	@Override
 	public double getVABase() {
 		return VABase;
 	}
 
+	@Override
 	public void setVABase(double base) {
 		VABase = base;
 	}
 
+	@Override
 	public CMatrix getZB() {
 		return ZB;
 	}
 
+	@Override
 	public void setZB(CMatrix zb) {
 		ZB = zb;
 	}
 
+	@Override
 	public CMatrix getY_1Volt() {
 		return Y_1Volt;
 	}
 
+	@Override
 	public void setY_1Volt(CMatrix value) {
 		Y_1Volt = value;
 	}
 
+	@Override
 	public CMatrix getY_Term() {
 		return Y_Term;
 	}
 
+	@Override
 	public void setY_Term(CMatrix value) {
 		Y_Term = value;
 	}
 
+	@Override
 	public CMatrix getY_1Volt_NL() {
 		return Y_1Volt_NL;
 	}
 
+	@Override
 	public void setY1VoltNL(CMatrix value) {
 		Y_1Volt_NL = value;
 	}
 
+	@Override
 	public CMatrix getYTermNL() {
 		return Y_Term_NL;
 	}
 
+	@Override
 	public void setYTermNL(CMatrix value) {
 		Y_Term_NL = value;
 	}
 
+	@Override
 	public double getYTerminalFreqMult() {
 		return Y_Terminal_FreqMult;
 	}
 
+	@Override
 	public void setYTerminalFreqMult(double mult) {
 		Y_Terminal_FreqMult = mult;
 	}
 
+	@Override
 	public double getThermalTimeConst() {
 		return thermalTimeConst;
 	}
 
+	@Override
 	public void setThermalTimeConst(double timeConst) {
 		thermalTimeConst = timeConst;
 	}
 
+	@Override
 	public double getNThermal() {
 		return nThermal;
 	}
 
+	@Override
 	public void setNThermal(double value) {
 		nThermal = value;
 	}
 
+	@Override
 	public double getMThermal() {
 		return mThermal;
 	}
 
+	@Override
 	public void setMThermal(double value) {
 		mThermal = value;
 	}
 
+	@Override
 	public boolean isXHLChanged() {
 		return XHLChanged;
 	}
 
+	@Override
 	public void setXHLChanged(boolean changed) {
 		XHLChanged = changed;
 	}
 
+	@Override
 	public boolean isSubstation() {
 		return isSubstation;
 	}
 
+	@Override
 	public void setPPM_FloatFactor(double factor) {
 		ppmFloatFactor = factor;
 	}
 
+	@Override
 	public void setPctImag(double pct) {
 		pctImag = pct;
 	}
 
+	@Override
 	public void setXHL(double value) {
 		XHL = value;
 	}
 
+	@Override
 	public void setXHT(double value) {
 		XHT = value;
 	}
 
+	@Override
 	public void setXLT(double value) {
 		XLT = value;
 	}
 
+	@Override
 	public void setNormMaxHKVA(double max) {
 		normMaxHKVA = max;
 	}
 
+	@Override
 	public void setEmergMaxHKVA(double max) {
 		emergMaxHKVA = max;
 	}
 
+	@Override
 	public void setFLRise(double rise) {
 		FLRise = rise;
 	}
 
+	@Override
 	public void setHSRise(double rise) {
 		HSRise = rise;
 	}
 
+	@Override
 	public void setPctLoadLoss(double pct) {
 		this.pctLoadLoss = pct;
 	}
 
+	@Override
 	public void setPctNoLoadLoss(double pct) {
 		this.pctNoLoadLoss = pct;
 	}

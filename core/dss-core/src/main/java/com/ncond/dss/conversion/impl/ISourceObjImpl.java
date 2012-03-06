@@ -1,7 +1,6 @@
 package com.ncond.dss.conversion.impl;
 
 import java.io.OutputStream;
-import java.io.PrintStream;
 import java.io.PrintWriter;
 
 
@@ -226,52 +225,64 @@ public class ISourceObjImpl extends PCElementImpl implements ISourceObj {
 		super.makePosSequence();
 	}
 
+	@Override
 	public double getSrcFrequency() {
 		return srcFrequency;
 	}
 
+	@Override
 	public void setSrcFrequency(double frequency) {
 		srcFrequency = frequency;
 	}
 
 	// FIXME Private members in OpenDSS
 
+	@Override
 	public double getAmps() {
 		return amps;
 	}
 
+	@Override
 	public void setAmps(double value) {
 		amps = value;
 	}
 
+	@Override
 	public double getAngle() {
 		return angle;
 	}
 
+	@Override
 	public void setAngle(double ang) {
 		angle = ang;
 	}
 
+	@Override
 	public double getPhaseShift() {
 		return phaseShift;
 	}
 
+	@Override
 	public void setPhaseShift(double shift) {
 		phaseShift = shift;
 	}
 
+	@Override
 	public int getScanType() {
 		return scanType;
 	}
 
+	@Override
 	public void setScanType(int type) {
 		scanType = type;
 	}
 
+	@Override
 	public int getSequenceType() {
 		return sequenceType;
 	}
 
+	@Override
 	public void setSequenceType(int type) {
 		sequenceType = type;
 	}

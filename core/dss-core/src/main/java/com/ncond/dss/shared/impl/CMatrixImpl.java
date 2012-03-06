@@ -19,34 +19,41 @@ public class CMatrixImpl implements CMatrix {
 			values[i] = Complex.ZERO;
 	}
 
+	@Override
 	public int order() {
 		return nOrder;
 	}
 
+	@Override
 	public void set(int i, int j, Complex value) {
 		values[(j * nOrder + i)] = value;
 	}
 
+	@Override
 	public void setSym(int i, int j, Complex value) {
 		values[j * nOrder + i] = value;
 		if (i != j)
 			values[i * nOrder + j] = value;  // ensure symmetry
 	}
 
+	@Override
 	public void add(int i, int j, Complex value) {
 		values[j * nOrder + i] = values[j * nOrder + i].add(value);
 	}
 
+	@Override
 	public void addSym(int i, int j, Complex value) {
 		values[j * nOrder + i] = values[j * nOrder + i].add(value);
 		if (i != j)
 			values[i * nOrder + j] = values[i * nOrder + j].add(value);  // ensure symmetry
 	}
 
+	@Override
 	public Complex get(int i, int j) {
 		return values[j * nOrder + i];
 	}
 
+	@Override
 	public int getErrorCode() {
 		return invertError;
 	}
@@ -54,6 +61,7 @@ public class CMatrixImpl implements CMatrix {
 	/**
 	 * Zero out matrix
 	 */
+	@Override
 	public void clear() {
 		for (int i = 0; i < nOrder * nOrder; i++)
 			values[i] = Complex.ZERO;
@@ -62,6 +70,7 @@ public class CMatrixImpl implements CMatrix {
 	/**
 	 * b = Ax
 	 */
+	@Override
 	public void vMult(Complex[] b, Complex[] x) {
 		Complex sum;
 		for (int i = 0; i < nOrder; i++) {
@@ -77,6 +86,7 @@ public class CMatrixImpl implements CMatrix {
 	 *
 	 * Same as MVMult except accumulates b.
 	 */
+	@Override
 	public void vMultAccum(Complex[] b, Complex[] x) {
 		Complex sum;
 		for (int i = 0; i < nOrder; i++) {
@@ -87,6 +97,7 @@ public class CMatrixImpl implements CMatrix {
 		}
 	}
 
+	@Override
 	public void addFrom(CMatrix otherMatrix) {
 		if (nOrder == otherMatrix.order()) {
 			for (int i = 0; i < nOrder; i++) {
@@ -97,6 +108,7 @@ public class CMatrixImpl implements CMatrix {
 		}
 	}
 
+	@Override
 	public void copyFrom(CMatrix otherMatrix) {
 		if (nOrder == otherMatrix.order()) {
 			for (int i = 0; i < nOrder; i++) {
@@ -110,6 +122,7 @@ public class CMatrixImpl implements CMatrix {
 	/**
 	 * Sum all elements in a given block of the matrix.
 	 */
+	@Override
 	public Complex sumBlock(int row1, int row2, int col1, int col2) {
 		int rowstart;
 		Complex sum = Complex.ZERO;
@@ -124,15 +137,18 @@ public class CMatrixImpl implements CMatrix {
 		return sum;
 	}
 
+	@Override
 	public Complex[] asArray(int[] order) {
 		order[0] = nOrder;
 		return values;
 	}
 
+	@Override
 	public Complex[] asArray() {
 		return values;
 	}
 
+	@Override
 	public void zeroRow(int iRow) {
 		int j = iRow;
 		for (int i = 0; i < nOrder; i++) {
@@ -141,6 +157,7 @@ public class CMatrixImpl implements CMatrix {
 		}
 	}
 
+	@Override
 	public void zeroCol(int iCol) {
 		for (int i = iCol * nOrder; i < (iCol + 1) * nOrder; i++) {
 			values[i] = Complex.ZERO;
@@ -150,6 +167,7 @@ public class CMatrixImpl implements CMatrix {
 	/**
 	 * Average of diagonal elements
 	 */
+	@Override
 	public Complex avgDiag() {
 		Complex result = Complex.ZERO;
 		for (int i = 0; i < nOrder; i++)
@@ -164,6 +182,7 @@ public class CMatrixImpl implements CMatrix {
 	/**
 	 * Average the upper triangle off diagonals.
 	 */
+	@Override
 	public Complex avgOffDiag() {
 		Complex result = Complex.ZERO;
 		int nTimes = 0;
@@ -183,6 +202,7 @@ public class CMatrixImpl implements CMatrix {
 	/**
 	 * Multiply all elements by a constant
 	 */
+	@Override
 	public void mult(double x) {
 		for (int i = 0; i < nOrder * nOrder; i++)
 			values[i] = values[i].multiply(x);
@@ -191,6 +211,7 @@ public class CMatrixImpl implements CMatrix {
 	/**
 	 * Inverts the matrix
 	 */
+	@Override
 	public void invert() {
 		int j, K, L, LL, m, i;
 		int[] LT;
@@ -275,6 +296,7 @@ public class CMatrixImpl implements CMatrix {
 	/**
 	 * Perform Kron reduction on last row/col and return new matrix
 	 */
+	@Override
 	public CMatrix kron(int eliminationRow) {
 		int ii, jj;
 		CMatrix result = null;   // null result on failure

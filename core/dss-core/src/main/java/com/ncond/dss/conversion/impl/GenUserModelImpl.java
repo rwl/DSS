@@ -37,14 +37,17 @@ public class GenUserModelImpl implements GenUserModel {
 	/**
 	 * Select active instance.
 	 */
+	@Override
 	public int select(int x) {
 		return 0;
 	}
 
+	@Override
 	public String getName() {
 		return name;
 	}
 
+	@Override
 	public void setName(String value) {
 	}
 
@@ -52,10 +55,12 @@ public class GenUserModelImpl implements GenUserModel {
 		return null;
 	}
 
+	@Override
 	public void edit(String value) {
 
 	}
 
+	@Override
 	public boolean exists() {
 		return false;
 	}
@@ -63,12 +68,14 @@ public class GenUserModelImpl implements GenUserModel {
 	/**
 	 * Send string to user model to handle
 	 */
+	@Override
 	public void edit(int s, int maxlen) {
 	}
 
 	/**
 	 * For dynamics
 	 */
+	@Override
 	public void init(Complex[] V, Complex[] I) {
 
 	}
@@ -76,6 +83,7 @@ public class GenUserModelImpl implements GenUserModel {
 	/**
 	 * Returns currents or sets Pshaft.
 	 */
+	@Override
 	public void calc(Complex[] V, Complex[] I) {
 
 	}
@@ -83,6 +91,7 @@ public class GenUserModelImpl implements GenUserModel {
 	/**
 	 * Integrates any state vars
 	 */
+	@Override
 	public void integrate() {
 
 	}
@@ -90,48 +99,59 @@ public class GenUserModelImpl implements GenUserModel {
 	/**
 	 * Called when props of generator updated.
 	 */
+	@Override
 	public void updateModel() {
 
 	}
 
+	@Override
 	public GeneratorVars getActiveGeneratorVars() {
 		return activeGeneratorVars;
 	}
 
+	@Override
 	public void setActiveGeneratorVars(GeneratorVars generatorVars) {
 		activeGeneratorVars = generatorVars;
 	}
 
+	@Override
 	public void save() {
 
 	}
 
+	@Override
 	public void restore() {
 
 	}
 
 	/* Monitoring functions */
 
+	@Override
 	public int numVars() {
 		return 0;
 	}
 
+	@Override
 	public void getAllVars(double[] vars) {
 
 	}
 
+	@Override
 	public void getAllVars(double var) {
 
 	}
 
+	@Override
 	public double getVariable(int i) {
 		return 0.0;
 	}
 
+	@Override
 	public void setVariable(int i, double value) {
 
 	}
 
+	@Override
 	public void getVarName(int varNum, int varName, int maxlen) {
 
 	}

@@ -40,6 +40,7 @@ public class ControlQueueImpl implements ControlQueue {
 		debugTrace = false;
 	}
 
+	@Override
 	public int push(int hour, double sec, int code, int proxyHdl, final ControlElem owner) {
 		int hr;
 		double thisActionTime, s;
@@ -92,14 +93,17 @@ public class ControlQueueImpl implements ControlQueue {
 		return ctrlHandle;
 	}
 
+	@Override
 	public int push(int hour, double sec, ControlAction code, int proxyHdl, final ControlElem owner) {
 		return push(hour, sec, code.code(), proxyHdl, owner);
 	}
 
+	@Override
 	public void clear() {
 		actionList.clear();
 	}
 
+	@Override
 	public void doAllActions() {
 		ActionRecord action;
 		for (int i = 0; i < actionList.size(); i++) {
@@ -109,6 +113,7 @@ public class ControlQueueImpl implements ControlQueue {
 		actionList.clear();
 	}
 
+	@Override
 	public boolean doNearestActions(int[] hour, double[] sec) {
 		ControlElem pElem;
 		TimeRec t;
@@ -135,6 +140,7 @@ public class ControlQueueImpl implements ControlQueue {
 		return result;
 	}
 
+	@Override
 	public boolean isEmpty() {
 		return actionList.size() == 0;
 	}
@@ -181,6 +187,7 @@ public class ControlQueueImpl implements ControlQueue {
 		actionList.remove(i);
 	}
 
+	@Override
 	public boolean doActions(int hour, double sec) {
 		TimeRec t = new TimeRec();
 		int[] code = new int[1];
@@ -209,6 +216,7 @@ public class ControlQueueImpl implements ControlQueue {
 		return timeRec.hour * 3600.0 + timeRec.sec;
 	}
 
+	@Override
 	public void setTrace(final boolean value) {
 		debugTrace = value;
 
@@ -226,10 +234,12 @@ public class ControlQueueImpl implements ControlQueue {
 		}
 	}
 
+	@Override
 	public boolean isTrace() {
 		return debugTrace;
 	}
 
+	@Override
 	public void showQueue(String fileName) {
 		ActionRecord pAction;
 
@@ -279,6 +289,7 @@ public class ControlQueueImpl implements ControlQueue {
 		}
 	}
 
+	@Override
 	public void delete(int hdl) {
 		for (int i = 0; i < actionList.size(); i++) {
  			if (actionList.get(i).actionHandle == hdl) {

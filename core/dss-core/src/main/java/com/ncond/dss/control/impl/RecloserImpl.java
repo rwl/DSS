@@ -40,6 +40,7 @@ public class RecloserImpl extends ControlClassImpl implements Recloser {
 		return result;
 	}
 
+	@Override
 	protected void defineProperties() {
 
 		numProperties = NumPropsThisClass;
@@ -241,6 +242,12 @@ public class RecloserImpl extends ControlClassImpl implements Recloser {
 		ar.recalcElementData();
 
 		return result;
+	}
+
+	@Override
+	public int init(int handle) {
+		DSS.doSimpleMsg("Need to implement Recloser.init", -1);
+		return 0;
 	}
 
 	@Override

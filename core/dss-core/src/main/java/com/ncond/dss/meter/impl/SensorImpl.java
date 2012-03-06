@@ -30,6 +30,7 @@ public class SensorImpl extends MeterClassImpl implements Sensor {
 		commandList.setAbbrevAllowed(true);
 	}
 
+	@Override
 	protected void defineProperties() {
 
 		numProperties = NumPropsThisClass;
@@ -236,6 +237,7 @@ public class SensorImpl extends MeterClassImpl implements Sensor {
 	/**
 	 * Set the hasSensorObj flag for all ckt element.
 	 */
+	@Override
 	public void setHasSensorFlag() {
 		int i;
 		SensorObj thisSensor;

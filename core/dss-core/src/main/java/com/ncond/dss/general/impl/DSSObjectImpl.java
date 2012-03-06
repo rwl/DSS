@@ -8,14 +8,13 @@
 package com.ncond.dss.general.impl;
 
 import java.io.OutputStream;
-import java.io.PrintStream;
 import java.io.PrintWriter;
 
 import com.ncond.dss.common.DSSClass;
 import com.ncond.dss.common.impl.Util;
 import com.ncond.dss.general.DSSObject;
 
-public class DSSObjectImpl extends NamedObjectImpl implements DSSObject {
+abstract public class DSSObjectImpl extends NamedObjectImpl implements DSSObject {
 
 	protected int propSeqCount;
 
@@ -36,6 +35,7 @@ public class DSSObjectImpl extends NamedObjectImpl implements DSSObject {
 	/** General purpose flag for each object  don't assume inited */
 	protected boolean flag;
 
+	@Override
 	public void clearPropSeqArray() {
 		propSeqCount = 0;
 		for (int i = 0; i < parentClass.getNumProperties(); i++)
@@ -56,6 +56,7 @@ public class DSSObjectImpl extends NamedObjectImpl implements DSSObject {
 		hasBeenSaved = false;
 	}
 
+	@Override
 	public void dumpProperties(OutputStream out, boolean complete) {
 		PrintWriter pw = new PrintWriter(out);
 		pw.println();
@@ -66,6 +67,7 @@ public class DSSObjectImpl extends NamedObjectImpl implements DSSObject {
 	/**
 	 * Allow calls to edit from object itself.
 	 */
+	@Override
 	public int edit() {
 		parentClass.setActiveElement(classIndex);
 		return parentClass.edit();
@@ -74,11 +76,13 @@ public class DSSObjectImpl extends NamedObjectImpl implements DSSObject {
 	/**
 	 * Use DSSClass.propertyIndex() to get index by name.
 	 */
+	@Override
 	public String getPropertyValue(int index) {
 		// default behavior for all DSS objects
 		return propertyValue[index];
 	}
 
+	@Override
 	public void initPropertyValues(int arrayOffset) {
 		propertyValue[arrayOffset] = "";
 
@@ -86,6 +90,7 @@ public class DSSObjectImpl extends NamedObjectImpl implements DSSObject {
 		clearPropSeqArray();
 	}
 
+	@Override
 	public void saveWrite(PrintWriter f) {
 		/* Write only properties that were explicitly set in the
 		 * final order they were actually set.
@@ -120,6 +125,7 @@ public class DSSObjectImpl extends NamedObjectImpl implements DSSObject {
 		return result;
 	}
 
+	@Override
 	public void setName(String value) {
 		// if renamed, then let someone know so hash list can be updated
 		if (getLocalName().length() > 0)
@@ -128,6 +134,7 @@ public class DSSObjectImpl extends NamedObjectImpl implements DSSObject {
 		setLocalName(value);
 	}
 
+	@Override
 	public void setPropertyValue(int index, String value) {
 		propertyValue[index] = value;
 
@@ -137,51 +144,63 @@ public class DSSObjectImpl extends NamedObjectImpl implements DSSObject {
 		prpSequence[index] = propSeqCount;
 	}
 
+	@Override
 	public String getName() {
 		return getLocalName();
 	}
 
+	@Override
 	public int getDSSObjType() {
 		return objType;
 	}
 
+	@Override
 	public void setDSSObjType(int type) {
 		objType = type;
 	}
 
+	@Override
 	public DSSClass getParentClass() {
 		return parentClass;
 	}
 
+	@Override
 	public void setParentClass(DSSClass parent) {
 		parentClass = parent;
 	}
 
+	@Override
 	public int getClassIndex() {
 		return classIndex;
 	}
 
+	@Override
 	public void setClassIndex(int index) {
 		classIndex = index;
 	}
 
+	@Override
 	public boolean isHasBeenSaved() {
 		return hasBeenSaved;
 	}
 
+	@Override
 	public void setHasBeenSaved(boolean saved) {
 		hasBeenSaved = saved;
 	}
 
+	@Override
 	public boolean isFlag() {
 		return flag;
 	}
 
+	@Override
 	public void setFlag(boolean value) {
 		flag = value;
 	}
 
 	// FIXME Protected member in OpenDSS
+	@Override
 	public int[] getPrpSequence() {
 		return prpSequence;
 	}

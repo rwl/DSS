@@ -1,7 +1,6 @@
 package com.ncond.dss.general.impl;
 
 import java.io.OutputStream;
-import java.io.PrintStream;
 import java.io.PrintWriter;
 
 import org.apache.commons.math.complex.Complex;
@@ -84,6 +83,7 @@ public class SpectrumObjImpl extends DSSObjectImpl implements SpectrumObj {
 		pw.close();
 	}
 
+	@Override
 	public Complex getMult(double h) {
 		/* Search list for harmonic (nearest 0.01 harmonic) and return multiplier */
 		for (int i = 0; i < numHarm; i++)
@@ -94,6 +94,7 @@ public class SpectrumObjImpl extends DSSObjectImpl implements SpectrumObj {
 		return Complex.ZERO;
 	}
 
+	@Override
 	public String getPropertyValue(int index) {
 		int i;
 		String result;
@@ -149,6 +150,7 @@ public class SpectrumObjImpl extends DSSObjectImpl implements SpectrumObj {
 		return result;
 	}
 
+	@Override
 	public void initPropertyValues(int arrayOffset) {
 
 		setPropertyValue(0, "0");
@@ -164,6 +166,7 @@ public class SpectrumObjImpl extends DSSObjectImpl implements SpectrumObj {
 	 * Rotate all phase angles so that the fundamental is at zero.
 	 */
 	// FIXME Private method in OpenDSS
+	@Override
 	public void setMultArray() {
 		int i;
 		double fundAngle;
@@ -187,44 +190,54 @@ public class SpectrumObjImpl extends DSSObjectImpl implements SpectrumObj {
 		}
 	}
 
+	@Override
 	public int getNumHarm() {
 		return numHarm;
 	}
 
+	@Override
 	public void setNumHarm(int num) {
 		numHarm = num;
 	}
 
+	@Override
 	public double[] getHarmArray() {
 		return harmArray;
 	}
 
+	@Override
 	public void setHarmArray(double[] array) {
 		harmArray = array;
 	}
 
 	// FIXME Private members in OpenDSS
 
+	@Override
 	public double[] getPUMagArray() {
 		return puMagArray;
 	}
 
+	@Override
 	public void setPUMagArray(double[] array) {
 		this.puMagArray = array;
 	}
 
+	@Override
 	public double[] getAngleArray() {
 		return angleArray;
 	}
 
+	@Override
 	public void setAngleArray(double[] array) {
 		angleArray = array;
 	}
 
+	@Override
 	public Complex[] getMultArray() {
 		return multArray;
 	}
 
+	@Override
 	public void setMultArray(Complex[] array) {
 		multArray = array;
 	}

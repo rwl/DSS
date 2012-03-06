@@ -61,6 +61,7 @@ public class DSSExecutive implements Executive {
 		return DSSExecutiveHolder.INSTANCE;
 	}
 
+	@Override
 	protected void finalize() throws Throwable {
 		DSS.writeDSS_Registry();
 
@@ -75,10 +76,12 @@ public class DSSExecutive implements Executive {
 		DSSClassDefs.disposeDSSClasses();
 	}
 
+	@Override
 	public String getLastError() {
 		return DSS.lastErrorMessage;
 	}
 
+	@Override
 	public int getErrorResult() {
 		return DSS.errorNumber;
 	}
@@ -87,6 +90,7 @@ public class DSSExecutive implements Executive {
 	 * Create default loadshapes, growthshapes, and other general DSS objects
 	 * used by all circuits.
 	 */
+	@Override
 	public void createDefaultDSSItems() {
 		/* this load shape used for generator dispatching, etc. loads may refer to it, also. */
 		setCommand("new loadshape.default npts=24 1.0 mult=(.677 .6256 .6087 .5833 .58028 .6025 .657 .7477 .832 .88 .94 .989 .985 .98 .9898 .999 1 .958 .936 .913 .876 .876 .828 .756)");
@@ -106,14 +110,17 @@ public class DSSExecutive implements Executive {
 		}
 	}
 
+	@Override
 	public String getCommand() {
 		return ExecCommands.getInstance().getLastCmdLine();
 	}
 
+	@Override
 	public void setCommand(String value) {
 		ExecCommands.getInstance().processCommand(value);
 	}
 
+	@Override
 	public void clear() {
 		if (DSS.numCircuits > 0) {
 			/* First get rid of all existing stuff */
@@ -127,6 +134,7 @@ public class DSSExecutive implements Executive {
 		}
 	}
 
+	@Override
 	public void setRecorderOn(boolean value) {
 		try {
 			if (value) {
@@ -145,10 +153,12 @@ public class DSSExecutive implements Executive {
 		recorderOn = value;
 	}
 
+	@Override
 	public boolean isRecorderOn() {
 		return recorderOn;
 	}
 
+	@Override
 	public void writeToRecorderFile(String s) {
 		new PrintWriter(recorderFileWriter).println(s);
 	}

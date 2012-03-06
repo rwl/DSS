@@ -48,6 +48,7 @@ public class BusImpl extends NamedObjectImpl implements Bus {
 		isRadialBus     = false;
 	}
 
+	@Override
 	public int add(int nodeNum) {
 		int result;
 		Circuit ckt = DSS.activeCircuit;
@@ -77,12 +78,14 @@ public class BusImpl extends NamedObjectImpl implements Bus {
 		}
 	}
 
+	@Override
 	public int find(int nodeNum) {
 		for (int i = 0; i < numNodesThisBus; i++)
 			if (nodes[i] == nodeNum) return refNo[i];
 		return 0;
 	}
 
+	@Override
 	public int getRef(int nodeIndex) {
 		if (nodeIndex >= 0 && nodeIndex < numNodesThisBus) {
 			return refNo[nodeIndex];
@@ -91,6 +94,7 @@ public class BusImpl extends NamedObjectImpl implements Bus {
 		}
 	}
 
+	@Override
 	public int getNum(int nodeIndex) {
 		if (nodeIndex >= 0 && nodeIndex < numNodesThisBus) {
 			return nodes[nodeIndex];
@@ -99,6 +103,7 @@ public class BusImpl extends NamedObjectImpl implements Bus {
 		}
 	}
 
+	@Override
 	public void allocateBusQuantities() {
 		// have to perform a short circuit study to get this allocated
 		Ysc = new CMatrixImpl(numNodesThisBus);
@@ -107,6 +112,7 @@ public class BusImpl extends NamedObjectImpl implements Bus {
 		allocateBusCurrents();
 	}
 
+	@Override
 	public Complex getZsc0() {
 		if (Zsc != null) {
 			return Zsc.avgDiag().add( Zsc.avgOffDiag().multiply(2.0) );
@@ -115,6 +121,7 @@ public class BusImpl extends NamedObjectImpl implements Bus {
 		}
 	}
 
+	@Override
 	public Complex getZsc1() {
 		if (Zsc != null) {
 			return Zsc.avgDiag().subtract( Zsc.avgOffDiag() );
@@ -123,12 +130,14 @@ public class BusImpl extends NamedObjectImpl implements Bus {
 		}
 	}
 
+	@Override
 	public int findIdx(int nodeNum) {
 		for (int i = 0; i < numNodesThisBus; i++)
 			if (nodes[i] == nodeNum) return i;
 		return -1;
 	}
 
+	@Override
 	public void allocateBusVoltages() {
 		VBus = new Complex[numNodesThisBus];
 
@@ -136,6 +145,7 @@ public class BusImpl extends NamedObjectImpl implements Bus {
 			VBus[i] = Complex.ZERO;
 	}
 
+	@Override
 	public void allocateBusCurrents() {
 		busCurrent = new Complex[numNodesThisBus];
 
@@ -143,102 +153,127 @@ public class BusImpl extends NamedObjectImpl implements Bus {
 			busCurrent[i] = Complex.ZERO;
 	}
 
+	@Override
 	public Complex[] getVBus() {
 		return VBus;
 	}
 
+	@Override
 	public void setVBus(Complex[] vBus) {
 		VBus = vBus;
 	}
 
+	@Override
 	public Complex[] getBusCurrent() {
 		return busCurrent;
 	}
 
+	@Override
 	public void setBusCurrent(Complex[] buscurrent) {
 		busCurrent = buscurrent;
 	}
 
+	@Override
 	public CMatrix getZsc() {
 		return Zsc;
 	}
 
+	@Override
 	public void setZsc(CMatrix zsc) {
 		Zsc = zsc;
 	}
 
+	@Override
 	public CMatrix getYsc() {
 		return Ysc;
 	}
 
+	@Override
 	public void setYsc(CMatrix ysc) {
 		Ysc = ysc;
 	}
 
+	@Override
 	public double getX() {
 		return x;
 	}
 
+	@Override
 	public void setX(double x) {
 		this.x = x;
 	}
 
+	@Override
 	public double getY() {
 		return y;
 	}
 
+	@Override
 	public void setY(double y) {
 		this.y = y;
 	}
 
+	@Override
 	public double getKVBase() {
 		return kVBase;
 	}
 
+	@Override
 	public void setKVBase(double kVBase) {
 		this.kVBase = kVBase;
 	}
 
+	@Override
 	public double getDistFromMeter() {
 		return distFromMeter;
 	}
 
+	@Override
 	public void setDistFromMeter(double distFromMeter) {
 		this.distFromMeter = distFromMeter;
 	}
 
+	@Override
 	public boolean isCoordDefined() {
 		return coordDefined;
 	}
 
+	@Override
 	public void setCoordDefined(boolean defined) {
 		coordDefined = defined;
 	}
 
+	@Override
 	public boolean isBusChecked() {
 		return busChecked;
 	}
 
+	@Override
 	public void setBusChecked(boolean checked) {
 		busChecked = checked;
 	}
 
+	@Override
 	public boolean isKeep() {
 		return keep;
 	}
 
+	@Override
 	public void setKeep(boolean keep) {
 		this.keep = keep;
 	}
 
+	@Override
 	public boolean isRadialBus() {
 		return isRadialBus;
 	}
 
+	@Override
 	public void setRadialBus(boolean isRadial) {
 		isRadialBus = isRadial;
 	}
 
+	@Override
 	public int getNumNodesThisBus() {
 		return numNodesThisBus;
 	}

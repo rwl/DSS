@@ -1,7 +1,7 @@
 package com.ncond.dss.common;
 
 import com.ncond.dss.common.impl.ControlProblem;
-import com.ncond.dss.common.impl.Esolv32Problem;
+import com.ncond.dss.common.impl.SolveProblem;
 import com.ncond.dss.common.impl.SolverError;
 
 /*
@@ -45,9 +45,9 @@ public interface AutoAdd {
 	 *
 	 * @throws ControlProblem
 	 * @throws SolverError
-	 * @throws Esolv32Problem
+	 * @throws SolveProblem
 	 */
-	int solve() throws SolverError, ControlProblem, Esolv32Problem;
+	int solve() throws SolverError, ControlProblem, SolveProblem;
 
 	/**
 	 * Compute injection currents for generator or capacitor and add into

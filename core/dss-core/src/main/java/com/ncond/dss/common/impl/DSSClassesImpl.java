@@ -5,6 +5,7 @@ import com.ncond.dss.common.DSSClasses;
 
 public class DSSClassesImpl implements DSSClasses {
 
+	@Override
 	public void setNew(DSSClass value) {
 
 		DSS.DSSClassList.add(value);  // add to class list

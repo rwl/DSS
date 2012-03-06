@@ -168,6 +168,7 @@ public interface GeneratorObj extends PCElement {
 	void resetStartPoint();
 
 	/** Make a positive sequence model */
+	@Override
 	void makePosSequence();
 
 	// FIXME Private method in OpenDSS

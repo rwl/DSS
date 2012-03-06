@@ -10,6 +10,7 @@ import com.ncond.dss.common.impl.DSSClassDefs;
 import com.ncond.dss.common.impl.DSSClassImpl;
 import com.ncond.dss.common.impl.DSS;
 import com.ncond.dss.common.impl.Util;
+import com.ncond.dss.general.DSSObject;
 import com.ncond.dss.general.XYCurve;
 import com.ncond.dss.general.XYCurveObj;
 import com.ncond.dss.parser.impl.Parser;
@@ -37,6 +38,7 @@ public class XYCurveImpl extends DSSClassImpl implements XYCurve {
 		commandList.setAbbrevAllowed(true);
 	}
 
+	@Override
 	protected void defineProperties() {
 		final String CRLF = DSS.CRLF;
 
@@ -230,10 +232,12 @@ public class XYCurveImpl extends DSSClassImpl implements XYCurve {
 		return result;
 	}
 
+	@Override
 	public String getCode() {
 		return ((XYCurveObj) elementList.getActive()).getName();
 	}
 
+	@Override
 	public void setCode(String value) {
 		activeXYCurveObj = null;
 		XYCurveObj pXYCurveObj = (XYCurveObj) elementList.getFirst();
@@ -337,7 +341,7 @@ public class XYCurveImpl extends DSSClassImpl implements XYCurve {
 	 * Find an obj of this class by name.
 	 */
 	@Override
-	public Object find(String objName) {
+	public DSSObject find(String objName) {
 		if (objName.length() == 0 || objName.equalsIgnoreCase("none")) {
 			return null;
 		} else {

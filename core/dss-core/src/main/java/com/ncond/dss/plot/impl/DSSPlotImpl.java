@@ -182,230 +182,287 @@ public class DSSPlotImpl implements DSSPlot {
 		return null;
 	}
 
+	@Override
 	public void setMaxLineThickness(int value) {
 
 	}
 
+	@Override
 	public int getMaxLineThickness() {
 		return maxLineThickness;
 	}
 
+	@Override
 	public PlotType getPlotType() {
 		return plotType;
 	}
 
+	@Override
 	public void setPlotType(PlotType type) {
 		plotType = type;
 	}
 
+	@Override
 	public double getMaxScale() {
 		return maxScale;
 	}
 
+	@Override
 	public void setMaxScale(double max) {
 		maxScale = max;
 	}
 
+	@Override
 	public double getMinScale() {
 		return minScale;
 	}
 
+	@Override
 	public void setMinScale(double min) {
 		minScale = min;
 	}
 
+	@Override
 	public boolean isDots() {
 		return dots;
 	}
 
+	@Override
 	public void setDots(boolean value) {
 		dots = value;
 	}
 
+	@Override
 	public boolean isLabels() {
 		return labels;
 	}
 
+	@Override
 	public void setLabels(boolean lbl) {
 		labels = lbl;
 	}
 
+	@Override
 	public boolean isShowLoops() {
 		return showLoops;
 	}
 
+	@Override
 	public void setShowLoops(boolean show) {
 		showLoops = show;
 	}
 
+	@Override
 	public boolean isShowSubs() {
 		return showSubs;
 	}
 
+	@Override
 	public void setShowSubs(boolean show) {
 		showSubs = show;
 	}
 
+	@Override
 	public PlotQuantity getQuantity() {
 		return quantity;
 	}
 
+	@Override
 	public void setQuantity(PlotQuantity qty) {
 		quantity = qty;
 	}
 
+	@Override
 	public String getObjectName() {
 		return objectName;
 	}
 
+	@Override
 	public void setObjectName(String name) {
 		objectName = name;
 	}
 
+	@Override
 	public String getFeederName() {
 		return feederName;
 	}
 
+	@Override
 	public void setFeederName(String name) {
 		feederName = name;
 	}
 
+	@Override
 	public int getValueIndex() {
 		return valueIndex;
 	}
 
+	@Override
 	public void setValueIndex(int index) {
 		valueIndex = index;
 	}
 
+	@Override
 	public int getMarkerIdx() {
 		return markerIdx;
 	}
 
+	@Override
 	public void setMarkerIdx(int idx) {
 		markerIdx = idx;
 	}
 
+	@Override
 	public int getPhasesToPlot() {
 		return phasesToPlot;
 	}
 
+	@Override
 	public void setPhasesToPlot(int phases) {
 		phasesToPlot = phases;
 	}
 
+	@Override
 	public int[] getChannels() {
 		return channels;
 	}
 
+	@Override
 	public void setChannels(int[] values) {
 		channels = values;
 	}
 
+	@Override
 	public double[] getBases() {
 		return bases;
 	}
 
+	@Override
 	public void setBases(double[] values) {
 		bases = values;
 	}
 
+	@Override
 	public Color getColor1() {
 		return color1;
 	}
 
+	@Override
 	public void setColor1(Color value) {
 		color1 = value;
 	}
 
+	@Override
 	public Color getColor2() {
 		return color2;
 	}
 
+	@Override
 	public void setColor2(Color value) {
 		color2 = value;
 	}
 
+	@Override
 	public Color getColor3() {
 		return color3;
 	}
 
+	@Override
 	public void setColor3(Color value) {
 		color3 = value;
 	}
 
+	@Override
 	public double getTriColorMax() {
 		return triColorMax;
 	}
 
+	@Override
 	public void setTriColorMax(double max) {
 		triColorMax = max;
 	}
 
+	@Override
 	public double getTriColorMid() {
 		return triColorMid;
 	}
 
+	@Override
 	public void setTriColorMid(double mid) {
 		triColorMid = mid;
 	}
 
+	@Override
 	public boolean isMaxScaleIsSpecified() {
 		return maxScaleIsSpecified;
 	}
 
+	@Override
 	public void setMaxScaleIsSpecified(boolean isSpecified) {
 		maxScaleIsSpecified = isSpecified;
 	}
 
+	@Override
 	public boolean isMinScaleIsSpecified() {
 		return minScaleIsSpecified;
 	}
 
+	@Override
 	public void setMinScaleIsSpecified(boolean isSpecified) {
 		minScaleIsSpecified = isSpecified;
 	}
 
+	@Override
 	public List<String> getDaisyBusList() {
 		return daisyBusList;
 	}
 
+	@Override
 	public void setDaisyBusList(List<String> list) {
 		daisyBusList = list;
 	}
 
+	@Override
 	public void execute() {
 
 	}
 
+	@Override
 	public void setDefaults() {
 
 	}
 
+	@Override
 	public void doLoadShapePlot(String loadShapeName) {
 
 	}
 
+	@Override
 	public void doTempShapePlot(String tempShapeName) {
 
 	}
 
+	@Override
 	public void doPriceShapePlot(String priceShapeName) {
 
 	}
 
+	@Override
 	public void doDI_Plot(String caseName, int caseYear, int[] iRegisters, boolean peakDay, String meterName) {
 
 	}
 
+	@Override
 	public void doCompareCases(String caseName1, String caseName2, String whichFile, int reg) {
 
 	}
 
+	@Override
 	public void doYearlyCurvePlot(ArrayList<String> caseNames, String whichFile, int[] iRegisters) {
 
 	}
 
+	@Override
 	public void doVisualizationPlot(CktElement element, int quantity) {
 
 	}

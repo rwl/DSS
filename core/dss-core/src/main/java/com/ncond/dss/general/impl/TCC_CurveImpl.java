@@ -28,6 +28,7 @@ public class TCC_CurveImpl extends DSSClassImpl implements TCC_Curve {
 		commandList.setAbbrevAllowed(true);
 	}
 
+	@Override
 	protected void defineProperties() {
 		final String CRLF = DSS.CRLF;
 
@@ -169,10 +170,12 @@ public class TCC_CurveImpl extends DSSClassImpl implements TCC_Curve {
 		return 0;
 	}
 
+	@Override
 	public String getCode() {
 		return ((TCC_CurveObj) elementList.getActive()).getName();
 	}
 
+	@Override
 	public void setCode(String value) {
 		activeTCC_CurveObj = null;
 		TCC_CurveObj curve;

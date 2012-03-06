@@ -40,9 +40,9 @@ public class SolutionAlgs {
 	 *
 	 * @throws ControlProblem
 	 * @throws SolverError
-	 * @throws Esolv32Problem
+	 * @throws SolveProblem
 	 */
-	public static int solveYearly() throws SolverError, ControlProblem, Esolv32Problem {
+	public static int solveYearly() throws SolverError, ControlProblem, SolveProblem {
 		int twoPct;
 
 		Circuit ckt = DSS.activeCircuit;
@@ -87,9 +87,9 @@ public class SolutionAlgs {
 	 *
 	 * @throws ControlProblem
 	 * @throws SolverError
-	 * @throws Esolv32Problem
+	 * @throws SolveProblem
 	 */
-	public static int solveDaily() throws SolverError, ControlProblem, Esolv32Problem {
+	public static int solveDaily() throws SolverError, ControlProblem, SolveProblem {
 		Circuit ckt = DSS.activeCircuit;
 		SolutionObj sol = ckt.getSolution();
 
@@ -131,10 +131,10 @@ public class SolutionAlgs {
 	 *
 	 * @throws ControlProblem
 	 * @throws SolverError
-	 * @throws Esolv32Problem
+	 * @throws SolveProblem
 	 *
 	 */
-	public static int solvePeakDay() throws SolverError, ControlProblem, Esolv32Problem {
+	public static int solvePeakDay() throws SolverError, ControlProblem, SolveProblem {
 		Circuit ckt = DSS.activeCircuit;
 		SolutionObj sol = ckt.getSolution();
 
@@ -172,9 +172,9 @@ public class SolutionAlgs {
 	 * Solve following duty cycle.
 	 * @throws ControlProblem
 	 * @throws SolverError
-	 * @throws Esolv32Problem
+	 * @throws SolveProblem
 	 */
-	public static int solveDuty() throws SolverError, ControlProblem, Esolv32Problem {
+	public static int solveDuty() throws SolverError, ControlProblem, SolveProblem {
 		Circuit ckt = DSS.activeCircuit;
 		SolutionObj sol = ckt.getSolution();
 
@@ -212,9 +212,9 @@ public class SolutionAlgs {
 	 *
 	 * @throws ControlProblem
 	 * @throws SolverError
-	 * @throws Esolv32Problem
+	 * @throws SolveProblem
 	 */
-	public static int solveGeneralTime() throws SolverError, ControlProblem, Esolv32Problem {
+	public static int solveGeneralTime() throws SolverError, ControlProblem, SolveProblem {
 		Circuit ckt = DSS.activeCircuit;
 		SolutionObj sol = ckt.getSolution();
 
@@ -248,9 +248,9 @@ public class SolutionAlgs {
 	 * Solve dynamics.
 	 * @throws ControlProblem
 	 * @throws SolverError
-	 * @throws Esolv32Problem
+	 * @throws SolveProblem
 	 */
-	public static int solveDynamic() throws SolverError, ControlProblem, Esolv32Problem {
+	public static int solveDynamic() throws SolverError, ControlProblem, SolveProblem {
 		Circuit ckt = DSS.activeCircuit;
 		SolutionObj sol = ckt.getSolution();
 
@@ -285,9 +285,9 @@ public class SolutionAlgs {
 	 *
 	 * @throws ControlProblem
 	 * @throws SolverError
-	 * @throws Esolv32Problem
+	 * @throws SolveProblem
 	 */
-	public static int solveMonte1() throws SolverError, ControlProblem, Esolv32Problem {
+	public static int solveMonte1() throws SolverError, ControlProblem, SolveProblem {
 		Circuit ckt = DSS.activeCircuit;
 		SolutionObj sol = ckt.getSolution();
 
@@ -332,9 +332,9 @@ public class SolutionAlgs {
 	 *
 	 * @throws ControlProblem
 	 * @throws SolverError
-	 * @throws Esolv32Problem
+	 * @throws SolveProblem
 	 */
-	public static int solveMonte2() throws SolverError, ControlProblem, Esolv32Problem {
+	public static int solveMonte2() throws SolverError, ControlProblem, SolveProblem {
 		Circuit ckt = DSS.activeCircuit;
 		SolutionObj sol = ckt.getSolution();
 
@@ -399,9 +399,9 @@ public class SolutionAlgs {
 	 * Hold time fixed and just vary the global load multiplier.
 	 * @throws ControlProblem
 	 * @throws SolverError
-	 * @throws Esolv32Problem
+	 * @throws SolveProblem
 	 */
-	public static int solveMonte3() throws SolverError, ControlProblem, Esolv32Problem {
+	public static int solveMonte3() throws SolverError, ControlProblem, SolveProblem {
 		Circuit ckt = DSS.activeCircuit;
 		SolutionObj sol = ckt.getSolution();
 
@@ -464,9 +464,9 @@ public class SolutionAlgs {
 	 * Do a Daily Simulation based on a load duration curve.
 	 * @throws ControlProblem
 	 * @throws SolverError
-	 * @throws Esolv32Problem
+	 * @throws SolveProblem
 	 */
-	public static int solveLD1() throws SolverError, ControlProblem, Esolv32Problem {
+	public static int solveLD1() throws SolverError, ControlProblem, SolveProblem {
 		Circuit ckt = DSS.activeCircuit;
 		SolutionObj sol = ckt.getSolution();
 
@@ -538,9 +538,9 @@ public class SolutionAlgs {
 	 *
 	 * @throws ControlProblem
 	 * @throws SolverError
-	 * @throws Esolv32Problem
+	 * @throws SolveProblem
 	 */
-	public static int solveLD2() throws SolverError, ControlProblem, Esolv32Problem {
+	public static int solveLD2() throws SolverError, ControlProblem, SolveProblem {
 		Circuit ckt = DSS.activeCircuit;
 		SolutionObj sol = ckt.getSolution();
 
@@ -619,9 +619,9 @@ public class SolutionAlgs {
 	/**
 	 * Solve Monte Carlo Fault Study.
 	 *
-	 * @throws Esolv32Problem
+	 * @throws SolveProblem
 	 */
-	public static int solveMonteFault() throws Esolv32Problem {
+	public static int solveMonteFault() throws SolveProblem {
 		Circuit ckt = DSS.activeCircuit;
 		SolutionObj sol = ckt.getSolution();
 
@@ -679,9 +679,9 @@ public class SolutionAlgs {
 	 * Compute YSC for I-th bus.
 	 * Assume InjCurr is zeroed.
 	 *
-	 * @throws Esolv32Problem
+	 * @throws SolveProblem
 	 */
-	public static void computeYsc(int iB) throws Esolv32Problem {
+	public static void computeYsc(int iB) throws SolveProblem {
 		Circuit ckt = DSS.activeCircuit;
 		SolutionObj sol = ckt.getSolution();
 		Bus bus = ckt.getBus(iB);
@@ -695,7 +695,7 @@ public class SolutionAlgs {
 				sol.setCurrent(ref1, Complex.ONE);
 				/* SparseSet expects 1st element of voltage array, not 0-th element */
 				if (YMatrix.solveSparseSet(sol.getYSystem(), sol.getNodeV(), 1, sol.getCurrents(), 1) < 1)
-					throw new Esolv32Problem("Error solving system Y matrix in computeYsc. Problem with sparse matrix solver.");
+					throw new SolveProblem("Error solving system Y matrix in computeYsc. Problem with sparse matrix solver.");
 				/* Extract voltage vector = column of Zsc */
 				for (int j = 0; j < bus.getNumNodesThisBus(); j++)
 					bus.getZsc().set(j, i, sol.getNodeV( bus.getRef(j) ));
@@ -718,7 +718,7 @@ public class SolutionAlgs {
 		for (int iB = 0; iB < ckt.getNumBuses(); iB++) {
 			try {
 				computeYsc(iB);  // compute YSC for iB-th Bus
-			} catch (Esolv32Problem e) {
+			} catch (SolveProblem e) {
 				// TODO Auto-generated catch block
 			}
 			if ((iB * 10) / ckt.getNumBuses() > progressCount) {
@@ -740,9 +740,9 @@ public class SolutionAlgs {
 	/**
 	 * Full fault study
 	 *
-	 * @throws Esolv32Problem
+	 * @throws SolveProblem
 	 */
-	public static int solveFaultStudy() throws Esolv32Problem {
+	public static int solveFaultStudy() throws SolveProblem {
 		SolutionObj sol = DSS.activeCircuit.getSolution();
 
 		DSS.forms.showPctProgress(0);
@@ -869,7 +869,7 @@ public class SolutionAlgs {
 		spectrumInUse = null;
 	}
 
-	public static int solveHarmonic() throws Esolv32Problem {
+	public static int solveHarmonic() throws SolveProblem {
 		double[] frequencyList = new double[0];
 		int nFreq = 0;
 

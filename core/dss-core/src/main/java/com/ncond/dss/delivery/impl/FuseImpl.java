@@ -45,6 +45,7 @@ public class FuseImpl extends ControlClassImpl implements Fuse {
 		return result;
 	}
 
+	@Override
 	protected void defineProperties() {
 		numProperties = Fuse.NumPropsThisClass;
 		countProperties();  // get inherited property count
@@ -205,6 +206,12 @@ public class FuseImpl extends ControlClassImpl implements Fuse {
 		}
 
 		return result;
+	}
+
+	@Override
+	public int init(int handle) {
+		DSS.doSimpleMsg("Need to implement Fuse.init", -1);
+		return 0;
 	}
 
 }

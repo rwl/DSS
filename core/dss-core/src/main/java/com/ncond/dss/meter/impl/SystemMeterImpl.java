@@ -41,6 +41,7 @@ public class SystemMeterImpl implements SystemMeter {
 	 * Only called if "SaveDemandInterval".
 	 */
 	// FIXME Protected method in OpenDSS
+	@Override
 	public void appendDemandIntervalFile() {
 		String fileName = "";
 
@@ -79,6 +80,7 @@ public class SystemMeterImpl implements SystemMeter {
 	}
 
 	// FIXME Protected method in OpenDSS
+	@Override
 	public void closeDemandIntervalFile() {
 		if (thisMeterDIFileIsOpen) {
 			try {
@@ -106,6 +108,7 @@ public class SystemMeterImpl implements SystemMeter {
 	}
 
 	// FIXME Protected method in OpenDSS
+	@Override
 	public void openDemandIntervalFile() {
 		PrintWriter systemDIPrinter;
 
@@ -125,10 +128,12 @@ public class SystemMeterImpl implements SystemMeter {
 		}
 	}
 
+	@Override
 	public void reset() {
 		clear();
 	}
 
+	@Override
 	public void save() {
 		String folder, csvName = "SystemMeter.csv";
 		FileWriter fw;
@@ -166,6 +171,7 @@ public class SystemMeterImpl implements SystemMeter {
 	/**
 	 * Get total system energy out of the sources.
 	 */
+	@Override
 	public void takeSample() {
 		cPower = Util.getTotalPowerFromSources().multiply(0.001);  // convert to kW
 

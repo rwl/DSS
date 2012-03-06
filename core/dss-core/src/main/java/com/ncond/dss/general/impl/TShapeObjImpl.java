@@ -1,7 +1,6 @@
 package com.ncond.dss.general.impl;
 
 import java.io.OutputStream;
-import java.io.PrintStream;
 import java.io.PrintWriter;
 
 import com.ncond.dss.common.DSSClass;
@@ -52,6 +51,7 @@ public class TShapeObjImpl extends DSSObjectImpl implements TShapeObj {
 	 * The value returned is the nearest to the interval requested. Thus if you request
 	 * hour=12.25 and the interval is 1.0, you will get interval 12.
 	 */
+	@Override
 	public double getTemperature(double hr) {
 		int index, i;
 
@@ -119,12 +119,14 @@ public class TShapeObjImpl extends DSSObjectImpl implements TShapeObj {
 		stdDevCalculated = true;
 	}
 
+	@Override
 	public double getMean() {
 		if (!stdDevCalculated)
 			calcMeanAndStdDev();
 		return mean[0];
 	}
 
+	@Override
 	public double getStdDev() {
 		if (!stdDevCalculated)
 			calcMeanAndStdDev();
@@ -134,6 +136,7 @@ public class TShapeObjImpl extends DSSObjectImpl implements TShapeObj {
 	/**
 	 * Get temperatures by index.
 	 */
+	@Override
 	public double getTemperature(int i) {
 		if (i < numPoints && i >= 0) {
 			lastValueAccessed = i;
@@ -146,6 +149,7 @@ public class TShapeObjImpl extends DSSObjectImpl implements TShapeObj {
 	/**
 	 * Get hour corresponding to point index.
 	 */
+	@Override
 	public double getHour(int i) {
 		if (interval == 0) {
 			if (i < numPoints && i >= 0) {
@@ -262,20 +266,24 @@ public class TShapeObjImpl extends DSSObjectImpl implements TShapeObj {
 	}
 
 	// FIXME Private method in OpenDSS
+	@Override
 	public void saveToDblFile() {
 		throw new UnsupportedOperationException();
 	}
 
 	// FIXME Private method in OpenDSS
+	@Override
 	public void saveToSngFile() {
 		throw new UnsupportedOperationException();
 	}
 
+	@Override
 	public void setMean(double value) {
 		stdDevCalculated = true;
 		mean[0] = value;
 	}
 
+	@Override
 	public void setNumPoints(int num) {
 		setPropertyValue(0, String.valueOf(num));  // update property list variable
 
@@ -287,61 +295,75 @@ public class TShapeObjImpl extends DSSObjectImpl implements TShapeObj {
 		numPoints = num;
 	}
 
+	@Override
 	public void setStdDev(double stddev) {
 		stdDevCalculated = true;
 		stdDev[0] = stddev;
 	}
 
+	@Override
 	public int getNumPoints() {
 		return 0;
 	}
 
+	@Override
 	public double getInterval() {
 		return interval;
 	}
 
+	@Override
 	public double[] getHours() {
 		return hours;
 	}
 
+	@Override
 	public void setHours(double[] values) {
 		hours = values;
 	}
 
+	@Override
 	public double[] getTValues() {
 		return TValues;
 	}
 
+	@Override
 	public void setTValues(double[] values) {
 		TValues = values;
 	}
 
 	// FIXME Private members in OpenDSS
 
+	@Override
 	public int getLastValueAccessed() {
 		return lastValueAccessed;
 	}
 
+	@Override
 	public void setLastValueAccessed(int lastValue) {
 		lastValueAccessed = lastValue;
 	}
 
+	@Override
 	public int getArrayPropertyIndex() {
 		return arrayPropertyIndex;
 	}
 
+	@Override
 	public void setArrayPropertyIndex(int index) {
 		arrayPropertyIndex = index;
 	}
 
+	@Override
 	public boolean isStdDevCalculated() {
 		return stdDevCalculated;
 	}
 
+	@Override
 	public void setStdDevCalculated(boolean calculated) {
 		stdDevCalculated = calculated;
 	}
 
+	@Override
 	public void setInterval(double value) {
 		interval = value;
 	}

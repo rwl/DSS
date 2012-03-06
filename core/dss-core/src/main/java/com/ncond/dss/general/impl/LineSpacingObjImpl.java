@@ -1,7 +1,6 @@
 package com.ncond.dss.general.impl;
 
 import java.io.OutputStream;
-import java.io.PrintStream;
 import java.io.PrintWriter;
 
 import com.ncond.dss.common.DSSClass;
@@ -72,10 +71,12 @@ public class LineSpacingObjImpl extends DSSObjectImpl implements LineSpacingObj 
 		}
 	}
 
+	@Override
 	public double getXCoord(int i) {
 		return i < nConds ? X[i] : 0.0;
 	}
 
+	@Override
 	public double getYCoord(int i) {
 		return i < nConds ? Y[i] : 0.0;
 	}
@@ -91,6 +92,7 @@ public class LineSpacingObjImpl extends DSSObjectImpl implements LineSpacingObj 
 		super.initPropertyValues(LineSpacing.NumPropsThisClass - 1);
 	}
 
+	@Override
 	public void setNWires(int value) {
 		nConds = value;
 		X = new double[nConds];
@@ -98,56 +100,69 @@ public class LineSpacingObjImpl extends DSSObjectImpl implements LineSpacingObj 
 		units = LineUnits.UNITS_FT;
 	}
 
+	@Override
 	public int getNWires() {
 		return nConds;
 	}
 
+	@Override
 	public int getNPhases() {
 		return nPhases;
 	}
 
+	@Override
 	public int getUnits() {
 		return units;
 	}
 
 	// FIXME Private members in OpenDSS.
 
+	@Override
 	public int getNConds() {
 		return nConds;
 	}
 
+	@Override
 	public void setNConds(int num) {
 		nConds = num;
 	}
 
+	@Override
 	public double[] getX() {
 		return X;
 	}
 
+	@Override
 	public void setX(double[] x) {
 		X = x;
 	}
 
+	@Override
 	public double[] getY() {
 		return Y;
 	}
 
+	@Override
 	public void setY(double[] y) {
 		Y = y;
 	}
 
+	@Override
 	public boolean isDataChanged() {
 		return dataChanged;
 	}
 
+	@Override
 	public void setDataChanged(boolean changed) {
 		dataChanged = changed;
 	}
 
+	@Override
 	public void setNPhases(int num) {
 		nPhases = num;
 	}
 
+	@Override
 	public void setUnits(int value) {
 		units = value;
 	}

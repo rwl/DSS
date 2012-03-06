@@ -27,6 +27,7 @@ public class CapControlImpl extends ControlClassImpl implements CapControl {
 		commandList.setAbbrevAllowed(true);
 	}
 
+	@Override
 	protected void defineProperties() {
 
 		numProperties = CapControl.NumPropsThisClass;
@@ -105,12 +106,11 @@ public class CapControlImpl extends ControlClassImpl implements CapControl {
 		super.defineProperties();  // add defs of inherited properties to bottom of list
 	}
 
-//	@Override
-//	public int newObject(String ObjName) {
-//
-//		DSS.activeCircuit.setActiveCktElement(new CapControlObjImpl(this, ObjName));
-//		return addObjectToList(DSS.activeDSSObject);
-//	}
+	@Override
+	public int newObject(String ObjName) {
+		DSS.activeCircuit.setActiveCktElement(new CapControlObjImpl(this, ObjName));
+		return addObjectToList(DSS.activeDSSObject);
+	}
 
 	@Override
 	public int edit() {
@@ -290,6 +290,12 @@ public class CapControlImpl extends ControlClassImpl implements CapControl {
 		acc.recalcElementData();
 
 		return result;
+	}
+
+	@Override
+	public int init(int handle) {
+		DSS.doSimpleMsg("Need to implement CapControl.init", -1);
+		return 0;
 	}
 
 	@Override

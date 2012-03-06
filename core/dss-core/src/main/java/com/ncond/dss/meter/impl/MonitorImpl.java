@@ -26,6 +26,7 @@ public class MonitorImpl extends MeterClassImpl implements Monitor {
 		commandList.setAbbrevAllowed(true);
 	}
 
+	@Override
 	protected void defineProperties() {
 
 		numProperties = Monitor.NumPropsThisClass;
@@ -235,6 +236,7 @@ public class MonitorImpl extends MeterClassImpl implements Monitor {
 		return result;
 	}
 
+	@Override
 	public void TOPExport(String objName) {
 		// FIXME Implement or remove this
 		throw new UnsupportedOperationException();

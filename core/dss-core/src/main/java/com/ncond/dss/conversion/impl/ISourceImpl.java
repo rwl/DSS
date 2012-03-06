@@ -26,6 +26,7 @@ public class ISourceImpl extends PCClassImpl implements ISource {
 		commandList.setAbbrevAllowed(true);
 	}
 
+	@Override
 	protected void defineProperties() {
 		numProperties = ISource.NumPropsThisClass;
 

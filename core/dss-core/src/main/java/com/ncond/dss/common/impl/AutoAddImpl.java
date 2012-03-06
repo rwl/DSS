@@ -83,6 +83,7 @@ public class AutoAddImpl implements AutoAdd {
 		return result;
 	}
 
+	@Override
 	public void makeBusList() {
 		int retval;
 		String bName;
@@ -145,6 +146,7 @@ public class AutoAddImpl implements AutoAdd {
 		busIdxListCreated = true;
 	}
 
+	@Override
 	public double getWeightedLosses() {
 		double losses;
 		Circuit ckt = DSS.activeCircuit;
@@ -165,6 +167,7 @@ public class AutoAddImpl implements AutoAdd {
 		return losses;
 	}
 
+	@Override
 	public void appendToFile(String fileName, String s) {
 		String fName = DSS.dataDirectory + DSS.circuitName_ + "AutoAdded" + fileName + ".txt";
 
@@ -210,7 +213,8 @@ public class AutoAddImpl implements AutoAdd {
 		return trialName;
 	}
 
-	public int solve() throws SolverError, ControlProblem, Esolv32Problem {
+	@Override
+	public int solve() throws SolverError, ControlProblem, SolveProblem {
 
 		double lossImproveFactor, maxLossImproveFactor;
 		int minLossBus, minBusPhases;
@@ -527,6 +531,7 @@ public class AutoAddImpl implements AutoAdd {
 		return result;
 	}
 
+	@Override
 	public void addCurrents(int solveType) {
 		Complex busV, current;
 		int nodeRef;
@@ -607,50 +612,62 @@ public class AutoAddImpl implements AutoAdd {
 		baseEEN = kWEEN;
 	}
 
+	@Override
 	public double getGenKW() {
 		return genKW;
 	}
 
+	@Override
 	public void setGenKW(double genkW) {
 		genKW = genkW;
 	}
 
+	@Override
 	public double getGenPF() {
 		return genPF;
 	}
 
+	@Override
 	public void setGenPF(double genpf) {
 		genPF = genpf;
 	}
 
+	@Override
 	public double getGenKVAr() {
 		return genKVAr;
 	}
 
+	@Override
 	public void setGenKVAr(double genkvar) {
 		genKVAr = genkvar;
 	}
 
+	@Override
 	public double getCapKVAr() {
 		return capKVAr;
 	}
 
+	@Override
 	public void setCapKVAr(double capkvar) {
 		capKVAr = capkvar;
 	}
 
+	@Override
 	public int getAddType() {
 		return addType;
 	}
 
+	@Override
 	public void setAddType(int addtype) {
 		addType = addtype;
 	}
 
+	@Override
 	public boolean isModeChanged() {
 		return modeChanged;
 	}
 
+	@Override
 	public void setModeChanged(boolean modeChanged) {
 		this.modeChanged = modeChanged;
 	}

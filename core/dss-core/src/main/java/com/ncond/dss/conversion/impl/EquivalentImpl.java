@@ -27,6 +27,7 @@ public class EquivalentImpl extends PCClassImpl implements Equivalent {
 		commandList.setAbbrevAllowed(true);
 	}
 
+	@Override
 	protected void defineProperties() {
 
 		numProperties = Equivalent.NumPropsThisClass;
@@ -215,7 +216,7 @@ public class EquivalentImpl extends PCClassImpl implements Equivalent {
 	}
 
 	@Override
-	public int init(int Handle) {
+	public int init(int handle) {
 		DSS.doSimpleMsg("Need to implement Equivalent.init", -1);
 		return 0;
 	}
@@ -223,6 +224,7 @@ public class EquivalentImpl extends PCClassImpl implements Equivalent {
 	/**
 	 * Routine expecting all winding connections expressed in one array of strings.
 	 */
+	@Override
 	public void interpretAllBuses(String s) {
 		String busName;
 

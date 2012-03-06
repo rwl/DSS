@@ -98,6 +98,7 @@ abstract public class CktElementImpl extends DSSObjectImpl implements CktElement
 		baseFrequency = DSS.activeCircuit.getFundamental();
 	}
 
+	@Override
 	public void setYPrimInvalid(boolean value) {
 		YPrimInvalid = value;
 		if (value) {
@@ -106,10 +107,12 @@ abstract public class CktElementImpl extends DSSObjectImpl implements CktElement
 		}
 	}
 
+	@Override
 	public boolean isYprimInvalid() {
 		return YPrimInvalid;
 	}
 
+	@Override
 	public void setActiveTerminalIdx(int value) {
 		if (value >= 0 && value < nTerms) {
 			activeTerminalIdx = value;
@@ -117,18 +120,22 @@ abstract public class CktElementImpl extends DSSObjectImpl implements CktElement
 		}
 	}
 
+	@Override
 	public int getActiveTerminalIdx() {
 		return activeTerminalIdx;
 	}
 
+	@Override
 	public void setHandle(int value) {
 		handle = value;
 	}
 
+	@Override
 	public int getHandle() {
 		return handle;
 	}
 
+	@Override
 	public boolean isConductorClosed(int index) {
 		boolean isClosed;
 		if (index == -1) {  // all phases
@@ -149,6 +156,7 @@ abstract public class CktElementImpl extends DSSObjectImpl implements CktElement
 		return isClosed;
 	}
 
+	@Override
 	public void setConductorClosed(int index, boolean value) {
 		SolutionObj sol = DSS.activeCircuit.getSolution();
 
@@ -166,6 +174,7 @@ abstract public class CktElementImpl extends DSSObjectImpl implements CktElement
 		}
 	}
 
+	@Override
 	public void setNumConds(int value) {
 		// check for an almost certain programming error
 		if (value <= 0) {
@@ -180,19 +189,23 @@ abstract public class CktElementImpl extends DSSObjectImpl implements CktElement
 		setNumTerms(nTerms);  // realloc terminals; need more efficient way to do this
 	}
 
+	@Override
 	public int getNumConds() {
 		return nConds;
 	}
 
+	@Override
 	public void setNumPhases(int value) {
 		if (value > 0)
 			nPhases = value;
 	}
 
+	@Override
 	public int getNumPhases() {
 		return nPhases;
 	}
 
+	@Override
 	public void setNumTerms(int value) {
 		int i;
 		String[] newBusNames;
@@ -258,10 +271,12 @@ abstract public class CktElementImpl extends DSSObjectImpl implements CktElement
 		}
 	}
 
+	@Override
 	public int getNumTerms() {
 		return nTerms;
 	}
 
+	@Override
 	public void setEnabled(boolean value) {
 		if (value != enabled) {  // don't change unless this represents a change
 			enabled = value;
@@ -270,10 +285,12 @@ abstract public class CktElementImpl extends DSSObjectImpl implements CktElement
 		}
 	}
 
+	@Override
 	public boolean isEnabled() {
 		return enabled;
 	}
 
+	@Override
 	public CMatrix getYPrim(int opt) {
 		CMatrix Y = null;
 
@@ -292,6 +309,7 @@ abstract public class CktElementImpl extends DSSObjectImpl implements CktElement
 		return Y;
 	}
 
+	@Override
 	public Complex[] getYPrimValues(int opt) {
 		Complex[] result = null;
 
@@ -313,10 +331,13 @@ abstract public class CktElementImpl extends DSSObjectImpl implements CktElement
 		return result;
 	}
 
+	@Override
 	abstract public void getCurrents(Complex[] curr);
 
+	@Override
 	abstract public void getInjCurrents(Complex[] curr);
 
+	@Override
 	public void getLosses(Complex[] totalLosses, Complex[] loadLosses, Complex[] noLoadLosses) {
 		Complex totLosses = getLosses();  // watts, vars
 
@@ -325,8 +346,10 @@ abstract public class CktElementImpl extends DSSObjectImpl implements CktElement
 		noLoadLosses[0] = Complex.ZERO;
 	}
 
+	@Override
 	abstract public int injCurrents();
 
+	@Override
 	public void setNodeRef(int iTerm, int[] nodeRefArray) {
 		int size, size2;
 
@@ -347,6 +370,7 @@ abstract public class CktElementImpl extends DSSObjectImpl implements CktElement
 		setNodeRef(iTerm, new int[] {nodeRefArray});
 	}
 
+	@Override
 	public String getFirstBus() {
 		if (nTerms > 0) {
 			busIdx = 0;
@@ -356,6 +380,7 @@ abstract public class CktElementImpl extends DSSObjectImpl implements CktElement
 		}
 	}
 
+	@Override
 	public String getNextBus() {
 		String name = "";
 		if (nTerms > 0) {
@@ -369,10 +394,12 @@ abstract public class CktElementImpl extends DSSObjectImpl implements CktElement
 		return name;
 	}
 
+	@Override
 	public String getBus(int i) {
 		return i < nTerms ? busNames[i] : "";
 	}
 
+	@Override
 	public void setBus(int i, String name) {
 		if (i < nTerms) {
 			busNames[i] = name.toLowerCase();
@@ -388,25 +415,30 @@ abstract public class CktElementImpl extends DSSObjectImpl implements CktElement
 		if (value > 0.0) YPrimFreq = value;
 	}
 
+	@Override
 	public void setYPrimFreq(double value) {
 		setFreq(value);
 	}
 
+	@Override
 	public double getYPrimFreq() {
 		return this.YPrimFreq;
 	}
 
+	@Override
 	public void recalcElementData() {
 		DSS.doSimpleMsg("recalcElementData in base CktElement class called for device = \"" +
 				getName() + "\"", 754);
 	}
 
+	@Override
 	public void calcYPrim() {
 		if (YPrimSeries != null) doYPrimCalcs(YPrimSeries);
 		if (YPrimShunt != null) doYPrimCalcs(YPrimShunt);
 		if (YPrim != null) doYPrimCalcs(YPrim);
 	}
 
+	@Override
 	public void computeITerminal() {
 		SolutionObj sol = DSS.activeCircuit.getSolution();
 		// to save time, only recompute if a different solution than last time it was computed
@@ -416,6 +448,7 @@ abstract public class CktElementImpl extends DSSObjectImpl implements CktElement
 		}
 	}
 
+	@Override
 	public double maxTerminalOneIMag() {
 		double max = 0.0;
 		if (enabled) {
@@ -425,6 +458,7 @@ abstract public class CktElementImpl extends DSSObjectImpl implements CktElement
 		return Math.sqrt(max);  // just do the sqrt once and save a little time
 	}
 
+	@Override
 	public Complex getPower(int idxTerm) {
 		Complex cPower = Complex.ZERO;
 		int i, k, n;
@@ -451,6 +485,7 @@ abstract public class CktElementImpl extends DSSObjectImpl implements CktElement
 		return cPower;
 	}
 
+	@Override
 	public Complex getLosses() {
 		Complex loss, totalLoss = Complex.ZERO;
 		int k, n;
@@ -473,6 +508,7 @@ abstract public class CktElementImpl extends DSSObjectImpl implements CktElement
 		return totalLoss;
 	}
 
+	@Override
 	public void getPhasePower(Complex[] powerBuffer) {
 		int i, n;
 		Complex S;
@@ -494,6 +530,7 @@ abstract public class CktElementImpl extends DSSObjectImpl implements CktElement
 		}
 	}
 
+	@Override
 	public void getPhaseLosses(int[] numPhases, Complex[] lossBuffer) {
 		int i, j, k, n;
 		Complex losses, loss;
@@ -523,6 +560,7 @@ abstract public class CktElementImpl extends DSSObjectImpl implements CktElement
 		}
 	}
 
+	@Override
 	public void dumpProperties(OutputStream out, boolean complete) {
 		int i, j;
 
@@ -629,6 +667,7 @@ abstract public class CktElementImpl extends DSSObjectImpl implements CktElement
 		rowEliminated = null;
 	}
 
+	@Override
 	public void sumCurrents() {
 		SolutionObj sol = DSS.activeCircuit.getSolution();
 
@@ -640,6 +679,7 @@ abstract public class CktElementImpl extends DSSObjectImpl implements CktElement
 		}
 	}
 
+	@Override
 	public void getTermVoltages(int iterm, Complex[] VBuffer) {
 		int i;
 		SolutionObj sol = DSS.activeCircuit.getSolution();
@@ -662,6 +702,7 @@ abstract public class CktElementImpl extends DSSObjectImpl implements CktElement
 		}
 	}
 
+	@Override
 	public void initPropertyValues(int arrayOffset) {
 		setPropertyValue(arrayOffset + 1, String.format("%g", baseFrequency));  // base freq
 		setPropertyValue(arrayOffset + 2, "true");  // enabled
@@ -671,6 +712,7 @@ abstract public class CktElementImpl extends DSSObjectImpl implements CktElement
 		super.initPropertyValues(arrayOffset + 2);
 	}
 
+	@Override
 	public String getPropertyValue(int index) {
 		String val;
 		if (index == enabledProperty) {
@@ -681,6 +723,7 @@ abstract public class CktElementImpl extends DSSObjectImpl implements CktElement
 		return val;
 	}
 
+	@Override
 	public void getSeqLosses(Complex[] posSeqLosses, Complex[] negSeqLosses, Complex[] zeroModeLosses) {
 		posSeqLosses[0] = Complex.ZERO;
 		negSeqLosses[0] = Complex.ZERO;
@@ -706,6 +749,7 @@ abstract public class CktElementImpl extends DSSObjectImpl implements CktElement
 		return grnd;
 	}
 
+	@Override
 	public void makePosSequence() {
 		boolean grnd;
 
@@ -716,6 +760,7 @@ abstract public class CktElementImpl extends DSSObjectImpl implements CktElement
 		}
 	}
 
+	@Override
 	public void computeVTerminal() {
 		SolutionObj sol = DSS.activeCircuit.getSolution();
 
@@ -723,130 +768,162 @@ abstract public class CktElementImpl extends DSSObjectImpl implements CktElement
 			VTerminal[i] = sol.getNodeV(nodeRef[i] - 1);
 	}
 
+	@Override
 	public void zeroITerminal() {
 		for (int i = 0; i < YOrder; i++) ITerminal[i] = Complex.ZERO;
 	}
 
+	@Override
 	public Terminal getTerminal(int idx) {
 		return terminals[idx];
 	}
 
+	@Override
 	public int[] getNodeRef() {
 		return nodeRef;
 	}
 
+	@Override
 	public void setNodeRef(int[] ref) {
 		nodeRef = ref;
 	}
 
+	@Override
 	public int getYorder() {
 		return YOrder;
 	}
 
+	@Override
 	public void setYOrder(int order) {
 		YOrder = order;
 	}
 
+	@Override
 	public int getLastTerminalChecked() {
 		return lastTerminalChecked;
 	}
 
+	@Override
 	public void setLastTerminalChecked(int checked) {
 		lastTerminalChecked = checked;
 	}
 
+	@Override
 	public boolean isChecked() {
 		return checked;
 	}
 
+	@Override
 	public void setChecked(boolean value) {
 		checked = value;
 	}
 
+	@Override
 	public boolean hasEnergyMeter() {
 		return hasEnergyMeter;
 	}
 
+	@Override
 	public void setHasEnergyMeter(boolean hasMeter) {
 		hasEnergyMeter = hasMeter;
 	}
 
+	@Override
 	public boolean hasSensorObj() {
 		return hasSensorObj;
 	}
 
+	@Override
 	public void setHasSensorObj(boolean value) {
 		hasSensorObj = value;
 	}
 
+	@Override
 	public boolean isIsolated() {
 		return isIsolated;
 	}
 
+	@Override
 	public void setIsolated(boolean value) {
 		isIsolated = value;
 	}
 
+	@Override
 	public boolean hasControl() {
 		return hasControl;
 	}
 
+	@Override
 	public void setHasControl(boolean value) {
 		hasControl = value;
 	}
 
+	@Override
 	public boolean isPartofFeeder() {
 		return isPartOfFeeder;
 	}
 
+	@Override
 	public void setPartofFeeder(boolean isPart) {
 		isPartOfFeeder = isPart;
 	}
 
+	@Override
 	public CktElement getControlElement() {
 		return controlElement;
 	}
 
+	@Override
 	public void setControlElement(CktElement element) {
 		controlElement = element;
 	}
 
+	@Override
 	public Complex[] getITerminal() {
 		return ITerminal;
 	}
 
+	@Override
 	public void setITerminal(Complex[] terminal) {
 		ITerminal = terminal;
 	}
 
+	@Override
 	public Complex[] getVTerminal() {
 		return VTerminal;
 	}
 
+	@Override
 	public void setVTerminal(Complex[] terminal) {
 		VTerminal = terminal;
 	}
 
+	@Override
 	public double getBaseFrequency() {
 		return baseFrequency;
 	}
 
+	@Override
 	public void setBaseFrequency(double frequency) {
 		baseFrequency = frequency;
 	}
 
+	@Override
 	public Terminal[] getTerminals() {
 		return terminals;
 	}
 
+	@Override
 	public void setTerminals(Terminal[] value) {
 		terminals = value;
 	}
 
+	@Override
 	public void setActiveTerminal(Terminal terminal) {
 		activeTerminal = terminal;
 	}
 
+	@Override
 	public Terminal getActiveTerminal() {
 		return activeTerminal;
 	}

@@ -22,10 +22,12 @@ public class CommandListImpl implements CommandList {
 		this.abbrevAllowed = abbrevAllowed;
 	}
 
+	@Override
 	public void addCommand(String cmd) {
 		commandList.add(cmd);
 	}
 
+	@Override
 	public int getCommand(String cmd) {
 		int result = commandList.find(cmd);
 		/* If no match found on whole command, check for abbrev */
@@ -37,18 +39,22 @@ public class CommandListImpl implements CommandList {
 		return result;
 	}
 
+	@Override
 	public String get(int i) {
 		return commandList.get(i);
 	}
 
+	@Override
 	public int getNumCommands() {
 		return commandList.listSize();
 	}
 
+	@Override
 	public boolean isAbbrevAllowed() {
 		return abbrevAllowed;
 	}
 
+	@Override
 	public void setAbbrevAllowed(boolean allowed) {
 		abbrevAllowed = allowed;
 	}

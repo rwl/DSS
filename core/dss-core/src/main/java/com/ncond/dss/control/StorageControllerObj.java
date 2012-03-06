@@ -133,8 +133,10 @@ public interface StorageControllerObj extends ControlElem {
 
 	void setChargingAllowed(boolean chargingAllowed);
 
+	@Override
 	boolean isShowEventLog();
 
+	@Override
 	void setShowEventLog(boolean showEventLog);
 
 	boolean isDispatchVars();

@@ -30,6 +30,7 @@ public class RegControlImpl extends ControlClassImpl implements RegControl {
 		commandList.setAbbrevAllowed(true);
 	}
 
+	@Override
 	protected void defineProperties() {
 
 		numProperties = RegControl.NumPropsThisClass;
@@ -333,6 +334,12 @@ public class RegControlImpl extends ControlClassImpl implements RegControl {
 		}
 
 		return result;
+	}
+
+	@Override
+	public int init(int handle) {
+		DSS.doSimpleMsg("Need to implement RegControl.init", -1);
+		return 0;
 	}
 
 }

@@ -1,15 +1,14 @@
 package com.ncond.dss.common;
 
-import java.io.PrintStream;
+import java.io.OutputStream;
 import java.util.UUID;
 
 import org.apache.commons.math.complex.Complex;
 
 import com.ncond.dss.common.impl.ControlProblem;
-import com.ncond.dss.common.impl.Esolv32Problem;
+import com.ncond.dss.common.impl.SolveProblem;
 import com.ncond.dss.common.impl.SolverError;
 import com.ncond.dss.general.DSSObject;
-import com.ncond.dss.shared.CMatrix;
 import com.ncond.dss.shared.impl.DynamicsRec;
 
 public interface SolutionObj extends DSSObject {
@@ -222,9 +221,9 @@ public interface SolutionObj extends DSSObject {
 
 	void zeroAuxCurrents();
 
-	int solveZeroLoadSnapShot() throws Esolv32Problem;
+	int solveZeroLoadSnapShot() throws SolveProblem;
 
-	void doPFlowSolution() throws SolverError, Esolv32Problem;
+	void doPFlowSolution() throws SolverError, SolveProblem;
 
 	/** Main solution dispatch */
 	void solve();
@@ -232,19 +231,19 @@ public interface SolutionObj extends DSSObject {
 	void snapShotInit();
 
 	/** Solve for now once */
-	int solveSnap() throws SolverError, ControlProblem, Esolv32Problem;
+	int solveSnap() throws SolverError, ControlProblem, SolveProblem;
 
 	/** Solve for now once, direct solution */
-	int solveDirect() throws Esolv32Problem;
+	int solveDirect() throws SolveProblem;
 
 	/** Similar to solveDirect; used for initialization */
-	int solveYDirect() throws Esolv32Problem;
+	int solveYDirect() throws SolveProblem;
 
 	/** SolveSnap sans control iteration */
 	int solveCircuit() throws SolverError;
 
 	/** Snapshot checks with matrix rebuild */
-	void checkControls() throws ControlProblem, Esolv32Problem;
+	void checkControls() throws ControlProblem, SolveProblem;
 
 	void sampleControlDevices() throws ControlProblem;
 
@@ -270,9 +269,7 @@ public interface SolutionObj extends DSSObject {
 	/** Difference between two node voltages */
 	Complex vDiff(int i, int j);
 
-	void initPropertyValues(int ArrayOffset);
-
-	void dumpProperties(PrintStream F, boolean Complete);
+	void dumpProperties(OutputStream out, boolean complete);
 
 	void writeConvergenceReport(String fName);
 

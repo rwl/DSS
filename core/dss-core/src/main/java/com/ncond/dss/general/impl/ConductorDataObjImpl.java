@@ -1,7 +1,6 @@
 package com.ncond.dss.general.impl;
 
 import java.io.OutputStream;
-import java.io.PrintStream;
 import java.io.PrintWriter;
 
 import com.ncond.dss.common.DSSClass;
@@ -98,76 +97,94 @@ public class ConductorDataObjImpl extends DSSObjectImpl implements ConductorData
 		super.initPropertyValues(arrayOffset + 10);
 	}
 
+	@Override
 	public double getNormAmps() {
 		return normAmps;
 	}
 
+	@Override
 	public void setNormAmps(double amps) {
 		normAmps = amps;
 	}
 
+	@Override
 	public double getEmergAmps() {
 		return emergAmps;
 	}
 
+	@Override
 	public void setEmergAmps(double amps) {
 		emergAmps = amps;
 	}
 
+	@Override
 	public double getRDC() {
 		return Rdc;
 	}
 
+	@Override
 	public double getR60() {
 		return R60;
 	}
 
+	@Override
 	public double getGMR60() {
 		return gmr60;
 	}
 
+	@Override
 	public double getRadius() {
 		return radius;
 	}
 
+	@Override
 	public int getGMRUnits() {
 		return gmrUnits;
 	}
 
+	@Override
 	public int getResistanceUnits() {
 		return resistanceUnits;
 	}
 
+	@Override
 	public int getRadiusUnits() {
 		return radiusUnits;
 	}
 
 	// FIXME Private members in OpenDSS.
 
+	@Override
 	public void setRDC(double rdc) {
 		Rdc = rdc;
 	}
 
+	@Override
 	public void setR60(double r60) {
 		R60 = r60;
 	}
 
+	@Override
 	public void setGMR60(double gmr) {
 		gmr60 = gmr;
 	}
 
+	@Override
 	public void setRadius(double value) {
 		radius = value;
 	}
 
+	@Override
 	public void setGMRUnits(int units) {
 		gmrUnits = units;
 	}
 
+	@Override
 	public void setResistanceUnits(int units) {
 		resistanceUnits = units;
 	}
 
+	@Override
 	public void setRadiusUnits(int units) {
 		radiusUnits = units;
 	}

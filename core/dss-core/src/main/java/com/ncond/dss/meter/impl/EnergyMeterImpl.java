@@ -76,6 +76,7 @@ public class EnergyMeterImpl extends MeterClassImpl implements EnergyMeter {
 		systemMeter = new SystemMeterImpl();
 	}
 
+	@Override
 	protected void defineProperties() {
 
 		numProperties = EnergyMeter.NumPropsThisClass;
@@ -159,12 +160,14 @@ public class EnergyMeterImpl extends MeterClassImpl implements EnergyMeter {
 		super.defineProperties();  // add defs of inherited properties to bottom of list
 	}
 
+	@Override
 	public int newObject(String objName) {
 
 		DSS.activeCircuit.setActiveCktElement(new EnergyMeterObjImpl(this, objName));
 		return addObjectToList(DSS.activeDSSObject);
 	}
 
+	@Override
 	public int edit() {
 		Parser parser = Parser.getInstance();
 
@@ -301,6 +304,7 @@ public class EnergyMeterImpl extends MeterClassImpl implements EnergyMeter {
 		return result;
 	}
 
+	@Override
 	protected int makeLike(String energyMeterName) {
 		EnergyMeterObj aem;
 		int result = 0;
@@ -349,11 +353,13 @@ public class EnergyMeterImpl extends MeterClassImpl implements EnergyMeter {
 		return result;
 	}
 
+	@Override
 	public int init(int handle) {
 		DSS.doSimpleMsg("Need to implement EnergyMeter.init", -1);
 		return 0;
 	}
 
+	@Override
 	public void resetMeterZonesAll() {
 		int i;
 
@@ -553,6 +559,7 @@ public class EnergyMeterImpl extends MeterClassImpl implements EnergyMeter {
 		}
 	}
 
+	@Override
 	public void closeAllDIFiles() {
 
 		if (saveDemandInterval) {
@@ -589,6 +596,7 @@ public class EnergyMeterImpl extends MeterClassImpl implements EnergyMeter {
 		}
 	}
 
+	@Override
 	public void appendAllDIFiles() {
 
 		if (saveDemandInterval) {
@@ -618,6 +626,7 @@ public class EnergyMeterImpl extends MeterClassImpl implements EnergyMeter {
 		}
 	}
 
+	@Override
 	public void setSaveDemandInterval(boolean value) {
 		saveDemandInterval = value;
 		resetAll();
@@ -716,6 +725,7 @@ public class EnergyMeterImpl extends MeterClassImpl implements EnergyMeter {
 		}
 	}
 
+	@Override
 	public void setDIVerbose(boolean value) {
 		DI_Verbose = value;
 		resetAll();
@@ -816,6 +826,7 @@ public class EnergyMeterImpl extends MeterClassImpl implements EnergyMeter {
 	/**
 	 * Similar to "append", by creates the files.
 	 */
+	@Override
 	public void openAllDIFiles() {
 
 		if (saveDemandInterval) {
@@ -880,82 +891,102 @@ public class EnergyMeterImpl extends MeterClassImpl implements EnergyMeter {
 		}
 	}
 
+	@Override
 	public boolean isSaveDemandInterval() {
 		return saveDemandInterval;
 	}
 
+	@Override
 	public boolean isDIVerbose() {
 		return DI_Verbose;
 	}
 
+	@Override
 	public double[] getDI_RegisterTotals() {
 		return DI_RegisterTotals;
 	}
 
+	@Override
 	public void setDI_RegisterTotals(double[] totals) {
 		DI_RegisterTotals = totals;
 	}
 
+	@Override
 	public String getDI_Dir() {
 		return DI_Dir;
 	}
 
+	@Override
 	public void setDI_Dir(String dir) {
 		DI_Dir = dir;
 	}
 
+	@Override
 	public FileWriter getDI_Totals() {
 		return DI_Totals;
 	}
 
+	@Override
 	public void setDI_Totals(FileWriter totals) {
 		DI_Totals = totals;
 	}
 
+	@Override
 	public FileWriter getMeterTotals() {
 		return meterTotals;
 	}
 
+	@Override
 	public void setMeterTotals(FileWriter totals) {
 		meterTotals = totals;
 	}
 
+	@Override
 	public SystemMeter getSystemMeter() {
 		return systemMeter;
 	}
 
+	@Override
 	public void setSystemMeter(SystemMeter meter) {
 		systemMeter = meter;
 	}
 
+	@Override
 	public boolean isDo_OverloadReport() {
 		return doOverloadReport;
 	}
 
+	@Override
 	public void setDoOverloadReport(boolean doReport) {
 		doOverloadReport = doReport;
 	}
 
+	@Override
 	public boolean isDo_VoltageExceptionReport() {
 		return doVoltageExceptionReport;
 	}
 
+	@Override
 	public void setDoVoltageExceptionReport(boolean doReport) {
 		doVoltageExceptionReport = doReport;
 	}
 
+	@Override
 	public boolean isOverLoadFileIsOpen() {
 		return overloadFileIsOpen;
 	}
 
+	@Override
 	public void setOverLoadFileIsOpen(boolean fileIsOpen) {
 		overloadFileIsOpen = fileIsOpen;
 	}
 
+	@Override
 	public boolean isVoltageFileIsOpen() {
 		return voltageFileIsOpen;
 	}
 
+	@Override
 	public void setVoltageFileIsOpen(boolean fileIsOpen) {
 		voltageFileIsOpen = fileIsOpen;
 	}

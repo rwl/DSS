@@ -10,6 +10,7 @@ import com.ncond.dss.common.impl.DSSClassDefs;
 import com.ncond.dss.common.impl.DSSClassImpl;
 import com.ncond.dss.common.impl.DSS;
 import com.ncond.dss.common.impl.Util;
+import com.ncond.dss.general.DSSObject;
 import com.ncond.dss.general.TShape;
 import com.ncond.dss.general.TShapeObj;
 import com.ncond.dss.parser.impl.Parser;
@@ -34,6 +35,7 @@ public class TShapeImpl extends DSSClassImpl implements TShape {
 		commandList.setAbbrevAllowed(true);
 	}
 
+	@Override
 	protected void defineProperties() {
 		final String CRLF = DSS.CRLF;
 
@@ -219,7 +221,7 @@ public class TShapeImpl extends DSSClassImpl implements TShape {
 	}
 
 	@Override
-	public Object find(String objName) {
+	public DSSObject find(String objName) {
 		if (objName.length() == 0 || objName.equalsIgnoreCase("none")) {
 			return null;
 		} else {
@@ -265,10 +267,12 @@ public class TShapeImpl extends DSSClassImpl implements TShape {
 		return 0;
 	}
 
+	@Override
 	public String getCode() {
 		return ((TShapeObj) elementList.getActive()).getName();
 	}
 
+	@Override
 	public void setCode(String value) {
 		activeTShapeObj = null;
 		TShapeObj pTShapeObj = (TShapeObj) elementList.getFirst();
@@ -342,6 +346,7 @@ public class TShapeImpl extends DSSClassImpl implements TShape {
 	/**
 	 * Can export this to top for plotting
 	 */
+	@Override
 	public void TOPExport(String objName) {
 		throw new UnsupportedOperationException();  // FIXME Implement
 	}

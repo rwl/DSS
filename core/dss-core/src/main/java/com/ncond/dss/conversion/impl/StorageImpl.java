@@ -46,6 +46,7 @@ public class StorageImpl extends PCClassImpl implements Storage {
 		commandList.setAbbrevAllowed(true);
 	}
 
+	@Override
 	protected void defineProperties() {
 
 		numProperties = NumPropsThisClass;
@@ -231,6 +232,7 @@ public class StorageImpl extends PCClassImpl implements Storage {
 		}
 	}
 
+	@Override
 	public void updateAll() {
 		StorageObj pElem;
 		for (int i = 0; i < elementList.size(); i++) {
@@ -641,6 +643,7 @@ public class StorageImpl extends PCClassImpl implements Storage {
 	/**
 	 * Force all EnergyMeters in the circuit to reset.
 	 */
+	@Override
 	public void resetRegistersAll() {
 		int idx = getFirst();
 		StorageObj pElem;
@@ -654,6 +657,7 @@ public class StorageImpl extends PCClassImpl implements Storage {
 	/**
 	 * Force all Storage elements in the circuit to take a sample.
 	 */
+	@Override
 	public void sampleAll() {
 		StorageObj pElem;
 		for (int i = 0; i < elementList.size(); i++) {
@@ -663,10 +667,12 @@ public class StorageImpl extends PCClassImpl implements Storage {
 		}
 	}
 
+	@Override
 	public String[] getRegisterNames() {
 		return registerNames;
 	}
 
+	@Override
 	public void setRegisterNames(String[] names) {
 		registerNames = names;
 	}

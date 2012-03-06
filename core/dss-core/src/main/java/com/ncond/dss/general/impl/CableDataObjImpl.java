@@ -1,7 +1,6 @@
 package com.ncond.dss.general.impl;
 
 import java.io.OutputStream;
-import java.io.PrintStream;
 import java.io.PrintWriter;
 
 import com.ncond.dss.common.DSSClass;
@@ -62,36 +61,44 @@ public class CableDataObjImpl extends ConductorDataObjImpl implements CableDataO
 		super.initPropertyValues(arrayOffset + 4);
 	}
 
+	@Override
 	public double getEpsR() {
 		return epsR;
 	}
 
+	@Override
 	public double getInsLayer() {
 		return insLayer;
 	}
 
+	@Override
 	public double getDiaIns() {
 		return diaIns;
 	}
 
+	@Override
 	public double getDiaCable() {
 		return diaCable;
 	}
 
 	// FIXME Private members in OpenDSS.
 
+	@Override
 	public void setEpsR(double epsr) {
 		epsR = epsr;
 	}
 
+	@Override
 	public void setInsLayer(double inslayer) {
 		insLayer = inslayer;
 	}
 
+	@Override
 	public void setDiaIns(double diains) {
 		diaIns = diains;
 	}
 
+	@Override
 	public void setDiaCable(double diacable) {
 		diaCable = diacable;
 	}

@@ -27,6 +27,7 @@ public class CapacitorImpl extends PDClassImpl implements Capacitor {
 		commandList.setAbbrevAllowed(true);
 	}
 
+	@Override
 	protected void defineProperties() {
 		final String CRLF = DSS.CRLF;
 

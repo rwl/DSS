@@ -36,6 +36,7 @@ public class LineCodeImpl extends DSSClassImpl implements LineCode {
 		commandList.setAbbrevAllowed(true);
 	}
 
+	@Override
 	protected void defineProperties() {
 		numProperties = LineCode.NumPropsThisClass;
 		countProperties();  // get inherited property count
@@ -393,6 +394,7 @@ public class LineCodeImpl extends DSSClassImpl implements LineCode {
 	/**
 	 * Returns active line code string.
 	 */
+	@Override
 	public String getCode() {
 		LineCodeObj active = (LineCodeObj) elementList.getActive();
 		return active.getName();
@@ -401,6 +403,7 @@ public class LineCodeImpl extends DSSClassImpl implements LineCode {
 	/**
 	 * Sets the active line code.
 	 */
+	@Override
 	public void setCode(String value) {
 		LineCodeObj pCode;
 

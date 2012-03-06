@@ -34,6 +34,7 @@ public class SpectrumImpl extends DSSClassImpl implements Spectrum {
 		commandList.setAbbrevAllowed(true);
 	}
 
+	@Override
 	protected void defineProperties() {
 		final String CRLF = DSS.CRLF;
 
@@ -176,6 +177,7 @@ public class SpectrumImpl extends DSSClassImpl implements Spectrum {
 	/**
 	 * Returns active spectrum code string.
 	 */
+	@Override
 	public String getCode() {
 		SpectrumObj spectrum = (SpectrumObj) elementList.getActive();
 		return spectrum.getName();
@@ -184,6 +186,7 @@ public class SpectrumImpl extends DSSClassImpl implements Spectrum {
 	/**
 	 * Sets the active spectrum.
 	 */
+	@Override
 	public void setCode(String value) {
 		SpectrumObj spectrum;
 		activeSpectrumObj = null;
@@ -244,6 +247,12 @@ public class SpectrumImpl extends DSSClassImpl implements Spectrum {
 			DSS.doSimpleMsg("Error processing CSV file: \"" + fileName + ". " + e.getMessage(), 654);
 			return;
 		}
+	}
+
+	@Override
+	public int init(int handle) {
+		DSS.doSimpleMsg("Need to implement Spectrum.init", -1);
+		return 0;
 	}
 
 }

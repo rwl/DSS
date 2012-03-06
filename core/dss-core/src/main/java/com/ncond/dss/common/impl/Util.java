@@ -32,7 +32,6 @@ import com.ncond.dss.common.Terminal;
 import com.ncond.dss.common.impl.BusImpl.NodeBus;
 import com.ncond.dss.common.impl.CircuitImpl.CktElementDef;
 import com.ncond.dss.control.ControlElem;
-import com.ncond.dss.conversion.GeneratorObj;
 import com.ncond.dss.conversion.LoadObj;
 import com.ncond.dss.conversion.PCElement;
 import com.ncond.dss.delivery.CapacitorObj;
