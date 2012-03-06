@@ -85,7 +85,7 @@ public class StorageControllerObjImpl extends ControlElemImpl implements Storage
 		objType = parClass.getDSSClassType();
 
 		setNumPhases(3);  // directly set conds and phases
-		ncond = 3;
+		nConds = 3;
 		setNumTerms(1);   // this forces allocation of terminals and conductors
 
 		elementName       = "";
@@ -294,7 +294,7 @@ public class StorageControllerObjImpl extends ControlElemImpl implements Storage
 						"Re-specify terminal no.", 371);
 			} else {
 				setNumPhases( monitoredElement.getNumPhases() );
-				setNumConds(nphase);
+				setNumConds(nPhases);
 				// sets name of i-th terminal's connected bus in StorageController's bus list
 				setBus(0, monitoredElement.getBus(elementTerminal));
 			}
@@ -325,7 +325,7 @@ public class StorageControllerObjImpl extends ControlElemImpl implements Storage
 	public void makePosSequence() {
 		if (monitoredElement != null) {
 			setNumPhases( monitoredElement.getNumPhases() );
-			setNumConds(nphase);
+			setNumConds(nPhases);
 			setBus(0, monitoredElement.getBus(elementTerminal));
 		}
 		super.makePosSequence();
@@ -338,13 +338,13 @@ public class StorageControllerObjImpl extends ControlElemImpl implements Storage
 
 	@Override
 	public void getCurrents(Complex[] curr) {
-		for (int i = 0; i < ncond; i++)
+		for (int i = 0; i < nConds; i++)
 			curr[i] = Complex.ZERO;
 	}
 
 	@Override
 	public void getInjCurrents(Complex[] curr) {
-		for (int i = 0; i < ncond; i++)
+		for (int i = 0; i < nConds; i++)
 			curr[i] = Complex.ZERO;
 	}
 

@@ -34,7 +34,7 @@ public class SensorObjImpl extends MeterElementImpl implements SensorObj {
 		setName(sensorName.toLowerCase());
 
 		setNumPhases(3);  // directly set conds and phases
-		ncond = 3;
+		nConds = 3;
 		setNumTerms(1);   // this forces allocation of terminals and conductors in base class
 
 		sensorKW   = null;
@@ -111,7 +111,7 @@ public class SensorObjImpl extends MeterElementImpl implements SensorObj {
 	private void recalcVbase() {
 		switch (conn) {
 		case 0:
-			if (nphase == 1) {
+			if (nPhases == 1) {
 				VBase = kVBase * 1000.0;
 			} else {
 				VBase = kVBase * 1000.0 / DSS.SQRT3;
@@ -139,12 +139,12 @@ public class SensorObjImpl extends MeterElementImpl implements SensorObj {
 		int result = j + deltaDirection;
 
 		// make sure result is within limits
-		if (nphase > 2) {
+		if (nPhases > 2) {
 			// assumes 2 phase delta is open delta
-			if (result >= nphase)
+			if (result >= nPhases)
 				result = 0;
 			if (result < 0)
-				result = nphase - 1;
+				result = nPhases - 1;
 		} else {
 			if (result < 0)
 				result = 2;  // for 2-phase delta, next phase will be 3rd phase
@@ -162,11 +162,11 @@ public class SensorObjImpl extends MeterElementImpl implements SensorObj {
 		computeVTerminal();
 		switch (conn) {
 		case 1:
-			for (int i = 0; i < nphase; i++)
+			for (int i = 0; i < nPhases; i++)
 				calculatedVoltage[i] = VTerminal[i].subtract( VTerminal[rotatePhases(i)] );
 			break;
 		default:
-			for (int i = 0; i < nphase; i++)
+			for (int i = 0; i < nPhases; i++)
 				calculatedVoltage[i] = VTerminal[i];
 			break;
 		}
@@ -174,13 +174,13 @@ public class SensorObjImpl extends MeterElementImpl implements SensorObj {
 
 	@Override
 	public void getCurrents(Complex[] curr) {
-		for (int i = 0; i < ncond; i++)
+		for (int i = 0; i < nConds; i++)
 			curr[i] = Complex.ZERO;
 	}
 
 	@Override
 	public void getInjCurrents(Complex[] curr) {
-		for (int i = 0; i < ncond; i++)
+		for (int i = 0; i < nConds; i++)
 			curr[i] = Complex.ZERO;
 	}
 
@@ -197,19 +197,19 @@ public class SensorObjImpl extends MeterElementImpl implements SensorObj {
 		/* Convert P and Q specification to currents */
 		if (PSpecified) {  // compute currents assuming vbase
 			if (QSpecified) {
-				for (i = 0; i < nphase; i++) {
+				for (i = 0; i < nPhases; i++) {
 					kVA = new Complex(sensorKW[i], sensorKVAr[i]).abs();
 					sensorCurrent[i] = kVA * 1000.0 / VBase;
 				}
 			} else {  // no Q just use P
-				for (i = 0; i < nphase; i++)
+				for (i = 0; i < nPhases; i++)
 					sensorCurrent[i] = sensorKW[i] * 1000.0 / VBase;
 			}
 			ISpecified = true;  // overrides current specification
 		}
 
 		if (ISpecified)
-			for (i = 0; i < nphase; i++)
+			for (i = 0; i < nPhases; i++)
 				result = result + Math.pow(calculatedCurrent[i].getReal(), 2) + Math.pow(calculatedCurrent[i].getImaginary(), 2) - Math.pow(sensorCurrent[i], 2);
 
 		result = result * weight;
@@ -225,7 +225,7 @@ public class SensorObjImpl extends MeterElementImpl implements SensorObj {
 		double result = 0.0;
 
 		if (VSpecified)
-			for (i = 0; i < nphase; i++)
+			for (i = 0; i < nPhases; i++)
 				result = result + Math.pow(calculatedVoltage[i].getReal(), 2) + Math.pow(calculatedVoltage[i].getImaginary(), 2) - Math.pow(sensorVoltage[i], 2);
 
 		result = result * weight;
@@ -259,13 +259,13 @@ public class SensorObjImpl extends MeterElementImpl implements SensorObj {
 	}
 
 	private void allocateSensorObjArrays() {
-		sensorKW = Util.resizeArray(sensorKW, nphase);
-		sensorKVAr = Util.resizeArray(sensorKVAr, nphase);
+		sensorKW = Util.resizeArray(sensorKW, nPhases);
+		sensorKVAr = Util.resizeArray(sensorKVAr, nPhases);
 		allocateSensorArrays();
 	}
 
 	private void zeroSensorArrays() {
-		for (int i = 0; i < nphase; i++) {
+		for (int i = 0; i < nPhases; i++) {
 			sensorCurrent[i] = 0.0;
 			sensorVoltage[i] = 0.0;
 			sensorKW[i]      = 0.0;

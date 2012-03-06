@@ -58,7 +58,7 @@ public class RecloserObjImpl extends ControlElemImpl implements RecloserObj {
 		objType = parClass.getDSSClassType();
 
 		setNumPhases(3);  // directly set conds and phases
-		ncond = 3;
+		nConds = 3;
 		setNumTerms(1);   // this forces allocation of terminals and conductors in base class
 
 		elementName = "";
@@ -166,7 +166,7 @@ public class RecloserObjImpl extends ControlElemImpl implements RecloserObj {
 	public void makePosSequence() {
 		if (monitoredElement != null) {
 			setNumPhases( monitoredElement.getNumPhases() );
-			setNumConds(nphase);
+			setNumConds(nPhases);
 			setBus(0, monitoredElement.getBus(elementTerminal));
 			// allocate a buffer big enough to hold everything from the monitored element
 			cBuffer = Util.resizeArray(cBuffer, monitoredElement.getYorder());
@@ -182,13 +182,13 @@ public class RecloserObjImpl extends ControlElemImpl implements RecloserObj {
 
 	@Override
 	public void getCurrents(Complex[] curr) {
-		for (int i = 0; i < ncond; i++)
+		for (int i = 0; i < nConds; i++)
 			curr[i] = Complex.ZERO;
 	}
 
 	@Override
 	public void getInjCurrents(Complex[] curr) {
-		for (int i = 0; i < ncond; i++)
+		for (int i = 0; i < nConds; i++)
 			curr[i] = Complex.ZERO;
 	}
 
@@ -316,7 +316,7 @@ public class RecloserObjImpl extends ControlElemImpl implements RecloserObj {
 			/* Check ground trip, if any */
 			if (groundCurve != null) {
 				CSum = Complex.ZERO;
-				for (i = condOffset; i < nphase + condOffset; i++)
+				for (i = condOffset; i < nPhases + condOffset; i++)
 					CSum = CSum.add(cBuffer[i]);
 				CMag = CSum.abs();
 				if (groundInst > 0.0 && CMag >= groundInst && operationCount == 1) {
@@ -336,7 +336,7 @@ public class RecloserObjImpl extends ControlElemImpl implements RecloserObj {
 			/* Check phase trip, if any */
 
 			if (phaseCurve != null) {
-				for (i = condOffset; i < nphase + condOffset; i++) {
+				for (i = condOffset; i < nPhases + condOffset; i++) {
 					CMag =  cBuffer[i].abs();
 
 					if (phaseInst > 0.0 && CMag >= phaseInst && operationCount == 1) {

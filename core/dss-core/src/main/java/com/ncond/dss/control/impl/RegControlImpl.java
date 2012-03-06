@@ -256,7 +256,7 @@ public class RegControlImpl extends ControlClassImpl implements RegControl {
 			case 16:
 				if (arc.isDebugTrace()) {
 					try {
-						File TraceFile = new File(DSS.DSSDataDirectory + "REG_"+arc.getName()+".csv");
+						File TraceFile = new File(DSS.dataDirectory + "REG_"+arc.getName()+".csv");
 						FileWriter TraceStream = new FileWriter(TraceFile, false);
 						BufferedWriter TraceBuffer = new BufferedWriter(TraceStream);
 

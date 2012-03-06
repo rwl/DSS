@@ -1,10 +1,8 @@
 package com.ncond.dss.common.impl;
 
-import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.File;
 import java.io.IOException;
-import java.io.PrintStream;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
@@ -39,9 +37,9 @@ import com.ncond.dss.shared.HashList;
 public class DSS {
 
 	public static final String CRLF = System.getProperty("line.separator");
-	public static final double PI = 3.14159265359;
+	public static final double PI = Math.PI;
 	public static final double TWO_PI = 2.0 * PI;
-	public static final double RADIANS_TO_DEGREES = 57.29577951;
+	public static final double RADIANS_TO_DEGREES = 180.0 / PI;
 	public static final double EPSILON = 1.0e-12;   // default tiny floating point
 	public static final double EPSILON2 = 1.0e-3;   // default for real number mismatch testing
 
@@ -102,14 +100,14 @@ public class DSS {
 	public static DSSForms forms = CommandLineDSSForms.getInstance();
 
 	/* Variables */
-	public static boolean DLLFirstTime = true;
-	public static PrintStream DLLDebugFile;
-	public static String DSSIniFileName = "OpenDSSPanel.ini";
-	public static String programName = "OpenDSS";
+	public static boolean debugFirstTime = true;
+//	public static File debugFile;
+//	public static String DSSIniFileName = "OpenDSSPanel.ini";
+//	public static String programName = "OpenDSS";
 	// Registry   (See Executive)
 //	public static IniRegSave DSS_Registry = IniRegSave("\\Software\\OpenDSS");
 
-	public static boolean isDLL = false;
+//	public static boolean isDLL = false;
 	public static boolean noFormsAllowed = false;
 
 	public static Circuit activeCircuit;
@@ -120,8 +118,8 @@ public class DSS {
 	public static int maxCircuits = 1;
 	public static int maxBusLimit = 0;  // set in validation
 	public static int maxAllocationIterations = 2;
-	public static ArrayList<Circuit> circuits;
-	public static ArrayList<DSSObject> DSSObjs;
+	public static List<Circuit> circuits;
+	public static List<DSSObject> DSSObjs;
 
 	// auxiliary parser for use by anybody for reparsing values
 	public static Parser auxParser = Parser.getInstance();
@@ -156,13 +154,13 @@ public class DSS {
 	public static String queryLogFileName = "";
 	public static File queryLogFile;
 
-	public static String defaultEditor = "NotePad";
-	public static String DSSFileName;// = GetDSSExeFile();  // name of current exe or DLL
-	public static String DSSDirectory;// = new File(DSSFileName).getParent();  // where the current exe resides
-	public static String startupDirectory = System.getProperty("user.dir") + "/";  // starting point
-	public static String DSSDataDirectory = startupDirectory;
+	public static String defaultEditor = "vi";
+//	public static String DSSFileName;// = getDSSExeFile();  // name of current exe or DLL
+//	public static String DSSDirectory;// = new File(DSSFileName).getParent();  // where the current exe resides
+//	public static String startupDirectory = System.getProperty("user.dir") + "/";  // starting point
+	public static String dataDirectory = System.getProperty("user.dir") + "/";
 	public static String circuitName_;  // name of circuit with a "_" appended
-	public static String currentDirectory = startupDirectory;  // current working directory
+	public static String currentDirectory = dataDirectory;  // current working directory
 
 	public static double defaultBaseFreq = 60.0;
 	public static double daisySize = 1.0;
@@ -195,9 +193,9 @@ public class DSS {
 	public static HashList classNames;
 
 	public static void doErrorMsg(String s, String emsg, String probCause, int errNum) {
-		String msg = String.format("Error %d reported from DSS function: ", errNum) + s
-			+ CRLF + "Error description: " + CRLF + emsg
-			+ CRLF + "Probable cause: " + CRLF + probCause;
+		String msg = String.format("Error %d reported from DSS function: ", errNum) +
+			s + CRLF + "Error description: " + CRLF + emsg + CRLF +
+			"Probable cause: " + CRLF + probCause;
 
 		if (!noFormsAllowed) {
 			if (inRedirect) {
@@ -217,9 +215,8 @@ public class DSS {
 	public static void doSimpleMsg(String s, int errNum) {
 		if (!noFormsAllowed) {
 			if (inRedirect) {
-				int RetVal = forms.messageDlg(String.format("(%d) %s%s", errNum, CRLF, s), false);
-				if (RetVal == -1)
-					redirectAbort = true;
+				int rc = forms.messageDlg(String.format("(%d) %s%s", errNum, CRLF, s), false);
+				if (rc == -1) redirectAbort = true;
 			} else {
 				forms.infoMessageDlg(String.format("(%d) %s%s", errNum, CRLF, s));
 			}
@@ -249,12 +246,12 @@ public class DSS {
 		// Split off obj class and name
 		int dotpos = param.indexOf(".");
 		switch (dotpos) {
-		case 0:
+		case -1:
 			// assume it is all name; class defaults
 			objName = param;
 			break;
 		default:
-			objClass = param.substring(0, dotpos - 1);
+			objClass = param.substring(0, dotpos);
 			objName = param.substring(dotpos + 1, param.length());
 			break;
 		}
@@ -266,7 +263,8 @@ public class DSS {
 		if (activeDSSClass != null) {
 			if (!activeDSSClass.setActive(objName)) {
 				// scroll through list of objects until a match
-				doSimpleMsg("Error: Object \"" + objName + "\" not found." + CRLF + Parser.getInstance().getCmdString(), 904);
+				doSimpleMsg("Error: Object \"" + objName + "\" not found." + CRLF +
+						Parser.getInstance().getCmdString(), 904);
 			} else {
 				switch (activeDSSObject.getDSSObjType()) {
 				case DSSClassDefs.DSS_OBJECT:
@@ -283,7 +281,9 @@ public class DSS {
 		}
 	}
 
-	/** Finds the bus and sets it active. */
+	/**
+	 * Finds the bus and sets it active.
+	 */
 	public static int setActiveBus(String busName) {
 		int result = 0;
 
@@ -300,7 +300,9 @@ public class DSS {
 		return result;
 	}
 
-	/** Pathname may be null */
+	/**
+	 * Pathname may be null
+	 */
 	public static void setDataPath(String pathName) {
 		File f = new File(pathName);
 
@@ -311,29 +313,29 @@ public class DSS {
 				doSimpleMsg("Cannot create " + pathName + " directory.", 907);
 				System.exit(0);
 			}
-
 		}
 
-		DSSDataDirectory = pathName;
+		dataDirectory = pathName;
 
-		// Put a \ on the end if not supplied. Allow a null specification.
-		if (DSSDataDirectory.length() > 0) {
-		currentDirectory = DSSDataDirectory;   // change to specified directory
-//			if (DSSDataDirectory.charAt(DSSDataDirectory.length()) != '\\') {
-//					DSSDataDirectory = DSSDataDirectory + "\\";
-//			}
+		// Put a / on the end if not supplied. Allow a null specification.
+		if (dataDirectory.length() > 0) {
+			currentDirectory = dataDirectory;   // change to specified directory
+			if (dataDirectory.charAt(dataDirectory.length()) != '/')
+				dataDirectory += "/";
 		}
 	}
 
 
 	public static void makeNewCircuit(String name) {
+		String s;
+
 		if (numCircuits < maxCircuits) {
-			activeCircuit = new DSSCircuit(name);
+			activeCircuit = new CircuitImpl(name);
 			activeDSSObject = SolutionImpl.activeSolutionObj;
 			/*Handle = */ circuits.add(activeCircuit);
 			numCircuits += 1;
 			// pass remainder of string on to VSource
-			String s = Parser.getInstance().getRemainder();
+			s = Parser.getInstance().getRemainder();
 
 			/* create a default circuit */
 			solutionAbort = false;
@@ -342,8 +344,8 @@ public class DSS {
 			DSSExecutive.getInstance().setCommand("new object=vsource.source bus1=SourceBus " + s);
 		} else {
 			doErrorMsg("makeNewCircuit", "Cannot create new circuit.",
-					"Max. circuits exceeded." + CRLF +
-					"(Max no. of circuits=" + String.valueOf(maxCircuits) + ")", 906);
+				"Max. circuits exceeded." + CRLF +
+				"(Max no. of circuits=" + maxCircuits + ")", 906);
 		}
 	}
 
@@ -351,40 +353,35 @@ public class DSS {
 	 * Append a string to global result, separated by commas.
 	 */
 	public static void appendGlobalResult(String s) {
-		if (globalResult.length() == 0) {
-			globalResult = s;
-		} else {
-			globalResult = globalResult + ", " + s;
-		}
+		globalResult += (globalResult.length() == 0) ? s : ", " + s;
 	}
 
 	/**
 	 * Separate by CRLF.
 	 */
 	public static void appendGlobalResultCRLF(String s) {
-		if (globalResult.length() > 0) {
-			globalResult += CRLF + s;
-		} else {
-			globalResult = s;
-		}
+		globalResult += (globalResult.length() > 0) ? CRLF + s : s;
 	}
 
-	public static void WriteDLLDebugFile(String s) {
+	public static void writeDebugFile(String s) {
 		boolean append;
-		if (DLLFirstTime) {
+		if (debugFirstTime) {
 			append = false;
-			DLLFirstTime = false;
+			debugFirstTime = false;
 		} else {
 			append = true;
 		}
-		FileWriter writer;
+
 		try {
-			writer = new FileWriter(DSSDataDirectory + "DSSDLLDebug.txt", append);
-			BufferedWriter debugFile = new BufferedWriter(writer);
-			debugFile.write(s + CRLF);
-			debugFile.close();
+			FileWriter fw = new FileWriter(dataDirectory + "DSSDebug.txt", append);
+			PrintWriter pw = new PrintWriter(fw);
+
+			pw.println(s);
+
+			pw.close();
+			fw.close();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
+			doSimpleMsg("Error writing debug file: " + e.getMessage(), 906);
 		}
 	}
 
@@ -393,32 +390,31 @@ public class DSS {
 	}
 
 	/**
-	 * Log file is written after a query command if LogQueries is true.
+	 * Log file is written after a query command if logQueries is true.
 	 */
 	public static void writeQueryLogFile(String prop, String s) {
-		FileWriter f;
-		PrintWriter writer;
+		FileWriter fw;
+		PrintWriter pw;
 
 		try {
-			queryLogFileName =  DSSDataDirectory + "QueryLog.csv";
-
+			queryLogFileName = dataDirectory + "QueryLog.csv";
 			queryLogFile = new File(queryLogFileName);
 
 			if (queryFirstTime) {
-				f = new FileWriter(queryLogFile, false);
-				writer = new PrintWriter(f);
-				writer.println("Time(h), Property, Result");
+				fw = new FileWriter(queryLogFile, false);
+				pw = new PrintWriter(fw);
+				pw.println("Time(h), Property, Result");
 				queryFirstTime = false;
 			} else {
-				f = new FileWriter(queryLogFile, true);
-				writer = new PrintWriter(f);
+				fw = new FileWriter(queryLogFile, true);
+				pw = new PrintWriter(fw);
 			}
 
-			writer.printf("%.10g, %s, %s", activeCircuit.getSolution().getDblHour(), prop, s);
-			writer.close();
-			f.close();
+			pw.printf("%.10g, %s, %s", activeCircuit.getSolution().getDblHour(), prop, s);
+			pw.close();
+			fw.close();
 		} catch (IOException e) {
-			doSimpleMsg("Error writing Query Log file: " + e.getMessage(), 908);
+			doSimpleMsg("Error writing query log file: " + e.getMessage(), 908);
 		}
 	}
 

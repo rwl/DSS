@@ -39,7 +39,7 @@ public class EquivalentObjImpl extends PCElementImpl implements EquivalentObj {
 		objType = parClass.getDSSClassType(); //SOURCE + NON_PCPD_ELEM;  // don't want this in PC element list
 
 		setNumPhases(3);
-		ncond = 3;
+		nConds = 3;
 		setNumTerms(1);
 		Z    = null;
 		ZInv = null;
@@ -66,12 +66,12 @@ public class EquivalentObjImpl extends PCElementImpl implements EquivalentObj {
 
 		initPropertyValues(0);
 
-		YOrder = nterm * ncond;
+		YOrder = nTerms * nConds;
 		recalcElementData();
 	}
 
 	private int idx(int a, int b) {
-		return b * nterm + a;
+		return b * nTerms + a;
 	}
 
 	@Override
@@ -81,20 +81,20 @@ public class EquivalentObjImpl extends PCElementImpl implements EquivalentObj {
 		int iOffset, jOffset, indx;
 
 		// for a source, nPhases = nCond, for now
-		Z    = new CMatrixImpl(nphase * nterm);
-		ZInv = new CMatrixImpl(nphase * nterm);
+		Z    = new CMatrixImpl(nPhases * nTerms);
+		ZInv = new CMatrixImpl(nPhases * nTerms);
 
 		// build Z matrix for all phases
-		for (int i = 0; i < nterm; i++)
-			for (int j = 0; j < nterm; j++) {
+		for (int i = 0; i < nTerms; i++)
+			for (int j = 0; j < nTerms; j++) {
 				indx = idx(i, j);
 				Zs = ComplexUtil.divide(new Complex(2.0 * R1[indx] + R0[indx], 2.0 * X1[indx] + X0[indx] ), 3.0);
 				Zm = ComplexUtil.divide(new Complex(R0[indx] - R1[indx], X0[indx] - X1[indx]), 3.0);
 
-				iOffset = i * nphase;
-				jOffset = j * nphase;
+				iOffset = i * nPhases;
+				jOffset = j * nPhases;
 
-				for (int ii = 0; ii < nphase; ii++) {
+				for (int ii = 0; ii < nPhases; ii++) {
 					for (int jj = 0; jj < ii; jj++) {
 						if (ii == jj) {
 							Z.set(ii + iOffset, jj + jOffset, Zs);
@@ -108,12 +108,12 @@ public class EquivalentObjImpl extends PCElementImpl implements EquivalentObj {
 			}
 
 		//  voltage source properties
-		switch (nphase) {
+		switch (nPhases) {
 		case 1:
 			VMag = kVBase * perUnit * 1000.0;
 			break;
 		default:
-			VMag = kVBase * perUnit * 1000.0 / 2.0 / Math.sin((180.0 / nphase)* Math.PI / 180.0);
+			VMag = kVBase * perUnit * 1000.0 / 2.0 / Math.sin((180.0 / nPhases)* Math.PI / 180.0);
 			break;
 		}
 
@@ -164,7 +164,7 @@ public class EquivalentObjImpl extends PCElementImpl implements EquivalentObj {
 			DSS.doErrorMsg("EquivalentObj.calcYPrim", "Matrix inversion error for equivalent \"" + getName() + "\"",
 					"Invalid impedance specified. Replaced with small resistance.", 803);
 			ZInv.clear();
-			for (i = 0; i < nphase; i++)
+			for (i = 0; i < nPhases; i++)
 				ZInv.set(i, i, new Complex(1.0 / DSS.EPSILON, 0.0));
 		}
 
@@ -190,12 +190,12 @@ public class EquivalentObjImpl extends PCElementImpl implements EquivalentObj {
 			 * of phases assuming they are equally displaced in time.
 			 */
 
-			switch (nphase) {
+			switch (nPhases) {
 			case 1:
 				VMag = kVBase * perUnit * 1000.0;
 				break;
 			default:
-				VMag = kVBase * perUnit * 1000.0 / 2.0 / Math.sin((180.0 / nphase) * Math.PI / 180.0);
+				VMag = kVBase * perUnit * 1000.0 / 2.0 / Math.sin((180.0 / nPhases) * Math.PI / 180.0);
 				break;
 			}
 
@@ -205,14 +205,14 @@ public class EquivalentObjImpl extends PCElementImpl implements EquivalentObj {
 				equivHarm = sol.getFrequency() / equivFrequency;
 				VHarm = getSpectrumObj().getMult(equivHarm).multiply(VMag);  // base voltage for this harmonic
 				VHarm = Util.rotatePhasorDeg(VHarm, equivHarm, angle);  // rotate for phase 1 shift
-				for (i = 0; i < nphase; i++) {
+				for (i = 0; i < nPhases; i++) {
 					VTerminal[i] = VHarm;
-					if (i < nphase)
-						VHarm = Util.rotatePhasorDeg(VHarm, equivHarm, -360.0 / nphase);
+					if (i < nPhases)
+						VHarm = Util.rotatePhasorDeg(VHarm, equivHarm, -360.0 / nPhases);
 				}
 			} else {
-				for (i = 0; i < nphase; i++)
-					VTerminal[i] = ComplexUtil.polarDeg2Complex(VMag, (360.0 + angle - i * 360.0 / nphase));
+				for (i = 0; i < nPhases; i++)
+					VTerminal[i] = ComplexUtil.polarDeg2Complex(VMag, (360.0 + angle - i * 360.0 / nPhases));
 			}
 
 		} catch (Exception e) {
@@ -276,7 +276,7 @@ public class EquivalentObjImpl extends PCElementImpl implements EquivalentObj {
 			f.println("baseFrequency=" + baseFrequency);
 			f.println("vMag=" + VMag);
 			f.println("zMatrix=");
-			for (i = 0; i < nphase; i++) {
+			for (i = 0; i < nPhases; i++) {
 				for (j = 0; j < i; j++) {
 					c = Z.get(i, j);
 					f.print(c.getReal() + " + j" + c.getImaginary());
@@ -334,9 +334,9 @@ public class EquivalentObjImpl extends PCElementImpl implements EquivalentObj {
 
 	// Private method in OpenDSS
 	public int doTerminalsDef(int n) {
-		int result = nterm;
+		int result = nTerms;
 
-		if (n != nterm)
+		if (n != nTerms)
 			if (n > 0)
 				reallocRX();
 
@@ -348,14 +348,14 @@ public class EquivalentObjImpl extends PCElementImpl implements EquivalentObj {
 	 */
 	// Private method in OpenDSS
 	public void parseDblMatrix(double[] mat) {
-		Parser.getInstance().parseAsSymMatrix(nterm, mat);
+		Parser.getInstance().parseAsSymMatrix(nTerms, mat);
 	}
 
 	private void reallocRX() {
-		R1 = Util.resizeArray(R1, (int) Math.pow(nterm, 2));
-		X1 = Util.resizeArray(X1, (int) Math.pow(nterm, 2));
-		R0 = Util.resizeArray(R0, (int) Math.pow(nterm, 2));
-		X0 = Util.resizeArray(X0, (int) Math.pow(nterm, 2));
+		R1 = Util.resizeArray(R1, (int) Math.pow(nTerms, 2));
+		X1 = Util.resizeArray(X1, (int) Math.pow(nTerms, 2));
+		R0 = Util.resizeArray(R0, (int) Math.pow(nTerms, 2));
+		X0 = Util.resizeArray(X0, (int) Math.pow(nTerms, 2));
 	}
 
 	public CMatrix getZ() {

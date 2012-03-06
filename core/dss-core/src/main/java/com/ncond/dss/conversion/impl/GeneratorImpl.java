@@ -436,7 +436,7 @@ public class GeneratorImpl extends PCClassImpl implements Generator {
 				case 21:
 					if (ag.isDebugTrace()) {
 						try {
-							File f = new File(DSS.DSSDataDirectory + "GEN_"+ag.getName()+".csv");
+							File f = new File(DSS.dataDirectory + "GEN_"+ag.getName()+".csv");
 							FileWriter fw = new FileWriter(f, false);
 							BufferedWriter bw = new BufferedWriter(fw);
 

@@ -37,7 +37,7 @@ public class ReactorObjImpl extends PDElementImpl implements ReactorObj {
 		objType = parClass.getDSSClassType();
 
 		setNumPhases(3);  // directly set conds and phases
-		ncond = 3;
+		nConds = 3;
 		setNumTerms(2);   // force allocation of terminals and conductors
 
 		setBus(1, (getBus(0) + ".0.0.0"));  // default to grounded wye
@@ -63,7 +63,7 @@ public class ReactorObjImpl extends PDElementImpl implements ReactorObj {
 		faultRate   = 0.0005;
 		pctPerm     = 100.0;
 		hrsToRepair = 3.0;
-		YOrder      = nterm * ncond;
+		YOrder      = nTerms * nConds;
 		recalcElementData();
 
 		initPropertyValues(0);
@@ -77,13 +77,13 @@ public class ReactorObjImpl extends PDElementImpl implements ReactorObj {
 
 		switch (specType) {
 		case 1:  // kVAr
-			kVArPerPhase = kVArRating / nphase;
+			kVArPerPhase = kVArRating / nPhases;
 			switch (connection) {
 			case 1:  // line-to-line
 				phaseKV = kVRating;
 				break;
 			default:  //  line-to-neutral
-				switch (nphase) {
+				switch (nPhases) {
 				case 2:
 					phaseKV = kVRating / DSS.SQRT3;  // assume three phase system
 					break;
@@ -116,26 +116,26 @@ public class ReactorObjImpl extends PDElementImpl implements ReactorObj {
 
 		if (isParallel && specType == 3) {
 
-			GMatrix = Util.resizeArray(GMatrix, nphase * nphase);
-			BMatrix = Util.resizeArray(BMatrix, nphase * nphase);
+			GMatrix = Util.resizeArray(GMatrix, nPhases * nPhases);
+			BMatrix = Util.resizeArray(BMatrix, nPhases * nPhases);
 
 			/* Copy rMatrix to gMatrix and invert */
-			for (i = 0; i < nphase * nphase; i++)
+			for (i = 0; i < nPhases * nPhases; i++)
 				GMatrix[i] = RMatrix[i];
-			MathUtil.ETKInvert(RMatrix, nphase, checkError);
+			MathUtil.ETKInvert(RMatrix, nPhases, checkError);
 			if (checkError[0] > 0) {
 				DSS.doSimpleMsg("Error inverting R matrix for Reactor."+getName()+" - G is zeroed.", 232);
-				for (i = 0; i < nphase * nphase; i++)
+				for (i = 0; i < nPhases * nPhases; i++)
 					GMatrix[i] = 0.0;
 			}
 
 			/* Copy xMatrix to bMatrix and invert */
-			for (i = 0; i < nphase * nphase; i++) {
+			for (i = 0; i < nPhases * nPhases; i++) {
 				BMatrix[i] = -XMatrix[i];
-				MathUtil.ETKInvert(BMatrix, nphase, checkError);
+				MathUtil.ETKInvert(BMatrix, nPhases, checkError);
 				if (checkError[0] > 0) {
 					DSS.doSimpleMsg("Error inverting X matrix for Reactor."+getName()+" - B is zeroed.", 233);
-					for (i = 0; i < nphase * nphase; i++)
+					for (i = 0; i < nPhases * nPhases; i++)
 						GMatrix[i] = 0.0;
 				}
 			}
@@ -188,7 +188,7 @@ public class ReactorObjImpl extends PDElementImpl implements ReactorObj {
 			case 1:  // line-line
 				value2 = value.multiply(2.0);
 				value = value.negate();
-				for (i = 0; i < nphase; i++) {
+				for (i = 0; i < nPhases; i++) {
 					YPrimTemp.set(i, i, value2);
 					for (j = 0; j < i; j++)
 						YPrimTemp.setSym(i, j, value);
@@ -196,10 +196,10 @@ public class ReactorObjImpl extends PDElementImpl implements ReactorObj {
 				}
 				break;
 			default:  // wye
-				for (i = 0; i < nphase; i++) {
+				for (i = 0; i < nPhases; i++) {
 					YPrimTemp.set(i, i, value);  // elements are only on the diagonals
-					YPrimTemp.set(i + nphase, i + nphase, value);
-					YPrimTemp.setSym(i, i + nphase, value.negate());
+					YPrimTemp.set(i + nPhases, i + nPhases, value);
+					YPrimTemp.setSym(i, i + nPhases, value.negate());
 				}
 				break;
 			}
@@ -215,7 +215,7 @@ public class ReactorObjImpl extends PDElementImpl implements ReactorObj {
 			case 1:  // line-line
 				value2 = value.multiply(2.0);
 				value = value.negate();
-				for (i = 0; i < nphase; i++) {
+				for (i = 0; i < nPhases; i++) {
 					YPrimTemp.set(i, i, value2);
 					for (j = 0; j < i; j++)
 						YPrimTemp.setSym(i, j, value);
@@ -223,10 +223,10 @@ public class ReactorObjImpl extends PDElementImpl implements ReactorObj {
 				}
 				break;
 			default:  // wye
-				for (i = 0; i < nphase; i++) {
+				for (i = 0; i < nPhases; i++) {
 					YPrimTemp.set(i, i, value);  // elements are only on the diagonals
-					YPrimTemp.set(i + nphase, i + nphase, value);
-					YPrimTemp.setSym(i, i + nphase, value.negate());
+					YPrimTemp.set(i + nPhases, i + nPhases, value);
+					YPrimTemp.setSym(i, i + nPhases, value.negate());
 				}
 				break;
 			}
@@ -237,21 +237,21 @@ public class ReactorObjImpl extends PDElementImpl implements ReactorObj {
 			/* Put in parallel r & l */
 			if (isParallel) {  // build Z as a Y matrix
 
-				for (i = 0; i < nphase; i++) {
-					for (j = 0; j < nphase; j++) {
-						idx = j * nphase + i;
+				for (i = 0; i < nPhases; i++) {
+					for (j = 0; j < nPhases; j++) {
+						idx = j * nPhases + i;
 						value = new Complex(GMatrix[idx], BMatrix[idx] / freqMultiplier);
 						YPrimTemp.set(i, j, value);
-						YPrimTemp.set(i + nphase, j + nphase, value);
-						YPrimTemp.setSym(i, j + nphase, value.negate());
+						YPrimTemp.set(i + nPhases, j + nPhases, value);
+						YPrimTemp.setSym(i, j + nPhases, value.negate());
 					}
 				}
 			} else {  // for series r and x
-				ZMatrix = new CMatrixImpl(nphase);
+				ZMatrix = new CMatrixImpl(nPhases);
 				ZValues = ZMatrix.asArray();  // so we can populate array fast
-				nphase = ZMatrix.order();
+				nPhases = ZMatrix.order();
 				/* Put in series r & l */
-				for (i = 0; i < nphase * nphase; i++)
+				for (i = 0; i < nPhases * nPhases; i++)
 					// correct the impedances for frequency
 					ZValues[i] = new Complex(RMatrix[i], XMatrix[i] * freqMultiplier);
 
@@ -260,15 +260,15 @@ public class ReactorObjImpl extends PDElementImpl implements ReactorObj {
 					DSS.doErrorMsg("ReactorObj.calcYPrim()", "Matrix inversion error for reactor \"" + getName() + "\"",
 									"Invalid impedance specified. Replaced with tiny conductance.", 234);
 					ZMatrix.clear();
-					for (i = 0; i < nphase; i++)
+					for (i = 0; i < nPhases; i++)
 						ZMatrix.set(i, i, new Complex(DSS.EPSILON, 0.0));
 
-					for (i = 0; i < nphase; i++)
-						for (j = 0; j < nphase; j++) {
+					for (i = 0; i < nPhases; i++)
+						for (j = 0; j < nPhases; j++) {
 							value = ZMatrix.get(i, j);
 							YPrimTemp.set(i, j, value);
-							YPrimTemp.set(i + nphase, j + nphase, value);
-							YPrimTemp.setSym(i, j + nphase, value.negate());
+							YPrimTemp.set(i + nPhases, j + nPhases, value);
+							YPrimTemp.setSym(i, j + nPhases, value.negate());
 						}
 
 					ZMatrix = null;
@@ -279,7 +279,7 @@ public class ReactorObjImpl extends PDElementImpl implements ReactorObj {
 
 		// set YPrim_Series based on diagonals of YPrim_Shunt so that calcVoltages doesn't fail
 		if (isShunt()) {
-			if (nphase == 1 && !DSS.activeCircuit.isPositiveSequence()) {  // assume a neutral or grounding reactor; leave diagonal in the circuit
+			if (nPhases == 1 && !DSS.activeCircuit.isPositiveSequence()) {  // assume a neutral or grounding reactor; leave diagonal in the circuit
 				for (i = 0; i < YOrder; i++)
 					YPrimSeries.set(i, i, YPrimShunt.get(i, i));
 			} else {
@@ -308,10 +308,10 @@ public class ReactorObjImpl extends PDElementImpl implements ReactorObj {
 			case 6:
 				if (RMatrix != null) {
 					pw.print(parentClass.getPropertyName(k) + "= (");
-					for (i = 0; i < nphase; i++) {
+					for (i = 0; i < nPhases; i++) {
 						for (j = 0; j < i; j++)
-							pw.printf("%-.5g", RMatrix[i * nphase + j] + " ");
-						if (i != nphase - 1)
+							pw.printf("%-.5g", RMatrix[i * nPhases + j] + " ");
+						if (i != nPhases - 1)
 							pw.print("|");
 					}
 					pw.println(")");
@@ -320,10 +320,10 @@ public class ReactorObjImpl extends PDElementImpl implements ReactorObj {
 			case 7:
 				if (XMatrix != null) {
 					pw.print(parentClass.getPropertyName(k) + "= (");
-					for (i = 0; i < nphase; i++) {
+					for (i = 0; i < nPhases; i++) {
 						for (j = 0; j < i; j++)
-							pw.printf("%-.5g", XMatrix[i * nphase + j] + " ");
-						if (i != nphase - 1)
+							pw.printf("%-.5g", XMatrix[i * nPhases + j] + " ");
+						if (i != nPhases - 1)
 							pw.print("|");
 					}
 					pw.println(")");
@@ -352,7 +352,7 @@ public class ReactorObjImpl extends PDElementImpl implements ReactorObj {
 			/* Compute losses in Rp branch from voltages across shunt element -- node to ground */
 			noload = Complex.ZERO;
 			sol = DSS.activeCircuit.getSolution();
-			for (int i = 0; i < nphase; i++) {
+			for (int i = 0; i < nPhases; i++) {
 				Complex V = sol.getNodeV(nodeRef[i]);
 				noload = noload.add(new Complex((Math.pow(V.getReal(), 2) + Math.pow(V.getImaginary(), 2)) / Rp, 0.0));  // V^2/Rp
 			}
@@ -405,11 +405,11 @@ public class ReactorObjImpl extends PDElementImpl implements ReactorObj {
 		double kVArPerPhase, phaseKV, Rs, Rm;
 		int i, j;
 
-		if (nphase > 1) {
+		if (nPhases > 1) {
 			switch (specType) {
 			case 1:  // kVAr
-				kVArPerPhase = kVArRating / nphase;
-				if (nphase > 1 || connection != 0) {
+				kVArPerPhase = kVArRating / nPhases;
+				if (nPhases > 1 || connection != 0) {
 					phaseKV = kVRating / DSS.SQRT3;
 				} else {
 					phaseKV = kVRating;
@@ -425,27 +425,27 @@ public class ReactorObjImpl extends PDElementImpl implements ReactorObj {
 				s = "phases=1 ";
 				// r1
 				Rs = 0.0;   // avg self
-				for (i = 0; i < nphase; i++)
-					Rs = Rs + RMatrix[i * nphase + i];
-				Rs = Rs / nphase;
+				for (i = 0; i < nPhases; i++)
+					Rs = Rs + RMatrix[i * nPhases + i];
+				Rs = Rs / nPhases;
 				Rm = 0.0;   // avg mutual
-				for (i = 1; i < nphase; i++)
-					for (j = i; j < nphase; j++)
-						Rm = Rm + RMatrix[i * nphase + j];
-				Rm = Rm / (nphase * (nphase - 1.0) / 2.0);
+				for (i = 1; i < nPhases; i++)
+					for (j = i; j < nPhases; j++)
+						Rm = Rm + RMatrix[i * nPhases + j];
+				Rm = Rm / (nPhases * (nPhases - 1.0) / 2.0);
 
 				s = s + String.format(" R=%-.5g", (Rs - Rm));
 
 				// x1
 				Rs = 0.0;   // avg self
-				for (i = 0; i < nphase; i++)
-					Rs = Rs + XMatrix[i * nphase + i];
-				Rs = Rs / nphase;
+				for (i = 0; i < nPhases; i++)
+					Rs = Rs + XMatrix[i * nPhases + i];
+				Rs = Rs / nPhases;
 				Rm = 0.0;   // avg mutual
-				for (i = 1; i < nphase; i++)
-					for (j = i; j < nphase; j++)
-						Rm = Rm + XMatrix[i * nphase + j];
-				Rm = Rm / (nphase * (nphase - 1.0) / 2.0);
+				for (i = 1; i < nPhases; i++)
+					for (j = i; j < nPhases; j++)
+						Rm = Rm + XMatrix[i * nPhases + j];
+				Rm = Rm / (nPhases * (nPhases - 1.0) / 2.0);
 
 				s = s + String.format(" X=%-.5g", (Rs - Rm));
 				break;

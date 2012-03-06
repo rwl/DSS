@@ -29,8 +29,8 @@ import com.ncond.dss.common.FeederObj;
 import com.ncond.dss.common.Solution;
 import com.ncond.dss.common.SolutionObj;
 import com.ncond.dss.common.Terminal;
-import com.ncond.dss.common.impl.DSSBus.NodeBus;
-import com.ncond.dss.common.impl.DSSCircuit.CktElementDef;
+import com.ncond.dss.common.impl.BusImpl.NodeBus;
+import com.ncond.dss.common.impl.CircuitImpl.CktElementDef;
 import com.ncond.dss.control.ControlElem;
 import com.ncond.dss.conversion.GeneratorObj;
 import com.ncond.dss.conversion.LoadObj;
@@ -859,21 +859,20 @@ public class Util {
 		}
 	}
 
-	public static void parseObjectClassandName(String fullObjName, StringBuffer className, StringBuffer objName) {
-		// split off obj class and name
+	/**
+	 * Split off obj class and name.
+	 */
+	public static void parseObjectClassandName(String fullObjName, String[] className, String[] objName) {
 		int dotpos = fullObjName.indexOf('.');
 		switch (dotpos) {
 		case -1:
-			objName.delete(0, objName.length());
 			// assume it is all objname; class defaults
-			objName.append( fullObjName.substring(0, fullObjName.length()) );
-			className.delete(0, className.length());
+			objName[0] = fullObjName;
+			className[0] = "";
 			break;
 		default:
-			className.delete(0, className.length());
-			className.append( fullObjName.substring(0, dotpos) );
-			objName.delete(0, objName.length());
-			objName.append( fullObjName.substring(dotpos + 1, fullObjName.length()) );
+			className[0] = fullObjName.substring(0, dotpos);
+			objName[0] = fullObjName.substring(dotpos + 1, fullObjName.length());
 			break;
 		}
 	}
@@ -1063,22 +1062,22 @@ public class Util {
 	public static int getCktElementIndex(String fullObjName) {
 
 		int devClassIndex, devIndex;
-		StringBuffer devClassName = new StringBuffer();
-		StringBuffer devName = new StringBuffer();
+		String[] devClassName = new String[1];
+		String[] devName = new String[1];
 
 		int result = -1;  // default return value
 		parseObjectClassandName(fullObjName, devClassName, devName);
-		devClassIndex = DSS.classNames.find(devClassName.toString());
+		devClassIndex = DSS.classNames.find(devClassName[0]);
 		if (devClassIndex == -1)
 			devClassIndex = DSS.lastClassReferenced;
 
 		// since there could be devices of the same name of different classes,
 		// loop until we find one of the correct class
 		Circuit ckt = DSS.activeCircuit;
-		devIndex = ckt.getDeviceList().find(devName.toString());
+		devIndex = ckt.getDeviceList().find(devName[0]);
 		while (devIndex > -1) {
-			if (ckt.getDeviceRef()[devIndex].cktElementClass == devClassIndex)  // we got a match
-				return devIndex;
+			if (ckt.getDeviceRef()[devIndex].cktElementClass == devClassIndex)
+				return devIndex;  // found a match
 			devIndex = ckt.getDeviceList().findNext();
 		}
 
@@ -1128,7 +1127,7 @@ public class Util {
 		PrintWriter pw;
 
 		try {
-			fileName = DSS.DSSDataDirectory + "AllocationFactors.txt";
+			fileName = DSS.dataDirectory + "AllocationFactors.txt";
 			FileWriter fw = new FileWriter(fileName);
 			pw = new PrintWriter(fw);
 		} catch (IOException e) {
@@ -1187,7 +1186,7 @@ public class Util {
 		double dNumNodes;
 
 		try {
-			FileWriter fw = new FileWriter(DSS.DSSDataDirectory + DSS.circuitName_ + "SavedVoltages.dbl");
+			FileWriter fw = new FileWriter(DSS.dataDirectory + DSS.circuitName_ + "SavedVoltages.dbl");
 			pw = new PrintWriter(fw);
 		} catch (Exception e) {
 			DSS.doSimpleMsg("Error opening/creating file to save voltages: " + e.getMessage(), 711);
@@ -2139,7 +2138,7 @@ public class Util {
 		}
 
 		try {
-			fileName = DSS.DSSDataDirectory + DSS.circuitName_ + scriptFileName;
+			fileName = DSS.dataDirectory + DSS.circuitName_ + scriptFileName;
 			DSS.globalResult = fileName;
 
 			fw = new FileWriter(fileName);

@@ -512,8 +512,7 @@ public class ExecCommands {
 				DSS.cmdResult = ExecHelper.doHelpCmd();
 				break;
 			case 21:
-				if (!DSS.isDLL)
-					DSS.forms.exitControlPanel();
+				DSS.forms.exitControlPanel();
 				break;
 			case 24:
 				DSS.forms.showControlPanel();
@@ -808,7 +807,7 @@ public class ExecCommands {
 				DSS.activeCircuit.getSolution().doControlActions();
 				break;
 			case 81:
-				DSS.activeCircuit.getControlQueue().showQueue(DSS.DSSDirectory + DSS.circuitName_ + "ControlQueue.csv");
+				DSS.activeCircuit.getControlQueue().showQueue(DSS.currentDirectory + DSS.circuitName_ + "ControlQueue.csv");
 				break;
 			case 82:
 				DSS.activeCircuit.getSolution().solveDirect();

@@ -104,7 +104,7 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 		objType = parClass.getDSSClassType();  // ENERGY_METER;
 
 		setNumPhases(3);  // directly set conds and phases
-		ncond = 3;
+		nConds = 3;
 		setNumTerms(1);  // this forces allocation of terminals and conductors in base class
 		excessFlag     = true;  // default to excess energy for UE
 		elementName    = "Vsource." + ckt.getCktElements().get(0).getName();  // default to first circuit element (source)
@@ -203,7 +203,7 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 
 		allocateSensorArrays();
 
-		for (i = 0; i < nphase; i++)
+		for (i = 0; i < nPhases; i++)
 			sensorCurrent[i] = 400.0;
 
 		//recalcElementData();
@@ -239,7 +239,7 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 					// this value will be used to set the nodeRef array (see takeSample)
 					setBus(0, meteredElement.getBus(meteredTerminal));
 					setNumPhases( meteredElement.getNumPhases() );
-					ncond  = meteredElement.getNumConds();
+					nConds  = meteredElement.getNumConds();
 					allocateSensorArrays();
 
 					// if we come through here, throw branch list away
@@ -317,7 +317,7 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 		String csvName = "MTR_" + getName() + ".csv";
 
 		try {
-			f = new File(DSS.DSSDataDirectory + csvName);
+			f = new File(DSS.dataDirectory + csvName);
 			fw = new FileWriter(f, false);
 			bw = new BufferedWriter(fw);
 
@@ -970,13 +970,13 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 
 	@Override
 	public void getCurrents(Complex[] curr) {
-		for (int i = 0; i < ncond; i++)
+		for (int i = 0; i < nConds; i++)
 			curr[i] = Complex.ZERO;
 	}
 
 	@Override
 	public void getInjCurrents(Complex[] curr) {
-		for (int i = 0; i < ncond; i++)
+		for (int i = 0; i < nConds; i++)
 			curr[i] = Complex.ZERO;
 	}
 
@@ -992,7 +992,7 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 		String csvName = "Zone_" + getName() + ".csv";
 
 		try {
-			f = new File(DSS.DSSDataDirectory, csvName);
+			f = new File(DSS.dataDirectory, csvName);
 			fw = new FileWriter(f, false);
 			bw = new BufferedWriter(fw);
 

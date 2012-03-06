@@ -66,7 +66,7 @@ public class MonitorObjImpl extends MeterElementImpl implements MonitorObj {
 		setName(monitorName.toLowerCase());
 
 		setNumPhases(3);  // directly set conds and phases
-		ncond = 3;
+		nConds = 3;
 		setNumTerms(1);   // this forces allocation of terminals and conductors in base class
 
 		/** Current buffer has to be big enough to hold all terminals */
@@ -248,11 +248,11 @@ public class MonitorObjImpl extends MeterElementImpl implements MonitorObj {
 				/* Compute recordSize */
 				// use same logic as in takeSample method
 
-				if (((mode & Monitor.SEQUENCEMASK) > 0) && nphase == 3) {  // convert to symmetrical components
+				if (((mode & Monitor.SEQUENCEMASK) > 0) && nPhases == 3) {  // convert to symmetrical components
 					isPosSeq = true;
 					numVI = 3;
 				} else {
-					numVI = ncond;
+					numVI = nConds;
 				}
 				// convert voltage buffer to power kW, kVAr
 				if ((mode & Monitor.MODEMASK) == 1) {
@@ -505,7 +505,7 @@ public class MonitorObjImpl extends MeterElementImpl implements MonitorObj {
 				currentBuffer[i] = meteredElement.getITerminal()[i];
 
 			try {
-				for (i = 0; i < ncond; i++) {
+				for (i = 0; i < nConds; i++) {
 					// nodeRef is set by the main circuit object
 					// it is the index of the terminal into the system node list
 					voltageBuffer[i] = sol.getNodeV( nodeRef[i] );
@@ -524,7 +524,7 @@ public class MonitorObjImpl extends MeterElementImpl implements MonitorObj {
 				currentBuffer[i] = meteredElement.getITerminal()[i];
 
 			try {
-				for (i = 0; i < ncond; i++) {
+				for (i = 0; i < nConds; i++) {
 					// nodeRef is set by the main circuit object
 					// it is the index of the terminal into the system node list
 					voltageBuffer[i] = sol.getNodeV(nodeRef[i]);
@@ -549,7 +549,7 @@ public class MonitorObjImpl extends MeterElementImpl implements MonitorObj {
 		}
 
 
-		if (((mode & Monitor.SEQUENCEMASK) > 0) && nphase == 3) {
+		if (((mode & Monitor.SEQUENCEMASK) > 0) && nPhases == 3) {
 
 			// convert to symmetrical components
 			MathUtil.phase2SymComp(voltageBuffer, V012);
@@ -562,7 +562,7 @@ public class MonitorObjImpl extends MeterElementImpl implements MonitorObj {
 			for (i = 0; i < 3; i++)
 				currentBuffer[offset + i] = I012[i];
 		} else {
-			numVI = ncond;
+			numVI = nConds;
 			isSequence = false;
 		}
 
@@ -572,11 +572,11 @@ public class MonitorObjImpl extends MeterElementImpl implements MonitorObj {
 			isPower = false;
 			if (includeResidual) {
 				if (VIPolar) {
-					residualVolt = Util.residualPolar(voltageBuffer[0], nphase);
-					residualCurr = Util.residualPolar(currentBuffer[offset + 1], nphase);  // TODO Check zero based indexing
+					residualVolt = Util.residualPolar(voltageBuffer[0], nPhases);
+					residualCurr = Util.residualPolar(currentBuffer[offset + 1], nPhases);  // TODO Check zero based indexing
 				} else {
-					residualVolt = Util.residual(voltageBuffer[0], nphase);
-					residualCurr = Util.residual(currentBuffer[offset + 1], nphase);  // TODO Check zero based indexing
+					residualVolt = Util.residual(voltageBuffer[0], nPhases);
+					residualCurr = Util.residual(currentBuffer[offset + 1], nPhases);  // TODO Check zero based indexing
 				}
 			}
 			if (VIPolar) {
@@ -618,20 +618,20 @@ public class MonitorObjImpl extends MeterElementImpl implements MonitorObj {
 			} else {
 				if (!isPower) {
 					sum = Complex.ZERO;
-					for (i = 0; i < nphase; i++)
+					for (i = 0; i < nPhases; i++)
 						sum = sum.add( voltageBuffer[i] );
 					addDblsToBuffer(sum.getReal(), 2);
 				} else {
 					// average the phase magnitudes and sum angles
 					sum = Complex.ZERO;
-					for (i = 0; i < nphase; i++)
+					for (i = 0; i < nPhases; i++)
 						sum = sum.add( voltageBuffer[i] );
-					sum = new Complex(sum.getReal() / nphase, sum.getImaginary());
+					sum = new Complex(sum.getReal() / nPhases, sum.getImaginary());
 					addDblsToBuffer(sum.getReal(), 2);
 					sum = Complex.ZERO;
-					for (i = 0; i < nphase; i++)
+					for (i = 0; i < nPhases; i++)
 						sum = sum.add( currentBuffer[i] );
-					sum = new Complex(sum.getReal() / nphase, sum.getImaginary());
+					sum = new Complex(sum.getReal() / nPhases, sum.getImaginary());
 					addDblsToBuffer(sum.getReal(), 2);
 				}
 			}
@@ -644,16 +644,16 @@ public class MonitorObjImpl extends MeterElementImpl implements MonitorObj {
 					addDblToBuffer(currentBuffer[offset + 2].getReal());
 			} else {
 				dSum = 0.0;
-				for (i = 0; i < nphase; i++)
+				for (i = 0; i < nPhases; i++)
 					dSum = dSum + voltageBuffer[i].getReal();  //VoltageBuffer[i].abs();
 				if (!isPower)
-					dSum = dSum / nphase;
+					dSum = dSum / nPhases;
 				addDblToBuffer(dSum);
 				if (!isPower) {
 					dSum = 0.0;
-					for (i = 0; i < nphase; i++)
+					for (i = 0; i < nPhases; i++)
 						dSum = dSum + currentBuffer[offset + i].getReal(); // CurrentBuffer[Offset+i].abs();
-					dSum = dSum / nphase;
+					dSum = dSum / nPhases;
 					addDblToBuffer(dSum);
 				}
 			}
@@ -762,13 +762,13 @@ public class MonitorObjImpl extends MeterElementImpl implements MonitorObj {
 
 	@Override
 	public void getCurrents(Complex[] curr) {
-		for (int i = 0; i < ncond; i++)
+		for (int i = 0; i < nConds; i++)
 			curr[i] = Complex.ZERO;
 	}
 
 	@Override
 	public void getInjCurrents(Complex[] curr) {
-		for (int i = 0; i < ncond; i++)
+		for (int i = 0; i < nConds; i++)
 			curr[i] = Complex.ZERO;
 	}
 
@@ -795,7 +795,7 @@ public class MonitorObjImpl extends MeterElementImpl implements MonitorObj {
 			for (int i = 0; i < bufPtr; i++) {
 				pw.print(monBuffer[i] + ", ");
 				k += 1;
-				if (k == (2 + ncond * 4)) {
+				if (k == (2 + nConds * 4)) {
 					pw.println();
 					k = 0;
 				}
@@ -824,7 +824,7 @@ public class MonitorObjImpl extends MeterElementImpl implements MonitorObj {
 	}
 
 	public String getFileName() {
-		return DSS.DSSDataDirectory + DSS.circuitName_ + "Mon_" + getName() + ".csv";
+		return DSS.dataDirectory + DSS.circuitName_ + "Mon_" + getName() + ".csv";
 	}
 
 	@Override

@@ -7,8 +7,14 @@ import com.ncond.dss.shared.CMatrix;
 
 public interface Bus extends NamedObject {
 
+	/**
+	 * @return Zs + 2 Zm
+	 */
 	Complex getZsc0();
 
+	/**
+	 * @return Zs - Zm
+	 */
 	Complex getZsc1();
 
 	Complex[] getVBus();
@@ -67,7 +73,12 @@ public interface Bus extends NamedObject {
 
 	void allocateBusCurrents();
 
-	int add(int NodeNum);
+	/**
+	 *
+	 * @param nodeNum
+	 * @return global node number
+	 */
+	int add(int nodeNum);
 
 	/** Returns reference num for node by node number */
 	int find(int NodeNum);

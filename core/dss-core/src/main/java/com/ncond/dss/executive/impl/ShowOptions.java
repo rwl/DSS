@@ -211,11 +211,11 @@ public class ShowOptions {
 
 		switch (paramPointer) {
 		case 0:  // autoadded
-			Util.fireOffEditor(DSS.DSSDataDirectory + DSS.circuitName_ + "AutoAddedGenerators.txt");
-			Util.fireOffEditor(DSS.DSSDataDirectory + DSS.circuitName_ + "AutoAddedCapacitors.txt");
+			Util.fireOffEditor(DSS.dataDirectory + DSS.circuitName_ + "AutoAddedGenerators.txt");
+			Util.fireOffEditor(DSS.dataDirectory + DSS.circuitName_ + "AutoAddedCapacitors.txt");
 			break;
 		case 1:
-			ShowResults.showBuses(DSS.DSSDataDirectory + DSS.circuitName_ + "Buses.txt");
+			ShowResults.showBuses(DSS.dataDirectory + DSS.circuitName_ + "Buses.txt");
 			break;
 		case 2:
 			showOptionCode = 0;
@@ -255,28 +255,28 @@ public class ShowOptions {
 					fileName = "Curr_Elem";
 					break;
 				}
-				ShowResults.showCurrents(DSS.DSSDataDirectory + DSS.circuitName_ + fileName + ".txt", showResid, showOptionCode);
+				ShowResults.showCurrents(DSS.dataDirectory + DSS.circuitName_ + fileName + ".txt", showResid, showOptionCode);
 			}
 			break;
 		case 3:
-			DSS.activeCircuit.getSolution().writeConvergenceReport(DSS.DSSDataDirectory + DSS.circuitName_ + "Convergence.txt");
+			DSS.activeCircuit.getSolution().writeConvergenceReport(DSS.dataDirectory + DSS.circuitName_ + "Convergence.txt");
 			break;
 		case 4:
 			parser.getNextParam();  // look for another param
 			param = parser.makeString().toLowerCase();
-			ShowResults.showElements(DSS.DSSDataDirectory + DSS.circuitName_ + "Elements.txt", param);
+			ShowResults.showElements(DSS.dataDirectory + DSS.circuitName_ + "Elements.txt", param);
 			break;
 		case 5:
-			ShowResults.showFaultStudy(DSS.DSSDataDirectory + DSS.circuitName_ + "FaultStudy.txt");
+			ShowResults.showFaultStudy(DSS.dataDirectory + DSS.circuitName_ + "FaultStudy.txt");
 			break;
 		case 6:
-			ShowResults.showIsolated(DSS.DSSDataDirectory + DSS.circuitName_ + "Isolated.txt");
+			ShowResults.showIsolated(DSS.dataDirectory + DSS.circuitName_ + "Isolated.txt");
 			break;
 		case 7:
-			ShowResults.showGenMeters(DSS.DSSDataDirectory + DSS.circuitName_ + "GenMeterOut.txt");
+			ShowResults.showGenMeters(DSS.dataDirectory + DSS.circuitName_ + "GenMeterOut.txt");
 			break;
 		case 8:
-			ShowResults.showMeters(DSS.DSSDataDirectory + DSS.circuitName_ + "EMout.txt");
+			ShowResults.showMeters(DSS.dataDirectory + DSS.circuitName_ + "EMout.txt");
 			break;
 		case 9:  // show monitor
 			parser.getNextParam();
@@ -327,7 +327,7 @@ public class ShowOptions {
 				fileName = fileName + "_kVA";
 			}
 
-			ShowResults.showPowers(DSS.DSSDataDirectory + DSS.circuitName_ + fileName + ".txt", MVAOpt, showOptionCode);
+			ShowResults.showPowers(DSS.dataDirectory + DSS.circuitName_ + fileName + ".txt", MVAOpt, showOptionCode);
 			break;
 		case 12:
 			LLOpt = false;  // line-line voltage option
@@ -361,40 +361,40 @@ public class ShowOptions {
 					break;
 				}
 			}
-			ShowResults.showVoltages(DSS.DSSDataDirectory + DSS.circuitName_ + fileName + ".txt", LLOpt, showOptionCode);
+			ShowResults.showVoltages(DSS.dataDirectory + DSS.circuitName_ + fileName + ".txt", LLOpt, showOptionCode);
 			break;
 		case 13:
-			ShowResults.showMeterZone(DSS.DSSDataDirectory + DSS.circuitName_ + "ZoneOut.txt");
+			ShowResults.showMeterZone(DSS.dataDirectory + DSS.circuitName_ + "ZoneOut.txt");
 			break;
 		case 14:
-			ShowResults.showRegulatorTaps(DSS.DSSDataDirectory + DSS.circuitName_ + "RegTaps.txt");
+			ShowResults.showRegulatorTaps(DSS.dataDirectory + DSS.circuitName_ + "RegTaps.txt");
 			break;
 		case 15:
-			ShowResults.showOverloads(DSS.DSSDataDirectory + DSS.circuitName_ + "Overload.txt");
+			ShowResults.showOverloads(DSS.dataDirectory + DSS.circuitName_ + "Overload.txt");
 			break;
 		case 16:
 			parser.getNextParam();
 			param = parser.makeString();
 			if (param.length() > 0) {
-				ShowResults.showUnserved(DSS.DSSDataDirectory + DSS.circuitName_ + "Unserved.txt", true);
+				ShowResults.showUnserved(DSS.dataDirectory + DSS.circuitName_ + "Unserved.txt", true);
 			} else {
-				ShowResults.showUnserved(DSS.DSSDataDirectory + DSS.circuitName_ + "Unserved.txt", false);
+				ShowResults.showUnserved(DSS.dataDirectory + DSS.circuitName_ + "Unserved.txt", false);
 			}
 			break;
 		case 17:
 			DSS.forms.showMessageForm(DSS.eventStrings);
 			break;
 		case 18:
-			ShowResults.showVariables(DSS.DSSDataDirectory + DSS.circuitName_ + "Variables.txt");
+			ShowResults.showVariables(DSS.dataDirectory + DSS.circuitName_ + "Variables.txt");
 			break;
 		case 19:
-			ShowResults.showRatings(DSS.DSSDataDirectory + DSS.circuitName_ + "RatingsOut.txt");
+			ShowResults.showRatings(DSS.dataDirectory + DSS.circuitName_ + "RatingsOut.txt");
 			break;
 		case 20:
-			ShowResults.showLoops(DSS.DSSDataDirectory + DSS.circuitName_ + "Loops.txt");
+			ShowResults.showLoops(DSS.dataDirectory + DSS.circuitName_ + "Loops.txt");
 			break;
 		case 21:
-			ShowResults.showLosses(DSS.DSSDataDirectory + DSS.circuitName_ + "Losses.txt");
+			ShowResults.showLosses(DSS.dataDirectory + DSS.circuitName_ + "Losses.txt");
 			break;
 		case 22:  // show bus power report
 			showOptionCode = 0;
@@ -434,7 +434,7 @@ public class ShowOptions {
 				fileName = fileName + "_kVA";
 			}
 
-			ShowResults.showBusPowers(DSS.DSSDataDirectory + DSS.circuitName_ + fileName + ".txt", busName, MVAOpt, showOptionCode);
+			ShowResults.showBusPowers(DSS.dataDirectory + DSS.circuitName_ + fileName + ".txt", busName, MVAOpt, showOptionCode);
 			break;
 		case 23:  // showLineConstants  show lineConstants 60 mi
 			freq = DSS.defaultBaseFreq;  // default
@@ -449,32 +449,32 @@ public class ShowOptions {
 			parser.getNextParam();
 			if (parser.makeString().length() > 0)
 				rhoLine = parser.makeDouble();
-			ShowResults.showLineConstants(DSS.DSSDataDirectory + DSS.circuitName_ + "LineConstants.txt", freq, units, rhoLine);
+			ShowResults.showLineConstants(DSS.dataDirectory + DSS.circuitName_ + "LineConstants.txt", freq, units, rhoLine);
 			break;
 		case 24:
 			if (DSS.activeCircuit != null) {  // Yprim
 				CktElement cktElem = DSS.activeCircuit.getActiveCktElement();
-				ShowResults.showYPrim(DSS.DSSDataDirectory + cktElem.getParentClass().getName() + '_' + cktElem.getName() + "_Yprim.txt");
+				ShowResults.showYPrim(DSS.dataDirectory + cktElem.getParentClass().getName() + '_' + cktElem.getName() + "_Yprim.txt");
 			}
 			break;
 		case 25:  // Y
-			ShowResults.showY(DSS.DSSDataDirectory + DSS.circuitName_ + "SystemY.txt");
+			ShowResults.showY(DSS.dataDirectory + DSS.circuitName_ + "SystemY.txt");
 			break;
 		case 26:
 			if (DSS.activeCircuit != null)
-				DSS.activeCircuit.getControlQueue().showQueue(DSS.DSSDataDirectory + DSS.circuitName_  + "ControlQueue.csv");
+				DSS.activeCircuit.getControlQueue().showQueue(DSS.dataDirectory + DSS.circuitName_  + "ControlQueue.csv");
 			break;
 		case 27:
-			ShowResults.showTopology(DSS.DSSDataDirectory + DSS.circuitName_);
+			ShowResults.showTopology(DSS.dataDirectory + DSS.circuitName_);
 			break;
 		case 28:
-			ShowResults.showNodeCurrentSum(DSS.DSSDataDirectory + DSS.circuitName_ + "NodeMismatch.txt");
+			ShowResults.showNodeCurrentSum(DSS.dataDirectory + DSS.circuitName_ + "NodeMismatch.txt");
 			break;
 		case 29:
-			ShowResults.showkVBaseMismatch(DSS.DSSDataDirectory + DSS.circuitName_ + "kVBaseMismatch.txt");
+			ShowResults.showkVBaseMismatch(DSS.dataDirectory + DSS.circuitName_ + "kVBaseMismatch.txt");
 			break;
 		case 30:
-			ShowResults.showDeltaV(DSS.DSSDataDirectory + DSS.circuitName_ + "DeltaV.txt");
+			ShowResults.showDeltaV(DSS.dataDirectory + DSS.circuitName_ + "DeltaV.txt");
 			break;
 		case 31:
 			Util.fireOffEditor(DSS.queryLogFileName);

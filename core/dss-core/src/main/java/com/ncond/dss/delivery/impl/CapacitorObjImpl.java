@@ -45,7 +45,7 @@ public class CapacitorObjImpl extends PDElementImpl implements CapacitorObj {
 		objType = parClass.getDSSClassType();
 
 		setNumPhases(3);  // directly set conds and phases
-		ncond = 3;
+		nConds = 3;
 		setNumTerms(2);  // force allocation of terminals and conductors
 
 		setBus(1, (getBus(0) + ".0.0.0"));  // default to grounded wye
@@ -84,7 +84,7 @@ public class CapacitorObjImpl extends PDElementImpl implements CapacitorObj {
 		faultRate = 0.0005;
 		pctPerm = 100.0;
 		hrsToRepair = 3.0;
-		YOrder = nterm * ncond;
+		YOrder = nTerms * nConds;
 
 		doHarmonicRecalc = false;
 
@@ -108,7 +108,7 @@ public class CapacitorObjImpl extends PDElementImpl implements CapacitorObj {
 				phaseKV = kVRating;
 				break;
 			default:  // line-to-neutral
-				switch (nphase) {
+				switch (nPhases) {
 				case 2:
 					phaseKV = kVRating / DSS.SQRT3;  // assume three phase system
 					break;
@@ -122,7 +122,7 @@ public class CapacitorObjImpl extends PDElementImpl implements CapacitorObj {
 				break;
 			}
 			for (i = 0; i < numSteps; i++)
-				C[i] = 1.0 / (w * Math.pow(phaseKV, 2) * 1000.0 / (kVArRating[0] / nphase));
+				C[i] = 1.0 / (w * Math.pow(phaseKV, 2) * 1000.0 / (kVArRating[0] / nPhases));
 			for (i = 0; i < numSteps; i++)
 				totalKVAr = totalKVAr + kVArRating[i];
 			break;
@@ -132,7 +132,7 @@ public class CapacitorObjImpl extends PDElementImpl implements CapacitorObj {
 				phaseKV = kVRating;
 				break;
 			default:  // line-to-neutral
-				switch (nphase) {
+				switch (nPhases) {
 				case 2:
 					phaseKV = kVRating / DSS.SQRT3;  // assume three phase system
 					break;
@@ -164,7 +164,7 @@ public class CapacitorObjImpl extends PDElementImpl implements CapacitorObj {
 					R[i] = XL[i] / 1000.0;
 			}
 
-		kVArPerPhase = totalKVAr / nphase;
+		kVArPerPhase = totalKVAr / nPhases;
 		setNormAmps(kVArPerPhase / phaseKV * 1.35);
 		setEmergAmps(getNormAmps() * 1.8 / 1.35);
 	}

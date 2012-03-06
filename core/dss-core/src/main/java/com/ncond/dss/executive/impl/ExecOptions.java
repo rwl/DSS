@@ -951,7 +951,7 @@ public class ExecOptions {
 					DSS.appendGlobalResult(Util.getControlModeID());
 					break;
 				case 43:
-					if (DSS.activeCircuit.getControlQueue().getTrace()) {
+					if (DSS.activeCircuit.getControlQueue().isTrace()) {
 						DSS.appendGlobalResult("Yes");
 					} else {
 						DSS.appendGlobalResult("No");
@@ -1004,7 +1004,7 @@ public class ExecOptions {
 					DSS.appendGlobalResult(DSS.activeCircuit.getBusList().get(DSS.activeCircuit.getActiveBusIndex()));
 					break;
 				case 56:
-					DSS.appendGlobalResult(DSS.DSSDataDirectory);
+					DSS.appendGlobalResult(DSS.dataDirectory);
 					break;
 				case 57:
 					ckt = DSS.activeCircuit;

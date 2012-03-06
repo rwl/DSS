@@ -67,7 +67,7 @@ public class RegControlObjImpl extends ControlElemImpl implements RegControlObj 
 		objType = parClass.getDSSClassType();
 
 		setNumPhases(3);  // directly set conds and phases
-		ncond = 3;
+		nConds = 3;
 		setNumTerms(1);   // this forces allocation of terminals and conductors in base class
 
 		Vreg         = 120.0;
@@ -141,8 +141,8 @@ public class RegControlObjImpl extends ControlElemImpl implements RegControlObj 
 				setNumConds(2);
 			} else {
 				setNumPhases( getControlledElement().getNumPhases() );
-				setNumConds(nphase);
-				if (PTPhase > nphase) {
+				setNumConds(nPhases);
+				if (PTPhase > nPhases) {
 					PTPhase = 1;
 					setPropertyValue(21, "1");
 				}
@@ -226,13 +226,13 @@ public class RegControlObjImpl extends ControlElemImpl implements RegControlObj 
 
 	@Override
 	public void getCurrents(Complex[] curr) {
-		for (int i = 0; i < ncond; i++)
+		for (int i = 0; i < nConds; i++)
 			curr[i] = Complex.ZERO;
 	}
 
 	@Override
 	public void getInjCurrents(Complex[] curr) {
-		for (int i = 0; i < ncond; i++)
+		for (int i = 0; i < nConds; i++)
 			curr[i] = Complex.ZERO;
 	}
 
@@ -719,7 +719,7 @@ public class RegControlObjImpl extends ControlElemImpl implements RegControlObj 
 			} else {
 				setNumPhases( getControlledElement().getNumPhases() );
 			}
-			setNumConds(nphase);
+			setNumConds(nPhases);
 			if (getControlledElement().getDSSClassName().equalsIgnoreCase("transformer")) {
 				// sets name of i-th terminal's connected bus in RegControl's bus list
 				// this value will be used to set the nodeRef array (see sample function)

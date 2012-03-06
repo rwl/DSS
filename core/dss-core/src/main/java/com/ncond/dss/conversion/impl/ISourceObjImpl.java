@@ -38,7 +38,7 @@ public class ISourceObjImpl extends PCElementImpl implements ISourceObj {
 		objType = parClass.getDSSClassType(); // SOURCE + NON_PCPD_ELEM;  // don't want this in PC Element List
 
 		setNumPhases(3);
-		ncond = 3;
+		nConds = 3;
 		setNumTerms(1);
 
 		amps = 0.0;
@@ -50,7 +50,7 @@ public class ISourceObjImpl extends PCElementImpl implements ISourceObj {
 
 		initPropertyValues(0);
 
-		YOrder = nterm * ncond;
+		YOrder = nTerms * nConds;
 		recalcElementData();
 	}
 

@@ -84,7 +84,7 @@ public class RelayObjImpl extends ControlElemImpl implements RelayObj {
 		objType = parClass.getDSSClassType();
 
 		setNumPhases(3);  // directly set conds and phases
-		ncond = 3;
+		nConds = 3;
 		setNumTerms(1);   // this forces allocation of terminals and conductors in base class
 
 
@@ -207,7 +207,7 @@ public class RelayObjImpl extends ControlElemImpl implements RelayObj {
 
 		pickupAmps46 = baseAmps46 * pctPickup46 * 0.01;
 
-		switch (nphase) {
+		switch (nPhases) {
 		case 1:
 			VBase = kVBase * 1000.0;
 			break;
@@ -226,14 +226,14 @@ public class RelayObjImpl extends ControlElemImpl implements RelayObj {
 	public void makePosSequence() {
 		if (monitoredElement != null) {
 			setNumPhases( monitoredElement.getNumPhases() );
-			setNumConds(nphase);
+			setNumConds(nPhases);
 			setBus(0, monitoredElement.getBus(elementTerminal));
 			// allocate a buffer big enough to hold everything from the monitored element
 			cBuffer = Util.resizeArray(cBuffer, monitoredElement.getYorder());
 			condOffset = (elementTerminal - 1) * monitoredElement.getNumConds();  // for speedy sampling
 		}
 
-		switch (nphase) {
+		switch (nPhases) {
 		case 1:
 			VBase = kVBase * 1000.0;
 			break;
@@ -254,13 +254,13 @@ public class RelayObjImpl extends ControlElemImpl implements RelayObj {
 
 	@Override
 	public void getCurrents(Complex[] curr) {
-		for (int i = 0; i < ncond; i++)
+		for (int i = 0; i < nConds; i++)
 			curr[i] = Complex.ZERO;
 	}
 
 	@Override
 	public void getInjCurrents(Complex[] curr) {
-		for (int i = 0; i < ncond; i++)
+		for (int i = 0; i < nConds; i++)
 			curr[i] = Complex.ZERO;
 	}
 
@@ -607,7 +607,7 @@ public class RelayObjImpl extends ControlElemImpl implements RelayObj {
 			/* Check ground trip, if any */
 			if ((groundCurve != null || delayTime > 0.0) && groundTrip > 0.0) {
 				CSum = Complex.ZERO;
-				for (i = condOffset; i < nphase + condOffset; i++)
+				for (i = condOffset; i < nPhases + condOffset; i++)
 					CSum = CSum.add(cBuffer[i]);
 				CMag  = CSum.abs();
 				if (groundInst > 0.0 && CMag >= groundInst && operationCount == 1) {
@@ -635,7 +635,7 @@ public class RelayObjImpl extends ControlElemImpl implements RelayObj {
 			/* Check phase trip, if any */
 
 			if ((phaseCurve != null || delayTime > 0.0) && phaseTrip > 0.0) {
-				for (i = condOffset; i < nphase + condOffset; i++) {
+				for (i = condOffset; i < nPhases + condOffset; i++) {
 					CMag = cBuffer[i].abs();
 					if (phaseInst > 0.0 && CMag >= phaseInst && operationCount == 1) {
 						phaseTime = 0.01 + breakerTime;  // inst trip on first operation

@@ -42,7 +42,7 @@ public class FaultObjImpl extends PDElementImpl implements FaultObj {
 
 		// default to SLG fault
 		setNumPhases(1);  // directly set conds and phases
-		ncond = 1;
+		nConds = 1;
 		setNumTerms(2);   // force allocation of terminals and conductors
 
 		setBus(1, (getBus(0) + ".0"));  // default to grounded
@@ -68,7 +68,7 @@ public class FaultObjImpl extends PDElementImpl implements FaultObj {
 
 		initPropertyValues(0);
 
-		YOrder = nterm * ncond;
+		YOrder = nTerms * nConds;
 		recalcElementData();
 	}
 
@@ -148,25 +148,25 @@ public class FaultObjImpl extends PDElementImpl implements FaultObj {
 				value = Complex.ZERO;
 			}
 			value2 = value.negate();
-			for (i = 0; i < nphase; i++) {
+			for (i = 0; i < nPhases; i++) {
 				YPrimTemp.set(i, i, value);  // elements are only on the diagonals
-				YPrimTemp.set(i + nphase, i + nphase, value);
-				YPrimTemp.setSym(i, i + nphase, value2);
+				YPrimTemp.set(i + nPhases, i + nPhases, value);
+				YPrimTemp.setSym(i, i + nPhases, value2);
 			}
 			break;
 		case 2:  // G matrix specified
-			for (i = 0; i < nphase; i++) {
-				ioffset = i * nphase;
-				for (j = 0; j < nphase; j++) {
+			for (i = 0; i < nPhases; i++) {
+				ioffset = i * nPhases;
+				for (j = 0; j < nPhases; j++) {
 					if (isOn) {
 						value = new Complex(GMatrix[ioffset + j] / randomMult, 0.0);
 					} else {
 						value = Complex.ZERO;
 					}
 					YPrimTemp.set(i, j, value);
-					YPrimTemp.set(i + nphase, j + nphase, value);
+					YPrimTemp.set(i + nPhases, j + nPhases, value);
 					value = value.negate();
-					YPrimTemp.setSym(i, j + nphase, value);
+					YPrimTemp.setSym(i, j + nPhases, value);
 				}
 			}
 			break;
@@ -191,15 +191,15 @@ public class FaultObjImpl extends PDElementImpl implements FaultObj {
 		pw.println("~ " + pc.getPropertyName(0) + "=" + getFirstBus());
 		pw.println("~ " + pc.getPropertyName(1) + "=" + getNextBus());
 
-		pw.println("~ " + pc.getPropertyName(2) + "=" + nphase);
+		pw.println("~ " + pc.getPropertyName(2) + "=" + nPhases);
 		pw.println("~ " + pc.getPropertyName(3) + "=" + (1.0 / G));
 		pw.println("~ " + pc.getPropertyName(4) + "=" + (stdDev * 100.0));
 		if (GMatrix != null) {
 			pw.print("~ " + pc.getPropertyName(5) + "= (");
-			for (i = 0; i < nphase; i++) {
+			for (i = 0; i < nPhases; i++) {
 				for (j = 0; j < i; j++)
-					pw.print(GMatrix[i * nphase + j] + " ");
-				if (i != nphase)
+					pw.print(GMatrix[i * nPhases + j] + " ");
+				if (i != nPhases)
 					pw.print("|");
 			}
 			pw.println(")");
@@ -268,7 +268,7 @@ public class FaultObjImpl extends PDElementImpl implements FaultObj {
 
 	private boolean faultStillGoing() {
 		computeITerminal();
-		for (int i = 0; i < nphase; i++)
+		for (int i = 0; i < nPhases; i++)
 			if (ITerminal[i].abs() > minAmps)
 				return true;
 		return false;
@@ -309,10 +309,10 @@ public class FaultObjImpl extends PDElementImpl implements FaultObj {
 		case 5:
 			result = "(";
 			if (GMatrix != null) {
-				for (int i = 0; i < nphase; i++) {
+				for (int i = 0; i < nPhases; i++) {
 					for (int j = 0; j < i; j++)
-						result = result + String.format("%-g", GMatrix[i * nphase + j]) + " ";
-					if (i < nphase - 1)
+						result = result + String.format("%-g", GMatrix[i * nPhases + j]) + " ";
+					if (i < nPhases - 1)
 						result = result + "|";
 				}
 			}
@@ -328,7 +328,7 @@ public class FaultObjImpl extends PDElementImpl implements FaultObj {
 
 	@Override
 	public void makePosSequence() {
-		if (nphase != 1) {
+		if (nPhases != 1) {
 			Parser.getInstance().setCmdString("Phases=1");
 			edit();
 		}

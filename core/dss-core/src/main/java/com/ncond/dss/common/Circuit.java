@@ -1,14 +1,15 @@
 package com.ncond.dss.common;
 
+import java.io.OutputStream;
 import java.io.PrintStream;
-import java.util.ArrayList;
+import java.util.List;
 import java.util.List;
 
 import org.apache.commons.math.complex.Complex;
 
-import com.ncond.dss.common.impl.DSSBus.NodeBus;
-import com.ncond.dss.common.impl.DSSCircuit.CktElementDef;
-import com.ncond.dss.common.impl.DSSCircuit.ReductionStrategyType;
+import com.ncond.dss.common.impl.BusImpl.NodeBus;
+import com.ncond.dss.common.impl.CircuitImpl.CktElementDef;
+import com.ncond.dss.common.impl.CircuitImpl.ReductionStrategyType;
 import com.ncond.dss.control.CapControlObj;
 import com.ncond.dss.control.ControlElem;
 import com.ncond.dss.control.RegControlObj;
@@ -64,93 +65,93 @@ public interface Circuit extends NamedObject {
 
 	void setDeviceRef(CktElementDef[] deviceRef);
 
-	ArrayList<FaultObj> getFaults();
+	List<FaultObj> getFaults();
 
-	void setFaults(ArrayList<FaultObj> faults);
+	void setFaults(List<FaultObj> faults);
 
-	ArrayList<CktElement> getCktElements();
+	List<CktElement> getCktElements();
 
-	void setCktElements(ArrayList<CktElement> cktElements);
+	void setCktElements(List<CktElement> cktElements);
 
-	ArrayList<PDElement> getPDElements();
+	List<PDElement> getPDElements();
 
-	void setPDElements(ArrayList<PDElement> PDElements);
+	void setPDElements(List<PDElement> PDElements);
 
-	ArrayList<PCElement> getPCElements();
+	List<PCElement> getPCElements();
 
-	void setPCElements(ArrayList<PCElement> PCElements);
+	void setPCElements(List<PCElement> PCElements);
 
-	ArrayList<ControlElem> getDSSControls();
+	List<ControlElem> getDSSControls();
 
-	void setDSSControls(ArrayList<ControlElem> DSSControls);
+	void setDSSControls(List<ControlElem> DSSControls);
 
-	ArrayList<PCElement> getSources();
+	List<PCElement> getSources();
 
-	void setSources(ArrayList<PCElement> sources);
+	void setSources(List<PCElement> sources);
 
-	ArrayList<MeterElement> getMeterElements();
+	List<MeterElement> getMeterElements();
 
-	void setMeterElements(ArrayList<MeterElement> meterElements);
+	void setMeterElements(List<MeterElement> meterElements);
 
-	ArrayList<SensorObj> getSensors();
+	List<SensorObj> getSensors();
 
-	void setSensors(ArrayList<SensorObj> sensors);
+	void setSensors(List<SensorObj> sensors);
 
-	ArrayList<MonitorObj> getMonitors();
+	List<MonitorObj> getMonitors();
 
-	void setMonitors(ArrayList<MonitorObj> monitors);
+	void setMonitors(List<MonitorObj> monitors);
 
-	ArrayList<EnergyMeterObj> getEnergyMeters();
+	List<EnergyMeterObj> getEnergyMeters();
 
-	void setEnergyMeters(ArrayList<EnergyMeterObj> energyMeters);
+	void setEnergyMeters(List<EnergyMeterObj> energyMeters);
 
-	ArrayList<GeneratorObj> getGenerators();
+	List<GeneratorObj> getGenerators();
 
-	void setGenerators(ArrayList<GeneratorObj> generators);
+	void setGenerators(List<GeneratorObj> generators);
 
-	ArrayList<StorageObj> getStorageElements();
+	List<StorageObj> getStorageElements();
 
-	void setStorageElements(ArrayList<StorageObj> storageElements);
+	void setStorageElements(List<StorageObj> storageElements);
 
-	ArrayList<PVSystemObj> getPVSystems();
+	List<PVSystemObj> getPVSystems();
 
-	void setPVSystems(ArrayList<PVSystemObj> PVSystems);
+	void setPVSystems(List<PVSystemObj> PVSystems);
 
-	ArrayList<DSSObject> getSubstations();
+	List<DSSObject> getSubstations();
 
-	void setSubstations(ArrayList<DSSObject> substations);
+	void setSubstations(List<DSSObject> substations);
 
-	ArrayList<TransformerObj> getTransformers();
+	List<TransformerObj> getTransformers();
 
-	void setTransformers(ArrayList<TransformerObj> transformers);
+	void setTransformers(List<TransformerObj> transformers);
 
-	ArrayList<CapControlObj> getCapControls();
+	List<CapControlObj> getCapControls();
 
-	void setCapControls(ArrayList<CapControlObj> capControls);
+	void setCapControls(List<CapControlObj> capControls);
 
-	ArrayList<RegControlObj> getRegControls();
+	List<RegControlObj> getRegControls();
 
-	void setRegControls(ArrayList<RegControlObj> regControls);
+	void setRegControls(List<RegControlObj> regControls);
 
-	ArrayList<LineObj> getLines();
+	List<LineObj> getLines();
 
-	void setLines(ArrayList<LineObj> lines);
+	void setLines(List<LineObj> lines);
 
-	ArrayList<LoadObj> getLoads();
+	List<LoadObj> getLoads();
 
-	void setLoads(ArrayList<LoadObj> loads);
+	void setLoads(List<LoadObj> loads);
 
-	ArrayList<CapacitorObj> getShuntCapacitors();
+	List<CapacitorObj> getShuntCapacitors();
 
-	void setShuntCapacitors(ArrayList<CapacitorObj> shuntCapacitors);
+	void setShuntCapacitors(List<CapacitorObj> shuntCapacitors);
 
-	ArrayList<FeederObj> getFeeders();
+	List<FeederObj> getFeeders();
 
-	void setFeeders(ArrayList<FeederObj> feeders);
+	void setFeeders(List<FeederObj> feeders);
 
-	ArrayList<SwtControlObj> getSwtControls();
+	List<SwtControlObj> getSwtControls();
 
-	void setSwtControls(ArrayList<SwtControlObj> swtControls);
+	void setSwtControls(List<SwtControlObj> swtControls);
 
 	ControlQueue getControlQueue();
 
@@ -410,7 +411,9 @@ public interface Circuit extends NamedObject {
 
 	boolean isBusNameRedefined();
 
-	/** Total circuit PD element losses */
+	/**
+	 * Total circuit PD element losses.
+	 */
 	Complex getLosses();
 
 	void setLoadMultiplier(double value);
@@ -423,10 +426,14 @@ public interface Circuit extends NamedObject {
 
 	String getName();
 
-	/** Adds last DSS object created to circuit */
+	/**
+	 * Adds last DSS object created to circuit.
+	 */
 	void addCktElement(int handle);
 
-	/** Totalize all energymeters in the problem */
+	/**
+	 * Totalize all energymeters in the problem.
+	 */
 	void totalizeMeters();
 
 	boolean computeCapacity();
@@ -435,7 +442,9 @@ public interface Circuit extends NamedObject {
 
 	void processBusDefs();
 
-	/** Redo all bus lists and node lists */
+	/**
+	 * Redo all bus lists and node lists.
+	 */
 	void reProcessBusDefs();
 
 	void doResetMeterZones();
@@ -444,9 +453,11 @@ public interface Circuit extends NamedObject {
 
 	void invalidateAllPCElements();
 
-	void debugDump(PrintStream f);
+	void debugDump(OutputStream f);
 
-	/** Access to topology from the first source */
+	/**
+	 * Access to topology from the first source.
+	 */
 	CktTree getTopology();
 
 	void freeTopology();

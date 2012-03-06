@@ -1017,7 +1017,7 @@ public class ExportResults {
 		for (EnergyMeterObj pElem : ckt.getEnergyMeters()) {
 			if (pElem.isEnabled()) {
 				try {
-					fileName = DSS.DSSDataDirectory + "EXP_MTR_"+pElem.getName().toUpperCase()+".csv";
+					fileName = DSS.dataDirectory + "EXP_MTR_"+pElem.getName().toUpperCase()+".csv";
 
 					if (!new File(fileName).exists()) {
 						f = new FileWriter(fileName);
@@ -1156,7 +1156,7 @@ public class ExportResults {
 		for (GeneratorObj pElem : ckt.getGenerators()) {
 			if (pElem.isEnabled()) {
 				try {
-					fileName = DSS.DSSDataDirectory + "EXP_GEN_" + pElem.getName().toUpperCase() + ".csv";
+					fileName = DSS.dataDirectory + "EXP_GEN_" + pElem.getName().toUpperCase() + ".csv";
 
 					if (!new File(fileName).exists()) {
 						f = new FileWriter(fileName);

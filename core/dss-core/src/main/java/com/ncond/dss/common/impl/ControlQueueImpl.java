@@ -1,8 +1,8 @@
 package com.ncond.dss.common.impl;
 
-import java.io.BufferedWriter;
-import java.io.FileWriter;
+import java.io.File;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,12 +12,12 @@ import com.ncond.dss.control.impl.ControlAction;
 
 public class ControlQueueImpl implements ControlQueue {
 
-	public class TimeRec {
+	public static class TimeRec {
 		public int hour;
 		public double sec;
 	}
 
-	public class ActionRecord {
+	public static class ActionRecord {
 		public TimeRec actionTime;
 		public int actionCode;
 		public int actionHandle;
@@ -27,18 +27,19 @@ public class ControlQueueImpl implements ControlQueue {
 
 	private List<ActionRecord> actionList;
 	private boolean debugTrace;
-	private FileWriter traceFile;
+	private File traceFile;
 	private int ctrlHandle;
 
-	public int push(int hour, double sec, ControlAction code, int proxyHdl, final ControlElem owner) {
-		return push(hour, sec, code.code(), proxyHdl, owner);
+	public ControlQueueImpl() {
+		super();
+		actionList = new ArrayList<ControlQueueImpl.ActionRecord>();
+		actionList.clear();
+
+		ctrlHandle = 0;  // just a serial number
+
+		debugTrace = false;
 	}
 
-	/**
-	 * Add a control action to the queue, sorted by lowest time first.
-	 *
-	 * @return handle to the action
-	 */
 	public int push(int hour, double sec, int code, int proxyHdl, final ControlElem owner) {
 		int hr;
 		double thisActionTime, s;
@@ -53,13 +54,13 @@ public class ControlQueueImpl implements ControlQueue {
 		s  = sec;
 		if (s > 3600.0) {
 			while (s >= 3600.0) {
-				hr = hr + 1;
-				s  = s - 3600.0;
+				hr++;
+				s -= 3600.0;
 			}
 		}
 
 		timeRec.hour = hr;
-		timeRec.sec  = s;
+		timeRec.sec = s;
 
 		thisActionTime = timeRecToTime(timeRec);
 		pAction = new ActionRecord();  // make a new action
@@ -83,25 +84,20 @@ public class ControlQueueImpl implements ControlQueue {
 		pAction.proxyHandle = proxyHdl;
 		pAction.controlElement = owner;
 
-		if (debugTrace)
+		if (debugTrace) {
 			writeTraceRecord(owner.getName(), code, owner.getDblTraceParameter(),
 					String.format("Handle %d pushed onto stack", ctrlHandle));
+		}
 
 		return ctrlHandle;
 	}
 
-	public void clear() {
-		actionList.clear();
+	public int push(int hour, double sec, ControlAction code, int proxyHdl, final ControlElem owner) {
+		return push(hour, sec, code.code(), proxyHdl, owner);
 	}
 
-	public ControlQueueImpl() {
-		super();
-		actionList = new ArrayList<ControlQueueImpl.ActionRecord>();
+	public void clear() {
 		actionList.clear();
-
-		ctrlHandle = 0;  // just a serial number
-
-		debugTrace = false;
 	}
 
 	public void doAllActions() {
@@ -113,9 +109,6 @@ public class ControlQueueImpl implements ControlQueue {
 		actionList.clear();
 	}
 
-	/**
-	 * Do only those actions with the same delay time as the first action return time.
-	 */
 	public boolean doNearestActions(int[] hour, double[] sec) {
 		ControlElem pElem;
 		TimeRec t;
@@ -130,9 +123,10 @@ public class ControlQueueImpl implements ControlQueue {
 			sec[0] = t.sec;
 			pElem = pop(t, code, proxyHdl, hdl);
 			while (pElem != null) {
-				if (debugTrace)
+				if (debugTrace) {
 					writeTraceRecord(pElem.getName(), code[0], pElem.getDblTraceParameter(),
 							String.format("Pop Handle %d Do Nearest Action", hdl));
+				}
 				pElem.doPendingAction(code[0], proxyHdl[0]);
 				result = true;
 				pElem = pop(t, code, proxyHdl, hdl);
@@ -142,20 +136,15 @@ public class ControlQueueImpl implements ControlQueue {
 	}
 
 	public boolean isEmpty() {
-		if (actionList.size() == 0) {
-			return true;
-		} else {
-			return false;
-		}
+		return actionList.size() == 0;
 	}
 
 	/**
 	 * Pop off next control action with an action time <= actionTime (sec).
 	 */
 	private ControlElem pop(TimeRec actionTime, int[] code, int[] proxyHdl, int[] hdl) {
-
-		ControlElem result = null;
 		ActionRecord action;
+		ControlElem result = null;
 
 		double t = timeRecToTime(actionTime);
 
@@ -185,21 +174,13 @@ public class ControlQueueImpl implements ControlQueue {
 
 		pElem = action.controlElement;
 		if (debugTrace) {
-			if (popped) {
-				s = "by Pop function";
-			} else {
-				s = "by control device";
-			}
+			s = popped ? "by Pop function" : "by control device";
 			writeTraceRecord(pElem.getName(), action.actionCode, pElem.getDblTraceParameter(),
 					String.format("Handle %d deleted from queue %s", action.actionHandle, s));
 		}
-
 		actionList.remove(i);
 	}
 
-	/**
-	 * Do actions with time <= t.
-	 */
 	public boolean doActions(int hour, double sec) {
 		TimeRec t = new TimeRec();
 		int[] code = new int[1];
@@ -208,20 +189,19 @@ public class ControlQueueImpl implements ControlQueue {
 
 		boolean result = false;
 		if (actionList.size() > 0) {
-
 			t.hour = hour;
 			t.sec  = sec;
 			ControlElem pElem = pop(t, code, proxyHdl, hdl);
 			while (pElem != null) {
-				if (debugTrace)
+				if (debugTrace) {
 					writeTraceRecord(pElem.getName(), code[0], pElem.getDblTraceParameter(),
 							String.format("Pop handle %d do action", hdl));
+				}
 				pElem.doPendingAction(code[0], proxyHdl[0]);
 				result = true;
 				pElem = pop(t, code, proxyHdl, hdl);
 			}
 		}
-
 		return result;
 	}
 
@@ -229,46 +209,49 @@ public class ControlQueueImpl implements ControlQueue {
 		return timeRec.hour * 3600.0 + timeRec.sec;
 	}
 
-	public void setTrace(final boolean Value) {
-		debugTrace = Value;
+	public void setTrace(final boolean value) {
+		debugTrace = value;
 
 		if (debugTrace) {
 			try {
-				traceFile = new FileWriter(DSS.DSSDataDirectory + "Trace_ControlQueue.csv");
-				BufferedWriter traceBuffer = new BufferedWriter(traceFile);
-				traceBuffer.write("\"Hour\", \"sec\", \"Control Iteration\", \"Element\", \"Action Code\", \"Trace Parameter\", \"Description\"");
-				traceBuffer.newLine();
-				traceBuffer.close();
+				traceFile = new File(DSS.dataDirectory + "Trace_ControlQueue.csv");
+				PrintWriter pw = new PrintWriter(traceFile);
+
+				pw.println("\"Hour\", \"sec\", \"Control Iteration\", \"Element\", \"Action Code\", \"Trace Parameter\", \"Description\"");
+
+				pw.close();
 			} catch (IOException e) {
 				DSS.doSimpleMsg("Error initialising control queue trace: " + e.getMessage(), 0);
 			}
 		}
 	}
 
-	public boolean getTrace() {
+	public boolean isTrace() {
 		return debugTrace;
 	}
 
 	public void showQueue(String fileName) {
-		FileWriter f;
 		ActionRecord pAction;
 
 		try {
-			f = new FileWriter(fileName);
-			BufferedWriter fileBuffer = new BufferedWriter(f);
+			PrintWriter pw = new PrintWriter(fileName);
 
-			fileBuffer.write("Handle, Hour, Sec, ActionCode, ProxyDevRef, Device");
-			fileBuffer.newLine();
+			pw.println("Handle, Hour, Sec, ActionCode, ProxyDevRef, Device");
 
 			for (int i = 0; i < actionList.size(); i++) {
 				pAction = actionList.get(i);
 				if (pAction != null) {
-					fileBuffer.write(String.format("%d, %d, %-.g, %d, %d, %s ",
-							pAction.actionHandle, pAction.actionTime.hour, pAction.actionTime.sec, pAction.actionCode, pAction.proxyHandle, pAction.controlElement.getName()));
-					fileBuffer.newLine();
+					pw.printf("%d, %d, %-.g, %d, %d, %s ",
+							pAction.actionHandle,
+							pAction.actionTime.hour,
+							pAction.actionTime.sec,
+							pAction.actionCode,
+							pAction.proxyHandle,
+							pAction.controlElement.getName());
+					pw.println();
 				}
 			}
-			fileBuffer.close();
+			pw.close();
 		} catch (IOException e) {
 			DSS.doSimpleMsg("Error writing control queue: " + e.getMessage(), 0);
 		} finally {
@@ -277,30 +260,25 @@ public class ControlQueueImpl implements ControlQueue {
 	}
 
 	private void writeTraceRecord(String elementName, int code, double traceParameter, String s) {
-
 		try {
 			if (!DSS.inShowResults) {
-				BufferedWriter traceBuffer = new BufferedWriter(traceFile);
+				PrintWriter pw = new PrintWriter(traceFile);
 
-				traceBuffer.write(String.format("%d, %.6g, %d, %s, %d, %-.g, %s",
+				pw.printf("%d, %.6g, %d, %s, %d, %-.g, %s",
 						DSS.activeCircuit.getSolution().getIntHour(),
 						DSS.activeCircuit.getSolution().getDynaVars().t,
 						DSS.activeCircuit.getSolution().getControlIteration(),
 						elementName,
 						code,
 						traceParameter,
-						s));
-
-				traceBuffer.close();
+						s);
+				pw.close();
 			}
 		} catch (IOException e) {
 			DSS.doSimpleMsg("Error writing control queue trace: " + e.getMessage(), 0);
 		}
 	}
 
-	/**
-	 * Delete queue item by handle.
-	 */
 	public void delete(int hdl) {
 		for (int i = 0; i < actionList.size(); i++) {
  			if (actionList.get(i).actionHandle == hdl) {

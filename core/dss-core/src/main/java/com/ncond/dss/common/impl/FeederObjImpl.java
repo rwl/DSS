@@ -53,11 +53,11 @@ public class FeederObjImpl extends PCElementImpl implements FeederObj {
 			setNumPhases( rootElement.getNumPhases() );  // take care of allocating terminal stuff
 			setNumConds( rootElement.getNumConds() );
 			setNumTerms(1);
-			YOrder = nterm * ncond;
+			YOrder = nTerms * nConds;
 
 			terminals[0].setBusRef( branchList.getPresentBranch().getFromBusReference() );
 			setBus(0, rootElement.getBus(branchList.getPresentBranch().getFromTerminal()));  // set bus name same as first element
-			fromTerminalOffset = branchList.getPresentBranch().getFromTerminal() * ncond;
+			fromTerminalOffset = branchList.getPresentBranch().getFromTerminal() * nConds;
 			setNodeRef(0, rootElement.getNodeRef()[ fromTerminalOffset ]);
 
 			// build the sequence list and shunt list

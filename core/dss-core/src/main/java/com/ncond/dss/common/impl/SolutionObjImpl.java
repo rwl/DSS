@@ -15,7 +15,7 @@ import com.ncond.dss.common.CktElement;
 import com.ncond.dss.common.DSSClass;
 import com.ncond.dss.common.Solution;
 import com.ncond.dss.common.SolutionObj;
-import com.ncond.dss.common.impl.DSSBus.NodeBus;
+import com.ncond.dss.common.impl.BusImpl.NodeBus;
 import com.ncond.dss.control.ControlElem;
 import com.ncond.dss.conversion.GeneratorObj;
 import com.ncond.dss.conversion.LoadObj;

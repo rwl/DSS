@@ -41,7 +41,7 @@ public class GenDispatcherObjImpl extends ControlElemImpl implements GenDispatch
 		objType = parClass.getDSSClassType();
 
 		setNumPhases(3);  // directly set conds and phases
-		ncond = 3;
+		nConds = 3;
 		setNumTerms(1);   // this forces allocation of terminals and conductors in base class
 
 
@@ -92,7 +92,7 @@ public class GenDispatcherObjImpl extends ControlElemImpl implements GenDispatch
 	public void makePosSequence() {
 		if (monitoredElement != null) {
 			setNumPhases(getControlledElement().getNumPhases());
-			setNumConds(nphase);
+			setNumConds(nPhases);
 			setBus(0, monitoredElement.getBus(elementTerminal));
 		}
 		super.makePosSequence();
@@ -105,13 +105,13 @@ public class GenDispatcherObjImpl extends ControlElemImpl implements GenDispatch
 
 	@Override
 	public void getCurrents(Complex[] curr) {
-		for (int i = 0; i < ncond; i++)
+		for (int i = 0; i < nConds; i++)
 			curr[i] = Complex.ZERO;
 	}
 
 	@Override
 	public void getInjCurrents(Complex[] curr) {
-		for (int i = 0; i < ncond; i++)
+		for (int i = 0; i < nConds; i++)
 			curr[i] = Complex.ZERO;
 	}
 

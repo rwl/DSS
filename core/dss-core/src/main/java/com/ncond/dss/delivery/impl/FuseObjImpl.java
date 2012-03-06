@@ -49,7 +49,7 @@ public class FuseObjImpl extends ControlElemImpl implements FuseObj {
 		objType = parClass.getDSSClassType();
 
 		setNumPhases(3);  // directly set conds and phases
-		ncond = 3;
+		nConds = 3;
 		setNumTerms(1);  // this forces allocation of terminals and conductors in base class
 
 		elementName = "";

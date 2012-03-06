@@ -131,7 +131,7 @@ public class DSSExecutive implements Executive {
 		try {
 			if (value) {
 				if (!recorderOn) {
-					recorderFile = DSS.DSSDataDirectory + "DSSRecorder.dss";
+					recorderFile = DSS.dataDirectory + "DSSRecorder.dss";
 					recorderFileWriter = new FileWriter(recorderFile);
 				}
 			} else if (recorderOn) {

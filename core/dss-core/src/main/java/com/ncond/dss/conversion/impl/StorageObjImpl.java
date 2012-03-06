@@ -135,7 +135,7 @@ public class StorageObjImpl extends PCElementImpl implements StorageObj {
 		objType = parClass.getDSSClassType(); // + STORAGE_ELEMENT;  // in both PCElement and StorageElement list
 
 		setNumPhases(3);
-		ncond = 4;  // defaults to wye
+		nConds = 4;  // defaults to wye
 		YOrder = 0;  // to trigger an initial allocation
 		setNumTerms(1);     // forces allocations
 
@@ -159,7 +159,7 @@ public class StorageObjImpl extends PCElementImpl implements StorageObj {
 		VMaxPU        = 1.10;
 		VBase95       = VMinPU * VBase;
 		VBase105      = VMaxPU * VBase;
-		YOrder        = nterm * ncond;
+		YOrder        = nTerms * nConds;
 		randomMult    = 1.0 ;
 
 		/* Output rating stuff */
@@ -533,11 +533,11 @@ public class StorageObjImpl extends PCElementImpl implements StorageObj {
 
 			/* Pnominalperphase is net at the terminal.  When discharging, the storage supplies the idling losses.
 			 * When charging, the idling losses are subtracting from the amount entering the storage element. */
-			PNominalPerPhase = 1000.0 * kWOut / nphase;
+			PNominalPerPhase = 1000.0 * kWOut / nPhases;
 
 			if (state == Storage.IDLING) {
 				if (dispatchMode == Storage.EXTERNAL_MODE) {  // check for requested kVAr
-					QNominalPerPhase = kVArRequested / nphase * 1000.0;
+					QNominalPerPhase = kVArRequested / nPhases * 1000.0;
 				} else {
 					QNominalPerPhase = 0.0;
 				}
@@ -545,7 +545,7 @@ public class StorageObjImpl extends PCElementImpl implements StorageObj {
 				Yeq95  = Yeq;
 				Yeq105 = Yeq;
 			} else {
-				QNominalPerPhase = 1000.0 * kVArOut / nphase;
+				QNominalPerPhase = 1000.0 * kVArOut / nPhases;
 
 				switch (voltageModel) {
 				/* Fix this when user model gets connected in */
@@ -585,7 +585,7 @@ public class StorageObjImpl extends PCElementImpl implements StorageObj {
 		VBase95  = VMinPU * VBase;
 		VBase105 = VMaxPU * VBase;
 
-		kVArBase = 1000.0 * kVArOut / nphase;  // remember this for follow mode
+		kVArBase = 1000.0 * kVArOut / nPhases;  // remember this for follow mode
 
 		// values in ohms for Thevenin equivalents
 		RThev = pctR * 0.01 * Math.pow(getPresentKV(), 2) / kVARating * 1000.0;
@@ -595,8 +595,8 @@ public class StorageObjImpl extends PCElementImpl implements StorageObj {
 		chargeEff    = pctChargeEff    * 0.01;
 		dischargeEff = pctDischargeEff * 0.01;
 
-		YeqIdling = new Complex(pctIdleKW, pctIdleKVAr).multiply( (kWRating * 10.0 / Math.pow(VBase, 2) / nphase) );  // 10.0 = 1000/100 = kW->W/pct
-		YeqDischarge = new Complex((kWRating * 1000.0 / Math.pow(VBase, 2) / nphase), 0.0);
+		YeqIdling = new Complex(pctIdleKW, pctIdleKVAr).multiply( (kWRating * 10.0 / Math.pow(VBase, 2) / nPhases) );  // 10.0 = 1000/100 = kW->W/pct
+		YeqDischarge = new Complex((kWRating * 1000.0 / Math.pow(VBase, 2) / nPhases), 0.0);
 
 		setNominalStorageOuput();
 
@@ -660,12 +660,12 @@ public class StorageObjImpl extends PCElementImpl implements StorageObj {
 				Y = ComplexUtil.divide(Y, 3.0);  // convert to delta impedance
 			Y = new Complex(Y.getReal(), Y.getImaginary() / freqMultiplier);
 			Yij = Y.negate();
-			for (i = 0; i < nphase; i++) {
+			for (i = 0; i < nPhases; i++) {
 				switch (connection) {
 				case 0:
 					YMatrix.set(i, i, Y);
-					YMatrix.add(ncond - 1, ncond - 1, Y);
-					YMatrix.setSym(i, ncond - 1, Yij);
+					YMatrix.add(nConds - 1, nConds - 1, Y);
+					YMatrix.setSym(i, nConds - 1, Yij);
 					break;
 				case 1:  /* Delta connection */
 					YMatrix.set(i, i, Y);
@@ -701,10 +701,10 @@ public class StorageObjImpl extends PCElementImpl implements StorageObj {
 			case 0:
 				// wye
 				Yij = Y.negate();
-				for (i = 0; i < nphase; i++) {
+				for (i = 0; i < nPhases; i++) {
 					YMatrix.set(i, i, Y);
-					YMatrix.add(ncond - 1, ncond - 1, Y);
-					YMatrix.setSym(i, ncond - 1, Yij);
+					YMatrix.add(nConds - 1, nConds - 1, Y);
+					YMatrix.setSym(i, nConds - 1, Yij);
 				}
 				break;
 
@@ -712,9 +712,9 @@ public class StorageObjImpl extends PCElementImpl implements StorageObj {
 				// delta or L-L
 				Y = ComplexUtil.divide(Y, 3.0);  // convert to delta impedance
 				Yij = Y.negate();
-				for (i = 0; i < nphase; i++) {
+				for (i = 0; i < nPhases; i++) {
 					j = i + 1;
-					if (j >= ncond)
+					if (j >= nConds)
 						j = 0;  // wrap around for closed connections
 					YMatrix.add(i, i, Y);
 					YMatrix.add(j, j, Y);
@@ -847,12 +847,12 @@ public class StorageObjImpl extends PCElementImpl implements StorageObj {
 		switch (connection) {
 		case 0:  // wye
 			termArray[i] = termArray[i].add(curr);
-			termArray[ncond - 1] = termArray[ncond - 1].add(curr.negate());  // neutral
+			termArray[nConds - 1] = termArray[nConds - 1].add(curr.negate());  // neutral
 			break;
 		case 1:  // delta
 			termArray[i] = termArray[i].add(curr);
 			int j = i + 1;
-			if (j >= ncond)
+			if (j >= nConds)
 				j = 0;
 			termArray[j] = termArray[j].add(curr.negate());
 			break;
@@ -879,11 +879,11 @@ public class StorageObjImpl extends PCElementImpl implements StorageObj {
 						(PNominalPerPhase * 3.0 / 1.0e6) + ", " +
 						s + ", ");
 
-				for (i = 0; i < nphase; i++)
+				for (i = 0; i < nPhases; i++)
 					bw.write( getInjCurrent()[i].abs() + ", ");
-				for (i = 0; i < nphase; i++)
+				for (i = 0; i < nPhases; i++)
 					bw.write( getITerminal()[i].abs() + ", ");
-				for (i = 0; i < nphase; i++)
+				for (i = 0; i < nPhases; i++)
 					bw.write( getVTerminal()[i].abs() + ", " );
 				for (i = 0; i < numVariables(); i++)
 					bw.write( String.format("%-.g, ", getVariable(i)) );
@@ -912,7 +912,7 @@ public class StorageObjImpl extends PCElementImpl implements StorageObj {
 
 		switch (state) {
 		case Storage.IDLING:  // YPrim current is only current
-			for (i = 0; i < nphase; i++) {
+			for (i = 0; i < nPhases; i++) {
 				curr = getInjCurrent()[i];
 				putCurrInTerminalArray(ITerminal, curr.negate(), i);  // put YPrim contribution into Terminal array taking into account connection
 				setITerminalUpdated(true);
@@ -922,7 +922,7 @@ public class StorageObjImpl extends PCElementImpl implements StorageObj {
 
 			calcVTerminalPhase();  // get actual voltage across each phase of the load
 
-			for (i = 0; i < nphase; i++) {
+			for (i = 0; i < nPhases; i++) {
 				V = VTerminal[i];
 				VMag = V.abs();
 
@@ -973,7 +973,7 @@ public class StorageObjImpl extends PCElementImpl implements StorageObj {
 			Yeq2 = ComplexUtil.divide(Yeq, 3.0);
 		}
 
-		for (int i = 0; i < nphase; i++) {
+		for (int i = 0; i < nPhases; i++) {
 			curr = Yeq2.multiply(VTerminal[i]);  // Yeq is always line to neutral
 			putCurrInTerminalArray(getITerminal(), curr.negate(), i);  // put into terminal array taking into account connection
 			setITerminalUpdated(true);
@@ -993,7 +993,7 @@ public class StorageObjImpl extends PCElementImpl implements StorageObj {
 			setITerminalUpdated(true);
 			//SolutionObj sol = DSSGlobals.activeCircuit.getSolution();
 			// negate currents from user model for power flow storage element model
-			for (int i = 0; i < ncond; i++)
+			for (int i = 0; i < nConds; i++)
 				getInjCurrent()[i] = getInjCurrent()[i].add( ITerminal[i].negate() );
 		} else {
 			DSS.doSimpleMsg("Storage." + getName() + " model designated to use user-written model, but user-written model is not defined.", 567);
@@ -1032,15 +1032,15 @@ public class StorageObjImpl extends PCElementImpl implements StorageObj {
 		}
 
 		e = Util.rotatePhasorRad(e, storageHarmonic, thetaHarm);  // time shift by fundamental frequency phase shift
-		for (int i = 0; i < nphase; i++) {
+		for (int i = 0; i < nPhases; i++) {
 			cBuffer[i] = e;
-			if (i < nphase)
+			if (i < nPhases)
 				e = Util.rotatePhasorDeg(e, storageHarmonic, -120.0);  // assume 3-phase Storage element
 		}
 
 		/* Handle wye connection */
 		if (connection == 0)
-			cBuffer[ncond - 1] = VTerminal[ncond - 1];  // assume no neutral injection voltage
+			cBuffer[nConds - 1] = VTerminal[nConds - 1];  // assume no neutral injection voltage
 
 		/* Inj currents = Yprim (E) */
 		YPrim.vMult(getInjCurrent(), cBuffer);
@@ -1053,14 +1053,14 @@ public class StorageObjImpl extends PCElementImpl implements StorageObj {
 		/* Establish phase voltages and stick in VTerminal */
 		switch (connection) {
 		case 0:
-			for (i = 0; i < nphase; i++)
-				VTerminal[i] = sol.vDiff(nodeRef[i], nodeRef[ncond - 1]);
+			for (i = 0; i < nPhases; i++)
+				VTerminal[i] = sol.vDiff(nodeRef[i], nodeRef[nConds - 1]);
 			break;
 
 		case 1:
-			for (i = 0; i < nphase; i++) {
+			for (i = 0; i < nPhases; i++) {
 				j = i + 1;
-				if (j >= ncond)
+				if (j >= nConds)
 					j = 0;
 				VTerminal[i] = sol.vDiff(nodeRef[i], nodeRef[j]);
 			}
@@ -1306,7 +1306,7 @@ public class StorageObjImpl extends PCElementImpl implements StorageObj {
 
 		double result = 0.0;
 		// compute sum of sqr(V) at this device -- sum of VV*
-		for (i = 0; i < nphase; i++)
+		for (i = 0; i < nPhases; i++)
 			result = result + getVTerminal()[i].multiply( getVTerminal()[i].conjugate() ).getReal();
 
 		result = result * YeqIdling.getReal() * 0.001;  // to kW
@@ -1365,7 +1365,7 @@ public class StorageObjImpl extends PCElementImpl implements StorageObj {
 
 			switch (connection) {
 			case 0:  /* wye - neutral is explicit */
-				Va = sol.getNodeV(nodeRef[0]).subtract( sol.getNodeV(nodeRef[ncond - 1]) );
+				Va = sol.getNodeV(nodeRef[0]).subtract( sol.getNodeV(nodeRef[nConds - 1]) );
 				break;
 			case 1:  /* delta -- assume neutral is at zero */
 				Va = sol.getNodeV(nodeRef[0]);
@@ -1575,7 +1575,7 @@ public class StorageObjImpl extends PCElementImpl implements StorageObj {
 		s = "phases=1 conn=wye";
 
 		// make sure voltage is line-neutral
-		if (nphase > 1 || connection != 0) {
+		if (nPhases > 1 || connection != 0) {
 			V = kVStorageBase / DSS.SQRT3;
 		} else {
 			V = kVStorageBase;
@@ -1583,8 +1583,8 @@ public class StorageObjImpl extends PCElementImpl implements StorageObj {
 
 		s = s + String.format(" kV=%-.5g", V);
 
-		if (nphase > 1)
-			s = s + String.format(" kWrating=%-.5g  PF=%-.5g", kWRating / nphase, PFNominal);
+		if (nPhases > 1)
+			s = s + String.format(" kWrating=%-.5g  PF=%-.5g", kWRating / nPhases, PFNominal);
 
 		Parser.getInstance().setCmdString(s);
 		edit();
@@ -1623,7 +1623,7 @@ public class StorageObjImpl extends PCElementImpl implements StorageObj {
 
 	public void setPresentKV(double value) {
 		kVStorageBase = value;
-		switch (nphase) {
+		switch (nPhases) {
 		case 2:
 			VBase = kVStorageBase * DSS.InvSQRT3x1000;
 			break;

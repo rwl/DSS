@@ -60,7 +60,7 @@ public class VVControlObjImpl extends ControlElemImpl implements VVControlObj {
 		objType = parClass.getDSSClassType();
 
 		setNumPhases(1);  // directly set conds and phases
-		ncond = 3;
+		nConds = 3;
 		setNumTerms(1);  // this forces allocation of terminals and conductors in base class
 
 		elementName = "";
@@ -178,7 +178,7 @@ public class VVControlObjImpl extends ControlElemImpl implements VVControlObj {
 	 */
 	@Override
 	public void getCurrents(Complex[] curr) {
-		for (int i = 0; i < ncond; i++)
+		for (int i = 0; i < nConds; i++)
 			curr[i] = Complex.ZERO;
 	}
 
@@ -187,7 +187,7 @@ public class VVControlObjImpl extends ControlElemImpl implements VVControlObj {
 	 */
 	@Override
 	public void getInjCurrents(Complex[] curr) {
-		for (int i = 0; i < ncond; i++)
+		for (int i = 0; i < nConds; i++)
 			curr[i] = Complex.ZERO;
 	}
 

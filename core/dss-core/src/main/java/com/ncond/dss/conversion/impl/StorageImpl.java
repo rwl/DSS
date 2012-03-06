@@ -497,7 +497,7 @@ public class StorageImpl extends PCClassImpl implements Storage {
 					if (as.isDebugTrace()) {
 						try {
 							// init trace file
-							File TraceFile = new File(DSS.DSSDataDirectory + "STOR_"+as.getName()+".csv");
+							File TraceFile = new File(DSS.dataDirectory + "STOR_"+as.getName()+".csv");
 							FileWriter TraceStream = new FileWriter(TraceFile, false);
 							BufferedWriter TraceBuffer = new BufferedWriter(TraceStream);
 

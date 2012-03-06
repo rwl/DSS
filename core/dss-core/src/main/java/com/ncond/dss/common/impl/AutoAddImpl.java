@@ -166,7 +166,7 @@ public class AutoAddImpl implements AutoAdd {
 	}
 
 	public void appendToFile(String fileName, String s) {
-		String fName = DSS.DSSDataDirectory + DSS.circuitName_ + "AutoAdded" + fileName + ".txt";
+		String fName = DSS.dataDirectory + DSS.circuitName_ + "AutoAdded" + fileName + ".txt";
 
 		try {
 			FileWriter fw = new FileWriter(fName, true);
@@ -268,7 +268,7 @@ public class AutoAddImpl implements AutoAdd {
 		sol.setIntervalHrs(1.0);
 
 		/* Start up Log File */
-		log = new File(DSS.DSSDataDirectory + DSS.circuitName_ + "AutoAddLog.csv");
+		log = new File(DSS.dataDirectory + DSS.circuitName_ + "AutoAddLog.csv");
 		try {
 			fw = new FileWriter(log, false);
 			pw = new PrintWriter(fw);
@@ -396,7 +396,7 @@ public class AutoAddImpl implements AutoAdd {
 
 				commandString = "new, generator." + getUniqueGenName() +
 						", bus1=\"" + ckt.getBusList().get(minLossBus) +
-						"\", phases=" + String.valueOf(minBusPhases) +
+						"\", phases=" + minBusPhases +
 						", kv="+ String.format("%-g", kVrat) +
 						", kw=" + String.format("%-g", testGenKW) +
 						", " + String.format("%5.2f", genPF) +
@@ -508,7 +508,7 @@ public class AutoAddImpl implements AutoAdd {
 
 				commandString = "new, capacitor." + getUniqueCapName() +
 						", bus1=\"" + ckt.getBusList().get(minLossBus) +
-						"\", phases=" + String.valueOf(minBusPhases) +
+						"\", phases=" + minBusPhases +
 						", kvar=" + String.format("%-g", testCapKVAr) +
 						", kv=" + String.format("%-g", kVrat);
 				exec.setCommand(commandString);  // defines capacitor
@@ -529,7 +529,7 @@ public class AutoAddImpl implements AutoAdd {
 
 	public void addCurrents(int solveType) {
 		Complex busV, current;
-		int nRef;
+		int nodeRef;
 
 		Circuit ckt = DSS.activeCircuit;
 		SolutionObj sol = ckt.getSolution();
@@ -538,19 +538,19 @@ public class AutoAddImpl implements AutoAdd {
 		case DSS.GENADD:
 			/* For buses with voltage != 0, add into aux current array */
 			for (int i = 0; i < phases; i++) {
-				nRef = ckt.getBus(busIndex).getRef(i);
-				if (nRef >= 0) {  // add in only non-ground currents
-					busV = sol.getNodeV(nRef);
+				nodeRef = ckt.getBus(busIndex).getRef(i) - 1;  // one based
+				if (nodeRef >= 0) {  // add in only non-ground currents
+					busV = sol.getNodeV(nodeRef);
 					if ((busV.getReal() != 0.0) || (busV.getImaginary() != 0.0)) {
 						/* Current into the system network */
 						switch (solveType) {
 						case Solution.NEWTONSOLVE:
 							current = genVA.divide(busV).conjugate().negate();  // terminal current
-							sol.setCurrent(nRef, sol.getCurrent(nRef).add(current));
+							sol.setCurrent(nodeRef, sol.getCurrent(nodeRef).add(current));
 							break;
 						case Solution.NORMALSOLVE:
 							current = genVA.divide(busV).conjugate();  // injection current
-							sol.setCurrent(nRef, sol.getCurrent(nRef).add(current));
+							sol.setCurrent(nodeRef, sol.getCurrent(nodeRef).add(current));
 							break;
 						}
 					}
@@ -560,19 +560,19 @@ public class AutoAddImpl implements AutoAdd {
 		case DSS.CAPADD:
 			/* For buses with voltage != 0, add into aux current array */
 			for (int i = 0; i < phases; i++) {
-				nRef = ckt.getBus(busIndex).getRef(i);
-				if (nRef >= 0) {
-					busV = sol.getNodeV(nRef);
+				nodeRef = ckt.getBus(busIndex).getRef(i) - 1;  // one based
+				if (nodeRef >= 0) {
+					busV = sol.getNodeV(nodeRef);
 					if (busV.getReal() != 0.0 || busV.getImaginary() != 0.0) {
 						/* Current into the system network */
 						switch (solveType) {
 						case Solution.NEWTONSOLVE:
 							current = new Complex(0.0, Ycap).multiply(busV);  // terminal current
-							sol.setCurrent(nRef, sol.getCurrent(nRef).add(current));
+							sol.setCurrent(nodeRef, sol.getCurrent(nodeRef).add(current));
 							break;
 						case Solution.NORMALSOLVE:
 							current = new Complex(0.0, -Ycap).multiply(busV);  // injection current
-							sol.setCurrent(nRef, sol.getCurrent(nRef).add(current));
+							sol.setCurrent(nodeRef, sol.getCurrent(nodeRef).add(current));
 							break;
 						}
 					}  // constant Y model

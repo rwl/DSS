@@ -242,7 +242,7 @@ public class ExportOptions {
 			case 33: fileName = "AllocationFactors.txt";
 			default: fileName = "EXP_VOLTAGES.csv"; break;
 			}
-			fileName = DSS.DSSDataDirectory + DSS.circuitName_ + fileName;  // explicitly define directory
+			fileName = DSS.dataDirectory + DSS.circuitName_ + fileName;  // explicitly define directory
 		}
 
 		switch (paramPointer) {

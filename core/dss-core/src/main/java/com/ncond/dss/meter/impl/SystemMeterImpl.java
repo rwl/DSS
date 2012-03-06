@@ -141,7 +141,7 @@ public class SystemMeterImpl implements SystemMeter {
 			if (DSS.energyMeterClass.isSaveDemandInterval()) {
 				folder = DSS.energyMeterClass.getDI_Dir() + "/";
 			} else {
-				folder = DSS.DSSDataDirectory;
+				folder = DSS.dataDirectory;
 			}
 			fw = new FileWriter(folder + csvName, false);
 			pw = new PrintWriter(fw);

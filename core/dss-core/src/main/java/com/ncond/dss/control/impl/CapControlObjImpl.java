@@ -67,7 +67,7 @@ abstract public class CapControlObjImpl extends ControlElemImpl implements CapCo
 		objType = parClass.getDSSClassType();
 
 		setNumPhases(3);  // directly set conds and phases
-		ncond = 3;
+		nConds = 3;
 		setNumTerms(1);   // this forces allocation of terminals and conductors in base class
 
 		CTPhase = 1;
@@ -129,7 +129,7 @@ abstract public class CapControlObjImpl extends ControlElemImpl implements CapCo
 			setControlledElement(ckt.getCktElements().get(devIndex));
 			controlledCapacitor = getCapacitor();
 			setNumPhases( getControlledElement().getNumPhases() );  // force number of phases to be same
-			setNumConds(nphase);
+			setNumConds(nPhases);
 			getControlledElement().setActiveTerminalIdx(0);  // make the 1st terminal active
 			// get control synched up with capacitor
 
@@ -190,7 +190,7 @@ abstract public class CapControlObjImpl extends ControlElemImpl implements CapCo
 		if (getControlledElement() != null) {
 			setEnabled(getControlledElement().isEnabled());
 			setNumPhases( getControlledElement().getNumPhases() );
-			setNumConds(nphase);
+			setNumConds(nPhases);
 		}
 
 		if (monitoredElement != null) {
@@ -214,7 +214,7 @@ abstract public class CapControlObjImpl extends ControlElemImpl implements CapCo
 		int j;
 
 		if (pBus.getVBus() != null)  // uses nPhases from CapControlObj
-			for (j = 0; j < nphase; j++)
+			for (j = 0; j < nPhases; j++)
 				buff[j] = DSS.activeCircuit.getSolution().getNodeV( pBus.getRef(j) );
 	}
 
@@ -229,19 +229,19 @@ abstract public class CapControlObjImpl extends ControlElemImpl implements CapCo
 		switch (CTPhase) {
 		case CapControl.AVGPHASES:
 			controlCurrent = 0.0;  // get avg of all phases
-			for (i = (1 + condOffset); i < (nphase + condOffset); i++)  // TODO Check zero based indexing
+			for (i = (1 + condOffset); i < (nPhases + condOffset); i++)  // TODO Check zero based indexing
 				controlCurrent += cBuffer[i].abs();
-			controlCurrent = controlCurrent / nphase / CTRatio;
+			controlCurrent = controlCurrent / nPhases / CTRatio;
 			break;
 		case CapControl.MAXPHASE:
 			controlCurrent = 0.0;  // get max of all phases
-			for (i = (1 + condOffset); i < (nphase + condOffset); i++)
+			for (i = (1 + condOffset); i < (nPhases + condOffset); i++)
 				controlCurrent = Math.max(controlCurrent, cBuffer[i].abs());
 			controlCurrent = controlCurrent / CTRatio;
 			break;
 		case CapControl.MINPHASE:
 			controlCurrent = 1.0e50;  // get min of all phases
-			for (i = (1 + condOffset); i < (nphase + condOffset); i++)
+			for (i = (1 + condOffset); i < (nPhases + condOffset); i++)
 				controlCurrent = Math.min(controlCurrent, cBuffer[i].abs());
 			controlCurrent = controlCurrent / CTRatio;
 			break;
@@ -256,13 +256,13 @@ abstract public class CapControlObjImpl extends ControlElemImpl implements CapCo
 
 	@Override
 	public void getCurrents(Complex[] curr) {
-		for (int i = 0; i < ncond; i++)
+		for (int i = 0; i < nConds; i++)
 			curr[i] = Complex.ZERO;
 	}
 
 	@Override
 	public void getInjCurrents(Complex[] curr) {
-		for (int i = 0; i < ncond; i++)
+		for (int i = 0; i < nConds; i++)
 			curr[i] = Complex.ZERO;
 	}
 
@@ -417,7 +417,7 @@ abstract public class CapControlObjImpl extends ControlElemImpl implements CapCo
 
 	private int nextDeltaPhase(int iphs) {
 		int result = iphs + 1;
-		if (result >= nphase)
+		if (result >= nPhases)
 			result = 0;
 		return result;
 	}

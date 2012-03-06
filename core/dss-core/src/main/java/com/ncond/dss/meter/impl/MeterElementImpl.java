@@ -43,9 +43,9 @@ abstract public class MeterElementImpl extends CktElementImpl implements MeterEl
 			calculatedCurrent = Util.resizeArray(calculatedCurrent, meteredElement.getYorder());
 		if (meteredElement != null)
 			calculatedVoltage = Util.resizeArray(calculatedVoltage, meteredElement.getYorder());
-		sensorCurrent = Util.resizeArray(sensorCurrent, nphase);
-		sensorVoltage = Util.resizeArray(sensorVoltage, nphase);
-		phsAllocationFactor = Util.resizeArray(phsAllocationFactor, nphase);
+		sensorCurrent = Util.resizeArray(sensorCurrent, nPhases);
+		sensorVoltage = Util.resizeArray(sensorVoltage, nPhases);
+		phsAllocationFactor = Util.resizeArray(phsAllocationFactor, nPhases);
 	}
 
 	public void calcAllocationFactors() {
@@ -58,7 +58,7 @@ abstract public class MeterElementImpl extends CktElementImpl implements MeterEl
 		// the phase allocation factor is the amount that the load must change to match the measured peak
 		iOffset = meteredTerminal * meteredElement.getNumConds();
 		avgAllocFactor = 0.0;
-		for (i = 0; i < nphase; i++) {
+		for (i = 0; i < nPhases; i++) {
 			mag = calculatedCurrent[i + iOffset].abs();
 			if (mag > 0.0) {
 				phsAllocationFactor[i] = sensorCurrent[i] / mag;
@@ -67,7 +67,7 @@ abstract public class MeterElementImpl extends CktElementImpl implements MeterEl
 			}
 			avgAllocFactor = avgAllocFactor + phsAllocationFactor[i];
 		}
-		avgAllocFactor = avgAllocFactor / nphase;  // factor for 2- and 3-phase loads
+		avgAllocFactor = avgAllocFactor / nPhases;  // factor for 2- and 3-phase loads
 	}
 
 	/**

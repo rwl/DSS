@@ -438,7 +438,7 @@ public class PVSystemImpl extends PCClassImpl implements PVSystem {
 				case DEBUG_TRACE:
 					if (apv.isDebugTrace()) {  // init trace file
 						try {
-							FileWriter fw = new FileWriter(DSS.DSSDataDirectory + "STOR_"+apv.getName()+".csv", false);
+							FileWriter fw = new FileWriter(DSS.dataDirectory + "STOR_"+apv.getName()+".csv", false);
 							BufferedWriter bw = new BufferedWriter(fw);
 
 							bw.write("t, Iteration, LoadMultiplier, Mode, LoadModel, PVSystemModel,  Qnominalperphase, Pnominalperphase, CurrentType");

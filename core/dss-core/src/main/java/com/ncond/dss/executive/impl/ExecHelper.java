@@ -29,7 +29,7 @@ import com.ncond.dss.common.impl.SolutionAlgs;
 import com.ncond.dss.common.impl.SolutionImpl;
 import com.ncond.dss.common.impl.SolverError;
 import com.ncond.dss.common.impl.Util;
-import com.ncond.dss.common.impl.DSSCircuit.ReductionStrategyType;
+import com.ncond.dss.common.impl.CircuitImpl.ReductionStrategyType;
 import com.ncond.dss.conversion.GeneratorObj;
 import com.ncond.dss.conversion.LoadObj;
 import com.ncond.dss.conversion.PCElement;
@@ -83,12 +83,9 @@ public class ExecHelper {
 	 *
 	 * If no dot, last class is assumed.
 	 */
-	public static void getObjClassAndName(StringBuffer objClass, StringBuffer objName) {
+	public static void getObjClassAndName(String[] objClass, String[] objName) {
 		String paramName, param;
 		Parser parser = Parser.getInstance();
-
-		objClass.delete(0, objClass.length());
-		objName.delete(0, objName.length());
 
 		paramName = parser.getNextParam().toLowerCase();
 		param = parser.makeString();
@@ -112,24 +109,24 @@ public class ExecHelper {
 	 * the "new" command always results in a new device being added.
 	 */
 	public static int doNewCmd() {
-		StringBuffer objClass = new StringBuffer();
-		StringBuffer objName = new StringBuffer();
+		String[] objClass = new String[1];
+		String[] objName = new String[1];
 		int handle = -1;
 		int result = 0;  // TODO Check return value
 
 		getObjClassAndName(objClass, objName);
 
-		if (objClass.toString().equalsIgnoreCase("solution")) {
+		if (objClass[0].equalsIgnoreCase("solution")) {
 			DSS.doSimpleMsg("You cannot create new Solution objects through the command interface.", 241);
 			return result;
 		}
 
-		if (objClass.toString().equalsIgnoreCase("circuit")) {
-			DSS.makeNewCircuit(objName.toString());
+		if (objClass[0].equalsIgnoreCase("circuit")) {
+			DSS.makeNewCircuit(objName[0]);
 			Util.clearEventLog();  // start the event log in the current directory
 		} else {
 			// everything else must be a circuit element or DSS object
-			handle = addObject(objClass.toString(), objName.toString());
+			handle = addObject(objClass[0], objName[0]);
 		}
 
 		if (handle == -1)
@@ -142,17 +139,17 @@ public class ExecHelper {
 	 * edit type=xxxx name=xxxx editstring
 	 */
 	public static int doEditCmd() {
-		StringBuffer objType = new StringBuffer();
-		StringBuffer objName = new StringBuffer();
+		String[] objType = new String[0];
+		String[] objName = new String[0];
 		int result = 0;
 
 		getObjClassAndName(objType, objName);
 
-		if (objType.toString().equalsIgnoreCase("circuit")) {
+		if (objType[0].equalsIgnoreCase("circuit")) {
 			// do nothing
 		} else {
 			// everything else must be a circuit element
-			result = editObject(objType.toString(), objName.toString());
+			result = editObject(objType[0], objName[0]);
 		}
 
 		return result;
@@ -162,8 +159,8 @@ public class ExecHelper {
 	 * batchedit type=xxxx name=pattern editstring
 	 */
 	public static int doBatchEditCmd() {
-		StringBuffer objType = new StringBuffer();
-		StringBuffer pattern = new StringBuffer();
+		String[] objType = new String[1];
+		String[] pattern = new String[1];
 		Pattern regEx1;
 		Matcher matcher;
 		DSSObject pObj;
@@ -173,19 +170,19 @@ public class ExecHelper {
 
 		int result = 0;
 		getObjClassAndName(objType, pattern);
-		if (objType.toString().equalsIgnoreCase("circuit")) {
+		if (objType[0].equalsIgnoreCase("circuit")) {
 			// do nothing
 		} else {
-			DSS.lastClassReferenced = DSS.classNames.find( objType.toString() );
+			DSS.lastClassReferenced = DSS.classNames.find( objType[0] );
 
 			switch (DSS.lastClassReferenced) {
 			case -1:
-				DSS.doSimpleMsg("BatchEdit command: Object type \"" + objType + "\" not found."+ DSS.CRLF + parser.getCmdString(), 267);
+				DSS.doSimpleMsg("BatchEdit command: Object type \"" + objType[0] + "\" not found."+ DSS.CRLF + parser.getCmdString(), 267);
 				return result;
 			default:
 				params = parser.getPosition();
 				DSS.activeDSSClass = DSS.DSSClassList.get( DSS.lastClassReferenced );
-				regEx1 = Pattern.compile( pattern.toString(), Pattern.CASE_INSENSITIVE );
+				regEx1 = Pattern.compile( pattern[0], Pattern.CASE_INSENSITIVE );
 				DSS.activeDSSClass.getFirst();
 				pObj = (DSSObject) DSS.activeDSSClass.getActiveObj();
 				while (pObj != null) {
@@ -296,29 +293,29 @@ public class ExecHelper {
 	 *   select element=elementname terminal=terminalnumber
 	 */
 	public static int doSelectCmd() {
-		StringBuffer objClass = new StringBuffer();
-		StringBuffer objName = new StringBuffer();
+		String[] objClass = new String[1];
+		String[] objName = new String[1];
 		String param;
 
 		int result = 1;
 
 		getObjClassAndName(objClass, objName);  // parse object class and name
 
-		if (objClass.toString().length() == 0 && objName.toString().length() == 0)
+		if (objClass[0].length() == 0 && objName[0].length() == 0)
 			return result;  // select active obj if any
 
-		if (objClass.toString().equalsIgnoreCase("circuit")) {
-			setActiveCircuit(objName.toString());
+		if (objClass[0].equalsIgnoreCase("circuit")) {
+			setActiveCircuit(objName[0]);
 		} else {
 			// everything else must be a circuit element
-			if (objClass.toString().length() > 0)
-				DSSClassDefs.setObjectClass(objClass.toString());
+			if (objClass[0].length() > 0)
+				DSSClassDefs.setObjectClass(objClass[0]);
 
 			DSS.activeDSSClass = DSS.DSSClassList.get(DSS.lastClassReferenced);
 			if (DSS.activeDSSClass != null) {
-				if (!DSS.activeDSSClass.setActive( objName.toString() )) {
+				if (!DSS.activeDSSClass.setActive( objName[0] )) {
 					// scroll through list of objects until a match
-					DSS.doSimpleMsg("Error: Object \"" + objName.toString() + "\" not found."+ DSS.CRLF + Parser.getInstance().getCmdString(), 245);
+					DSS.doSimpleMsg("Error: Object \"" + objName[0] + "\" not found."+ DSS.CRLF + Parser.getInstance().getCmdString(), 245);
 					result = 0;
 				} else {
 					switch (DSS.activeDSSObject.getDSSObjType()) {
@@ -396,27 +393,27 @@ public class ExecHelper {
 	 * Parses the object off the line and sets it active as a CktElement.
 	 */
 	public static int setActiveCktElement() {
-		StringBuffer objType = new StringBuffer();
-		StringBuffer objName = new StringBuffer();
+		String[] objType = new String[1];
+		String[] objName = new String[1];
 		int result = 0;
 
 		getObjClassAndName(objType, objName);
 
-		if (objType.toString().equalsIgnoreCase("circuit")) {
+		if (objType[0].equalsIgnoreCase("circuit")) {
 			// do nothing
 		} else {
-			if (!objType.toString().equalsIgnoreCase( DSS.activeDSSClass.getName() )) {
-				DSS.lastClassReferenced =  DSS.classNames.find(objType.toString());
+			if (!objType[0].equalsIgnoreCase( DSS.activeDSSClass.getName() )) {
+				DSS.lastClassReferenced =  DSS.classNames.find(objType[0]);
 
 				switch (DSS.lastClassReferenced) {
 				case 0:
-					DSS.doSimpleMsg("Object type \"" + objType.toString() + "\" not found."+ DSS.CRLF + Parser.getInstance().getCmdString(), 253);
+					DSS.doSimpleMsg("Object type \"" + objType[0] + "\" not found."+ DSS.CRLF + Parser.getInstance().getCmdString(), 253);
 					result = 0;
 					return result;
 				default:
 					// intrinsic and user defined models
 					DSS.activeDSSClass = DSS.DSSClassList.get(DSS.lastClassReferenced);
-					if (DSS.activeDSSClass.setActive( objName.toString() )) {
+					if (DSS.activeDSSClass.setActive( objName[0] )) {
 						// scroll through list of objects until a match
 						switch (DSS.activeDSSObject.getDSSObjType()) {
 						case DSSClassDefs.DSS_OBJECT:
@@ -436,8 +433,8 @@ public class ExecHelper {
 	}
 
 	public static int doEnableCmd() {
-		StringBuffer objType = new StringBuffer();
-		StringBuffer objName = new StringBuffer();
+		String[] objType = new String[1];
+		String[] objName = new String[1];
 		DSSClass classPtr;
 		CktElement cktElem;
 
@@ -448,17 +445,17 @@ public class ExecHelper {
 
 		getObjClassAndName(objType, objName);
 
-		if (objType.toString().equalsIgnoreCase("circuit")) {
+		if (objType[0].equalsIgnoreCase("circuit")) {
 			// do nothing
 		} else {
-			if (objType.toString().length() > 0) {
+			if (objType[0].length() > 0) {
 				// only applies to CktElementClass objects
-				classPtr = DSSClassDefs.getDSSClass(objType.toString());
+				classPtr = DSSClassDefs.getDSSClass(objType[0]);
 				if (classPtr != null) {
 
 					if ((classPtr.getDSSClassType() & DSSClassDefs.BASECLASSMASK) > 0) {
 						// everything else must be a circuit element
-						if (objName.toString().equals("*")) {
+						if (objName[0].equals("*")) {
 							// enable all elements of this class
 							for (int i = 0; i < classPtr.getElementCount(); i++) {
 								cktElem = (CktElement) classPtr.getElementList().get(i);
@@ -467,7 +464,7 @@ public class ExecHelper {
 						} else {
 							// just load up the parser and call the edit routine for the object in question
 							Parser.getInstance().setCmdString("enabled=true");  // will only work for CktElements
-							result = editObject(objType.toString(), objName.toString());
+							result = editObject(objType[0], objName[0]);
 						}
 					}
 
@@ -479,8 +476,8 @@ public class ExecHelper {
 	}
 
 	public static int doDisableCmd() {
-		StringBuffer objType = new StringBuffer();
-		StringBuffer objName = new StringBuffer();
+		String[] objType = new String[1];
+		String[] objName = new String[1];
 		DSSClass classPtr;
 		CktElement cktElem;
 
@@ -488,17 +485,17 @@ public class ExecHelper {
 
 		getObjClassAndName(objType, objName);
 
-		if (objType.toString().equalsIgnoreCase("circuit")) {
+		if (objType[0].equalsIgnoreCase("circuit")) {
 			// do nothing
 		} else {
-			if (objType.toString().length() > 0) {
+			if (objType[0].length() > 0) {
 				// only applies to CktElementClass objects
-				classPtr = DSSClassDefs.getDSSClass(objType.toString());
+				classPtr = DSSClassDefs.getDSSClass(objType[0]);
 				if (classPtr != null) {
 
 					if ((classPtr.getDSSClassType() & DSSClassDefs.BASECLASSMASK) > 0) {
 						// everything else must be a circuit element
-						if (objName.toString().equals("*")) {
+						if (objName[0].equals("*")) {
 							// disable all elements of this class
 							for (int i = 0; i < classPtr.getElementCount(); i++) {
 								cktElem = (CktElement) classPtr.getElementList().get(i);
@@ -508,7 +505,7 @@ public class ExecHelper {
 					} else {
 						// just load up the parser and call the edit routine for the object in question
 						Parser.getInstance().setCmdString("enabled=false");  // will only work for CktElements
-						result = editObject(objType.toString(), objName.toString());
+						result = editObject(objType[0], objName[0]);
 					}
 
 				}

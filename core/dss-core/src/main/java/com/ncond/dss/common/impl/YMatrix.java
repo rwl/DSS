@@ -9,7 +9,7 @@ import net.sourceforge.klusolve.CSparseSolve;
 import com.ncond.dss.common.Circuit;
 import com.ncond.dss.common.CktElement;
 import com.ncond.dss.common.SolutionObj;
-import com.ncond.dss.common.impl.DSSBus.NodeBus;
+import com.ncond.dss.common.impl.BusImpl.NodeBus;
 
 
 public class YMatrix extends CSparseSolve {

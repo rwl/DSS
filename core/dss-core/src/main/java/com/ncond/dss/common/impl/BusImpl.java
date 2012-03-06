@@ -8,11 +8,10 @@ import com.ncond.dss.general.impl.NamedObjectImpl;
 import com.ncond.dss.shared.CMatrix;
 import com.ncond.dss.shared.impl.CMatrixImpl;
 
-public class DSSBus extends NamedObjectImpl implements Bus {
+public class BusImpl extends NamedObjectImpl implements Bus {
 
-	public class NodeBus {
-		/* Ref to bus in circuit's bus list */
-		public int busRef;
+	public static class NodeBus {
+		public int busRef;  // ref to bus in circuit's bus list
 		public int nodeNum;  // one-based
 	}
 
@@ -24,31 +23,49 @@ public class DSSBus extends NamedObjectImpl implements Bus {
 	protected Complex[] VBus, busCurrent;
 	protected CMatrix Zsc, Ysc;
 
-	/* Coordinates */
-	protected double x, y;
-	protected double kVBase;
-	/* Base kV for each node to ground (0) */
+	protected double x, y;  // coordinates
+	protected double kVBase;  // base kV for each node to ground (0)
 	protected double distFromMeter;
 
 	protected boolean coordDefined, busChecked, keep, isRadialBus;
 
-	public DSSBus() {
+	public BusImpl() {
 		super("Bus");
 		allocation = 3;
 		nodes = new int[allocation];
 		refNo = new int[allocation];
 		numNodesThisBus = 0;
-		Ysc              = null;
-		Zsc              = null;
-		VBus             = null;
-		busCurrent       = null;
-		kVBase           = 0.0;  // signify that it has not been set
-		x                = 0.0;
-		y                = 0.0;
-		distFromMeter    = 0.0;
-		coordDefined     = false;
-		keep             = false;
-		isRadialBus      = false;
+		Ysc             = null;
+		Zsc             = null;
+		VBus            = null;
+		busCurrent      = null;
+		kVBase          = 0.0;  // signify that it has not been set
+		x               = 0.0;
+		y               = 0.0;
+		distFromMeter   = 0.0;
+		coordDefined    = false;
+		keep            = false;
+		isRadialBus     = false;
+	}
+
+	public int add(int nodeNum) {
+		int result;
+		Circuit ckt = DSS.activeCircuit;
+
+		if (nodeNum == 0) {
+			result = 0;
+		} else {
+			result = find(nodeNum);
+			if (result == 0) {
+				addANode();  // add a node to the bus
+				nodes[numNodesThisBus - 1] = nodeNum;
+
+				ckt.setNumNodes(ckt.getNumNodes() + 1);  // global node number for circuit
+				refNo[numNodesThisBus - 1] = ckt.getNumNodes();
+				result = ckt.getNumNodes();  // return global node number
+			}
+		}
+		return result;
 	}
 
 	private void addANode() {
@@ -60,59 +77,25 @@ public class DSSBus extends NamedObjectImpl implements Bus {
 		}
 	}
 
-	public int add(int nodeNum) {
-		int result;
-
-		if (nodeNum == 0) {
-			result = -1;
-		} else {
-			result = find(nodeNum);
-			if (result == -1) {
-				// add a node to the bus
-				addANode();
-				nodes[numNodesThisBus] = nodeNum;
-
-				Circuit ckt = DSS.activeCircuit;
-
-				ckt.setNumNodes(ckt.getNumNodes() + 1);  // global node number for circuit
-				refNo[numNodesThisBus] = ckt.getNumNodes() - 1;
-				result = ckt.getNumNodes();  // return global node number
-			}
-		}
-
-		return result;
-	}
-
-	/**
-	 * Returns reference num for node by node number.
-	 */
 	public int find(int nodeNum) {
-		for (int i = 0; i < numNodesThisBus; i++) {
-			if (nodes[i] == nodeNum)
-				return refNo[i];
-		}
-		return -1;
+		for (int i = 0; i < numNodesThisBus; i++)
+			if (nodes[i] == nodeNum) return refNo[i];
+		return 0;
 	}
 
-	/**
-	 * Returns reference num for node by node index.
-	 */
 	public int getRef(int nodeIndex) {
 		if (nodeIndex >= 0 && nodeIndex < numNodesThisBus) {
 			return refNo[nodeIndex];
 		} else {
-			return -1;
+			return 0;
 		}
 	}
 
-	/**
-	 * Returns ith node number designation.
-	 */
 	public int getNum(int nodeIndex) {
 		if (nodeIndex >= 0 && nodeIndex < numNodesThisBus) {
 			return nodes[nodeIndex];
 		} else {
-			return -1;
+			return 0;
 		}
 	}
 
@@ -124,9 +107,6 @@ public class DSSBus extends NamedObjectImpl implements Bus {
 		allocateBusCurrents();
 	}
 
-	/**
-	 * = Zs + 2 Zm
-	 */
 	public Complex getZsc0() {
 		if (Zsc != null) {
 			return Zsc.avgDiag().add( Zsc.avgOffDiag().multiply(2.0) );
@@ -135,9 +115,6 @@ public class DSSBus extends NamedObjectImpl implements Bus {
 		}
 	}
 
-	/**
-	 * = Zs - Zm
-	 */
 	public Complex getZsc1() {
 		if (Zsc != null) {
 			return Zsc.avgDiag().subtract( Zsc.avgOffDiag() );
@@ -146,25 +123,22 @@ public class DSSBus extends NamedObjectImpl implements Bus {
 		}
 	}
 
-	/**
-	 * Returns index of node by node number.
-	 */
 	public int findIdx(int nodeNum) {
-		for (int i = 0; i < numNodesThisBus; i++) {
-			if (nodes[i] == nodeNum)
-				return i;
-		}
+		for (int i = 0; i < numNodesThisBus; i++)
+			if (nodes[i] == nodeNum) return i;
 		return -1;
 	}
 
 	public void allocateBusVoltages() {
-		VBus = Util.resizeArray(VBus, numNodesThisBus);
+		VBus = new Complex[numNodesThisBus];
+
 		for (int i = 0; i < numNodesThisBus; i++)
 			VBus[i] = Complex.ZERO;
 	}
 
 	public void allocateBusCurrents() {
-		busCurrent = Util.resizeArray(busCurrent, numNodesThisBus);
+		busCurrent = new Complex[numNodesThisBus];
+
 		for (int i = 0; i < numNodesThisBus; i++)
 			busCurrent[i] = Complex.ZERO;
 	}
