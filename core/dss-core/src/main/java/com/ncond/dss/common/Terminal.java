@@ -1,29 +1,76 @@
 package com.ncond.dss.common;
 
-public interface Terminal {
+import com.ncond.dss.common.Conductor;
 
-	int getBusRef();
+public class Terminal {
 
-	void setBusRef(int busRef);
+	private int numCond;
+	private int activeConductor;
 
-	int getTermNodeRef(int idx);
+	protected int busRef;
 
-	int[] getTermNodeRef();
+	protected int[] termNodeRef;
+	protected Conductor[] conductors;
+	protected boolean checked;
 
-	void setTermNodeRef(int[] termNodeRef);
+	public Terminal(int nCond) {
+		super();
+		numCond = nCond;
+		busRef = -1;  // signify not set
+		termNodeRef = new int[numCond];
+		conductors = new Conductor[numCond];
+		for (int i = 0; i < numCond; i++)
+			conductors[i] = new Conductor();
+		activeConductor = 0;
+	}
 
-	Conductor getConductor(int idx);
+	public Conductor getConductor(int idx) {
+		return conductors[idx];
+	}
 
-	Conductor[] getConductors();
+	public int getTermNodeRef(int idx) {
+		return termNodeRef[idx];
+	}
 
-	void setConductors(Conductor[] conductors);
+	public int getBusRef() {
+		return busRef;
+	}
 
-	boolean isChecked();
+	public void setBusRef(int value) {
+		busRef = value;
+	}
 
-	void setChecked(boolean checked);
+	public int[] getTermNodeRef() {
+		return termNodeRef;
+	}
 
-	void setActiveConductor(int Value);
+	public void setTermNodeRef(int[] value) {
+		termNodeRef = value;
+	}
 
-	int getActiveConductor();
+	public Conductor[] getConductors() {
+		return conductors;
+	}
+
+	public void setConductors(Conductor[] value) {
+		conductors = value;
+	}
+
+	public boolean isChecked() {
+		return checked;
+	}
+
+	public void setChecked(boolean value) {
+		checked = value;
+	}
+
+	public void setActiveConductor(int value) {
+		if (value >= 0 & value < numCond)
+			activeConductor = value;
+	}
+
+	public int getActiveConductor() {
+		return activeConductor;
+	}
 
 }

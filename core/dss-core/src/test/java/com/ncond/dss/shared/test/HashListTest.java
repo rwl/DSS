@@ -1,7 +1,7 @@
 package com.ncond.dss.shared.test;
 
 import com.ncond.dss.shared.HashList;
-import com.ncond.dss.shared.impl.HashListImpl;
+import com.ncond.dss.shared.HashList;
 
 import junit.framework.TestCase;
 
@@ -14,7 +14,7 @@ public class HashListTest extends TestCase {
 	HashList hl;
 
 	protected void setUp() throws Exception {
-		hl = new HashListImpl(28);
+		hl = new HashList(28);
 
 		for (String month : months)
 			hl.add(month);

@@ -1,62 +1,143 @@
 package com.ncond.dss.parser;
 
-public interface RPNCalc {
 
-	double getX();
+public class RPNCalc {
 
-	void setX(double x);
+	private static final int MaxStackSize = 10;
 
-	double getY();
+	private static final double DegToRad = 3.14159265359 / 180.0;
+	private static final double RadToDeg = 1.0 / DegToRad;
 
-	void setY(double y);
+	private double[] stack = new double[MaxStackSize];
 
-	double getZ();
+	public RPNCalc() {
+		for (int i = 0; i < MaxStackSize; i++)
+			stack[i] = 0.0;
+	}
 
-	void setZ(double z);
+	public void aCosDeg() {
+		stack[0] = RadToDeg * Math.acos(stack[0]);
+	}
 
-	void multiply();
+	public void add() {
+		stack[1] = stack[0] + stack[1];
+		rollDn();
+	}
 
-	void divide();
+	public void aSinDeg() {
+		stack[0] = RadToDeg * Math.asin(stack[0]);
+	}
 
-	void sqrt();
+	public void aTanDeg() {
+		stack[0] = RadToDeg * Math.atan(stack[0]);
+	}
 
-	void square();
+	public void aTan2Deg() {
+		stack[1] = RadToDeg * Math.atan2(stack[1], stack[0]);
+		rollDn();
+	}
 
-	void add();
+	public void cosDeg() {
+		stack[0] = Math.cos(DegToRad * stack[0]);
+	}
 
-	void subtract();
+	public void divide() {
+		stack[1] = stack[1] / stack[0];
+		rollDn();
+	}
 
-	void yToTheXPower();
+	public double getX() {
+		return stack[0];
+	}
 
-	void sinDeg();
+	public double getY() {
+		return stack[1];
+	}
 
-	void cosDeg();
+	public double getZ() {
+		return stack[2];
+	}
 
-	void tanDeg();
+	public void multiply() {
+		stack[1] = stack[1] * stack[0];
+		rollDn();
+	}
 
-	void aSinDeg();
+	public void rollDn() {
+		for (int i = 1; i < MaxStackSize; i++)
+			stack[i - 1] = stack[i];
+	}
 
-	void aCosDeg();
+	public void rollUp() {
+		for (int i = 1; i < MaxStackSize; i++)
+			stack[i] = stack[i - 1];
 
-	void aTanDeg();
+	}
 
-	void aTan2Deg();
+	public void setX(double x) {
+		rollUp();
+		stack[0] = x;
+	}
 
-	void natLog();
+	public void setY(double y) {
+		stack[1] = y;
+	}
 
-	void tenLog();
+	public void setZ(double z) {
+		stack[2] = z;
+	}
 
-	void eToTheX();
+	public void sinDeg() {
+		stack[0] = Math.sin(DegToRad * stack[0]);
+	}
 
-	void enterPi();
+	public void sqrt() {
+		stack[0] = Math.sqrt(stack[0]);
+	}
 
-	void inv();
+	public void square() {
+		stack[0] = Math.pow(stack[0], 2);
+	}
 
+	public void subtract() {
+		stack[1] = stack[1] - stack[0];
+		rollDn();
+	}
 
-	void swapXY();
+	public void swapXY() {
+		double Temp = stack[0];
+		stack[0] = stack[1];
+		stack[1] = Temp;
+	}
 
-	void rollUp();
+	public void tanDeg() {
+		stack[0] = Math.tan(DegToRad * stack[0]);
+	}
 
-	void rollDn();
+	public void yToTheXPower() {
+		stack[1] = Math.pow(stack[1], stack[0]);
+		rollDn();
+	}
+
+	public void enterPi() {
+		rollUp();
+		stack[0] = Math.PI;
+	}
+
+	public void eToTheX() {
+		stack[0] = Math.exp(stack[0]);
+	}
+
+	public void natLog() {
+		stack[0] = Math.log(stack[0]);
+	}
+
+	public void tenLog() {
+		stack[0] = Math.log10(stack[0]);
+	}
+
+	public void inv() {
+		stack[0] = 1.0 / stack[0];
+	}
 
 }

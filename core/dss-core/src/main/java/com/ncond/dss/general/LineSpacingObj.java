@@ -1,39 +1,149 @@
 package com.ncond.dss.general;
 
-public interface LineSpacingObj extends DSSObject {
+import java.io.OutputStream;
+import java.io.PrintWriter;
 
-	void setNWires(int value);
+import com.ncond.dss.common.DSSClass;
+import com.ncond.dss.shared.LineUnits;
 
-	int getNWires();
+public class LineSpacingObj extends DSSObject {
 
-	double getXCoord(int i);
+	private int nConds;
+	private int nPhases;
+	private double[] X;
+	private double[] Y;
+	private int units;
+	private boolean dataChanged;
 
-	double getYCoord(int i);
+	public LineSpacingObj(DSSClass parClass, String lineSpacingName) {
+		super(parClass);
 
-	int getNPhases();
+		setName(lineSpacingName.toLowerCase());
+		objType = parClass.getDSSClassType();
 
-	int getUnits();
+		dataChanged = true;
+		X           = null;
+		Y           = null;
+		units       = LineUnits.UNITS_FT;
+
+		setNWires(3);  // allocates terminals
+		nPhases = 3;
+
+		initPropertyValues(0);
+	}
+
+	public void dumpProperties(OutputStream out, boolean complete) {
+		super.dumpProperties(out, complete);
+
+		PrintWriter pw = new PrintWriter(out);
+
+		for (int i = 0; i < 5; i++)
+			pw.println("~ " + parentClass.getPropertyName(i) + "=" + getPropertyValue(i));
+
+		pw.close();
+	}
+
+	private String arrayString(double[] pf, int n) {
+		// FIXME use StringBuffer
+		String r = "[";
+		if (n > 0)
+			r = r + String.format("%-g", pf[0]);
+		for (int i = 1; i < n; i++)
+			r = r + String.format(",%-g", pf[i]);
+		return r + "]";
+	}
+
+	public String getPropertyValue(int index) {
+		switch (index) {
+		case 2:
+			return arrayString(X, nConds);
+		case 3:
+			return arrayString(Y, nConds);
+		case 4:
+			LineUnits.lineUnitsStr(units);
+		default:
+			// inherited parameters
+			return super.getPropertyValue(index);
+		}
+	}
+
+	public double getXCoord(int i) {
+		return i < nConds ? X[i] : 0.0;
+	}
+
+	public double getYCoord(int i) {
+		return i < nConds ? Y[i] : 0.0;
+	}
+
+	public void initPropertyValues(int arrayOffset) {
+		setPropertyValue(0, "3");
+		setPropertyValue(1, "3");
+		setPropertyValue(2, "0");
+		setPropertyValue(3, "32");
+		setPropertyValue(4, "ft");
+
+		super.initPropertyValues(LineSpacing.NumPropsThisClass - 1);
+	}
+
+	public void setNWires(int value) {
+		nConds = value;
+		X = new double[nConds];
+		Y = new double[nConds];
+		units = LineUnits.UNITS_FT;
+	}
+
+	public int getNWires() {
+		return nConds;
+	}
+
+	public int getNPhases() {
+		return nPhases;
+	}
+
+	public int getUnits() {
+		return units;
+	}
 
 	// FIXME Private members in OpenDSS.
 
-	int getNConds();
+	public int getNConds() {
+		return nConds;
+	}
 
-	void setNConds(int nConds);
+	public void setNConds(int num) {
+		nConds = num;
+	}
 
-	double[] getX();
+	public double[] getX() {
+		return X;
+	}
 
-	void setX(double[] x);
+	public void setX(double[] x) {
+		X = x;
+	}
 
-	double[] getY();
+	public double[] getY() {
+		return Y;
+	}
 
-	void setY(double[] y);
+	public void setY(double[] y) {
+		Y = y;
+	}
 
-	boolean isDataChanged();
+	public boolean isDataChanged() {
+		return dataChanged;
+	}
 
-	void setDataChanged(boolean dataChanged);
+	public void setDataChanged(boolean changed) {
+		dataChanged = changed;
+	}
 
-	void setNPhases(int nPhases);
+	public void setNPhases(int num) {
+		nPhases = num;
+	}
 
-	void setUnits(int units);
+	public void setUnits(int value) {
+		units = value;
+	}
 
 }

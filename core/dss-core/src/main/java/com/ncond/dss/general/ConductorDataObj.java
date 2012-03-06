@@ -1,5 +1,11 @@
 package com.ncond.dss.general;
 
+import java.io.OutputStream;
+import java.io.PrintWriter;
+
+import com.ncond.dss.common.DSSClass;
+import com.ncond.dss.shared.LineUnits;
+
 /**
  * The ConductorData object is a general DSS object used by all circuits
  * as a reference for obtaining line impedances.
@@ -12,44 +18,166 @@ package com.ncond.dss.general;
  * Then the values of that code can be retrieved via the public variables.
  *
  */
-public interface ConductorDataObj extends DSSObject {
+public class ConductorDataObj extends DSSObject {
 
-	double getNormAmps();
+	private double Rdc;
+	private double R60;
+	private double gmr60;
+	private double radius;
+	private int gmrUnits;
+	private int resistanceUnits;
+	private int radiusUnits;
 
-	void setNormAmps(double normAmps);
+	protected double normAmps;
+	protected double emergAmps;
 
-	double getEmergAmps();
+	public ConductorDataObj(DSSClass parClass, String conductorDataName) {
+		super(parClass);
 
-	void setEmergAmps(double emergAmps);
+		setName(conductorDataName.toLowerCase());
+		objType = parClass.getDSSClassType();
 
-	double getRDC();
+		Rdc             = -1.0;
+		R60             = -1.0;
+		gmr60           = -1.0;
+		radius          = -1.0;
+		gmrUnits        = 0;
+		resistanceUnits = 0;
+		radiusUnits     = 0;
 
-	double getR60();
+		normAmps  = -1.0;
+		emergAmps = -1.0;
+	}
 
-	double getGMR60();
+	public void dumpProperties(OutputStream out, boolean complete) {
+		super.dumpProperties(out, complete);
 
-	double getRadius();
+		PrintWriter pw = new PrintWriter(out);
 
-	int getGMRUnits();
+		for (int i = 0; i < getParentClass().getNumProperties(); i++) {
+			pw.print("~ " + getParentClass().getPropertyName(i) + "=");
+			switch (i) {
+			case 0:
+				pw.printf("%.6g", getRDC());
+				break;
+			case 1:
+				pw.printf("%.6g", getR60());
+				break;
+			case 2:
+				pw.printf("%s", LineUnits.lineUnitsStr(getResistanceUnits()));
+				break;
+			case 3:
+				pw.printf("%.6g", getGMR60());
+				break;
+			case 4:
+				pw.printf("%s", LineUnits.lineUnitsStr(getGMRUnits()));
+				break;
+			case 5:
+				pw.printf("%.6g", getRadius());
+				break;
+			case 6:
+				pw.printf("%s", LineUnits.lineUnitsStr(getRadiusUnits()));
+				break;
+			case 7:
+				pw.printf("%.6g", getNormAmps());
+				break;
+			case 8:
+				pw.printf("%.6g", getEmergAmps());
+				break;
+			case 9:
+				pw.printf("%.6g", getRadius() * 2.0);
+				break;
+			}
+			pw.println();
+		}
+	}
 
-	int getResistanceUnits();
+	public void initPropertyValues(int arrayOffset) {
+		setPropertyValue(arrayOffset + 1, "-1");
+		setPropertyValue(arrayOffset + 2, "-1");
+		setPropertyValue(arrayOffset + 3, "none");
+		setPropertyValue(arrayOffset + 4, "-1");
+		setPropertyValue(arrayOffset + 5, "none");
+		setPropertyValue(arrayOffset + 6, "-1");
+		setPropertyValue(arrayOffset + 7, "none");
+		setPropertyValue(arrayOffset + 8, "-1");
+		setPropertyValue(arrayOffset + 9, "-1");
+		setPropertyValue(arrayOffset + 10, "-1");
+		super.initPropertyValues(arrayOffset + 10);
+	}
 
-	int getRadiusUnits();
+	public double getNormAmps() {
+		return normAmps;
+	}
+
+	public void setNormAmps(double amps) {
+		normAmps = amps;
+	}
+
+	public double getEmergAmps() {
+		return emergAmps;
+	}
+
+	public void setEmergAmps(double amps) {
+		emergAmps = amps;
+	}
+
+	public double getRDC() {
+		return Rdc;
+	}
+
+	public double getR60() {
+		return R60;
+	}
+
+	public double getGMR60() {
+		return gmr60;
+	}
+
+	public double getRadius() {
+		return radius;
+	}
+
+	public int getGMRUnits() {
+		return gmrUnits;
+	}
+
+	public int getResistanceUnits() {
+		return resistanceUnits;
+	}
+
+	public int getRadiusUnits() {
+		return radiusUnits;
+	}
 
 	// FIXME Private members in OpenDSS.
 
-	void setRDC(double rDC);
+	public void setRDC(double rdc) {
+		Rdc = rdc;
+	}
 
-	void setR60(double r60);
+	public void setR60(double r60) {
+		R60 = r60;
+	}
 
-	void setGMR60(double gMR60);
+	public void setGMR60(double gmr) {
+		gmr60 = gmr;
+	}
 
-	void setRadius(double radius);
+	public void setRadius(double value) {
+		radius = value;
+	}
 
-	void setGMRUnits(int gMRUnits);
+	public void setGMRUnits(int units) {
+		gmrUnits = units;
+	}
 
-	void setResistanceUnits(int resistanceUnits);
+	public void setResistanceUnits(int units) {
+		resistanceUnits = units;
+	}
 
-	void setRadiusUnits(int radiusUnits);
+	public void setRadiusUnits(int units) {
+		radiusUnits = units;
+	}
 
 }

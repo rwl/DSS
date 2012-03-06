@@ -2,61 +2,144 @@ package com.ncond.dss.control;
 
 import com.ncond.dss.common.Bus;
 import com.ncond.dss.common.CktElement;
+import com.ncond.dss.common.CktElement;
+import com.ncond.dss.common.DSS;
+import com.ncond.dss.common.DSSClass;
+import com.ncond.dss.common.DSSClassDefs;
 
-public interface ControlElem extends CktElement {
+abstract public class ControlElem extends CktElement {
 
-	static final double USER_BASE_ACTION_CODE = 100;
+	public static final double USER_BASE_ACTION_CODE = 100;
 
-	String getElementName();
+	private CktElement controlledElement;
 
-	void setElementName(String elementName);
+	protected String elementName;
+	protected int elementTerminal;
+	/* If different than terminal */
+	protected String controlledBusName;
+	protected Bus controlledBus;
+	protected String monitorVariable;
+	protected int monitorVarIndex;
+	protected double timeDelay, dblTraceParameter;
+	protected boolean showEventLog;
 
-	int getElementTerminal();
+	public ControlElem(DSSClass parClass) {
+		super(parClass);
 
-	void setElementTerminal(int elementTerminal);
-
-	String getControlledBusName();
-
-	void setControlledBusName(String controlledBusName);
-
-	Bus getControlledBus();
-
-	void setControlledBus(Bus controlledBus);
-
-	String getMonitorVariable();
-
-	void setMonitorVariable(String monitorVariable);
-
-	int getMonitorVarIndex();
-
-	void setMonitorVarIndex(int monitorVarIndex);
-
-	double getTimeDelay();
-
-	void setTimeDelay(double timeDelay);
-
-	double getDblTraceParameter();
-
-	void setDblTraceParameter(double dblTraceParameter);
-
-	void setControlledElement(CktElement value);
-
-	CktElement getControlledElement();
-
-	/**
-	 * Sample control quantities and set action times in control queue.
-	 */
-	void sample();
+		objType = DSSClassDefs.CTRL_ELEMENT;
+		dblTraceParameter = 0.0;
+		monitorVariable = "";
+		monitorVarIndex = 0;
+		controlledElement = null;
+		showEventLog = true;
+	}
 
 	/**
 	 * Do the action that is pending from last sample.
 	 */
-	void doPendingAction(int code, int proxyHdl);
+	public void doPendingAction(int code, int proxyHdl) {
+		DSS.doSimpleMsg("Programming error: Reached base class for doPendingAction."+DSS.CRLF+"Device: "+getDSSClassName()+"."+getName(), 460);
+	}
 
-	void reset();
+	public void reset() {
+		DSS.doSimpleMsg("Programming error: Reached base class for reset."+DSS.CRLF+"Device: "+getDSSClassName()+"."+getName(), 461);
+	}
 
-	boolean isShowEventLog();
+	/**
+	 * Sample control quantities and set action times in control queue.
+	 */
+	public void sample() {
+		DSS.doSimpleMsg("Programming error: Reached base class for sample."+DSS.CRLF+"Device: "+getDSSClassName()+"."+getName(), 462);
+	}
 
-	void setShowEventLog(boolean showEventLog);
+	public void setControlledElement(CktElement value) {
+		try {
+			// check for reassignment
+			if (controlledElement != null)
+				controlledElement.setHasControl(false);
+		} finally {
+			controlledElement = value;
+			if (controlledElement != null) {
+				controlledElement.setHasControl(true);
+				controlledElement.setControlElement(this);
+			}
+		}
+	}
+
+	public CktElement getControlledElement() {
+		return controlledElement;
+	}
+
+	public String getElementName() {
+		return elementName;
+	}
+
+	public void setElementName(String name) {
+		elementName = name;
+	}
+
+	public int getElementTerminal() {
+		return elementTerminal;
+	}
+
+	public void setElementTerminal(int terminal) {
+		elementTerminal = terminal;
+	}
+
+	public String getControlledBusName() {
+		return controlledBusName;
+	}
+
+	public void setControlledBusName(String name) {
+		controlledBusName = name;
+	}
+
+	public Bus getControlledBus() {
+		return controlledBus;
+	}
+
+	public void setControlledBus(Bus bus) {
+		controlledBus = bus;
+	}
+
+	public String getMonitorVariable() {
+		return monitorVariable;
+	}
+
+	public void setMonitorVariable(String variable) {
+		monitorVariable = variable;
+	}
+
+	public int getMonitorVarIndex() {
+		return monitorVarIndex;
+	}
+
+	public void setMonitorVarIndex(int index) {
+		monitorVarIndex = index;
+	}
+
+	public double getTimeDelay() {
+		return timeDelay;
+	}
+
+	public void setTimeDelay(double delay) {
+		timeDelay = delay;
+	}
+
+	public double getDblTraceParameter() {
+		return dblTraceParameter;
+	}
+
+	public void setDblTraceParameter(double parameter) {
+		dblTraceParameter = parameter;
+	}
+
+	public boolean isShowEventLog() {
+		return showEventLog;
+	}
+
+	public void setShowEventLog(boolean showEventLog) {
+		this.showEventLog = showEventLog;
+	}
 
 }

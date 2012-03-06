@@ -1,6 +1,6 @@
 package com.ncond.dss.parser.test;
 
-import com.ncond.dss.parser.impl.Parser;
+import com.ncond.dss.parser.Parser;
 
 import junit.framework.TestCase;
 

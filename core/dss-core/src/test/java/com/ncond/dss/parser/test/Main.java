@@ -1,7 +1,7 @@
 package com.ncond.dss.parser.test;
 
 import com.ncond.dss.executive.Executive;
-import com.ncond.dss.executive.impl.DSSExecutive;
+import com.ncond.dss.executive.Executive;
 
 public class Main {
 
@@ -10,7 +10,7 @@ public class Main {
 	 */
 	public static void main(String[] args) {
 
-		Executive ex = DSSExecutive.getInstance();
+		Executive ex = Executive.getInstance();
 
 		ex.createDefaultDSSItems();
 

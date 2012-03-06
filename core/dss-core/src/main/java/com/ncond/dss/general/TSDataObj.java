@@ -1,19 +1,81 @@
 package com.ncond.dss.general;
 
-public interface TSDataObj extends CableDataObj {
+import java.io.OutputStream;
+import java.io.PrintWriter;
 
-	double getDiaShield();
+import com.ncond.dss.common.DSSClass;
 
-	double getTapeLayer();
+public class TSDataObj extends CableDataObj {
 
-	double getTapeLap();
+	private double diaShield;
+	private double tapeLayer;
+	private double tapeLap;
+
+	public TSDataObj(DSSClass parClass, String TSDataName) {
+		super(parClass, TSDataName);
+
+		setName(TSDataName.toLowerCase());
+		objType = parClass.getDSSClassType();
+		diaShield = -1.0;
+		tapeLayer = -1.0;
+		tapeLap = 20.0;
+
+		initPropertyValues(0);
+	}
+
+	public void dumpProperties(OutputStream out, boolean complete) {
+		super.dumpProperties(out, complete);
+
+		PrintWriter pw = new PrintWriter(out);
+
+		for (int i = 0; i < getParentClass().getNumProperties(); i++) {
+			pw.print("~ " + getParentClass().getPropertyName(i) + "=");
+			switch (i) {
+			case 0:
+				pw.printf("%.6g", diaShield);
+				break;
+			case 1:
+				pw.printf("%.6g", tapeLayer);
+				break;
+			case 2:
+				pw.printf("%.2g", tapeLap);
+				break;
+			}
+			pw.println();
+		}
+	}
+
+	public void initPropertyValues(int arrayOffset) {
+		setPropertyValue(0, "-1");
+		setPropertyValue(1, "-1");
+		setPropertyValue(2, "20.0");
+		super.initPropertyValues(arrayOffset + TSData.NumPropsThisClass);
+	}
+
+	public double getDiaShield() {
+		return diaShield;
+	}
+
+	public double getTapeLayer() {
+		return tapeLayer;
+	}
+
+	public double getTapeLap() {
+		return tapeLap;
+	}
 
 	// FIXME Private members in OpenDSS
 
-	void setDiaShield(double diaShield);
+	public void setDiaShield(double shield) {
+		diaShield = shield;
+	}
 
-	void setTapeLayer(double tapeLayer);
+	public void setTapeLayer(double layer) {
+		tapeLayer = layer;
+	}
 
-	void setTapeLap(double tapeLap);
+	public void setTapeLap(double lap) {
+		tapeLap = lap;
+	}
 
 }

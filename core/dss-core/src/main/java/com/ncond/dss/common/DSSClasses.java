@@ -1,10 +1,16 @@
 package com.ncond.dss.common;
 
+
 /**
  * Collection of all DSS Classes.
  */
-public interface DSSClasses {
+public class DSSClasses {
 
-	void setNew(DSSClass value);
+	public void setNew(DSSClass value) {
+
+		DSS.DSSClassList.add(value);  // add to class list
+		DSS.activeDSSClass = value;      // declare to be active
+		DSS.classNames.add(DSS.activeDSSClass.getName());  // add to classname list
+	}
 
 }

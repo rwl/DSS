@@ -1,59 +1,149 @@
 package com.ncond.dss.delivery;
 
-public interface Winding {
+import com.ncond.dss.common.DSS;
 
-	int getConnection();
+public class Winding {
 
-	void setConnection(int connection);
+	private int connection;
+	private double kVLL,
+		VBase,
+		kVA,
+		puTap,
+		Rpu,  // on transformer MVABase (1st winding)
+		RNeut,
+		XNeut;
+	private double Y_PPM;  // Anti float reactance adder
 
-	double getKVLL();
+	/* Tap changer data */
+	private double tapIncrement,
+		minTap,
+		maxTap;
+	private int numTaps;
 
-	void setKVLL(double kvll);
+	public Winding() {
+		super();
+		connection = 0;
+		kVLL       = 12.47;
+		VBase      = kVLL / DSS.SQRT3 * 1000.0;
+		kVA        = 1000.0;
+		puTap      = 1.0;
+		Rpu        = 0.002;
+		RNeut      = -1.0;  // default to open - make user specify connection
+		XNeut      = 0.0;
+		computeAntiFloatAdder(1.0e-6, kVA / 3.0 / 1000.0);  //  1 PPM
 
-	double getVBase();
+		tapIncrement = 0.00625;
+		numTaps      = 32;
+		maxTap       = 1.10;
+		minTap       = 0.90;
+	}
 
-	void setVBase(double vBase);
+	public void computeAntiFloatAdder(double PPM_Factor, double VABase1ph) {
+		Y_PPM = -PPM_Factor / (Math.pow(VBase, 2) / VABase1ph);
+	}
 
-	double getKVA();
+	public int getConnection() {
+		return connection;
+	}
 
-	void setKVA(double kva);
+	public void setConnection(int conn) {
+		connection = conn;
+	}
 
-	double getPUTap();
+	public double getKVLL() {
+		return kVLL;
+	}
 
-	void setPUTap(double puTap);
+	public void setKVLL(double kvll) {
+		kVLL = kvll;
+	}
 
-	double getRpu();
+	public double getVBase() {
+		return VBase;
+	}
 
-	void setRpu(double rpu);
+	public void setVBase(double base) {
+		VBase = base;
+	}
 
-	double getRNeut();
+	public double getKVA() {
+		return kVA;
+	}
 
-	void setRNeut(double rneut);
+	public void setKVA(double kva) {
+		kVA = kva;
+	}
 
-	double getXNeut();
+	public double getPUTap() {
+		return puTap;
+	}
 
-	void setXNeut(double xneut);
+	public void setPUTap(double tap) {
+		puTap = tap;
+	}
 
-	double getY_PPM();
+	public double getRpu() {
+		return Rpu;
+	}
 
-	void setY_PPM(double y_PPM);
+	public void setRpu(double rpu) {
+		Rpu = rpu;
+	}
 
-	double getTapIncrement();
+	public double getRNeut() {
+		return RNeut;
+	}
 
-	void setTapIncrement(double tapIncrement);
+	public void setRNeut(double rneut) {
+		RNeut = rneut;
+	}
 
-	double getMinTap();
+	public double getXNeut() {
+		return XNeut;
+	}
 
-	void setMinTap(double minTap);
+	public void setXNeut(double xneut) {
+		XNeut = xneut;
+	}
 
-	double getMaxTap();
+	public double getY_PPM() {
+		return Y_PPM;
+	}
 
-	void setMaxTap(double maxTap);
+	public void setY_PPM(double y) {
+		Y_PPM = y;
+	}
 
-	int getNumTaps();
+	public double getTapIncrement() {
+		return tapIncrement;
+	}
 
-	void setNumTaps(int numTaps);
-	
-	void computeAntiFloatAdder(double PPM_Factor, double VABase1ph);
+	public void setTapIncrement(double increment) {
+		tapIncrement = increment;
+	}
+
+	public double getMinTap() {
+		return minTap;
+	}
+
+	public void setMinTap(double min) {
+		minTap = min;
+	}
+
+	public double getMaxTap() {
+		return maxTap;
+	}
+
+	public void setMaxTap(double max) {
+		maxTap = max;
+	}
+
+	public int getNumTaps() {
+		return numTaps;
+	}
+
+	public void setNumTaps(int num) {
+		numTaps = num;
+	}
 
 }

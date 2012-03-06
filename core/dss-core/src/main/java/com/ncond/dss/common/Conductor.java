@@ -1,32 +1,65 @@
 package com.ncond.dss.common;
 
-public interface Conductor {
 
-	boolean isClosed();
+public class Conductor {
 
-	/**
-	 * Change this variable to indicate open or closed switch.
-	 */
-	void setClosed(boolean closed);
+	private String TCCName;
+	private double ambientTemp;
+	/** accumulated I2t */
+	private double accumIsqt;
 
-	boolean isFuseBlown();
+	/** Change this variable to indicate open or closed switch. */
+	protected boolean closed;
+	protected boolean fuseBlown;
 
-	void setFuseBlown(boolean fuseBlown);
+	public Conductor() {
+		super();
+		closed = true;
+		fuseBlown = false;
+		accumIsqt = 0.0;
+		TCCName = "";
+	}
 
-	void setAmbient(double value);
+	public void setAmbient(double Value) {
+		ambientTemp = Value;
+	}
 
-	void setTCCName(String value);
+	public void setTCCName(String Value) {
+		TCCName = Value.toLowerCase();
+	}
 
-	String getTCCName();
+	public String getTCCName() {
+		return TCCName;
+	}
 
 	/**
 	 * Computes whether conductor has burned down.
 	 */
-	void calcIsqt(double currentMag);
+	public void calcIsqt(double CurrentMag) {
+		DSS.doSimpleMsg("Need to implement Conductor.calcIsqt", 770);
+	}
 
 	/**
 	 * Restore the conductor and reset the i2t calcs.
 	 */
-	void resetIsqt();
+	public void resetIsqt() {
+		DSS.doSimpleMsg("Need to implement Conductor.resetIsqt", 771);
+	}
+
+	public boolean isClosed() {
+		return closed;
+	}
+
+	public void setClosed(boolean value) {
+		closed = value;
+	}
+
+	public boolean isFuseBlown() {
+		return fuseBlown;
+	}
+
+	public void setFuseBlown(boolean value) {
+		fuseBlown = value;
+	}
 
 }

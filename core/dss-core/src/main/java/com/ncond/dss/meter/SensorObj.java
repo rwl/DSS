@@ -1,88 +1,432 @@
 package com.ncond.dss.meter;
 
+import java.io.OutputStream;
+import java.io.PrintWriter;
+
+import org.apache.commons.math.complex.Complex;
+
+import com.ncond.dss.common.DSS;
+import com.ncond.dss.common.DSSClass;
+import com.ncond.dss.common.Util;
+
 /**
  * Sensor compares voltages and currents. Power quantities are converted to
  * current quantities based on rated kVBase, or actual voltage if voltage
  * measurement specified.
- *
  */
-public interface SensorObj extends MeterElement {
+public class SensorObj extends MeterElement {
 
-	/** Connection code */
-	void setConn(int value);
+	private boolean validSensor;
+	private double[] sensorKW;
+	private double[] sensorKVAr;
+	private double kVBase;  // value specified
+	private double VBase;   // in volts
 
-	int getConn();
+	private int conn;
 
-	void setAction(String value);
+	private boolean VSpecified, ISpecified, PSpecified, QSpecified;
 
-	double getWLSCurrentError();
+	private boolean clearSpecified;
+	private int deltaDirection;
 
-	double getWLSVoltageError();
+	protected double pctError, weight;
 
-	double[] getSensorKW();
+	public SensorObj(DSSClass parClass, String sensorName) {
+		super(parClass);
+		setName(sensorName.toLowerCase());
 
-	double[] getSensorKVAr();
+		setNumPhases(3);  // directly set conds and phases
+		nConds = 3;
+		setNumTerms(1);   // this forces allocation of terminals and conductors in base class
 
-	double getKVBase();
+		sensorKW   = null;
+		sensorKVAr = null;
 
-	int getDeltaDirection();
+		kVBase = 12.47;  // default 3-phase voltage
+		weight = 1.0;
+		pctError = 1.0;
 
-	double getPctError();
+		setConn(0);  // wye
 
-	void setPctError(double pctError);
+		clearSensor();
 
-	double getWeight();
+		objType = parClass.getDSSClassType();  // SENSOR_ELEMENT;
 
-	void setWeight(double weight);
+		initPropertyValues(0);
 
-	void resetIt();
+		//recalcElementData();
+	}
 
-	/** Saves present buffer to file. */
-	void save();
+	public void recalcElementData() {
+
+		validSensor = false;
+		int devIndex = Util.getCktElementIndex(elementName);
+		if (devIndex >= 0) {  // sensored element must already exist
+			meteredElement = DSS.activeCircuit.getCktElements().get(devIndex);
+
+			if (meteredTerminal >= meteredElement.getNumTerms()) {
+				DSS.doErrorMsg("Sensor: \"" + getName() + "\"",
+						"Terminal no. \"" +"\" does not exist.",
+						"Respecify terminal no.", 665);
+			} else {
+				setNumPhases( meteredElement.getNumPhases() );
+				setNumConds( meteredElement.getNumConds() );
+
+				// sets name of i-th terminal's connected bus in Sensor's bus list
+				// this value will be used to set the nodeRef array (see takeSample)
+				setBus(0, meteredElement.getBus(meteredTerminal));
+
+				clearSensor();
+
+				validSensor = true;
+
+				allocateSensorObjArrays();
+				zeroSensorArrays();
+				recalcVbase();
+			}
+		} else {
+			meteredElement = null;   // element not found
+			DSS.doErrorMsg("Sensor: \"" + getName() + "\"", "Circuit Element \""+ elementName + "\" not found.",
+					" Element must be defined previously.", 666);
+		}
+	}
+
+	/**
+	 * Make a positive sequence model.
+	 */
+	public void makePosSequence() {
+		if (meteredElement != null) {
+			setBus(0, meteredElement.getBus(meteredTerminal));
+			setNumPhases( meteredElement.getNumPhases() );
+			setNumConds( meteredElement.getNumConds() );
+			clearSensor();
+			validSensor = true;
+			allocateSensorObjArrays();
+			zeroSensorArrays();
+			recalcVbase();
+		}
+		super.makePosSequence();
+	}
+
+	private void recalcVbase() {
+		switch (conn) {
+		case 0:
+			if (nPhases == 1) {
+				VBase = kVBase * 1000.0;
+			} else {
+				VBase = kVBase * 1000.0 / DSS.SQRT3;
+			}
+			break;
+		case 1:
+			VBase = kVBase * 1000.0;
+			break;
+		}
+	}
+
+	public void calcYPrim() {
+		// leave YPrims as nil and they will be ignored
+	}
+
+	public void resetIt() {
+		clearSensor();
+	}
+
+	/**
+	 * For delta connections or line-line voltages.
+	 */
+	private int rotatePhases(int j) {
+		int result = j + deltaDirection;
+
+		// make sure result is within limits
+		if (nPhases > 2) {
+			// assumes 2 phase delta is open delta
+			if (result >= nPhases)
+				result = 0;
+			if (result < 0)
+				result = nPhases - 1;
+		} else {
+			if (result < 0)
+				result = 2;  // for 2-phase delta, next phase will be 3rd phase
+		}
+
+		return result;
+	}
+
+	public void takeSample() {
+		if ( !(validSensor && isEnabled()) )
+			return;
+
+		meteredElement.getCurrents(calculatedCurrent);
+		computeVTerminal();
+		switch (conn) {
+		case 1:
+			for (int i = 0; i < nPhases; i++)
+				calculatedVoltage[i] = VTerminal[i].subtract( VTerminal[rotatePhases(i)] );
+			break;
+		default:
+			for (int i = 0; i < nPhases; i++)
+				calculatedVoltage[i] = VTerminal[i];
+			break;
+		}
+	}
+
+	public void getCurrents(Complex[] curr) {
+		for (int i = 0; i < nConds; i++)
+			curr[i] = Complex.ZERO;
+	}
+
+	public void getInjCurrents(Complex[] curr) {
+		for (int i = 0; i < nConds; i++)
+			curr[i] = Complex.ZERO;
+	}
+
+	/**
+	 * Return the WLS Error for currents.
+	 * Get square error and weight it.
+	 */
+	public double getWLSCurrentError() {
+		double kVA;
+		int i;
+
+		double result = 0.0;
+
+		/* Convert P and Q specification to currents */
+		if (PSpecified) {  // compute currents assuming vbase
+			if (QSpecified) {
+				for (i = 0; i < nPhases; i++) {
+					kVA = new Complex(sensorKW[i], sensorKVAr[i]).abs();
+					sensorCurrent[i] = kVA * 1000.0 / VBase;
+				}
+			} else {  // no Q just use P
+				for (i = 0; i < nPhases; i++)
+					sensorCurrent[i] = sensorKW[i] * 1000.0 / VBase;
+			}
+			ISpecified = true;  // overrides current specification
+		}
+
+		if (ISpecified)
+			for (i = 0; i < nPhases; i++)
+				result = result + Math.pow(calculatedCurrent[i].getReal(), 2) + Math.pow(calculatedCurrent[i].getImaginary(), 2) - Math.pow(sensorCurrent[i], 2);
+
+		result = result * weight;
+
+		return result;
+	}
+
+	/**
+	 * Get square error and weight it.
+	 */
+	public double getWLSVoltageError() {
+		int i;
+		double result = 0.0;
+
+		if (VSpecified)
+			for (i = 0; i < nPhases; i++)
+				result = result + Math.pow(calculatedVoltage[i].getReal(), 2) + Math.pow(calculatedVoltage[i].getImaginary(), 2) - Math.pow(sensorVoltage[i], 2);
+
+		result = result * weight;
+
+		return result;
+	}
+
+	public void dumpProperties(OutputStream out, boolean complete) {
+		super.dumpProperties(out, complete);
+
+		PrintWriter pw = new PrintWriter(out);
+
+		for (int i = 0; i < getParentClass().getNumProperties(); i++) {
+			pw.println("~ " + getParentClass().getPropertyName(i) +
+				"=" + getPropertyValue(i));
+		}
+
+		if (complete) pw.println();
+
+		pw.close();
+	}
 
 	// FIXME Private method in OpenDSS
-	int limitToPlusMinusOne(int i);
+	public void clearSensor() {
+		VSpecified = false;
+		ISpecified = false;
+		PSpecified = false;
+		QSpecified = false;
+		clearSpecified = false;
+	}
+
+	private void allocateSensorObjArrays() {
+		sensorKW = Util.resizeArray(sensorKW, nPhases);
+		sensorKVAr = Util.resizeArray(sensorKVAr, nPhases);
+		allocateSensorArrays();
+	}
+
+	private void zeroSensorArrays() {
+		for (int i = 0; i < nPhases; i++) {
+			sensorCurrent[i] = 0.0;
+			sensorVoltage[i] = 0.0;
+			sensorKW[i]      = 0.0;
+			sensorKVAr[i]    = 0.0;
+		}
+	}
+
+	public void initPropertyValues(int arrayOffset) {
+		setPropertyValue(0, "");   // 'element';
+		setPropertyValue(1, "1");  // 'terminal';
+		setPropertyValue(2, "12.47");  // 'kVBase';
+		setPropertyValue(3, "No");  // must be set to yes to clear before setting quantities
+		setPropertyValue(4, "[7.2, 7.2, 7.2]");
+		setPropertyValue(5, "[0.0, 0.0, 0.0]");  // currents
+		setPropertyValue(6, "[0.0, 0.0, 0.0]");  // P kW
+		setPropertyValue(7, "[0.0, 0.0, 0.0]");  // Q kvar
+		setPropertyValue(8, "wye");
+		setPropertyValue(9, "1");
+		setPropertyValue(10, "1");  // %Error
+		setPropertyValue(11, "1");  // %Error
+		setPropertyValue(12, "");   // Action
+
+		super.initPropertyValues(Sensor.NumPropsThisClass);
+	}
+
+	public int injCurrents() {
+		throw new UnsupportedOperationException();
+	}
 
 	// FIXME Private method in OpenDSS
-	void clearSensor();
+	public int limitToPlusMinusOne(int i) {
+		if (i >= 0) {
+			return 1;
+		} else {
+			return -1;
+		}
+	}
+
+	/**
+	 * Saves present buffer to file.
+	 */
+	public void save() {
+
+	}
+
+	/**
+	 * Connection code.
+	 */
+	public void setConn(int value) {
+		conn = value;
+		recalcVbase();
+	}
+
+	public void setAction(String value) {
+
+	}
+
+	public int getConn() {
+		return conn;
+	}
+
+	public double[] getSensorKW() {
+		return sensorKW;
+	}
+
+	public double[] getSensorKVAr() {
+		return sensorKVAr;
+	}
+
+	public double getKVBase() {
+		return kVBase;
+	}
+
+	public int getDeltaDirection() {
+		return deltaDirection;
+	}
+
+	public double getPctError() {
+		return pctError;
+	}
+
+	public void setPctError(double pct) {
+		this.pctError = pct;
+	}
+
+	public double getWeight() {
+		return weight;
+	}
+
+	public void setWeight(double w) {
+		weight = w;
+	}
 
 
 	// FIXME Private members in OpenDSS
 
-	boolean isValidSensor();
+	public boolean isValidSensor() {
+		return validSensor;
+	}
 
-	void setValidSensor(boolean validSensor);
+	public void setValidSensor(boolean valid) {
+		validSensor = valid;
+	}
 
-	double getVBase();
+	public double getVBase() {
+		return VBase;
+	}
 
-	void setVBase(double vbase);
+	public void setVBase(double vbase) {
+		VBase = vbase;
+	}
 
-	boolean isVSpecified();
+	public boolean isVSpecified() {
+		return VSpecified;
+	}
 
-	void setVSpecified(boolean vspecified);
+	public void setVSpecified(boolean specified) {
+		VSpecified = specified;
+	}
 
-	boolean isISpecified();
+	public boolean isISpecified() {
+		return ISpecified;
+	}
 
-	void setISpecified(boolean ispecified);
+	public void setISpecified(boolean specified) {
+		ISpecified = specified;
+	}
 
-	boolean isPSpecified();
+	public boolean isPSpecified() {
+		return PSpecified;
+	}
 
-	void setPSpecified(boolean pspecified);
+	public void setPSpecified(boolean specified) {
+		PSpecified = specified;
+	}
 
-	boolean isQSpecified();
+	public boolean isQSpecified() {
+		return QSpecified;
+	}
 
-	void setQSpecified(boolean qspecified);
+	public void setQSpecified(boolean specified) {
+		QSpecified = specified;
+	}
 
-	boolean isClearSpecified();
+	public boolean isClearSpecified() {
+		return clearSpecified;
+	}
 
-	void setClearSpecified(boolean clearSpecified);
+	public void setClearSpecified(boolean clear) {
+		clearSpecified = clear;
+	}
 
-	void setSensorKW(double[] sensorKW);
+	public void setSensorKW(double[] kw) {
+		sensorKW = kw;
+	}
 
-	void setSensorKVAr(double[] sensorKVar);
+	public void setSensorKVAr(double[] kvar) {
+		sensorKVAr = kvar;
+	}
 
-	void setKVBase(double kVBase);
+	public void setKVBase(double base) {
+		this.kVBase = base;
+	}
 
-	void setDeltaDirection(int deltaDirection);
+	public void setDeltaDirection(int direction) {
+		deltaDirection = direction;
+	}
 
 }

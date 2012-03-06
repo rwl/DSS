@@ -1,14 +1,14 @@
 package com.ncond.dss.shared.test;
 
 import com.ncond.dss.shared.PointerList;
-import com.ncond.dss.shared.impl.PointerListImpl;
+import com.ncond.dss.shared.PointerList;
 
 import junit.framework.TestCase;
 
 public class PointerListTest extends TestCase {
 
 	public void testAdd() {
-		PointerList pl = new PointerListImpl();
+		PointerList pl = new PointerList();
 
 		try {
 			pl.add( new Object() );
@@ -20,7 +20,7 @@ public class PointerListTest extends TestCase {
 	public void testSize() {
 		int i, n = 3;
 
-		PointerList pl = new PointerListImpl();
+		PointerList pl = new PointerList();
 
 		for (i = 0; i < n; i++)
 			pl.add( new Object() );
@@ -32,7 +32,7 @@ public class PointerListTest extends TestCase {
 		int i, n = 3;
 		Object first;
 
-		PointerList pl = new PointerListImpl();
+		PointerList pl = new PointerList();
 
 		first = new Object();
 		pl.add(first);
@@ -47,7 +47,7 @@ public class PointerListTest extends TestCase {
 		int i, n = 3;
 		Object next;
 
-		PointerList pl = new PointerListImpl();
+		PointerList pl = new PointerList();
 
 		pl.add(new Object());
 		next = new Object();
@@ -64,7 +64,7 @@ public class PointerListTest extends TestCase {
 		int i, n = 3;
 		Object first, last;
 
-		PointerList pl = new PointerListImpl();
+		PointerList pl = new PointerList();
 
 		first = new Object();
 		pl.add(first);
@@ -85,7 +85,7 @@ public class PointerListTest extends TestCase {
 		int i, n = 3;
 		Object first, last;
 
-		PointerList pl = new PointerListImpl();
+		PointerList pl = new PointerList();
 
 		first = new Object();
 		pl.add(first);
@@ -106,7 +106,7 @@ public class PointerListTest extends TestCase {
 		int i, n = 3;
 		Object first;
 
-		PointerList pl = new PointerListImpl();
+		PointerList pl = new PointerList();
 
 		first = new Object();
 		pl.add(first);
@@ -120,7 +120,7 @@ public class PointerListTest extends TestCase {
 	public void testClear() {
 		int i, n = 3;
 
-		PointerList pl = new PointerListImpl();
+		PointerList pl = new PointerList();
 
 		for (i = 0; i < n; i++)
 			pl.add( new Object() );

@@ -4,81 +4,255 @@ import java.io.PrintStream;
 
 import org.apache.commons.math.complex.Complex;
 
+import com.ncond.dss.common.Circuit;
 import com.ncond.dss.common.CktElement;
+import com.ncond.dss.common.DSS;
+import com.ncond.dss.common.DSSClass;
+import com.ncond.dss.common.DSSClassDefs;
+import com.ncond.dss.common.SolutionObj;
+import com.ncond.dss.conversion.PCElement;
 import com.ncond.dss.general.SpectrumObj;
 import com.ncond.dss.meter.MeterElement;
 
-public interface PCElement extends CktElement {
+public abstract class PCElement extends CktElement {
 
-	String getSpectrum();
+	private boolean ITerminalUpdated;
 
-	void setSpectrum(String spectrum);
+	protected String spectrum;
+	protected SpectrumObj spectrumObj;
+	/** Upline energy meter */
+	private MeterElement meterObj;
+	/** Upline sensor for this element */
+	private MeterElement sensorObj;
 
-	/* Upline Sensor for this element */
-	SpectrumObj getSpectrumObj();
+	private Complex[] injCurrent;
 
-	void setSpectrumObj(SpectrumObj spectrumObj);
+	public PCElement(DSSClass ParClass) {
+		super(ParClass);
+		spectrum = "default";
+		spectrumObj = null;  // have to allocate later because not guaranteed there will be one now
+		sensorObj   = null;
+		meterObj    = null;
+		injCurrent  = null;
+		ITerminalUpdated = false;
 
-	/* Upline EnergyMeter */
-	MeterElement getMeterObj();
+		objType = DSSClassDefs.PC_ELEMENT;
+	}
 
-	void setMeterObj(MeterElement meterObj);
+	/**
+	 * Add injection currents into system currents array.
+	 */
+	public int injCurrents() {
+		SolutionObj sol = DSS.activeCircuit.getSolution();
 
-	MeterElement getSensorObj();
+		for (int i = 0; i < YOrder; i++)
+			sol.setCurrent(nodeRef[i], sol.getCurrent(nodeRef[i]).add( injCurrent[i] ));
 
-	void setSensorObj(MeterElement sensorObj);
+		return 0;
+	}
 
-	Complex[] getInjCurrent();
+	/**
+	 * Get present values of terminal.
+	 */
+	public void getInjCurrents(Complex[] curr) {
+		DSS.doErrorMsg("PCElement.InjCurrents", ("Improper call to getInjCurrents for element: " + getName() + "."),
+			"Called PCElement class virtual function instead of actual.", 640);
+	}
 
-	void setInjCurrent(Complex[] injCurrent);
+	/**
+	 * This is called only if we need to compute the terminal currents from the inj currents.
+	 *
+	 * Such as for harmonic model.
+	 */
+	protected void getTerminalCurrents(Complex[] curr) {
+		if (getITerminalUpdated()) {  // just copy ITerminal unless ITerminal=curr
+			if (curr != getITerminal())
+				for (int i = 0; i < YOrder; i++)
+					curr[i] = getITerminal()[i];
+		} else {
+			YPrim.vMult(curr, getVTerminal());
+			for (int i = 0; i < YOrder; i++)
+				curr[i] = curr[i].add( getInjCurrent()[i].negate() );
+			setITerminalUpdated(true);
+		}
+		ITerminalSolutionCount = DSS.activeCircuit.getSolution().getSolutionCount();
+	}
 
-	void setITerminalUpdated(boolean Value);
+	/**
+	 * Get present values of terminal.
+	 *
+	 * Gets total currents going into a devices terminals.
+	 */
+	public void getCurrents(Complex[] curr) {
+		try {
+			SolutionObj sol = DSS.activeCircuit.getSolution();
 
-	boolean getITerminalUpdated();
+			if (isEnabled()) {
 
-	double getVariable(int i);
+				if ( sol.lastSolutionWasDirect() && (! (sol.isDynamicModel() || sol.isHarmonicModel()) ) ) {
 
-	void setVariable(int i, double value);
+					// take a short cut and get currents from YPrim only
+					// for case where model is entirely in Y matrix
 
-	void zeroInjCurrent();
+					calcYPrimContribution(curr);
 
-	@Override
-	void initPropertyValues(int arrayOffset);
+				} else {
 
-	/** Get present values of terminal */
-	@Override
-	void getCurrents(Complex[] curr);
+					getTerminalCurrents(curr);
+				}
 
-	/** Get present values of terminal */
-	@Override
-	void getInjCurrents(Complex[] curr);
+			} else {  // not enabled
+				for (int i = 0; i < YOrder; i++)
+					curr[i] = Complex.ZERO;
+			}
+		} catch (Exception e) {
+			DSS.doErrorMsg(("getCurrents for element: " + getName() + "."), e.getMessage(),
+					"Inadequate storage allotted for circuit element.", 641);
+		}
+	}
 
-	@Override
-	void computeITerminal();
+	public void calcYPrimContribution(Complex[] curr) {
+		computeVTerminal();
+		// apply these voltages to Yprim
+		YPrim.vMult(curr, VTerminal);
+	}
 
-	@Override
-	int injCurrents();
+	/**
+	 * For harmonics mode
+	 */
+	public void initHarmonics() {
+		// by default do nothing in the base class
+	}
 
-	void calcYPrimContribution(Complex[] curr);
+	public void initPropertyValues(int arrayOffset) {
+		propertyValue[arrayOffset + 1] = spectrum;
 
-	void dumpProperties(PrintStream f, boolean complete);
+		super.initPropertyValues(arrayOffset + 1);
+	}
 
-	/* For harmonics mode */
+	/**
+	 * For dynamics mode and control devices.
+	 */
+	public void initStateVars() {
+		// by default do nothing
+	}
 
-	void initHarmonics();
+	public void integrateStates() {
+		// by default do nothing
+	}
 
-	/* For dynamics mode and control devices */
+	public void getAllVariables(double[] states) {
+		/* Do nothing */
+	}
 
-	void initStateVars();
+	public int numVariables() {
+		return 0;
+	}
 
-	void integrateStates();
+	public String variableName(int i) {
+		/* Do nothing */
+		return "";
+	}
 
-	int numVariables();
+	/**
+	 * Search through variable name list and return index if found.
+	 * Compare up to length of S.
+	 */
+	public int lookupVariable(String s) {
+		int result = -1;   // returns -1 for error not found
+		int testLength = s.length();
+		for (int i = 0; i < numVariables(); i++) {
+			if (variableName(i).substring(0, testLength).equalsIgnoreCase(s)) {
+				result = i;
+				break;
+			}
+		}
+		return result;
+	}
 
-	void getAllVariables(double[] states);
+	public void dumpProperties(PrintStream f, boolean complete) {
+		super.dumpProperties(f, complete);
 
-	String variableName(int i);
+		if (complete) {
+			f.println("! VARIABLES");
+			for (int i = 0; i < numVariables(); i++)
+				f.println("! " + i + ": " + variableName(i) + " = " + String.format("%-.5g", getVariable(i)));
+		}
+	}
 
-	int lookupVariable(String s);
+	public double getVariable(int i) {
+		/* Do nothing here -- up to override function */
+		return -9999.99;
+	}
+
+	public void setVariable(int i, double value) {
+		/* Do nothing */
+	}
+
+	public void computeITerminal() {
+		Circuit ckt = DSS.activeCircuit;
+
+		if (ITerminalSolutionCount != ckt.getSolution().getSolutionCount()) {
+			getCurrents(ITerminal);
+			ITerminalSolutionCount = ckt.getSolution().getSolutionCount();
+		}
+	}
+
+	public void zeroInjCurrent() {
+		for (int i = 0; i < YOrder; i++)
+			injCurrent[i] = Complex.ZERO;
+	}
+
+	public void setITerminalUpdated(boolean value) {
+		ITerminalUpdated = value;
+		if (value)
+			ITerminalSolutionCount = DSS.activeCircuit.getSolution().getSolutionCount();
+	}
+
+	public boolean getITerminalUpdated() {
+		return ITerminalUpdated;
+	}
+
+	public Complex[] getInjCurrent() {
+		return injCurrent;
+	}
+
+	public String getSpectrum() {
+		return spectrum;
+	}
+
+	public void setSpectrum(String value) {
+		spectrum = value;
+	}
+
+	/** Upline sensor for this element */
+	public SpectrumObj getSpectrumObj() {
+		return spectrumObj;
+	}
+
+	public void setSpectrumObj(SpectrumObj spectrum) {
+		spectrumObj = spectrum;
+	}
+
+	/** Upline energy meter */
+	public MeterElement getMeterObj() {
+		return meterObj;
+	}
+
+	public void setMeterObj(MeterElement meter) {
+		meterObj = meter;
+	}
+
+	public MeterElement getSensorObj() {
+		return sensorObj;
+	}
+
+	public void setSensorObj(MeterElement sensor) {
+		sensorObj = sensor;
+	}
+
+	public void setInjCurrent(Complex[] current) {
+		injCurrent = current;
+	}
 
 }

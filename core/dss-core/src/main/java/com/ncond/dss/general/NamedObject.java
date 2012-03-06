@@ -1,29 +1,100 @@
+/**
+ * Copyright (C) 2009 Electric Power Research Institute, Inc.
+ * Copyright (C) 2011 Richard Lincoln
+ *
+ * All rights reserved.
+ */
+
 package com.ncond.dss.general;
 
 import java.util.UUID;
 
-public interface NamedObject {
 
-	String getQualifiedName();
+public class NamedObject {
 
-	String getDisplayName();
+	/**
+	 * Path name, or class name for DSS.
+	 */
+	private String pathName;
 
-	void setDisplayName(String value);
+	/**
+	 * LocalName is unique within a class.
+	 */
+	private String localName;
 
-	void setUUID(UUID value);
+	/**
+	 * For optional display, does not have to be unique.
+	 */
+	private String displayName;
 
-	String getID();
+	private UUID uuid;
 
-	String getCIM_ID();
 
-	String getDSSClassName();
+	public NamedObject(String className) {
+		super();
+		pathName = className;
+		localName = "";
+		displayName = "";
+		uuid = null;
+	}
 
-	void setDSSClassName(String value);
+	public String getDisplayName() {
+		if (this.displayName == "") {
+			return pathName + "_" + localName;
+		} else {
+			return displayName;
+		}
+	}
 
-	String getLocalName();
+	public void setDisplayName(String value) {
+		displayName = value;
+	}
 
-	void setLocalName(String value);
+	public String getQualifiedName() {
+		return pathName + "." + localName;
+	}
 
-	String UUIDToCIMString(UUID uUID);
+	private UUID getUUID() {
+		if (uuid == null)
+			uuid = UUID.randomUUID();
+		return uuid;
+	}
+
+	public void setUUID(UUID value) {
+		//if (pGuid == null) {}
+		uuid = value;
+	}
+
+	public String getID() {
+		return getUUID().toString();
+	}
+
+	public String getCIM_ID() {
+		return UUIDToCIMString(getUUID());
+	}
+
+
+	public String getDSSClassName() {
+		return pathName;
+	}
+
+	public void setDSSClassName(String value) {
+		pathName = value;
+	}
+
+	public String getLocalName() {
+		return localName;
+	}
+
+	public void setLocalName(String value) {
+		localName = value;
+	}
+
+
+	public String UUIDToCIMString(UUID uUID) {
+		String s;
+		s = uUID.toString();
+		return s.substring(1, s.length() - 2);
+	}
 
 }
