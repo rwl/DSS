@@ -47,6 +47,7 @@ public class Fuse extends ControlClass {
 		return result;
 	}
 
+	@Override
 	protected void defineProperties() {
 		numProperties = Fuse.NumPropsThisClass;
 		countProperties();  // get inherited property count
@@ -87,11 +88,13 @@ public class Fuse extends ControlClass {
 		super.defineProperties();  // add defs of inherited properties to bottom of list
 	}
 
+	@Override
 	public int newObject(String objName) {
 		DSS.activeCircuit.setActiveCktElement(new FuseObj(this, objName));
 		return addObjectToList(DSS.activeDSSObject);
 	}
 
+	@Override
 	public int edit() {
 		Parser parser = Parser.getInstance();
 
@@ -170,6 +173,7 @@ public class Fuse extends ControlClass {
 		return result;
 	}
 
+	@Override
 	protected int makeLike(String fuseName) {
 
 		int result = 0;
@@ -206,6 +210,7 @@ public class Fuse extends ControlClass {
 		return result;
 	}
 
+	@Override
 	public int init(int handle) {
 		DSS.doSimpleMsg("Need to implement Fuse.init", -1);
 		return 0;

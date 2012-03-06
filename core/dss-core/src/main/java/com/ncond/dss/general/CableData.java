@@ -13,11 +13,13 @@ public class CableData extends ConductorData {
 		classType = DSSClassDefs.DSS_OBJECT;
 	}
 
+	@Override
 	protected void countProperties() {
 		numProperties = numProperties + numCableClassProps;
 		super.countProperties();
 	}
 
+	@Override
 	protected void defineProperties() {
 		propertyName[activeProperty + 1] = "EpsR";
 		propertyName[activeProperty + 2] = "InsLayer";
@@ -35,6 +37,7 @@ public class CableData extends ConductorData {
 		super.defineProperties();
 	}
 
+	@Override
 	protected int classEdit(DSSObject activeObj, int paramPointer) {
 		Parser parser = Parser.getInstance();
 
@@ -83,11 +86,13 @@ public class CableData extends ConductorData {
 		return result;
 	}
 
+	@Override
 	public int newObject(String objName) {
 		// TODO Auto-generated method stub
 		return 0;
 	}
 
+	@Override
 	protected void classMakeLike(DSSObject otherObj) {
 
 		CableDataObj otherCableData = (CableDataObj) otherObj;
@@ -109,16 +114,19 @@ public class CableData extends ConductorData {
 		return numCableClassProps;
 	}
 
+	@Override
 	public int edit() {
 		DSS.doSimpleMsg("Need to implement CableData.edit", -1);
 		return 0;
 	}
 
+	@Override
 	public int init(int handle) {
 		DSS.doSimpleMsg("Need to implement CableData.init", -1);
 		return 0;
 	}
 
+	@Override
 	protected int makeLike(String objName) {
 		DSS.doSimpleMsg("Need to implement CableData.makeLike", -1);
 		return 0;

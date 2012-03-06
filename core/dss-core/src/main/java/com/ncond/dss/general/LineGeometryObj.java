@@ -82,6 +82,7 @@ public class LineGeometryObj extends DSSObject {
 		initPropertyValues(0);
 	}
 
+	@Override
 	public void dumpProperties(OutputStream out, boolean complete) {
 		super.dumpProperties(out, complete);
 
@@ -105,6 +106,7 @@ public class LineGeometryObj extends DSSObject {
 		pw.close();
 	}
 
+	@Override
 	public String getPropertyValue(int index) {
 		String result;
 
@@ -211,6 +213,7 @@ public class LineGeometryObj extends DSSObject {
 		return result;
 	}
 
+	@Override
 	public void initPropertyValues(int arrayOffset) {
 
 		setPropertyValue(0, "3");
@@ -230,6 +233,7 @@ public class LineGeometryObj extends DSSObject {
 	 * Overrides standard saveWrite.
 	 * LineGeometry structure not conducive to standard means of saving.
 	 */
+	@Override
 	public void saveWrite(PrintWriter f) {
 		/* Write only properties that were explicitly set in the
 		 * final order they were actually set.

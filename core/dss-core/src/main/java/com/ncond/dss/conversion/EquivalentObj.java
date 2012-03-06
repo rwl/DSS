@@ -2,17 +2,15 @@ package com.ncond.dss.conversion;
 
 import java.io.PrintStream;
 
+import org.apache.commons.math.complex.Complex;
+
 import com.ncond.dss.common.DSS;
-import com.ncond.dss.common.DSSClass;
 import com.ncond.dss.common.DSSClass;
 import com.ncond.dss.common.SolutionObj;
 import com.ncond.dss.common.Util;
 import com.ncond.dss.parser.Parser;
 import com.ncond.dss.shared.CMatrix;
-import com.ncond.dss.shared.CMatrix;
 import com.ncond.dss.shared.ComplexUtil;
-
-import org.apache.commons.math.complex.Complex;
 
 public class EquivalentObj extends PCElement {
 
@@ -72,6 +70,7 @@ public class EquivalentObj extends PCElement {
 		return b * nTerms + a;
 	}
 
+	@Override
 	public void recalcElementData() {
 		Complex Zs, Zm;
 //		int i, j, ii, jj;
@@ -123,6 +122,7 @@ public class EquivalentObj extends PCElement {
 		needToDoRecalc = false;
 	}
 
+	@Override
 	public void calcYPrim() {
 		Complex value;
 		int i, j;
@@ -218,11 +218,13 @@ public class EquivalentObj extends PCElement {
 		}
 	}
 
+	@Override
 	public int injCurrents() {
 		getInjCurrents(getInjCurrent());
 		return super.injCurrents();  // add into system array
 	}
 
+	@Override
 	public void getCurrents(Complex[] curr) {
 		int i;
 		SolutionObj sol;
@@ -245,6 +247,7 @@ public class EquivalentObj extends PCElement {
 		}
 	}
 
+	@Override
 	public void getInjCurrents(Complex[] curr) {
 
 		getVterminalForSource();
@@ -253,6 +256,7 @@ public class EquivalentObj extends PCElement {
 		setITerminalUpdated(false);
 	}
 
+	@Override
 	public void dumpProperties(PrintStream f, boolean complete) {
 		int i, j;
 		Complex c;
@@ -278,6 +282,7 @@ public class EquivalentObj extends PCElement {
 		}
 	}
 
+	@Override
 	public void initPropertyValues(int arrayOffset) {
 
 		setPropertyValue(0, "1");
@@ -295,6 +300,7 @@ public class EquivalentObj extends PCElement {
 		super.initPropertyValues(Equivalent.NumPropsThisClass - 1);
 	}
 
+	@Override
 	public String getPropertyValue(int index) {
 		switch (index) {
 		case 0:
@@ -307,6 +313,7 @@ public class EquivalentObj extends PCElement {
 	/**
 	 * Make a positive sequence model.
 	 */
+	@Override
 	public void makePosSequence() {
 		String s;
 

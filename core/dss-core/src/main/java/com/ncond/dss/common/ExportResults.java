@@ -9,7 +9,6 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.UUID;
 
-
 import org.apache.commons.math.complex.Complex;
 
 import com.ncond.dss.conversion.Generator;
@@ -25,7 +24,6 @@ import com.ncond.dss.general.XfmrCode;
 import com.ncond.dss.meter.EnergyMeter;
 import com.ncond.dss.meter.EnergyMeterObj;
 import com.ncond.dss.meter.SensorObj;
-import com.ncond.dss.shared.CMatrix;
 import com.ncond.dss.shared.CMatrix;
 import com.ncond.dss.shared.ComplexUtil;
 import com.ncond.dss.shared.MathUtil;

@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.UUID;
 
-
 import org.apache.commons.math.complex.Complex;
 
 import com.ncond.dss.control.RegControlObj;
@@ -22,8 +21,6 @@ import com.ncond.dss.meter.EnergyMeter;
 import com.ncond.dss.meter.EnergyMeterObj;
 import com.ncond.dss.parser.Parser;
 import com.ncond.dss.shared.CMatrix;
-import com.ncond.dss.shared.CMatrix;
-import com.ncond.dss.shared.CktTree;
 import com.ncond.dss.shared.CktTree;
 import com.ncond.dss.shared.CktTreeNode;
 import com.ncond.dss.shared.ComplexUtil;

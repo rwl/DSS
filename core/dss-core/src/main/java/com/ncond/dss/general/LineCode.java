@@ -36,6 +36,7 @@ public class LineCode extends DSSClass {
 		commandList.setAbbrevAllowed(true);
 	}
 
+	@Override
 	protected void defineProperties() {
 		numProperties = LineCode.NumPropsThisClass;
 		countProperties();  // get inherited property count
@@ -116,6 +117,7 @@ public class LineCode extends DSSClass {
 	/**
 	 * Create a new object of this class and add to list.
 	 */
+	@Override
 	public int newObject(String objName) {
 		DSS.activeDSSObject = new LineCodeObj(this, objName);
 		return addObjectToList(DSS.activeDSSObject);
@@ -204,6 +206,7 @@ public class LineCode extends DSSClass {
 	/**
 	 * Uses global parser.
 	 */
+	@Override
 	public int edit() {
 		int result = 0;
 
@@ -335,6 +338,7 @@ public class LineCode extends DSSClass {
 		return result;
 	}
 
+	@Override
 	protected int makeLike(String lineName) {
 		int result = 0;
 
@@ -381,6 +385,7 @@ public class LineCode extends DSSClass {
 		return result;
 	}
 
+	@Override
 	public int init(int handle) {
 		DSS.doSimpleMsg("Need to implement LineCode.init()", -1);
 		return 0;

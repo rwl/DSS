@@ -34,6 +34,7 @@ public class TShape extends DSSClass {
 		commandList.setAbbrevAllowed(true);
 	}
 
+	@Override
 	protected void defineProperties() {
 		final String CRLF = DSS.CRLF;
 
@@ -99,6 +100,7 @@ public class TShape extends DSSClass {
 		super.defineProperties();  // add defs of inherited properties to bottom of list
 	}
 
+	@Override
 	public int newObject(String objName) {
 		DSS.activeDSSObject = new TShapeObj(this, objName);
 		return addObjectToList(DSS.activeDSSObject);
@@ -107,6 +109,7 @@ public class TShape extends DSSClass {
 	/**
 	 * Uses global parser.
 	 */
+	@Override
 	public int edit() {
 		Parser parser = Parser.getInstance();
 
@@ -216,6 +219,7 @@ public class TShape extends DSSClass {
 		return result;
 	}
 
+	@Override
 	public DSSObject find(String objName) {
 		if (objName.length() == 0 || objName.equalsIgnoreCase("none")) {
 			return null;
@@ -224,6 +228,7 @@ public class TShape extends DSSClass {
 		}
 	}
 
+	@Override
 	protected int makeLike(String shapeName) {
 		TShapeObj otherTShape;
 		int i, result = 0;
@@ -255,6 +260,7 @@ public class TShape extends DSSClass {
 		return result;
 	}
 
+	@Override
 	public int init(int handle) {
 		DSS.doSimpleMsg("Need to implement TShape.init", -1);
 		return 0;

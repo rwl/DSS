@@ -24,6 +24,7 @@ public class TSData extends CableData {
 		commandList.setAbbrevAllowed(true);
 	}
 
+	@Override
 	protected void defineProperties() {
 		numProperties = TSData.NumPropsThisClass;
 		countProperties();  // get inherited property count
@@ -41,6 +42,7 @@ public class TSData extends CableData {
 		super.defineProperties();  // add defs of inherited properties to bottom of list
 	}
 
+	@Override
 	public int newObject(String objName) {
 		DSS.activeDSSObject = new TSDataObj(this, objName);
 		return addObjectToList(DSS.activeDSSObject);
@@ -49,6 +51,7 @@ public class TSData extends CableData {
 	/**
 	 * Uses global parser.
 	 */
+	@Override
 	public int edit() {
 		Parser parser = Parser.getInstance();
 
@@ -114,6 +117,7 @@ public class TSData extends CableData {
 		return result;
 	}
 
+	@Override
 	protected int makeLike(String TSName) {
 		int result = 0;
 		TSDataObj otherData = (TSDataObj) find(TSName);
@@ -133,6 +137,7 @@ public class TSData extends CableData {
 		return result;
 	}
 
+	@Override
 	public int init(int handle) {
 		DSS.doSimpleMsg("Need to implement TSData.init", -1);
 		return 0;

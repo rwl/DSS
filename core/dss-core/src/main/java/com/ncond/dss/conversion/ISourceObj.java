@@ -3,7 +3,6 @@ package com.ncond.dss.conversion;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 
-
 import org.apache.commons.math.complex.Complex;
 
 import com.ncond.dss.common.DSS;
@@ -58,6 +57,7 @@ public class ISourceObj extends PCElement {
 		recalcElementData();
 	}
 
+	@Override
 	public void recalcElementData() {
 		setSpectrumObj( (com.ncond.dss.general.SpectrumObj) DSS.spectrumClass.find(getSpectrum()) );
 
@@ -67,6 +67,7 @@ public class ISourceObj extends PCElement {
 		setInjCurrent( Util.resizeArray(getInjCurrent(), YOrder) );
 	}
 
+	@Override
 	public void calcYPrim() {
 
 		// build only YPrim_Series
@@ -121,6 +122,7 @@ public class ISourceObj extends PCElement {
 	/**
 	 * Sum currents directly into solution array.
 	 */
+	@Override
 	public int injCurrents() {
 		getInjCurrents(getInjCurrent());
 
@@ -130,6 +132,7 @@ public class ISourceObj extends PCElement {
 	/**
 	 * Total currents into a device.
 	 */
+	@Override
 	public void getCurrents(Complex[] curr) {
 		try {
 			getInjCurrents(complexBuffer);  // get present value of inj currents
@@ -145,6 +148,7 @@ public class ISourceObj extends PCElement {
 	/**
 	 * Fill up an array of injection currents.
 	 */
+	@Override
 	public void getInjCurrents(Complex[] curr) {
 		SolutionObj sol = DSS.activeCircuit.getSolution();
 
@@ -182,6 +186,7 @@ public class ISourceObj extends PCElement {
 		}
 	}
 
+	@Override
 	public void dumpProperties(OutputStream out, boolean complete) {
 		super.dumpProperties(out, complete);
 
@@ -198,6 +203,7 @@ public class ISourceObj extends PCElement {
 		pw.close();
 	}
 
+	@Override
 	public void initPropertyValues(int arrayOffset) {
 
 		setPropertyValue(0, getBus(0));
@@ -214,6 +220,7 @@ public class ISourceObj extends PCElement {
 	/**
 	 * Make a positive sequence model.
 	 */
+	@Override
 	public void makePosSequence() {
 		if (getNumPhases() > 1) {
 			Parser.getInstance().setCmdString("phases=1");

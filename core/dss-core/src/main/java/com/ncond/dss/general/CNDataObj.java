@@ -25,6 +25,7 @@ public class CNDataObj extends CableDataObj {
 		initPropertyValues(0);
 	}
 
+	@Override
 	public void dumpProperties(OutputStream out, boolean complete) {
 		super.dumpProperties(out, complete);
 
@@ -51,6 +52,7 @@ public class CNDataObj extends CableDataObj {
 		pw.close();
 	}
 
+	@Override
 	public void initPropertyValues(int arrayOffset) {
 		setPropertyValue(0, "2");
 		setPropertyValue(1, "-1");

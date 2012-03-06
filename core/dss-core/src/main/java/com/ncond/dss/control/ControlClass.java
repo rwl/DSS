@@ -15,17 +15,20 @@ public abstract class ControlClass extends CktElementClass {
 		classType = DSSClassDefs.CTRL_ELEMENT;
 	}
 
+	@Override
 	protected void countProperties() {
 		numProperties = numProperties + numControlClassProps;
 		super.countProperties();
 	}
 
+	@Override
 	protected void defineProperties() {
 		activeProperty = activeProperty + numControlClassProps;
 
 		super.defineProperties();
 	}
 
+	@Override
 	protected int classEdit(DSSObject activeControlObj, int paramPointer) {
 
 		if (paramPointer >= 0)

@@ -8,7 +8,6 @@ import org.apache.commons.math.complex.Complex;
 import com.ncond.dss.common.DSS;
 import com.ncond.dss.common.DSSClass;
 import com.ncond.dss.shared.CMatrix;
-import com.ncond.dss.shared.CMatrix;
 import com.ncond.dss.shared.LineUnits;
 
 /**
@@ -163,6 +162,7 @@ public class LineCodeObj extends DSSObject {
 		Zinv.invert();
 	}
 
+	@Override
 	public void dumpProperties(OutputStream out, boolean Complete) {
 		super.dumpProperties(out, Complete);
 
@@ -208,6 +208,7 @@ public class LineCodeObj extends DSSObject {
 		pw.close();
 	}
 
+	@Override
 	public String getPropertyValue(int index) {
 		switch (index) {
 		case 0:
@@ -249,6 +250,7 @@ public class LineCodeObj extends DSSObject {
 		}
 	}
 
+	@Override
 	public void initPropertyValues(int ArrayOffset) {
 
 		setPropertyValue(0, "3");      // "nphases"

@@ -67,6 +67,7 @@ public class GrowthShape extends DSSClass {
 		commandList.setAbbrevAllowed(false);
 	}
 
+	@Override
 	protected void defineProperties() {
 		final String CRLF = DSS.CRLF;
 
@@ -103,12 +104,14 @@ public class GrowthShape extends DSSClass {
 		super.defineProperties();  // add defs of inherited properties to bottom of list
 	}
 
+	@Override
 	public int newObject(String objName) {
 		// create a new object of this class and add to list.
 		DSS.activeDSSObject = new GrowthShapeObj(this, objName);
 		return addObjectToList(DSS.activeDSSObject);
 	}
 
+	@Override
 	public int edit() {
 		double[] YrBuffer;
 		int result = 0;
@@ -177,6 +180,7 @@ public class GrowthShape extends DSSClass {
 		return result;
 	}
 
+	@Override
 	protected int makeLike(String shapeName) {
 		GrowthShapeObj pShape, otherGrowthShape;
 
@@ -200,6 +204,7 @@ public class GrowthShape extends DSSClass {
 		return 0;
 	}
 
+	@Override
 	public int init(int handle) {
 		DSS.doSimpleMsg("Need to implement GrowthShape.init()", -1);
 		return 0;

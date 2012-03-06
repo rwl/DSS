@@ -74,6 +74,7 @@ public class PVSystem extends PCClass {
 		commandList.setAbbrevAllowed(true);
 	}
 
+	@Override
 	protected void defineProperties() {
 		final String CRLF = DSS.CRLF;
 
@@ -209,6 +210,7 @@ public class PVSystem extends PCClass {
 				"Default value is \"default\", which is defined when the DSS starts.";
 	}
 
+	@Override
 	public int newObject(String objName) {
 
 		DSS.activeCircuit.setActiveCktElement(new PVSystemObj(this, objName));
@@ -302,6 +304,7 @@ public class PVSystem extends PCClass {
 	/**
 	 * Uses global parser.
 	 */
+	@Override
 	public int edit() {
 		Parser parser = Parser.getInstance();
 
@@ -500,6 +503,7 @@ public class PVSystem extends PCClass {
 		return result;
 	}
 
+	@Override
 	protected int makeLike(String otherPVSystemObjName) {
 		int result = 0;
 		/* See if we can find this line name in the present collection */
@@ -573,6 +577,7 @@ public class PVSystem extends PCClass {
 		return result;
 	}
 
+	@Override
 	public int init(int handle) {
 		PVSystemObj p;
 

@@ -13,7 +13,6 @@ import org.apache.commons.math.complex.Complex;
 import com.ncond.dss.common.Bus;
 import com.ncond.dss.common.Circuit;
 import com.ncond.dss.common.CktElement;
-import com.ncond.dss.common.CktElement;
 import com.ncond.dss.common.DSS;
 import com.ncond.dss.common.DSSClass;
 import com.ncond.dss.common.DSSClassDefs;
@@ -26,7 +25,6 @@ import com.ncond.dss.conversion.PCElement;
 import com.ncond.dss.delivery.LineObj;
 import com.ncond.dss.delivery.PDElement;
 import com.ncond.dss.parser.Parser;
-import com.ncond.dss.shared.CktTree;
 import com.ncond.dss.shared.CktTree;
 import com.ncond.dss.shared.CktTreeNode;
 import com.ncond.dss.shared.LineUnits;
@@ -250,6 +248,7 @@ public class EnergyMeterObj extends MeterElement {
 		return j * 3 + i;
 	}
 
+	@Override
 	public void recalcElementData() {
 
 		int devIndex = Util.getCktElementIndex(elementName);
@@ -294,6 +293,7 @@ public class EnergyMeterObj extends MeterElement {
 	/**
 	 * Make a positive sequence model.
 	 */
+	@Override
 	public void makePosSequence() {
 
 		if (meteredElement != null) {
@@ -339,6 +339,7 @@ public class EnergyMeterObj extends MeterElement {
 		// Removed .. open in solution loop See Solve Yearly if (EnergyMeterClass.SaveDemandInterval) openDemandIntervalFile();
 	}
 
+	@Override
 	public void calcYPrim() {
 		// YPrim is all zeros; just leave as nil so it is ignored
 	}
@@ -394,6 +395,7 @@ public class EnergyMeterObj extends MeterElement {
 	 * Update registers from metered zone.
 	 * Assumes one time period has taken place since last sample.
 	 */
+	@Override
 	public void takeSample() {
 		int i, j;
 
@@ -1001,11 +1003,13 @@ public class EnergyMeterObj extends MeterElement {
 		assignVoltBaseRegisterNames();
 	}
 
+	@Override
 	public void getCurrents(Complex[] curr) {
 		for (int i = 0; i < nConds; i++)
 			curr[i] = Complex.ZERO;
 	}
 
+	@Override
 	public void getInjCurrents(Complex[] curr) {
 		for (int i = 0; i < nConds; i++)
 			curr[i] = Complex.ZERO;
@@ -1058,6 +1062,7 @@ public class EnergyMeterObj extends MeterElement {
 		}
 	}
 
+	@Override
 	public void dumpProperties(OutputStream out, boolean complete) {
 		int i;
 		PDElement pd;
@@ -1182,6 +1187,7 @@ public class EnergyMeterObj extends MeterElement {
 		}
 	}
 
+	@Override
 	public void initPropertyValues(int arrayOffset) {
 		String s;
 
@@ -1396,6 +1402,7 @@ public class EnergyMeterObj extends MeterElement {
 		}
 	}
 
+	@Override
 	public String getPropertyValue(int index) {
 		String result;
 
@@ -1838,6 +1845,7 @@ public class EnergyMeterObj extends MeterElement {
 		return totalsMask[idx];
 	}
 
+	@Override
 	public int injCurrents() {
 		throw new UnsupportedOperationException();
 	}

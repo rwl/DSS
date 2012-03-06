@@ -15,7 +15,6 @@ import com.ncond.dss.common.Util;
 import com.ncond.dss.conversion.GeneratorObj;
 import com.ncond.dss.general.XYCurveObj;
 import com.ncond.dss.shared.PointerList;
-import com.ncond.dss.shared.PointerList;
 
 public class VVControlObj extends ControlElem {
 
@@ -97,6 +96,7 @@ public class VVControlObj extends ControlElem {
 		pendingChange = NONE;
 	}
 
+	@Override
 	public void recalcElementData() {
 		int devIndex;
 
@@ -143,6 +143,7 @@ public class VVControlObj extends ControlElem {
 	/**
 	 * Make a positive sequence model
 	 */
+	@Override
 	public void makePosSequence() {
 		if (getControlledElement() != null) {
 			setEnabled( getControlledElement().isEnabled() );
@@ -163,6 +164,7 @@ public class VVControlObj extends ControlElem {
 	/**
 	 * Always zero for a VVCControl
 	 */
+	@Override
 	public void calcYPrim() {
 		// Yprim is zeroed when created.  Leave it as is.
 	}
@@ -170,6 +172,7 @@ public class VVControlObj extends ControlElem {
 	/**
 	 * Get present value of terminal curr
 	 */
+	@Override
 	public void getCurrents(Complex[] curr) {
 		for (int i = 0; i < nConds; i++)
 			curr[i] = Complex.ZERO;
@@ -178,11 +181,13 @@ public class VVControlObj extends ControlElem {
 	/**
 	 * Returns injextion currents
 	 */
+	@Override
 	public void getInjCurrents(Complex[] curr) {
 		for (int i = 0; i < nConds; i++)
 			curr[i] = Complex.ZERO;
 	}
 
+	@Override
 	public void dumpProperties(OutputStream out, boolean complete) {
 		super.dumpProperties(out, complete);
 
@@ -199,6 +204,7 @@ public class VVControlObj extends ControlElem {
 	/**
 	 * Do the action that is pending from last sample
 	 */
+	@Override
 	public void doPendingAction(final int code, int proxyHdl) {
 		int i;
 		double deltaQ, QHeadroom, QDesiredPU, QNeeded, PPresentGenOutput,
@@ -273,6 +279,7 @@ public class VVControlObj extends ControlElem {
 	/**
 	 * Sample control quantities and set action times in control queue
 	 */
+	@Override
 	public void sample() {
 		int i;
 		double baseKV, VAvg;
@@ -322,6 +329,7 @@ public class VVControlObj extends ControlElem {
 		}
 	}
 
+	@Override
 	public void initPropertyValues(int arrayOffset) {
 
 		setPropertyValue(0, "");     // "element";
@@ -347,6 +355,7 @@ public class VVControlObj extends ControlElem {
 		super.initPropertyValues(VVControl.NumPropsThisClass - 1);
 	}
 
+	@Override
 	public String getPropertyValue(int index) {
 
 		switch (index) {
@@ -489,6 +498,7 @@ public class VVControlObj extends ControlElem {
 	/**
 	 * Reset to initial defined state
 	 */
+	@Override
 	public void reset() {
 		pendingChange = NONE;
 	}
@@ -498,6 +508,7 @@ public class VVControlObj extends ControlElem {
 		setDblTraceParameter(Value);
 	}
 
+	@Override
 	public int injCurrents() {
 		throw new UnsupportedOperationException();
 	}

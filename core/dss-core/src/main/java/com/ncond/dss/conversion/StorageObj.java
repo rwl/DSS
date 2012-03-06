@@ -5,7 +5,6 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.PrintStream;
 
-
 import org.apache.commons.math.complex.Complex;
 
 import com.ncond.dss.common.Circuit;
@@ -15,7 +14,6 @@ import com.ncond.dss.common.SolutionObj;
 import com.ncond.dss.common.Util;
 import com.ncond.dss.general.LoadShapeObj;
 import com.ncond.dss.parser.Parser;
-import com.ncond.dss.shared.CMatrix;
 import com.ncond.dss.shared.CMatrix;
 import com.ncond.dss.shared.ComplexUtil;
 import com.ncond.dss.shared.Dynamics;
@@ -241,6 +239,7 @@ public class StorageObj extends PCElement {
 	/**
 	 * Define default values for the properties.
 	 */
+	@Override
 	public void initPropertyValues(int arrayOffset) {
 
 		setPropertyValue(0, "3");         // "phases";
@@ -303,6 +302,7 @@ public class StorageObj extends PCElement {
 		}
 	}
 
+	@Override
 	public String getPropertyValue(int index) {
 
 		switch (index) {
@@ -593,6 +593,7 @@ public class StorageObj extends PCElement {
 		}
 	}
 
+	@Override
 	public void recalcElementData() {
 
 		VBase95  = VMinPU * VBase;
@@ -824,6 +825,7 @@ public class StorageObj extends PCElement {
 		}
 	}
 
+	@Override
 	public void calcYPrim() {
 		// build only shunt Yprim
 		// build a dummy Yprim_Series so that calcV does not fail
@@ -1140,6 +1142,7 @@ public class StorageObj extends PCElement {
 	/**
 	 * Compute total currents.
 	 */
+	@Override
 	protected void getTerminalCurrents(Complex[] Curr) {
 		SolutionObj sol = DSS.activeCircuit.getSolution();
 
@@ -1153,6 +1156,7 @@ public class StorageObj extends PCElement {
 			writeTraceRecord("TotalCurrent");
 	}
 
+	@Override
 	public int injCurrents() {
 		SolutionObj sol = DSS.activeCircuit.getSolution();
 
@@ -1174,6 +1178,7 @@ public class StorageObj extends PCElement {
 	 *
 	 * Do not call setNominalLoad, as that may change the load values.
 	 */
+	@Override
 	public void getInjCurrents(Complex[] curr) {
 
 		calcInjCurrentArray();  // difference between currents in YPrim and total current
@@ -1331,6 +1336,7 @@ public class StorageObj extends PCElement {
 		return kVArOut;  // QNominalPerPhase * 0.001 * nPhases;
 	}
 
+	@Override
 	public void dumpProperties(PrintStream f, boolean complete) {
 		int i, idx;
 
@@ -1355,6 +1361,7 @@ public class StorageObj extends PCElement {
 	/**
 	 * This method makes a Thevenin equivalent behis the reactance spec'd in %R and %X
 	 */
+	@Override
 	public void initHarmonics() {
 		Complex e, Va = null;
 
@@ -1391,6 +1398,7 @@ public class StorageObj extends PCElement {
 	/**
 	 * For going into dynamics mode.
 	 */
+	@Override
 	public void initStateVars() {
 		setYPrimInvalid(true);  // force rebuild of YPrims
 	}
@@ -1398,6 +1406,7 @@ public class StorageObj extends PCElement {
 	/**
 	 * Dynamics mode integration routine.
 	 */
+	@Override
 	public void integrateStates() {
 
 	}
@@ -1427,6 +1436,7 @@ public class StorageObj extends PCElement {
 	/**
 	 * Return variables one at a time.
 	 */
+	@Override
 	public double getVariable(int i) {
 		int n, k;
 
@@ -1468,6 +1478,7 @@ public class StorageObj extends PCElement {
 		return -9999.99;
 	}
 
+	@Override
 	public void setVariable(int i, double value) {
 		int n, k;
 
@@ -1509,6 +1520,7 @@ public class StorageObj extends PCElement {
 		}
 	}
 
+	@Override
 	public void getAllVariables(double[] states) {
 		for (int i = 0; i < Storage.NumStorageVariables; i++)
 			states[i] = getVariable(i);
@@ -1517,6 +1529,7 @@ public class StorageObj extends PCElement {
 			userModel.getAllVars(states[Storage.NumStorageVariables - 1]);
 	}
 
+	@Override
 	public int numVariables() {
 		int result = Storage.NumStorageVariables;
 		if (userModel.exists())
@@ -1524,6 +1537,7 @@ public class StorageObj extends PCElement {
 		return result;
 	}
 
+	@Override
 	public String variableName(int i) {
 		final int buffSize = 255;
 
@@ -1567,6 +1581,7 @@ public class StorageObj extends PCElement {
 	/**
 	 * Make a positive sequence model.
 	 */
+	@Override
 	public void makePosSequence() {
 		String s;
 		double V;
@@ -1591,6 +1606,7 @@ public class StorageObj extends PCElement {
 		super.makePosSequence();  // write out other properties
 	}
 
+	@Override
 	public void setConductorClosed(int index, boolean value) {
 		super.setConductorClosed(index, value);
 

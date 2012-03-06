@@ -31,6 +31,7 @@ public class Transformer extends PDClass {
 		commandList.setAbbrevAllowed(true);  // allow property list abbreviations
 	}
 
+	@Override
 	protected void defineProperties() {
 
 		numProperties = Transformer.NumPropsThisClass;
@@ -160,6 +161,7 @@ public class Transformer extends PDClass {
 		super.defineProperties();  // add defs of inherited properties to bottom of list
 	}
 
+	@Override
 	public int newObject(String objName) {
 		DSS.activeCircuit.setActiveCktElement(new TransformerObj(this, objName));
 		return addObjectToList(DSS.activeDSSObject);
@@ -168,6 +170,7 @@ public class Transformer extends PDClass {
 	/**
 	 * A Transf defaults to 3-phases, 2-windings (both wye).
 	 */
+	@Override
 	public int edit() {
 		// continue parsing cmdline presently in parser
 		Parser parser = Parser.getInstance();
@@ -551,6 +554,7 @@ public class Transformer extends PDClass {
 		}
 	}
 
+	@Override
 	protected int makeLike(String transfName) {
 		int i;
 
@@ -624,6 +628,7 @@ public class Transformer extends PDClass {
 		return result;
 	}
 
+	@Override
 	public int init(int handle) {
 		DSS.doSimpleMsg("Need to implement Transformer.init()", -1);
 		return 0;

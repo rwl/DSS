@@ -3,15 +3,14 @@ package com.ncond.dss.delivery;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 
+import org.apache.commons.math.complex.Complex;
+
 import com.ncond.dss.common.DSS;
 import com.ncond.dss.common.DSSClass;
 import com.ncond.dss.common.Util;
 import com.ncond.dss.parser.Parser;
 import com.ncond.dss.shared.CMatrix;
-import com.ncond.dss.shared.CMatrix;
 import com.ncond.dss.shared.ComplexUtil;
-
-import org.apache.commons.math.complex.Complex;
 
 /**
  * Basic capacitor
@@ -126,6 +125,7 @@ public class CapacitorObj extends PDElement {
 		initPropertyValues(0);
 	}
 
+	@Override
 	public void recalcElementData() {
 		double kVArPerPhase, phaseKV, w;
 		int i;
@@ -201,6 +201,7 @@ public class CapacitorObj extends PDElement {
 		setEmergAmps(getNormAmps() * 1.8 / 1.35);
 	}
 
+	@Override
 	public void calcYPrim() {
 		int i;
 		CMatrix YPrimTemp, YPrimWork;
@@ -246,6 +247,7 @@ public class CapacitorObj extends PDElement {
 		setYPrimInvalid(false);
 	}
 
+	@Override
 	public void dumpProperties(OutputStream out, boolean complete) {
 		super.dumpProperties(out, complete);
 
@@ -294,6 +296,7 @@ public class CapacitorObj extends PDElement {
 		pw.close();
 	}
 
+	@Override
 	public void initPropertyValues(int arrayOffset) {
 		setPropertyValue(0, getBus(0));
 		setPropertyValue(1, getBus(1));
@@ -320,6 +323,7 @@ public class CapacitorObj extends PDElement {
 		clearPropSeqArray();
 	}
 
+	@Override
 	public void makePosSequence() {
 		String s = null;
 		double kVArPerPhase, phaseKV, Cs, Cm;
@@ -629,6 +633,7 @@ public class CapacitorObj extends PDElement {
 		}
 	}
 
+	@Override
 	public String getPropertyValue(int index) {
 		double[] temp;
 
@@ -695,10 +700,12 @@ public class CapacitorObj extends PDElement {
 		}
 	}
 
+	@Override
 	public void getInjCurrents(Complex[] curr) {
 		throw new UnsupportedOperationException();
 	}
 
+	@Override
 	public int injCurrents() {
 		throw new UnsupportedOperationException();
 	}

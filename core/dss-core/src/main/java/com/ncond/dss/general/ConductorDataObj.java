@@ -49,6 +49,7 @@ public class ConductorDataObj extends DSSObject {
 		emergAmps = -1.0;
 	}
 
+	@Override
 	public void dumpProperties(OutputStream out, boolean complete) {
 		super.dumpProperties(out, complete);
 
@@ -92,6 +93,7 @@ public class ConductorDataObj extends DSSObject {
 		}
 	}
 
+	@Override
 	public void initPropertyValues(int arrayOffset) {
 		setPropertyValue(arrayOffset + 1, "-1");
 		setPropertyValue(arrayOffset + 2, "-1");

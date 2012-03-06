@@ -1,12 +1,9 @@
 package com.ncond.dss.common;
 
 import com.ncond.dss.general.DSSObject;
-import com.ncond.dss.general.DSSObject;
 import com.ncond.dss.parser.Parser;
 import com.ncond.dss.shared.CommandList;
 import com.ncond.dss.shared.HashList;
-import com.ncond.dss.shared.HashList;
-import com.ncond.dss.shared.PointerList;
 import com.ncond.dss.shared.PointerList;
 
 /**

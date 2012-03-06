@@ -8,8 +8,6 @@ import java.util.List;
 
 import org.apache.commons.math.complex.Complex;
 
-import com.ncond.dss.common.AutoAdd;
-import com.ncond.dss.common.Bus;
 import com.ncond.dss.common.Bus.NodeBus;
 import com.ncond.dss.control.CapControlObj;
 import com.ncond.dss.control.ControlElem;
@@ -35,9 +33,7 @@ import com.ncond.dss.meter.MonitorObj;
 import com.ncond.dss.meter.SensorObj;
 import com.ncond.dss.parser.Parser;
 import com.ncond.dss.shared.CktTree;
-import com.ncond.dss.shared.CktTree;
 import com.ncond.dss.shared.Dynamics;
-import com.ncond.dss.shared.HashList;
 import com.ncond.dss.shared.HashList;
 
 public class Circuit extends NamedObject {

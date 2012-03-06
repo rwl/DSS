@@ -1,8 +1,8 @@
 package com.ncond.dss.executive;
 
-import java.io.File;
-import java.io.DataInputStream;
 import java.io.BufferedReader;
+import java.io.DataInputStream;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -13,23 +13,20 @@ import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-
 import org.apache.commons.math.complex.Complex;
 
 import com.ncond.dss.common.Bus;
 import com.ncond.dss.common.Circuit;
-import com.ncond.dss.common.CktElement;
+import com.ncond.dss.common.Circuit.ReductionStrategyType;
 import com.ncond.dss.common.CktElement;
 import com.ncond.dss.common.DSS;
 import com.ncond.dss.common.DSSClass;
-import com.ncond.dss.common.DSSClass;
 import com.ncond.dss.common.DSSClassDefs;
-import com.ncond.dss.common.SolutionAlgs;
 import com.ncond.dss.common.Solution;
+import com.ncond.dss.common.SolutionAlgs;
 import com.ncond.dss.common.SolutionObj;
 import com.ncond.dss.common.SolverError;
 import com.ncond.dss.common.Util;
-import com.ncond.dss.common.Circuit.ReductionStrategyType;
 import com.ncond.dss.conversion.GeneratorObj;
 import com.ncond.dss.conversion.Load;
 import com.ncond.dss.conversion.LoadObj;
@@ -38,7 +35,6 @@ import com.ncond.dss.delivery.CapacitorObj;
 import com.ncond.dss.delivery.Line;
 import com.ncond.dss.delivery.LineObj;
 import com.ncond.dss.delivery.ReactorObj;
-import com.ncond.dss.general.DSSObject;
 import com.ncond.dss.general.DSSObject;
 import com.ncond.dss.general.LoadShape;
 import com.ncond.dss.general.LoadShapeObj;
@@ -49,8 +45,6 @@ import com.ncond.dss.meter.SensorObj;
 import com.ncond.dss.parser.Parser;
 import com.ncond.dss.plot.DSSGraphDeclarations;
 import com.ncond.dss.plot.DSSPlot;
-import com.ncond.dss.plot.DSSPlot;
-import com.ncond.dss.shared.CommandList;
 import com.ncond.dss.shared.CommandList;
 import com.ncond.dss.shared.ComplexUtil;
 import com.ncond.dss.shared.Dynamics;

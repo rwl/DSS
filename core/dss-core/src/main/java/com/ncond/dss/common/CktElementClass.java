@@ -12,6 +12,7 @@ abstract public class CktElementClass extends DSSClass {
 		numCktElemClassProps = 2;
 	}
 
+	@Override
 	protected int classEdit(DSSObject activeCktElemObj, int paramPointer) {
 		Parser parser = Parser.getInstance();
 
@@ -44,6 +45,7 @@ abstract public class CktElementClass extends DSSClass {
 	/**
 	 * Add no. of intrinsic properties.
 	 */
+	@Override
 	protected void countProperties() {
 		numProperties = numProperties + numCktElemClassProps;
 		super.countProperties();
@@ -52,6 +54,7 @@ abstract public class CktElementClass extends DSSClass {
 	/**
 	 * Define the properties for the base power delivery element class.
 	 */
+	@Override
 	protected void defineProperties() {
 		propertyName[activeProperty + 1] = "basefreq";
 		propertyName[activeProperty + 2] = "enabled";

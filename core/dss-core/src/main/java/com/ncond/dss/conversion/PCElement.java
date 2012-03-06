@@ -10,7 +10,6 @@ import com.ncond.dss.common.DSS;
 import com.ncond.dss.common.DSSClass;
 import com.ncond.dss.common.DSSClassDefs;
 import com.ncond.dss.common.SolutionObj;
-import com.ncond.dss.conversion.PCElement;
 import com.ncond.dss.general.SpectrumObj;
 import com.ncond.dss.meter.MeterElement;
 
@@ -42,6 +41,7 @@ public abstract class PCElement extends CktElement {
 	/**
 	 * Add injection currents into system currents array.
 	 */
+	@Override
 	public int injCurrents() {
 		SolutionObj sol = DSS.activeCircuit.getSolution();
 
@@ -54,6 +54,7 @@ public abstract class PCElement extends CktElement {
 	/**
 	 * Get present values of terminal.
 	 */
+	@Override
 	public void getInjCurrents(Complex[] curr) {
 		DSS.doErrorMsg("PCElement.InjCurrents", ("Improper call to getInjCurrents for element: " + getName() + "."),
 			"Called PCElement class virtual function instead of actual.", 640);
@@ -83,6 +84,7 @@ public abstract class PCElement extends CktElement {
 	 *
 	 * Gets total currents going into a devices terminals.
 	 */
+	@Override
 	public void getCurrents(Complex[] curr) {
 		try {
 			SolutionObj sol = DSS.activeCircuit.getSolution();
@@ -124,6 +126,7 @@ public abstract class PCElement extends CktElement {
 		// by default do nothing in the base class
 	}
 
+	@Override
 	public void initPropertyValues(int arrayOffset) {
 		propertyValue[arrayOffset + 1] = spectrum;
 
@@ -189,6 +192,7 @@ public abstract class PCElement extends CktElement {
 		/* Do nothing */
 	}
 
+	@Override
 	public void computeITerminal() {
 		Circuit ckt = DSS.activeCircuit;
 

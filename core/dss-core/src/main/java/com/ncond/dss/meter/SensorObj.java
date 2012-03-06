@@ -57,6 +57,7 @@ public class SensorObj extends MeterElement {
 		//recalcElementData();
 	}
 
+	@Override
 	public void recalcElementData() {
 
 		validSensor = false;
@@ -94,6 +95,7 @@ public class SensorObj extends MeterElement {
 	/**
 	 * Make a positive sequence model.
 	 */
+	@Override
 	public void makePosSequence() {
 		if (meteredElement != null) {
 			setBus(0, meteredElement.getBus(meteredTerminal));
@@ -123,6 +125,7 @@ public class SensorObj extends MeterElement {
 		}
 	}
 
+	@Override
 	public void calcYPrim() {
 		// leave YPrims as nil and they will be ignored
 	}
@@ -152,6 +155,7 @@ public class SensorObj extends MeterElement {
 		return result;
 	}
 
+	@Override
 	public void takeSample() {
 		if ( !(validSensor && isEnabled()) )
 			return;
@@ -170,11 +174,13 @@ public class SensorObj extends MeterElement {
 		}
 	}
 
+	@Override
 	public void getCurrents(Complex[] curr) {
 		for (int i = 0; i < nConds; i++)
 			curr[i] = Complex.ZERO;
 	}
 
+	@Override
 	public void getInjCurrents(Complex[] curr) {
 		for (int i = 0; i < nConds; i++)
 			curr[i] = Complex.ZERO;
@@ -229,6 +235,7 @@ public class SensorObj extends MeterElement {
 		return result;
 	}
 
+	@Override
 	public void dumpProperties(OutputStream out, boolean complete) {
 		super.dumpProperties(out, complete);
 
@@ -268,6 +275,7 @@ public class SensorObj extends MeterElement {
 		}
 	}
 
+	@Override
 	public void initPropertyValues(int arrayOffset) {
 		setPropertyValue(0, "");   // 'element';
 		setPropertyValue(1, "1");  // 'terminal';
@@ -286,6 +294,7 @@ public class SensorObj extends MeterElement {
 		super.initPropertyValues(Sensor.NumPropsThisClass);
 	}
 
+	@Override
 	public int injCurrents() {
 		throw new UnsupportedOperationException();
 	}

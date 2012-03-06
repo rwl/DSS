@@ -15,16 +15,19 @@ abstract public class MeterClass extends CktElementClass {
 		classType = DSSClassDefs.METER_ELEMENT;
 	}
 
+	@Override
 	protected void countProperties() {
 		numProperties = numProperties + numMeterClassProps;
 		super.countProperties();
 	}
 
+	@Override
 	protected void defineProperties() {
 		activeProperty = activeProperty + numMeterClassProps;
 		super.defineProperties();
 	}
 
+	@Override
 	protected int classEdit(DSSObject activeMeterObj, int paramPointer) {
 		if (paramPointer >= 0)
 			super.classEdit(activeMeterObj, paramPointer - numMeterClassProps);

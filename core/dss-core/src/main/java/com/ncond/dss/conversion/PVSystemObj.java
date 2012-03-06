@@ -6,7 +6,6 @@ import java.io.FileWriter;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 
-
 import org.apache.commons.math.complex.Complex;
 
 import com.ncond.dss.common.Circuit;
@@ -18,7 +17,6 @@ import com.ncond.dss.general.LoadShapeObj;
 import com.ncond.dss.general.TShapeObj;
 import com.ncond.dss.general.XYCurveObj;
 import com.ncond.dss.parser.Parser;
-import com.ncond.dss.shared.CMatrix;
 import com.ncond.dss.shared.CMatrix;
 import com.ncond.dss.shared.ComplexUtil;
 import com.ncond.dss.shared.Dynamics;
@@ -217,6 +215,7 @@ public class PVSystemObj extends PCElement {
 		recalcElementData();
 	}
 
+	@Override
 	public void initPropertyValues(int arrayOffset) {
 		setPropertyValue(0, "3");         // "phases";
 		setPropertyValue(1, getBus(0));   // "bus1";
@@ -257,6 +256,7 @@ public class PVSystemObj extends PCElement {
 		super.initPropertyValues(PVSystem.NumPropsThisClass);
 	}
 
+	@Override
 	public String getPropertyValue(int index) {
 		switch (index) {
 		case PVSystem.KV         : return String.format("%.6g", kVPVSystemBase);
@@ -461,6 +461,7 @@ public class PVSystemObj extends PCElement {
 		}
 	}
 
+	@Override
 	public void recalcElementData() {
 
 		VBase95 = VMinPU * VBase;
@@ -645,6 +646,7 @@ public class PVSystemObj extends PCElement {
 		panelKW = irradiance * shapeFactor.getReal() * Pmpp * tempFactor;
 	}
 
+	@Override
 	public void calcYPrim() {
 		// build only shunt Yprim
 		// build a dummy Yprim Series so that calcV does not fail
@@ -941,6 +943,7 @@ public class PVSystemObj extends PCElement {
 	/**
 	 * Compute total currents.
 	 */
+	@Override
 	public void getTerminalCurrents(Complex[] curr) {
 		SolutionObj sol = DSS.activeCircuit.getSolution();
 
@@ -954,6 +957,7 @@ public class PVSystemObj extends PCElement {
 			writeTraceRecord("TotalCurrent");
 	}
 
+	@Override
 	public int injCurrents() {
 		SolutionObj sol = DSS.activeCircuit.getSolution();
 
@@ -975,6 +979,7 @@ public class PVSystemObj extends PCElement {
 	 *
 	 * Do not call setNominal, as that may change the load values.
 	 */
+	@Override
 	public void getInjCurrents(Complex[] curr) {
 
 		calcInjCurrentArray();  // difference between currents in YPrim and total current
@@ -1074,6 +1079,7 @@ public class PVSystemObj extends PCElement {
 		return QNominalPerPhase * 0.001 * nPhases;
 	}
 
+	@Override
 	public void dumpProperties(OutputStream out, boolean complete) {
 		int i, idx;
 
@@ -1101,6 +1107,7 @@ public class PVSystemObj extends PCElement {
 	/**
 	 * This routine makes a Thevenin equivalent behis the reactance spec'd in %R and %X.
 	 */
+	@Override
 	public void initHarmonics() {
 		Complex e, Va = null;
 
@@ -1132,6 +1139,7 @@ public class PVSystemObj extends PCElement {
 	/**
 	 * For going into dynamics mode
 	 */
+	@Override
 	public void initStateVars() {
 		setYPrimInvalid(true);  // force rebuild of YPrims
 	}
@@ -1139,6 +1147,7 @@ public class PVSystemObj extends PCElement {
 	/**
 	 * Dynamics mode integration routine
 	 */
+	@Override
 	public void integrateStates() {
 
 	}
@@ -1146,6 +1155,7 @@ public class PVSystemObj extends PCElement {
 	/**
 	 * Return variables one at a time
 	 */
+	@Override
 	public double getVariable(int i) {
 		int n, k;
 
@@ -1174,6 +1184,7 @@ public class PVSystemObj extends PCElement {
 		return -9999.0;
 	}
 
+	@Override
 	public void setVariable(int i, double value) {
 		int n, k;
 
@@ -1206,6 +1217,7 @@ public class PVSystemObj extends PCElement {
 		}
 	}
 
+	@Override
 	public void getAllVariables(double[] states) {
 		for (int i = 0; i < PVSystem.NumPVSystemVariables; i++)
 			states[i] = getVariable(i);
@@ -1214,6 +1226,7 @@ public class PVSystemObj extends PCElement {
 			userModel.getAllVars(states[PVSystem.NumPVSystemVariables]);
 	}
 
+	@Override
 	public int numVariables() {
 		int result = PVSystem.NumPVSystemVariables;
 		if (userModel.exists())
@@ -1221,6 +1234,7 @@ public class PVSystemObj extends PCElement {
 		return result;
 	}
 
+	@Override
 	public String variableName(int i) {
 		final int buffSize = 255;
 
@@ -1258,6 +1272,7 @@ public class PVSystemObj extends PCElement {
 	/**
 	 * Make a positive sequence model
 	 */
+	@Override
 	public void makePosSequence() {
 		String s;
 		double V;
@@ -1282,6 +1297,7 @@ public class PVSystemObj extends PCElement {
 		super.makePosSequence();  // write out other properties
 	}
 
+	@Override
 	public void setConductorClosed(int index, boolean value) {
 		// just turn PVSystem element on or off
 		if (value) {

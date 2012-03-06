@@ -159,6 +159,7 @@ public class TCC_CurveObj extends DSSObject {
 		}
 	}
 
+	@Override
 	public void dumpProperties(OutputStream out, boolean complete) {
 		super.dumpProperties(out, complete);
 
@@ -170,6 +171,7 @@ public class TCC_CurveObj extends DSSObject {
 		pw.close();
 	}
 
+	@Override
 	public String getPropertyValue(int index) {
 		int i;
 		String result;
@@ -212,6 +214,7 @@ public class TCC_CurveObj extends DSSObject {
 		return result;
 	}
 
+	@Override
 	public void initPropertyValues(int arrayOffset) {
 		setPropertyValue(0, "0");  // number of points to expect
 		setPropertyValue(1, "");   // vector of multiplier values

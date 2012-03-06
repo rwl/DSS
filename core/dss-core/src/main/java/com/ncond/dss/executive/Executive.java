@@ -60,6 +60,7 @@ public class Executive {
 		return DSSExecutiveHolder.INSTANCE;
 	}
 
+	@Override
 	protected void finalize() throws Throwable {
 		DSS.writeDSS_Registry();
 

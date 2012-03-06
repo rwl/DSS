@@ -566,6 +566,7 @@ abstract public class CktElement extends DSSObject {
 		}
 	}
 
+	@Override
 	public void dumpProperties(OutputStream out, boolean complete) {
 		int i, j;
 
@@ -715,6 +716,7 @@ abstract public class CktElement extends DSSObject {
 		}
 	}
 
+	@Override
 	public void initPropertyValues(int arrayOffset) {
 		setPropertyValue(arrayOffset + 1, String.format("%g", baseFrequency));  // base freq
 		setPropertyValue(arrayOffset + 2, "true");  // enabled
@@ -724,6 +726,7 @@ abstract public class CktElement extends DSSObject {
 		super.initPropertyValues(arrayOffset + 2);
 	}
 
+	@Override
 	public String getPropertyValue(int index) {
 		String val;
 		if (index == enabledProperty) {

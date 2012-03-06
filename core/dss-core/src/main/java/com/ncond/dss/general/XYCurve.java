@@ -37,6 +37,7 @@ public class XYCurve extends DSSClass {
 		commandList.setAbbrevAllowed(true);
 	}
 
+	@Override
 	protected void defineProperties() {
 		final String CRLF = DSS.CRLF;
 
@@ -90,6 +91,7 @@ public class XYCurve extends DSSClass {
 		super.defineProperties();  // add defs of inherited properties to bottom of list
 	}
 
+	@Override
 	public int newObject(String objName) {
 		DSS.activeDSSObject = new XYCurveObj(this, objName);
 		return addObjectToList(DSS.activeDSSObject);
@@ -98,6 +100,7 @@ public class XYCurve extends DSSClass {
 	/**
 	 * Uses global parser.
 	 */
+	@Override
 	public int edit() {
 		Parser parser = Parser.getInstance();
 
@@ -300,6 +303,7 @@ public class XYCurve extends DSSClass {
 		throw new UnsupportedOperationException();
 	}
 
+	@Override
 	protected int makeLike(String curveName) {
 		int i, result = 0;
 
@@ -324,6 +328,7 @@ public class XYCurve extends DSSClass {
 		return result;
 	}
 
+	@Override
 	public int init(int handle) {
 		DSS.doSimpleMsg("Need to implement XYcurve.init", -1);
 		return 0;
@@ -332,6 +337,7 @@ public class XYCurve extends DSSClass {
 	/**
 	 * Find an obj of this class by name.
 	 */
+	@Override
 	public DSSObject find(String objName) {
 		if (objName.length() == 0 || objName.equalsIgnoreCase("none")) {
 			return null;

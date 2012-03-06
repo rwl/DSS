@@ -293,6 +293,7 @@ public class LoadShapeObj extends DSSObject {
 		}
 	}
 
+	@Override
 	public void dumpProperties(OutputStream out, boolean complete) {
 		super.dumpProperties(out, complete);
 
@@ -317,6 +318,7 @@ public class LoadShapeObj extends DSSObject {
 		pw.close();
 	}
 
+	@Override
 	public String getPropertyValue(int index) {
 		String result;
 
@@ -401,6 +403,7 @@ public class LoadShapeObj extends DSSObject {
 		return result;
 	}
 
+	@Override
 	public void initPropertyValues(int arrayOffset) {
 
 		setPropertyValue(0, "0");  // number of points to expect

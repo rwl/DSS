@@ -32,6 +32,7 @@ public class LineSpacingObj extends DSSObject {
 		initPropertyValues(0);
 	}
 
+	@Override
 	public void dumpProperties(OutputStream out, boolean complete) {
 		super.dumpProperties(out, complete);
 
@@ -53,6 +54,7 @@ public class LineSpacingObj extends DSSObject {
 		return r + "]";
 	}
 
+	@Override
 	public String getPropertyValue(int index) {
 		switch (index) {
 		case 2:
@@ -75,6 +77,7 @@ public class LineSpacingObj extends DSSObject {
 		return i < nConds ? Y[i] : 0.0;
 	}
 
+	@Override
 	public void initPropertyValues(int arrayOffset) {
 		setPropertyValue(0, "3");
 		setPropertyValue(1, "3");

@@ -124,6 +124,7 @@ public class XYCurveObj extends DSSObject {
 		}
 	}
 
+	@Override
 	public void dumpProperties(OutputStream out, boolean complete) {
 		super.dumpProperties(out, complete);
 
@@ -147,6 +148,7 @@ public class XYCurveObj extends DSSObject {
 		}
 	}
 
+	@Override
 	public String getPropertyValue(int index) {
 		String result;
 
@@ -265,6 +267,7 @@ public class XYCurveObj extends DSSObject {
 		return result;
 	}
 
+	@Override
 	public void initPropertyValues(int arrayOffset) {
 
 		setPropertyValue(0, "0");  // number of points to expect

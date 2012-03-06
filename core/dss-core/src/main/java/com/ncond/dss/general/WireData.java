@@ -24,6 +24,7 @@ public class WireData extends ConductorData {
 		commandList.setAbbrevAllowed(true);
 	}
 
+	@Override
 	protected void defineProperties() {
 		numProperties = WireData.NumPropsThisClass;
 		countProperties();   // get inherited property count
@@ -33,12 +34,14 @@ public class WireData extends ConductorData {
 		super.defineProperties();  // add defs of inherited properties to bottom of list
 	}
 
+	@Override
 	public int newObject(String objName) {
 
 		DSS.activeDSSObject = new WireDataObj(this, objName);
 		return addObjectToList(DSS.activeDSSObject);
 	}
 
+	@Override
 	public int edit() {
 		int result = 0;
 		// continue parsing with contents of parser
@@ -79,6 +82,7 @@ public class WireData extends ConductorData {
 		return result;
 	}
 
+	@Override
 	protected int makeLike(String name) {
 		int result = 0;
 		/* See if we can find this line code in the present collection */
@@ -98,6 +102,7 @@ public class WireData extends ConductorData {
 		return result;
 	}
 
+	@Override
 	public int init(int handle) {
 		DSS.doSimpleMsg("Need to implement WireData.init()", -1);
 		return 0;

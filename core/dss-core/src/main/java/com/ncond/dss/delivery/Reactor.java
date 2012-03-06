@@ -27,6 +27,7 @@ public class Reactor extends PDClass {
 		commandList.setAbbrevAllowed(true);
 	}
 
+	@Override
 	protected void defineProperties() {
 
 		numProperties = Reactor.NumPropsThisClass;
@@ -72,6 +73,7 @@ public class Reactor extends PDClass {
 		super.defineProperties();  // add defs of inherited properties to bottom of list
 	}
 
+	@Override
 	public int newObject(String objName) {
 		DSS.activeCircuit.setActiveCktElement(new ReactorObj(this, objName));
 		return addObjectToList(DSS.activeDSSObject);
@@ -163,6 +165,7 @@ public class Reactor extends PDClass {
 		ar.setShunt(true);
 	}
 
+	@Override
 	public int edit() {
 		Parser parser = Parser.getInstance();
 
@@ -280,6 +283,7 @@ public class Reactor extends PDClass {
 		return result;
 	}
 
+	@Override
 	protected int makeLike(String reactorName) {
 
 		int i, result = 0;
@@ -337,6 +341,7 @@ public class Reactor extends PDClass {
 		return result;
 	}
 
+	@Override
 	public int init(int handle) {
 		DSS.doSimpleMsg("Need to implement Reactor.init()", -1);
 		return 0;

@@ -11,7 +11,6 @@ import com.ncond.dss.general.LoadShapeObj;
 import com.ncond.dss.general.PriceShapeObj;
 import com.ncond.dss.parser.Parser;
 import com.ncond.dss.shared.CommandList;
-import com.ncond.dss.shared.CommandList;
 
 public class ExecOptions {
 

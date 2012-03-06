@@ -16,6 +16,7 @@ abstract public class PDClass extends CktElementClass {
 		classType = DSSClassDefs.PD_ELEMENT;
 	}
 
+	@Override
 	protected void countProperties() {
 		numProperties = numProperties + numPDClassProps;
 		super.countProperties();
@@ -24,6 +25,7 @@ abstract public class PDClass extends CktElementClass {
 	/**
 	 * Define the properties for the base power delivery element class.
 	 */
+	@Override
 	protected void defineProperties() {
 		propertyName[activeProperty + 1] = "normamps";
 		propertyName[activeProperty + 2] = "emergamps";
@@ -42,6 +44,7 @@ abstract public class PDClass extends CktElementClass {
 		super.defineProperties();
 	}
 
+	@Override
 	protected int classEdit(DSSObject activePDObj, int paramPointer) {
 		// continue parsing with contents of parser
 		Parser parser = Parser.getInstance();
@@ -73,6 +76,7 @@ abstract public class PDClass extends CktElementClass {
 		return 0;
 	}
 
+	@Override
 	protected void classMakeLike(DSSObject otherObj) {
 		PDElement otherPDObj = (PDElement) otherObj;
 		PDElement PDElem = (PDElement) DSS.activeDSSObject;

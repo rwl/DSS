@@ -3,7 +3,6 @@ package com.ncond.dss.conversion;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 
-
 import org.apache.commons.math.complex.Complex;
 
 import com.ncond.dss.common.Circuit;
@@ -14,7 +13,6 @@ import com.ncond.dss.common.Util;
 import com.ncond.dss.general.GrowthShapeObj;
 import com.ncond.dss.general.LoadShapeObj;
 import com.ncond.dss.parser.Parser;
-import com.ncond.dss.shared.CMatrix;
 import com.ncond.dss.shared.CMatrix;
 import com.ncond.dss.shared.ComplexUtil;
 import com.ncond.dss.shared.Dynamics;
@@ -456,6 +454,7 @@ public class LoadObj extends PCElement {
 		}
 	}
 
+	@Override
 	public void recalcElementData() {
 		VBase95  = VMinPU * VBase;
 		VBase105 = VMaxPU * VBase;
@@ -593,6 +592,7 @@ public class LoadObj extends PCElement {
 	 * If doing an analysis that requires the load to be modeled as an impedance
 	 * then put all in.
 	 */
+	@Override
 	public void calcYPrim() {
 
 		// build only YPrim shunt for a load then copy to YPrim
@@ -1089,6 +1089,7 @@ public class LoadObj extends PCElement {
 	/**
 	 * Always return total terminal currents in the curr array
 	 */
+	@Override
 	protected void getTerminalCurrents(Complex[] Curr) {
 		SolutionObj sol = DSS.activeCircuit.getSolution();
 
@@ -1101,6 +1102,7 @@ public class LoadObj extends PCElement {
 	/**
 	 * Get the injection currents and add them directly into the currents array.
 	 */
+	@Override
 	public int injCurrents() {
 		SolutionObj sol = DSS.activeCircuit.getSolution();
 
@@ -1119,6 +1121,7 @@ public class LoadObj extends PCElement {
 	 * Gets the injection currents for the last solution performed.
 	 * Do not call setNominalLoad, as that may change the load values.
 	 */
+	@Override
 	public void getInjCurrents(Complex[] curr) {
 		try {
 			if (isEnabled()) {
@@ -1237,6 +1240,7 @@ public class LoadObj extends PCElement {
 		return false;
 	}
 
+	@Override
 	public void dumpProperties(OutputStream out, boolean complete) {
 		int j;
 
@@ -1358,6 +1362,7 @@ public class LoadObj extends PCElement {
 	/**
 	 * Get the present terminal currents and store for harmonics base reference.
 	 */
+	@Override
 	public void initHarmonics() {
 		Complex[] currents;
 
@@ -1380,6 +1385,7 @@ public class LoadObj extends PCElement {
 		currents = null;
 	}
 
+	@Override
 	public void initPropertyValues(int arrayOffset) {
 
 		setPropertyValue(0, "3");        // "phases";
@@ -1422,6 +1428,7 @@ public class LoadObj extends PCElement {
 	/**
 	 * Make a positive sequence model.
 	 */
+	@Override
 	public void makePosSequence() {
 		double V;
 
@@ -1449,6 +1456,7 @@ public class LoadObj extends PCElement {
 		super.makePosSequence();
 	}
 
+	@Override
 	public String getPropertyValue(int index) {
 		switch (index) {
 		case 1:

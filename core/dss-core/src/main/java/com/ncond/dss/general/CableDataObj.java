@@ -25,6 +25,7 @@ public class CableDataObj extends ConductorDataObj {
 		diaCable = -1.0;
 	}
 
+	@Override
 	public void dumpProperties(OutputStream out, boolean complete) {
 		super.dumpProperties(out, complete);
 
@@ -50,6 +51,7 @@ public class CableDataObj extends ConductorDataObj {
 		pw.close();
 	}
 
+	@Override
 	public void initPropertyValues(int arrayOffset) {
 		setPropertyValue(arrayOffset + 1, "2.3");
 		setPropertyValue(arrayOffset + 2, "-1");

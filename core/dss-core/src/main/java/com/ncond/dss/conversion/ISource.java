@@ -26,6 +26,7 @@ public class ISource extends PCClass {
 		commandList.setAbbrevAllowed(true);
 	}
 
+	@Override
 	protected void defineProperties() {
 		numProperties = ISource.NumPropsThisClass;
 
@@ -62,11 +63,13 @@ public class ISource extends PCClass {
 		propertyHelp[ISource.NumPropsThisClass] = "Harmonic spectrum assumed for this source.  Default is \"default\".";
 	}
 
+	@Override
 	public int newObject(String objName) {
 		DSS.activeCircuit.setActiveCktElement(new ISourceObj(this, objName));
 		return addObjectToList(DSS.activeDSSObject);
 	}
 
+	@Override
 	public int edit() {
 		Parser parser = Parser.getInstance();
 
@@ -172,6 +175,7 @@ public class ISource extends PCClass {
 		return result;
 	}
 
+	@Override
 	protected int makeLike(String otherSource) {
 		int result = 0;
 
@@ -208,6 +212,7 @@ public class ISource extends PCClass {
 		return result;
 	}
 
+	@Override
 	public int init(int handle) {
 		DSS.doSimpleMsg("Need to implement ISource.init", -1);
 		return 0;

@@ -98,10 +98,12 @@ public class FeederObj extends PCElement {
 		}
 	}
 
+	@Override
 	public void recalcElementData() {
 
 	}
 
+	@Override
 	public void calcYPrim() {
 		// for now, YPrim is null
 
@@ -131,6 +133,7 @@ public class FeederObj extends PCElement {
 	 * Total currents into a feeder which are equal to the currents into the first element.
 	 * Return the currents in the from terminal of the first element in the sequence list.
 	 */
+	@Override
 	public void getCurrents(Complex[] curr) {
 		for (int i = 0; i < YOrder; i++)
 			curr[i] = Complex.ZERO;  // no contribution if not radial solution
@@ -141,10 +144,12 @@ public class FeederObj extends PCElement {
 	 *
 	 * Only thing this is used for is for getCurrents(). Ignore for Feeder.
 	 */
+	@Override
 	public void getInjCurrents(Complex[] curr) {
 
 	}
 
+	@Override
 	public void dumpProperties(PrintStream f, boolean complete) {
 		super.dumpProperties(f, complete);
 		// do not dump any properties for a Feeder unless debug
@@ -156,6 +161,7 @@ public class FeederObj extends PCElement {
 		}
 	}
 
+	@Override
 	public void initPropertyValues(int arrayOffset) {
 		super.initPropertyValues(Feeder.NumPropsThisClass);
 	}
@@ -163,6 +169,7 @@ public class FeederObj extends PCElement {
 	/**
 	 * Make a positive sequence model.
 	 */
+	@Override
 	public void makePosSequence() {
 		// do nothing
 	}

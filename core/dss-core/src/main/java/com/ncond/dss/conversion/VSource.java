@@ -27,6 +27,7 @@ public class VSource extends PCClass {
 		commandList.setAbbrevAllowed(true);
 	}
 
+	@Override
 	protected void defineProperties() {
 
 		numProperties = VSource.NumPropsThisClass;
@@ -99,6 +100,7 @@ public class VSource extends PCClass {
 		propertyHelp[VSource.NumPropsThisClass] = "Name of harmonic spectrum for this source.  Default is \"defaultvsource\", which is defined when the DSS starts.";
 	}
 
+	@Override
 	public int newObject(String objName) {
 		DSS.activeCircuit.setActiveCktElement(new VSourceObj(this, objName));
 		return addObjectToList(DSS.activeDSSObject);
@@ -130,6 +132,7 @@ public class VSource extends PCClass {
 		avs.setBus(1, s2);  // default setting for bus2
 	}
 
+	@Override
 	public int edit() {
 
 		Parser parser = Parser.getInstance();
@@ -286,6 +289,7 @@ public class VSource extends PCClass {
 		return result;
 	}
 
+	@Override
 	protected int makeLike(String otherSource) {
 
 		int result = 0;
@@ -333,6 +337,7 @@ public class VSource extends PCClass {
 		return result;
 	}
 
+	@Override
 	public int init(int handle) {
 		DSS.doSimpleMsg("Need to implement VSource.init", -1);
 		return 0;

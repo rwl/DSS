@@ -3,9 +3,7 @@ package com.ncond.dss.delivery;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 
-
 import org.apache.commons.math.complex.Complex;
-
 
 import com.ncond.dss.common.Circuit;
 import com.ncond.dss.common.DSS;
@@ -19,11 +17,9 @@ import com.ncond.dss.general.LineCode;
 import com.ncond.dss.general.LineCodeObj;
 import com.ncond.dss.general.LineGeometry;
 import com.ncond.dss.general.LineGeometryObj;
-import com.ncond.dss.general.LineGeometryObj;
 import com.ncond.dss.general.LineSpacingObj;
 import com.ncond.dss.general.WireDataObj;
 import com.ncond.dss.parser.Parser;
-import com.ncond.dss.shared.CMatrix;
 import com.ncond.dss.shared.CMatrix;
 import com.ncond.dss.shared.ComplexUtil;
 import com.ncond.dss.shared.LineUnits;
@@ -201,6 +197,7 @@ public class LineObj extends PDElement {
 		}
 	}
 
+	@Override
 	public void recalcElementData() {
 		Complex Zs, Zm, Ys, Ym, ZTemp;
 		double Yc1, Yc0, oneThird;
@@ -267,6 +264,7 @@ public class LineObj extends PDElement {
 		symComponentsChanged = false;
 	}
 
+	@Override
 	public void calcYPrim() {
 
 		Complex value;
@@ -405,6 +403,7 @@ public class LineObj extends PDElement {
 		setYPrimInvalid(false);
 	}
 
+	@Override
 	public void dumpProperties(OutputStream out, boolean complete) {
 		super.dumpProperties(out, complete);
 
@@ -457,6 +456,7 @@ public class LineObj extends PDElement {
 		pw.close();
 	}
 
+	@Override
 	public String getPropertyValue(int index) {
 		int i, j;
 		double factor;
@@ -632,6 +632,7 @@ public class LineObj extends PDElement {
 		}
 	}
 
+	@Override
 	public void initPropertyValues(int arrayOffset) {
 
 		setPropertyValue(0, getBus(0));
@@ -670,6 +671,7 @@ public class LineObj extends PDElement {
 		clearPropSeqArray();
 	}
 
+	@Override
 	public void makePosSequence() {
 		String s;
 		double C1New, Cs, Cm;
@@ -1188,10 +1190,12 @@ public class LineObj extends PDElement {
 		setPropertyValue(Line.NumPropsThisClass + 4, String.format("%-g", getHrsToRepair()));
 	}
 
+	@Override
 	public void getInjCurrents(Complex[] curr) {
 		throw new UnsupportedOperationException();
 	}
 
+	@Override
 	public int injCurrents() {
 		throw new UnsupportedOperationException();
 	}

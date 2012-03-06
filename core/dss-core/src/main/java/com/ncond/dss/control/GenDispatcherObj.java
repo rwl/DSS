@@ -11,7 +11,6 @@ import com.ncond.dss.common.Circuit;
 import com.ncond.dss.common.CktElement;
 import com.ncond.dss.common.DSS;
 import com.ncond.dss.common.DSSClass;
-import com.ncond.dss.common.DSSClass;
 import com.ncond.dss.common.DSSClassDefs;
 import com.ncond.dss.common.SolutionObj;
 import com.ncond.dss.common.Util;
@@ -68,6 +67,7 @@ public class GenDispatcherObj extends ControlElem {
 		//recalcElementData();
 	}
 
+	@Override
 	public void recalcElementData() {
 
 		/* Check for existence of monitored element */
@@ -91,6 +91,7 @@ public class GenDispatcherObj extends ControlElem {
 	/**
 	 * Make a positive sequence model.
 	 */
+	@Override
 	public void makePosSequence() {
 		if (monitoredElement != null) {
 			setNumPhases(getControlledElement().getNumPhases());
@@ -100,20 +101,24 @@ public class GenDispatcherObj extends ControlElem {
 		super.makePosSequence();
 	}
 
+	@Override
 	public void calcYPrim() {
 		// leave YPrims as null and they will be ignored
 	}
 
+	@Override
 	public void getCurrents(Complex[] curr) {
 		for (int i = 0; i < nConds; i++)
 			curr[i] = Complex.ZERO;
 	}
 
+	@Override
 	public void getInjCurrents(Complex[] curr) {
 		for (int i = 0; i < nConds; i++)
 			curr[i] = Complex.ZERO;
 	}
 
+	@Override
 	public void dumpProperties(OutputStream out, boolean complete) {
 		super.dumpProperties(out, complete);
 
@@ -130,6 +135,7 @@ public class GenDispatcherObj extends ControlElem {
 	/**
 	 * Do the action that is pending from last sample.
 	 */
+	@Override
 	public void doPendingAction(int code, int proxyHdl) {
 		/* Do nothing */
 	}
@@ -137,6 +143,7 @@ public class GenDispatcherObj extends ControlElem {
 	/**
 	 * Sample control quantities and set action times in control queue.
 	 */
+	@Override
 	public void sample() {
 		int i;
 		double PDiff, QDiff;
@@ -200,6 +207,7 @@ public class GenDispatcherObj extends ControlElem {
 		}
 	}
 
+	@Override
 	public void initPropertyValues(int arrayOffset) {
 
 		setPropertyValue(0, "");  // "element";
@@ -258,10 +266,12 @@ public class GenDispatcherObj extends ControlElem {
 	/**
 	 * Reset to initial defined state.
 	 */
+	@Override
 	public void reset() {
 		//super.reset();
 	}
 
+	@Override
 	public int injCurrents() {
 		throw new UnsupportedOperationException();
 	}

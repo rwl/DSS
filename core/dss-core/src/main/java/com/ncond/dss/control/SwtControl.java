@@ -26,6 +26,7 @@ public class SwtControl extends ControlClass {
 		commandList.setAbbrevAllowed(true);
 	}
 
+	@Override
 	protected void defineProperties() {
 
 		numProperties = SwtControl.NumPropsThisClass;
@@ -53,12 +54,14 @@ public class SwtControl extends ControlClass {
 		super.defineProperties();  // add defs of inherited properties to bottom of list
 	}
 
+	@Override
 	public int newObject(String objName) {
 
 		DSS.activeCircuit.setActiveCktElement(new SwtControlObj(this, objName));
 		return addObjectToList(DSS.activeDSSObject);
 	}
 
+	@Override
 	public int edit() {
 		Parser parser = Parser.getInstance();
 
@@ -117,6 +120,7 @@ public class SwtControl extends ControlClass {
 		return result;
 	}
 
+	@Override
 	protected int makeLike(String swtControlName) {
 
 		int result = 0;
@@ -145,6 +149,7 @@ public class SwtControl extends ControlClass {
 		return result;
 	}
 
+	@Override
 	public int init(int handle) {
 		DSS.doSimpleMsg("Need to implement SwtControl.init", -1);
 		return 0;

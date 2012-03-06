@@ -27,6 +27,7 @@ public class Capacitor extends PDClass {
 		commandList.setAbbrevAllowed(true);
 	}
 
+	@Override
 	protected void defineProperties() {
 		final String CRLF = DSS.CRLF;
 
@@ -79,6 +80,7 @@ public class Capacitor extends PDClass {
 		super.defineProperties();  // add defs of inherited properties to bottom of list
 	}
 
+	@Override
 	public int newObject(String objName) {
 		DSS.activeCircuit.setActiveCktElement(new CapacitorObj(this, objName));
 		return addObjectToList(DSS.activeDSSObject);
@@ -172,6 +174,7 @@ public class Capacitor extends PDClass {
 		aco.setShunt(true);
 	}
 
+	@Override
 	public int edit() {
 		int result = 0;
 		Parser parser = Parser.getInstance();
@@ -318,6 +321,7 @@ public class Capacitor extends PDClass {
 		return result;
 	}
 
+	@Override
 	protected int makeLike(String capacitorName) {
 		int result = 0;
 		/* See if we can find this capacitor name in the present collection */
@@ -370,6 +374,7 @@ public class Capacitor extends PDClass {
 		return result;
 	}
 
+	@Override
 	public int init(int handle) {
 		DSS.doSimpleMsg("Need to implement Capacitor.init()", 452);
 		return 0;

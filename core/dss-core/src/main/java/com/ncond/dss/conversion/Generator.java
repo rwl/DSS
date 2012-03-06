@@ -52,6 +52,7 @@ public class Generator extends PCClass {
 		commandList.setAbbrevAllowed(true);
 	}
 
+	@Override
 	protected void defineProperties() {
 
 		numProperties = Generator.NumPropsThisClass;
@@ -163,6 +164,7 @@ public class Generator extends PCClass {
 				"Default value is \"default\", which is defined when the DSS starts.";
 	}
 
+	@Override
 	public int newObject(String objName) {
 		DSS.activeCircuit.setActiveCktElement(new GeneratorObj(this, objName));
 		return addObjectToList(DSS.activeDSSObject);
@@ -255,6 +257,7 @@ public class Generator extends PCClass {
 		}
 	}
 
+	@Override
 	public int edit() {
 		Parser parser = Parser.getInstance();
 
@@ -486,6 +489,7 @@ public class Generator extends PCClass {
 		return result;
 	}
 
+	@Override
 	protected int makeLike(String otherGeneratorName) {
 		int i;
 
@@ -565,6 +569,7 @@ public class Generator extends PCClass {
 		return result;
 	}
 
+	@Override
 	public int init(int handle) {
 		GeneratorObj p;
 

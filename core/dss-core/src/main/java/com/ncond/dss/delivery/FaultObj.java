@@ -11,7 +11,6 @@ import com.ncond.dss.common.SolutionObj;
 import com.ncond.dss.common.Util;
 import com.ncond.dss.parser.Parser;
 import com.ncond.dss.shared.CMatrix;
-import com.ncond.dss.shared.CMatrix;
 import com.ncond.dss.shared.Dynamics;
 import com.ncond.dss.shared.MathUtil;
 
@@ -90,6 +89,7 @@ public class FaultObj extends PDElement {
 		recalcElementData();
 	}
 
+	@Override
 	public void recalcElementData() {
 		// nothing to do
 	}
@@ -121,6 +121,7 @@ public class FaultObj extends PDElement {
 		setYPrimInvalid(true);  // force rebuilding of matrix
 	}
 
+	@Override
 	public void calcYPrim() {
 		Complex value, value2;
 		int i, j, ioffset;
@@ -194,6 +195,7 @@ public class FaultObj extends PDElement {
 		setYPrimInvalid(false);
 	}
 
+	@Override
 	public void dumpProperties(OutputStream out, boolean complete) {
 		int i, j;
 
@@ -293,6 +295,7 @@ public class FaultObj extends PDElement {
 		setCleared(false);
 	}
 
+	@Override
 	public void initPropertyValues(int ArrayOffset) {
 
 		setPropertyValue(0, getBus(0));
@@ -315,6 +318,7 @@ public class FaultObj extends PDElement {
 		setPropertyValue(Fault.NumPropsThisClass + 4, "0");  // hrsToRepair
 	}
 
+	@Override
 	public String getPropertyValue(int index) {
 		String result;
 
@@ -339,6 +343,7 @@ public class FaultObj extends PDElement {
 		return result;
 	}
 
+	@Override
 	public void makePosSequence() {
 		if (nPhases != 1) {
 			Parser.getInstance().setCmdString("Phases=1");
@@ -347,10 +352,12 @@ public class FaultObj extends PDElement {
 		super.makePosSequence();
 	}
 
+	@Override
 	public void getInjCurrents(Complex[] curr) {
 		throw new UnsupportedOperationException();
 	}
 
+	@Override
 	public int injCurrents() {
 		throw new UnsupportedOperationException();
 	}

@@ -71,6 +71,7 @@ public class StorageController extends ControlClass {
 		commandList.setAbbrevAllowed(true);
 	}
 
+	@Override
 	protected void defineProperties() {
 
 		numProperties = StorageController.NumPropsThisClass;
@@ -210,12 +211,14 @@ public class StorageController extends ControlClass {
 		super.defineProperties();  // add defs of inherited properties to bottom of list
 	}
 
+	@Override
 	public int newObject(String objName) {
 
 		DSS.activeCircuit.setActiveCktElement(new StorageControllerObj(this, objName));
 		return addObjectToList(DSS.activeDSSObject);
 	}
 
+	@Override
 	public int edit() {
 		Parser parser = Parser.getInstance();
 
@@ -402,6 +405,7 @@ public class StorageController extends ControlClass {
 		return result;
 	}
 
+	@Override
 	protected int makeLike(String storageControllerName) {
 		int result = 0;
 		/* See if we can find this StorageController name in the present collection */
@@ -464,6 +468,7 @@ public class StorageController extends ControlClass {
 		return result;
 	}
 
+	@Override
 	public int init(int handle) {
 		DSS.doSimpleMsg("Need to implement StorageController.init", -1);
 		return 0;

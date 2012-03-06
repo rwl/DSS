@@ -117,6 +117,7 @@ public class RecloserObj extends ControlElem {
 		//recalcElementData();
 	}
 
+	@Override
 	public void recalcElementData() {
 		Circuit ckt = DSS.activeCircuit;
 
@@ -167,6 +168,7 @@ public class RecloserObj extends ControlElem {
 	/**
 	 * Make a positive sequence model.
 	 */
+	@Override
 	public void makePosSequence() {
 		if (monitoredElement != null) {
 			setNumPhases( monitoredElement.getNumPhases() );
@@ -179,15 +181,18 @@ public class RecloserObj extends ControlElem {
 		super.makePosSequence();
 	}
 
+	@Override
 	public void calcYPrim() {
 		// leave YPrims as null and they will be ignored
 	}
 
+	@Override
 	public void getCurrents(Complex[] curr) {
 		for (int i = 0; i < nConds; i++)
 			curr[i] = Complex.ZERO;
 	}
 
+	@Override
 	public void getInjCurrents(Complex[] curr) {
 		for (int i = 0; i < nConds; i++)
 			curr[i] = Complex.ZERO;
@@ -196,6 +201,7 @@ public class RecloserObj extends ControlElem {
 	/**
 	 * Do the action that is pending from last sample.
 	 */
+	@Override
 	public void doPendingAction(int code, int proxyHdl) {
 
 		getControlledElement().setActiveTerminalIdx(elementTerminal);  // set active terminal of CktElement to terminal 1
@@ -274,6 +280,7 @@ public class RecloserObj extends ControlElem {
 	/**
 	 * Sample control quantities and set action times in control queue.
 	 */
+	@Override
 	public void sample() {
 		int i;
 		double CMag;
@@ -388,6 +395,7 @@ public class RecloserObj extends ControlElem {
 		}
 	}
 
+	@Override
 	public void dumpProperties(OutputStream out, boolean complete) {
 		super.dumpProperties(out, complete);
 
@@ -401,6 +409,7 @@ public class RecloserObj extends ControlElem {
 		pw.close();
 	}
 
+	@Override
 	public String getPropertyValue(int index) {
 		String result = "";
 		switch (index) {
@@ -420,6 +429,7 @@ public class RecloserObj extends ControlElem {
 	/**
 	 * Reset to initial defined state.
 	 */
+	@Override
 	public void reset() {
 
 		presentState   = ControlAction.CLOSE;
@@ -436,6 +446,7 @@ public class RecloserObj extends ControlElem {
 		}
 	}
 
+	@Override
 	public void initPropertyValues(int arrayOffset) {
 
 		setPropertyValue(0, "");   // "element";
@@ -464,6 +475,7 @@ public class RecloserObj extends ControlElem {
 		super.initPropertyValues(Recloser.NumPropsThisClass - 1);
 	}
 
+	@Override
 	public int injCurrents() {
 		throw new UnsupportedOperationException();
 	}

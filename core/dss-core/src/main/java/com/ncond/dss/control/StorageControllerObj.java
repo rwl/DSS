@@ -144,6 +144,7 @@ public class StorageControllerObj extends ControlElem {
 		initPropertyValues(0);
 	}
 
+	@Override
 	public void initPropertyValues(int arrayOffset) {
 
 		setPropertyValue(StorageController.ELEMENT, "");
@@ -180,6 +181,7 @@ public class StorageControllerObj extends ControlElem {
 		super.initPropertyValues(StorageController.NumPropsThisClass - 1);
 	}
 
+	@Override
 	public String getPropertyValue(int index) {
 		switch (index) {
 		case StorageController.KW_TARGET:
@@ -288,6 +290,7 @@ public class StorageControllerObj extends ControlElem {
 	/**
 	 * Recalculate critical element values after changes have been made.
 	 */
+	@Override
 	public void recalcElementData() {
 
 		/* Check for existence of monitored element */
@@ -327,6 +330,7 @@ public class StorageControllerObj extends ControlElem {
 	/**
 	 * Make a positive sequence model.
 	 */
+	@Override
 	public void makePosSequence() {
 		if (monitoredElement != null) {
 			setNumPhases( monitoredElement.getNumPhases() );
@@ -336,15 +340,18 @@ public class StorageControllerObj extends ControlElem {
 		super.makePosSequence();
 	}
 
+	@Override
 	public void calcYPrim() {
 		// leave YPrims as null and they will be ignored
 	}
 
+	@Override
 	public void getCurrents(Complex[] curr) {
 		for (int i = 0; i < nConds; i++)
 			curr[i] = Complex.ZERO;
 	}
 
+	@Override
 	public void getInjCurrents(Complex[] curr) {
 		for (int i = 0; i < nConds; i++)
 			curr[i] = Complex.ZERO;
@@ -414,6 +421,7 @@ public class StorageControllerObj extends ControlElem {
 		}
 	}
 
+	@Override
 	public void dumpProperties(OutputStream out, boolean complete) {
 		super.dumpProperties(out, complete);
 
@@ -430,6 +438,7 @@ public class StorageControllerObj extends ControlElem {
 	/**
 	 * Do the action that is pending from last sample.
 	 */
+	@Override
 	public void doPendingAction(int code, int proxyHdl) {
 		/* Release the discharge inhibit.
 		 * Do nothing for other codes.
@@ -749,6 +758,7 @@ public class StorageControllerObj extends ControlElem {
 	/**
 	 * Sample control quantities and set action times in control queue.
 	 */
+	@Override
 	public void sample() {
 		chargingAllowed = false;
 
@@ -1065,6 +1075,7 @@ public class StorageControllerObj extends ControlElem {
 	/**
 	 * Reset to initial defined state.
 	 */
+	@Override
 	public void reset() {
 		//super.reset();
 		setFleetToIdle();
@@ -1096,6 +1107,7 @@ public class StorageControllerObj extends ControlElem {
 		return result;
 	}
 
+	@Override
 	public int injCurrents() {
 		throw new UnsupportedOperationException();
 	}
@@ -1339,11 +1351,13 @@ public class StorageControllerObj extends ControlElem {
 	}
 
 
+	@Override
 	public boolean isShowEventLog() {
 		return showEventLog;
 	}
 
 
+	@Override
 	public void setShowEventLog(boolean show) {
 		showEventLog = show;
 	}

@@ -34,6 +34,7 @@ public class PriceShape extends DSSClass {
 		commandList.setAbbrevAllowed(true);
 	}
 
+	@Override
 	protected void defineProperties() {
 		final String CRLF = DSS.CRLF;
 
@@ -99,6 +100,7 @@ public class PriceShape extends DSSClass {
 		super.defineProperties();  // add defs of inherited properties to bottom of list
 	}
 
+	@Override
 	public int newObject(String ObjName) {
 		DSS.activeDSSObject = new PriceShapeObj(this, ObjName);
 		return addObjectToList(DSS.activeDSSObject);
@@ -107,6 +109,7 @@ public class PriceShape extends DSSClass {
 	/**
 	 * Uses global parser.
 	 */
+	@Override
 	public int edit() {
 		Parser parser = Parser.getInstance();
 
@@ -216,6 +219,7 @@ public class PriceShape extends DSSClass {
 		return result;
 	}
 
+	@Override
 	public DSSObject find(String objName) {
 		if (objName.length() == 0 || objName.equalsIgnoreCase("none")) {
 			return null;
@@ -224,6 +228,7 @@ public class PriceShape extends DSSClass {
 		}
 	}
 
+	@Override
 	protected int makeLike(String shapeName) {
 		PriceShapeObj otherPriceShape;
 		PriceShapeObj aps;
@@ -257,6 +262,7 @@ public class PriceShape extends DSSClass {
 		return result;
 	}
 
+	@Override
 	public int init(int handle) {
 		DSS.doSimpleMsg("Need to implement PriceShape.init", -1);
 		return 0;

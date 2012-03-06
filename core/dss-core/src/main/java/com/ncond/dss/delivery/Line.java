@@ -42,6 +42,7 @@ public class Line extends PDClass {
 		commandList.setAbbrevAllowed(true);
 	}
 
+	@Override
 	protected void defineProperties() {
 
 		numProperties = Line.NumPropsThisClass;
@@ -149,6 +150,7 @@ public class Line extends PDClass {
 		super.defineProperties();  // add defs of inherited properties to bottom of list
 	}
 
+	@Override
 	public int newObject(String objName) {
 		DSS.activeCircuit.setActiveCktElement(new LineObj(this, objName));
 		return addObjectToList(DSS.activeDSSObject);
@@ -235,6 +237,7 @@ public class Line extends PDClass {
 	 * Note that if you change the number of phases, the matrices are reallocated and reinitialized
 	 * with whatever is currently in the symmetrical component data.
 	 */
+	@Override
 	public int edit() {
 		Parser parser = Parser.getInstance();
 
@@ -516,6 +519,7 @@ public class Line extends PDClass {
 		return result;
 	}
 
+	@Override
 	protected int makeLike(String lineName) {
 
 		int result = 0;
@@ -562,6 +566,7 @@ public class Line extends PDClass {
 		return result;
 	}
 
+	@Override
 	public int init(int handle) {
 		DSS.doSimpleMsg("Need to implement Line.init()", -1);
 		return 0;

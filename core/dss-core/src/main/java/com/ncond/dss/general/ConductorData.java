@@ -22,11 +22,13 @@ abstract public class ConductorData extends DSSClass {
 		classType = DSSClassDefs.DSS_OBJECT;
 	}
 
+	@Override
 	protected void countProperties() {
 		numProperties = numProperties + getNumConductorClassProps();
 		super.countProperties();
 	}
 
+	@Override
 	protected void defineProperties() {
 		propertyName[activeProperty + 1] = "Rdc";
 		propertyName[activeProperty + 2] = "Rac";
@@ -54,6 +56,7 @@ abstract public class ConductorData extends DSSClass {
 		super.defineProperties();
 	}
 
+	@Override
 	protected int classEdit(DSSObject activeObj, int paramPointer) {
 		Parser parser = Parser.getInstance();
 

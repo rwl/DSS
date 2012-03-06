@@ -35,6 +35,7 @@ public class LoadShape extends DSSClass {
 		commandList.setAbbrevAllowed(true);
 	}
 
+	@Override
 	protected void defineProperties() {
 		final String CRLF = DSS.CRLF;
 
@@ -120,11 +121,13 @@ public class LoadShape extends DSSClass {
 		super.defineProperties();  // add defs of inherited properties to bottom of list
 	}
 
+	@Override
 	public int newObject(String objName) {
 		DSS.activeDSSObject = new LoadShapeObj(this, objName);
 		return addObjectToList(DSS.activeDSSObject);
 	}
 
+	@Override
 	public int edit() {
 		Parser parser = Parser.getInstance();
 
@@ -269,6 +272,7 @@ public class LoadShape extends DSSClass {
 	/**
 	 * Find an obj of this class by name.
 	 */
+	@Override
 	public DSSObject find(String objName) {
 		if (objName.length() == 0 || objName.equalsIgnoreCase("none")) {
 			return null;
@@ -277,6 +281,7 @@ public class LoadShape extends DSSClass {
 		}
 	}
 
+	@Override
 	protected int makeLike(String shapeName) {
 		int result = 0;
 		/* See if we can find this line code in the present collection */
@@ -320,6 +325,7 @@ public class LoadShape extends DSSClass {
 		return result;
 	}
 
+	@Override
 	public int init(int handle) {
 		DSS.doSimpleMsg("Need to implement LoadShape.init()", -1);
 		return 0;

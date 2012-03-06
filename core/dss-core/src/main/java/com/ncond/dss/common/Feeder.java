@@ -25,6 +25,7 @@ public class Feeder extends PCClass {
 		commandList.setAbbrevAllowed(true);
 	}
 
+	@Override
 	protected void defineProperties() {
 		NumPropsThisClass = 0;
 
@@ -47,6 +48,7 @@ public class Feeder extends PCClass {
 	/**
 	 * Called from EnergyMeter.
 	 */
+	@Override
 	public int newObject(String objName) {
 		int result;
 
@@ -69,6 +71,7 @@ public class Feeder extends PCClass {
 		return result;
 	}
 
+	@Override
 	public int edit() {
 		// continue parsing with contents of parser
 		activeFeederObj = (FeederObj) elementList.getActive();
@@ -108,6 +111,7 @@ public class Feeder extends PCClass {
 		return result;
 	}
 
+	@Override
 	protected int makeLike(String otherFeederName) {
 		int result = 0;
 
@@ -137,6 +141,7 @@ public class Feeder extends PCClass {
 		return result;
 	}
 
+	@Override
 	public int init(int handle) {
 		DSS.doSimpleMsg("Need to implement Feeder.init()", -1);
 		return 0;

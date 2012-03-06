@@ -40,6 +40,7 @@ public class VVControl extends ControlClass {
 		XY_CurveClass = DSSClassDefs.getDSSClass("XYCurve");
 	}
 
+	@Override
 	protected void defineProperties() {
 
 		numProperties = NumPropsThisClass;
@@ -124,11 +125,13 @@ public class VVControl extends ControlClass {
 		return result;
 	}
 
+	@Override
 	public int newObject(String objName) {
 		DSS.activeCircuit.setActiveCktElement(new VVControlObj(this, objName));
 		return addObjectToList(DSS.activeDSSObject);
 	}
 
+	@Override
 	public int edit() {
 		Parser parser = Parser.getInstance();
 
@@ -250,6 +253,7 @@ public class VVControl extends ControlClass {
 		return result;
 	}
 
+	@Override
 	protected int makeLike(String VVCControlName) {
 		int result = 0;
 
@@ -279,6 +283,7 @@ public class VVControl extends ControlClass {
 		return result;
 	}
 
+	@Override
 	public int init(int handle) {
 		DSS.doSimpleMsg("Need to implement VVControl.init", -1);
 		return 0;

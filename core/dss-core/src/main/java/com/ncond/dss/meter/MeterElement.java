@@ -3,7 +3,6 @@ package com.ncond.dss.meter;
 import org.apache.commons.math.complex.Complex;
 
 import com.ncond.dss.common.CktElement;
-import com.ncond.dss.common.CktElement;
 import com.ncond.dss.common.DSS;
 import com.ncond.dss.common.DSSClass;
 import com.ncond.dss.common.DSSClassDefs;

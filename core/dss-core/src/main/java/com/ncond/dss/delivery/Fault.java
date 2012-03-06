@@ -27,6 +27,7 @@ public class Fault extends PDClass {
 		commandList.setAbbrevAllowed(true);
 	}
 
+	@Override
 	protected void defineProperties() {
 
 		numProperties = Fault.NumPropsThisClass;
@@ -70,6 +71,7 @@ public class Fault extends PDClass {
 		super.defineProperties();  // add defs of inherited properties to bottom of list
 	}
 
+	@Override
 	public int newObject(String objName) {
 		DSS.activeCircuit.setActiveCktElement(new FaultObj(this, objName));
 		return addObjectToList(DSS.activeDSSObject);
@@ -117,6 +119,7 @@ public class Fault extends PDClass {
 		af.setShunt(true);
 	}
 
+	@Override
 	public int edit() {
 		Parser parser = Parser.getInstance();
 
@@ -232,6 +235,7 @@ public class Fault extends PDClass {
 		return result;
 	}
 
+	@Override
 	protected int makeLike(String faultName) {
 
 		int result = 0;
@@ -277,6 +281,7 @@ public class Fault extends PDClass {
 		return result;
 	}
 
+	@Override
 	public int init(int handle) {
 		DSS.doSimpleMsg("Need to implement Fault.init()", -1);
 		return 0;

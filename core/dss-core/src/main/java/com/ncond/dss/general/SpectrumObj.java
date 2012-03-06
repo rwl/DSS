@@ -39,6 +39,7 @@ public class SpectrumObj extends DSSObject {
 		initPropertyValues(0);
 	}
 
+	@Override
 	public void dumpProperties(OutputStream out, boolean complete) {
 		int i, j;
 
@@ -96,6 +97,7 @@ public class SpectrumObj extends DSSObject {
 		return Complex.ZERO;
 	}
 
+	@Override
 	public String getPropertyValue(int index) {
 		int i;
 		String result;
@@ -151,6 +153,7 @@ public class SpectrumObj extends DSSObject {
 		return result;
 	}
 
+	@Override
 	public void initPropertyValues(int arrayOffset) {
 
 		setPropertyValue(0, "0");

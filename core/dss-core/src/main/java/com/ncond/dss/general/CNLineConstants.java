@@ -3,7 +3,6 @@ package com.ncond.dss.general;
 import org.apache.commons.math.complex.Complex;
 
 import com.ncond.dss.shared.CMatrix;
-import com.ncond.dss.shared.CMatrix;
 import com.ncond.dss.shared.LineUnits;
 import com.ncond.dss.shared.MathUtil;
 
@@ -26,6 +25,7 @@ public class CNLineConstants extends CableConstants {
 	/**
 	 * Compute base Z and YC matrices in ohms/m for this frequency and earth impedance.
 	 */
+	@Override
 	public void calc(double f) {
 		Complex Zi, ZSpacing;
 		boolean powerFreq;

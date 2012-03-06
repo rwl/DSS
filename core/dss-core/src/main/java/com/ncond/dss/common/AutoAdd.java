@@ -7,14 +7,11 @@ import java.io.PrintWriter;
 
 import org.apache.commons.math.complex.Complex;
 
-import com.ncond.dss.common.AutoAdd;
 import com.ncond.dss.conversion.Generator;
 import com.ncond.dss.delivery.Capacitor;
 import com.ncond.dss.delivery.PDElement;
 import com.ncond.dss.executive.Executive;
-import com.ncond.dss.executive.Executive;
 import com.ncond.dss.meter.EnergyMeterObj;
-import com.ncond.dss.shared.HashList;
 import com.ncond.dss.shared.HashList;
 
 /**

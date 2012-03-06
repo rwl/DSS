@@ -31,6 +31,7 @@ public class Load extends PCClass {
 	/**
 	 * Add properties of this class to propName.
 	 */
+	@Override
 	protected void defineProperties() {
 
 		numProperties = NumPropsThisClass;
@@ -189,6 +190,7 @@ public class Load extends PCClass {
 		propertyHelp[NumPropsThisClass] = "Name of harmonic current spectrum for this load.  Default is \"defaultload\", which is defined when the DSS starts.";
 	}
 
+	@Override
 	public int newObject(String objName) {
 
 		DSS.activeCircuit.setActiveCktElement(new LoadObj(this, objName));
@@ -275,6 +277,7 @@ public class Load extends PCClass {
 		al.setYPrimInvalid(true);
 	}
 
+	@Override
 	public int edit() {
 		Parser parser = Parser.getInstance();
 
@@ -486,6 +489,7 @@ public class Load extends PCClass {
 		return result;
 	}
 
+	@Override
 	protected int makeLike(String otherLoadName) {
 		int result = 0;
 
@@ -558,6 +562,7 @@ public class Load extends PCClass {
 		return result;
 	}
 
+	@Override
 	public int init(int handle) {
 		LoadObj pLoad;
 		if (handle == 0) {

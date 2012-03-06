@@ -31,6 +31,7 @@ public class Monitor extends MeterClass {
 		commandList.setAbbrevAllowed(true);
 	}
 
+	@Override
 	protected void defineProperties() {
 
 		numProperties = Monitor.NumPropsThisClass;
@@ -77,11 +78,13 @@ public class Monitor extends MeterClass {
 		super.defineProperties();  // add defs of inherited properties to bottom of list
 	}
 
+	@Override
 	public int newObject(String objName) {
 		DSS.activeCircuit.setActiveCktElement(new MonitorObj(this, objName));
 		return addObjectToList(DSS.activeDSSObject);
 	}
 
+	@Override
 	public int edit() {
 		Parser parser = Parser.getInstance();
 
@@ -162,6 +165,7 @@ public class Monitor extends MeterClass {
 	/**
 	 * Force all monitors in the circuit to reset.
 	 */
+	@Override
 	public void resetAll() {
 		for (MonitorObj pMon : DSS.activeCircuit.getMonitors())
 			if (pMon.isEnabled())
@@ -171,6 +175,7 @@ public class Monitor extends MeterClass {
 	/**
 	 * Force all monitors to take a sample.
 	 */
+	@Override
 	public void sampleAll() {
 		for (MonitorObj pMon : DSS.activeCircuit.getMonitors())
 			if (pMon.isEnabled())
@@ -180,12 +185,14 @@ public class Monitor extends MeterClass {
 	/**
 	 * Force all monitors to save their buffers to disk.
 	 */
+	@Override
 	public void saveAll() {
 		for (MonitorObj pMon : DSS.activeCircuit.getMonitors())
 			if (pMon.isEnabled())
 				pMon.save();
 	}
 
+	@Override
 	protected int makeLike(String MonitorName) {
 		int i, result = 0;
 		/* See if we can find this monitor name in the present collection */
@@ -215,6 +222,7 @@ public class Monitor extends MeterClass {
 		return result;
 	}
 
+	@Override
 	public int init(int handle) {
 		MonitorObj mon;
 		int result = 0;

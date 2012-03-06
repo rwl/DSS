@@ -29,6 +29,7 @@ public class LineGeometry extends DSSClass {
 		commandList.setAbbrevAllowed(true);
 	}
 
+	@Override
 	protected void defineProperties() {
 		final String CRLF = DSS.CRLF;
 
@@ -93,11 +94,13 @@ public class LineGeometry extends DSSClass {
 	/**
 	 * Create a new object of this class and add to list.
 	 */
+	@Override
 	public int newObject(String objName) {
 		DSS.activeDSSObject = new LineGeometryObj(this, objName);
 		return addObjectToList(DSS.activeDSSObject);
 	}
 
+	@Override
 	public int edit() {
 		Parser parser = Parser.getInstance();
 
@@ -377,6 +380,7 @@ public class LineGeometry extends DSSClass {
 		return result;
 	}
 
+	@Override
 	protected int makeLike(String lineName) {
 
 		int i, result = 0;
@@ -421,6 +425,7 @@ public class LineGeometry extends DSSClass {
 		return result;
 	}
 
+	@Override
 	public int init(int handle) {
 		DSS.doSimpleMsg("Need to implement LineGeometry.init()", -1);
 		return 0;

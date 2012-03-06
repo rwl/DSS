@@ -10,7 +10,6 @@ import java.io.PrintWriter;
 import org.apache.commons.math.complex.Complex;
 import org.apache.commons.math.complex.ComplexUtils;
 
-
 import com.ncond.dss.common.Circuit;
 import com.ncond.dss.common.DSS;
 import com.ncond.dss.common.DSSClass;
@@ -18,7 +17,6 @@ import com.ncond.dss.common.SolutionObj;
 import com.ncond.dss.common.Util;
 import com.ncond.dss.general.LoadShapeObj;
 import com.ncond.dss.parser.Parser;
-import com.ncond.dss.shared.CMatrix;
 import com.ncond.dss.shared.CMatrix;
 import com.ncond.dss.shared.ComplexUtil;
 import com.ncond.dss.shared.Dynamics;
@@ -493,6 +491,7 @@ public class GeneratorObj extends PCElement {
 			setYPrimInvalid(true);
 	}
 
+	@Override
 	public void recalcElementData() {
 
 		VBase95  = VMinPU * VBase;
@@ -636,6 +635,7 @@ public class GeneratorObj extends PCElement {
 		}
 	}
 
+	@Override
 	public void calcYPrim() {
 
 		// build only shunt Yprim
@@ -1376,6 +1376,7 @@ public class GeneratorObj extends PCElement {
 	/**
 	 * Compute total currents.
 	 */
+	@Override
 	protected void getTerminalCurrents(Complex[] curr) {
 		SolutionObj sol = DSS.activeCircuit.getSolution();
 
@@ -1390,6 +1391,7 @@ public class GeneratorObj extends PCElement {
 			writeTraceRecord("TotalCurrent");
 	}
 
+	@Override
 	public int injCurrents() {
 		SolutionObj sol = DSS.activeCircuit.getSolution();
 
@@ -1411,6 +1413,7 @@ public class GeneratorObj extends PCElement {
 	 *
 	 * Do not call setNominalLoad, as that may change the load values.
 	 */
+	@Override
 	public void getInjCurrents(Complex[] curr) {
 		calcInjCurrentArray();  // difference between currents in YPrim and total current
 
@@ -1549,6 +1552,7 @@ public class GeneratorObj extends PCElement {
 		genVars.QNominalPerPhase = 1000.0 * kVArBase / nPhases;
 	}
 
+	@Override
 	public void dumpProperties(OutputStream out, boolean Complete) {
 		int i, idx;
 
@@ -1584,6 +1588,7 @@ public class GeneratorObj extends PCElement {
 	 * Support for harmonics mode.
 	 */
 
+	@Override
 	public void initHarmonics() {
 		Complex e, Va = null;
 
@@ -1617,6 +1622,7 @@ public class GeneratorObj extends PCElement {
 		}
 	}
 
+	@Override
 	public void initPropertyValues(int arrayOffset) {
 
 		setPropertyValue(0, "3");        // phases;
@@ -1663,6 +1669,7 @@ public class GeneratorObj extends PCElement {
 	 * Support for dynamics mode.
 	 */
 
+	@Override
 	public void initStateVars() {
 		//Complex VNeut;
 		Complex Edp = null;
@@ -1749,6 +1756,7 @@ public class GeneratorObj extends PCElement {
 		}
 	}
 
+	@Override
 	public void integrateStates() {
 		Complex tracePower;
 
@@ -1804,6 +1812,7 @@ public class GeneratorObj extends PCElement {
 	/**
 	 * Return variables one at a time.
 	 */
+	@Override
 	public double getVariable(int i) {
 		int n, k;
 
@@ -1852,6 +1861,7 @@ public class GeneratorObj extends PCElement {
 		return result;
 	}
 
+	@Override
 	public void setVariable(int i, double value) {
 		int n, k;
 
@@ -1898,6 +1908,7 @@ public class GeneratorObj extends PCElement {
 		}
 	}
 
+	@Override
 	public void getAllVariables(double[] states) {
 		int i, n;
 		n = 0;
@@ -1914,6 +1925,7 @@ public class GeneratorObj extends PCElement {
 			shaftModel.getAllVars(states[NumGenVariables + n]);
 	}
 
+	@Override
 	public int numVariables() {
 		int result = NumGenVariables;
 		if (userModel.exists())
@@ -1923,6 +1935,7 @@ public class GeneratorObj extends PCElement {
 		return result;
 	}
 
+	@Override
 	public String variableName(int i) {
 		final int buffSize = 255;
 
@@ -1978,6 +1991,7 @@ public class GeneratorObj extends PCElement {
 		return result;
 	}
 
+	@Override
 	public String getPropertyValue(int index) {
 		String result = "";
 
@@ -2032,6 +2046,7 @@ public class GeneratorObj extends PCElement {
 	/**
 	 * Make a positive sequence model
 	 */
+	@Override
 	public void makePosSequence() {
 		String s;
 		double V;
@@ -2064,6 +2079,7 @@ public class GeneratorObj extends PCElement {
 		super.makePosSequence();
 	}
 
+	@Override
 	public void setConductorClosed(int index, boolean value) {
 		super.setConductorClosed(index, value);
 

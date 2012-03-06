@@ -31,6 +31,7 @@ public class XfmrCode extends DSSClass {
 		commandList.setAbbrevAllowed(true);
 	}
 
+	@Override
 	protected void defineProperties() {
 		final String CRLF = DSS.CRLF;
 
@@ -144,6 +145,7 @@ public class XfmrCode extends DSSClass {
 
 	}
 
+	@Override
 	public int newObject(String objName) {
 		DSS.activeDSSObject = new XfmrCodeObj(this, objName);
 		return addObjectToList(DSS.activeDSSObject);
@@ -190,6 +192,7 @@ public class XfmrCode extends DSSClass {
 		}
 	}
 
+	@Override
 	public int edit() {
 		activeXfmrCodeObj = (XfmrCodeObj) elementList.getActive();
 		DSS.activeDSSObject = activeXfmrCodeObj;
@@ -387,6 +390,7 @@ public class XfmrCode extends DSSClass {
 		return 0;
 	}
 
+	@Override
 	protected int makeLike(String name) {
 		int i;
 		int result = 0;
@@ -438,6 +442,7 @@ public class XfmrCode extends DSSClass {
 		return result;
 	}
 
+	@Override
 	public int init(int handle) {
 		DSS.doSimpleMsg("Need to implement XfmrCode.init", -1);
 		return 0;

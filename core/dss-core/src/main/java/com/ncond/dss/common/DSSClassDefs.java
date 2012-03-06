@@ -2,7 +2,6 @@ package com.ncond.dss.common;
 
 import java.util.ArrayList;
 
-import com.ncond.dss.common.DSSClass;
 import com.ncond.dss.control.CapControl;
 import com.ncond.dss.control.GenDispatcher;
 import com.ncond.dss.control.Recloser;

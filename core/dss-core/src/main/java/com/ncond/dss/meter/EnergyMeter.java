@@ -10,7 +10,6 @@ import java.util.List;
 import com.ncond.dss.common.Bus;
 import com.ncond.dss.common.Circuit;
 import com.ncond.dss.common.CktElement;
-import com.ncond.dss.common.CktElement;
 import com.ncond.dss.common.DSS;
 import com.ncond.dss.common.DSSClassDefs;
 import com.ncond.dss.common.Util;
@@ -112,6 +111,7 @@ public class EnergyMeter extends MeterClass {
 		systemMeter = new SystemMeter();
 	}
 
+	@Override
 	protected void defineProperties() {
 
 		numProperties = EnergyMeter.NumPropsThisClass;
@@ -195,12 +195,14 @@ public class EnergyMeter extends MeterClass {
 		super.defineProperties();  // add defs of inherited properties to bottom of list
 	}
 
+	@Override
 	public int newObject(String objName) {
 
 		DSS.activeCircuit.setActiveCktElement(new EnergyMeterObj(this, objName));
 		return addObjectToList(DSS.activeDSSObject);
 	}
 
+	@Override
 	public int edit() {
 		Parser parser = Parser.getInstance();
 
@@ -337,6 +339,7 @@ public class EnergyMeter extends MeterClass {
 		return result;
 	}
 
+	@Override
 	protected int makeLike(String energyMeterName) {
 		EnergyMeterObj aem;
 		int result = 0;
@@ -385,6 +388,7 @@ public class EnergyMeter extends MeterClass {
 		return result;
 	}
 
+	@Override
 	public int init(int handle) {
 		DSS.doSimpleMsg("Need to implement EnergyMeter.init", -1);
 		return 0;
@@ -439,6 +443,7 @@ public class EnergyMeter extends MeterClass {
 	/**
 	 * Reset all meters in active circuit to zero.
 	 */
+	@Override
 	public void resetAll() {
 		Circuit ckt = DSS.activeCircuit;
 
@@ -487,6 +492,7 @@ public class EnergyMeter extends MeterClass {
 	/**
 	 * Force all meters in active circuit to sample.
 	 */
+	@Override
 	public void sampleAll() {
 		Circuit ckt = DSS.activeCircuit;
 
@@ -518,6 +524,7 @@ public class EnergyMeter extends MeterClass {
 	/**
 	 * Force all EnergyMeters in the circuit to take a sample.
 	 */
+	@Override
 	public void saveAll() {
 		Circuit ckt = DSS.activeCircuit;
 

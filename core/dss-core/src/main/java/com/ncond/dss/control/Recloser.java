@@ -44,6 +44,7 @@ public class Recloser extends ControlClass {
 		return result;
 	}
 
+	@Override
 	protected void defineProperties() {
 
 		numProperties = NumPropsThisClass;
@@ -120,12 +121,14 @@ public class Recloser extends ControlClass {
 		super.defineProperties();  // add defs of inherited properties to bottom of list
 	}
 
+	@Override
 	public int newObject(String objName) {
 
 		DSS.activeCircuit.setActiveCktElement(new RecloserObj(this, objName));
 		return addObjectToList(DSS.activeDSSObject);
 	}
 
+	@Override
 	public int edit() {
 		Parser parser = Parser.getInstance();
 
@@ -245,11 +248,13 @@ public class Recloser extends ControlClass {
 		return result;
 	}
 
+	@Override
 	public int init(int handle) {
 		DSS.doSimpleMsg("Need to implement Recloser.init", -1);
 		return 0;
 	}
 
+	@Override
 	protected int makeLike(String recloserName) {
 		int i, result = 0;
 

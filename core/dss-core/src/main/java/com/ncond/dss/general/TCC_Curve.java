@@ -28,6 +28,7 @@ public class TCC_Curve extends DSSClass {
 		commandList.setAbbrevAllowed(true);
 	}
 
+	@Override
 	protected void defineProperties() {
 		final String CRLF = DSS.CRLF;
 
@@ -53,6 +54,7 @@ public class TCC_Curve extends DSSClass {
 		super.defineProperties();  // add defs of inherited properties to bottom of list
 	}
 
+	@Override
 	public int newObject(String objName) {
 		DSS.activeDSSObject = new TCC_CurveObj(this, objName);
 		return addObjectToList(DSS.activeDSSObject);
@@ -67,6 +69,7 @@ public class TCC_Curve extends DSSClass {
 			}
 	}
 
+	@Override
 	public int edit() {
 		int result = 0;
 		// continue parsing with contents of parser
@@ -131,6 +134,7 @@ public class TCC_Curve extends DSSClass {
 		return result;
 	}
 
+	@Override
 	protected int makeLike(String name) {
 		int i, result = 0;
 		/* See if we can find this line code in the present collection */
@@ -160,6 +164,7 @@ public class TCC_Curve extends DSSClass {
 		return result;
 	}
 
+	@Override
 	public int init(int handle) {
 		DSS.doSimpleMsg("Need to implement TCC_Curve.init()", -1);
 		return 0;

@@ -4,7 +4,6 @@ import org.apache.commons.math.complex.Complex;
 
 import com.ncond.dss.general.NamedObject;
 import com.ncond.dss.shared.CMatrix;
-import com.ncond.dss.shared.CMatrix;
 
 public class Bus extends NamedObject {
 

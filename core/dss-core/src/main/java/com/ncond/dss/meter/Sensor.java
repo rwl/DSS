@@ -30,6 +30,7 @@ public class Sensor extends MeterClass {
 		commandList.setAbbrevAllowed(true);
 	}
 
+	@Override
 	protected void defineProperties() {
 
 		numProperties = NumPropsThisClass;
@@ -78,11 +79,13 @@ public class Sensor extends MeterClass {
 		super.defineProperties();  // add defs of inherited properties to bottom of list
 	}
 
+	@Override
 	public int newObject(String objName) {
 		DSS.activeCircuit.setActiveCktElement(new SensorObj(this, objName));
 		return addObjectToList(DSS.activeDSSObject);
 	}
 
+	@Override
 	public int edit() {
 		Parser parser = Parser.getInstance();
 
@@ -207,6 +210,7 @@ public class Sensor extends MeterClass {
 	/**
 	 * Force all sensors in the circuit to reset.
 	 */
+	@Override
 	public void resetAll() {
 		for (SensorObj sensor : DSS.activeCircuit.getSensors())
 			sensor.resetIt();
@@ -215,6 +219,7 @@ public class Sensor extends MeterClass {
 	/**
 	 * Force all sensors to take a sample.
 	 */
+	@Override
 	public void sampleAll() {
 		for (SensorObj sensor : DSS.activeCircuit.getSensors())
 			sensor.takeSample();
@@ -223,6 +228,7 @@ public class Sensor extends MeterClass {
 	/**
 	 * Force all sensors to save their buffers to disk.
 	 */
+	@Override
 	public void saveAll() {
 //		for (SensorObj pSensor : DSSGlobals.activeCircuit.getSensors())
 //			pSensor.save();
@@ -261,6 +267,7 @@ public class Sensor extends MeterClass {
 		}
 	}
 
+	@Override
 	protected int makeLike(String sensorName) {
 		SensorObj otherSensor;
 		int i, result = 0;
@@ -288,6 +295,7 @@ public class Sensor extends MeterClass {
 		return result;
 	}
 
+	@Override
 	public int init(int handle) {
 		SensorObj sensor;
 		int Result = 0;

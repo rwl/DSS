@@ -2,11 +2,11 @@ package com.ncond.dss.common;
 
 import java.util.UUID;
 
+import net.sourceforge.klusolve.CSparseSolve;
+
 import org.apache.commons.math.complex.Complex;
 
 import com.ncond.dss.common.Bus.NodeBus;
-
-import net.sourceforge.klusolve.CSparseSolve;
 
 
 public class YMatrix extends CSparseSolve {

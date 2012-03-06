@@ -81,6 +81,7 @@ public class GrowthShapeObj extends DSSObject {
 		}
 	}
 
+	@Override
 	public void dumpProperties(OutputStream out, boolean complete) {
 		super.dumpProperties(out, complete);
 
@@ -105,6 +106,7 @@ public class GrowthShapeObj extends DSSObject {
 		pw.close();
 	}
 
+	@Override
 	public String getPropertyValue(int index) {
 		int i;
 		String result;
@@ -147,6 +149,7 @@ public class GrowthShapeObj extends DSSObject {
 		return result;
 	}
 
+	@Override
 	public void initPropertyValues(int arrayOffset) {
 
 		propertyValue[0] = "0";  // number of points to expect

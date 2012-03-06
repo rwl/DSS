@@ -24,6 +24,7 @@ public class CNData extends CableData {
 		commandList.setAbbrevAllowed(true);
 	}
 
+	@Override
 	protected void defineProperties() {
 		numProperties = CNData.NumPropsThisClass;
 		countProperties();   // get inherited property count
@@ -43,6 +44,7 @@ public class CNData extends CableData {
 		super.defineProperties();  // add defs of inherited properties to bottom of list
 	}
 
+	@Override
 	public int newObject(String objName) {
 		DSS.activeDSSObject = new CNDataObj(this, objName);
 		return addObjectToList(DSS.activeDSSObject);
@@ -51,6 +53,7 @@ public class CNData extends CableData {
 	/**
 	 * Uses global parser.
 	 */
+	@Override
 	public int edit() {
 		Parser parser = Parser.getInstance();
 
@@ -126,6 +129,7 @@ public class CNData extends CableData {
 		return result;
 	}
 
+	@Override
 	protected int makeLike(String CNName) {
 		CNDataObj acd = (CNDataObj) ConductorData.activeConductorDataObj;
 
@@ -146,6 +150,7 @@ public class CNData extends CableData {
 		return result;
 	}
 
+	@Override
 	public int init(int handle) {
 		DSS.doSimpleMsg("Need to implement CNData.init().", -1);
 		return 0;

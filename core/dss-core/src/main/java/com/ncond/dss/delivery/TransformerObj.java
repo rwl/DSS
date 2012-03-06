@@ -3,7 +3,6 @@ package com.ncond.dss.delivery;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 
-
 import org.apache.commons.math.complex.Complex;
 
 import com.ncond.dss.common.DSS;
@@ -12,7 +11,6 @@ import com.ncond.dss.common.SolutionObj;
 import com.ncond.dss.common.Util;
 import com.ncond.dss.general.XfmrCodeObj;
 import com.ncond.dss.parser.Parser;
-import com.ncond.dss.shared.CMatrix;
 import com.ncond.dss.shared.CMatrix;
 import com.ncond.dss.shared.ComplexUtil;
 
@@ -146,6 +144,7 @@ public class TransformerObj extends PDElement {
 		}
 	}
 
+	@Override
 	public void recalcElementData() {
 		int i, iHVolt;
 		double VFactor;
@@ -269,6 +268,7 @@ public class TransformerObj extends PDElement {
 	/**
 	 * Transformer structure not conducive to standard means of saving.
 	 */
+	@Override
 	public void saveWrite(PrintWriter f) {
 		int i;
 
@@ -354,6 +354,7 @@ public class TransformerObj extends PDElement {
 		}
 	}
 
+	@Override
 	public void calcYPrim() {
 		double freqMultiplier;
 
@@ -392,6 +393,7 @@ public class TransformerObj extends PDElement {
 		setYPrimInvalid(false);
 	}
 
+	@Override
 	public void dumpProperties(OutputStream out, boolean complete) {
 		int i, j;
 
@@ -662,6 +664,7 @@ public class TransformerObj extends PDElement {
 		}
 	}
 
+	@Override
 	public void getLosses(Complex[] totalLosses, Complex[] loadLosses, Complex[] noLoadLosses) {
 		Complex tot, load, noload;
 		Complex[] cTempIterminal;
@@ -691,6 +694,7 @@ public class TransformerObj extends PDElement {
 	/**
 	 * Gets the property for the active winding; set the active winding before calling.
 	 */
+	@Override
 	public String getPropertyValue(int index) {
 		int i;
 		String result;
@@ -830,6 +834,7 @@ public class TransformerObj extends PDElement {
 		return result;
 	}
 
+	@Override
 	public void initPropertyValues(int arrayOffset) {
 
 		setPropertyValue(0, "3");  // "phases";
@@ -909,6 +914,7 @@ public class TransformerObj extends PDElement {
 	 * Converts default 3-phase transformer model into equivalent positive-sequence
 	 * using scripting.
 	 */
+	@Override
 	public void makePosSequence() {
 		int iW, i;
 		int[] n = new int[1];
@@ -1262,10 +1268,12 @@ public class TransformerObj extends PDElement {
 		}
 	}
 
+	@Override
 	public void getInjCurrents(Complex[] curr) {
 		throw new UnsupportedOperationException();
 	}
 
+	@Override
 	public int injCurrents() {
 		throw new UnsupportedOperationException();
 	}

@@ -1,6 +1,5 @@
 package com.ncond.dss.common;
 
-import com.ncond.dss.common.Conductor;
 
 public class Terminal {
 

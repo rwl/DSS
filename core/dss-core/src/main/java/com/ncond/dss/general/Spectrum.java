@@ -34,6 +34,7 @@ public class Spectrum extends DSSClass {
 		commandList.setAbbrevAllowed(true);
 	}
 
+	@Override
 	protected void defineProperties() {
 		final String CRLF = DSS.CRLF;
 
@@ -67,11 +68,13 @@ public class Spectrum extends DSSClass {
 		super.defineProperties();  // add defs of inherited properties to bottom of list
 	}
 
+	@Override
 	public int newObject(String objName) {
 		DSS.activeDSSObject = new SpectrumObj(this, objName);
 		return addObjectToList(DSS.activeDSSObject);
 	}
 
+	@Override
 	public int edit() {
 		Parser parser = Parser.getInstance();
 
@@ -138,6 +141,7 @@ public class Spectrum extends DSSClass {
 		return result;
 	}
 
+	@Override
 	protected int makeLike(String name) {
 		SpectrumObj otherSpectrum;
 
@@ -243,6 +247,7 @@ public class Spectrum extends DSSClass {
 		}
 	}
 
+	@Override
 	public int init(int handle) {
 		DSS.doSimpleMsg("Need to implement Spectrum.init", -1);
 		return 0;

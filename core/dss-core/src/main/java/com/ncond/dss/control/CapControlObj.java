@@ -124,6 +124,7 @@ public class CapControlObj extends ControlElem {
 		//recalcElementData();
 	}
 
+	@Override
 	public void recalcElementData() {
 		Circuit ckt = DSS.activeCircuit;
 
@@ -191,6 +192,7 @@ public class CapControlObj extends ControlElem {
 	/**
 	 * Make a positive sequence model.
 	 */
+	@Override
 	public void makePosSequence() {
 		if (getControlledElement() != null) {
 			setEnabled(getControlledElement().isEnabled());
@@ -209,6 +211,7 @@ public class CapControlObj extends ControlElem {
 		super.makePosSequence();
 	}
 
+	@Override
 	public void calcYPrim() {
 		// leave YPrims as null and they will be ignored
 	}
@@ -258,20 +261,24 @@ public class CapControlObj extends ControlElem {
 		return controlCurrent;
 	}
 
+	@Override
 	public void getCurrents(Complex[] curr) {
 		for (int i = 0; i < nConds; i++)
 			curr[i] = Complex.ZERO;
 	}
 
+	@Override
 	public void getInjCurrents(Complex[] curr) {
 		for (int i = 0; i < nConds; i++)
 			curr[i] = Complex.ZERO;
 	}
 
+	@Override
 	public int injCurrents() {
 		throw new UnsupportedOperationException();
 	}
 
+	@Override
 	public void dumpProperties(OutputStream out, boolean complete) {
 		super.dumpProperties(out, complete);
 
@@ -288,6 +295,7 @@ public class CapControlObj extends ControlElem {
 	/**
 	 * Do the action that is pending from last sample.
 	 */
+	@Override
 	public void doPendingAction(int code, int proxyHdl) {
 		Circuit ckt;
 
@@ -448,6 +456,7 @@ public class CapControlObj extends ControlElem {
 	/**
 	 * Sample control quantities and set action times in control queue.
 	 */
+	@Override
 	public void sample() {
 		Complex S;
 		double normalizedTime, Q, PF, currTest, VTest;
@@ -777,6 +786,7 @@ public class CapControlObj extends ControlElem {
 	/**
 	 * Reset to initial defined state.
 	 */
+	@Override
 	public void reset() {
 		setPendingChange(ControlAction.NONE);
 		getControlledElement().setActiveTerminalIdx(0);
@@ -793,6 +803,7 @@ public class CapControlObj extends ControlElem {
 		presentState = initialState;
 	}
 
+	@Override
 	public void initPropertyValues(int arrayOffset) {
 
 		setPropertyValue(0, "");   // "element";

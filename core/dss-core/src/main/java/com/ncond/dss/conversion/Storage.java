@@ -4,14 +4,14 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 
+import org.apache.commons.math.complex.Complex;
+
 import com.ncond.dss.common.DSS;
 import com.ncond.dss.common.DSSClassDefs;
 import com.ncond.dss.common.Util;
 import com.ncond.dss.general.LoadShapeObj;
 import com.ncond.dss.parser.Parser;
 import com.ncond.dss.shared.CommandList;
-
-import org.apache.commons.math.complex.Complex;
 
 public class Storage extends PCClass {
 
@@ -103,6 +103,7 @@ public class Storage extends PCClass {
 		commandList.setAbbrevAllowed(true);
 	}
 
+	@Override
 	protected void defineProperties() {
 
 		numProperties = NumPropsThisClass;
@@ -258,6 +259,7 @@ public class Storage extends PCClass {
 							"Default value is \"default\", which is defined when the DSS starts.";
 	}
 
+	@Override
 	public int newObject(String objName) {
 
 		DSS.activeCircuit.setActiveCktElement(new StorageObj(this, objName));
@@ -364,6 +366,7 @@ public class Storage extends PCClass {
 		}
 	}
 
+	@Override
 	public int edit() {
 		int i, iCase;
 
@@ -595,6 +598,7 @@ public class Storage extends PCClass {
 	/**
 	 * Copy over essential properties from other object.
 	 */
+	@Override
 	protected int makeLike(String otherStorageObjName) {
 		int result = 0;
 		/* See if we can find this line name in the present collection */
@@ -673,6 +677,7 @@ public class Storage extends PCClass {
 		return result;
 	}
 
+	@Override
 	public int init(int handle) {
 		StorageObj pElem;
 

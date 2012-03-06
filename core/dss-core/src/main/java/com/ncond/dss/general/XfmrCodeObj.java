@@ -9,7 +9,6 @@ import com.ncond.dss.common.Util;
 import com.ncond.dss.delivery.Transformer;
 import com.ncond.dss.delivery.TransformerObj;
 import com.ncond.dss.delivery.Winding;
-import com.ncond.dss.delivery.Winding;
 
 public class XfmrCodeObj extends DSSObject {
 
@@ -131,6 +130,7 @@ public class XfmrCodeObj extends DSSObject {
 		}
 	}
 
+	@Override
 	public void dumpProperties(OutputStream out, boolean complete) {
 		super.dumpProperties(out, complete);
 
@@ -193,6 +193,7 @@ public class XfmrCodeObj extends DSSObject {
 	 * Gets the property for the active winding.
 	 * Set the active winding before calling.
 	 */
+	@Override
 	public String getPropertyValue(int index) {
 		String result;
 		switch (index) {
@@ -329,6 +330,7 @@ public class XfmrCodeObj extends DSSObject {
 		return result;
 	}
 
+	@Override
 	public void initPropertyValues(int arrayOffset) {
 
 		setPropertyValue(0, "3"); // "phases");

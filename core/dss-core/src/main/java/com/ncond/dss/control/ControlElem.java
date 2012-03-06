@@ -2,7 +2,6 @@ package com.ncond.dss.control;
 
 import com.ncond.dss.common.Bus;
 import com.ncond.dss.common.CktElement;
-import com.ncond.dss.common.CktElement;
 import com.ncond.dss.common.DSS;
 import com.ncond.dss.common.DSSClass;
 import com.ncond.dss.common.DSSClassDefs;

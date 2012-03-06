@@ -1,6 +1,7 @@
 package com.ncond.dss.general;
 
 import java.io.OutputStream;
+
 import com.ncond.dss.common.DSSClass;
 
 /**
@@ -12,10 +13,12 @@ public class WireDataObj extends ConductorDataObj {
 		super(parClass, wireDataName);
 	}
 
+	@Override
 	public void dumpProperties(OutputStream out, boolean complete) {
 		super.dumpProperties(out, complete);
 	}
 
+	@Override
 	public void initPropertyValues(int arrayOffset) {
 		super.initPropertyValues(arrayOffset + WireData.NumPropsThisClass);
 	}

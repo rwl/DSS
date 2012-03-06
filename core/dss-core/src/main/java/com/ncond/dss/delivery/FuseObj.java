@@ -5,7 +5,6 @@ import java.io.PrintWriter;
 
 import org.apache.commons.math.complex.Complex;
 
-import com.ncond.dss.common.Bus;
 import com.ncond.dss.common.Circuit;
 import com.ncond.dss.common.CktElement;
 import com.ncond.dss.common.DSS;
@@ -87,6 +86,7 @@ public class FuseObj extends ControlElem {
 		//recalcElementData();
 	}
 
+	@Override
 	public void recalcElementData() {
 		int i;
 
@@ -137,6 +137,7 @@ public class FuseObj extends ControlElem {
 	/**
 	 * Always zero for a fuse.
 	 */
+	@Override
 	public void calcYPrim() {
 		// leave YPrims as null and they will be ignored
 	}
@@ -144,6 +145,7 @@ public class FuseObj extends ControlElem {
 	/**
 	 * Get present value of terminal current.
 	 */
+	@Override
 	public void getCurrents(Complex[] curr) {
 		for (int i = 0; i < getNumConds(); i++)
 			curr[i] = Complex.ZERO;
@@ -152,6 +154,7 @@ public class FuseObj extends ControlElem {
 	/**
 	 * Returns injection currents.
 	 */
+	@Override
 	public void getInjCurrents(Complex[] curr) {
 		for (int i = 0; i < getNumConds(); i++)
 			curr[i] = Complex.ZERO;
@@ -164,6 +167,7 @@ public class FuseObj extends ControlElem {
 	 *
 	 * Only legal action is to open one phase.
 	 */
+	@Override
 	public void doPendingAction(int phs, int proxyHdl) {
 		if (phs <= Fuse.FUSEMAXDIM) {
 			getControlledElement().setActiveTerminalIdx(elementTerminal);  // set active terminal of CktElement to terminal 1
@@ -202,6 +206,7 @@ public class FuseObj extends ControlElem {
 	/**
 	 * Sample control quantities and set action times in control queue.
 	 */
+	@Override
 	public void sample() {
 		double CMag;
 		double tripTime;
@@ -245,6 +250,7 @@ public class FuseObj extends ControlElem {
 		}
 	}
 
+	@Override
 	public void dumpProperties(OutputStream out, boolean complete) {
 		super.dumpProperties(out, complete);
 
@@ -259,6 +265,7 @@ public class FuseObj extends ControlElem {
 		pw.close();
 	}
 
+	@Override
 	public String getPropertyValue(int index) {
 		return super.getPropertyValue(index);
 	}
@@ -266,6 +273,7 @@ public class FuseObj extends ControlElem {
 	/**
 	 * Reset to initial defined state.
 	 */
+	@Override
 	public void reset() {
 		int i;
 
@@ -281,6 +289,7 @@ public class FuseObj extends ControlElem {
 		}
 	}
 
+	@Override
 	public void initPropertyValues(int arrayOffset) {
 		setPropertyValue(0, "");   // "element";
 		setPropertyValue(1, "1");  // "terminal";
@@ -294,6 +303,7 @@ public class FuseObj extends ControlElem {
 		super.initPropertyValues(Fuse.NumPropsThisClass - 1);
 	}
 
+	@Override
 	public int injCurrents() {
 		throw new UnsupportedOperationException();
 	}

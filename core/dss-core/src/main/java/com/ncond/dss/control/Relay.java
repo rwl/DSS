@@ -39,6 +39,7 @@ public class Relay extends ControlClass {
 		TCC_CurveClass = DSSClassDefs.getDSSClass("TCC_Curve");
 	}
 
+	@Override
 	protected void defineProperties() {
 
 		numProperties = Relay.NumPropsThisClass;
@@ -121,6 +122,7 @@ public class Relay extends ControlClass {
 		super.defineProperties();  // add defs of inherited properties to bottom of list
 	}
 
+	@Override
 	public int newObject(String objName) {
 
 		DSS.activeCircuit.setActiveCktElement(new RelayObj(this, objName));
@@ -137,6 +139,7 @@ public class Relay extends ControlClass {
 		return result;
 	}
 
+	@Override
 	public int edit() {
 		Parser parser = Parser.getInstance();
 
@@ -302,6 +305,7 @@ public class Relay extends ControlClass {
 		return result;
 	}
 
+	@Override
 	protected int makeLike(String relayName) {
 		int result = 0;
 		/* See if we can find this relay name in the present collection */
@@ -372,6 +376,7 @@ public class Relay extends ControlClass {
 		return result;
 	}
 
+	@Override
 	public int init(int handle) {
 		DSS.doSimpleMsg("Need to implement Relay.init", -1);
 		return 0;

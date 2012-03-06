@@ -3,7 +3,6 @@ package com.ncond.dss.delivery;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 
-
 import org.apache.commons.math.complex.Complex;
 
 import com.ncond.dss.common.DSS;
@@ -11,7 +10,6 @@ import com.ncond.dss.common.DSSClass;
 import com.ncond.dss.common.SolutionObj;
 import com.ncond.dss.common.Util;
 import com.ncond.dss.parser.Parser;
-import com.ncond.dss.shared.CMatrix;
 import com.ncond.dss.shared.CMatrix;
 import com.ncond.dss.shared.ComplexUtil;
 import com.ncond.dss.shared.MathUtil;
@@ -108,6 +106,7 @@ public class ReactorObj extends PDElement {
 		initPropertyValues(0);
 	}
 
+	@Override
 	public void recalcElementData() {
 		double kVArPerPhase, phaseKV;
 		int i;
@@ -180,6 +179,7 @@ public class ReactorObj extends PDElement {
 		}
 	}
 
+	@Override
 	public void calcYPrim() {
 
 		Complex value, value2;
@@ -332,6 +332,7 @@ public class ReactorObj extends PDElement {
 		setYPrimInvalid(false);
 	}
 
+	@Override
 	public void dumpProperties(OutputStream out, boolean complete) {
 		int i, j, k;
 
@@ -373,6 +374,7 @@ public class ReactorObj extends PDElement {
 		pw.close();
 	}
 
+	@Override
 	public void getLosses(Complex[] totalLosses, Complex[] loadLosses, Complex[] noLoadLosses) {
 		SolutionObj sol;
 		Complex tot, noload, load;
@@ -406,6 +408,7 @@ public class ReactorObj extends PDElement {
 		}
 	}
 
+	@Override
 	public void initPropertyValues(int arrayOffset) {
 
 		setPropertyValue(0, getBus(0));
@@ -433,6 +436,7 @@ public class ReactorObj extends PDElement {
 		clearPropSeqArray();
 	}
 
+	@Override
 	public void makePosSequence() {
 		String s = "";
 		double kVArPerPhase, phaseKV, Rs, Rm;
@@ -491,10 +495,12 @@ public class ReactorObj extends PDElement {
 		super.makePosSequence();
 	}
 
+	@Override
 	public void getInjCurrents(Complex[] curr) {
 		throw new UnsupportedOperationException();
 	}
 
+	@Override
 	public int injCurrents() {
 		throw new UnsupportedOperationException();
 	}

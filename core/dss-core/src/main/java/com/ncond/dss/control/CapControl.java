@@ -32,6 +32,7 @@ public class CapControl extends ControlClass {
 		commandList.setAbbrevAllowed(true);
 	}
 
+	@Override
 	protected void defineProperties() {
 
 		numProperties = CapControl.NumPropsThisClass;
@@ -110,11 +111,13 @@ public class CapControl extends ControlClass {
 		super.defineProperties();  // add defs of inherited properties to bottom of list
 	}
 
+	@Override
 	public int newObject(String ObjName) {
 		DSS.activeCircuit.setActiveCktElement(new CapControlObj(this, ObjName));
 		return addObjectToList(DSS.activeDSSObject);
 	}
 
+	@Override
 	public int edit() {
 		Parser parser = Parser.getInstance();
 
@@ -294,11 +297,13 @@ public class CapControl extends ControlClass {
 		return result;
 	}
 
+	@Override
 	public int init(int handle) {
 		DSS.doSimpleMsg("Need to implement CapControl.init", -1);
 		return 0;
 	}
 
+	@Override
 	protected int makeLike(String capControlName) {
 		int i, result = 0;
 

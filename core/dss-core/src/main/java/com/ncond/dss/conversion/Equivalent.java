@@ -27,6 +27,7 @@ public class Equivalent extends PCClass {
 		commandList.setAbbrevAllowed(true);
 	}
 
+	@Override
 	protected void defineProperties() {
 
 		numProperties = Equivalent.NumPropsThisClass;
@@ -68,11 +69,13 @@ public class Equivalent extends PCClass {
 		propertyHelp[Equivalent.NumPropsThisClass] = "Name of harmonic spectrum for this source.  Default is \"defaultvsource\", which is defined when the DSS starts.";
 	}
 
+	@Override
 	public int newObject(String objName) {
 		DSS.activeCircuit.setActiveCktElement(new EquivalentObj(this, objName));
 		return addObjectToList(DSS.activeDSSObject);
 	}
 
+	@Override
 	public int edit() {
 		Parser parser = Parser.getInstance();
 
@@ -154,6 +157,7 @@ public class Equivalent extends PCClass {
 		return result;
 	}
 
+	@Override
 	protected int makeLike(String OtherSource) {
 		int i, result = 0;
 
@@ -211,6 +215,7 @@ public class Equivalent extends PCClass {
 		return result;
 	}
 
+	@Override
 	public int init(int handle) {
 		DSS.doSimpleMsg("Need to implement Equivalent.init", -1);
 		return 0;

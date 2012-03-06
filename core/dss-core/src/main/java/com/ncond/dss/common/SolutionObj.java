@@ -8,9 +8,7 @@ import java.util.UUID;
 
 import org.apache.commons.math.complex.Complex;
 
-
 import com.ncond.dss.common.Bus.NodeBus;
-import com.ncond.dss.common.Solution;
 import com.ncond.dss.control.ControlElem;
 import com.ncond.dss.conversion.GeneratorObj;
 import com.ncond.dss.conversion.PCElement;
@@ -834,6 +832,7 @@ public class SolutionObj extends DSSObject {
 				pElem.injCurrents();  // uses nodeRef to add current into injCurr array
 	}
 
+	@Override
 	public void dumpProperties(OutputStream out, boolean complete) {
 		// TODO Translate this method
 		throw new UnsupportedOperationException();
@@ -1187,6 +1186,7 @@ public class SolutionObj extends DSSObject {
 		updateDblHour();
 	}
 
+	@Override
 	public void initPropertyValues(int arrayOffset) {
 		setPropertyValue(0, "");
 

@@ -30,6 +30,7 @@ public class LineSpacing extends DSSClass {
 		commandList.setAbbrevAllowed(true);
 	}
 
+	@Override
 	protected void defineProperties() {
 		numProperties = NumPropsThisClass;
 		countProperties();   // get inherited property count
@@ -52,6 +53,7 @@ public class LineSpacing extends DSSClass {
 		super.defineProperties();  // add defs of inherited properties to bottom of list
 	}
 
+	@Override
 	public int newObject(String objName) {
 		DSS.activeDSSObject = new LineSpacingObj(this, objName);
 		return addObjectToList(DSS.activeDSSObject);
@@ -78,6 +80,7 @@ public class LineSpacing extends DSSClass {
 		}
 	}
 
+	@Override
 	public int edit() {
 		int result = 0;
 		Parser parser = Parser.getInstance();
@@ -151,6 +154,7 @@ public class LineSpacing extends DSSClass {
 		return result;
 	}
 
+	@Override
 	protected int makeLike(String lineName) {
 		int i;
 		int result = 0;
@@ -180,6 +184,7 @@ public class LineSpacing extends DSSClass {
 		return result;
 	}
 
+	@Override
 	public int init(int handle) {
 		DSS.doSimpleMsg("Need to implement LineSpacing.init()", -1);
 		return 0;

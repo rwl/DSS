@@ -34,6 +34,7 @@ public class SwtControlObj extends ControlElem {
 		initPropertyValues(0);
 	}
 
+	@Override
 	public void recalcElementData() {
 
 		int devIndex = Util.getCktElementIndex(elementName);
@@ -64,6 +65,7 @@ public class SwtControlObj extends ControlElem {
 	/**
 	 * Make a positive sequence model.
 	 */
+	@Override
 	public void makePosSequence() {
 		if (getControlledElement() != null) {
 			setNumPhases( getControlledElement().getNumPhases() );
@@ -73,15 +75,18 @@ public class SwtControlObj extends ControlElem {
 		super.makePosSequence();
 	}
 
+	@Override
 	public void calcYPrim() {
 		// leave YPrims as nil
 	}
 
+	@Override
 	public void getCurrents(Complex[] curr) {
 		for (int i = 0; i < nConds; i++)
 			curr[i] = Complex.ZERO;
 	}
 
+	@Override
 	public void getInjCurrents(Complex[] curr) {
 		for (int i = 0; i < nConds; i++)
 			curr[i] = Complex.ZERO;
@@ -90,6 +95,7 @@ public class SwtControlObj extends ControlElem {
 	/**
 	 * Do the action that is pending from last sample.
 	 */
+	@Override
 	public void doPendingAction(int code, int proxyHdl) {
 		if (!locked) {
 			getControlledElement().setActiveTerminalIdx(elementTerminal);
@@ -133,6 +139,7 @@ public class SwtControlObj extends ControlElem {
 	/**
 	 * Sample control quantities and set action times in control queue.
 	 */
+	@Override
 	public void sample() {
 		getControlledElement().setActiveTerminalIdx(elementTerminal);
 		if (getControlledElement().isConductorClosed(-1)) {  // check state of phases of active terminal
@@ -142,6 +149,7 @@ public class SwtControlObj extends ControlElem {
 		}
 	}
 
+	@Override
 	public void dumpProperties(OutputStream out, boolean complete) {
 		super.dumpProperties(out, complete);
 
@@ -156,6 +164,7 @@ public class SwtControlObj extends ControlElem {
 		pw.close();
 	}
 
+	@Override
 	public String getPropertyValue(int index) {
 		return super.getPropertyValue(index);
 	}
@@ -163,6 +172,7 @@ public class SwtControlObj extends ControlElem {
 	/**
 	 * Reset to initial defined state.
 	 */
+	@Override
 	public void reset() {
 		presentState = ControlAction.CLOSE;
 		locked       = false;
@@ -172,6 +182,7 @@ public class SwtControlObj extends ControlElem {
 		}
 	}
 
+	@Override
 	public void initPropertyValues(int arrayOffset) {
 		setPropertyValue(0, "");   // 'element';
 		setPropertyValue(1, "1");  // 'terminal';
@@ -189,6 +200,7 @@ public class SwtControlObj extends ControlElem {
 		return locked;
 	}
 
+	@Override
 	public int injCurrents() {
 		throw new UnsupportedOperationException();
 	}

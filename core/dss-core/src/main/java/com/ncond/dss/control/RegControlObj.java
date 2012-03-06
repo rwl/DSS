@@ -123,6 +123,7 @@ public class RegControlObj extends ControlElem {
 		//recalcElementData();
 	}
 
+	@Override
 	public void recalcElementData() {
 
 		if (R != 0.0 || X != 0.0) {
@@ -181,6 +182,7 @@ public class RegControlObj extends ControlElem {
 		}
 	}
 
+	@Override
 	public void calcYPrim() {
 		// leave YPrim as null and it will be ignored ... zero current source
 	}
@@ -228,16 +230,19 @@ public class RegControlObj extends ControlElem {
 		return result;
 	}
 
+	@Override
 	public void getCurrents(Complex[] curr) {
 		for (int i = 0; i < nConds; i++)
 			curr[i] = Complex.ZERO;
 	}
 
+	@Override
 	public void getInjCurrents(Complex[] curr) {
 		for (int i = 0; i < nConds; i++)
 			curr[i] = Complex.ZERO;
 	}
 
+	@Override
 	public void dumpProperties(OutputStream out, boolean complete) {
 		super.dumpProperties(out, complete);
 
@@ -308,6 +313,7 @@ public class RegControlObj extends ControlElem {
 	/**
 	 * Do the action that is pending from last sample.
 	 */
+	@Override
 	public void doPendingAction(int code, int proxyHdl) {
 
 		Circuit ckt = DSS.activeCircuit;
@@ -387,6 +393,7 @@ public class RegControlObj extends ControlElem {
 	/**
 	 * Sample control quantities and set action times in control queue.
 	 */
+	@Override
 	public void sample() {
 		double boostNeeded, increment, VActual, VBoost;
 		double VLocalBus;
@@ -663,10 +670,12 @@ public class RegControlObj extends ControlElem {
 	/**
 	 * Reset to initial defined state.
 	 */
+	@Override
 	public void reset() {
 		setPendingTapChange(0.0);
 	}
 
+	@Override
 	public void initPropertyValues(int arrayOffset) {
 
 		setPropertyValue(0, "");   // "element";
@@ -707,6 +716,7 @@ public class RegControlObj extends ControlElem {
 	/**
 	 * Make a positive sequence model.
 	 */
+	@Override
 	public void makePosSequence() {
 		if (getControlledElement() != null) {
 			setEnabled( getControlledElement().isEnabled() );
@@ -740,6 +750,7 @@ public class RegControlObj extends ControlElem {
 		}
 	}
 
+	@Override
 	public int injCurrents() {
 		throw new UnsupportedOperationException();
 	}

@@ -1,7 +1,7 @@
 package com.ncond.dss.common;
 
-import java.io.FileWriter;
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
@@ -9,7 +9,6 @@ import java.util.List;
 
 import org.apache.commons.math.complex.Complex;
 
-import com.ncond.dss.common.Circuit;
 import com.ncond.dss.control.VVControl;
 import com.ncond.dss.conversion.PVSystem;
 import com.ncond.dss.conversion.Storage;

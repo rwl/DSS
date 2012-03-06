@@ -44,6 +44,7 @@ abstract public class PDElement extends CktElement {
 		objType = DSSClassDefs.PD_ELEMENT;
 	}
 
+	@Override
 	public void getCurrents(Complex[] curr) {
 		int i;
 		SolutionObj sol;
@@ -116,6 +117,7 @@ abstract public class PDElement extends CktElement {
 		return result;
 	}
 
+	@Override
 	public void initPropertyValues(int arrayOffset) {
 
 		setPropertyValue(arrayOffset + 1, "400");  // normAmps

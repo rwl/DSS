@@ -19,6 +19,7 @@ abstract public class PCClass extends CktElementClass {
 	/**
 	 * Add no. of intrinsic properties.
 	 */
+	@Override
 	protected void countProperties() {
 		numProperties = numProperties + numPCClassProps;
 		super.countProperties();
@@ -29,6 +30,7 @@ abstract public class PCClass extends CktElementClass {
 	 *
 	 * Define the properties for the base power delivery element class.
 	 */
+	@Override
 	protected void defineProperties() {
 		propertyName[activeProperty + 1] = "spectrum";
 
@@ -39,6 +41,7 @@ abstract public class PCClass extends CktElementClass {
 		super.defineProperties();
 	}
 
+	@Override
 	protected int classEdit(DSSObject activePCObj, int paramPointer) {
 		int result = 0;
 		// continue parsing with contents of parser
@@ -57,6 +60,7 @@ abstract public class PCClass extends CktElementClass {
 		return result;
 	}
 
+	@Override
 	protected void classMakeLike(DSSObject otherObj) {
 		PCElement otherPCObj = (PCElement) otherObj;
 

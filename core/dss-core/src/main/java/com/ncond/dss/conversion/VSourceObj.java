@@ -3,7 +3,6 @@ package com.ncond.dss.conversion;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 
-
 import org.apache.commons.math.complex.Complex;
 
 import com.ncond.dss.common.DSS;
@@ -11,7 +10,6 @@ import com.ncond.dss.common.DSSClass;
 import com.ncond.dss.common.SolutionObj;
 import com.ncond.dss.common.Util;
 import com.ncond.dss.parser.Parser;
-import com.ncond.dss.shared.CMatrix;
 import com.ncond.dss.shared.CMatrix;
 import com.ncond.dss.shared.ComplexUtil;
 
@@ -77,6 +75,7 @@ public class VSourceObj extends PCElement {
 		recalcElementData();
 	}
 
+	@Override
 	public void recalcElementData() {
 
 		Complex Zs, Zm;
@@ -188,6 +187,7 @@ public class VSourceObj extends PCElement {
 		setInjCurrent( Util.resizeArray(getInjCurrent(), YOrder) );
 	}
 
+	@Override
 	public void calcYPrim() {
 		Complex value;
 		int i, j;
@@ -315,6 +315,7 @@ public class VSourceObj extends PCElement {
 		}
 	}
 
+	@Override
 	public int injCurrents() {
 		getInjCurrents(getInjCurrent());
 
@@ -323,6 +324,7 @@ public class VSourceObj extends PCElement {
 		return super.injCurrents();  // add into system array
 	}
 
+	@Override
 	public void getCurrents(Complex[] curr) {
 
 		try {
@@ -352,6 +354,7 @@ public class VSourceObj extends PCElement {
 	 * 		|Iinj2|           | 0       |
 	 * 		_     _           _         _
 	 */
+	@Override
 	public void getInjCurrents(Complex[] curr) {
 
 		getVTerminalForSource();  // gets voltage vector above
@@ -360,6 +363,7 @@ public class VSourceObj extends PCElement {
 		setITerminalUpdated(false);
 	}
 
+	@Override
 	public void dumpProperties(OutputStream out, boolean complete) {
 		Complex c;
 
@@ -386,6 +390,7 @@ public class VSourceObj extends PCElement {
 		pw.close();
 	}
 
+	@Override
 	public void initPropertyValues(int arrayOffset) {
 
 		/* PropertyValue allocated in DSSObject constructor */
@@ -412,6 +417,7 @@ public class VSourceObj extends PCElement {
 		super.initPropertyValues(VSource.NumPropsThisClass - 1);
 	}
 
+	@Override
 	public String getPropertyValue(int index) {
 		switch (index) {
 		case 0:
@@ -442,6 +448,7 @@ public class VSourceObj extends PCElement {
 	/**
 	 * Make a positive sequence model.
 	 */
+	@Override
 	public void makePosSequence() {
 		String s = "phases=1 ";
 		s = s + String.format("basekV=%-.5g ", kVBase / DSS.SQRT3);

@@ -1,7 +1,6 @@
 package com.ncond.dss.general;
 
 import com.ncond.dss.shared.CMatrix;
-import com.ncond.dss.shared.CMatrix;
 import com.ncond.dss.shared.LineUnits;
 import com.ncond.dss.shared.MathUtil;
 
@@ -23,6 +22,7 @@ public class CableConstants extends LineConstants {
 	/**
 	 * Don't reduce Y, it has zero neutral capacitance.
 	 */
+	@Override
 	public void kron(int norder) {
 		CMatrix ZTemp;
 		int i, j;
@@ -41,6 +41,7 @@ public class CableConstants extends LineConstants {
 		}
 	}
 
+	@Override
 	public boolean conductorsInSameSpace(StringBuffer errorMessage) {
 		int i, j;
 		double Dij;

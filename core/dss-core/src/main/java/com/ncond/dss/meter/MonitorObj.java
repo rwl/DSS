@@ -9,7 +9,6 @@ import java.io.PrintWriter;
 
 import org.apache.commons.math.complex.Complex;
 
-
 import com.ncond.dss.common.CktElement;
 import com.ncond.dss.common.DSS;
 import com.ncond.dss.common.DSSClass;
@@ -164,6 +163,7 @@ public class MonitorObj extends MeterElement {
 		s.replace(' ', '_');
 	}
 
+	@Override
 	public void recalcElementData() {
 
 		validMonitor = false;
@@ -226,6 +226,7 @@ public class MonitorObj extends MeterElement {
 	/**
 	 * Make a positive sequence model.
 	 */
+	@Override
 	public void makePosSequence() {
 		if (meteredElement != null) {
 			setBus(0, meteredElement.getBus(meteredTerminal));
@@ -247,6 +248,7 @@ public class MonitorObj extends MeterElement {
 		super.makePosSequence();
 	}
 
+	@Override
 	public void calcYPrim() {
 		/* A Monitor is a zero current source; Yprim is always zero. */
 	}
@@ -507,6 +509,7 @@ public class MonitorObj extends MeterElement {
 		clearMonitorStream();
 	}
 
+	@Override
 	public void takeSample() {
 		double dHour;
 		double dSum;
@@ -808,16 +811,19 @@ public class MonitorObj extends MeterElement {
 		DSS.globalResult = csvName;
 	}
 
+	@Override
 	public void getCurrents(Complex[] curr) {
 		for (int i = 0; i < nConds; i++)
 			curr[i] = Complex.ZERO;
 	}
 
+	@Override
 	public void getInjCurrents(Complex[] curr) {
 		for (int i = 0; i < nConds; i++)
 			curr[i] = Complex.ZERO;
 	}
 
+	@Override
 	public void dumpProperties(OutputStream out, boolean complete) {
 		super.dumpProperties(out, complete);
 
@@ -850,6 +856,7 @@ public class MonitorObj extends MeterElement {
 		pw.close();
 	}
 
+	@Override
 	public void initPropertyValues(int arrayOffset) {
 
 		setPropertyValue(0, "");  // "element";
@@ -871,6 +878,7 @@ public class MonitorObj extends MeterElement {
 		return DSS.dataDirectory + DSS.circuitName_ + "Mon_" + getName() + ".csv";
 	}
 
+	@Override
 	public int injCurrents() {
 		throw new UnsupportedOperationException();
 	}

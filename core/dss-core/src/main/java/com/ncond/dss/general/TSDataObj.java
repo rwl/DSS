@@ -23,6 +23,7 @@ public class TSDataObj extends CableDataObj {
 		initPropertyValues(0);
 	}
 
+	@Override
 	public void dumpProperties(OutputStream out, boolean complete) {
 		super.dumpProperties(out, complete);
 
@@ -45,6 +46,7 @@ public class TSDataObj extends CableDataObj {
 		}
 	}
 
+	@Override
 	public void initPropertyValues(int arrayOffset) {
 		setPropertyValue(0, "-1");
 		setPropertyValue(1, "-1");
