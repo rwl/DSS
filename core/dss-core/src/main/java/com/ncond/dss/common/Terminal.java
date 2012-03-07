@@ -1,6 +1,8 @@
 package com.ncond.dss.common;
 
+import lombok.Data;
 
+@Data
 public class Terminal {
 
 	private int numCond;
@@ -23,6 +25,11 @@ public class Terminal {
 		activeConductor = 0;
 	}
 
+	public void setActiveConductor(int value) {
+		if (value >= 0 & value < numCond)
+			activeConductor = value;
+	}
+
 	public Conductor getConductor(int idx) {
 		return conductors[idx];
 	}
@@ -31,45 +38,8 @@ public class Terminal {
 		return termNodeRef[idx];
 	}
 
-	public int getBusRef() {
-		return busRef;
-	}
-
-	public void setBusRef(int value) {
-		busRef = value;
-	}
-
 	public int[] getTermNodeRef() {
 		return termNodeRef;
-	}
-
-	public void setTermNodeRef(int[] value) {
-		termNodeRef = value;
-	}
-
-	public Conductor[] getConductors() {
-		return conductors;
-	}
-
-	public void setConductors(Conductor[] value) {
-		conductors = value;
-	}
-
-	public boolean isChecked() {
-		return checked;
-	}
-
-	public void setChecked(boolean value) {
-		checked = value;
-	}
-
-	public void setActiveConductor(int value) {
-		if (value >= 0 & value < numCond)
-			activeConductor = value;
-	}
-
-	public int getActiveConductor() {
-		return activeConductor;
 	}
 
 }

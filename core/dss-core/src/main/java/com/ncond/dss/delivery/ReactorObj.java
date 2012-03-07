@@ -71,7 +71,7 @@ public class ReactorObj extends PDElement {
 	public ReactorObj(DSSClass parClass, String reactorName) {
 		super(parClass);
 		setName(reactorName.toLowerCase());
-		objType = parClass.getDSSClassType();
+		objType = parClass.getClassType();
 
 		setNumPhases(3);  // directly set conds and phases
 		nConds = 3;

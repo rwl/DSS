@@ -74,7 +74,7 @@ public class CapacitorObj extends PDElement {
 		super(parClass);
 
 		setName(capacitorName.toLowerCase());
-		objType = parClass.getDSSClassType();
+		objType = parClass.getClassType();
 
 		setNumPhases(3);  // directly set conds and phases
 		nConds = 3;

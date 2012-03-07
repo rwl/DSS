@@ -93,7 +93,7 @@ public class GenDispatcher extends ControlClass {
 
 			switch (paramPointer) {
 			case -1:
-				DSS.doSimpleMsg("Unknown parameter \"" + paramName + "\" for object \"" + getName() +"."+ agd.getName() + "\"", 364);
+				DSS.doSimpleMsg("Unknown parameter \"" + paramName + "\" for object \"" + getClassName() +"."+ agd.getName() + "\"", 364);
 				break;
 			case 0:
 				agd.setElementName(param.toLowerCase());

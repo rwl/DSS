@@ -108,7 +108,7 @@ public class DSSClassDefs {
 
 		DSS.classNames = new HashList(25);  // makes 5 sub lists
 		DSS.DSSClassList = new ArrayList<DSSClass>(10);  // 10 is initial size and increment
-		DSSClass.setDSSClasses(new DSSClasses());  // class to handle defining DSS classes
+		DSSClass.DSSClasses = new DSSClasses();  // class to handle defining DSS classes
 
 		/* General DSS objects, not circuit elements */
 		DSS.DSSObjs = new ArrayList<DSSObject>(25);  // 25 is initial size and increment
@@ -116,72 +116,72 @@ public class DSSClassDefs {
 		/* Instantiate all intrinsic object classes */
 
 		/* Generic object classes first in case others refer to them */
-		DSSClass.getDSSClasses().setNew( new Solution() );
+		DSSClass.DSSClasses.setNew( new Solution() );
 		DSS.solutionClass = DSS.activeDSSClass;  // this is a special class
-		DSSClass.getDSSClasses().setNew( new LineCode() );
+		DSSClass.DSSClasses.setNew( new LineCode() );
 		DSS.loadShapeClass = new LoadShape();
-		DSSClass.getDSSClasses().setNew( DSS.loadShapeClass );
+		DSSClass.DSSClasses.setNew( DSS.loadShapeClass );
 
 		DSS.TShapeClass = new TShape();
-		DSSClass.getDSSClasses().setNew( DSS.TShapeClass );
+		DSSClass.DSSClasses.setNew( DSS.TShapeClass );
 		DSS.priceShapeClass = new PriceShape();
-		DSSClass.getDSSClasses().setNew( DSS.priceShapeClass );
+		DSSClass.DSSClasses.setNew( DSS.priceShapeClass );
 		DSS.XYCurveClass = new XYCurve();
-		DSSClass.getDSSClasses().setNew( DSS.XYCurveClass );
+		DSSClass.DSSClasses.setNew( DSS.XYCurveClass );
 
 		DSS.growthShapeClass = new GrowthShape();
-		DSSClass.getDSSClasses().setNew( DSS.growthShapeClass );
+		DSSClass.DSSClasses.setNew( DSS.growthShapeClass );
 		DSS.TCC_CurveClass = new TCC_Curve();
-		DSSClass.getDSSClasses().setNew( DSS.TCC_CurveClass );
+		DSSClass.DSSClasses.setNew( DSS.TCC_CurveClass );
 		DSS.spectrumClass = new Spectrum();
-		DSSClass.getDSSClasses().setNew( DSS.spectrumClass );
+		DSSClass.DSSClasses.setNew( DSS.spectrumClass );
 		DSS.wireDataClass = new WireData();
-		DSSClass.getDSSClasses().setNew( DSS.wireDataClass );
+		DSSClass.DSSClasses.setNew( DSS.wireDataClass );
 
 		DSS.CNDataClass = new CNData();
-		DSSClass.getDSSClasses().setNew( DSS.CNDataClass );
+		DSSClass.DSSClasses.setNew( DSS.CNDataClass );
 		DSS.TSDataClass = new TSData();
-		DSSClass.getDSSClasses().setNew( DSS.TSDataClass );
+		DSSClass.DSSClasses.setNew( DSS.TSDataClass );
 
-		DSSClass.getDSSClasses().setNew( new LineGeometry() );
+		DSSClass.DSSClasses.setNew( new LineGeometry() );
 		DSS.lineSpacingClass = new LineSpacing();
-		DSSClass.getDSSClasses().setNew( DSS.lineSpacingClass );
-		DSSClass.getDSSClasses().setNew( new XfmrCode() );
+		DSSClass.DSSClasses.setNew( DSS.lineSpacingClass );
+		DSSClass.DSSClasses.setNew( new XfmrCode() );
 
 		/* Circuit element classes */
-		DSSClass.getDSSClasses().setNew( new Line() );
-		DSSClass.getDSSClasses().setNew( new VSource() );
-		DSSClass.getDSSClasses().setNew( new ISource() );
-		DSSClass.getDSSClasses().setNew( new Load() );
-		DSSClass.getDSSClasses().setNew( new Transformer() );
-		DSSClass.getDSSClasses().setNew( new RegControl() );
-		DSSClass.getDSSClasses().setNew( new Capacitor() );
-		DSSClass.getDSSClasses().setNew( new Reactor() );
-		DSSClass.getDSSClasses().setNew( new CapControl() );
-		DSSClass.getDSSClasses().setNew( new Fault() );
-		DSSClass.getDSSClasses().setNew( new Generator() );
-		DSSClass.getDSSClasses().setNew( new GenDispatcher() );
+		DSSClass.DSSClasses.setNew( new Line() );
+		DSSClass.DSSClasses.setNew( new VSource() );
+		DSSClass.DSSClasses.setNew( new ISource() );
+		DSSClass.DSSClasses.setNew( new Load() );
+		DSSClass.DSSClasses.setNew( new Transformer() );
+		DSSClass.DSSClasses.setNew( new RegControl() );
+		DSSClass.DSSClasses.setNew( new Capacitor() );
+		DSSClass.DSSClasses.setNew( new Reactor() );
+		DSSClass.DSSClasses.setNew( new CapControl() );
+		DSSClass.DSSClasses.setNew( new Fault() );
+		DSSClass.DSSClasses.setNew( new Generator() );
+		DSSClass.DSSClasses.setNew( new GenDispatcher() );
 		DSS.storageClass = new Storage();
-		DSSClass.getDSSClasses().setNew( DSS.storageClass );
-		DSSClass.getDSSClasses().setNew( new StorageController() );
-		DSSClass.getDSSClasses().setNew( new Relay() );
-		DSSClass.getDSSClasses().setNew( new Recloser() );
-		DSSClass.getDSSClasses().setNew( new Fuse() );
+		DSSClass.DSSClasses.setNew( DSS.storageClass );
+		DSSClass.DSSClasses.setNew( new StorageController() );
+		DSSClass.DSSClasses.setNew( new Relay() );
+		DSSClass.DSSClasses.setNew( new Recloser() );
+		DSSClass.DSSClasses.setNew( new Fuse() );
 		//Globals.setFeederClass(new FeederImpl());
-		//DSSClassImpl.getDSSClasses().setNew( Globals.getFeederClass() );
-		DSSClass.getDSSClasses().setNew( new SwtControl() );
+		//DSSClassImpl.DSSClasses.setNew( Globals.getFeederClass() );
+		DSSClass.DSSClasses.setNew( new SwtControl() );
 		DSS.PVSystemClass = new PVSystem();
-		DSSClass.getDSSClasses().setNew( DSS.PVSystemClass );
+		DSSClass.DSSClasses.setNew( DSS.PVSystemClass );
 
 		DSS.VVControlClass = new VVControl();
-		DSSClass.getDSSClasses().setNew ( DSS.VVControlClass );
+		DSSClass.DSSClasses.setNew ( DSS.VVControlClass );
 
 		DSS.monitorClass = new Monitor();  // have to do this after Generator
-		DSSClass.getDSSClasses().setNew( DSS.monitorClass );
+		DSSClass.DSSClasses.setNew( DSS.monitorClass );
 		DSS.energyMeterClass = new EnergyMeter();  // have to do this after Generator
-		DSSClass.getDSSClasses().setNew( DSS.energyMeterClass );
+		DSSClass.DSSClasses.setNew( DSS.energyMeterClass );
 		DSS.sensorClass = new Sensor();  // create state estimation sensors
-		DSSClass.getDSSClasses().setNew( DSS.sensorClass );
+		DSSClass.DSSClasses.setNew( DSS.sensorClass );
 
 
 		/* Create classes for custom implementations */
@@ -203,7 +203,7 @@ public class DSSClassDefs {
 			successFree = "First Object";
 			for (int i = 0; i < DSS.DSSObjs.size(); i++) {
 				obj = DSS.DSSObjs.get(i);
-				traceName = obj.getParentClass().getName() + "." + obj.getName();
+				traceName = obj.getParentClass().getClassName() + "." + obj.getName();
 				successFree = traceName;
 			}
 			traceName = "(DSSObjs Class)";
@@ -220,7 +220,7 @@ public class DSSClassDefs {
 			traceName = "(DSS Class List)";
 			DSS.DSSClassList = null;
 			traceName = "(DSS Classes)";
-			DSSClass.setDSSClasses(null);
+			DSSClass.DSSClasses = null;
 			traceName = "(ClassNames)";
 			DSS.classNames = null;
 		} catch (Exception e) {

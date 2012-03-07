@@ -9,13 +9,15 @@ package com.ncond.dss.general;
 
 import java.util.UUID;
 
+import lombok.Data;
 
+@Data
 public class NamedObject {
 
 	/**
 	 * Path name, or class name for DSS.
 	 */
-	private String pathName;
+	private String DSSClassName;
 
 	/**
 	 * LocalName is unique within a class.
@@ -32,7 +34,7 @@ public class NamedObject {
 
 	public NamedObject(String className) {
 		super();
-		pathName = className;
+		DSSClassName = className;
 		localName = "";
 		displayName = "";
 		uuid = null;
@@ -40,18 +42,14 @@ public class NamedObject {
 
 	public String getDisplayName() {
 		if (this.displayName == "") {
-			return pathName + "_" + localName;
+			return DSSClassName + "_" + localName;
 		} else {
 			return displayName;
 		}
 	}
 
-	public void setDisplayName(String value) {
-		displayName = value;
-	}
-
 	public String getQualifiedName() {
-		return pathName + "." + localName;
+		return DSSClassName + "." + localName;
 	}
 
 	private UUID getUUID() {
@@ -72,24 +70,6 @@ public class NamedObject {
 	public String getCIM_ID() {
 		return UUIDToCIMString(getUUID());
 	}
-
-
-	public String getDSSClassName() {
-		return pathName;
-	}
-
-	public void setDSSClassName(String value) {
-		pathName = value;
-	}
-
-	public String getLocalName() {
-		return localName;
-	}
-
-	public void setLocalName(String value) {
-		localName = value;
-	}
-
 
 	public String UUIDToCIMString(UUID uUID) {
 		String s;

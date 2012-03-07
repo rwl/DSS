@@ -160,7 +160,7 @@ public class RegControl extends ControlClass {
 
 			switch (paramPointer) {
 			case -1:
-				DSS.doSimpleMsg("Unknown parameter \"" + paramName + "\" for object \"" + getName() +"."+ arc.getName() + "\"", 120);
+				DSS.doSimpleMsg("Unknown parameter \"" + paramName + "\" for object \"" + getClassName() +"."+ arc.getName() + "\"", 120);
 				break;
 			case 0:
 				arc.setElementName("Transformer." + param.toLowerCase());
@@ -169,7 +169,7 @@ public class RegControl extends ControlClass {
 				arc.setElementTerminal(parser.makeInteger());
 				break;
 			case 2:
-				arc.setVReg(parser.makeDouble());
+				arc.setVreg(parser.makeDouble());
 				break;
 			case 3:
 				arc.setBandwidth(parser.makeDouble());
@@ -196,7 +196,7 @@ public class RegControl extends ControlClass {
 				arc.setReversible(Util.interpretYesNo(param));
 				break;
 			case 11:
-				arc.setRevVReg(parser.makeDouble());
+				arc.setRevVreg(parser.makeDouble());
 				break;
 			case 12:
 				arc.setRevBandwidth(parser.makeDouble());
@@ -307,7 +307,7 @@ public class RegControl extends ControlClass {
 			arc.setElementName(otherRegControl.getElementName());
 			arc.setControlledElement(otherRegControl.getControlledElement());  // pointer to target circuit element
 			arc.setElementTerminal(otherRegControl.getElementTerminal());
-			arc.setVReg(otherRegControl.getVReg());
+			arc.setVreg(otherRegControl.getVreg());
 			arc.setBandwidth(otherRegControl.getBandwidth());
 			arc.setPTRatio(otherRegControl.getPTRatio());
 			arc.setCTRating(otherRegControl.getCTRating());
@@ -316,7 +316,7 @@ public class RegControl extends ControlClass {
 			arc.setRegulatedBus(otherRegControl.getRegulatedBus());
 			arc.setTimeDelay(otherRegControl.getTimeDelay());
 			arc.setReversible(otherRegControl.isReversible());
-			arc.setRevVReg(otherRegControl.getRevVReg());
+			arc.setRevVreg(otherRegControl.getRevVreg());
 			arc.setRevBandwidth(otherRegControl.getRevBandwidth());
 			arc.setRevR(otherRegControl.getRevR());
 			arc.setRevX(otherRegControl.getRevX());

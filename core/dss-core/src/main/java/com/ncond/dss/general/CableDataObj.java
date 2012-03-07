@@ -17,7 +17,7 @@ public class CableDataObj extends ConductorDataObj {
 		super(parClass, cableDataName);
 
 		setName(cableDataName.toLowerCase());
-		objType = parClass.getDSSClassType();
+		objType = parClass.getClassType();
 
 		epsR     =  2.3;
 		insLayer = -1.0;

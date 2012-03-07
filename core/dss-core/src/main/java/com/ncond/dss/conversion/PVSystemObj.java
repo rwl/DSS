@@ -135,7 +135,7 @@ public class PVSystemObj extends PCElement {
 		super(parClass);
 
 		setName(PVSystemName.toLowerCase());
-		objType = parClass.getDSSClassType();  // + PVSystem_ELEMENT;  // in both PCElement and PVSystemElement list
+		objType = parClass.getClassType();  // + PVSystem_ELEMENT;  // in both PCElement and PVSystemElement list
 
 		setNumPhases(3);
 		nConds = 4;    // defaults to wye

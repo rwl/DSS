@@ -54,7 +54,7 @@ public class FaultObj extends PDElement {
 	public FaultObj(DSSClass parClass, String faultName) {
 		super(parClass);
 
-		objType = parClass.getDSSClassType(); //FAULTOBJECT + NON_PCPD_ELEM;  // only in fault object class
+		objType = parClass.getClassType(); //FAULTOBJECT + NON_PCPD_ELEM;  // only in fault object class
 		setName(faultName.toLowerCase());
 
 		// default to SLG fault

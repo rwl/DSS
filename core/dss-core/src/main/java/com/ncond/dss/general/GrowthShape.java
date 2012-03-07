@@ -137,7 +137,7 @@ public class GrowthShape extends DSSClass {
 
 			switch (paramPointer) {
 			case -1:
-				DSS.doSimpleMsg("Unknown parameter \"" + paramName + "\" for Object \"" + getName() +"."+ getName() + "\"", 600);
+				DSS.doSimpleMsg("Unknown parameter \"" + paramName + "\" for Object \"" + getClassName() +"."+ getClassName() + "\"", 600);
 				break;
 			case 0:
 				pShape.setNPts(Parser.getInstance().makeInteger());

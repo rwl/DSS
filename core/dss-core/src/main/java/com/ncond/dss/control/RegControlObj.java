@@ -6,6 +6,9 @@ import java.io.FileWriter;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+
 import org.apache.commons.math.complex.Complex;
 
 import com.ncond.dss.common.Circuit;
@@ -25,6 +28,8 @@ import com.ncond.dss.shared.ComplexUtil;
  * Transformer to be controlled must already exist.
  *
  */
+@Data
+@EqualsAndHashCode(callSuper=true)
 public class RegControlObj extends ControlElem {
 
 	private static int lastChange;
@@ -70,7 +75,7 @@ public class RegControlObj extends ControlElem {
 	public RegControlObj(DSSClass parClass, String regControlName) {
 		super(parClass);
 		setName(regControlName.toLowerCase());
-		objType = parClass.getDSSClassType();
+		objType = parClass.getClassType();
 
 		setNumPhases(3);  // directly set conds and phases
 		nConds = 3;
@@ -114,7 +119,7 @@ public class RegControlObj extends ControlElem {
 		VBuffer = null;
 		CBuffer = null;
 
-		objType = parClass.getDSSClassType();  // REG_CONTROL;
+		objType = parClass.getClassType();  // REG_CONTROL;
 
 		initPropertyValues(0);
 		inverseTime = false;
@@ -168,7 +173,7 @@ public class RegControlObj extends ControlElem {
 					}
 					// buffer to hold regulator voltages
 					VBuffer = Util.resizeArray(VBuffer, getControlledElement().getNumPhases());
-					CBuffer = Util.resizeArray(CBuffer, getControlledElement().getYorder());
+					CBuffer = Util.resizeArray(CBuffer, getControlledElement().getYOrder());
 				}
 			} else {
 				setControlledElement(null);  // we get here if element not found
@@ -735,7 +740,7 @@ public class RegControlObj extends ControlElem {
 					setBus(0, getControlledElement().getBus(elementTerminal));
 					// buffer to hold regulator voltages
 					VBuffer = Util.resizeArray(VBuffer, getControlledElement().getNumPhases());
-					CBuffer = Util.resizeArray(CBuffer, getControlledElement().getYorder());
+					CBuffer = Util.resizeArray(CBuffer, getControlledElement().getYOrder());
 				}
 			}
 		}
@@ -753,300 +758,6 @@ public class RegControlObj extends ControlElem {
 	@Override
 	public int injCurrents() {
 		throw new UnsupportedOperationException();
-	}
-
-	public double getPendingTapChange() {
-		return pendingTapChange;
-	}
-
-	public double getTargetVoltage() {
-		return Vreg;
-	}
-
-	public double getBandwidth() {
-		return bandwidth;
-	}
-
-	public double getPTRatio() {
-		return PTRatio;
-	}
-
-	public double getCTRating() {
-		return CTRating;
-	}
-
-	public double getLineDropR() {
-		return R;
-	}
-
-	public double getLineDropX() {
-		return X;
-	}
-
-	public double getRevTargetVoltage() {
-		return revVreg;
-	}
-
-	public double getRevBandwidth() {
-		return revBandwidth;
-	}
-
-	public double getRevR() {
-		return revR;
-	}
-
-	public double getRevX() {
-		return revX;
-	}
-
-	public boolean useReverseDrop() {
-		return isReversible;
-	}
-
-	public boolean useLineDrop() {
-		return LDCActive;
-	}
-
-	public double getTapDelay() {
-		return tapDelay;
-	}
-
-	public int getMaxTapChange() {
-		return tapLimitPerChange;
-	}
-
-	public boolean isInverseTime() {
-		return inverseTime;
-	}
-
-	public double getVoltageLimit() {
-		return VLimit;
-	}
-
-	public boolean useLimit() {
-		return VLimitActive;
-	}
-
-	// FIXME Private members in OpenDSS
-
-	public double getVReg() {
-		return Vreg;
-	}
-
-	public void setVReg(double value) {
-		Vreg = value;
-	}
-
-	public double getR() {
-		return R;
-	}
-
-	public void setR(double value) {
-		R = value;
-	}
-
-	public double getX() {
-		return X;
-	}
-
-	public void setX(double value) {
-		X = value;
-	}
-
-	public double getRevVReg() {
-		return revVreg;
-	}
-
-	public void setRevVReg(double value) {
-		this.revVreg = value;
-	}
-
-	public String getRegulatedBus() {
-		return regulatedBus;
-	}
-
-	public void setRegulatedBus(String bus) {
-		regulatedBus = bus;
-	}
-
-	public boolean isReversible() {
-		return isReversible;
-	}
-
-	public void setReversible(boolean value) {
-		isReversible = value;
-	}
-
-	public boolean isLDCActive() {
-		return LDCActive;
-	}
-
-	public void setLDCActive(boolean active) {
-		LDCActive = active;
-	}
-
-	public boolean isUsingRegulatedBus() {
-		return usingRegulatedBus;
-	}
-
-	public void setUsingRegulatedBus(boolean value) {
-		usingRegulatedBus = value;
-	}
-
-	public boolean isDebugTrace() {
-		return debugTrace;
-	}
-
-	public void setDebugTrace(boolean value) {
-		debugTrace = value;
-	}
-
-	public boolean isArmed() {
-		return armed;
-	}
-
-	public void setArmed(boolean value) {
-		armed = value;
-	}
-
-	public File getTraceFile() {
-		return traceFile;
-	}
-
-	public void setTraceFile(File tracefile) {
-		traceFile = tracefile;
-	}
-
-	public int getTapLimitPerChange() {
-		return tapLimitPerChange;
-	}
-
-	public void setTapLimitPerChange(int tapLimit) {
-		tapLimitPerChange = tapLimit;
-	}
-
-	public int getTapWinding() {
-		return tapWinding;
-	}
-
-	public void setTapWinding(int winding) {
-		tapWinding = winding;
-	}
-
-	public boolean isInversetime() {
-		return inverseTime;
-	}
-
-	public void setInverseTime(boolean time) {
-		inverseTime = time;
-	}
-
-	public double getVLimit() {
-		return VLimit;
-	}
-
-	public void setVLimit(double limit) {
-		VLimit = limit;
-	}
-
-	public boolean isVLimitActive() {
-		return VLimitActive;
-	}
-
-	public void setVLimitActive(boolean limitActive) {
-		VLimitActive = limitActive;
-	}
-
-	public int getPTPhase() {
-		return PTPhase;
-	}
-
-	public void setPTPhase(int phase) {
-		PTPhase = phase;
-	}
-
-	public int getControlledPhase() {
-		return controlledPhase;
-	}
-
-	public void setControlledPhase(int phase) {
-		controlledPhase = phase;
-	}
-
-	public Complex[] getVBuffer() {
-		return VBuffer;
-	}
-
-	public void setVBuffer(Complex[] buffer) {
-		VBuffer = buffer;
-	}
-
-	public Complex[] getCBuffer() {
-		return CBuffer;
-	}
-
-	public void setCBuffer(Complex[] buffer) {
-		CBuffer = buffer;
-	}
-
-	public void setBandwidth(double value) {
-		bandwidth = value;
-	}
-
-	public void setPTRatio(double ratio) {
-		PTRatio = ratio;
-	}
-
-	public void setCTRating(double rating) {
-		CTRating = rating;
-	}
-
-	public void setRevBandwidth(double bandwidth) {
-		this.revBandwidth = bandwidth;
-	}
-
-	public void setRevR(double value) {
-		this.revR = value;
-	}
-
-	public void setRevX(double value) {
-		this.revX = value;
-	}
-
-	public void setTapDelay(double delay) {
-		tapDelay = delay;
-	}
-
-	public double getKWRevPowerThreshold() {
-		return kWRevPowerThreshold;
-	}
-
-	public void setKWRevPowerThreshold(double threshold) {
-		this.kWRevPowerThreshold = threshold;
-	}
-
-	public void setRevDelay(double delay) {
-		this.revDelay = delay;
-	}
-
-	public void setReverseNeutral(boolean value) {
-		reverseNeutral = value;
-	}
-
-	public void setRevPowerThreshold(double threshold) {
-		revPowerThreshold = threshold;
-	}
-
-	public double getRevPowerThreshold() {
-		return revPowerThreshold;
-	}
-
-	public double getRevDelay() {
-		return revDelay;
-	}
-
-	public boolean isReverseNeutral() {
-		return reverseNeutral;
 	}
 
 }

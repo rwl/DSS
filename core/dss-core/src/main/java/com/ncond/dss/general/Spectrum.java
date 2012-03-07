@@ -100,7 +100,7 @@ public class Spectrum extends DSSClass {
 
 			switch (paramPointer) {
 			case -1:
-				DSS.doSimpleMsg("Unknown parameter \""+paramName+"\" for Object \""+getName()+"\"", 650);
+				DSS.doSimpleMsg("Unknown parameter \""+paramName+"\" for Object \""+getClassName()+"\"", 650);
 				break;
 			case 0:
 				aso.setNumHarm(parser.makeInteger());

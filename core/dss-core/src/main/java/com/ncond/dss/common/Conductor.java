@@ -1,6 +1,8 @@
 package com.ncond.dss.common;
 
+import lombok.Data;
 
+@Data
 public class Conductor {
 
 	private String TCCName;
@@ -44,22 +46,6 @@ public class Conductor {
 	 */
 	public void resetIsqt() {
 		DSS.doSimpleMsg("Need to implement Conductor.resetIsqt", 771);
-	}
-
-	public boolean isClosed() {
-		return closed;
-	}
-
-	public void setClosed(boolean value) {
-		closed = value;
-	}
-
-	public boolean isFuseBlown() {
-		return fuseBlown;
-	}
-
-	public void setFuseBlown(boolean value) {
-		fuseBlown = value;
 	}
 
 }

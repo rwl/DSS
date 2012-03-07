@@ -67,7 +67,7 @@ public class WireData extends ConductorData {
 
 			switch (paramPointer) {
 			case -1:
-				DSS.doSimpleMsg("Unknown parameter \"" + paramName + "\" for object \"" + getName() +'.'+ acd.getName() + "\"", 101);
+				DSS.doSimpleMsg("Unknown parameter \"" + paramName + "\" for object \"" + getClassName() +'.'+ acd.getName() + "\"", 101);
 				break;
 			default:
 				// inherited parameters

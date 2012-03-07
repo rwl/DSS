@@ -3,6 +3,9 @@ package com.ncond.dss.control;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+
 import org.apache.commons.math.complex.Complex;
 
 import com.ncond.dss.common.Bus;
@@ -24,6 +27,8 @@ import com.ncond.dss.delivery.CapacitorObj;
  *
  * Capacitor to be controlled must already exist.
  */
+@Data
+@EqualsAndHashCode(callSuper=true)
 public class CapControlObj extends ControlElem {
 
 	public enum CapControlType {
@@ -71,7 +76,7 @@ public class CapControlObj extends ControlElem {
 	public CapControlObj(DSSClass parClass, String capControlName) {
 		super(parClass);
 		setName(capControlName.toLowerCase());
-		objType = parClass.getDSSClassType();
+		objType = parClass.getClassType();
 
 		setNumPhases(3);  // directly set conds and phases
 		nConds = 3;
@@ -117,7 +122,7 @@ public class CapControlObj extends ControlElem {
 
 		cBuffer = null;
 
-		objType = parClass.getDSSClassType();  // CAP_CONTROL;
+		objType = parClass.getClassType();  // CAP_CONTROL;
 
 		initPropertyValues(0);
 
@@ -171,7 +176,7 @@ public class CapControlObj extends ControlElem {
 				setBus(0, monitoredElement.getBus(elementTerminal));
 
 				// allocate a buffer big enough to hold everything from the monitored element
-				cBuffer = Util.resizeArray(cBuffer, monitoredElement.getYorder());
+				cBuffer = Util.resizeArray(cBuffer, monitoredElement.getYOrder());
 
 				condOffset = elementTerminal * monitoredElement.getNumConds();  // for speedy sampling
 			}
@@ -204,7 +209,7 @@ public class CapControlObj extends ControlElem {
 			setBus(0, monitoredElement.getBus(elementTerminal));
 
 			// allocate a buffer big enough to hold everything from the monitored element
-			cBuffer = Util.resizeArray(cBuffer, monitoredElement.getYorder());
+			cBuffer = Util.resizeArray(cBuffer, monitoredElement.getYOrder());
 
 			condOffset = elementTerminal * monitoredElement.getNumConds();  // for speedy sampling
 		}
@@ -831,244 +836,6 @@ public class CapControlObj extends ControlElem {
 	public void setPendingChange(ControlAction value) {
 		pendingChange = value;
 		dblTraceParameter = value.code();
-	}
-
-	public ControlAction getPendingChange() {
-		return pendingChange;
-	}
-
-	public CapControlType getControlType() {
-		return controlType;
-	}
-
-	public void setControlType(CapControlType type) {
-		controlType = type;
-	}
-
-	public double getOnValue() {
-		return onValue;
-	}
-
-	public double getOffValue() {
-		return offValue;
-	}
-
-	public double getPFOnValue() {
-		return PFOnValue;
-	}
-
-	public double getPFOffValue() {
-		return PFOffValue;
-	}
-
-	public double getCTRatio() {
-		return CTRatio;
-	}
-
-	public double getPTRatio() {
-		return PTRatio;
-	}
-
-	public double getOnDelay() {
-		return OnDelay;
-	}
-
-	public double getOffDelay() {
-		return OffDelay;
-	}
-
-	public double getDeadTime() {
-		return DeadTime;
-	}
-
-	public boolean isVOverride() {
-		return VOverride;
-	}
-
-	public double getVMax() {
-		return VMax;
-	}
-
-	public double getVMin() {
-		return VMin;
-	}
-
-	// FIXME Private properties in OpenDSS
-
-	public int getCTPhase() {
-		return CTPhase;
-	}
-
-	public void setCTPhase(int phase) {
-		CTPhase = phase;
-	}
-
-	public int getPTPhase() {
-		return PTPhase;
-	}
-
-	public void setPTPhase(int phase) {
-		PTPhase = phase;
-	}
-
-	public double getLastOpenTime() {
-		return LastOpenTime;
-	}
-
-	public void setLastOpenTime(double time) {
-		LastOpenTime = time;
-	}
-
-	public String getCapacitorName() {
-		return capacitorName;
-	}
-
-	public void setCapacitorName(String name) {
-		capacitorName = name;
-	}
-
-	public CktElement getMonitoredElement() {
-		return monitoredElement;
-	}
-
-	public void setMonitoredElement(CktElement element) {
-		monitoredElement = element;
-	}
-
-	public CapacitorObj getControlledCapacitor() {
-		return controlledCapacitor;
-	}
-
-	public void setControlledCapacitor(CapacitorObj capacitor) {
-		controlledCapacitor = capacitor;
-	}
-
-	public boolean isShouldSwitch() {
-		return shouldSwitch;
-	}
-
-	public void setShouldSwitch(boolean value) {
-		shouldSwitch = value;
-	}
-
-	public boolean isArmed() {
-		return armed;
-	}
-
-	public void setArmed(boolean value) {
-		armed = value;
-	}
-
-	public ControlAction getPresentState() {
-		return presentState;
-	}
-
-	public void setPresentState(ControlAction state) {
-		presentState = state;
-	}
-
-	public ControlAction getInitialState() {
-		return initialState;
-	}
-
-	public void setInitialState(ControlAction state) {
-		initialState = state;
-	}
-
-	public int getControlActionHandle() {
-		return controlActionHandle;
-	}
-
-	public void setControlActionHandle(int handle) {
-		controlActionHandle = handle;
-	}
-
-	public int getCondOffset() {
-		return condOffset;
-	}
-
-	public void setCondOffset(int offset) {
-		condOffset = offset;
-	}
-
-	public Complex[] getCBuffer() {
-		return cBuffer;
-	}
-
-	public void setCBuffer(Complex[] buffer) {
-		cBuffer = buffer;
-	}
-
-	public void setOnValue(double value) {
-		onValue = value;
-	}
-
-	public void setOffValue(double value) {
-		offValue = value;
-	}
-
-	public void setPFOnValue(double value) {
-		PFOnValue = value;
-	}
-
-	public void setPFOffValue(double value) {
-		PFOffValue = value;
-	}
-
-	public void setCTRatio(double ratio) {
-		CTRatio = ratio;
-	}
-
-	public void setPTRatio(double ratio) {
-		PTRatio = ratio;
-	}
-
-	public void setOnDelay(double delay) {
-		OnDelay = delay;
-	}
-
-	public void setOffDelay(double delay) {
-		OffDelay = delay;
-	}
-
-	public void setDeadTime(double time) {
-		DeadTime = time;
-	}
-
-	public void setVOverride(boolean vOverride) {
-		VOverride = vOverride;
-	}
-
-	public void setVMax(double vmax) {
-		VMax = vmax;
-	}
-
-	public void setVMin(double vmin) {
-		VMin = vmin;
-	}
-
-	public boolean isVOverrideBusSpecified() {
-		return VOverrideBusSpecified;
-	}
-
-	public void setVOverrideBusSpecified(boolean vOverrideBusSpecified) {
-		VOverrideBusSpecified = vOverrideBusSpecified;
-	}
-
-	public String getVOverrideBusName() {
-		return VOverrideBusName;
-	}
-
-	public void setVOverrideBusName(String vOverrideBusName) {
-		VOverrideBusName = vOverrideBusName;
-	}
-
-	public int getVOverrideBusIndex() {
-		return VOverrideBusIndex;
-	}
-
-	public void setVOverrideBusIndex(int vOverrideBusIndex) {
-		VOverrideBusIndex = vOverrideBusIndex;
 	}
 
 }

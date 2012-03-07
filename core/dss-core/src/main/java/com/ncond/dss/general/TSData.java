@@ -77,7 +77,7 @@ public class TSData extends CableData {
 
 			switch (paramPointer) {
 			case -1:
-				DSS.doSimpleMsg("Unknown parameter \"" + paramName + "\" for object \"" + getName() +"."+ tsd.getName() + "\"", 101);
+				DSS.doSimpleMsg("Unknown parameter \"" + paramName + "\" for object \"" + getClassName() +"."+ tsd.getName() + "\"", 101);
 				break;
 			case 0:
 				tsd.setDiaShield(parser.makeDouble());

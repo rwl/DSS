@@ -46,7 +46,7 @@ public class LineCodeObj extends DSSObject {
 		super(parClass);
 
 		setName(lineCodeName.toLowerCase());
-		objType = parClass.getDSSClassType();
+		objType = parClass.getClassType();
 
 		setNPhases(3);  // directly set conds and phases
 		neutralConductor = nPhases - 1;  // initialize to last conductor

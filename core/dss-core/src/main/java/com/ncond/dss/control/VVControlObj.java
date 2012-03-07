@@ -5,6 +5,9 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+
 import org.apache.commons.math.complex.Complex;
 
 import com.ncond.dss.common.CktElement;
@@ -16,6 +19,8 @@ import com.ncond.dss.conversion.GeneratorObj;
 import com.ncond.dss.general.XYCurveObj;
 import com.ncond.dss.shared.PointerList;
 
+@Data
+@EqualsAndHashCode(callSuper=true)
 public class VVControlObj extends ControlElem {
 
 	private static final int NONE = 0;
@@ -53,7 +58,7 @@ public class VVControlObj extends ControlElem {
 		super(parClass);
 
 		setName(VVCControlName.toLowerCase());
-		objType = parClass.getDSSClassType();
+		objType = parClass.getClassType();
 
 		setNumPhases(1);  // directly set conds and phases
 		nConds = 3;
@@ -113,7 +118,7 @@ public class VVControlObj extends ControlElem {
 				// sets name of i-th terminal's connected bus in VVCControl's buslist
 				setBus(0, monitoredElement.getBus( elementTerminal ));
 			}
-			Util.resizeArray(cBuffer, monitoredElement.getYorder());
+			Util.resizeArray(cBuffer, monitoredElement.getYOrder());
 			condOffset = (elementTerminal - 1) * monitoredElement.getNumConds();
 			// for speedy sampling
 		} else {
@@ -511,252 +516,6 @@ public class VVControlObj extends ControlElem {
 	@Override
 	public int injCurrents() {
 		throw new UnsupportedOperationException();
-	}
-
-	// FIXME Private members in OpenDSS
-
-	public double getVvc_Vmaxpu() {
-		return vvc_VMaxPU;
-	}
-
-	public void setVvc_Vmaxpu(double vvc_Vmaxpu) {
-		this.vvc_VMaxPU = vvc_Vmaxpu;
-	}
-
-	public double getVvc_Vminpu() {
-		return vvc_VMinPU;
-	}
-
-	public void setVvc_Vminpu(double vvc_Vminpu) {
-		this.vvc_VMinPU = vvc_Vminpu;
-	}
-
-	public double getKva_rating() {
-		return kVA_Rating;
-	}
-
-	public void setKva_rating(double kva_rating) {
-		this.kVA_Rating = kva_rating;
-	}
-
-	public double getkW_rating() {
-		return kW_Rating;
-	}
-
-	public void setkW_rating(double kW_rating) {
-		this.kW_Rating = kW_rating;
-	}
-
-	public double getKvar_fulloutput() {
-		return kVAr_FullOutput;
-	}
-
-	public void setKvar_fulloutput(double kvar_fulloutput) {
-		this.kVAr_FullOutput = kvar_fulloutput;
-	}
-
-	public double getPf() {
-		return pf;
-	}
-
-	public void setPf(double pf) {
-		this.pf = pf;
-	}
-
-	public double getDelay() {
-		return delay;
-	}
-
-	public void setDelay(double delay) {
-		this.delay = delay;
-	}
-
-	public double getDelayoff() {
-		return delayOff;
-	}
-
-	public void setDelayoff(double delayoff) {
-		this.delayOff = delayoff;
-	}
-
-	public double getkW_ramp_rate() {
-		return kW_RampRate;
-	}
-
-	public void setkW_ramp_rate(double kW_ramp_rate) {
-		this.kW_RampRate = kW_ramp_rate;
-	}
-
-	public double getKvar_ramp_rate() {
-		return kVAr_RampRate;
-	}
-
-	public void setKvar_ramp_rate(double kvar_ramp_rate) {
-		this.kVAr_RampRate = kvar_ramp_rate;
-	}
-
-	public double getkW_limit() {
-		return kW_Limit;
-	}
-
-	public void setkW_limit(double kW_limit) {
-		this.kW_Limit = kW_limit;
-	}
-
-	public double getKvar_limit() {
-		return kVAr_Limit;
-	}
-
-	public void setKvar_limit(double kvar_limit) {
-		this.kVAr_Limit = kvar_limit;
-	}
-
-	public double getDeltaVTolerance() {
-		return deltaVTolerance;
-	}
-
-	public void setDeltaVTolerance(double deltaVTolerance) {
-		this.deltaVTolerance = deltaVTolerance;
-	}
-
-	public double getTotalWeight() {
-		return totalWeight;
-	}
-
-	public void setTotalWeight(double totalWeight) {
-		this.totalWeight = totalWeight;
-	}
-
-	public double getQOldDeliver() {
-		return QOldDeliver;
-	}
-
-	public void setQOldDeliver(double qOldDeliver) {
-		QOldDeliver = qOldDeliver;
-	}
-
-	public double getQdeliver() {
-		return QDeliver;
-	}
-
-	public void setQdeliver(double qdeliver) {
-		QDeliver = qdeliver;
-	}
-
-	public double getQNew() {
-		return QNew;
-	}
-
-	public void setQNew(double qNew) {
-		QNew = qNew;
-	}
-
-	public double getVavgPuPrior() {
-		return VAvgPuPrior;
-	}
-
-	public void setVavgPuPrior(double vavgPuPrior) {
-		VAvgPuPrior = vavgPuPrior;
-	}
-
-	public double getVavgPu() {
-		return VAvgPu;
-	}
-
-	public void setVavgPu(double vavgPu) {
-		VAvgPu = vavgPu;
-	}
-
-	public double getPresentHour() {
-		return presentHour;
-	}
-
-	public void setPresentHour(double presentHour) {
-		this.presentHour = presentHour;
-	}
-
-	public int getControlActionHandle() {
-		return controlActionHandle;
-	}
-
-	public void setControlActionHandle(int controlActionHandle) {
-		this.controlActionHandle = controlActionHandle;
-	}
-
-	public int getListSize() {
-		return listSize;
-	}
-
-	public void setListSize(int listSize) {
-		this.listSize = listSize;
-	}
-
-	public List<String> getGeneratorNameList() {
-		return generatorNameList;
-	}
-
-	public void setGeneratorNameList(List<String> generatorNameList) {
-		this.generatorNameList = generatorNameList;
-	}
-
-	public PointerList getGenPointerList() {
-		return genPointerList;
-	}
-
-	public void setGenPointerList(PointerList genPointerList) {
-		this.genPointerList = genPointerList;
-	}
-
-	public double[] getWeights() {
-		return weights;
-	}
-
-	public void setWeights(double[] weights) {
-		this.weights = weights;
-	}
-
-	public int getVvc_curve_size() {
-		return vvc_CurveSize;
-	}
-
-	public void setVvc_curve_size(int vvc_curve_size) {
-		this.vvc_CurveSize = vvc_curve_size;
-	}
-
-	public XYCurveObj getVvc_curve() {
-		return vvc_Curve;
-	}
-
-	public void setVvc_curve(XYCurveObj vvc_curve) {
-		this.vvc_Curve = vvc_curve;
-	}
-
-	public double getDeltaQ_factor() {
-		return deltaQFactor;
-	}
-
-	public void setDeltaQ_factor(double deltaQ_factor) {
-		this.deltaQFactor = deltaQ_factor;
-	}
-
-	public int getPendingChange() {
-		return pendingChange;
-	}
-
-	public CktElement getMonitoredElement() {
-		return monitoredElement;
-	}
-
-	public void setMonitoredElement(CktElement monitoredElement) {
-		this.monitoredElement = monitoredElement;
-	}
-
-	public int getCondOffset() {
-		return condOffset;
-	}
-
-	public void setCondOffset(int condOffset) {
-		this.condOffset = condOffset;
 	}
 
 }

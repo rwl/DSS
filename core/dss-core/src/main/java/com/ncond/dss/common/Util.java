@@ -995,7 +995,7 @@ public class Util {
 	}
 
 	public static boolean isShuntElement(CktElement elem) {
-		switch (elem.getDSSObjType() & DSSClassDefs.CLASSMASK) {
+		switch (elem.getObjType() & DSSClassDefs.CLASSMASK) {
 		case DSSClassDefs.CAP_ELEMENT:
 			return ((CapacitorObj) elem).isShunt();
 		case DSSClassDefs.REACTOR_ELEMENT:
@@ -1006,7 +1006,7 @@ public class Util {
 	}
 
 	public static boolean isLineElement(CktElement elem) {
-		if ((elem.getDSSObjType() & DSSClassDefs.CLASSMASK) == DSSClassDefs.LINE_ELEMENT) {
+		if ((elem.getObjType() & DSSClassDefs.CLASSMASK) == DSSClassDefs.LINE_ELEMENT) {
 			return true;
 		} else {
 			return false;
@@ -1014,7 +1014,7 @@ public class Util {
 	}
 
 	public static boolean isTransformerElement(CktElement elem) {
-		if ((elem.getDSSObjType() & DSSClassDefs.CLASSMASK) == DSSClassDefs.XFMR_ELEMENT) {
+		if ((elem.getObjType() & DSSClassDefs.CLASSMASK) == DSSClassDefs.XFMR_ELEMENT) {
 			return true;
 		} else {
 			return false;
@@ -1136,7 +1136,7 @@ public class Util {
 
 		// dump all present DSSClasses
 		for (DSSClass pClass : DSS.DSSClassList) {
-			pw.println("[" + pClass.getName() + "]");
+			pw.println("[" + pClass.getClassName() + "]");
 			for (int i = 0; i < pClass.getNumProperties(); i++)
 				pw.println(i + ", \"" + pClass.getPropertyName(i) + "\" \"" + pClass.getPropertyHelp()[i] + "\"");
 		}
@@ -1252,7 +1252,7 @@ public class Util {
 	}
 
 	public static int doResetControls() {
-		for (ControlElem cElem : DSS.activeCircuit.getDSSControls()) {
+		for (ControlElem cElem : DSS.activeCircuit.getControls()) {
 			if (cElem.isEnabled())
 				cElem.reset();
 		}
@@ -1442,7 +1442,7 @@ public class Util {
 			return result;
 
 		try {
-			clsName = cls.getName();
+			clsName = cls.getClassName();
 			FileWriter fw = new FileWriter(clsName + ".dss");
 			pw = new PrintWriter(fw);
 
@@ -1481,7 +1481,7 @@ public class Util {
 			return result;
 
 		try {
-			clsName = cls.getName();
+			clsName = cls.getClassName();
 			if (fileName.length() == 0)
 				fileName = clsName + ".dss";  // default file name
 
@@ -1537,12 +1537,12 @@ public class Util {
 	public static void writeActiveDSSObject(PrintWriter pw, String newOrEdit) {
 
 		DSSClass parClass = DSS.activeDSSObject.getParentClass();
-		pw.write(newOrEdit + " \"" + parClass.getName() + "." + DSS.activeDSSObject.getName() + "\"");
+		pw.write(newOrEdit + " \"" + parClass.getClassName() + "." + DSS.activeDSSObject.getName() + "\"");
 
 		DSS.activeDSSObject.saveWrite(pw);
 
 		// handle disabled circuit elements; modified to allow applets to save disabled elements 12-28-06
-		if ((DSS.activeDSSObject.getDSSObjType() & DSSClassDefs.CLASSMASK) != DSSClassDefs.DSS_OBJECT) {
+		if ((DSS.activeDSSObject.getObjType() & DSSClassDefs.CLASSMASK) != DSSClassDefs.DSS_OBJECT) {
 			CktElement elem = (CktElement) DSS.activeDSSObject;
 			if (!elem.isEnabled())
 				pw.write(" ENABLED=NO");
@@ -2044,7 +2044,7 @@ public class Util {
 
 		int result = 0;
 		for (int i = 0; i < ckt.getNumDevices(); i++)
-			result = Math.max(result, ckt.getCktElements().get(i).getYorder());
+			result = Math.max(result, ckt.getCktElements().get(i).getYOrder());
 		return result;
 	}
 
@@ -2122,7 +2122,7 @@ public class Util {
 
 		/* Error check */
 		if (pPDelem == null) {
-			DSS.doSimpleMsg(fromLine.getParentClass().getName() + "." + fromLine.getName() + " not found in meter zone.", 723);
+			DSS.doSimpleMsg(fromLine.getParentClass().getClassName() + "." + fromLine.getName() + " not found in meter zone.", 723);
 			return;
 		}
 
@@ -2138,7 +2138,7 @@ public class Util {
 			pPDelem = (PDElement) pMeter.getBranchList().goForward();
 
 			while (pPDelem != null) {
-				s = "edit " + pPDelem.getParentClass().getName() + "." + pPDelem.getName();
+				s = "edit " + pPDelem.getParentClass().getClassName() + "." + pPDelem.getName();
 
 				/* ----------------LINES------------------------------------- */
 
@@ -2164,7 +2164,7 @@ public class Util {
 					while (pShuntObject != null) {
 						/* 1st terminal only */
 						i = 0;
-						s = "edit " + pShuntObject.getParentClass().getName() + "." + pShuntObject.getName();
+						s = "edit " + pShuntObject.getParentClass().getClassName() + "." + pShuntObject.getName();
 						s = s + String.format(" Bus%d=%s%s", i, stripExtension(pShuntObject.getBus(i)), phaseString);
 						if (editStr.length() > 0)
 							s = s + "  " + editStr;
@@ -2366,14 +2366,14 @@ public class Util {
 	public static String makeNewCktElemName(final String oldName) {
 		DSS.setObject(oldName);  // set object active
 		DSSObject obj = DSS.activeDSSObject;
-		return String.format("%s.%s%d", obj.getParentClass().getName(),
-				obj.getParentClass().getName().substring(0, 3),
+		return String.format("%s.%s%d", obj.getParentClass().getClassName(),
+				obj.getParentClass().getClassName().substring(0, 3),
 				obj.getClassIndex());
 	}
 
 	private static void renameCktElem(CktElement pElem) {
 		pElem.setName( String.format("%s%d",
-				pElem.getParentClass().getName().substring(0, 3),
+				pElem.getParentClass().getClassName().substring(0, 3),
 				pElem.getClassIndex()) );
 		// make a new device list corresponding to the CktElements list
 		DSS.activeCircuit.getDeviceList().add(pElem.getName());
@@ -2421,7 +2421,7 @@ public class Util {
 		/* Rename the bus names in each circuit element before renaming the
 		 * elements */
 		for (CktElement pCktElem : ckt.getCktElements()) {
-			baseClass = (pCktElem.getDSSObjType() & DSSClassDefs.BASECLASSMASK);
+			baseClass = (pCktElem.getObjType() & DSSClassDefs.BASECLASSMASK);
 			if ((baseClass == DSSClassDefs.PC_ELEMENT) ||
 					(baseClass == DSSClassDefs.PD_ELEMENT)) {
 				s = "";
@@ -2437,7 +2437,7 @@ public class Util {
 					bref  = pCktElem.getTerminal(i).getBusRef();
 					newBusName = String.format("B_%d%s", bref, nodes);
 					// check for transformer because that will be an exception
-					switch (pCktElem.getDSSObjType() & DSSClassDefs.CLASSMASK) {
+					switch (pCktElem.getObjType() & DSSClassDefs.CLASSMASK) {
 					case DSSClassDefs.XFMR_ELEMENT:
 						s = s + String.format("Wdg=%d Bus=%s ", i, newBusName);
 						break;
@@ -2461,7 +2461,7 @@ public class Util {
 		controlUpDatePtrs    = new ArrayList<CktElement>();
 
 		for (CktElement pCktElem : ckt.getCktElements()) {
-			switch (pCktElem.getDSSObjType() & DSSClassDefs.CLASSMASK) {
+			switch (pCktElem.getObjType() & DSSClassDefs.CLASSMASK) {
 			case DSSClassDefs.CAP_CONTROL:
 				s = String.format("Element=%s ",
 						makeNewCktElemName(pCktElem.getPropertyValue(0)));
@@ -2520,7 +2520,7 @@ public class Util {
 
 		for (CktElement pCktElem : ckt.getCktElements()) {
 			if (!pCktElem.isChecked()) {
-				elemClass = (pCktElem.getDSSObjType() & DSSClassDefs.CLASSMASK);
+				elemClass = (pCktElem.getObjType() & DSSClassDefs.CLASSMASK);
 				renameCktElem(pCktElem);
 				switch (elemClass) {
 				case DSSClassDefs.XFMR_ELEMENT:

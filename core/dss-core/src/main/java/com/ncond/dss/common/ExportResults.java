@@ -545,7 +545,7 @@ public class ExportResults {
 				if (PDElem.isEnabled()) {
 					PDElem.getLosses(Stot, Sload, S_noload);
 					pw.printf("%s.%s, %.7g, %.7g, %.7g, %.7g, %.7g, %.7g",
-						PDElem.getParentClass().getName(),
+						PDElem.getParentClass().getClassName(),
 						PDElem.getName().toUpperCase(),
 						Stot[0].getReal(), Stot[0].getImaginary(),
 						Sload[0].getReal(), Sload[0].getImaginary(),
@@ -596,7 +596,7 @@ public class ExportResults {
 					pw.printf("\"%s.%s\", %d, %d, %d", PDElem.getDSSClassName(), PDElem.getName().toUpperCase(),
 							PDElem.getNumTerms(), PDElem.getNumConds(), PDElem.getNumPhases());
 
-					for (i = 0; i < PDElem.getYorder(); i++) {
+					for (i = 0; i < PDElem.getYOrder(); i++) {
 						S = PDElem.getVTerminal(i).multiply( PDElem.getITerminal(i).conjugate() ).multiply(0.001);
 						if (opt == 1) S = S.multiply(0.001);  // convert to MVA
 						pw.printf(", %10.3f, %10.3f", S.getReal(), S.getImaginary());
@@ -614,7 +614,7 @@ public class ExportResults {
 					pw.printf("\"%s.%s\", %d, %d, %d", PCElem.getDSSClassName(), PCElem.getName().toUpperCase(),
 						PCElem.getNumTerms(), PCElem.getNumConds(), PCElem.getNumPhases());
 
-					for (i = 0; i < PCElem.getYorder(); i++) {
+					for (i = 0; i < PCElem.getYOrder(); i++) {
 						S = PCElem.getVTerminal(i).multiply( PCElem.getITerminal(i).conjugate() ).multiply(0.001);
 						if (opt == 1) S = S.multiply(0.001);  // convert to MVA
 						pw.printf(", %10.3f, %10.3f", S.getReal(), S.getImaginary());
@@ -1388,7 +1388,7 @@ public class ExportResults {
 			// PD elements only
 			for (PDElement PDElem : ckt.getPDElements()) {
 				if (PDElem.isEnabled()) {
-					if ((DSSClassDefs.CLASSMASK & PDElem.getDSSObjType()) != DSSClassDefs.CAP_ELEMENT) {  // ignore caps
+					if ((DSSClassDefs.CLASSMASK & PDElem.getObjType()) != DSSClassDefs.CAP_ELEMENT) {  // ignore caps
 						NCond = PDElem.getNumConds();
 						PDElem.getCurrents(cBuffer);
 
@@ -1527,11 +1527,11 @@ public class ExportResults {
 				if (ckt.getActiveCktElement().isEnabled()) {
 					if ((ckt.getActiveCktElement() instanceof PDElement) || (ckt.getActiveCktElement() instanceof PCElement)) {
 						cktElem = ckt.getActiveCktElement();
-						writer.println(cktElem.getParentClass().getName() + "." + cktElem.getName().toUpperCase());
+						writer.println(cktElem.getParentClass().getClassName() + "." + cktElem.getName().toUpperCase());
 						cValues = cktElem.getYPrimValues(DSS.ALL_YPRIM);
-						for (i = 0; i < cktElem.getYorder(); i++) {
-							for (j = 0; j < cktElem.getYorder(); j++)
-								writer.printf("%-13.10g, %-13.10g, ", cValues[i + (j - 1) * cktElem.getYorder()].getReal(), cValues[i + (j - 1) * cktElem.getYorder()].getImaginary());
+						for (i = 0; i < cktElem.getYOrder(); i++) {
+							for (j = 0; j < cktElem.getYOrder(); j++)
+								writer.printf("%-13.10g, %-13.10g, ", cValues[i + (j - 1) * cktElem.getYOrder()].getReal(), cValues[i + (j - 1) * cktElem.getYOrder()].getImaginary());
 							writer.println();
 						}
 					}
@@ -1744,7 +1744,7 @@ public class ExportResults {
 			writer.println("Format: DSS Class Name = Instance Count");
 			writer.println();
 			for (DSSClass cls : DSS.DSSClassList) {
-				writer.printf("%s = %d", cls.getName(), cls.getElementCount());
+				writer.printf("%s = %d", cls.getClassName(), cls.getElementCount());
 				writer.println();
 			}
 

@@ -127,7 +127,7 @@ public class LineGeometry extends DSSClass {
 
 			switch (paramPointer) {
 			case -1:
-				DSS.doSimpleMsg("Unknown parameter \"" + paramName + "\" for Object \"" + getName() + "." + alg.getName() + "\"", 10101);
+				DSS.doSimpleMsg("Unknown parameter \"" + paramName + "\" for Object \"" + getClassName() + "." + alg.getName() + "\"", 10101);
 				break;
 			case 0:
 				alg.setNConds(parser.makeInteger());  // use property value to force reallocations

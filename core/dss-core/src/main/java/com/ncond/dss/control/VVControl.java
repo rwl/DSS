@@ -168,19 +168,19 @@ public class VVControl extends ControlClass {
 				avc.setElementTerminal(parser.makeInteger());
 				break;
 			case 2:
-				avc.setVvc_Vmaxpu(parser.makeDouble());
+				avc.setVvc_VMaxPU(parser.makeDouble());
 				break;
 			case 3:
-				avc.setVvc_Vminpu(parser.makeDouble());
+				avc.setVvc_VMinPU(parser.makeDouble());
 				break;
 			case 4:
-				avc.setKva_rating(parser.makeDouble());
+				avc.setKVA_Rating(parser.makeDouble());
 				break;
 			case 5:
-				avc.setkW_rating(parser.makeDouble());
+				avc.setKW_Rating(parser.makeDouble());
 				break;
 			case 6:
-				avc.setKvar_fulloutput(parser.makeDouble());
+				avc.setKVAr_FullOutput(parser.makeDouble());
 				break;
 			case 7:
 				avc.setPf(parser.makeDouble());
@@ -189,19 +189,19 @@ public class VVControl extends ControlClass {
 				avc.setDelay(parser.makeDouble());
 				break;
 			case 9:
-				avc.setDelayoff(parser.makeDouble());
+				avc.setDelayOff(parser.makeDouble());
 				break;
 			case 10:
-				avc.setkW_ramp_rate(parser.makeDouble());
+				avc.setKW_RampRate(parser.makeDouble());
 				break;
 			case 11:
-				avc.setKvar_ramp_rate(parser.makeDouble());
+				avc.setKVAr_RampRate(parser.makeDouble());
 				break;
 			case 12:
-				avc.setkW_limit(parser.makeDouble());
+				avc.setKW_Limit(parser.makeDouble());
 				break;
 			case 13:
-				avc.setKvar_limit(parser.makeDouble());
+				avc.setKVAr_Limit(parser.makeDouble());
 				break;
 
 			case 14:
@@ -215,13 +215,13 @@ public class VVControl extends ControlClass {
 				}
 				break;
 			case 16:
-				avc.setVvc_curve_size(parser.makeInteger());
+				avc.setVvc_CurveSize(parser.makeInteger());
 				break;
 			case 17:
-				avc.setVvc_curve(getVVCCurve(param));
+				avc.setVvc_Curve(getVVCCurve(param));
 				break;
 			case 18:
-				avc.setDeltaQ_factor(parser.makeDouble());
+				avc.setDeltaQFactor(parser.makeDouble());
 				break;
 			default:
 				// inherited parameters
@@ -240,8 +240,8 @@ public class VVControl extends ControlClass {
 			case 17:
 				// re-set the number vvc_curve_size property to the number
 				// of points in the curve
-				if (avc.getVvc_curve().getNumPoints() != avc.getVvc_curve_size())
-					avc.setVvc_curve_size(avc.getVvc_curve().getNumPoints());
+				if (avc.getVvc_Curve().getNumPoints() != avc.getVvc_CurveSize())
+					avc.setVvc_CurveSize(avc.getVvc_Curve().getNumPoints());
 			}
 
 

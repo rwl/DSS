@@ -25,7 +25,7 @@ public class TCC_CurveObj extends DSSObject {
 		super(parClass);
 
 		setName(name.toLowerCase());
-		objType = parClass.getDSSClassType();
+		objType = parClass.getClassType();
 
 		lastValueAccessed = 0;
 		npts = 0;

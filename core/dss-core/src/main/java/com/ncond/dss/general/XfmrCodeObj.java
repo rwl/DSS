@@ -35,7 +35,7 @@ public class XfmrCodeObj extends DSSObject {
 	public XfmrCodeObj(DSSClass parClass, String xfmrCodeName) {
 		super(parClass);
 		setName(xfmrCodeName.toLowerCase());
-		objType = parClass.getDSSClassType();
+		objType = parClass.getClassType();
 
 		// default values and sizes
 		nPhases       = 3;

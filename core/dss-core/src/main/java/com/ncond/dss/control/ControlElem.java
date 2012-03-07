@@ -1,11 +1,16 @@
 package com.ncond.dss.control;
 
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+
 import com.ncond.dss.common.Bus;
 import com.ncond.dss.common.CktElement;
 import com.ncond.dss.common.DSS;
 import com.ncond.dss.common.DSSClass;
 import com.ncond.dss.common.DSSClassDefs;
 
+@Data
+@EqualsAndHashCode(callSuper=true)
 abstract public class ControlElem extends CktElement {
 
 	public static final double USER_BASE_ACTION_CODE = 100;
@@ -63,82 +68,6 @@ abstract public class ControlElem extends CktElement {
 				controlledElement.setControlElement(this);
 			}
 		}
-	}
-
-	public CktElement getControlledElement() {
-		return controlledElement;
-	}
-
-	public String getElementName() {
-		return elementName;
-	}
-
-	public void setElementName(String name) {
-		elementName = name;
-	}
-
-	public int getElementTerminal() {
-		return elementTerminal;
-	}
-
-	public void setElementTerminal(int terminal) {
-		elementTerminal = terminal;
-	}
-
-	public String getControlledBusName() {
-		return controlledBusName;
-	}
-
-	public void setControlledBusName(String name) {
-		controlledBusName = name;
-	}
-
-	public Bus getControlledBus() {
-		return controlledBus;
-	}
-
-	public void setControlledBus(Bus bus) {
-		controlledBus = bus;
-	}
-
-	public String getMonitorVariable() {
-		return monitorVariable;
-	}
-
-	public void setMonitorVariable(String variable) {
-		monitorVariable = variable;
-	}
-
-	public int getMonitorVarIndex() {
-		return monitorVarIndex;
-	}
-
-	public void setMonitorVarIndex(int index) {
-		monitorVarIndex = index;
-	}
-
-	public double getTimeDelay() {
-		return timeDelay;
-	}
-
-	public void setTimeDelay(double delay) {
-		timeDelay = delay;
-	}
-
-	public double getDblTraceParameter() {
-		return dblTraceParameter;
-	}
-
-	public void setDblTraceParameter(double parameter) {
-		dblTraceParameter = parameter;
-	}
-
-	public boolean isShowEventLog() {
-		return showEventLog;
-	}
-
-	public void setShowEventLog(boolean showEventLog) {
-		this.showEventLog = showEventLog;
 	}
 
 }

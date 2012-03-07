@@ -304,7 +304,7 @@ public class Load extends PCClass {
 
 			switch (paramPointer) {
 			case -1:
-				DSS.doSimpleMsg("Unknown parameter \"" + paramName + "\" for object \"" + getName() +"."+ al.getName() + "\"", 580);
+				DSS.doSimpleMsg("Unknown parameter \"" + paramName + "\" for object \"" + getClassName() +"."+ al.getName() + "\"", 580);
 				break;
 			case 0:
 				al.setNumPhases(parser.makeInteger()); // num phases

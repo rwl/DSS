@@ -287,7 +287,7 @@ public class Generator extends PCClass {
 			if (paramPointer >= 0) {
 				switch (propertyIdxMap[paramPointer]) {
 				case -1:
-					DSS.doSimpleMsg("Unknown parameter \"" + paramName + "\" for object \"" + getName() +"."+ ag.getName() + "\"", 561);
+					DSS.doSimpleMsg("Unknown parameter \"" + paramName + "\" for object \"" + getClassName() +"."+ ag.getName() + "\"", 561);
 					break;
 				case 0:
 					ag.setNumPhases(parser.makeInteger());  // num phases

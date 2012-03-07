@@ -1,7 +1,7 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 <modelVersion>4.0.0</modelVersion>
 <groupId>com.ncond.dss</groupId>
-<artifactId>dss-core</artifactId>
+<artifactId>dss</artifactId>
 <version>0.0.1-SNAPSHOT</version>
 <build>
 	<plugins>
@@ -20,6 +20,7 @@
 				<mainClass>com.epri.dss.shell.Main</mainClass>
 			</configuration>
 		</plugin>
+
 		<plugin>
 			<groupId>org.apache.maven.plugins</groupId>
 			<artifactId>maven-assembly-plugin</artifactId>
@@ -47,15 +48,25 @@
 				</execution>
 			</executions>
 		</plugin>
+
+        <!-- Lombok requires Java 6 -->
+	    <plugin>
+	      <groupId>org.apache.maven.plugins</groupId>
+	      <artifactId>maven-compiler-plugin</artifactId>
+	      <configuration>
+	        <compilerVersion>1.6</compilerVersion>
+	        <source>1.6</source>
+	        <target>1.6</target>
+	      </configuration>
+	    </plugin>
 	</plugins>
 </build>
 
 <dependencies>
-
 	<dependency>
-	<groupId>org.apache.commons</groupId>
-	<artifactId>commons-math</artifactId>
-	<version>2.1</version>
+		<groupId>org.apache.commons</groupId>
+		<artifactId>commons-math</artifactId>
+		<version>2.1</version>
 	</dependency>
 
 	<dependency>
@@ -71,6 +82,11 @@
   		<scope>test</scope>
   	</dependency>
 
+  	<dependency>
+  		<groupId>org.projectlombok</groupId>
+  		<artifactId>lombok</artifactId>
+  		<version>0.10.8</version>
+  	</dependency>
 </dependencies>
 
 </project>

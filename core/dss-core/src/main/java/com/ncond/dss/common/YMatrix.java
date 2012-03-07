@@ -143,7 +143,7 @@ public class YMatrix extends CSparseSolve {
 				}
 				// new function adding primitive Y matrix to KLU system Y matrix
 				if (CmatArray != null)
-					if (addPrimitiveMatrix(sol.getY(), pElem.getYorder(), pElem.getNodeRef(), 1, CmatArray, 1) < 0)  // TODO Check zero based indexing
+					if (addPrimitiveMatrix(sol.getY(), pElem.getYOrder(), pElem.getNodeRef(), 1, CmatArray, 1) < 0)  // TODO Check zero based indexing
 						throw new SolveProblem("Node index out of range adding to System Y Matrix");
 			}  // if enabled
 		}

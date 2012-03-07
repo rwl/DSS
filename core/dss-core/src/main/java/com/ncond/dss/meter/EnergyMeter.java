@@ -233,7 +233,7 @@ public class EnergyMeter extends MeterClass {
 
 			switch (paramPointer) {
 			case -1:
-				DSS.doSimpleMsg("Unknown parameter \"" + paramName + "\" for object \"" + getName() +"."+ aem.getName() + "\"", 520);
+				DSS.doSimpleMsg("Unknown parameter \"" + paramName + "\" for object \"" + getClassName() +"."+ aem.getName() + "\"", 520);
 				break;
 			case 0:
 				aem.setElementName(param.toLowerCase());
@@ -651,7 +651,7 @@ public class EnergyMeter extends MeterClass {
 					createDI_Totals();
 				}
 			} catch (Exception e) {
-				DSS.doSimpleMsg("Error opening demand interval file \""+getName()+".csv" + " for appending."+DSS.CRLF+e.getMessage(), 538);
+				DSS.doSimpleMsg("Error opening demand interval file \""+getClassName()+".csv" + " for appending."+DSS.CRLF+e.getMessage(), 538);
 			}
 
 			DSS.DIFilesAreOpen = true;
@@ -878,7 +878,7 @@ public class EnergyMeter extends MeterClass {
 			try {
 				createDI_Totals();  // TODO add throws exception
 			} catch (Exception e) {
-				DSS.doSimpleMsg("Error opening demand interval file \""+getName()+".csv" + " for appending."+DSS.CRLF+e.getMessage(), 538);
+				DSS.doSimpleMsg("Error opening demand interval file \""+getClassName()+".csv" + " for appending."+DSS.CRLF+e.getMessage(), 538);
 			}
 
 			DSS.DIFilesAreOpen = true;

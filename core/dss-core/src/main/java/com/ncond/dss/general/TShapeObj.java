@@ -55,7 +55,7 @@ public class TShapeObj extends DSSObject {
 	public TShapeObj(DSSClass parClass, String TShapeName) {
 		super(parClass);
 		setName(TShapeName.toLowerCase());
-		objType = parClass.getDSSClassType();
+		objType = parClass.getClassType();
 
 		lastValueAccessed = 0;
 

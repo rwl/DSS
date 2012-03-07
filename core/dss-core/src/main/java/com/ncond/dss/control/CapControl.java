@@ -144,7 +144,7 @@ public class CapControl extends ControlClass {
 
 			switch (paramPointer) {
 			case -1:
-				DSS.doSimpleMsg("Unknown parameter \"" + paramName + "\" for object \"" + getName() +"."+ acc.getName() + "\"", 352);
+				DSS.doSimpleMsg("Unknown parameter \"" + paramName + "\" for object \"" + getClassName() +"."+ acc.getName() + "\"", 352);
 				break;
 			case 0:
 				acc.setElementName(param.toLowerCase());

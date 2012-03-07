@@ -10,9 +10,14 @@ package com.ncond.dss.general;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+
 import com.ncond.dss.common.DSSClass;
 import com.ncond.dss.common.Util;
 
+@Data
+@EqualsAndHashCode(callSuper=true)
 abstract public class DSSObject extends NamedObject {
 
 	protected int propSeqCount;
@@ -41,7 +46,7 @@ abstract public class DSSObject extends NamedObject {
 	}
 
 	public DSSObject(DSSClass parClass) {
-		super(parClass.getName());
+		super(parClass.getClassName());
 
 		objType = 0;
 		propSeqCount = 0;
@@ -139,49 +144,8 @@ abstract public class DSSObject extends NamedObject {
 		return getLocalName();
 	}
 
-	public int getDSSObjType() {
-		return objType;
-	}
-
-	public void setDSSObjType(int type) {
-		objType = type;
-	}
-
-	public DSSClass getParentClass() {
-		return parentClass;
-	}
-
-	public void setParentClass(DSSClass parent) {
-		parentClass = parent;
-	}
-
-	public int getClassIndex() {
-		return classIndex;
-	}
-
-	public void setClassIndex(int index) {
-		classIndex = index;
-	}
-
-	public boolean isHasBeenSaved() {
-		return hasBeenSaved;
-	}
-
-	public void setHasBeenSaved(boolean saved) {
-		hasBeenSaved = saved;
-	}
-
-	public boolean isFlag() {
-		return flag;
-	}
-
-	public void setFlag(boolean value) {
-		flag = value;
-	}
-
-	// FIXME Protected member in OpenDSS
-	public int[] getPrpSequence() {
-		return prpSequence;
+	public String[] getPropertyValue() {
+		return propertyValue;
 	}
 
 }

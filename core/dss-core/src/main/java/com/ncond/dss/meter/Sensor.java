@@ -113,7 +113,7 @@ public class Sensor extends MeterClass {
 
 			switch (paramPointer) {
 			case -1:
-				DSS.doSimpleMsg("Unknown parameter \"" + paramName + "\" for object \"" + getName() +"."+ as.getName() + "\"", 661);
+				DSS.doSimpleMsg("Unknown parameter \"" + paramName + "\" for object \"" + getClassName() +"."+ as.getName() + "\"", 661);
 				break;
 			case 0:
 				as.setElementName(param.toLowerCase());

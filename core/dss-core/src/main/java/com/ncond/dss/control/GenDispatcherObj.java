@@ -5,6 +5,9 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+
 import org.apache.commons.math.complex.Complex;
 
 import com.ncond.dss.common.Circuit;
@@ -23,6 +26,8 @@ import com.ncond.dss.conversion.GeneratorObj;
  *
  *   new genDispatcher.name=myName element=devClass.name terminal=[ 1|2|...] capacitorList=(gen1 gen2 ...)
  */
+@Data
+@EqualsAndHashCode(callSuper=true)
 public class GenDispatcherObj extends ControlElem {
 
 	private double kWLimit,
@@ -41,7 +46,7 @@ public class GenDispatcherObj extends ControlElem {
 		super(parClass);
 
 		setName(genDispatcherName.toLowerCase());
-		objType = parClass.getDSSClassType();
+		objType = parClass.getClassType();
 
 		setNumPhases(3);  // directly set conds and phases
 		nConds = 3;
@@ -274,88 +279,6 @@ public class GenDispatcherObj extends ControlElem {
 	@Override
 	public int injCurrents() {
 		throw new UnsupportedOperationException();
-	}
-
-	// FIXME Private members in OpenDSS
-
-	public double getKWLimit() {
-		return kWLimit;
-	}
-
-	public void setKWLimit(double limit) {
-		this.kWLimit = limit;
-	}
-
-	public double getKWBand() {
-		return kWBand;
-	}
-
-	public void setKWBand(double band) {
-		this.kWBand = band;
-	}
-
-	public double getHalfKWBand() {
-		return halfKWBand;
-	}
-
-	public void setHalfKWBand(double band) {
-		halfKWBand = band;
-	}
-
-	public double getKVArLimit() {
-		return kVArLimit;
-	}
-
-	public void setKVArLimit(double limit) {
-		kVArLimit = limit;
-	}
-
-	public double getTotalWeight() {
-		return totalWeight;
-	}
-
-	public void setTotalWeight(double total) {
-		totalWeight = total;
-	}
-
-	public int getListSize() {
-		return listSize;
-	}
-
-	public void setListSize(int size) {
-		listSize = size;
-	}
-
-	public List<String> getGeneratorNameList() {
-		return generatorNameList;
-	}
-
-	public void setGeneratorNameList(List<String> list) {
-		generatorNameList = list;
-	}
-
-	public List<GeneratorObj> getGenPointerList() {
-		return genPointerList;
-	}
-
-	public void setGenPointerList(List<GeneratorObj> list) {
-		genPointerList = list;
-	}
-
-	public double[] getWeights() {
-		return weights;
-	}
-
-	public void setWeights(double[] values) {
-		weights = values;
-	}
-
-	public CktElement getMonitoredElement() {
-		return monitoredElement;
-	}
-
-	public void setMonitoredElement(CktElement element) {
-		monitoredElement = element;
 	}
 
 }

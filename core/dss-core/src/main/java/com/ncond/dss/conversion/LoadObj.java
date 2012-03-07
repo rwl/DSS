@@ -133,7 +133,7 @@ public class LoadObj extends PCElement {
 	public LoadObj(DSSClass parClass, String sourceName) {
 		super(parClass);
 		setName(sourceName.toLowerCase());
-		objType = parClass.getDSSClassType();
+		objType = parClass.getClassType();
 
 		setNumPhases(3);
 		nConds        = 4;  // defaults to wye so it has a 4th conductor

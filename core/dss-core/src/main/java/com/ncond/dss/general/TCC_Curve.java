@@ -95,7 +95,7 @@ public class TCC_Curve extends DSSClass {
 
 			switch (paramPointer) {
 			case -1:
-				DSS.doSimpleMsg("Unknown parameter \"" + paramName + "\" for object \"" + getName() +"."+ atc.getName() + "\"", 420);
+				DSS.doSimpleMsg("Unknown parameter \"" + paramName + "\" for object \"" + getClassName() +"."+ atc.getName() + "\"", 420);
 				break;
 			case 0:
 				atc.setNPts(parser.makeInteger());

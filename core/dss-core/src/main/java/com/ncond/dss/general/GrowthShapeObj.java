@@ -22,7 +22,7 @@ public class GrowthShapeObj extends DSSObject {
 		super(parClass);
 
 		setName(growthShapeName.toLowerCase());
-		objType = parClass.getDSSClassType();
+		objType = parClass.getClassType();
 
 		npts = 0;
 		year = null;

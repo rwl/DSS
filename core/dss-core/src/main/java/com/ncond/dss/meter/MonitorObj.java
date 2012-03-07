@@ -151,7 +151,7 @@ public class MonitorObj extends MeterElement {
 		fileVersion     = 1;
 		sampleCount     = 0;
 
-		objType = parClass.getDSSClassType();  // MON_ELEMENT;
+		objType = parClass.getClassType();  // MON_ELEMENT;
 
 		initPropertyValues(0);
 	}
@@ -172,13 +172,13 @@ public class MonitorObj extends MeterElement {
 			meteredElement = (CktElement) DSS.activeCircuit.getCktElements().get(devIndex);
 			switch (mode & Monitor.MODEMASK) {
 			case 2:  // must be transformer
-				if ((meteredElement.getDSSObjType() & DSSClassDefs.CLASSMASK) != DSSClassDefs.XFMR_ELEMENT) {
+				if ((meteredElement.getObjType() & DSSClassDefs.CLASSMASK) != DSSClassDefs.XFMR_ELEMENT) {
 					DSS.doSimpleMsg(meteredElement.getName() + " is not a transformer!", 663);
 					return;
 				}
 				break;
 			case 3:  // must be PC element
-				if ((meteredElement.getDSSObjType() & DSSClassDefs.BASECLASSMASK) != DSSClassDefs.PC_ELEMENT) {
+				if ((meteredElement.getObjType() & DSSClassDefs.BASECLASSMASK) != DSSClassDefs.PC_ELEMENT) {
 					DSS.doSimpleMsg(meteredElement.getName() + " must be a power conversion element (Load or Generator)!", 664);
 					return;
 				}
@@ -207,7 +207,7 @@ public class MonitorObj extends MeterElement {
 					stateBuffer = Util.resizeArray(stateBuffer, numStateVars);
 					break;
 				default:
-					currentBuffer = Util.resizeArray(currentBuffer, meteredElement.getYorder());
+					currentBuffer = Util.resizeArray(currentBuffer, meteredElement.getYOrder());
 					voltageBuffer = Util.resizeArray(voltageBuffer, meteredElement.getNumConds());
 					break;
 				}
@@ -238,7 +238,7 @@ public class MonitorObj extends MeterElement {
 				stateBuffer = (double[]) Util.resizeArray(stateBuffer, numStateVars);
 				break;
 			default:
-				currentBuffer = Util.resizeArray(currentBuffer, meteredElement.getYorder());
+				currentBuffer = Util.resizeArray(currentBuffer, meteredElement.getYOrder());
 				voltageBuffer = Util.resizeArray(voltageBuffer, meteredElement.getNumConds());
 				break;
 			}
@@ -552,7 +552,7 @@ public class MonitorObj extends MeterElement {
 			// meteredElement.getCurrents(currentBuffer);
 			// to save some time, call computeITerminal
 			meteredElement.computeITerminal();  // only does calc if needed
-			for (i = 0; i < meteredElement.getYorder(); i++)
+			for (i = 0; i < meteredElement.getYOrder(); i++)
 				currentBuffer[i] = meteredElement.getITerminal(i);
 
 			try {
@@ -571,7 +571,7 @@ public class MonitorObj extends MeterElement {
 			// meteredElement.getCurrents(currentBuffer);
 			// to save some time, call computeITerminal
 			meteredElement.computeITerminal();  // only does calc if needed
-			for (i = 0; i < meteredElement.getYorder(); i++)
+			for (i = 0; i < meteredElement.getYOrder(); i++)
 				currentBuffer[i] = meteredElement.getITerminal(i);
 
 			try {

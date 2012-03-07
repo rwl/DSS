@@ -60,7 +60,7 @@ public class TransformerObj extends PDElement {
 		super(parClass);
 
 		setName(transfName.toLowerCase());
-		objType = parClass.getDSSClassType(); //DSSObjType + XFMR; // override PDElement (kept in both actually)
+		objType = parClass.getClassType(); //DSSObjType + XFMR; // override PDElement (kept in both actually)
 
 		setNumPhases(3);  // directly set conds and phases
 		nConds = nPhases + 1;

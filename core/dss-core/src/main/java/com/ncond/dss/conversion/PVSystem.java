@@ -336,7 +336,7 @@ public class PVSystem extends PCClass {
 				iCase = propertyIdxMap[paramPointer];
 				switch (iCase) {
 				case -1:
-					DSS.doSimpleMsg("Unknown parameter \"" + paramName + "\" for object \"" + getName() +"."+ apv.getName() + "\"", 561);
+					DSS.doSimpleMsg("Unknown parameter \"" + paramName + "\" for object \"" + getClassName() +"."+ apv.getName() + "\"", 561);
 					break;
 				case 0:
 					apv.setNumPhases(parser.makeInteger());  // num phases

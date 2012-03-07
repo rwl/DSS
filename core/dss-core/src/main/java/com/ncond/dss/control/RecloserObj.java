@@ -3,6 +3,9 @@ package com.ncond.dss.control;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+
 import org.apache.commons.math.complex.Complex;
 
 import com.ncond.dss.common.Circuit;
@@ -21,6 +24,8 @@ import com.ncond.dss.general.TCC_CurveObj;
  *
  * CktElement to be controlled must already exist.
  */
+@Data
+@EqualsAndHashCode(callSuper=true)
 public class RecloserObj extends ControlElem {
 
 	private TCC_CurveObj phaseDelayed,
@@ -61,7 +66,7 @@ public class RecloserObj extends ControlElem {
 		super(parClass);
 
 		setName(recloserName.toLowerCase());
-		objType = parClass.getDSSClassType();
+		objType = parClass.getClassType();
 
 		setNumPhases(3);  // directly set conds and phases
 		nConds = 3;
@@ -110,7 +115,7 @@ public class RecloserObj extends ControlElem {
 
 		cBuffer = null;
 
-		objType = parClass.getDSSClassType();  // CAP_CONTROL;
+		objType = parClass.getClassType();  // CAP_CONTROL;
 
 		initPropertyValues(0);
 
@@ -134,7 +139,7 @@ public class RecloserObj extends ControlElem {
 				// sets name of i-th terminal's connected bus in Recloser's bus list
 				setBus(0, monitoredElement.getBus(monitoredElementTerminal));
 				// allocate a buffer big enough to hold everything from the monitored element
-				cBuffer = Util.resizeArray(cBuffer, monitoredElement.getYorder());
+				cBuffer = Util.resizeArray(cBuffer, monitoredElement.getYOrder());
 				condOffset = monitoredElementTerminal * monitoredElement.getNumConds();  // for speedy sampling
 			}
 		}
@@ -175,7 +180,7 @@ public class RecloserObj extends ControlElem {
 			setNumConds(nPhases);
 			setBus(0, monitoredElement.getBus(elementTerminal));
 			// allocate a buffer big enough to hold everything from the monitored element
-			cBuffer = Util.resizeArray(cBuffer, monitoredElement.getYorder());
+			cBuffer = Util.resizeArray(cBuffer, monitoredElement.getYOrder());
 			condOffset = elementTerminal * monitoredElement.getNumConds();  // for speedy sampling
 		}
 		super.makePosSequence();
@@ -478,240 +483,6 @@ public class RecloserObj extends ControlElem {
 	@Override
 	public int injCurrents() {
 		throw new UnsupportedOperationException();
-	}
-
-	// FIXME Private members in Open DSS
-
-	public TCC_CurveObj getPhaseDelayed() {
-		return phaseDelayed;
-	}
-
-	public void setPhaseDelayed(TCC_CurveObj value) {
-		phaseDelayed = value;
-	}
-
-	public TCC_CurveObj getGroundDelayed() {
-		return groundDelayed;
-	}
-
-	public void setGroundDelayed(TCC_CurveObj value) {
-		groundDelayed = value;
-	}
-
-	public TCC_CurveObj getPhaseFast() {
-		return phaseFast;
-	}
-
-	public void setPhaseFast(TCC_CurveObj value) {
-		phaseFast = value;
-	}
-
-	public TCC_CurveObj getGroundFast() {
-		return groundFast;
-	}
-
-	public void setGroundFast(TCC_CurveObj value) {
-		groundFast = value;
-	}
-
-	public double getPhaseTrip() {
-		return phaseTrip;
-	}
-
-	public void setPhaseTrip(double value) {
-		phaseTrip = value;
-	}
-
-	public double getGroundTrip() {
-		return groundTrip;
-	}
-
-	public void setGroundTrip(double value) {
-		groundTrip = value;
-	}
-
-	public double getPhaseInst() {
-		return phaseInst;
-	}
-
-	public void setPhaseInst(double value) {
-		phaseInst = value;
-	}
-
-	public double getGroundInst() {
-		return groundInst;
-	}
-
-	public void setGroundInst(double value) {
-		groundInst = value;
-	}
-
-	public double[] getRecloseIntervals() {
-		return recloseIntervals;
-	}
-
-	public void setRecloseIntervals(double[] intervals) {
-		recloseIntervals = intervals;
-	}
-
-	public int getNumFast() {
-		return numFast;
-	}
-
-	public void setNumFast(int num) {
-		numFast = num;
-	}
-
-	public int getNumReclose() {
-		return numReclose;
-	}
-
-	public void setNumReclose(int num) {
-		numReclose = num;
-	}
-
-	public double getResetTime() {
-		return resetTime;
-	}
-
-	public void setResetTime(double time) {
-		resetTime = time;
-	}
-
-	public double getDelayTime() {
-		return delayTime;
-	}
-
-	public void setDelayTime(double time) {
-		delayTime = time;
-	}
-
-	public double getTDGrDelayed() {
-		return TDGrDelayed;
-	}
-
-	public void setTDGrDelayed(double value) {
-		TDGrDelayed = value;
-	}
-
-	public double getTDPhDelayed() {
-		return TDPhDelayed;
-	}
-
-	public void setTDPhDelayed(double value) {
-		TDPhDelayed = value;
-	}
-
-	public double getTDGrFast() {
-		return TDGrFast;
-	}
-
-	public void setTDGrFast(double value) {
-		TDGrFast = value;
-	}
-
-	public double getTDPhFast() {
-		return TDPhFast;
-	}
-
-	public void setTDPhFast(double value) {
-		TDPhFast = value;
-	}
-
-	public String getMonitoredElementName() {
-		return monitoredElementName;
-	}
-
-	public void setMonitoredElementName(String name) {
-		monitoredElementName = name;
-	}
-
-	public int getMonitoredElementTerminal() {
-		return monitoredElementTerminal;
-	}
-
-	public void setMonitoredElementTerminal(int terminal) {
-		monitoredElementTerminal = terminal;
-	}
-
-	public CktElement getMonitoredElement() {
-		return monitoredElement;
-	}
-
-	public void setMonitoredElement(CktElement element) {
-		monitoredElement = element;
-	}
-
-	public ControlAction getPresentState() {
-		return presentState;
-	}
-
-	public void setPresentState(ControlAction state) {
-		presentState = state;
-	}
-
-	public int getOperationCount() {
-		return operationCount;
-	}
-
-	public void setOperationCount(int count) {
-		operationCount = count;
-	}
-
-	public boolean isLockedOut() {
-		return lockedOut;
-	}
-
-	public void setLockedOut(boolean locked) {
-		lockedOut = locked;
-	}
-
-	public boolean isArmedForClose() {
-		return armedForClose;
-	}
-
-	public void setArmedForClose(boolean armed) {
-		armedForClose = armed;
-	}
-
-	public boolean isArmedForOpen() {
-		return armedForOpen;
-	}
-
-	public void setArmedForOpen(boolean armed) {
-		armedForOpen = armed;
-	}
-
-	public boolean isGroundTarget() {
-		return groundTarget;
-	}
-
-	public void setGroundTarget(boolean target) {
-		groundTarget = target;
-	}
-
-	public boolean isPhaseTarget() {
-		return phaseTarget;
-	}
-
-	public void setPhaseTarget(boolean target) {
-		phaseTarget = target;
-	}
-
-	public int getCondOffset() {
-		return condOffset;
-	}
-
-	public void setCondOffset(int offset) {
-		condOffset = offset;
-	}
-
-	public Complex[] getCBuffer() {
-		return cBuffer;
-	}
-
-	public void setCBuffer(Complex[] buffer) {
-		this.cBuffer = buffer;
 	}
 
 }

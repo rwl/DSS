@@ -7,6 +7,8 @@ import java.io.PrintWriter;
 
 import org.apache.commons.math.complex.Complex;
 
+import lombok.Data;
+
 import com.ncond.dss.conversion.Generator;
 import com.ncond.dss.delivery.Capacitor;
 import com.ncond.dss.delivery.PDElement;
@@ -22,6 +24,7 @@ import com.ncond.dss.shared.HashList;
  * There is one of these per circuit.
  *
  */
+@Data
 public class AutoAdd {
 
 	private Generator generatorClass;
@@ -42,7 +45,7 @@ public class AutoAdd {
 	private double kWLosses, baseLosses, puLossImprovement;
 	private double kWEEN , baseEEN, puEENImprovement;
 
-	private File log;  // log file
+	private File logFile;  // log file
 
 	private int progressCount;
 
@@ -292,9 +295,9 @@ public class AutoAdd {
 		sol.setIntervalHrs(1.0);
 
 		/* Start up Log File */
-		log = new File(DSS.dataDirectory + DSS.circuitName_ + "AutoAddLog.csv");
+		logFile = new File(DSS.dataDirectory + DSS.circuitName_ + "AutoAddLog.csv");
 		try {
-			fw = new FileWriter(log, false);
+			fw = new FileWriter(logFile, false);
 			pw = new PrintWriter(fw);
 			pw.println("\"Bus\", \"Base kV\", \"kW Losses\", \"% Improvement\", \"kW UE\", \"% Improvement\", \"Weighted Total\", \"Iterations\"");
 			fw.close();  // close it now after clearing it out
@@ -365,7 +368,7 @@ public class AutoAdd {
 					genVA = new Complex(1000.0 * testGenKW/phases, 1000.0 * genKVAr/phases) ;
 
 					/* - - - - - - - - - Solution - - - - - - - - - - - - - - - */
-					ckt.setIsSolved(false);
+					ckt.setSolved(false);
 
 					sol.setUseAuxCurrents(true);  // calls injCurrents on callback
 					sol.solveSnap();
@@ -379,7 +382,7 @@ public class AutoAdd {
 						lossImproveFactor = getWeightedLosses();
 
 						try {
-							fw = new FileWriter(log, true);  // append
+							fw = new FileWriter(logFile, true);  // append
 							pw = new PrintWriter(fw);
 
 							pw.printf("\"%s\", %-g", testBus, ckt.getBus(busIndex).getKVBase() * DSS.SQRT3);
@@ -479,7 +482,7 @@ public class AutoAdd {
 
 
 					/* - - - - - - - - - Solution - - - - - - - - - - - - - - - */
-					ckt.setIsSolved(false);
+					ckt.setSolved(false);
 
 					sol.setUseAuxCurrents(true);  // calls injCurrents on callback
 					sol.solveSnap();
@@ -493,7 +496,7 @@ public class AutoAdd {
 						lossImproveFactor = getWeightedLosses();
 
 						try {
-							fw = new FileWriter(log, true);  // append
+							fw = new FileWriter(logFile, true);  // append
 							pw = new PrintWriter(fw);
 							pw.printf("\"%s\", %-g", testBus, ckt.getBus(busIndex).getKVBase() * DSS.SQRT3);
 							pw.printf(", %-g, %-g", kWLosses, puLossImprovement * 100.0);
@@ -633,54 +636,6 @@ public class AutoAdd {
 		computekWLossesEEN();
 		baseLosses = kWLosses;
 		baseEEN = kWEEN;
-	}
-
-	public double getGenKW() {
-		return genKW;
-	}
-
-	public void setGenKW(double genkW) {
-		genKW = genkW;
-	}
-
-	public double getGenPF() {
-		return genPF;
-	}
-
-	public void setGenPF(double genpf) {
-		genPF = genpf;
-	}
-
-	public double getGenKVAr() {
-		return genKVAr;
-	}
-
-	public void setGenKVAr(double genkvar) {
-		genKVAr = genkvar;
-	}
-
-	public double getCapKVAr() {
-		return capKVAr;
-	}
-
-	public void setCapKVAr(double capkvar) {
-		capKVAr = capkvar;
-	}
-
-	public int getAddType() {
-		return addType;
-	}
-
-	public void setAddType(int addtype) {
-		addType = addtype;
-	}
-
-	public boolean isModeChanged() {
-		return modeChanged;
-	}
-
-	public void setModeChanged(boolean modeChanged) {
-		this.modeChanged = modeChanged;
 	}
 
 }

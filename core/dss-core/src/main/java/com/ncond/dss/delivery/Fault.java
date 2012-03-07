@@ -145,7 +145,7 @@ public class Fault extends PDClass {
 
 			switch (paramPointer) {
 			case -1:
-				DSS.doSimpleMsg("Unknown parameter \"" + paramName + "\" for object \"" + getName() +"."+ af.getName() + "\"", 350);
+				DSS.doSimpleMsg("Unknown parameter \"" + paramName + "\" for object \"" + getClassName() +"."+ af.getName() + "\"", 350);
 				break;
 			case 0:
 				fltSetBus1(param);

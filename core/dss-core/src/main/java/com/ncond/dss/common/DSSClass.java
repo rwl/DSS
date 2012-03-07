@@ -1,5 +1,7 @@
 package com.ncond.dss.common;
 
+import lombok.Data;
+
 import com.ncond.dss.general.DSSObject;
 import com.ncond.dss.parser.Parser;
 import com.ncond.dss.shared.CommandList;
@@ -10,9 +12,10 @@ import com.ncond.dss.shared.PointerList;
  * Base class for all DSS collection classes.
  * Keeps track of objects of each class, dispatches edits, etc.
  */
+@Data
 abstract public class DSSClass {
 
-	private static com.ncond.dss.common.DSSClasses DSSClasses;
+	public static com.ncond.dss.common.DSSClasses DSSClasses;
 
 	protected String className;
 
@@ -299,88 +302,16 @@ abstract public class DSSClass {
 		return revPropertyIdxMap[idx];
 	}
 
-	public int getNumProperties() {
-		return numProperties;
-	}
-
-	public void setNumProperties(int num) {
-		numProperties = num;
-	}
-
 	public String[] getPropertyName() {
 		return propertyName;
-	}
-
-	public void setPropertyName(String[] name) {
-		propertyName = name;
-	}
-
-	public String[] getPropertyHelp() {
-		return propertyHelp;
-	}
-
-	public void setPropertyHelp(String[] help) {
-		propertyHelp = help;
 	}
 
 	public int[] getPropertyIdxMap() {
 		return propertyIdxMap;
 	}
 
-	public void setPropertyIdxMap(int[] map) {
-		propertyIdxMap = map;
-	}
-
 	public int[] getRevPropertyIdxMap() {
 		return revPropertyIdxMap;
-	}
-
-	public void setRevPropertyIdxMap(int[] map) {
-		revPropertyIdxMap = map;
-	}
-
-	public int getDSSClassType() {
-		return classType;
-	}
-
-	public void setDSSClassType(int type) {
-		classType = type;
-	}
-
-	public PointerList getElementList() {
-		return elementList;
-	}
-
-	public void setElementList(PointerList list) {
-		elementList = list;
-	}
-
-	public boolean isElementNamesOutOfSynch() {
-		return elementNamesOutOfSynch;
-	}
-
-	public void setElementNamesOutOfSynch(boolean value) {
-		elementNamesOutOfSynch = value;
-	}
-
-	public boolean isSaved() {
-		return saved;
-	}
-
-	public void setSaved(boolean value) {
-		saved = value;
-	}
-
-	public String getName() {
-		return className;
-	}
-
-	public static void setDSSClasses(com.ncond.dss.common.DSSClasses classes) {
-		DSSClasses = classes;
-	}
-
-	public static com.ncond.dss.common.DSSClasses getDSSClasses() {
-		return DSSClasses;
 	}
 
 }

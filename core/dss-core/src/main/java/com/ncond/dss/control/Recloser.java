@@ -155,7 +155,7 @@ public class Recloser extends ControlClass {
 
 			switch (paramPointer) {
 			case -1:
-				DSS.doSimpleMsg("Unknown parameter \"" + paramName + "\" for object \"" + getName() +"."+ ar.getName() +"\"", 390);
+				DSS.doSimpleMsg("Unknown parameter \"" + paramName + "\" for object \"" + getClassName() +"."+ ar.getName() +"\"", 390);
 				break;
 			case 0:
 				ar.setMonitoredElementName(param.toLowerCase());

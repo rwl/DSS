@@ -52,7 +52,7 @@ public class FuseObj extends ControlElem {
 		int i;
 
 		setName(fuseName.toLowerCase());
-		objType = parClass.getDSSClassType();
+		objType = parClass.getClassType();
 
 		setNumPhases(3);  // directly set conds and phases
 		nConds = 3;
@@ -79,7 +79,7 @@ public class FuseObj extends ControlElem {
 
 		cBuffer = null;  // complex buffer
 
-		objType = parClass.getDSSClassType(); //CAP_CONTROL;
+		objType = parClass.getClassType(); //CAP_CONTROL;
 
 		initPropertyValues(0);
 
@@ -104,7 +104,7 @@ public class FuseObj extends ControlElem {
 				// sets name of i-th terminal's connected bus in fuse's bus list
 				setBus(0, monitoredElement.getBus(monitoredElementTerminal));
 				// allocate a buffer big enough to hold everything from the monitored element
-				cBuffer = Util.resizeArray(cBuffer, monitoredElement.getYorder());
+				cBuffer = Util.resizeArray(cBuffer, monitoredElement.getYOrder());
 				condOffset = monitoredElementTerminal * monitoredElement.getNumConds();  // for speedy sampling
 			}
 		}

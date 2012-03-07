@@ -312,7 +312,7 @@ public class ExecHelper {
 					DSS.doSimpleMsg("Error: Object \"" + objName[0] + "\" not found."+ DSS.CRLF + Parser.getInstance().getCmdString(), 245);
 					result = 0;
 				} else {
-					switch (DSS.activeDSSObject.getDSSObjType()) {
+					switch (DSS.activeDSSObject.getObjType()) {
 					case DSSClassDefs.DSS_OBJECT:
 						// do nothing for general DSS object
 						break;
@@ -396,7 +396,7 @@ public class ExecHelper {
 		if (objType[0].equalsIgnoreCase("circuit")) {
 			// do nothing
 		} else {
-			if (!objType[0].equalsIgnoreCase( DSS.activeDSSClass.getName() )) {
+			if (!objType[0].equalsIgnoreCase( DSS.activeDSSClass.getClassName() )) {
 				DSS.lastClassReferenced =  DSS.classNames.find(objType[0]);
 
 				switch (DSS.lastClassReferenced) {
@@ -409,7 +409,7 @@ public class ExecHelper {
 					DSS.activeDSSClass = DSS.DSSClassList.get(DSS.lastClassReferenced);
 					if (DSS.activeDSSClass.setActive( objName[0] )) {
 						// scroll through list of objects until a match
-						switch (DSS.activeDSSObject.getDSSObjType()) {
+						switch (DSS.activeDSSObject.getObjType()) {
 						case DSSClassDefs.DSS_OBJECT:
 							DSS.doSimpleMsg("Error in setActiveCktElement: Object not a circuit element."+ DSS.CRLF + Parser.getInstance().getCmdString(), 254);
 							break;
@@ -447,7 +447,7 @@ public class ExecHelper {
 				classPtr = DSSClassDefs.getDSSClass(objType[0]);
 				if (classPtr != null) {
 
-					if ((classPtr.getDSSClassType() & DSSClassDefs.BASECLASSMASK) > 0) {
+					if ((classPtr.getClassType() & DSSClassDefs.BASECLASSMASK) > 0) {
 						// everything else must be a circuit element
 						if (objName[0].equals("*")) {
 							// enable all elements of this class
@@ -487,7 +487,7 @@ public class ExecHelper {
 				classPtr = DSSClassDefs.getDSSClass(objType[0]);
 				if (classPtr != null) {
 
-					if ((classPtr.getDSSClassType() & DSSClassDefs.BASECLASSMASK) > 0) {
+					if ((classPtr.getClassType() & DSSClassDefs.BASECLASSMASK) > 0) {
 						// everything else must be a circuit element
 						if (objName[0].equals("*")) {
 							// disable all elements of this class
@@ -897,7 +897,7 @@ public class ExecHelper {
 
 		// search for class if not already active
 		// if nothing specified, lastClassReferenced remains
-		if (!objType.equalsIgnoreCase( DSS.activeDSSClass.getName() ))
+		if (!objType.equalsIgnoreCase( DSS.activeDSSClass.getClassName() ))
 			DSS.lastClassReferenced = DSS.classNames.find(objType);
 
 		switch (DSS.lastClassReferenced) {
@@ -917,7 +917,7 @@ public class ExecHelper {
 			}
 
 			// now let's make a new object or set an existing one active, whatever the case
-			switch (DSS.activeDSSClass.getDSSClassType()) {
+			switch (DSS.activeDSSClass.getClassType()) {
 			case DSSClassDefs.DSS_OBJECT:
 				// these can be added without having an active circuit
 				// duplicates not allowed in general DSS objects
@@ -944,7 +944,7 @@ public class ExecHelper {
 						handle = DSS.activeDSSClass.newObject(name);  // returns index into this class
 						DSS.activeCircuit.addCktElement(handle);  // adds active object to active circuit
 					} else {
-						DSS.doSimpleMsg("Warning: Duplicate new element definition: \""+ DSS.activeDSSClass.getName()+"."+name+"\""+
+						DSS.doSimpleMsg("Warning: Duplicate new element definition: \""+ DSS.activeDSSClass.getClassName()+"."+name+"\""+
 								DSS.CRLF+ "Element being redefined.", 266);
 					}
 				}
@@ -1638,7 +1638,7 @@ public class ExecHelper {
 	public static int doClassesCmd() {
 
 		for (int i = 0; i < DSSClassDefs.getNumIntrinsicClasses(); i++)
-			DSS.appendGlobalResult( ((DSSClass) DSS.DSSClassList.get(i)).getName() );
+			DSS.appendGlobalResult( ((DSSClass) DSS.DSSClassList.get(i)).getClassName() );
 
 		return 0;
 	}
@@ -1649,7 +1649,7 @@ public class ExecHelper {
 			DSS.appendGlobalResult("No user classes defined.");
 		} else {
 			for (int i = DSSClassDefs.getNumIntrinsicClasses(); i < DSS.DSSClassList.size(); i++)
-				DSS.appendGlobalResult( ((DSSClass) DSS.DSSClassList.get(i)).getName() );
+				DSS.appendGlobalResult( ((DSSClass) DSS.DSSClassList.get(i)).getClassName() );
 		}
 		return 0;
 	}
@@ -1685,7 +1685,7 @@ public class ExecHelper {
 		if (DSS.activeCircuit != null) {
 			ckt = DSS.activeCircuit;
 			/* Check if PCElement */
-			switch (ckt.getActiveCktElement().getDSSObjType()) {
+			switch (ckt.getActiveCktElement().getObjType()) {
 			case DSSClassDefs.PC_ELEMENT:
 				PCElement cktElem = (PCElement) ckt.getActiveCktElement();
 				for (int i = 0; i < cktElem.numVariables(); i++)
@@ -1713,7 +1713,7 @@ public class ExecHelper {
 
 		/* Check to make sure this is a PC Element. If not, return null string in global result */
 
-		if ((DSS.activeCircuit.getActiveCktElement().getDSSObjType() & DSSClassDefs.BASECLASSMASK) != DSSClassDefs.PC_ELEMENT) {
+		if ((DSS.activeCircuit.getActiveCktElement().getObjType() & DSSClassDefs.BASECLASSMASK) != DSSClassDefs.PC_ELEMENT) {
 
 			DSS.globalResult = "";
 
@@ -1767,7 +1767,7 @@ public class ExecHelper {
 		if (DSS.activeCircuit != null) {
 			Circuit ckt = DSS.activeCircuit;
 			/* Check if PCElement */
-			switch (ckt.getActiveCktElement().getDSSObjType()) {
+			switch (ckt.getActiveCktElement().getObjType()) {
 			case DSSClassDefs.PC_ELEMENT:
 				PCElement cktElem = (PCElement) ckt.getActiveCktElement();
 				for (int i = 0; i < cktElem.numVariables(); i++)

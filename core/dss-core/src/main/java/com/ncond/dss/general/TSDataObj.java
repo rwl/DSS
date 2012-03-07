@@ -15,7 +15,7 @@ public class TSDataObj extends CableDataObj {
 		super(parClass, TSDataName);
 
 		setName(TSDataName.toLowerCase());
-		objType = parClass.getDSSClassType();
+		objType = parClass.getClassType();
 		diaShield = -1.0;
 		tapeLayer = -1.0;
 		tapeLap = 20.0;

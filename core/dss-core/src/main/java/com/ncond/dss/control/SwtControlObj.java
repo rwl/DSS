@@ -3,12 +3,17 @@ package com.ncond.dss.control;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+
 import org.apache.commons.math.complex.Complex;
 
 import com.ncond.dss.common.DSS;
 import com.ncond.dss.common.DSSClass;
 import com.ncond.dss.common.Util;
 
+@Data
+@EqualsAndHashCode(callSuper=true)
 public class SwtControlObj extends ControlElem {
 
 	private ControlAction presentState;
@@ -18,7 +23,7 @@ public class SwtControlObj extends ControlElem {
 		super(parClass);
 
 		setName(swtControlName.toLowerCase());
-		objType = parClass.getDSSClassType();
+		objType = parClass.getClassType();
 
 		setNumPhases(3);  // directly set conds and phases
 		nConds = 3;
@@ -203,16 +208,6 @@ public class SwtControlObj extends ControlElem {
 	@Override
 	public int injCurrents() {
 		throw new UnsupportedOperationException();
-	}
-
-	// FIXME Private members in OpenDSS
-
-	public void setPresentState(ControlAction state) {
-		presentState = state;
-	}
-
-	public void setLocked(boolean value) {
-		locked = value;
 	}
 
 }

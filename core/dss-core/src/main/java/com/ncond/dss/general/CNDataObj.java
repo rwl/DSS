@@ -15,7 +15,7 @@ public class CNDataObj extends CableDataObj {
 	public CNDataObj(DSSClass parClass, String CNDataName) {
 		super(parClass, CNDataName);
 		setName(CNDataName.toLowerCase());
-		objType = parClass.getDSSClassType();
+		objType = parClass.getClassType();
 
 		kStrand   = 2;
 		diaStrand = -1.0;

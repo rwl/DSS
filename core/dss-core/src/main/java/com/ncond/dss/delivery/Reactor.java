@@ -192,7 +192,7 @@ public class Reactor extends PDClass {
 
 			switch (paramPointer) {
 			case -1:
-				DSS.doSimpleMsg("Unknown parameter \"" + paramName + "\" for object \"" + getName() +"."+ ar.getName() + "\"", 230);
+				DSS.doSimpleMsg("Unknown parameter \"" + paramName + "\" for object \"" + getClassName() +"."+ ar.getName() + "\"", 230);
 				break;
 			case 0:
 				reactorSetBus1(param);

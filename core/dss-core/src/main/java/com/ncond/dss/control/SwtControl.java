@@ -88,7 +88,7 @@ public class SwtControl extends ControlClass {
 
 			switch (paramPointer) {
 			case -1:
-				DSS.doSimpleMsg("Unknown parameter \"" + paramName + "\" for object \"" + getName() +"."+ asc.getName() + "\"", 382);
+				DSS.doSimpleMsg("Unknown parameter \"" + paramName + "\" for object \"" + getClassName() +"."+ asc.getName() + "\"", 382);
 				break;
 			case 0:
 				asc.setElementName(param.toLowerCase());

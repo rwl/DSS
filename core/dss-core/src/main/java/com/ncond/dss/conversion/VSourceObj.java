@@ -41,7 +41,7 @@ public class VSourceObj extends PCElement {
 		super(parClass);
 
 		setName(sourceName.toLowerCase());
-		objType = parClass.getDSSClassType(); //SOURCE + NON_PCPD_ELEM;  // don't want this in PC element list
+		objType = parClass.getClassType(); //SOURCE + NON_PCPD_ELEM;  // don't want this in PC element list
 
 		setNumPhases(3);
 		nConds = 3;

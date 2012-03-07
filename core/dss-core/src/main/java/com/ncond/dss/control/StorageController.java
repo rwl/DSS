@@ -245,7 +245,7 @@ public class StorageController extends ControlClass {
 
 			switch (paramPointer) {
 			case -1:
-				DSS.doSimpleMsg("Unknown parameter \"" + paramName + "\" for object \"" + getName() +"."+ asc.getName() + "\"", 14407);
+				DSS.doSimpleMsg("Unknown parameter \"" + paramName + "\" for object \"" + getClassName() +"."+ asc.getName() + "\"", 14407);
 				break;
 			case StorageController.ELEMENT:
 				asc.setElementName(param.toLowerCase());
@@ -257,7 +257,7 @@ public class StorageController extends ControlClass {
 				asc.setKWTarget(parser.makeDouble());
 				break;
 			case StorageController.KW_BAND:
-				asc.setPctKWBand(parser.makeDouble());
+				asc.setPctkWBand(parser.makeDouble());
 				break;
 			case StorageController.PF_TARGET:
 				asc.setPFTarget( Util.convertPFToPFRange2(parser.makeDouble()) );
@@ -355,10 +355,10 @@ public class StorageController extends ControlClass {
 			// side effects of setting properties above
 			switch (paramPointer) {
 			case KW_TARGET:
-				asc.setHalfKWBand( asc.getPctKWBand() / 200.0 * asc.getKWTarget() );
+				asc.setHalfKWBand( asc.getPctkWBand() / 200.0 * asc.getKWTarget() );
 				break;
 			case KW_BAND:
-				asc.setHalfKWBand( asc.getPctKWBand() / 200.0 * asc.getKWTarget() );
+				asc.setHalfKWBand( asc.getPctkWBand() / 200.0 * asc.getKWTarget() );
 				asc.setKWThreshold( asc.getKWTarget() * 0.75 );
 				break;
 			case PF_BAND:
@@ -423,7 +423,7 @@ public class StorageController extends ControlClass {
 
 			asc.setKWTarget(otherStorageController.getKWTarget());
 			asc.setKWThreshold(otherStorageController.getKWThreshold());
-			asc.setPctKWBand(otherStorageController.getPctKWBand());
+			asc.setPctkWBand(otherStorageController.getPctkWBand());
 			asc.setPFTarget(otherStorageController.getPFTarget());
 			asc.setPFBand(otherStorageController.getPFBand());
 			asc.setHalfPFBand(otherStorageController.getHalfPFBand());

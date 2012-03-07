@@ -35,7 +35,7 @@ public class ConductorDataObj extends DSSObject {
 		super(parClass);
 
 		setName(conductorDataName.toLowerCase());
-		objType = parClass.getDSSClassType();
+		objType = parClass.getClassType();
 
 		Rdc             = -1.0;
 		R60             = -1.0;

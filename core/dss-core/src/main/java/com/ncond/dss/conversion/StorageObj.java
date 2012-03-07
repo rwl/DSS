@@ -146,7 +146,7 @@ public class StorageObj extends PCElement {
 		super(parClass);
 
 		setName(storageName.toLowerCase());
-		objType = parClass.getDSSClassType(); // + STORAGE_ELEMENT;  // in both PCElement and StorageElement list
+		objType = parClass.getClassType(); // + STORAGE_ELEMENT;  // in both PCElement and StorageElement list
 
 		setNumPhases(3);
 		nConds = 4;  // defaults to wye

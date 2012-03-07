@@ -96,7 +96,7 @@ public class ISource extends PCClass {
 
 			switch (paramPointer) {
 			case -1:
-				DSS.doSimpleMsg("Unknown parameter \"" + paramName + "\" for object \"" + getName() +"."+ ais.getName() + "\"", 330);
+				DSS.doSimpleMsg("Unknown parameter \"" + paramName + "\" for object \"" + getClassName() +"."+ ais.getName() + "\"", 330);
 				break;
 			case 0:
 				ais.setBus(0, param);
@@ -140,7 +140,7 @@ public class ISource extends PCClass {
 					ais.setScanType(-1);
 					break;
 				default:
-					DSS.doSimpleMsg("Unknown scan type for \"" + getName() +"."+ ais.getName() + "\": "+param, 331);
+					DSS.doSimpleMsg("Unknown scan type for \"" + getClassName() +"."+ ais.getName() + "\": "+param, 331);
 					break;
 				}
 				break;
@@ -156,7 +156,7 @@ public class ISource extends PCClass {
 					ais.setSequenceType(-1);
 					break;
 				default:
-					DSS.doSimpleMsg("Unknown sequence type for \"" + getName() +"."+ ais.getName() + "\": "+param, 331);
+					DSS.doSimpleMsg("Unknown sequence type for \"" + getClassName() +"."+ ais.getName() + "\": "+param, 331);
 					break;
 				}
 				break;

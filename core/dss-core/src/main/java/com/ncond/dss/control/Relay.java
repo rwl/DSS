@@ -171,7 +171,7 @@ public class Relay extends ControlClass {
 				switch (propertyIdxMap[paramPointer]) {
 				/* internal relay property commands */
 				case -1:
-					DSS.doSimpleMsg("Unknown parameter \"" + paramName + "\" for object \"" + getName() +"."+ ar.getName() + "\"", 382);
+					DSS.doSimpleMsg("Unknown parameter \"" + paramName + "\" for object \"" + getClassName() +"."+ ar.getName() + "\"", 382);
 					break;
 				case 0:
 					ar.setMonitoredElementName(param.toLowerCase());

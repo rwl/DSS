@@ -401,7 +401,7 @@ public class Storage extends PCClass {
 				iCase = propertyIdxMap[paramPointer];
 				switch (iCase) {
 				case -1:
-					DSS.doSimpleMsg("Unknown parameter \"" + paramName + "\" for object \"" + getName() +"."+ as.getName() + "\"", 561);
+					DSS.doSimpleMsg("Unknown parameter \"" + paramName + "\" for object \"" + getClassName() +"."+ as.getName() + "\"", 561);
 					break;
 				case 0:
 					as.setNumPhases(parser.makeInteger());  // num phases

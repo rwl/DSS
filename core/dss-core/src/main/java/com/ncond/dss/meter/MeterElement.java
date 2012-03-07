@@ -38,9 +38,9 @@ abstract public class MeterElement extends CktElement {
 
 	public void allocateSensorArrays() {
 		if (meteredElement != null)
-			calculatedCurrent = Util.resizeArray(calculatedCurrent, meteredElement.getYorder());
+			calculatedCurrent = Util.resizeArray(calculatedCurrent, meteredElement.getYOrder());
 		if (meteredElement != null)
-			calculatedVoltage = Util.resizeArray(calculatedVoltage, meteredElement.getYorder());
+			calculatedVoltage = Util.resizeArray(calculatedVoltage, meteredElement.getYOrder());
 		sensorCurrent = Util.resizeArray(sensorCurrent, nPhases);
 		sensorVoltage = Util.resizeArray(sensorVoltage, nPhases);
 		phsAllocationFactor = Util.resizeArray(phsAllocationFactor, nPhases);

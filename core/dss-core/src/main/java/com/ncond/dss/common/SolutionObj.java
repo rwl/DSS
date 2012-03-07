@@ -6,6 +6,9 @@ import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.util.UUID;
 
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+
 import org.apache.commons.math.complex.Complex;
 
 import com.ncond.dss.common.Bus.NodeBus;
@@ -18,6 +21,8 @@ import com.ncond.dss.shared.ComplexUtil;
 import com.ncond.dss.shared.Dynamics;
 import com.ncond.dss.shared.DynamicsRec;
 
+@Data
+@EqualsAndHashCode(callSuper=true)
 public class SolutionObj extends DSSObject {
 
 	/* Array of delta V for Newton iteration */
@@ -162,7 +167,7 @@ public class SolutionObj extends DSSObject {
 	 */
 	public void solve() {
 
-		DSS.activeCircuit.setIsSolved(false);
+		DSS.activeCircuit.setSolved(false);
 		DSS.solutionWasAttempted = true;
 
 		DSS.forms.initProgressForm();  // initialize progress form;
@@ -604,7 +609,7 @@ public class SolutionObj extends DSSObject {
 			break;
 		}
 
-		DSS.activeCircuit.setIsSolved(convergedFlag);
+		DSS.activeCircuit.setSolved(convergedFlag);
 		lastSolutionWasDirect = false;
 	}
 
@@ -667,7 +672,7 @@ public class SolutionObj extends DSSObject {
 
 			YMatrix.initializeNodeVbase();  // for convergence test
 
-			ckt.setIsSolved(true);
+			ckt.setSolved(true);
 
 			// now build the meter zones
 			ckt.setMeterZonesComputed(bZoneCalc);
@@ -781,7 +786,7 @@ public class SolutionObj extends DSSObject {
 			getPCInjCurr();
 
 		if (solveSystem(nodeV) == 1) {  // solve with zero injection current
-			DSS.activeCircuit.setIsSolved(true);
+			DSS.activeCircuit.setSolved(true);
 			convergedFlag = true;
 		}
 
@@ -925,8 +930,8 @@ public class SolutionObj extends DSSObject {
 		Circuit ckt = DSS.activeCircuit;
 		try {
 			// sample all controls and set action times in control queue.
-			for (int i = 0; i < ckt.getDSSControls().size(); i++) {
-				controlDevice = ckt.getDSSControls().get(i);
+			for (int i = 0; i < ckt.getControls().size(); i++) {
+				controlDevice = ckt.getControls().get(i);
 				if (controlDevice.isEnabled())
 					controlDevice.sample();
 			}
@@ -1333,6 +1338,10 @@ public class SolutionObj extends DSSObject {
 		return nodeV[nref - 1];
 	}
 
+	public Complex[] getNodeV() {
+		return nodeV;
+	}
+
 	/**
 	 * @param nref one based node reference
 	 * @return complex current
@@ -1349,392 +1358,16 @@ public class SolutionObj extends DSSObject {
 		currents[nref - 1] = current;
 	}
 
-	public double getFrequency() {
-		return frequency;
-	}
-
 	public int getMode() {
 		return dynaVars.solutionMode;
-	}
-
-	public int getYear() {
-		return year;
-	}
-
-	public int getAlgorithm() {
-		return algorithm;
-	}
-
-	public void setAlgorithm(int alg) {
-		algorithm = alg;
-	}
-
-	public Complex[] getAuxCurrents() {
-		return auxCurrents;
-	}
-
-	public void setAuxCurrents(Complex[] value) {
-		auxCurrents = value;
-	}
-
-	public boolean isControlActionsDone() {
-		return controlActionsDone;
-	}
-
-	public void setControlActionsDone(boolean value) {
-		controlActionsDone = value;
-	}
-
-	public int getControlIteration() {
-		return controlIteration;
-	}
-
-	public void setControlIteration(int iteration) {
-		controlIteration = iteration;
-	}
-
-	public int getControlMode() {
-		return controlMode;
-	}
-
-	public void setControlMode(int mode) {
-		controlMode = mode;
-	}
-
-	public double getConvergenceTolerance() {
-		return convergenceTolerance;
-	}
-
-	public void setConvergenceTolerance(double tolerance) {
-		convergenceTolerance = tolerance;
-	}
-
-	public boolean isConvergedFlag() {
-		return convergedFlag;
-	}
-
-	public void setConvergedFlag(boolean flag) {
-		convergedFlag = flag;
-	}
-
-	public int getDefaultControlMode() {
-		return defaultControlMode;
-	}
-
-	public void setDefaultControlMode(int controlMode) {
-		defaultControlMode = controlMode;
-	}
-
-	public int getDefaultLoadModel() {
-		return defaultLoadModel;
-	}
-
-	public void setDefaultLoadModel(int loadModel) {
-		defaultLoadModel = loadModel;
-	}
-
-	public boolean isDoAllHarmonics() {
-		return doAllHarmonics;
-	}
-
-	public void setDoAllHarmonics(boolean value) {
-		doAllHarmonics = value;
-	}
-
-	public boolean isDynamicsAllowed() {
-		return dynamicsAllowed;
-	}
-
-	public void setDynamicsAllowed(boolean allowed) {
-		dynamicsAllowed = allowed;
-	}
-
-	public DynamicsRec getDynaVars() {
-		return dynaVars;
-	}
-
-	public void setDynaVars(DynamicsRec vars) {
-		dynaVars = vars;
-	}
-
-	public double[] getErrorSaved() {
-		return errorSaved;
-	}
-
-	public void setErrorSaved(double[] value) {
-		errorSaved = value;
-	}
-
-	public boolean isFirstIteration() {
-		return firstIteration;
-	}
-
-	public void setFirstIteration(boolean iteration) {
-		firstIteration = iteration;
-	}
-
-	public boolean isFrequencyChanged() {
-		return frequencyChanged;
-	}
-
-	public void setFrequencyChanged(boolean value) {
-		frequencyChanged = value;
-	}
-
-	public double getHarmonic() {
-		return harmonic;
-	}
-
-	public void setHarmonic(double value) {
-		harmonic = value;
-	}
-
-	public double[] getHarmonicList() {
-		return harmonicList;
-	}
-
-	public void setHarmonicList(double[] value) {
-		harmonicList = value;
-	}
-
-	public int getHarmonicListSize() {
-		return harmonicListSize;
-	}
-
-	public void setHarmonicListSize(int size) {
-		harmonicListSize = size;
-	}
-
-	public int getIntHour() {
-		return intHour;
-	}
-
-	public void setIntHour(int hour) {
-		this.intHour = hour;
-	}
-
-	public double getDblHour() {
-		return dblHour;
-	}
-
-	public void setDblHour(double hour) {
-		this.dblHour = hour;
-	}
-
-	public UUID getYSystem() {
-		return YSystem;
-	}
-
-	public void setYSystem(UUID value) {
-		YSystem = value;
-	}
-
-	public UUID getYSeries() {
-		return YSeries;
-	}
-
-	public void setYSeries(UUID value) {
-		YSeries = value;
-	}
-
-	public UUID getY() {
-		return Y;
-	}
-
-	public void setY(UUID y) {
-		Y = y;
-	}
-
-	public double getIntervalHrs() {
-		return intervalHrs;
-	}
-
-	public void setIntervalHrs(double interval) {
-		intervalHrs = interval;
-	}
-
-	public boolean isDynamicModel() {
-		return isDynamicModel;
-	}
-
-	public void setDynamicModel(boolean isDynamic) {
-		isDynamicModel = isDynamic;
-	}
-
-	public boolean isHarmonicModel() {
-		return isHarmonicModel;
-	}
-
-	public void setHarmonicModel(boolean isHarmonic) {
-		isHarmonicModel = isHarmonic;
-	}
-
-	public int getIteration() {
-		return iteration;
-	}
-
-	public void setIteration(int iter) {
-		iteration = iter;
-	}
-
-	public int getLoadModel() {
-		return loadModel;
-	}
-
-	public void setLoadModel(int model) {
-		loadModel = model;
 	}
 
 	public boolean lastSolutionWasDirect() {
 		return lastSolutionWasDirect;
 	}
 
-	public void setLastSolutionWasDirect(boolean value) {
-		lastSolutionWasDirect = value;
-	}
-
 	public boolean loadsNeedUpdating() {
 		return loadsNeedUpdating;
-	}
-
-	public void setLoadsNeedUpdating(boolean value) {
-		loadsNeedUpdating = value;
-	}
-
-	public int getMaxControlIterations() {
-		return maxControlIterations;
-	}
-
-	public void setMaxControlIterations(int iterations) {
-		maxControlIterations = iterations;
-	}
-
-	public double getMaxError() {
-		return maxError;
-	}
-
-	public void setMaxError(double error) {
-		maxError = error;
-	}
-
-	public int getMaxIterations() {
-		return maxIterations;
-	}
-
-	public void setMaxIterations(int iterations) {
-		maxIterations = iterations;
-	}
-
-	public int getMostIterationsDone() {
-		return mostIterationsDone;
-	}
-
-	public void setMostIterationsDone(int value) {
-		mostIterationsDone = value;
-	}
-
-	public double[] getNodeVBase() {
-		return nodeVBase;
-	}
-
-	public void setNodeVBase(double[] base) {
-		nodeVBase = base;
-	}
-
-	public int getNumberOfTimes() {
-		return numberOfTimes;
-	}
-
-	public void setNumberOfTimes(int number) {
-		numberOfTimes = number;
-	}
-
-	public boolean isPreserveNodeVoltages() {
-		return preserveNodeVoltages;
-	}
-
-	public void setPreserveNodeVoltages(boolean preserve) {
-		preserveNodeVoltages = preserve;
-	}
-
-	public int getRandomType() {
-		return randomType;
-	}
-
-	public void setRandomType(int type) {
-		randomType = type;
-	}
-
-	public boolean isSeriesYInvalid() {
-		return seriesYInvalid;
-	}
-
-	public void setSeriesYInvalid(boolean invalid) {
-		seriesYInvalid = invalid;
-	}
-
-	public int getSolutionCount() {
-		return solutionCount;
-	}
-
-	public void setSolutionCount(int count) {
-		solutionCount = count;
-	}
-
-	public boolean isSolutionInitialized() {
-		return solutionInitialized;
-	}
-
-	public void setSolutionInitialized(boolean value) {
-		solutionInitialized = value;
-	}
-
-	public boolean isSystemYChanged() {
-		return systemYChanged;
-	}
-
-	public void setSystemYChanged(boolean value) {
-		systemYChanged = value;
-	}
-
-	public boolean useAuxCurrents() {
-		return useAuxCurrents;
-	}
-
-	public void setUseAuxCurrents(boolean value) {
-		useAuxCurrents = value;
-	}
-
-	public double[] getVMagSaved() {
-		return VMagSaved;
-	}
-
-	public void setVMagSaved(double[] value) {
-		VMagSaved = value;
-	}
-
-	public boolean isVoltageBaseChanged() {
-		return voltageBaseChanged;
-	}
-
-	public void setVoltageBaseChanged(boolean value) {
-		voltageBaseChanged = value;
-	}
-
-	public Complex[] getNodeV() {
-		return nodeV;
-	}
-
-	public void setNodeV(Complex[] value) {
-		nodeV = value;
-	}
-
-	public Complex[] getCurrents() {
-		return currents;
-	}
-
-	public void setCurrents(Complex[] value) {
-		currents = value;
 	}
 
 }

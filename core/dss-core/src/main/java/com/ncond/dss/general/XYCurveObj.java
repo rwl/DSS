@@ -34,7 +34,7 @@ public class XYCurveObj extends DSSObject {
 	public XYCurveObj(DSSClass parClass, String XYCurveName) {
 		super(parClass);
 		setName(XYCurveName.toLowerCase());
-		objType = parClass.getDSSClassType();
+		objType = parClass.getClassType();
 
 		lastValueAccessed = 0;
 

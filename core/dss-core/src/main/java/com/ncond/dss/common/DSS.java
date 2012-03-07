@@ -263,7 +263,7 @@ public class DSS {
 				doSimpleMsg("Error: Object \"" + objName + "\" not found." + CRLF +
 						Parser.getInstance().getCmdString(), 904);
 			} else {
-				switch (activeDSSObject.getDSSObjType()) {
+				switch (activeDSSObject.getObjType()) {
 				case DSSClassDefs.DSS_OBJECT:
 					// do nothing for general DSS object
 					break;

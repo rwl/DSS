@@ -94,7 +94,7 @@ public class Feeder extends PCClass {
 
 			switch (paramPointer) {
 			case -1:
-				DSS.doSimpleMsg("Unknown parameter \"" + paramName + "\" for object \"" + getName() +"."+ activeFeederObj.getName() + "\"", 630);
+				DSS.doSimpleMsg("Unknown parameter \"" + paramName + "\" for object \"" + getClassName() +"."+ activeFeederObj.getName() + "\"", 630);
 				break;
 			default:
 				classEdit(activeFeederObj, paramPointer - NumPropsThisClass);

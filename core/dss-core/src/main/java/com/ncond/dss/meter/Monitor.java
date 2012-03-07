@@ -111,7 +111,7 @@ public class Monitor extends MeterClass {
 
 			switch (paramPointer) {
 			case -1:
-				DSS.doSimpleMsg("Unknown parameter \"" + paramName + "\" for object \"" + getName() +"."+ am.getName() + "\"", 661);
+				DSS.doSimpleMsg("Unknown parameter \"" + paramName + "\" for object \"" + getClassName() +"."+ am.getName() + "\"", 661);
 				break;
 			case 0:
 				am.setElementName(param.toLowerCase());

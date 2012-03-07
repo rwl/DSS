@@ -57,7 +57,7 @@ public class LineGeometryObj extends DSSObject {
 		super(parClass);
 
 		setName(lineGeometryName.toLowerCase());
-		objType = parClass.getDSSClassType();
+		objType = parClass.getClassType();
 
 		dataChanged = true;
 

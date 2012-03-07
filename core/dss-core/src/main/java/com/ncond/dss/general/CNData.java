@@ -80,7 +80,7 @@ public class CNData extends CableData {
 
 			switch (paramPointer) {
 			case -1:
-				DSS.doSimpleMsg("Unknown parameter \"" + paramName + "\" for object \"" + getName() +"."+ getName() + "\"", 101);
+				DSS.doSimpleMsg("Unknown parameter \"" + paramName + "\" for object \"" + getClassName() +"."+ getClassName() + "\"", 101);
 				break;
 			case 0:
 				acd.setkStrand(parser.makeInteger());

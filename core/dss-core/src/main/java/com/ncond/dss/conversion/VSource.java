@@ -223,7 +223,7 @@ public class VSource extends PCClass {
 					avs.setScanType(-1);
 					break;
 				default:
-					DSS.doSimpleMsg("Unknown scan type for \"" + getName() +"."+ avs.getName() + "\": "+param, 321);
+					DSS.doSimpleMsg("Unknown scan type for \"" + getClassName() +"."+ avs.getName() + "\": "+param, 321);
 					break;
 				}
 				break;
@@ -239,7 +239,7 @@ public class VSource extends PCClass {
 					avs.setSequenceType(-1);
 					break;
 				default:
-					DSS.doSimpleMsg("Unknown sequence type for \"" + getName() +"."+ getName() + "\": "+param, 321);
+					DSS.doSimpleMsg("Unknown sequence type for \"" + getClassName() +"."+ getClassName() + "\": "+param, 321);
 					break;
 				}
 				break;

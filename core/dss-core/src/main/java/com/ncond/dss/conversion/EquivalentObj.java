@@ -32,7 +32,7 @@ public class EquivalentObj extends PCElement {
 	public EquivalentObj(DSSClass parClass, String sourceName) {
 		super(parClass);
 		setName(sourceName.toLowerCase());
-		objType = parClass.getDSSClassType(); //SOURCE + NON_PCPD_ELEM;  // don't want this in PC element list
+		objType = parClass.getClassType(); //SOURCE + NON_PCPD_ELEM;  // don't want this in PC element list
 
 		setNumPhases(3);
 		nConds = 3;

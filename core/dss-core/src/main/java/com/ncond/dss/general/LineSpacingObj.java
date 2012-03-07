@@ -19,7 +19,7 @@ public class LineSpacingObj extends DSSObject {
 		super(parClass);
 
 		setName(lineSpacingName.toLowerCase());
-		objType = parClass.getDSSClassType();
+		objType = parClass.getClassType();
 
 		dataChanged = true;
 		X           = null;

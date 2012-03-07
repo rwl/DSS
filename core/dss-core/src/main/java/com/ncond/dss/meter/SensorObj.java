@@ -50,7 +50,7 @@ public class SensorObj extends MeterElement {
 
 		clearSensor();
 
-		objType = parClass.getDSSClassType();  // SENSOR_ELEMENT;
+		objType = parClass.getClassType();  // SENSOR_ELEMENT;
 
 		initPropertyValues(0);
 

@@ -75,7 +75,7 @@ public class LoadShapeObj extends DSSObject {
 	public LoadShapeObj(DSSClass parClass, String loadShapeName) {
 		super(parClass);
 		setName(loadShapeName.toLowerCase());
-		objType = parClass.getDSSClassType();
+		objType = parClass.getClassType();
 
 		lastValueAccessed = 0;
 

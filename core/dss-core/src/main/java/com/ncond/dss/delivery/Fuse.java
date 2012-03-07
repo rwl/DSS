@@ -22,7 +22,7 @@ public class Fuse extends ControlClass {
 		super();
 
 		className = "Fuse";
-		classType = getDSSClassType() + DSSClassDefs.FUSE_CONTROL;
+		classType = getClassType() + DSSClassDefs.FUSE_CONTROL;
 
 		defineProperties();
 
@@ -121,7 +121,7 @@ public class Fuse extends ControlClass {
 
 			switch (paramPointer) {
 			case -1:
-				DSS.doSimpleMsg("Unknown parameter \"" + paramName + "\" for object \"" + getName() + "." + getName() + "\"", 402);
+				DSS.doSimpleMsg("Unknown parameter \"" + paramName + "\" for object \"" + getClassName() + "." + getClassName() + "\"", 402);
 				break;
 			case 0:
 				af.setMonitoredElementName(param.toLowerCase());

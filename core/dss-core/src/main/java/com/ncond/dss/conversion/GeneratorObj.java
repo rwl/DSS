@@ -184,7 +184,7 @@ public class GeneratorObj extends PCElement {
 	public GeneratorObj(DSSClass parClass, String generatorName) {
 		super(parClass);
 		setName(generatorName.toLowerCase());
-		objType = parClass.getDSSClassType(); // + GEN_ELEMENT;  // in both PC element and gen element list
+		objType = parClass.getClassType(); // + GEN_ELEMENT;  // in both PC element and gen element list
 
 		setNumPhases(3);
 		nConds = 4;   // defaults to wye

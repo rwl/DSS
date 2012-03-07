@@ -136,7 +136,7 @@ public class EnergyMeterObj extends MeterElement {
 		Circuit ckt = DSS.activeCircuit;
 
 		setName(energyMeterName.toLowerCase());
-		objType = parClass.getDSSClassType();  // ENERGY_METER;
+		objType = parClass.getClassType();  // ENERGY_METER;
 
 		setNumPhases(3);  // directly set conds and phases
 		nConds = 3;
@@ -544,7 +544,7 @@ public class EnergyMeterObj extends MeterElement {
 			// if voltage only is to be used for Load UE/EEN, don't mark (set to 0.0 and load will calc UE based on voltage)
 			PCElem = (PCElement) branchList.getFirstObject();
 			while (PCElem != null) {
-				if ((PCElem.getDSSObjType() & DSSClassDefs.CLASSMASK) == DSSClassDefs.LOAD_ELEMENT) {
+				if ((PCElem.getObjType() & DSSClassDefs.CLASSMASK) == DSSClassDefs.LOAD_ELEMENT) {
 					load = (LoadObj) PCElem;
 					if (cktElem.getOverloadEEN() > 0.0 && zoneIsRadial && !voltageUEOnly) {
 						load.setEEN_Factor(cktElem.getOverloadEEN());
@@ -579,7 +579,7 @@ public class EnergyMeterObj extends MeterElement {
 		while (cktElem != null) {
 			PCElem = (PCElement) branchList.getFirstObject();
 			while (PCElem != null) {
-				switch (PCElem.getDSSObjType() & DSSClassDefs.CLASSMASK) {
+				switch (PCElem.getObjType() & DSSClassDefs.CLASSMASK) {
 				case DSSClassDefs.LOAD_ELEMENT:
 					if (!localOnly) {  // don't check for load EEN/UE if Local only
 						load = (LoadObj) PCElem;
@@ -906,10 +906,10 @@ public class EnergyMeterObj extends MeterElement {
 							continue;  // skip ones we already checked
 						branchList.getPresentBranch().setDangling(false);  // something is connected here
 						// is this a load or a generator or a capacitor or reactor?
-						if (((pc.getDSSObjType() & DSSClassDefs.CLASSMASK) == DSSClassDefs.LOAD_ELEMENT)
-								|| ((pc.getDSSObjType() & DSSClassDefs.CLASSMASK) == DSSClassDefs.GEN_ELEMENT)
-								|| ((pc.getDSSObjType() & DSSClassDefs.CLASSMASK) == DSSClassDefs.CAP_ELEMENT)
-								|| ((pc.getDSSObjType() & DSSClassDefs.CLASSMASK) == DSSClassDefs.REACTOR_ELEMENT)) {
+						if (((pc.getObjType() & DSSClassDefs.CLASSMASK) == DSSClassDefs.LOAD_ELEMENT)
+								|| ((pc.getObjType() & DSSClassDefs.CLASSMASK) == DSSClassDefs.GEN_ELEMENT)
+								|| ((pc.getObjType() & DSSClassDefs.CLASSMASK) == DSSClassDefs.CAP_ELEMENT)
+								|| ((pc.getObjType() & DSSClassDefs.CLASSMASK) == DSSClassDefs.REACTOR_ELEMENT)) {
 
 							branchList.setNewObject(pc);
 							pc.setChecked(true);  // so we don't pick this element up again
@@ -980,7 +980,7 @@ public class EnergyMeterObj extends MeterElement {
 								if (!testElement.isEnabled()) {
 									zoneListCounter += 1;  // lets ignore disabled devices
 								} else {
-									if ((testElement.getDSSObjType() & DSSClassDefs.BASECLASSMASK) != DSSClassDefs.PD_ELEMENT) {
+									if ((testElement.getObjType() & DSSClassDefs.BASECLASSMASK) != DSSClassDefs.PD_ELEMENT) {
 										zoneListCounter += 1;  // lets ignore non-PD elements
 									} else {
 										branchList.addNewChild(testElement, 0, 0);  // add it as a child to the previous element
@@ -1040,14 +1040,14 @@ public class EnergyMeterObj extends MeterElement {
 				pd = (PDElement) branchList.getFirst();
 				while (pd != null) {
 					bw.write(String.format("%d, %s.%s, %s, %s, %10.4f",
-							branchList.getLevel(), pd.getParentClass().getName(), pd.getName(),
+							branchList.getLevel(), pd.getParentClass().getClassName(), pd.getName(),
 							pd.getFirstBus(), pd.getNextBus(),
 							/*BusList.get(BranchList.getPresentBranch().getToBusReference()),*/
 							ckt.getBus(branchList.getPresentBranch().getToBusReference()).getDistFromMeter()));
 					bw.newLine();
 					loadElem = (CktElement) branchList.getFirstObject();
 					while (loadElem != null) {
-						bw.write("-1, " + String.format("%s.%s, %s", loadElem.getParentClass().getName(), loadElem.getName(), loadElem.getFirstBus()/*ckt.getBusList().get(BranchList.getPresentBranch().getToBusReference())*/));
+						bw.write("-1, " + String.format("%s.%s, %s", loadElem.getParentClass().getClassName(), loadElem.getName(), loadElem.getFirstBus()/*ckt.getBusList().get(BranchList.getPresentBranch().getToBusReference())*/));
 						bw.newLine();
 						loadElem = (CktElement) branchList.getNextObject();
 					}
@@ -1115,7 +1115,7 @@ public class EnergyMeterObj extends MeterElement {
 					pw.println("Circuit Element = " + pd.getName());
 					load = (CktElement) branchList.getFirstObject();
 					while (load != null) {
-						pw.println("   Shunt Element = " + load.getParentClass().getName() + "." + load.getName());
+						pw.println("   Shunt Element = " + load.getParentClass().getClassName() + "." + load.getName());
 						load = (CktElement) branchList.getNextObject();
 					}
 					pd = (PDElement) branchList.goForward();
@@ -1168,7 +1168,7 @@ public class EnergyMeterObj extends MeterElement {
 		while (cktElem != null) {
 			loadElem = (LoadObj) branchList.getFirstObject();
 			while (loadElem != null) {
-				if ((loadElem.getDSSObjType() & DSSClassDefs.CLASSMASK) == DSSClassDefs.LOAD_ELEMENT) {  // only for loads not other shunts
+				if ((loadElem.getObjType() & DSSClassDefs.CLASSMASK) == DSSClassDefs.LOAD_ELEMENT) {  // only for loads not other shunts
 					switch (loadElem.getNumPhases()) {
 					/* For single phase loads, allocate based on phase factor, else average factor */
 					case 1:
@@ -1539,7 +1539,7 @@ public class EnergyMeterObj extends MeterElement {
 					shuntElement = (CktElement) branchList.getFirstObject();
 					while (shuntElement != null) {
 						ckt.setActiveCktElement(shuntElement);
-						if ((shuntElement.getDSSObjType() & DSSClassDefs.CLASSMASK) == DSSClassDefs.LOAD_ELEMENT) {
+						if ((shuntElement.getObjType() & DSSClassDefs.CLASSMASK) == DSSClassDefs.LOAD_ELEMENT) {
 							loadElement = (LoadObj) shuntElement;
 							if (loadElement.getHasBeenAllocated()) {
 								/* Manually set the allocation factor so it shows up */
@@ -1549,14 +1549,14 @@ public class EnergyMeterObj extends MeterElement {
 							ckt.setActiveCktElement(shuntElement);  // reset in case edit mangles it
 							nloads += 1;
 							Util.writeActiveDSSObject(pwloads, "New");
-						} else if ((shuntElement.getDSSObjType() & DSSClassDefs.CLASSMASK) == DSSClassDefs.GEN_ELEMENT) {
+						} else if ((shuntElement.getObjType() & DSSClassDefs.CLASSMASK) == DSSClassDefs.GEN_ELEMENT) {
 							ngens += 1;
 							Util.writeActiveDSSObject(pwgens, "New");
 							if (ckt.getActiveCktElement().hasControl()) {
 								ckt.setActiveCktElement(ckt.getActiveCktElement().getControlElement());
 								Util.writeActiveDSSObject(pwgens, "New");
 							}
-						} else if ((shuntElement.getDSSObjType() & DSSClassDefs.CLASSMASK) == DSSClassDefs.CAP_ELEMENT) {
+						} else if ((shuntElement.getObjType() & DSSClassDefs.CLASSMASK) == DSSClassDefs.CAP_ELEMENT) {
 							ncaps += 1;
 							Util.writeActiveDSSObject(pwcaps, "New");
 							if (ckt.getActiveCktElement().hasControl()) {

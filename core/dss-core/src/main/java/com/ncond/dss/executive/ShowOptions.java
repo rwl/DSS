@@ -453,7 +453,7 @@ public class ShowOptions {
 		case 24:
 			if (DSS.activeCircuit != null) {  // Yprim
 				CktElement cktElem = DSS.activeCircuit.getActiveCktElement();
-				ShowResults.showYPrim(DSS.dataDirectory + cktElem.getParentClass().getName() + '_' + cktElem.getName() + "_Yprim.txt");
+				ShowResults.showYPrim(DSS.dataDirectory + cktElem.getParentClass().getClassName() + '_' + cktElem.getName() + "_Yprim.txt");
 			}
 			break;
 		case 25:  // Y

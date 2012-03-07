@@ -68,7 +68,7 @@ public class LineObj extends PDElement {
 	public LineObj(DSSClass parClass, String lineName) {
 		super(parClass);
 		setName(lineName.toLowerCase());
-		objType = parClass.getDSSClassType();  // DSSObjType + LINESECTION; // in both PD element list and line section lists
+		objType = parClass.getClassType();  // DSSObjType + LINESECTION; // in both PD element list and line section lists
 
 		setNumPhases(3);  // directly set conds and phases
 		nConds = 3;
@@ -931,7 +931,7 @@ public class LineObj extends PDElement {
 
 	public void updateControlElements(String newName, String oldName) {
 		Circuit ckt = DSS.activeCircuit;
-		for (ControlElem pControlElem : ckt.getDSSControls())
+		for (ControlElem pControlElem : ckt.getControls())
 			if (oldName.equalsIgnoreCase( pControlElem.getElementName() )) {
 				Parser.getInstance().setCmdString(" Element=" + newName);  // change name of the property
 				pControlElem.edit();

@@ -5,6 +5,11 @@ import org.apache.commons.math.complex.Complex;
 import com.ncond.dss.general.NamedObject;
 import com.ncond.dss.shared.CMatrix;
 
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+
+@Data
+@EqualsAndHashCode(callSuper=true)
 public class Bus extends NamedObject {
 
 	public static class NodeBus {
@@ -174,13 +179,13 @@ public class Bus extends NamedObject {
 			busCurrent[i] = Complex.ZERO;
 	}
 
-	public Complex[] getVBus() {
-		return VBus;
-	}
-
-	public void setVBus(Complex[] vBus) {
-		VBus = vBus;
-	}
+//	public Complex[] getVBus() {
+//		return VBus;
+//	}
+//
+//	public void setVBus(Complex[] vBus) {
+//		VBus = vBus;
+//	}
 
 	public Complex getBusCurrent(int idx) {
 		return busCurrent[idx];
@@ -190,92 +195,92 @@ public class Bus extends NamedObject {
 		return busCurrent;
 	}
 
-	public void setBusCurrent(Complex[] buscurrent) {
-		busCurrent = buscurrent;
-	}
-
-	public CMatrix getZsc() {
-		return Zsc;
-	}
-
-	public void setZsc(CMatrix zsc) {
-		Zsc = zsc;
-	}
-
-	public CMatrix getYsc() {
-		return Ysc;
-	}
-
-	public void setYsc(CMatrix ysc) {
-		Ysc = ysc;
-	}
-
-	public double getX() {
-		return x;
-	}
-
-	public void setX(double x) {
-		this.x = x;
-	}
-
-	public double getY() {
-		return y;
-	}
-
-	public void setY(double y) {
-		this.y = y;
-	}
-
-	public double getKVBase() {
-		return kVBase;
-	}
-
-	public void setKVBase(double kVBase) {
-		this.kVBase = kVBase;
-	}
-
-	public double getDistFromMeter() {
-		return distFromMeter;
-	}
-
-	public void setDistFromMeter(double distFromMeter) {
-		this.distFromMeter = distFromMeter;
-	}
-
-	public boolean isCoordDefined() {
-		return coordDefined;
-	}
-
-	public void setCoordDefined(boolean defined) {
-		coordDefined = defined;
-	}
-
-	public boolean isBusChecked() {
-		return busChecked;
-	}
-
-	public void setBusChecked(boolean checked) {
-		busChecked = checked;
-	}
-
-	public boolean isKeep() {
-		return keep;
-	}
-
-	public void setKeep(boolean keep) {
-		this.keep = keep;
-	}
-
-	public boolean isRadialBus() {
-		return isRadialBus;
-	}
-
-	public void setRadialBus(boolean isRadial) {
-		isRadialBus = isRadial;
-	}
-
-	public int getNumNodesThisBus() {
-		return numNodesThisBus;
-	}
+//	public void setBusCurrent(Complex[] buscurrent) {
+//		busCurrent = buscurrent;
+//	}
+//
+//	public CMatrix getZsc() {
+//		return Zsc;
+//	}
+//
+//	public void setZsc(CMatrix zsc) {
+//		Zsc = zsc;
+//	}
+//
+//	public CMatrix getYsc() {
+//		return Ysc;
+//	}
+//
+//	public void setYsc(CMatrix ysc) {
+//		Ysc = ysc;
+//	}
+//
+//	public double getX() {
+//		return x;
+//	}
+//
+//	public void setX(double x) {
+//		this.x = x;
+//	}
+//
+//	public double getY() {
+//		return y;
+//	}
+//
+//	public void setY(double y) {
+//		this.y = y;
+//	}
+//
+//	public double getKVBase() {
+//		return kVBase;
+//	}
+//
+//	public void setKVBase(double kVBase) {
+//		this.kVBase = kVBase;
+//	}
+//
+//	public double getDistFromMeter() {
+//		return distFromMeter;
+//	}
+//
+//	public void setDistFromMeter(double distFromMeter) {
+//		this.distFromMeter = distFromMeter;
+//	}
+//
+//	public boolean isCoordDefined() {
+//		return coordDefined;
+//	}
+//
+//	public void setCoordDefined(boolean defined) {
+//		coordDefined = defined;
+//	}
+//
+//	public boolean isBusChecked() {
+//		return busChecked;
+//	}
+//
+//	public void setBusChecked(boolean checked) {
+//		busChecked = checked;
+//	}
+//
+//	public boolean isKeep() {
+//		return keep;
+//	}
+//
+//	public void setKeep(boolean keep) {
+//		this.keep = keep;
+//	}
+//
+//	public boolean isRadialBus() {
+//		return isRadialBus;
+//	}
+//
+//	public void setRadialBus(boolean isRadial) {
+//		isRadialBus = isRadial;
+//	}
+//
+//	public int getNumNodesThisBus() {
+//		return numNodesThisBus;
+//	}
 
 }

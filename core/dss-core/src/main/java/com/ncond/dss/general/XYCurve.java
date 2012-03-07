@@ -127,7 +127,7 @@ public class XYCurve extends DSSClass {
 
 			switch (paramPointer) {
 			case -1:
-				DSS.doSimpleMsg("Unknown parameter \"" + paramName + "\" for object \"" + getName() +"."+ xyc.getName() + "\"", 610);
+				DSS.doSimpleMsg("Unknown parameter \"" + paramName + "\" for object \"" + getClassName() +"."+ xyc.getName() + "\"", 610);
 				break;
 			case 0:
 				xyc.setNumPoints(parser.makeInteger());

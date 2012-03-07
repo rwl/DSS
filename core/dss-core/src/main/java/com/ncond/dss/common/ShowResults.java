@@ -49,7 +49,7 @@ public abstract class ShowResults {
 		maxDeviceNameLength = 0;
 		for (int i = 0; i < ckt.getNumDevices(); i++) {
 			devName = ckt.getDeviceList().get(i);
-			devClassName = ((DSSClass) DSS.DSSClassList.get( ckt.getDeviceRef()[i].cktElementClass )).getName();
+			devClassName = ((DSSClass) DSS.DSSClassList.get( ckt.getDeviceRef()[i].cktElementClass )).getClassName();
 			maxDeviceNameLength = Math.max(maxDeviceNameLength, devName.length() + devClassName.length() + 1);
 		}
 	}
@@ -461,7 +461,7 @@ public abstract class ShowResults {
 
 						for (j = 0; j < nTerm; j++) {
 							getI0I1I2(I0, I1, I2, CMax, pElem.getNumPhases(), (j - 1) * nCond, cBuffer);  // TODO Check pass be value
-							writeSeqCurrents(pw, Util.padDots( Util.fullName(pElem), maxDeviceNameLength + 2 ), I0, I1, I2, CMax, 0.0, 0.0, j, pElem.getDSSObjType());
+							writeSeqCurrents(pw, Util.padDots( Util.fullName(pElem), maxDeviceNameLength + 2 ), I0, I1, I2, CMax, 0.0, 0.0, j, pElem.getObjType());
 						}
 						cBuffer = null;
 					}
@@ -477,7 +477,7 @@ public abstract class ShowResults {
 
 						for (j = 0; j < nTerm; j++) {
 							getI0I1I2(I0, I1, I2, CMax, PDElem.getNumPhases(), (j - 1) * nCond, cBuffer);
-							writeSeqCurrents(pw, Util.padDots( Util.fullName(PDElem), maxDeviceNameLength + 2 ), I0, I1, I2, CMax, PDElem.getNormAmps(), PDElem.getEmergAmps(), j, PDElem.getDSSObjType());
+							writeSeqCurrents(pw, Util.padDots( Util.fullName(PDElem), maxDeviceNameLength + 2 ), I0, I1, I2, CMax, PDElem.getNormAmps(), PDElem.getEmergAmps(), j, PDElem.getObjType());
 						}
 						cBuffer = null;
 					}
@@ -493,7 +493,7 @@ public abstract class ShowResults {
 
 						for (j = 0; j < nTerm; j++) {
 							getI0I1I2(I0, I1, I2, CMax, PCElem.getNumPhases(), (j - 1) * nCond, cBuffer);
-							writeSeqCurrents(pw, Util.padDots( Util.fullName(PCElem), maxDeviceNameLength + 2 ), I0, I1, I2, CMax, 0.0, 0.0, j, PCElem.getDSSObjType());
+							writeSeqCurrents(pw, Util.padDots( Util.fullName(PCElem), maxDeviceNameLength + 2 ), I0, I1, I2, CMax, 0.0, 0.0, j, PCElem.getObjType());
 						}
 						cBuffer = null;
 					}
@@ -509,7 +509,7 @@ public abstract class ShowResults {
 
 						for (j = 0; j < nTerm; j++) {
 							getI0I1I2(I0, I1, I2, CMax, pElem.getNumPhases(), (j - 1) * nCond, cBuffer);
-							writeSeqCurrents(pw, Util.padDots( Util.fullName(pElem), maxDeviceNameLength + 2 ), I0, I1, I2, CMax, 0.0, 0.0, j, pElem.getDSSObjType());
+							writeSeqCurrents(pw, Util.padDots( Util.fullName(pElem), maxDeviceNameLength + 2 ), I0, I1, I2, CMax, 0.0, 0.0, j, pElem.getObjType());
 						}
 						cBuffer = null;
 					}
@@ -949,7 +949,7 @@ public abstract class ShowResults {
 
 		try {
 			/* Allocate cBuffer big enough for this circuit element */
-			cBuffer = new Complex[cktElem.getYorder()];
+			cBuffer = new Complex[cktElem.getYOrder()];
 
 			nCond = cktElem.getNumConds();
 			cktElem.getCurrents(cBuffer);
@@ -1020,7 +1020,7 @@ public abstract class ShowResults {
 		Circuit ckt = DSS.activeCircuit;
 
 		try {
-			cBuffer = new Complex[cktElem.getYorder()];
+			cBuffer = new Complex[cktElem.getYOrder()];
 
 			nCond = cktElem.getNumConds();
 			cktElem.getCurrents(cBuffer);
@@ -1111,7 +1111,7 @@ public abstract class ShowResults {
 
 							for (j = 0; j < nTerm; j++) {
 								getI0I1I2(I0, I1, I2, CMax, pElem.getNumPhases(), (j - 1) * nCond, cBuffer);
-								writeSeqCurrents(pw, Util.padDots(Util.fullName(pElem), maxDeviceNameLength + 2), I0, I1, I2, CMax, 0.0, 0.0, j, pElem.getDSSObjType());
+								writeSeqCurrents(pw, Util.padDots(Util.fullName(pElem), maxDeviceNameLength + 2), I0, I1, I2, CMax, 0.0, 0.0, j, pElem.getObjType());
 							}
 						}
 				}
@@ -1127,7 +1127,7 @@ public abstract class ShowResults {
 
 							for (j = 0; j < nTerm; j++) {
 								getI0I1I2(I0, I1, I2, CMax, PDElem.getNumPhases(), (j - 1) * nCond, cBuffer);
-								writeSeqCurrents(pw, Util.padDots(Util.fullName(PDElem), maxDeviceNameLength + 2), I0, I1, I2, CMax, 0.0, 0.0, j, PDElem.getDSSObjType());
+								writeSeqCurrents(pw, Util.padDots(Util.fullName(PDElem), maxDeviceNameLength + 2), I0, I1, I2, CMax, 0.0, 0.0, j, PDElem.getObjType());
 							}
 						}
 				}
@@ -1142,7 +1142,7 @@ public abstract class ShowResults {
 
 							for (j = 0; j < nTerm; j++) {
 								getI0I1I2(I0, I1, I2, CMax, PCElem.getNumPhases(), (j - 1) * nCond, cBuffer);
-								writeSeqCurrents(pw, Util.padDots(Util.fullName(PCElem), maxDeviceNameLength + 2), I0, I1, I2, CMax, 0.0, 0.0, j, PCElem.getDSSObjType());
+								writeSeqCurrents(pw, Util.padDots(Util.fullName(PCElem), maxDeviceNameLength + 2), I0, I1, I2, CMax, 0.0, 0.0, j, PCElem.getObjType());
 							}
 						}
 				}
@@ -1499,7 +1499,7 @@ public abstract class ShowResults {
 					DSS.activeDSSClass = DSS.DSSClassList.get(DSS.lastClassReferenced);
 					for (i = 0; i < DSS.activeDSSClass.getElementCount(); i++) {
 						DSS.activeDSSClass.setActiveElement(i);
-						if ((DSS.activeDSSClass.getDSSClassType() & DSSClassDefs.BASECLASSMASK) > 0) {
+						if ((DSS.activeDSSClass.getClassType() & DSSClassDefs.BASECLASSMASK) > 0) {
 							if (((CktElement) DSS.activeDSSObject).isEnabled()) {
 								pw.println(DSS.activeDSSObject.getName().toUpperCase());
 							} else {
@@ -1826,15 +1826,15 @@ public abstract class ShowResults {
 							for (i = 0; i < pMtr.getBranchList().getLevel(); i++)
 								pw.print(TABCHAR);
 							//F.print(pMtr.getBranchList().getLevel() +" ");
-							pw.print(PDElem.getParentClass().getName() + "." + PDElem.getName());
+							pw.print(PDElem.getParentClass().getClassName() + "." + PDElem.getName());
 							CktTreeNode pb = pMtr.getBranchList().getPresentBranch();
 							if (pb.isParallel())
 								pw.print("(PARALLEL:" + ((CktElement) pb.getLoopLineObj()).getName()+")");
 							if (pb.isLoopedHere())
-								pw.print("(LOOP:" + ((CktElement) pb.getLoopLineObj()).getParentClass().getName()+"."+((CktElement) pb.getLoopLineObj()).getName()+")");
+								pw.print("(LOOP:" + ((CktElement) pb.getLoopLineObj()).getParentClass().getClassName()+"."+((CktElement) pb.getLoopLineObj()).getName()+")");
 
 							if (PDElem.getSensorObj() != null) {
-								pw.printf(" (Sensor: %s.%s) ", PDElem.getSensorObj().getParentClass().getName(), PDElem.getSensorObj().getName());
+								pw.printf(" (Sensor: %s.%s) ", PDElem.getSensorObj().getParentClass().getClassName(), PDElem.getSensorObj().getName());
 							} else {
 								pw.print(" (Sensor: NIL)");
 							}
@@ -1843,9 +1843,9 @@ public abstract class ShowResults {
 							while (loadElem != null) {
 								for (i = 0; i < pMtr.getBranchList().getLevel() + 1; i++)
 									pw.print(TABCHAR);
-								pw.print(loadElem.getParentClass().getName() + "." + loadElem.getName());
+								pw.print(loadElem.getParentClass().getClassName() + "." + loadElem.getName());
 								if (loadElem.getSensorObj() != null) {
-									pw.printf(" (Sensor: %s.%s) ", loadElem.getSensorObj().getParentClass().getName(), loadElem.getSensorObj().getName());
+									pw.printf(" (Sensor: %s.%s) ", loadElem.getSensorObj().getParentClass().getClassName(), loadElem.getSensorObj().getName());
 								} else {
 									pw.print(" (Sensor: NIL)");
 								}
@@ -1911,7 +1911,7 @@ public abstract class ShowResults {
 			// PD elements
 			for (PDElement PDElem : ckt.getPDElements()) {
 				if (PDElem.isEnabled())
-					if ((DSSClassDefs.CLASSMASK & PDElem.getDSSObjType()) != DSSClassDefs.CAP_ELEMENT) {  // ignore capacitors
+					if ((DSSClassDefs.CLASSMASK & PDElem.getObjType()) != DSSClassDefs.CAP_ELEMENT) {  // ignore capacitors
 						NCond = PDElem.getNumConds();
 						PDElem.getCurrents(cBuffer);
 
@@ -2068,9 +2068,9 @@ public abstract class ShowResults {
 					totalLosses = totalLosses.add(kLosses);
 					termPower = PDElem.getPower(1).multiply(0.001);  // terminal 1 power  TODO Check zero based indexing
 
-					if ((DSSClassDefs.CLASSMASK & PDElem.getDSSObjType()) == DSSClassDefs.XFMR_ELEMENT)
+					if ((DSSClassDefs.CLASSMASK & PDElem.getObjType()) == DSSClassDefs.XFMR_ELEMENT)
 						transLosses = transLosses.add(kLosses);
-					if ((DSSClassDefs.CLASSMASK & PDElem.getDSSObjType()) == DSSClassDefs.LINE_ELEMENT)
+					if ((DSSClassDefs.CLASSMASK & PDElem.getObjType()) == DSSClassDefs.LINE_ELEMENT)
 						lineLosses = lineLosses.add(kLosses);
 
 					pw.print(Util.pad(Util.fullName(PDElem), maxDeviceNameLength + 2));
@@ -2135,7 +2135,7 @@ public abstract class ShowResults {
 
 			for (PCElement PCElem : ckt.getPCElements()) {
 				if (PCElem.isEnabled() && (PCElem.numVariables() > 0)) {
-					pw.println("ELEMENT: " + PCElem.getParentClass().getName() + "." + PCElem.getName());
+					pw.println("ELEMENT: " + PCElem.getParentClass().getClassName() + "." + PCElem.getName());
 					pw.println("No. of variables: " + PCElem.numVariables());
 					for (i = 0; i < PCElem.numVariables(); i++)
 						pw.println("  " + PCElem.variableName(i) + " = " + String.format("%-.6g", PCElem.getVariable(i)));
@@ -2207,16 +2207,16 @@ public abstract class ShowResults {
 			for (CktElement TestElement : ckt.getCktElements()) {
 				if (TestElement.isEnabled())
 					if (!TestElement.isChecked())
-						if ((TestElement.getDSSObjType() & DSSClassDefs.BASECLASSMASK) == DSSClassDefs.PD_ELEMENT) {
+						if ((TestElement.getObjType() & DSSClassDefs.BASECLASSMASK) == DSSClassDefs.PD_ELEMENT) {
 							subArea = CktTree.getIsolatedSubArea(TestElement);
 							pw.println("*** START SUBAREA ***");
 
 							testBranch = (CktElement) subArea.getFirst();  // TODO Implement
 							while (testBranch != null) {
-								pw.println("(" + subArea.getLevel() + ") " + testBranch.getParentClass().getName() + "." + testBranch.getName());
+								pw.println("(" + subArea.getLevel() + ") " + testBranch.getParentClass().getClassName() + "." + testBranch.getName());
 								pElem = (CktElement) subArea.getFirstObject();
 								while (pElem != null) {
-									pw.println("[SHUNT], " + pElem.getParentClass().getName() + "." + pElem.getName());
+									pw.println("[SHUNT], " + pElem.getParentClass().getClassName() + "." + pElem.getName());
 									pElem = (CktElement) subArea.getNextObject();
 								}
 								testBranch = (CktElement) subArea.goForward();
@@ -2232,15 +2232,15 @@ public abstract class ShowResults {
 
 			/* Mark all controls, energy meters and monitors as checked so they don"t show up */
 
-			for (i = 0; i < ckt.getDSSControls().size(); i++)
-				((CktElement) ckt.getDSSControls().get(i)).setChecked(true);
+			for (i = 0; i < ckt.getControls().size(); i++)
+				((CktElement) ckt.getControls().get(i)).setChecked(true);
 			for (i = 0; i < ckt.getMeterElements().size(); i++)
 				((CktElement) ckt.getMeterElements().get(i)).setChecked(true);
 
 			for (CktElement TestElement : ckt.getCktElements()) {
 				if (TestElement.isEnabled()) {
 					if (!TestElement.isChecked()) {
-						pw.print("\"" + TestElement.getParentClass().getName() + "." + TestElement.getName() + "\"");
+						pw.print("\"" + TestElement.getParentClass().getClassName() + "." + TestElement.getName() + "\"");
 						pw.print("  Buses:");
 						for (j = 0; j < TestElement.getNumTerms(); j++)
 							pw.print("  \"" + TestElement.getBus(j) + "\"");
@@ -2266,10 +2266,10 @@ public abstract class ShowResults {
 
 			testBranch = (CktElement) branchList.getFirst();  // FIXME Make generic
 			while (testBranch != null) {
-				pw.println("(" + branchList.getLevel() + ") " + testBranch.getParentClass().getName() + "." + testBranch.getName());
+				pw.println("(" + branchList.getLevel() + ") " + testBranch.getParentClass().getClassName() + "." + testBranch.getName());
 				testElem = (CktElement) branchList.getFirstObject();
 				while (testElem != null) {
-					pw.println("[SHUNT], " + testElem.getParentClass().getName() + "." + testElem.getName());
+					pw.println("[SHUNT], " + testElem.getParentClass().getClassName() + "." + testElem.getName());
 					testElem = (CktElement) branchList.getNextObject();
 				}
 				testBranch = (CktElement) branchList.goForward();
@@ -2299,7 +2299,7 @@ public abstract class ShowResults {
 			pw.println();
 
 			for (PDElement PDElem : ckt.getPDElements()) {
-				pw.print("\"" + PDElem.getParentClass().getName() + "." + PDElem.getName() + "\" normamps=");
+				pw.print("\"" + PDElem.getParentClass().getClassName() + "." + PDElem.getName() + "\" normamps=");
 				pw.printf("%-.4g,  %-.4g  !Amps", PDElem.getNormAmps(), PDElem.getEmergAmps());
 				pw.println();
 
@@ -2344,9 +2344,9 @@ public abstract class ShowResults {
 
 						CktTreeNode pb = pMtr.getBranchList().getPresentBranch();
 						if (pb.isParallel())
-							pw.println("(" + pMtr.getName() + ") " + PDElem.getParentClass().getName() + "." + PDElem.getName().toUpperCase() +": PARALLEL WITH " + ((CktElement) pb.getLoopLineObj()).getParentClass().getName() + "." + ((CktElement) pb.getLoopLineObj()).getName());
+							pw.println("(" + pMtr.getName() + ") " + PDElem.getParentClass().getClassName() + "." + PDElem.getName().toUpperCase() +": PARALLEL WITH " + ((CktElement) pb.getLoopLineObj()).getParentClass().getClassName() + "." + ((CktElement) pb.getLoopLineObj()).getName());
 						if (pb.isLoopedHere())
-							pw.println("(" + pMtr.getName() + ") " + PDElem.getParentClass().getName() + "." + PDElem.getName().toUpperCase() + ": LOOPED TO     " + ((CktElement) pb.getLoopLineObj()).getParentClass().getName() + "." + ((CktElement) pb.getLoopLineObj()).getName());
+							pw.println("(" + pMtr.getName() + ") " + PDElem.getParentClass().getClassName() + "." + PDElem.getName().toUpperCase() + ": LOOPED TO     " + ((CktElement) pb.getLoopLineObj()).getParentClass().getClassName() + "." + ((CktElement) pb.getLoopLineObj()).getName());
 
 						PDElem = (PDElement) pMtr.getBranchList().goForward();
 					}
@@ -2413,7 +2413,7 @@ public abstract class ShowResults {
 				if (topo.getLevel() > nLevels)
 					nLevels = topo.getLevel();
 				topoLevelTabs(pwTree, topo.getLevel());
-				pwTree.print(PDElem.getParentClass().getName() + "." + PDElem.getName());
+				pwTree.print(PDElem.getParentClass().getClassName() + "." + PDElem.getName());
 				CktTreeNode pb = topo.getPresentBranch();
 				if (pb.isParallel()) {
 					nParallel += 1;
@@ -2421,17 +2421,17 @@ public abstract class ShowResults {
 				}
 				if (pb.isLoopedHere()) {
 					nLoops++;
-					pwTree.print("(LOOP:" + ((CktElement) pb.getLoopLineObj()).getParentClass().getName()
+					pwTree.print("(LOOP:" + ((CktElement) pb.getLoopLineObj()).getParentClass().getClassName()
 					+"."+((CktElement) pb.getLoopLineObj()).getName()+")");
 				}
 				if (PDElem.hasSensorObj()) {
 					pwTree.printf(" (Sensor: %s.%s) ",
-							PDElem.getSensorObj().getParentClass().getName(), PDElem.getSensorObj().getName());
+							PDElem.getSensorObj().getParentClass().getClassName(), PDElem.getSensorObj().getName());
 				}
 				if (PDElem.hasControl()) {
 					pwTree.printf(" (Control: %s.%s) ",
-							PDElem.getControlElement().getParentClass().getName(), PDElem.getControlElement().getName());
-					if ((PDElem.getControlElement().getDSSObjType() & DSSClassDefs.CLASSMASK) == DSSClassDefs.SWT_CONTROL)
+							PDElem.getControlElement().getParentClass().getClassName(), PDElem.getControlElement().getName());
+					if ((PDElem.getControlElement().getObjType() & DSSClassDefs.CLASSMASK) == DSSClassDefs.SWT_CONTROL)
 						nSwitches++;
 				}
 				if (PDElem.hasEnergyMeter())
@@ -2441,14 +2441,14 @@ public abstract class ShowResults {
 				loadElem = (LoadObj) topo.getFirstObject();
 				while (loadElem != null) {
 					topoLevelTabs(pwTree, topo.getLevel() + 1);
-					pwTree.print(loadElem.getParentClass().getName() + "." + loadElem.getName());
+					pwTree.print(loadElem.getParentClass().getClassName() + "." + loadElem.getName());
 					if (loadElem.hasSensorObj())
 						pwTree.printf(" (Sensor: %s.%s) ",
-								loadElem.getSensorObj().getParentClass().getName(), loadElem.getSensorObj().getName());
+								loadElem.getSensorObj().getParentClass().getClassName(), loadElem.getSensorObj().getName());
 					if (loadElem.hasControl()) {
 						pwTree.printf(" (Control: %s.%s) ",
-								loadElem.getControlElement().getParentClass().getName(), loadElem.getControlElement().getName());
-						if ((loadElem.getControlElement().getDSSObjType() & DSSClassDefs.CLASSMASK) == DSSClassDefs.SWT_CONTROL)
+								loadElem.getControlElement().getParentClass().getClassName(), loadElem.getControlElement().getName());
+						if ((loadElem.getControlElement().getObjType() & DSSClassDefs.CLASSMASK) == DSSClassDefs.SWT_CONTROL)
 							nSwitches++;
 					}
 					if (loadElem.hasEnergyMeter()) {
@@ -2463,16 +2463,16 @@ public abstract class ShowResults {
 
 			for (PDElement PDElemt : ckt.getPDElements()) {
 				if (PDElemt.isIsolated()) {
-					pwTree.printf("Isolated: %s.%s", PDElemt.getParentClass().getName(), PDElemt.getName());
+					pwTree.printf("Isolated: %s.%s", PDElemt.getParentClass().getClassName(), PDElemt.getName());
 					if (PDElemt.hasSensorObj()) {
 						pwTree.printf(" (Sensor: %s.%s) ",
-								PDElemt.getSensorObj().getParentClass().getName(), PDElemt.getSensorObj().getName());
+								PDElemt.getSensorObj().getParentClass().getClassName(), PDElemt.getSensorObj().getName());
 					}
 					if (PDElemt.hasControl()) {
 						pwTree.printf(" (Control: %s.%s) ",
-								PDElemt.getControlElement().getParentClass().getName(), PDElemt.getControlElement().getName());
+								PDElemt.getControlElement().getParentClass().getClassName(), PDElemt.getControlElement().getName());
 
-						if ((PDElemt.getControlElement().getDSSObjType() & DSSClassDefs.CLASSMASK) == DSSClassDefs.SWT_CONTROL)
+						if ((PDElemt.getControlElement().getObjType() & DSSClassDefs.CLASSMASK) == DSSClassDefs.SWT_CONTROL)
 							nSwitches++;
 					}
 					if (PDElemt.hasEnergyMeter()) {
@@ -2742,7 +2742,7 @@ public abstract class ShowResults {
 
 					CktElement ace = ckt.getActiveCktElement();
 
-					pw.println("Yprim of active circuit element: " + ace.getParentClass().getName() + "." + ace.getName());
+					pw.println("Yprim of active circuit element: " + ace.getParentClass().getClassName() + "." + ace.getName());
 					pw.println();
 
 					cValues = ace.getYPrimValues(DSS.ALL_YPRIM);
@@ -2751,9 +2751,9 @@ public abstract class ShowResults {
 						pw.println("G matrix (conductance), S");
 						pw.println();
 
-						for (i = 0; i < ace.getYorder(); i++) {
+						for (i = 0; i < ace.getYOrder(); i++) {
 							for (j = 0; j < i; j++)
-								pw.printf("%13.10g ", cValues[i + (j - 1) * ace.getYorder()].getReal());
+								pw.printf("%13.10g ", cValues[i + (j - 1) * ace.getYOrder()].getReal());
 							pw.println();
 						}
 
@@ -2761,9 +2761,9 @@ public abstract class ShowResults {
 						pw.println("jB matrix (Susceptance), S") ;
 						pw.println();
 
-						for (i = 0; i < ace.getYorder(); i++) {
+						for (i = 0; i < ace.getYOrder(); i++) {
 							for (j = 0; j < i; j++)
-								pw.printf("%13.10g ", cValues[i + (j - 1) * ace.getYorder()].getImaginary());
+								pw.printf("%13.10g ", cValues[i + (j - 1) * ace.getYOrder()].getImaginary());
 							pw.println();
 						}
 					} else {
@@ -2882,7 +2882,7 @@ public abstract class ShowResults {
 			for (CktElement pCktElement : ckt.getCktElements()) {
 				if (pCktElement.isEnabled()) {
 					pCktElement.computeITerminal();
-					for (i = 0; i < pCktElement.getYorder(); i++) {
+					for (i = 0; i < pCktElement.getYOrder(); i++) {
 						CTemp =  pCktElement.getITerminal(i);
 						nRef  =  pCktElement.getNodeRef(i);
 						sol.setCurrent(nRef, sol.getCurrent(nRef).add(CTemp));  // nodeRef = 0 is OK  TODO Check

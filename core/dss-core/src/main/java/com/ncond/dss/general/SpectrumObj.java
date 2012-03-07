@@ -28,7 +28,7 @@ public class SpectrumObj extends DSSObject {
 	public SpectrumObj(DSSClass parClass, String spectrumName) {
 		super(parClass);
 		setName(spectrumName.toLowerCase());
-		objType = parClass.getDSSClassType();
+		objType = parClass.getClassType();
 
 		numHarm    = 0;
 		harmArray  = null;

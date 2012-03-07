@@ -106,7 +106,7 @@ public class LineSpacing extends DSSClass {
 
 			switch (paramPointer) {
 			case -1:
-				DSS.doSimpleMsg("Unknown parameter \"" + paramName + "\" for object \"" + getName() +"."+ als.getName() + "\"", 10101);
+				DSS.doSimpleMsg("Unknown parameter \"" + paramName + "\" for object \"" + getClassName() +"."+ als.getName() + "\"", 10101);
 				break;
 			case 0:
 				als.setNWires(parser.makeInteger());  // use property value to force reallocations

@@ -55,7 +55,7 @@ public class PriceShapeObj extends DSSObject {
 	public PriceShapeObj(DSSClass parClass, String priceShapeName) {
 		super(parClass);
 		setName(priceShapeName.toLowerCase());
-		objType = parClass.getDSSClassType();
+		objType = parClass.getClassType();
 
 		lastValueAccessed = 0;
 

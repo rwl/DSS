@@ -3,6 +3,9 @@ package com.ncond.dss.common;
 import java.io.PrintStream;
 import java.util.ArrayList;
 
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+
 import org.apache.commons.math.complex.Complex;
 
 import com.ncond.dss.conversion.PCElement;
@@ -22,6 +25,8 @@ import com.ncond.dss.shared.CktTree;
  * Feeders are not saved. This is implicit with the EnergyMeter saving.
  *
  */
+@Data
+@EqualsAndHashCode(callSuper=true)
 public class FeederObj extends PCElement {
 
 	private ArrayList<CktElement> sequenceList;
@@ -36,7 +41,7 @@ public class FeederObj extends PCElement {
 		super(ParClass);
 
 		setName(MeterName.toLowerCase());
-		objType = ParClass.getDSSClassType();  // this will be a current source (PCElement)
+		objType = ParClass.getClassType();  // this will be a current source (PCElement)
 
 		sequenceList = new ArrayList<CktElement>(50);
 		shuntList = new ArrayList<CktElement>(50);
@@ -176,18 +181,10 @@ public class FeederObj extends PCElement {
 
 	public void setCktElementFeederFlags(boolean value) {
 		for (int i = 0; i < shuntList.size(); i++)
-			shuntList.get(i).setPartofFeeder(value);
+			shuntList.get(i).setPartOfFeeder(value);
 
 		for (int i = 0; i < sequenceList.size(); i++)
-			sequenceList.get(i).setPartofFeeder(value);
-	}
-
-	public boolean isSynched() {
-		return isSynched;
-	}
-
-	public void setSynched(boolean synched) {
-		isSynched = synched;
+			sequenceList.get(i).setPartOfFeeder(value);
 	}
 
 }

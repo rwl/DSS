@@ -3,6 +3,9 @@ package com.ncond.dss.control;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+
 import org.apache.commons.math.complex.Complex;
 
 import com.ncond.dss.common.Circuit;
@@ -42,6 +45,8 @@ import com.ncond.dss.shared.MathUtil;
  * set time after the voltage comes back in the normal range.
  *
  */
+@Data
+@EqualsAndHashCode(callSuper=true)
 public class RelayObj extends ControlElem {
 
 	private int controlType;
@@ -105,7 +110,7 @@ public class RelayObj extends ControlElem {
 	public RelayObj(DSSClass parClass, String relayName) {
 		super(parClass);
 		setName(relayName.toLowerCase());
-		objType = parClass.getDSSClassType();
+		objType = parClass.getClassType();
 
 		setNumPhases(3);  // directly set conds and phases
 		nConds = 3;
@@ -164,7 +169,7 @@ public class RelayObj extends ControlElem {
 
 		cBuffer = null;
 
-		objType = parClass.getDSSClassType();  // CAP_CONTROL;
+		objType = parClass.getClassType();  // CAP_CONTROL;
 
 		initPropertyValues(0);
 
@@ -186,12 +191,12 @@ public class RelayObj extends ControlElem {
 				// sets name of i-th terminal's connected bus in Relay's bus list
 				setBus(0, monitoredElement.getBus(monitoredElementTerminal));
 				// allocate a buffer big enough to hold everything from the monitored element
-				cBuffer = Util.resizeArray(cBuffer, monitoredElement.getYorder());
+				cBuffer = Util.resizeArray(cBuffer, monitoredElement.getYOrder());
 				condOffset = monitoredElementTerminal * monitoredElement.getNumConds();  // for speedy sampling
 
 				switch (controlType) {
 				case Relay.GENERIC:
-					if ((monitoredElement.getDSSObjType() & DSSClassDefs.BASECLASSMASK) != DSSClassDefs.PC_ELEMENT) {
+					if ((monitoredElement.getObjType() & DSSClassDefs.BASECLASSMASK) != DSSClassDefs.PC_ELEMENT) {
 						DSS.doSimpleMsg("Relay "+getName()+": Monitored element for generic relay is not a PC element.", 385);
 					} else {
 						PCElement pElem = (PCElement) monitoredElement;
@@ -253,7 +258,7 @@ public class RelayObj extends ControlElem {
 			setNumConds(nPhases);
 			setBus(0, monitoredElement.getBus(elementTerminal));
 			// allocate a buffer big enough to hold everything from the monitored element
-			cBuffer = Util.resizeArray(cBuffer, monitoredElement.getYorder());
+			cBuffer = Util.resizeArray(cBuffer, monitoredElement.getYOrder());
 			condOffset = (elementTerminal - 1) * monitoredElement.getNumConds();  // for speedy sampling
 		}
 
@@ -886,336 +891,6 @@ public class RelayObj extends ControlElem {
 	@Override
 	public int injCurrents() {
 		throw new UnsupportedOperationException();
-	}
-
-	// FIXME Private members in OpenDSS
-
-	public int getControlType() {
-		return controlType;
-	}
-
-	public void setControlType(int type) {
-		controlType = type;
-	}
-
-	public TCC_CurveObj getPhaseCurve() {
-		return phaseCurve;
-	}
-
-	public void setPhaseCurve(TCC_CurveObj curve) {
-		phaseCurve = curve;
-	}
-
-	public TCC_CurveObj getGroundCurve() {
-		return groundCurve;
-	}
-
-	public void setGroundCurve(TCC_CurveObj curve) {
-		groundCurve = curve;
-	}
-
-	public double getPhaseTrip() {
-		return phaseTrip;
-	}
-
-	public void setPhaseTrip(double trip) {
-		phaseTrip = trip;
-	}
-
-	public double getGroundTrip() {
-		return groundTrip;
-	}
-
-	public void setGroundTrip(double trip) {
-		groundTrip = trip;
-	}
-
-	public double getPhaseInst() {
-		return phaseInst;
-	}
-
-	public void setPhaseInst(double value) {
-		phaseInst = value;
-	}
-
-	public double getGroundInst() {
-		return groundInst;
-	}
-
-	public void setGroundInst(double value) {
-		groundInst = value;
-	}
-
-	public double[] getRecloseIntervals() {
-		return recloseIntervals;
-	}
-
-	public void setRecloseIntervals(double[] intervals) {
-		recloseIntervals = intervals;
-	}
-
-	public int getNumReclose() {
-		return numReclose;
-	}
-
-	public void setNumReclose(int num) {
-		numReclose = num;
-	}
-
-	public double getResetTime() {
-		return resetTime;
-	}
-
-	public void setResetTime(double time) {
-		resetTime = time;
-	}
-
-	public double getDelayTime() {
-		return delayTime;
-	}
-
-	public void setDelayTime(double time) {
-		delayTime = time;
-	}
-
-	public double getBreakerTime() {
-		return breakerTime;
-	}
-
-	public void setBreakerTime(double time) {
-		breakerTime = time;
-	}
-
-	public double getTDPhase() {
-		return TDPhase;
-	}
-
-	public void setTDPhase(double phase) {
-		TDPhase = phase;
-	}
-
-	public double getTDGround() {
-		return TDGround;
-	}
-
-	public void setTDGround(double ground) {
-		TDGround = ground;
-	}
-
-	public String getRelayTarget() {
-		return relayTarget;
-	}
-
-	public void setRelayTarget(String target) {
-		relayTarget = target;
-	}
-
-	public TCC_CurveObj getOVCurve() {
-		return OVCurve;
-	}
-
-	public void setOVCurve(TCC_CurveObj curve) {
-		OVCurve = curve;
-	}
-
-	public TCC_CurveObj getUVCurve() {
-		return UVCurve;
-	}
-
-	public void setUVCurve(TCC_CurveObj curve) {
-		UVCurve = curve;
-	}
-
-	public double getVBase() {
-		return VBase;
-	}
-
-	public void setVBase(double base) {
-		VBase = base;
-	}
-
-	public double getKVBase() {
-		return kVBase;
-	}
-
-	public void setKVBase(double base) {
-		this.kVBase = base;
-	}
-
-	public double getPickupAmps46() {
-		return pickupAmps46;
-	}
-
-	public void setPickupAmps46(double value) {
-		pickupAmps46 = value;
-	}
-
-	public double getPctPickup46() {
-		return pctPickup46;
-	}
-
-	public void setPctPickup46(double value) {
-		pctPickup46 = value;
-	}
-
-	public double getBaseAmps46() {
-		return baseAmps46;
-	}
-
-	public void setBaseAmps46(double value) {
-		baseAmps46 = value;
-	}
-
-	public double getIsqt46() {
-		return isqt46;
-	}
-
-	public void setIsqt46(double value) {
-		isqt46 = value;
-	}
-
-	public double getPickupVolts47() {
-		return pickupVolts47;
-	}
-
-	public void setPickupVolts47(double value) {
-		pickupVolts47 = value;
-	}
-
-	public double getPctPickup47() {
-		return pctPickup47;
-	}
-
-	public void setPctPickup47(double value) {
-		pctPickup47 = value;
-	}
-
-	public double getOverTrip() {
-		return overTrip;
-	}
-
-	public void setOverTrip(double trip) {
-		overTrip = trip;
-	}
-
-	public double getUnderTrip() {
-		return underTrip;
-	}
-
-	public void setUnderTrip(double trip) {
-		underTrip = trip;
-	}
-
-	public String getMonitoredElementName() {
-		return monitoredElementName;
-	}
-
-	public void setMonitoredElementName(String name) {
-		monitoredElementName = name;
-	}
-
-	public int getMonitoredElementTerminal() {
-		return monitoredElementTerminal;
-	}
-
-	public void setMonitoredElementTerminal(int terminal) {
-		monitoredElementTerminal = terminal;
-	}
-
-	public CktElement getMonitoredElement() {
-		return monitoredElement;
-	}
-
-	public void setMonitoredElement(CktElement element) {
-		monitoredElement = element;
-	}
-
-	public ControlAction getPresentState() {
-		return presentState;
-	}
-
-	public void setPresentState(ControlAction state) {
-		presentState = state;
-	}
-
-	public int getOperationCount() {
-		return operationCount;
-	}
-
-	public void setOperationCount(int count) {
-		operationCount = count;
-	}
-
-	public boolean isLockedOut() {
-		return lockedOut;
-	}
-
-	public void setLockedOut(boolean value) {
-		lockedOut = value;
-	}
-
-	public boolean isArmedForClose() {
-		return armedForClose;
-	}
-
-	public void setArmedForClose(boolean armed) {
-		armedForClose = armed;
-	}
-
-	public boolean isArmedForOpen() {
-		return armedForOpen;
-	}
-
-	public void setArmedForOpen(boolean armed) {
-		armedForOpen = armed;
-	}
-
-	public boolean isPhaseTarget() {
-		return phaseTarget;
-	}
-
-	public void setPhaseTarget(boolean target) {
-		phaseTarget = target;
-	}
-
-	public boolean isGroundTarget() {
-		return groundTarget;
-	}
-
-	public void setGroundTarget(boolean target) {
-		groundTarget = target;
-	}
-
-	public double getNextTripTime() {
-		return nextTripTime;
-	}
-
-	public void setNextTripTime(double time) {
-		nextTripTime = time;
-	}
-
-	public int getLastEventHandle() {
-		return lastEventHandle;
-	}
-
-	public void setLastEventHandle(int handle) {
-		lastEventHandle = handle;
-	}
-
-	public int getCondOffset() {
-		return condOffset;
-	}
-
-	public void setCondOffset(int offset) {
-		condOffset = offset;
-	}
-
-	public Complex[] getCBuffer() {
-		return cBuffer;
-	}
-
-	public void setCBuffer(Complex[] buffer) {
-		this.cBuffer = buffer;
 	}
 
 }

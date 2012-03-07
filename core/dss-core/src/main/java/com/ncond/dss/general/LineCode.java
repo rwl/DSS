@@ -235,7 +235,7 @@ public class LineCode extends DSSClass {
 
 			switch (paramPointer) {
 			case -1:
-				DSS.doSimpleMsg("Unknown parameter \"" + paramName + "\" for Object \"" + getName() +"."+ getName() + "\"", 101);
+				DSS.doSimpleMsg("Unknown parameter \"" + paramName + "\" for Object \"" + getClassName() +"."+ getClassName() + "\"", 101);
 				break;
 			case 0:
 				activeLineCodeObj.setNPhases(parser.makeInteger());  // use property value to force reallocations

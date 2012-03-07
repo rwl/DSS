@@ -3,11 +3,16 @@ package com.ncond.dss.common;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+
 import org.apache.commons.math.complex.Complex;
 
 import com.ncond.dss.general.DSSObject;
 import com.ncond.dss.shared.CMatrix;
 
+@Data
+@EqualsAndHashCode(callSuper=true)
 abstract public class CktElement extends DSSObject {
 
 	private String[] busNames;
@@ -170,7 +175,7 @@ abstract public class CktElement extends DSSObject {
 		// check for an almost certain programming error
 		if (value <= 0) {
 			DSS.doSimpleMsg(String.format("Invalid number of terminals (%d) for \"%s.%s\"",
-					value, parentClass.getName(), getName()), 749);
+					value, parentClass.getClassName(), getName()), 749);
 			return;
 		}
 
@@ -200,7 +205,7 @@ abstract public class CktElement extends DSSObject {
 		// check for an almost certain programming error
 		if (value <= 0) {
 			DSS.doSimpleMsg(String.format("Invalid number of terminals (%d) for \"%s.%s\"",
-					value, parentClass.getName(), getName()), 749);
+					value, parentClass.getClassName(), getName()), 749);
 			return;
 		}
 
@@ -212,7 +217,7 @@ abstract public class CktElement extends DSSObject {
 			if (nConds > 101) {
 				DSS.doSimpleMsg(String.format("Warning: Number of conductors is very large (%d) for circuit element: \"%s.%s." +
 						"Possible error in specifying the number of phases for element.",
-						nConds, parentClass.getName(), getName()), 750);
+						nConds, parentClass.getClassName(), getName()), 750);
 			}
 
 			/* Reallocate bus names */
@@ -274,7 +279,7 @@ abstract public class CktElement extends DSSObject {
 		return enabled;
 	}
 
-	public CMatrix getYPrim(int opt) {
+	public CMatrix getYPrimMatrix(int opt) {
 		CMatrix Y = null;
 
 		switch (opt) {
@@ -803,8 +808,16 @@ abstract public class CktElement extends DSSObject {
 		return VTerminal[idx];
 	}
 
+	public Complex[] getVTerminal() {
+		return VTerminal;
+	}
+
 	public Complex getITerminal(int idx) {
 		return ITerminal[idx];
+	}
+
+	public Complex[] getITerminal() {
+		return ITerminal;
 	}
 
 	public int getNodeRef(int idx) {
@@ -815,120 +828,16 @@ abstract public class CktElement extends DSSObject {
 		return nodeRef;
 	}
 
-	public void setNodeRef(int[] ref) {
-		nodeRef = ref;
-	}
-
-	public int getYorder() {
-		return YOrder;
-	}
-
-	public void setYOrder(int order) {
-		YOrder = order;
-	}
-
-	public int getLastTerminalChecked() {
-		return lastTerminalChecked;
-	}
-
-	public void setLastTerminalChecked(int checked) {
-		lastTerminalChecked = checked;
-	}
-
-	public boolean isChecked() {
-		return checked;
-	}
-
-	public void setChecked(boolean value) {
-		checked = value;
-	}
-
 	public boolean hasEnergyMeter() {
 		return hasEnergyMeter;
-	}
-
-	public void setHasEnergyMeter(boolean hasMeter) {
-		hasEnergyMeter = hasMeter;
 	}
 
 	public boolean hasSensorObj() {
 		return hasSensorObj;
 	}
 
-	public void setHasSensorObj(boolean value) {
-		hasSensorObj = value;
-	}
-
-	public boolean isIsolated() {
-		return isIsolated;
-	}
-
-	public void setIsolated(boolean value) {
-		isIsolated = value;
-	}
-
 	public boolean hasControl() {
 		return hasControl;
-	}
-
-	public void setHasControl(boolean value) {
-		hasControl = value;
-	}
-
-	public boolean isPartofFeeder() {
-		return isPartOfFeeder;
-	}
-
-	public void setPartofFeeder(boolean isPart) {
-		isPartOfFeeder = isPart;
-	}
-
-	public CktElement getControlElement() {
-		return controlElement;
-	}
-
-	public void setControlElement(CktElement element) {
-		controlElement = element;
-	}
-
-	public Complex[] getITerminal() {
-		return ITerminal;
-	}
-
-	public void setITerminal(Complex[] terminal) {
-		ITerminal = terminal;
-	}
-
-	public Complex[] getVTerminal() {
-		return VTerminal;
-	}
-
-	public void setVTerminal(Complex[] terminal) {
-		VTerminal = terminal;
-	}
-
-	public double getBaseFrequency() {
-		return baseFrequency;
-	}
-
-	public void setBaseFrequency(double frequency) {
-		baseFrequency = frequency;
-	}
-
-	public Terminal[] getTerminals() {
-		return terminals;
-	}
-
-	public void setTerminals(Terminal[] value) {
-		terminals = value;
-	}
-
-	public void setActiveTerminal(Terminal terminal) {
-		activeTerminal = terminal;
-	}
-
-	public Terminal getActiveTerminal() {
-		return activeTerminal;
 	}
 
 }

@@ -136,7 +136,7 @@ public class TShape extends DSSClass {
 
 			switch (paramPointer) {
 			case -1:
-				DSS.doSimpleMsg("Unknown parameter \"" + paramName + "\" for object \"" + getName() +"."+ ats.getName() + "\"", 610);
+				DSS.doSimpleMsg("Unknown parameter \"" + paramName + "\" for object \"" + getClassName() +"."+ ats.getName() + "\"", 610);
 				break;
 			case 0:
 				ats.setNumPoints(parser.makeInteger());
