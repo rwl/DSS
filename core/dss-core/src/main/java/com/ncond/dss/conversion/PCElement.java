@@ -69,11 +69,11 @@ public abstract class PCElement extends CktElement {
 		if (getITerminalUpdated()) {  // just copy ITerminal unless ITerminal=curr
 			if (curr != getITerminal())
 				for (int i = 0; i < YOrder; i++)
-					curr[i] = getITerminal()[i];
+					curr[i] = getITerminal(i);
 		} else {
 			YPrim.vMult(curr, getVTerminal());
 			for (int i = 0; i < YOrder; i++)
-				curr[i] = curr[i].add( getInjCurrent()[i].negate() );
+				curr[i] = curr[i].add( getInjCurrent(i).negate() );
 			setITerminalUpdated(true);
 		}
 		ITerminalSolutionCount = DSS.activeCircuit.getSolution().getSolutionCount();
@@ -215,6 +215,10 @@ public abstract class PCElement extends CktElement {
 
 	public boolean getITerminalUpdated() {
 		return ITerminalUpdated;
+	}
+
+	public Complex getInjCurrent(int idx) {
+		return injCurrent[idx];
 	}
 
 	public Complex[] getInjCurrent() {

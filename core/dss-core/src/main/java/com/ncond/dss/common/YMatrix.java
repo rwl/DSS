@@ -53,11 +53,12 @@ public class YMatrix extends CSparseSolve {
 	}
 
 	public static void initializeNodeVbase() {
+		NodeBus nb;
 		Circuit ckt = DSS.activeCircuit;
 		SolutionObj sol = ckt.getSolution();
 
 		for (int i = 0; i < ckt.getNumNodes(); i++) {
-			NodeBus nb = ckt.getMapNodeToBus()[i];
+			nb = ckt.getMapNodeToBus(i);
 			sol.getNodeVBase()[i] = ckt.getBus(nb.busRef).getKVBase() * 1000.0;
 			sol.setVoltageBaseChanged(false);
 		}
@@ -194,31 +195,34 @@ public class YMatrix extends CSparseSolve {
 		int[] sCol = new int[1];
 		long nIslands, iCount, iFirst;
 		int[] cliques;
+		NodeBus nb;
 
 		Circuit ckt = DSS.activeCircuit;
 
-		String Result = "";
+		String s = "";
 
 		Y = ckt.getSolution().getY();
 		for (int i = 0; i < ckt.getNumNodes(); i++) {
 			getMatrixElement(Y, i, i, c);
 			if (c[0].abs() == 0.0) {
-				NodeBus nb = ckt.getMapNodeToBus()[i];
-				Result += String.format("%sZero diagonal for bus %s, node %d", DSS.CRLF, ckt.getBusList().get(nb.busRef), nb.nodeNum);
+				nb = ckt.getMapNodeToBus(i);
+				s += String.format("%sZero diagonal for bus %s, node %d",
+					DSS.CRLF, ckt.getBusList().get(nb.busRef), nb.nodeNum);
 			}
 		}
 
 		// new diagnostics
 		getSingularCol(Y, sCol);  // returns a 0-based node number  TODO Check zero based indexing
 		if (sCol[0] >= 0) {
-			NodeBus nb = ckt.getMapNodeToBus()[sCol[0]];
-			Result += String.format("%sMatrix singularity at bus %s, node %d", DSS.CRLF, ckt.getBusList().get(nb.busRef), sCol);
+			nb = ckt.getMapNodeToBus(sCol[0]);
+			s += String.format("%sMatrix singularity at bus %s, node %d",
+				DSS.CRLF, ckt.getBusList().get(nb.busRef), sCol);
 		}
 
 		cliques = new int[ckt.getNumNodes()];
 		nIslands = findIslands(Y, ckt.getNumNodes(), cliques);
 		if (nIslands > 1) {
-			Result += String.format("%sFound %d electrical islands:", DSS.CRLF, nIslands);
+			s += String.format("%sFound %d electrical islands:", DSS.CRLF, nIslands);
 			for (int i = 0; i < nIslands; i++) {
 				iCount = 0;
 				iFirst = 0;
@@ -229,12 +233,13 @@ public class YMatrix extends CSparseSolve {
 							iFirst = p + 1;
 					}
 				}
-				NodeBus nb = ckt.getMapNodeToBus()[(int) iFirst];
-				Result += String.format("%s  #%d has %d nodes, including bus %s (node %d)", DSS.CRLF, i, iCount, ckt.getBusList().get(nb.busRef), iFirst);
+				nb = ckt.getMapNodeToBus((int) iFirst);
+				s += String.format("%s  #%d has %d nodes, including bus %s (node %d)",
+					DSS.CRLF, i, iCount, ckt.getBusList().get(nb.busRef), iFirst);
 			}
 		}
 
-		return Result;
+		return s;
 	}
 
 }

@@ -275,7 +275,7 @@ public class ExportOptions {
 		case 15: ExportResults.exportYprim(fileName); break;
 		case 16: ExportResults.exportY(fileName); break;
 		case 17: ExportResults.exportSeqZ(fileName); break;
-		case 18: ExportResults.exportPbyphase(fileName, MVAOpt); break;
+		case 18: ExportResults.exportPowersByPhase(fileName, MVAOpt); break;
 		case 19: ExportResults.exportCDPSM(fileName, CIMProfileChoice.COMBINED); break;  // defaults to a load-flow model
 		case 20: ExportResults.exportCDPSM(fileName, CIMProfileChoice.FUNCTIONAL); break;
 		case 21: ExportResults.exportCDPSM(fileName, CIMProfileChoice.ASSET); break;

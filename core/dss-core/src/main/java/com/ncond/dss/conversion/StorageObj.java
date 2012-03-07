@@ -894,11 +894,11 @@ public class StorageObj extends PCElement {
 						s + ", ");
 
 				for (i = 0; i < nPhases; i++)
-					bw.write( getInjCurrent()[i].abs() + ", ");
+					bw.write( getInjCurrent(i).abs() + ", ");
 				for (i = 0; i < nPhases; i++)
-					bw.write( getITerminal()[i].abs() + ", ");
+					bw.write( getITerminal(i).abs() + ", ");
 				for (i = 0; i < nPhases; i++)
-					bw.write( getVTerminal()[i].abs() + ", " );
+					bw.write( getVTerminal(i).abs() + ", " );
 				for (i = 0; i < numVariables(); i++)
 					bw.write( String.format("%-.g, ", getVariable(i)) );
 				//TraceBuffer.write(VThevMag + ", " + StoreVARs.Theta * 180.0 / Math.PI);
@@ -927,7 +927,7 @@ public class StorageObj extends PCElement {
 		switch (state) {
 		case Storage.IDLING:  // YPrim current is only current
 			for (i = 0; i < nPhases; i++) {
-				curr = getInjCurrent()[i];
+				curr = getInjCurrent(i);
 				putCurrInTerminalArray(ITerminal, curr.negate(), i);  // put YPrim contribution into Terminal array taking into account connection
 				setITerminalUpdated(true);
 				putCurrInTerminalArray(getInjCurrent(), curr.negate(), i);    // Compensation current is zero since terminal current is same as Yprim contribution
@@ -1008,7 +1008,7 @@ public class StorageObj extends PCElement {
 			//SolutionObj sol = DSSGlobals.activeCircuit.getSolution();
 			// negate currents from user model for power flow storage element model
 			for (int i = 0; i < nConds; i++)
-				getInjCurrent()[i] = getInjCurrent()[i].add( ITerminal[i].negate() );
+				getInjCurrent()[i] = getInjCurrent(i).add( ITerminal[i].negate() );
 		} else {
 			DSS.doSimpleMsg("Storage." + getName() + " model designated to use user-written model, but user-written model is not defined.", 567);
 		}
@@ -1186,7 +1186,7 @@ public class StorageObj extends PCElement {
 		try {
 			// copy into buffer array
 			for (int i = 0; i < YOrder; i++)
-				curr[i] = getInjCurrent()[i];
+				curr[i] = getInjCurrent(i);
 		} catch (Exception e) {
 			DSS.doErrorMsg("Storage object: \"" + getName() + "\" in getInjCurrents method.",
 					e.getMessage(), "Current buffer not big enough.", 568);
@@ -1321,7 +1321,7 @@ public class StorageObj extends PCElement {
 		double result = 0.0;
 		// compute sum of sqr(V) at this device -- sum of VV*
 		for (i = 0; i < nPhases; i++)
-			result = result + getVTerminal()[i].multiply( getVTerminal()[i].conjugate() ).getReal();
+			result = result + getVTerminal(i).multiply( getVTerminal(i).conjugate() ).getReal();
 
 		result = result * YeqIdling.getReal() * 0.001;  // to kW
 

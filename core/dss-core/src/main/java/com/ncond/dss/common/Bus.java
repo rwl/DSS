@@ -80,6 +80,9 @@ public class Bus extends NamedObject {
 
 	/**
 	 * Returns reference num for node by node number
+	 *
+	 * @param nodeNum one based node number
+	 * @return one based reference number
 	 */
 	public int find(int nodeNum) {
 		for (int i = 0; i < numNodesThisBus; i++)
@@ -89,6 +92,9 @@ public class Bus extends NamedObject {
 
 	/**
 	 * Returns reference num for node by node index
+	 *
+	 * @param nodeIndex zero based node index
+	 * @return one based reference number
 	 */
 	public int getRef(int nodeIndex) {
 		if (nodeIndex >= 0 && nodeIndex < numNodesThisBus) {
@@ -100,6 +106,9 @@ public class Bus extends NamedObject {
 
 	/**
 	 * Returns i-th node number designation
+	 *
+	 * @param nodeIndex zero based node index
+	 * @return one based node number
 	 */
 	public int getNum(int nodeIndex) {
 		if (nodeIndex >= 0 && nodeIndex < numNodesThisBus) {
@@ -107,6 +116,18 @@ public class Bus extends NamedObject {
 		} else {
 			return 0;
 		}
+	}
+
+	/**
+	 * Returns index of node by node number
+	 *
+	 * @param nodeNum one based node number
+	 * @return zero based node index
+	 */
+	public int findIdx(int nodeNum) {
+		for (int i = 0; i < numNodesThisBus; i++)
+			if (nodes[i] == nodeNum) return i;
+		return -1;
 	}
 
 	public void allocateBusQuantities() {
@@ -139,13 +160,6 @@ public class Bus extends NamedObject {
 		}
 	}
 
-	/** Returns index of node by node number */
-	public int findIdx(int nodeNum) {
-		for (int i = 0; i < numNodesThisBus; i++)
-			if (nodes[i] == nodeNum) return i;
-		return -1;
-	}
-
 	public void allocateBusVoltages() {
 		VBus = new Complex[numNodesThisBus];
 
@@ -166,6 +180,10 @@ public class Bus extends NamedObject {
 
 	public void setVBus(Complex[] vBus) {
 		VBus = vBus;
+	}
+
+	public Complex getBusCurrent(int idx) {
+		return busCurrent[idx];
 	}
 
 	public Complex[] getBusCurrent() {

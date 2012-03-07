@@ -1071,6 +1071,14 @@ public class Circuit extends NamedObject {
 		return buses[idx];
 	}
 
+	/**
+	 * @param nref one based node reference
+	 * @return node bus mapping
+	 */
+	public NodeBus getMapNodeToBus(int nref) {
+		return mapNodeToBus[nref - 1];
+	}
+
 	public int getActiveBusIndex() {
 		return activeBusIndex;
 	}

@@ -700,7 +700,8 @@ public class ExecHelper {
 						if (reacElement.isEnabled())
 							DSS.activeCircuit.getBus( reacElement.getTerminal(0).getBusRef() ).setKeep(true);
 					} catch (Exception e) {
-						DSS.doSimpleMsg(String.format("%s %s reactor=%s Bus No.=%d ", e.getMessage(), DSS.CRLF, reacElement.getName(), reacElement.getNodeRef()[0]), 9999);
+						DSS.doSimpleMsg(String.format("%s %s reactor=%s Bus No.=%d ", e.getMessage(), DSS.CRLF,
+							reacElement.getName(), reacElement.getNodeRef(0)), 9999);
 					}
 				}
 				objRef = cls.getNext();
@@ -1355,7 +1356,7 @@ public class ExecHelper {
 
 								k = j * cktElem.getNumConds();
 								for (i = 0; i < 3; i++)
-									Vph[i] = ckt.getSolution().getNodeV( cktElem.getNodeRef()[i + k] );
+									Vph[i] = ckt.getSolution().getNodeV( cktElem.getNodeRef(i + k) );
 
 								MathUtil.phase2SymComp(Vph, V012);  // compute symmetrical components
 

@@ -553,7 +553,7 @@ public class MonitorObj extends MeterElement {
 			// to save some time, call computeITerminal
 			meteredElement.computeITerminal();  // only does calc if needed
 			for (i = 0; i < meteredElement.getYorder(); i++)
-				currentBuffer[i] = meteredElement.getITerminal()[i];
+				currentBuffer[i] = meteredElement.getITerminal(i);
 
 			try {
 				for (i = 0; i < nConds; i++) {
@@ -572,7 +572,7 @@ public class MonitorObj extends MeterElement {
 			// to save some time, call computeITerminal
 			meteredElement.computeITerminal();  // only does calc if needed
 			for (i = 0; i < meteredElement.getYorder(); i++)
-				currentBuffer[i] = meteredElement.getITerminal()[i];
+				currentBuffer[i] = meteredElement.getITerminal(i);
 
 			try {
 				for (i = 0; i < nConds; i++) {

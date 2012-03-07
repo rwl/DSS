@@ -466,9 +466,9 @@ abstract public class CktElement extends DSSObject {
 		// sum complex power going into phase conductors of active terminal
 		k = idxTerm * nConds;
 		for (i = 0; i < nConds; i++) {
-			n = activeTerminal.getTermNodeRef(i);  // FIXME: don't bother with grounded node
-			if (n >= 0) {
-				cPower = cPower.add( sol.getNodeV(n).multiply( ITerminal[k + i].conjugate() ) );
+			n = activeTerminal.getTermNodeRef(i);  // don't bother with grounded node
+			if (n > 0) {
+				cPower = cPower.add( sol.getNodeV(n).multiply(ITerminal[k + i].conjugate()) );
 			}
 		}
 
@@ -496,7 +496,7 @@ abstract public class CktElement extends DSSObject {
 			for (k = 0; k < YOrder; k++) {
 				n = nodeRef[k];  // one based
 				if (n > 0) {
-					loss = sol.getNodeV(n - 1).multiply( ITerminal[k].conjugate() );
+					loss = sol.getNodeV(n).multiply( ITerminal[k].conjugate() );
 					if (DSS.activeCircuit.isPositiveSequence())
 						loss = loss.multiply(3.0);
 					totalLoss = totalLoss.add(loss);
@@ -520,7 +520,7 @@ abstract public class CktElement extends DSSObject {
 			for (i = 0; i < YOrder; i++) {
 				n = nodeRef[i];  // increment through terminals
 				if (n > 0) {
-					S = sol.getNodeV(n - 1).multiply( ITerminal[i].conjugate() );
+					S = sol.getNodeV(n).multiply( ITerminal[i].conjugate() );
 					if (DSS.activeCircuit.isPositiveSequence())
 						S = S.multiply(3.0);
 					powerBuffer[i] = S;
@@ -552,7 +552,7 @@ abstract public class CktElement extends DSSObject {
 					k = j * nConds + i;
 					n = nodeRef[k];  // increment through terminals
 					if (n > 0) {
-						loss = sol.getNodeV(n - 1).multiply( ITerminal[k].conjugate() );
+						loss = sol.getNodeV(n).multiply( ITerminal[k].conjugate() );
 						if (DSS.activeCircuit.isPositiveSequence())
 							loss = loss.multiply(3.0);
 						loss = losses.add(loss);
@@ -706,7 +706,7 @@ abstract public class CktElement extends DSSObject {
 			}
 
 			for (i = 0; i < nConds; i++) {
-				VBuffer[i] = sol.getNodeV(terminals[iterm].getTermNodeRef(i) - 1);
+				VBuffer[i] = sol.getNodeV(terminals[iterm].getTermNodeRef(i));
 			}
 		} catch (Exception e) {
 			DSS.doSimpleMsg("Error filling voltage buffer in getTermVoltages for circuit element:" +
@@ -788,7 +788,7 @@ abstract public class CktElement extends DSSObject {
 		SolutionObj sol = DSS.activeCircuit.getSolution();
 
 		for (int i = 0; i < YOrder; i++)
-			VTerminal[i] = sol.getNodeV(nodeRef[i] - 1);
+			VTerminal[i] = sol.getNodeV(nodeRef[i]);
 	}
 
 	public void zeroITerminal() {
@@ -797,6 +797,18 @@ abstract public class CktElement extends DSSObject {
 
 	public Terminal getTerminal(int idx) {
 		return terminals[idx];
+	}
+
+	public Complex getVTerminal(int idx) {
+		return VTerminal[idx];
+	}
+
+	public Complex getITerminal(int idx) {
+		return ITerminal[idx];
+	}
+
+	public int getNodeRef(int idx) {
+		return nodeRef[idx];
 	}
 
 	public int[] getNodeRef() {

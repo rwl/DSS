@@ -712,11 +712,11 @@ public class PVSystemObj extends PCElement {
 						(PNominalPerPhase * 3.0 / 1.0e6) + ", " +
 						s + ", ");
 				for (i = 0; i < nPhases; i++)
-					bw.write(getInjCurrent()[i].abs() + ", ");
+					bw.write(getInjCurrent(i).abs() + ", ");
 				for (i = 0; i < nPhases; i++)
-					bw.write(getITerminal()[i].abs() + ", ");
+					bw.write(getITerminal(i).abs() + ", ");
 				for (i = 0; i < nPhases; i++)
-					bw.write(getVTerminal()[i].abs() + ", ");
+					bw.write(getVTerminal(i).abs() + ", ");
 
 				bw.newLine();
 				bw.close();
@@ -811,7 +811,7 @@ public class PVSystemObj extends PCElement {
 			setITerminalUpdated(true);
 			// negate currents from user model for power flow PVSystem element model
 			for (int i = 0; i < nConds; i++)
-				getInjCurrent()[i] = getInjCurrent()[i].add( ITerminal[i].negate() );
+				getInjCurrent()[i] = getInjCurrent(i).add( ITerminal[i].negate() );
 		} else {
 			DSS.doSimpleMsg("PVSystem." + getName() + " model designated to use user-written model, but user-written model is not defined.", 567);
 		}
@@ -987,7 +987,7 @@ public class PVSystemObj extends PCElement {
 		try {
 			// copy into buffer array
 			for (int i = 0; i < YOrder; i++)
-				curr[i] = getInjCurrent()[i];
+				curr[i] = getInjCurrent(i);
 		} catch (Exception e) {
 			DSS.doErrorMsg("PVSystem object: \"" + getName() + "\" in getInjCurrents method.",
 					e.getMessage(), "Current buffer not big enough.", 568);

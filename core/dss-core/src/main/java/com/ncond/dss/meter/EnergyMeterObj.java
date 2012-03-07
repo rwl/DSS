@@ -1172,7 +1172,7 @@ public class EnergyMeterObj extends MeterElement {
 					switch (loadElem.getNumPhases()) {
 					/* For single phase loads, allocate based on phase factor, else average factor */
 					case 1:
-						connectedPhase = DSS.activeCircuit.getMapNodeToBus()[nodeRef[0]].nodeNum;  // one-based
+						connectedPhase = DSS.activeCircuit.getMapNodeToBus(nodeRef[0]).nodeNum;  // one-based
 						if (connectedPhase > 0 && connectedPhase < 4)  // restrict to phases 1..3
 							loadElem.setAllocationFactor( loadElem.getAllocationFactor() * loadElem.getSensorObj().getPhsAllocationFactor()[connectedPhase] );
 						break;

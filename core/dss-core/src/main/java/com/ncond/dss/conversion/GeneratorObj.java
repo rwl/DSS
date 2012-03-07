@@ -714,11 +714,11 @@ public class GeneratorObj extends PCElement {
 						(genVars.PNominalPerPhase * 3.0 / 1.0e6) + ", " +
 						s + ", ");
 				for (i = 0; i < nPhases; i++)
-					bw.write(getInjCurrent()[i].abs() + ", ");
+					bw.write(getInjCurrent(i).abs() + ", ");
 				for (i = 0; i < nPhases; i++)
-					bw.write(getITerminal()[i].abs() + ", ");
+					bw.write(getITerminal(i).abs() + ", ");
 				for (i = 0; i < nPhases; i++)
-					bw.write(getVTerminal()[i].abs() + ", ");
+					bw.write(getVTerminal(i).abs() + ", ");
 				bw.write(VThevMag + ", " + genVars.theta * 180.0 / Math.PI);
 				bw.newLine();
 				bw.close();
@@ -1011,7 +1011,7 @@ public class GeneratorObj extends PCElement {
 //			SolutionObj sol = DSSGlobals.activeCircuit.getSolution();
 			// negate currents from user model for power flow generator model
 			for (int i = 0; i < nConds; i++)
-				getInjCurrent()[i] = getInjCurrent()[i].add( getITerminal()[i].negate() );
+				getInjCurrent()[i] = getInjCurrent(i).add( getITerminal(i).negate() );
 		} else {
 			DSS.doSimpleMsg("Generator." + getName() + " model designated to use user-written model, but user-written model is not defined.", 567);
 		}
@@ -1153,8 +1153,8 @@ public class GeneratorObj extends PCElement {
 			case 1:
 				calcVThevDyn();  // update for latest phase angle
 
-				getITerminal()[0] = getVTerminal()[0].subtract(VThev).subtract(getVTerminal()[1]).divide(new Complex(0.0, genVars.Xdp));
-				getITerminal()[1] = getITerminal()[0].negate();
+				getITerminal()[0] = getVTerminal(0).subtract(VThev).subtract(getVTerminal(1)).divide(new Complex(0.0, genVars.Xdp));
+				getITerminal()[1] = getITerminal(0).negate();
 
 				break;
 			case 3:
@@ -1186,7 +1186,7 @@ public class GeneratorObj extends PCElement {
 
 		/* Add it into inj current array */
 		for (i = 0; i < nConds; i++)
-			getInjCurrent()[i] = getInjCurrent()[i].add( getITerminal()[i].negate() );
+			getInjCurrent()[i] = getInjCurrent(i).add( getITerminal(i).negate() );
 
 		/* Take Care of any shaft model calcs */
 		if (genModel == 6 && shaftModel.exists()) {  // auto selects model
@@ -1220,7 +1220,7 @@ public class GeneratorObj extends PCElement {
 
 		/* Handle wye connection */
 		if (connection == 0)
-			cBuffer[nConds] = getVTerminal()[nConds];  // assume no neutral injection voltage
+			cBuffer[nConds] = getVTerminal(nConds);  // assume no neutral injection voltage
 
 		/* Inj currents = Yprim(E) */
 		YPrim.vMult(getInjCurrent(), cBuffer);
@@ -1419,7 +1419,7 @@ public class GeneratorObj extends PCElement {
 
 		try {
 			for (int i = 0; i < YOrder; i++)  // copy into buffer array
-				curr[i] = getInjCurrent()[i];
+				curr[i] = getInjCurrent(i);
 		} catch (Exception e) {
 			DSS.doErrorMsg("Generator Object: \"" + getName() + "\" in getInjCurrents method.",
 					e.getMessage(),
@@ -1700,7 +1700,7 @@ public class GeneratorObj extends PCElement {
 
 			switch (nPhases) {
 			case 1:
-				Edp = sol.getNodeV(nodeRef[0]).subtract( sol.getNodeV(nodeRef[1]) ).subtract( getITerminal()[0].multiply(Zthev) );
+				Edp = sol.getNodeV(nodeRef[0]).subtract( sol.getNodeV(nodeRef[1]) ).subtract( getITerminal(0).multiply(Zthev) );
 				VThevMag = Edp.abs();
 
 				break;

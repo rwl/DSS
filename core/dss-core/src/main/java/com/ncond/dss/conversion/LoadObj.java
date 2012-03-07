@@ -1128,7 +1128,7 @@ public class LoadObj extends PCElement {
 				calcInjCurrentArray();
 				// copy into buffer array
 				for (int i = 0; i < YOrder; i++)
-					curr[i] = getInjCurrent()[i];
+					curr[i] = getInjCurrent(i);
 			} else {
 				for (int i = 0; i < curr.length; i++)
 					curr[i] = Complex.ZERO;

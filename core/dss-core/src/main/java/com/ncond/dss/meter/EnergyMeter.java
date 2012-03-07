@@ -695,7 +695,7 @@ public class EnergyMeter extends MeterClass {
 							pw.print(" 0.0,");
 						}
 						/* Find bus of first terminal */
-						pw.printf(" %-.3g ", ckt.getBus(ckt.getMapNodeToBus()[ PDElem.getNodeRef()[0] ].busRef).getKVBase());
+						pw.printf(" %-.3g ", ckt.getBus(ckt.getMapNodeToBus( PDElem.getNodeRef(0) ).busRef).getKVBase());
 
 						pw.println();
 					}

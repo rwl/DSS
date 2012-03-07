@@ -766,9 +766,9 @@ public class LineObj extends PDElement {
 				common2 = -1;
 				i = 0;
 				while (common1 == -1 && i < 2) {
-					testBusNum = DSS.activeCircuit.getMapNodeToBus()[nodeRef[1 + i * nConds]].busRef;
+					testBusNum = DSS.activeCircuit.getMapNodeToBus(nodeRef[1 + i * nConds]).busRef;
 					for (j = 0; j < 2; j++) {
-						if (DSS.activeCircuit.getMapNodeToBus()[otherLine.getNodeRef()[1 + j * otherLine.getNumConds()]].busRef == testBusNum) {
+						if (DSS.activeCircuit.getMapNodeToBus(otherLine.getNodeRef(1 + j * otherLine.getNumConds())).busRef == testBusNum) {
 							common1 = i;
 							common2 = j;
 							break;

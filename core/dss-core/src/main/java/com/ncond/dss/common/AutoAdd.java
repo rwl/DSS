@@ -566,8 +566,8 @@ public class AutoAdd {
 		case DSS.GENADD:
 			/* For buses with voltage != 0, add into aux current array */
 			for (int i = 0; i < phases; i++) {
-				nodeRef = ckt.getBus(busIndex).getRef(i) - 1;  // one based
-				if (nodeRef >= 0) {  // add in only non-ground currents
+				nodeRef = ckt.getBus(busIndex).getRef(i);
+				if (nodeRef > 0) {  // add in only non-ground currents
 					busV = sol.getNodeV(nodeRef);
 					if ((busV.getReal() != 0.0) || (busV.getImaginary() != 0.0)) {
 						/* Current into the system network */
@@ -588,8 +588,8 @@ public class AutoAdd {
 		case DSS.CAPADD:
 			/* For buses with voltage != 0, add into aux current array */
 			for (int i = 0; i < phases; i++) {
-				nodeRef = ckt.getBus(busIndex).getRef(i) - 1;  // one based
-				if (nodeRef >= 0) {
+				nodeRef = ckt.getBus(busIndex).getRef(i);
+				if (nodeRef > 0) {
 					busV = sol.getNodeV(nodeRef);
 					if (busV.getReal() != 0.0 || busV.getImaginary() != 0.0) {
 						/* Current into the system network */

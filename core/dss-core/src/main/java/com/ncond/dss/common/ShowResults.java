@@ -167,13 +167,13 @@ public abstract class ShowResults {
 		for (j = 0; j < nTerm; j++) {
 			for (i = 0; i < nCond; i++) {
 				k++;
-				nref = pElem.getNodeRef()[k];
+				nref = pElem.getNodeRef(k);
 				volts = ckt.getSolution().getNodeV(nref);
 				Vmag  = volts.abs() * 0.001;
 				if (nref == 0) {
 					Vpu = 0.0;
 				} else {
-					bref = ckt.getMapNodeToBus()[nref].busRef;
+					bref = ckt.getMapNodeToBus(nref).busRef;
 					if (ckt.getBus(bref).getKVBase() != 0.0) {
 						Vpu = Vmag / ckt.getBus(bref).getKVBase();
 					} else {
@@ -202,15 +202,15 @@ public abstract class ShowResults {
 
 		elemName = Util.pad(pElem.getDSSClassName() + "." + pElem.getName().toUpperCase(), maxDeviceNameLength);
 		for (i = 0; i < nCond; i++) {
-			node1 = pElem.getNodeRef()[i];
-			node2 = pElem.getNodeRef()[i + nCond];
+			node1 = pElem.getNodeRef(i);
+			node2 = pElem.getNodeRef(i + nCond);
 			if (node1 > 0) {
-				bus1  = ckt.getMapNodeToBus()[node1].busRef;
+				bus1  = ckt.getMapNodeToBus(node1).busRef;
 			} else {
 				bus1 = 0;
 			}
 			if (node2 > 0) {
-				bus2 = ckt.getMapNodeToBus()[node2].busRef;
+				bus2 = ckt.getMapNodeToBus(node2).busRef;
 			} else {
 				bus2 = 0;
 			}
@@ -411,7 +411,7 @@ public abstract class ShowResults {
 				k++;
 				if (showResidual)
 					CTotal = CTotal.add(cBuffer[k]);
-				pw.printf("%s  %4d    %13.5g /_ %6.1f", fromBus.toUpperCase(), Util.getNodeNum(pElem.getNodeRef()[k]), cBuffer[k].abs(), ComplexUtil.degArg(cBuffer[k]));
+				pw.printf("%s  %4d    %13.5g /_ %6.1f", fromBus.toUpperCase(), Util.getNodeNum(pElem.getNodeRef(k)), cBuffer[k].abs(), ComplexUtil.degArg(cBuffer[k]));
 				pw.println();
 			}
 			if (showResidual && (pElem.getNumPhases() > 1)) {
@@ -623,7 +623,7 @@ public abstract class ShowResults {
 							pw.print(Util.pad( Util.fullName(pElem), maxDeviceNameLength + 2) + j);
 							for (i = 0; i < Math.min(3, pElem.getNumPhases()); i++) {
 								k = (j - 1) * nCond + i;
-								nref = pElem.getNodeRef()[k];
+								nref = pElem.getNodeRef(k);
 								volts = ckt.getSolution().getNodeV(nref);
 								Iph[i] = cBuffer[k];
 								Vph[i] = volts;
@@ -674,7 +674,7 @@ public abstract class ShowResults {
 							pw.print(Util.pad( Util.fullName(PDElem), maxDeviceNameLength + 2) + j);
 							for (i = 0; i < Math.min(3, PDElem.getNumPhases()); i++) {
 								k = (j - 1) * nCond + i;
-								nref = PDElem.getNodeRef()[k];
+								nref = PDElem.getNodeRef(k);
 								volts = ckt.getSolution().getNodeV(nref);
 								Iph[i] = cBuffer[k];
 								Vph[i] = volts;
@@ -736,7 +736,7 @@ public abstract class ShowResults {
 							pw.print(Util.pad( Util.fullName(PCElem), maxDeviceNameLength + 2) + j);
 							for (i = 0; i < Math.min(3, PCElem.getNumPhases()); i++) {
 								k = (j - 1) * nCond + i;  // TODO Check zero based indexing
-								nref = PCElem.getNodeRef()[k];
+								nref = PCElem.getNodeRef(k);
 								volts = ckt.getSolution().getNodeV(nref);
 								Iph[i] = cBuffer[k];
 								Vph[i] = volts;
@@ -809,14 +809,14 @@ public abstract class ShowResults {
 							Saccum = Complex.ZERO;
 							for (i = 0; i < nCond; i++) {
 								k++;
-								nref = pElem.getNodeRef()[k];
+								nref = pElem.getNodeRef(k);
 								volts = ckt.getSolution().getNodeV(nref);
 								S = volts.multiply( cBuffer[k].conjugate() );
 								if (/* (pElem.getNPhases() == 1) and */ ckt.isPositiveSequence())
 									S = S.multiply(3.0);
 								if (opt == 1) S = S.multiply(0.001);
 								Saccum = Saccum.add(S);
-								pw.print(fromBus.toUpperCase() + "  " + Util.getNodeNum(pElem.getNodeRef()[k]) + "    " + S.getReal() / 1000.0 + " +j " + S.getImaginary() / 1000.0);
+								pw.print(fromBus.toUpperCase() + "  " + Util.getNodeNum(pElem.getNodeRef(k)) + "    " + S.getReal() / 1000.0 + " +j " + S.getImaginary() / 1000.0);
 								pw.println("   " + S.abs() / 1000.0 + "     " + Util.powerFactor(S));
 							}
 							pw.print(Util.padDots("   TERMINAL TOTAL", maxBusNameLength + 10) + Saccum.getReal() / 1000.0 + " +j " + Saccum.getImaginary() / 1000.0);
@@ -841,14 +841,14 @@ public abstract class ShowResults {
 							Saccum = Complex.ZERO;
 							for (i = 0; i < nCond; i++) {
 								k++;
-								nref = pElem.getNodeRef()[k];
+								nref = pElem.getNodeRef(k);
 								volts = ckt.getSolution().getNodeV(nref);
 								S = volts.multiply(cBuffer[k].conjugate());
 								if (/* (pElem.getNPhases() == 1) and */ ckt.isPositiveSequence())
 									S = S.multiply(3.0);
 								if (opt == 1) S = S.multiply(0.001);
 								Saccum = Saccum.add(S);
-								pw.print(fromBus.toUpperCase() + "  " + Util.getNodeNum(pElem.getNodeRef()[k]) + "    " + S.getReal() / 1000.0 + " +j " + S.getImaginary() / 1000.0);
+ 								pw.print(fromBus.toUpperCase() + "  " + Util.getNodeNum(pElem.getNodeRef(k)) + "    " + S.getReal() / 1000.0 + " +j " + S.getImaginary() / 1000.0);
 								pw.println("   " + S.abs() / 1000.0 + "     " + Util.powerFactor(S));
 							}
 							pw.print(Util.padDots("   TERMINAL TOTAL", maxBusNameLength + 10) + Saccum.getReal() / 1000.0 + " +j " + Saccum.getImaginary() / 1000.0);
@@ -886,14 +886,14 @@ public abstract class ShowResults {
 							Saccum = Complex.ZERO;
 							for (i = 0; i < nCond; i++) {
 								k++;
-								nref = pElem.getNodeRef()[k];
+								nref = pElem.getNodeRef(k);
 								volts = ckt.getSolution().getNodeV(nref);
 								S = volts.multiply(cBuffer[k].conjugate());
 								if (/* (pElem.getNPhases() == 1) and */ ckt.isPositiveSequence())
 									S = S.multiply(3.0);
 								if (opt == 1) S = S.multiply(0.001);
 								Saccum = Saccum.add(S);
-								pw.print(fromBus.toUpperCase() + "  " + Util.getNodeNum(pElem.getNodeRef()[k]) + "    " + S.getReal() / 1000.0 + " +j " + S.getImaginary() / 1000.0);
+								pw.print(fromBus.toUpperCase() + "  " + Util.getNodeNum(pElem.getNodeRef(k)) + "    " + S.getReal() / 1000.0 + " +j " + S.getImaginary() / 1000.0);
 								pw.println("   " + S.abs() / 1000.0 + "     " + Util.powerFactor(S));
 							}
 							pw.print(Util.padDots("   TERMINAL TOTAL", maxBusNameLength + 10) + Saccum.getReal() / 1000.0 + " +j " + Saccum.getImaginary() / 1000.0);
@@ -956,7 +956,7 @@ public abstract class ShowResults {
 			pw.print(Util.pad( Util.fullName(cktElem), maxDeviceNameLength + 2) + j);
 			for (i = 0; i < Math.min(cktElem.getNumPhases(), 3); i++) {
 				k = (j - 1) * nCond + i;  // TODO Check zero based indexing
-				nref = cktElem.getNodeRef()[k];
+				nref = cktElem.getNodeRef(k);
 				volts = ckt.getSolution().getNodeV(nref);
 				Iph[i] = cBuffer[k];
 				Vph[i] = volts;
@@ -1030,7 +1030,7 @@ public abstract class ShowResults {
 			Saccum = Complex.ZERO;
 			for (i = 0; i < nCond; i++) {
 				k = (jTerm - 1) * nCond + i;  // TODO Check zero based indexing
-				nref = cktElem.getNodeRef()[k];
+				nref = cktElem.getNodeRef(k);
 				volts = ckt.getSolution().getNodeV(nref);
 				S = volts.multiply( cBuffer[k].conjugate() );
 				if (/* (CktElem.getNPhases() == 1) and */ ckt.isPositiveSequence())
@@ -1038,7 +1038,7 @@ public abstract class ShowResults {
 				if (opt == 1) S = S.multiply(0.001);
 				Saccum = Saccum.add(S);
 				pw.printf("%s %4d %10.5g +j %10.5g    %10.5g    %8.4f",
-						fromBus.toUpperCase(), Util.getNodeNum(cktElem.getNodeRef()[k]), S.getReal() / 1000.0, S.getImaginary() / 1000.0,
+						fromBus.toUpperCase(), Util.getNodeNum(cktElem.getNodeRef(k)), S.getReal() / 1000.0, S.getImaginary() / 1000.0,
 						S.abs() / 1000.0 , Util.powerFactor(S));
 				pw.println();
 			}
@@ -1348,12 +1348,12 @@ public abstract class ShowResults {
 				bus = ckt.getBus(iBus);
 				pw.print(Util.pad(Util.encloseQuotes(ckt.getBusList().get(iBus).toUpperCase()) + ",", maxBusNameLength + 2));
 				for (i = 0; i < bus.getNumNodesThisBus(); i++) {
-					currMag = bus.getBusCurrent()[i].abs();
+					currMag = bus.getBusCurrent(i).abs();
 					if (i > 1)
 						pw.print(", ");
 						pw.print(currMag);
 						if (currMag > 0.0) {
-							pw.print(", " + MathUtil.getXR( bus.getVBus()[i].divide( bus.getBusCurrent()[i] ) ));
+							pw.print(", " + MathUtil.getXR( bus.getVBus()[i].divide( bus.getBusCurrent(i) ) ));
 						} else {
 							pw.print(",   N/A");
 						}
@@ -2883,8 +2883,8 @@ public abstract class ShowResults {
 				if (pCktElement.isEnabled()) {
 					pCktElement.computeITerminal();
 					for (i = 0; i < pCktElement.getYorder(); i++) {
-						CTemp =  pCktElement.getITerminal()[i];
-						nRef  =  pCktElement.getNodeRef()[i];
+						CTemp =  pCktElement.getITerminal(i);
+						nRef  =  pCktElement.getNodeRef(i);
 						sol.setCurrent(nRef, sol.getCurrent(nRef).add(CTemp));  // nodeRef = 0 is OK  TODO Check
 						if (CTemp.abs() > maxNodeCurrent[nRef])
 							maxNodeCurrent[nRef] = CTemp.abs();

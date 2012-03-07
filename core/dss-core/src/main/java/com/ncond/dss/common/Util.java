@@ -1263,7 +1263,7 @@ public class Util {
 		if (nodeRef == -1) {
 			return 0;
 		} else {
-			return DSS.activeCircuit.getMapNodeToBus()[nodeRef].nodeNum;
+			return DSS.activeCircuit.getMapNodeToBus(nodeRef).nodeNum;
 		}
 	}
 

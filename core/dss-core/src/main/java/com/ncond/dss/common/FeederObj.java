@@ -69,7 +69,7 @@ public class FeederObj extends PCElement {
 			terminals[0].setBusRef( branchList.getPresentBranch().getFromBusReference() );
 			setBus(0, rootElement.getBus(branchList.getPresentBranch().getFromTerminal()));  // set bus name same as first element
 			fromTerminalOffset = branchList.getPresentBranch().getFromTerminal() * nConds;
-			setNodeRef(0, rootElement.getNodeRef()[ fromTerminalOffset ]);
+			setNodeRef(0, rootElement.getNodeRef(fromTerminalOffset));
 
 			// build the sequence list and shunt list
 			pElement = rootElement;

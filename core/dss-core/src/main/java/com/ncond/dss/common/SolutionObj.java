@@ -846,6 +846,7 @@ public class SolutionObj extends DSSObject {
 	}
 
 	public void writeConvergenceReport(String fileName) {
+		NodeBus nb;
 		FileWriter fw;
 		PrintWriter f;
 
@@ -862,7 +863,7 @@ public class SolutionObj extends DSSObject {
 			Circuit ckt = DSS.activeCircuit;
 
 			for (int i = 0; i < ckt.getNumNodes(); i++) {
-				NodeBus nb = ckt.getMapNodeToBus()[i];
+				nb = ckt.getMapNodeToBus(i);
 				f.print("\"" + Util.pad((ckt.getBusList().get(nb.busRef)+"."+String.valueOf(nb.nodeNum)+"\""), 18) );
 				f.printf(", %10.5s", errorSaved[i]);
 				f.printf(", %14s", VMagSaved[i]);
@@ -1322,16 +1323,30 @@ public class SolutionObj extends DSSObject {
 		return 0;
 	}
 
-	public Complex getNodeV(int idx) {
-		return nodeV[idx];
+	/**
+	 * Get the complex node voltage.
+	 *
+	 * @param nref one based node reference
+	 * @return complex node voltage
+	 */
+	public Complex getNodeV(int nref) {
+		return nodeV[nref - 1];
 	}
 
-	public Complex getCurrent(int idx) {
-		return currents[idx];
+	/**
+	 * @param nref one based node reference
+	 * @return complex current
+	 */
+	public Complex getCurrent(int nref) {
+		return currents[nref - 1];
 	}
 
-	public void setCurrent(int idx, Complex current) {
-		currents[idx] = current;
+	/**
+	 * @param nref one based node reference
+	 * @param current complex current
+	 */
+	public void setCurrent(int nref, Complex current) {
+		currents[nref - 1] = current;
 	}
 
 	public double getFrequency() {
