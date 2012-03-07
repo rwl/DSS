@@ -1,5 +1,8 @@
 package com.ncond.dss.delivery;
 
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+
 import org.apache.commons.math.complex.Complex;
 
 import com.ncond.dss.common.CktElement;
@@ -9,6 +12,8 @@ import com.ncond.dss.common.DSSClassDefs;
 import com.ncond.dss.common.SolutionObj;
 import com.ncond.dss.meter.MeterElement;
 
+@Data
+@EqualsAndHashCode(callSuper=true)
 abstract public class PDElement extends CktElement {
 
 	protected double normAmps,
@@ -127,126 +132,6 @@ abstract public class PDElement extends CktElement {
 		setPropertyValue(arrayOffset + 5, "3");    // hrsToRepair
 
 		super.initPropertyValues(arrayOffset + 5);
-	}
-
-	public double getNormAmps() {
-		return normAmps;
-	}
-
-	public void setNormAmps(double amps) {
-		normAmps = amps;
-	}
-
-	public double getEmergAmps() {
-		return emergAmps;
-	}
-
-	public void setEmergAmps(double amps) {
-		emergAmps = amps;
-	}
-
-	public double getFaultRate() {
-		return faultRate;
-	}
-
-	public void setFaultRate(double rate) {
-		faultRate = rate;
-	}
-
-	public double getPctPerm() {
-		return pctPerm;
-	}
-
-	public void setPctPerm(double pct) {
-		pctPerm = pct;
-	}
-
-	public double getHrsToRepair() {
-		return hrsToRepair;
-	}
-
-	public void setHrsToRepair(double hrs) {
-		hrsToRepair = hrs;
-	}
-
-	public int getFromTerminal() {
-		return fromTerminal;
-	}
-
-	public void setFromTerminal(int terminal) {
-		fromTerminal = terminal;
-	}
-
-	public int getToTerminal() {
-		return toTerminal;
-	}
-
-	public void setToTerminal(int terminal) {
-		toTerminal = terminal;
-	}
-
-	public boolean isShunt() {
-		return isShunt;
-	}
-
-	public void setShunt(boolean value) {
-		isShunt = value;
-	}
-
-	public int getNumCustomers() {
-		return numCustomers;
-	}
-
-	public void setNumCustomers(int num) {
-		numCustomers = num;
-	}
-
-	public int getTotalCustomers() {
-		return totalCustomers;
-	}
-
-	public void setTotalCustomers(int total) {
-		totalCustomers = total;
-	}
-
-	public PDElement getParentPDElement() {
-		return parentPDElement;
-	}
-
-	public void setParentPDElement(PDElement parent) {
-		parentPDElement = parent;
-	}
-
-	public MeterElement getMeterObj() {
-		return meterObj;
-	}
-
-	public void setMeterObj(MeterElement meter) {
-		meterObj = meter;
-	}
-
-	public MeterElement getSensorObj() {
-		return sensorObj;
-	}
-
-	public void setSensorObj(MeterElement sensor) {
-		sensorObj = sensor;
-	}
-
-	public double getOverloadUE() {
-		return overloadUE;
-	}
-
-	public void setOverload_UE(double overload) {
-		overloadUE = overload;
-	}
-
-	public double getOverloadEEN() {
-		return overloadEEN;
-	}
-
-	public void setOverloadEEN(double overload) {
-		overloadEEN = overload;
 	}
 
 }

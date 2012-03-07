@@ -3,6 +3,9 @@ package com.ncond.dss.delivery;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+
 import org.apache.commons.math.complex.Complex;
 
 import com.ncond.dss.common.DSS;
@@ -48,6 +51,8 @@ import com.ncond.dss.shared.ComplexUtil;
  *       Microfarads.
  *
  */
+@Data
+@EqualsAndHashCode(callSuper=true)
 public class CapacitorObj extends PDElement {
 
 	private double[] C,
@@ -714,110 +719,12 @@ public class CapacitorObj extends PDElement {
 		return getNumSteps() - lastStepInService;
 	}
 
-	public int getNumSteps() {
-		return numSteps;
-	}
-
-	public int getConnection() {
-		return connection;
-	}
-
-	public void setConnection(int conn) {
-		connection = conn;
-	}
-
-	public double getTotalKVAr() {
-		return totalKVAr;
-	}
-
-	public double getKVRating() {
-		return kVRating;
-	}
-
-	// FIXME Private members in OpenDSS
-
-	public double[] getC() {
-		return C;
-	}
-
-	public void setC(double[] value) {
-		C = value;
-	}
-
-	public double[] getXL() {
-		return XL;
-	}
-
-	public void setXL(double[] xl) {
-		XL = xl;
-	}
-
-	public double[] getKVArRating() {
-		return kVArRating;
-	}
-
-	public void setKVArRating(double[] rating) {
-		this.kVArRating = rating;
-	}
-
-	public double[] getR() {
-		return R;
-	}
-
-	public void setR(double[] r) {
-		R = r;
-	}
-
-	public double[] getHarm() {
-		return harm;
-	}
-
-	public void setHarm(double[] values) {
-		harm = values;
-	}
-
 	public int[] getStates() {
 		return states;
 	}
 
 	public void setStates(int[] values) {
 		states = values;
-	}
-
-	public int getLastStepInService() {
-		return lastStepInService;
-	}
-
-	public void setLastStepInService(int lastStep) {
-		lastStepInService = lastStep;
-	}
-
-	public double[] getCMatrix() {
-		return CMatrix;
-	}
-
-	public void setCMatrix(double[] cmatrix) {
-		CMatrix = cmatrix;
-	}
-
-	public boolean isDoHarmonicRecalc() {
-		return doHarmonicRecalc;
-	}
-
-	public void setDoHarmonicRecalc(boolean value) {
-		this.doHarmonicRecalc = value;
-	}
-
-	public int getSpecType() {
-		return specType;
-	}
-
-	public void setSpecType(int type) {
-		specType = type;
-	}
-
-	public void setTotalKVAr(double total) {
-		this.totalKVAr = total;
 	}
 
 	public void setKVARating(double rating) {

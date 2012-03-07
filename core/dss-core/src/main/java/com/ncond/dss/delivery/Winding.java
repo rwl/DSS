@@ -1,7 +1,10 @@
 package com.ncond.dss.delivery;
 
+import lombok.Data;
+
 import com.ncond.dss.common.DSS;
 
+@Data
 public class Winding {
 
 	private int connection;
@@ -40,110 +43,6 @@ public class Winding {
 
 	public void computeAntiFloatAdder(double PPM_Factor, double VABase1ph) {
 		Y_PPM = -PPM_Factor / (Math.pow(VBase, 2) / VABase1ph);
-	}
-
-	public int getConnection() {
-		return connection;
-	}
-
-	public void setConnection(int conn) {
-		connection = conn;
-	}
-
-	public double getKVLL() {
-		return kVLL;
-	}
-
-	public void setKVLL(double kvll) {
-		kVLL = kvll;
-	}
-
-	public double getVBase() {
-		return VBase;
-	}
-
-	public void setVBase(double base) {
-		VBase = base;
-	}
-
-	public double getKVA() {
-		return kVA;
-	}
-
-	public void setKVA(double kva) {
-		kVA = kva;
-	}
-
-	public double getPUTap() {
-		return puTap;
-	}
-
-	public void setPUTap(double tap) {
-		puTap = tap;
-	}
-
-	public double getRpu() {
-		return Rpu;
-	}
-
-	public void setRpu(double rpu) {
-		Rpu = rpu;
-	}
-
-	public double getRNeut() {
-		return RNeut;
-	}
-
-	public void setRNeut(double rneut) {
-		RNeut = rneut;
-	}
-
-	public double getXNeut() {
-		return XNeut;
-	}
-
-	public void setXNeut(double xneut) {
-		XNeut = xneut;
-	}
-
-	public double getY_PPM() {
-		return Y_PPM;
-	}
-
-	public void setY_PPM(double y) {
-		Y_PPM = y;
-	}
-
-	public double getTapIncrement() {
-		return tapIncrement;
-	}
-
-	public void setTapIncrement(double increment) {
-		tapIncrement = increment;
-	}
-
-	public double getMinTap() {
-		return minTap;
-	}
-
-	public void setMinTap(double min) {
-		minTap = min;
-	}
-
-	public double getMaxTap() {
-		return maxTap;
-	}
-
-	public void setMaxTap(double max) {
-		maxTap = max;
-	}
-
-	public int getNumTaps() {
-		return numTaps;
-	}
-
-	public void setNumTaps(int num) {
-		numTaps = num;
 	}
 
 }

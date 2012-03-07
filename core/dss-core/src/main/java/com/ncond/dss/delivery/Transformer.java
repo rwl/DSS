@@ -223,7 +223,7 @@ public class Transformer extends PDClass {
 				at.getWinding()[at.getActiveWinding()].setKVA(parser.makeDouble());
 				break;
 			case 7:
-				at.getWinding()[at.getActiveWinding()].setPUTap(parser.makeDouble());
+				at.getWinding()[at.getActiveWinding()].setPuTap(parser.makeDouble());
 				break;
 			case 8:
 				at.getWinding()[at.getActiveWinding()].setRpu(parser.makeDouble() * 0.01);  // %R
@@ -307,7 +307,7 @@ public class Transformer extends PDClass {
 				at.setPctImag(parser.makeDouble());
 				break;
 			case 35:
-				at.setPPM_FloatFactor(parser.makeDouble() * 1.0e-6);
+				at.setPpmFloatFactor(parser.makeDouble() * 1.0e-6);
 				break;
 			case 36:
 				interpretAllRs(param);
@@ -550,7 +550,7 @@ public class Transformer extends PDClass {
 			DSS.auxParser.getNextParam();  // ignore any parameter name, not expecting any
 			dataStr = DSS.auxParser.makeString();
 			if (dataStr.length() > 0)
-				at.getWinding()[at.getActiveWinding()].setPUTap(DSS.auxParser.makeDouble());
+				at.getWinding()[at.getActiveWinding()].setPuTap(DSS.auxParser.makeDouble());
 		}
 	}
 
@@ -577,7 +577,7 @@ public class Transformer extends PDClass {
 				w.setKVLL(otherTransf.getWinding()[i].getKVLL());
 				w.setVBase(otherTransf.getWinding()[i].getVBase());
 				w.setKVA(otherTransf.getWinding()[i].getKVA());
-				w.setPUTap(otherTransf.getWinding()[i].getPUTap());
+				w.setPuTap(otherTransf.getWinding()[i].getPuTap());
 				w.setRpu(otherTransf.getWinding()[i].getRpu());
 				w.setRNeut(otherTransf.getWinding()[i].getRNeut());
 				w.setXNeut(otherTransf.getWinding()[i].getXNeut());
@@ -595,13 +595,13 @@ public class Transformer extends PDClass {
 			at.setXLT(otherTransf.getXLT());
 
 			for (i = 0; i < (at.getNumWindings() * (at.getNumWindings() - 1) / 2); i++)
-				at.getXSC()[i] = otherTransf.getXsc(i);
+				at.getXSC()[i] = otherTransf.getXSC(i);
 
 			at.getZB().copyFrom(otherTransf.getZB());
 			at.getY_1Volt().copyFrom(otherTransf.getY_1Volt());
 			at.getY_Term().copyFrom(otherTransf.getY_Term());
 			at.getY_1Volt_NL().copyFrom(otherTransf.getY_1Volt_NL());
-			at.getYTermNL().copyFrom(otherTransf.getYTermNL());
+			at.getY_Term_NL().copyFrom(otherTransf.getY_Term_NL());
 
 			at.setThermalTimeConst(otherTransf.getThermalTimeConst());
 			at.setNThermal(otherTransf.getNThermal());

@@ -3,6 +3,9 @@ package com.ncond.dss.delivery;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+
 import org.apache.commons.math.complex.Complex;
 
 import com.ncond.dss.common.Circuit;
@@ -24,6 +27,8 @@ import com.ncond.dss.general.TCC_CurveObj;
  * CktElement to be controlled must already exist.
  *
  */
+@Data
+@EqualsAndHashCode(callSuper=true)
 public class FuseObj extends ControlElem {
 
 	private TCC_CurveObj fuseCurve;
@@ -306,96 +311,6 @@ public class FuseObj extends ControlElem {
 	@Override
 	public int injCurrents() {
 		throw new UnsupportedOperationException();
-	}
-
-	// FIXME: Private members in OpenDSS
-
-	public TCC_CurveObj getFuseCurve() {
-		return fuseCurve;
-	}
-
-	public void setFuseCurve(TCC_CurveObj curve) {
-		fuseCurve = curve;
-	}
-
-	public double getRatedCurrent() {
-		return ratedCurrent;
-	}
-
-	public void setRatedCurrent(double current) {
-		ratedCurrent = current;
-	}
-
-	public double getDelayTime() {
-		return delayTime;
-	}
-
-	public void setDelayTime(double time) {
-		delayTime = time;
-	}
-
-	public String getMonitoredElementName() {
-		return monitoredElementName;
-	}
-
-	public void setMonitoredElementName(String name) {
-		monitoredElementName = name;
-	}
-
-	public int getMonitoredElementTerminal() {
-		return monitoredElementTerminal;
-	}
-
-	public void setMonitoredElementTerminal(int terminal) {
-		monitoredElementTerminal = terminal;
-	}
-
-	public CktElement getMonitoredElement() {
-		return monitoredElement;
-	}
-
-	public void setMonitoredElement(CktElement element) {
-		monitoredElement = element;
-	}
-
-	public int[] getHAction() {
-		return hAction;
-	}
-
-	public void setHAction(int[] action) {
-		this.hAction = action;
-	}
-
-	public ControlAction[] getPresentState() {
-		return presentState;
-	}
-
-	public void setPresentState(ControlAction[] state) {
-		presentState = state;
-	}
-
-	public boolean[] getReadyToBlow() {
-		return readyToBlow;
-	}
-
-	public void setReadyToBlow(boolean[] ready) {
-		readyToBlow = ready;
-	}
-
-	public int getCondOffset() {
-		return condOffset;
-	}
-
-	public void setCondOffset(int offset) {
-		condOffset = offset;
-	}
-
-	public Complex[] getCBuffer() {
-		return cBuffer;
-	}
-
-	public void setCBuffer(Complex[] buffer) {
-		cBuffer = buffer;
 	}
 
 }

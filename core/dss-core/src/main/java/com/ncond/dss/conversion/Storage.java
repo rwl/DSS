@@ -4,6 +4,9 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+
 import org.apache.commons.math.complex.Complex;
 
 import com.ncond.dss.common.DSS;
@@ -13,6 +16,8 @@ import com.ncond.dss.general.LoadShapeObj;
 import com.ncond.dss.parser.Parser;
 import com.ncond.dss.shared.CommandList;
 
+@Data
+@EqualsAndHashCode(callSuper=true)
 public class Storage extends PCClass {
 
 	public static final int NumStorageRegisters = 6;
@@ -479,7 +484,7 @@ public class Storage extends PCClass {
 					as.setStorageState(as.interpretState(param));
 					break;
 				case KVA:
-					as.setKVA_Rating(parser.makeDouble());
+					as.setKVARating(parser.makeDouble());
 					break;
 				case KW_RATED:
 					as.setKWRating(parser.makeDouble());
@@ -503,7 +508,7 @@ public class Storage extends PCClass {
 					as.setDebugTrace(Util.interpretYesNo(param));
 					break;
 				case PCT_KW_IN:
-					as.setPctKWin(parser.makeDouble());
+					as.setPctKWIn(parser.makeDouble());
 					break;
 				case PCT_STORED:
 					as.setKWhStored(parser.makeDouble() * 0.01 * as.getKWhRating());
@@ -539,7 +544,7 @@ public class Storage extends PCClass {
 					as.setDutyShapeObj((LoadShapeObj) DSS.loadShapeClass.find(as.getDutyShape()));
 					break;
 				case KW_RATED:
-					as.setKVA_Rating(as.getKWRating());
+					as.setKVARating(as.getKWRating());
 					break;
 				case KWH_RATED:
 					as.setKWhStored(as.getKWhRating());  // Assume fully charged
@@ -639,7 +644,7 @@ public class Storage extends PCClass {
 			as.setStateChanged(otherStorageObj.isStateChanged());
 			as.setKVANotSet(otherStorageObj.isKVANotSet());
 
-			as.setKVA_Rating(otherStorageObj.getKVArating());
+			as.setKVARating(otherStorageObj.getKVARating());
 
 			as.setKWRating(otherStorageObj.getKWRating());
 			as.setKWhRating(otherStorageObj.getKWhRating());
@@ -651,8 +656,8 @@ public class Storage extends PCClass {
 			as.setChargeTrigger(otherStorageObj.getChargeTrigger());
 			as.setPctChargeEff(otherStorageObj.getPctChargeEff());
 			as.setPctDischargeEff(otherStorageObj.getPctDischargeEff());
-			as.setPctKWOut(otherStorageObj.getPctKWOut());
-			as.setPctKWin(otherStorageObj.getPctKWin());
+			as.setPctKWOut(otherStorageObj.getPctKWout());
+			as.setPctKWIn(otherStorageObj.getPctKWIn());
 			as.setPctIdleKW(otherStorageObj.getPctIdleKW());
 			as.setPctIdleKVAr(otherStorageObj.getPctIdleKVAr());
 			as.setChargeTime(otherStorageObj.getChargeTime());
@@ -719,14 +724,6 @@ public class Storage extends PCClass {
 			if (pElem.isEnabled())
 				pElem.takeSample();
 		}
-	}
-
-	public String[] getRegisterNames() {
-		return registerNames;
-	}
-
-	public void setRegisterNames(String[] names) {
-		registerNames = names;
 	}
 
 }

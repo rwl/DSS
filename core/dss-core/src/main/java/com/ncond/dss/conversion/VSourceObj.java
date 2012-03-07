@@ -3,6 +3,9 @@ package com.ncond.dss.conversion;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+
 import org.apache.commons.math.complex.Complex;
 
 import com.ncond.dss.common.DSS;
@@ -13,6 +16,8 @@ import com.ncond.dss.parser.Parser;
 import com.ncond.dss.shared.CMatrix;
 import com.ncond.dss.shared.ComplexUtil;
 
+@Data
+@EqualsAndHashCode(callSuper=true)
 public class VSourceObj extends PCElement {
 
 	private double MVAsc3;
@@ -459,168 +464,6 @@ public class VSourceObj extends PCElement {
 		edit();
 
 		super.makePosSequence();
-	}
-
-	public CMatrix getZ() {
-		return Z;
-	}
-
-	public void setZ(CMatrix z) {
-		Z = z;
-	}
-
-	public CMatrix getZinv() {
-		return ZInv;
-	}
-
-	public void setZinv(CMatrix zinv) {
-		ZInv = zinv;
-	}
-
-	public double getVMag() {
-		return VMag;
-	}
-
-	public void setVMag(double mag) {
-		VMag = mag;
-	}
-
-	public double getKVBase() {
-		return kVBase;
-	}
-
-	public void setKVBase(double base) {
-		this.kVBase = base;
-	}
-
-	public double getPerUnit() {
-		return perUnit;
-	}
-
-	public void setPerUnit(double pu) {
-		perUnit = pu;
-	}
-
-	public double getAngle() {
-		return angle;
-	}
-
-	public void setAngle(double ang) {
-		angle = ang;
-	}
-
-	public double getSrcFrequency() {
-		return srcFrequency;
-	}
-
-	public void setSrcFrequency(double frequency) {
-		srcFrequency = frequency;
-	}
-
-	// FIXME Private members in OpenDSS
-
-	public double getMVAsc3() {
-		return MVAsc3;
-	}
-
-	public void setMVAsc3(double mvasc3) {
-		MVAsc3 = mvasc3;
-	}
-
-	public double getMVAsc1() {
-		return MVAsc1;
-	}
-
-	public void setMVAsc1(double mvasc1) {
-		MVAsc1 = mvasc1;
-	}
-
-	public double getIsc3() {
-		return Isc3;
-	}
-
-	public void setIsc3(double isc3) {
-		Isc3 = isc3;
-	}
-
-	public double getIsc1() {
-		return Isc1;
-	}
-
-	public void setIsc1(double isc1) {
-		Isc1 = isc1;
-	}
-
-	public int getZSpecType() {
-		return ZSpecType;
-	}
-
-	public void setZSpecType(int specType) {
-		ZSpecType = specType;
-	}
-
-	public double getR1() {
-		return R1;
-	}
-
-	public void setR1(double r1) {
-		R1 = r1;
-	}
-
-	public double getX1() {
-		return X1;
-	}
-
-	public void setX1(double x1) {
-		X1 = x1;
-	}
-
-	public double getR0() {
-		return R0;
-	}
-
-	public void setR0(double r0) {
-		R0 = r0;
-	}
-
-	public double getX0() {
-		return X0;
-	}
-
-	public void setX0(double x0) {
-		X0 = x0;
-	}
-
-	public double getX1R1() {
-		return X1R1;
-	}
-
-	public void setX1R1(double x1r1) {
-		X1R1 = x1r1;
-	}
-
-	public double getX0R0() {
-		return X0R0;
-	}
-
-	public void setX0R0(double x0r0) {
-		X0R0 = x0r0;
-	}
-
-	public int getScanType() {
-		return scanType;
-	}
-
-	public void setScanType(int type) {
-		scanType = type;
-	}
-
-	public int getSequenceType() {
-		return sequenceType;
-	}
-
-	public void setSequenceType(int type) {
-		sequenceType = type;
 	}
 
 }

@@ -1,9 +1,12 @@
 package com.ncond.dss.general;
 
+import lombok.EqualsAndHashCode;
+
 import com.ncond.dss.shared.CMatrix;
 import com.ncond.dss.shared.LineUnits;
 import com.ncond.dss.shared.MathUtil;
 
+@EqualsAndHashCode(callSuper=true)
 public class CableConstants extends LineConstants {
 
 	protected double[] epsR;

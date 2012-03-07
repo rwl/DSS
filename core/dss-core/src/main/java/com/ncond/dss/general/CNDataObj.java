@@ -3,8 +3,14 @@ package com.ncond.dss.general;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 
-import com.ncond.dss.common.DSSClass;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 
+import com.ncond.dss.common.DSSClass;
+import com.ncond.dss.delivery.LineObj;
+
+@Data
+@EqualsAndHashCode(callSuper=true)
 public class CNDataObj extends CableDataObj {
 
 	private int kStrand;
@@ -59,40 +65,6 @@ public class CNDataObj extends CableDataObj {
 		setPropertyValue(2, "-1");
 		setPropertyValue(3, "-1");
 		super.initPropertyValues(arrayOffset + CNData.NumPropsThisClass);
-	}
-
-	public int getkStrand() {
-		return kStrand;
-	}
-
-	public double getDiaStrand() {
-		return diaStrand;
-	}
-
-	public double getGmrStrand() {
-		return gmrStrand;
-	}
-
-	public double getRStrand() {
-		return rStrand;
-	}
-
-	// FIXME: Private members in OpenDSS
-
-	public void setkStrand(int kstrand) {
-		this.kStrand = kstrand;
-	}
-
-	public void setDiaStrand(double diastrand) {
-		diaStrand = diastrand;
-	}
-
-	public void setGmrStrand(double gmrstrand) {
-		gmrStrand = gmrstrand;
-	}
-
-	public void setRStrand(double rstrand) {
-		rStrand = rstrand;
 	}
 
 }

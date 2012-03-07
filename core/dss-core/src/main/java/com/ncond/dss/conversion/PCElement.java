@@ -2,6 +2,9 @@ package com.ncond.dss.conversion;
 
 import java.io.PrintStream;
 
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+
 import org.apache.commons.math.complex.Complex;
 
 import com.ncond.dss.common.Circuit;
@@ -13,6 +16,8 @@ import com.ncond.dss.common.SolutionObj;
 import com.ncond.dss.general.SpectrumObj;
 import com.ncond.dss.meter.MeterElement;
 
+@Data
+@EqualsAndHashCode(callSuper=true)
 public abstract class PCElement extends CktElement {
 
 	private boolean ITerminalUpdated;
@@ -66,7 +71,7 @@ public abstract class PCElement extends CktElement {
 	 * Such as for harmonic model.
 	 */
 	protected void getTerminalCurrents(Complex[] curr) {
-		if (getITerminalUpdated()) {  // just copy ITerminal unless ITerminal=curr
+		if (isITerminalUpdated()) {  // just copy ITerminal unless ITerminal=curr
 			if (curr != getITerminal())
 				for (int i = 0; i < YOrder; i++)
 					curr[i] = getITerminal(i);
@@ -209,12 +214,9 @@ public abstract class PCElement extends CktElement {
 
 	public void setITerminalUpdated(boolean value) {
 		ITerminalUpdated = value;
-		if (value)
+		if (value) {
 			ITerminalSolutionCount = DSS.activeCircuit.getSolution().getSolutionCount();
-	}
-
-	public boolean getITerminalUpdated() {
-		return ITerminalUpdated;
+		}
 	}
 
 	public Complex getInjCurrent(int idx) {
@@ -223,44 +225,6 @@ public abstract class PCElement extends CktElement {
 
 	public Complex[] getInjCurrent() {
 		return injCurrent;
-	}
-
-	public String getSpectrum() {
-		return spectrum;
-	}
-
-	public void setSpectrum(String value) {
-		spectrum = value;
-	}
-
-	/** Upline sensor for this element */
-	public SpectrumObj getSpectrumObj() {
-		return spectrumObj;
-	}
-
-	public void setSpectrumObj(SpectrumObj spectrum) {
-		spectrumObj = spectrum;
-	}
-
-	/** Upline energy meter */
-	public MeterElement getMeterObj() {
-		return meterObj;
-	}
-
-	public void setMeterObj(MeterElement meter) {
-		meterObj = meter;
-	}
-
-	public MeterElement getSensorObj() {
-		return sensorObj;
-	}
-
-	public void setSensorObj(MeterElement sensor) {
-		sensorObj = sensor;
-	}
-
-	public void setInjCurrent(Complex[] current) {
-		injCurrent = current;
 	}
 
 }

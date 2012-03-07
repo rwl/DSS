@@ -380,8 +380,8 @@ public class LineGeometryObj extends DSSObject {
 			lineData.setX(i, units[i], X[i]);
 			lineData.setY(i, units[i], Y[i]);
 			lineData.setRadius(i, wireData[i].getRadiusUnits(), wireData[i].getRadius());
-			lineData.setGMR(i, wireData[i].getGMRUnits(), wireData[i].getGMR60());
-			lineData.setRdc(i, wireData[i].getResistanceUnits(), wireData[i].getRDC());
+			lineData.setGMR(i, wireData[i].getGmrUnits(), wireData[i].getGmr60());
+			lineData.setRdc(i, wireData[i].getResistanceUnits(), wireData[i].getRdc());
 			lineData.setRac(i, wireData[i].getResistanceUnits(), wireData[i].getR60());  // Rac
 			if (wireData[i] instanceof CNDataObj) {
 				CNLineConstants cnlc = (CNLineConstants) lineData;
@@ -390,9 +390,9 @@ public class LineGeometryObj extends DSSObject {
 				cnlc.setInsLayer(i, cnd.getRadiusUnits(), cnd.getInsLayer());
 				cnlc.setDiaIns(i, cnd.getRadiusUnits(), cnd.getDiaIns());
 				cnlc.setDiaCable(i, cnd.getRadiusUnits(), cnd.getDiaCable());
-				cnlc.setKStrand(i, cnd.getkStrand());
+				cnlc.setKStrand(i, cnd.getKStrand());
 				cnlc.setDiaStrand(i, cnd.getRadiusUnits(), cnd.getDiaStrand());
-				cnlc.setGmrStrand(i, cnd.getGMRUnits(), cnd.getGmrStrand());
+				cnlc.setGmrStrand(i, cnd.getGmrUnits(), cnd.getGmrStrand());
 				cnlc.setRStrand(i, cnd.getResistanceUnits(), cnd.getRStrand());
 			} else if (wireData[i] instanceof TSDataObj) {
 				TSLineConstants tslc = (TSLineConstants) lineData;

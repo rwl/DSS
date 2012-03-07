@@ -1,11 +1,17 @@
 package com.ncond.dss.general;
 
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+
 import com.ncond.dss.common.DSS;
 import com.ncond.dss.common.DSSClass;
 import com.ncond.dss.common.DSSClassDefs;
+import com.ncond.dss.delivery.LineObj;
 import com.ncond.dss.parser.Parser;
 import com.ncond.dss.shared.LineUnits;
 
+@Data
+@EqualsAndHashCode(callSuper=true)
 abstract public class ConductorData extends DSSClass {
 
 	public static final String LineUnitsHelp = "{mi|kft|km|m|Ft|in|cm|mm} Default=none.";
@@ -66,7 +72,7 @@ abstract public class ConductorData extends DSSClass {
 			ConductorDataObj cd = (ConductorDataObj) activeObj;
 			switch (paramPointer) {
 			case 0:
-				cd.setRDC(parser.makeDouble());
+				cd.setRdc(parser.makeDouble());
 				break;
 			case 1:
 				cd.setR60(parser.makeDouble());
@@ -75,10 +81,10 @@ abstract public class ConductorData extends DSSClass {
 				cd.setResistanceUnits( LineUnits.getUnitsCode(parser.makeString()) );
 				break;
 			case 3:
-				cd.setGMR60(parser.makeDouble());
+				cd.setGmr60(parser.makeDouble());
 				break;
 			case 4:
-				cd.setGMRUnits( LineUnits.getUnitsCode(parser.makeString()) );
+				cd.setGmrUnits( LineUnits.getUnitsCode(parser.makeString()) );
 				break;
 			case 5:
 				cd.setRadius(parser.makeDouble());
@@ -103,27 +109,27 @@ abstract public class ConductorData extends DSSClass {
 			switch (paramPointer) {
 			case 0:
 				if (cd.getR60() < 0.0)
-					cd.setR60(1.02 * cd.getRDC());
+					cd.setR60(1.02 * cd.getRdc());
 				break;
 			case 1:
-				if (cd.getRDC() < 0.0)
-					cd.setRDC(cd.getR60() / 1.02);
+				if (cd.getRdc() < 0.0)
+					cd.setRdc(cd.getR60() / 1.02);
 				break;
 			case 3:
 				if (cd.getRadius() < 0.0)
-					cd.setRadius(cd.getGMR60() / 0.7788);
+					cd.setRadius(cd.getGmr60() / 0.7788);
 				break;
 			case 4:
 				if (cd.getRadiusUnits() == 0)
-					cd.setRadiusUnits(cd.getGMRUnits());
+					cd.setRadiusUnits(cd.getGmrUnits());
 				break;
 			case 5:
-				if (cd.getGMR60() < 0.0)
-					cd.setGMR60(0.7788 * cd.getRadius());
+				if (cd.getGmr60() < 0.0)
+					cd.setGmr60(0.7788 * cd.getRadius());
 				break;
 			case 6:
-				if (cd.getGMRUnits() == 0)
-					cd.setGMRUnits(cd.getRadiusUnits());
+				if (cd.getGmrUnits() == 0)
+					cd.setGmrUnits(cd.getRadiusUnits());
 				break;
 			case 7:
 				if (cd.getEmergAmps() < 0.0)
@@ -134,8 +140,8 @@ abstract public class ConductorData extends DSSClass {
 					cd.setNormAmps(cd.getEmergAmps() / 1.5);
 				break;
 			case 9:
-				if (cd.getGMR60() < 0.0)
-					cd.setGMR60(0.7788 * cd.getRadius());
+				if (cd.getGmr60() < 0.0)
+					cd.setGmr60(0.7788 * cd.getRadius());
 				break;
 			}
 			/* Check for critical errors */
@@ -145,7 +151,7 @@ abstract public class ConductorData extends DSSClass {
 					DSS.doSimpleMsg("Error: Radius is specified as zero for ConductorData." + cd.getName(), 999);
 				break;
 			case 5:
-				if (cd.getGMR60() == 0.0)
+				if (cd.getGmr60() == 0.0)
 					DSS.doSimpleMsg("Error: GMR is specified as zero for ConductorData." + cd.getName(), 999);
 				break;
 			}
@@ -159,24 +165,16 @@ abstract public class ConductorData extends DSSClass {
 		ConductorDataObj otherConductorData = (ConductorDataObj) otherObj;
 		ConductorDataObj cd = (ConductorDataObj) DSS.activeDSSObject;
 
-		cd.setRDC(otherConductorData.getRDC());
+		cd.setRdc(otherConductorData.getRdc());
 		cd.setR60(otherConductorData.getR60());
 		cd.setResistanceUnits(otherConductorData.getResistanceUnits());
-		cd.setGMR60(otherConductorData.getGMR60());
-		cd.setGMRUnits(otherConductorData.getGMRUnits());
+		cd.setGmr60(otherConductorData.getGmr60());
+		cd.setGmrUnits(otherConductorData.getGmrUnits());
 		cd.setRadius(otherConductorData.getRadius());
 		cd.setRadiusUnits(otherConductorData.getRadiusUnits());
 		cd.setNormAmps(otherConductorData.getNormAmps());
 		cd.setEmergAmps(otherConductorData.getEmergAmps());
 		//super.classMakeLike(OtherObj);
-	}
-
-	public void setNumConductorClassProps(int num) {
-		numConductorClassProps = num;
-	}
-
-	public int getNumConductorClassProps() {
-		return numConductorClassProps;
 	}
 
 }

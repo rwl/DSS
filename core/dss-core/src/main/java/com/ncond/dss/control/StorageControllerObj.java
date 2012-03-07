@@ -896,7 +896,7 @@ public class StorageControllerObj extends ControlElem {
 		StorageObj pStorage;
 		for (int i = 0; i < fleetPointerList.size(); i++) {
 			pStorage = (StorageObj) fleetPointerList.get(i);
-			pStorage.setPctKWin(pctChargeRate);
+			pStorage.setPctKWIn(pctChargeRate);
 			pStorage.setPctKVArOut(pctKVArRate);
 			pStorage.setPctKWOut(pctKWRate);
 			pStorage.setPctReserve(pctFleetReserve);
@@ -907,7 +907,7 @@ public class StorageControllerObj extends ControlElem {
 		StorageObj pStorage;
 		for (int i = 0; i < fleetPointerList.size(); i++) {
 			pStorage = (StorageObj) fleetPointerList.get(i);
-			pStorage.setPctKWin(pctChargeRate);
+			pStorage.setPctKWIn(pctChargeRate);
 		}
 	}
 

@@ -83,7 +83,7 @@ public class CNData extends CableData {
 				DSS.doSimpleMsg("Unknown parameter \"" + paramName + "\" for object \"" + getClassName() +"."+ getClassName() + "\"", 101);
 				break;
 			case 0:
-				acd.setkStrand(parser.makeInteger());
+				acd.setKStrand(parser.makeInteger());
 				break;
 			case 1:
 				acd.setDiaStrand(parser.makeDouble());
@@ -111,7 +111,7 @@ public class CNData extends CableData {
 			/* Check for critical errors */
 			switch (paramPointer) {
 			case 0:
-				if (acd.getkStrand() < 2)
+				if (acd.getKStrand() < 2)
 					DSS.doSimpleMsg("Error: Must have at least 2 concentric neutral strands for CNData " + acd.getName(), 999);
 				break;
 			case 1:
@@ -136,7 +136,7 @@ public class CNData extends CableData {
 		int result = 0;
 		CNDataObj otherData = (CNDataObj) find(CNName);
 		if (otherData != null) {
-			acd.setkStrand(otherData.getkStrand());
+			acd.setKStrand(otherData.getKStrand());
 			acd.setDiaStrand(otherData.getDiaStrand());
 			acd.setGmrStrand(otherData.getGmrStrand());
 			acd.setRStrand(otherData.getRStrand());

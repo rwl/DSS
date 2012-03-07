@@ -2,6 +2,9 @@ package com.ncond.dss.conversion;
 
 import java.io.PrintStream;
 
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+
 import org.apache.commons.math.complex.Complex;
 
 import com.ncond.dss.common.DSS;
@@ -12,6 +15,8 @@ import com.ncond.dss.parser.Parser;
 import com.ncond.dss.shared.CMatrix;
 import com.ncond.dss.shared.ComplexUtil;
 
+@Data
+@EqualsAndHashCode(callSuper=true)
 public class EquivalentObj extends PCElement {
 
 	private double kVBase;
@@ -352,104 +357,6 @@ public class EquivalentObj extends PCElement {
 		X1 = Util.resizeArray(X1, (int) Math.pow(nTerms, 2));
 		R0 = Util.resizeArray(R0, (int) Math.pow(nTerms, 2));
 		X0 = Util.resizeArray(X0, (int) Math.pow(nTerms, 2));
-	}
-
-	public CMatrix getZ() {
-		return Z;
-	}
-
-	public void setZ(CMatrix z) {
-		Z = z;
-	}
-
-	public CMatrix getZinv() {
-		return ZInv;
-	}
-
-	public void setZInv(CMatrix zinv) {
-		ZInv = zinv;
-	}
-
-	// FIXME Private members in OpenDSS
-
-	public double getKvBase() {
-		return kVBase;
-	}
-
-	public void setKvBase(double base) {
-		this.kVBase = base;
-	}
-
-	public double getVMag() {
-		return VMag;
-	}
-
-	public void setVMag(double mag) {
-		VMag = mag;
-	}
-
-	public double getPerUnit() {
-		return perUnit;
-	}
-
-	public void setPerUnit(double pu) {
-		perUnit = pu;
-	}
-
-	public double getAngle() {
-		return angle;
-	}
-
-	public void setAngle(double ang) {
-		angle = ang;
-	}
-
-	public double getEquivFrequency() {
-		return equivFrequency;
-	}
-
-	public void setEquivFrequency(double frequency) {
-		equivFrequency = frequency;
-	}
-
-	public double[] getR1() {
-		return R1;
-	}
-
-	public void setR1(double[] r1) {
-		R1 = r1;
-	}
-
-	public double[] getX1() {
-		return X1;
-	}
-
-	public void setX1(double[] x1) {
-		X1 = x1;
-	}
-
-	public double[] getR0() {
-		return R0;
-	}
-
-	public void setR0(double[] r0) {
-		R0 = r0;
-	}
-
-	public double[] getX0() {
-		return X0;
-	}
-
-	public void setX0(double[] x0) {
-		X0 = x0;
-	}
-
-	public boolean isNeedToDoRecalc() {
-		return needToDoRecalc;
-	}
-
-	public void setNeedToDoRecalc(boolean value) {
-		needToDoRecalc = value;
 	}
 
 }

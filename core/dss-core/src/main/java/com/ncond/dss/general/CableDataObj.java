@@ -3,8 +3,13 @@ package com.ncond.dss.general;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+
 import com.ncond.dss.common.DSSClass;
 
+@Data
+@EqualsAndHashCode(callSuper=true)
 public class CableDataObj extends ConductorDataObj {
 
 	private double epsR;
@@ -58,40 +63,6 @@ public class CableDataObj extends ConductorDataObj {
 		setPropertyValue(arrayOffset + 3, "-1");
 		setPropertyValue(arrayOffset + 4, "-1");
 		super.initPropertyValues(arrayOffset + 4);
-	}
-
-	public double getEpsR() {
-		return epsR;
-	}
-
-	public double getInsLayer() {
-		return insLayer;
-	}
-
-	public double getDiaIns() {
-		return diaIns;
-	}
-
-	public double getDiaCable() {
-		return diaCable;
-	}
-
-	// FIXME Private members in OpenDSS.
-
-	public void setEpsR(double epsr) {
-		epsR = epsr;
-	}
-
-	public void setInsLayer(double inslayer) {
-		insLayer = inslayer;
-	}
-
-	public void setDiaIns(double diains) {
-		diaIns = diains;
-	}
-
-	public void setDiaCable(double diacable) {
-		diaCable = diacable;
 	}
 
 }

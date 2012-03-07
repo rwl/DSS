@@ -3,9 +3,14 @@ package com.ncond.dss.general;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+
 import com.ncond.dss.common.DSSClass;
 import com.ncond.dss.common.Util;
 
+@Data
+@EqualsAndHashCode(callSuper=true)
 public class GrowthShapeObj extends DSSObject {
 
 	/** Number of points in curve */
@@ -160,40 +165,6 @@ public class GrowthShapeObj extends DSSObject {
 		propertyValue[5] = "";   // switch input to a binary file of doubles (year, mult)
 
 		super.initPropertyValues(GrowthShape.NumPropsThisClass - 1);
-	}
-
-
-	/* FIXME Private members in OpenDSS */
-	public int getNPts() {
-		return npts;
-	}
-
-	public void setNPts(int n) {
-		npts = n;
-	}
-
-	public int[] getYear() {
-		return year;
-	}
-
-	public void setYear(int[] values) {
-		year = values;
-	}
-
-	public double[] getMultiplier() {
-		return multiplier;
-	}
-
-	public void setMultiplier(double[] mult) {
-		multiplier = mult;
-	}
-
-	public int getBaseYear() {
-		return baseYear;
-	}
-
-	public void setBaseYear(int year) {
-		baseYear = year;
 	}
 
 }

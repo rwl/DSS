@@ -4,6 +4,9 @@ import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
 
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+
 import com.ncond.dss.common.DSS;
 import com.ncond.dss.common.DSSClassDefs;
 import com.ncond.dss.common.Util;
@@ -13,6 +16,8 @@ import com.ncond.dss.general.XYCurveObj;
 import com.ncond.dss.parser.Parser;
 import com.ncond.dss.shared.CommandList;
 
+@Data
+@EqualsAndHashCode(callSuper=true)
 public class PVSystem extends PCClass {
 
 	public static final int NumPVSystemRegisters = 5;  // number of energy meter registers
@@ -418,7 +423,7 @@ public class PVSystem extends PCClass {
 					apv.setVMaxPU(parser.makeDouble());
 					break;
 				case KVA:
-					apv.setKVArating(parser.makeDouble());
+					apv.setKVARating(parser.makeDouble());
 					break;
 				case USER_MODEL:
 					apv.getUserModel().setName(parser.makeString());  // connect to user written models
@@ -555,7 +560,7 @@ public class PVSystem extends PCClass {
 			apv.setPctCutOut(otherPVsystemObj.getPctCutOut());
 			apv.setIrradiance(otherPVsystemObj.getIrradiance());
 
-			apv.setKVArating(otherPVsystemObj.getKVARating());
+			apv.setKVARating(otherPVsystemObj.getKVARating());
 
 			apv.setPctR(otherPVsystemObj.getPctR());
 			apv.setPctX(otherPVsystemObj.getPctX());
@@ -612,14 +617,6 @@ public class PVSystem extends PCClass {
 			if (pElem.isEnabled())
 				pElem.takeSample();
 		}
-	}
-
-	public void setRegisterNames(String[] names) {
-		registerNames = names;
-	}
-
-	public String[] getRegisterNames() {
-		return registerNames;
 	}
 
 }

@@ -471,10 +471,10 @@ public class Generator extends PCClass {
 					}
 					break;
 				case 25:
-					ag.setkVANotSet(false);
+					ag.setKVANotSet(false);
 					break;
 				case 26:
-					ag.setkVANotSet(false);
+					ag.setKVANotSet(false);
 					break;
 				}
 			}
@@ -518,8 +518,8 @@ public class Generator extends PCClass {
 			ag.getGenVars().PNominalPerPhase = otherGenerator.getGenVars().PNominalPerPhase;
 			ag.setPowerFactor(otherGenerator.getPowerFactor());
 			ag.getGenVars().QNominalPerPhase = otherGenerator.getGenVars().QNominalPerPhase;
-			ag.setVArMin(otherGenerator.getVArMin());
-			ag.setVArMax(otherGenerator.getVArMax());
+			ag.setVarMin(otherGenerator.getVarMin());
+			ag.setVarMax(otherGenerator.getVarMax());
 			ag.setConnection(otherGenerator.getConnection());
 			//ag.setRneut(OtherGenerator.getRneut());
 			//ag.setXneut(OtherGenerator.getXneut());
@@ -539,7 +539,7 @@ public class Generator extends PCClass {
 			ag.setKVArMax(otherGenerator.getKVArMax());
 			ag.setKVArMin(otherGenerator.getKVArMin());
 			ag.setForcedOn(otherGenerator.isForcedOn());
-			ag.setkVANotSet(otherGenerator.iskVANotSet());
+			ag.setKVANotSet(otherGenerator.isKVANotSet());
 
 			ag.getGenVars().kVARating      = otherGenerator.getGenVars().kVARating;
 			ag.getGenVars().puXd           = otherGenerator.getGenVars().puXd;

@@ -140,21 +140,21 @@ public class GrowthShape extends DSSClass {
 				DSS.doSimpleMsg("Unknown parameter \"" + paramName + "\" for Object \"" + getClassName() +"."+ getClassName() + "\"", 600);
 				break;
 			case 0:
-				pShape.setNPts(Parser.getInstance().makeInteger());
+				pShape.setNpts(Parser.getInstance().makeInteger());
 				break;
 			case 1:
-				pShape.setYear( Util.resizeArray(pShape.getYear(), pShape.getNPts()) );
-				YrBuffer = new double[pShape.getNPts()];
-				Util.interpretDblArray(param, pShape.getNPts(), YrBuffer);  // Parser.parseAsVector(pShape.getNpts(), Yrbuffer);
+				pShape.setYear( Util.resizeArray(pShape.getYear(), pShape.getNpts()) );
+				YrBuffer = new double[pShape.getNpts()];
+				Util.interpretDblArray(param, pShape.getNpts(), YrBuffer);  // Parser.parseAsVector(pShape.getNpts(), Yrbuffer);
 
-				for (int i = 0; i < pShape.getNPts(); i++)
+				for (int i = 0; i < pShape.getNpts(); i++)
 					pShape.getYear()[i] = (int) Math.round(YrBuffer[i]);
 				pShape.setBaseYear(pShape.getYear()[0]);
 				YrBuffer = null;
 				break;
 			case 2:
-				pShape.setMultiplier( Util.resizeArray(pShape.getMultiplier(), pShape.getNPts()) );
-				Util.interpretDblArray(param, pShape.getNPts(), pShape.getMultiplier());   //Parser.parseAsVector(pShape.getNpts(), pShape.getMultiplier());
+				pShape.setMultiplier( Util.resizeArray(pShape.getMultiplier(), pShape.getNpts()) );
+				Util.interpretDblArray(param, pShape.getNpts(), pShape.getMultiplier());   //Parser.parseAsVector(pShape.getNpts(), pShape.getMultiplier());
 				break;
 			case 3:
 				doCSVFile(param);
@@ -189,12 +189,12 @@ public class GrowthShape extends DSSClass {
 
 		if (otherGrowthShape != null) {
 			pShape = activeGrowthShapeObj;
-			pShape.setNPts(otherGrowthShape.getNPts());
-			pShape.setMultiplier( Util.resizeArray(pShape.getMultiplier(), pShape.getNPts()) );
-			for (int i = 0; i < pShape.getNPts(); i++)
+			pShape.setNpts(otherGrowthShape.getNpts());
+			pShape.setMultiplier( Util.resizeArray(pShape.getMultiplier(), pShape.getNpts()) );
+			for (int i = 0; i < pShape.getNpts(); i++)
 				pShape.getMultiplier()[i] = otherGrowthShape.getMultiplier()[i];
-			pShape.setYear( Util.resizeArray(pShape.getYear(), pShape.getNPts()) );
-			for (int i = 0; i < pShape.getNPts(); i++)
+			pShape.setYear( Util.resizeArray(pShape.getYear(), pShape.getNpts()) );
+			for (int i = 0; i < pShape.getNpts(); i++)
 				pShape.getYear()[i] = otherGrowthShape.getYear()[i];
 			for (int i = 0; i < pShape.getParentClass().getNumProperties(); i++)
 				pShape.setPropertyValue(i, otherGrowthShape.getPropertyValue(i));
@@ -250,7 +250,7 @@ public class GrowthShape extends DSSClass {
 			GrowthShapeObj pShape = activeGrowthShapeObj;
 
 			int i = 0;
-			while (((s = br.readLine()) != null) && i < pShape.getNPts()) {
+			while (((s = br.readLine()) != null) && i < pShape.getNpts()) {
 				// use aux parser to allow flexible formats
 				parser = DSS.auxParser;
 				parser.setCmdString(s);

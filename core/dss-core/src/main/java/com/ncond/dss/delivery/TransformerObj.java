@@ -3,6 +3,9 @@ package com.ncond.dss.delivery;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+
 import org.apache.commons.math.complex.Complex;
 
 import com.ncond.dss.common.DSS;
@@ -14,6 +17,8 @@ import com.ncond.dss.parser.Parser;
 import com.ncond.dss.shared.CMatrix;
 import com.ncond.dss.shared.ComplexUtil;
 
+@Data
+@EqualsAndHashCode(callSuper=true)
 public class TransformerObj extends PDElement {
 
 	private int deltaDirection;
@@ -424,7 +429,7 @@ public class TransformerObj extends PDElement {
 			}
 			pw.println("~ kv=" + W.getKVLL());
 			pw.println("~ kva=" + W.getKVA());
-			pw.println("~ tap=" + W.getPUTap());
+			pw.println("~ tap=" + W.getPuTap());
 			pw.println("~ %r=" + (W.getRpu() * 100.0));
 			pw.println("~ rneut=" + W.getRNeut());
 			pw.println("~ xneut=" + W.getXNeut());
@@ -514,8 +519,8 @@ public class TransformerObj extends PDElement {
 				tempVal = W.getMaxTap();
 			}
 
-			if (tempVal != W.getPUTap()) {  /* Only if there's been a change */
-				W.setPUTap(tempVal);
+			if (tempVal != W.getPuTap()) {  /* Only if there's been a change */
+				W.setPuTap(tempVal);
 				setYPrimInvalid(true);  // this property triggers setting systemYChanged=true
 				recalcElementData();
 			}
@@ -562,7 +567,7 @@ public class TransformerObj extends PDElement {
 		}
 	}
 
-	public double getXsc(int i) {
+	public double getXSC(int i) {
 		int imax = (numWindings - 1) * numWindings / 2;
 
 		if (i >= 0 && i < imax) {
@@ -735,7 +740,7 @@ public class TransformerObj extends PDElement {
 			result = String.format("%.7g", winding[activeWinding].getKVA());
 			break;
 		case 7:
-			result = String.format("%.7g", winding[activeWinding].getPUTap());
+			result = String.format("%.7g", winding[activeWinding].getPuTap());
 			break;
 		case 8:
 			result = String.format("%.7g", winding[activeWinding].getRpu() * 100.0);  // %R
@@ -772,7 +777,7 @@ public class TransformerObj extends PDElement {
 			break;
 		case 15:
 			for (i = 0; i < numWindings; i++)
-				result = result + String.format("%.7g, ", winding[i].getPUTap());  // interpretAllTaps(Param);
+				result = result + String.format("%.7g, ", winding[i].getPuTap());  // interpretAllTaps(Param);
 			break;
 		case 16:
 			result = String.format("%.7g", XHL * 100.0);
@@ -1145,19 +1150,19 @@ public class TransformerObj extends PDElement {
 		At = new CMatrix(numWindings * 2);
 
 		for (i = 0; i < numWindings; i++)
-			At.set(2 * i - 1, i, new Complex(1.0 / (winding[i].getVBase() * winding[i].getPUTap()), 0.0));
+			At.set(2 * i - 1, i, new Complex(1.0 / (winding[i].getVBase() * winding[i].getPuTap()), 0.0));
 		for (i = 0; i < numWindings; i++)
-			At.set(2 * i,     i, new Complex(-1.0 / (winding[i].getVBase() * winding[i].getPUTap()), 0.0));
+			At.set(2 * i,     i, new Complex(-1.0 / (winding[i].getVBase() * winding[i].getPuTap()), 0.0));
 		for (i = 0; i < 2 * numWindings; i++)
 			cTempArray1[i] = Complex.ZERO;
 
 		for (i = 0; i < 2 * numWindings; i++) {
 			for (k = 0; k < numWindings; k++) {
 				if (i == (2 * k - 1)) {
-					a[k] = new Complex((1.0 / (winding[k].getVBase() * winding[k].getPUTap())), 0.0);
+					a[k] = new Complex((1.0 / (winding[k].getVBase() * winding[k].getPuTap())), 0.0);
 				} else {
 					if (i == 2 * k) {
-						a[k] = new Complex((-1.0 / (winding[k].getVBase() * winding[k].getPUTap())), 0.0);
+						a[k] = new Complex((-1.0 / (winding[k].getVBase() * winding[k].getPuTap())), 0.0);
 					} else {
 						a[k] = Complex.ZERO;
 					}
@@ -1233,7 +1238,7 @@ public class TransformerObj extends PDElement {
 				W.setKVLL(obj.getWinding()[i].getKVLL());
 				W.setVBase(obj.getWinding()[i].getVBase());
 				W.setKVA(obj.getWinding()[i].getKVA());
-				W.setPUTap(obj.getWinding()[i].getPUTap());
+				W.setPuTap(obj.getWinding()[i].getPuTap());
 				W.setRpu(obj.getWinding()[i].getRpu());
 				W.setRNeut(obj.getWinding()[i].getRNeut());
 				W.setXNeut(obj.getWinding()[i].getXNeut());
@@ -1282,88 +1287,6 @@ public class TransformerObj extends PDElement {
 		return 0.0;
 	}
 
-	/* CIM accessors */
-
-	public int getNumWindings() {
-		return numWindings;
-	}
-
-	public int getActiveWinding() {
-		return activeWinding;
-	}
-
-	public void setActiveWinding(int winding) {
-		activeWinding = winding;
-	}
-
-	public void setSubstation(boolean value) {
-		isSubstation = value;
-	}
-
-	public String getSubstationName() {
-		return substationName;
-	}
-
-	public void setSubstationName(String name) {
-		substationName = name;
-	}
-
-	public Winding[] getWinding() {
-		return winding;
-	}
-
-	public void setWinding(Winding[] values) {
-		winding = values;
-	}
-
-	public String getXfmrBank() {
-		return XfmrBank;
-	}
-
-	public void setXfmrBank(String bank) {
-		XfmrBank = bank;
-	}
-
-	public String getXfmrCode() {
-		return XfmrCode;
-	}
-
-	public void setXfmrCode(String code) {
-		XfmrCode = code;
-	}
-
-	public double getPPM_FloatFactor() {
-		return ppmFloatFactor;
-	}
-
-	public double getPctImag() {
-		return pctImag;
-	}
-
-	public double getXHL() {
-		return XHL;
-	}
-
-	public double getXHT() {
-		return XHT;
-	}
-
-	public double getXLT() {
-		return XLT;
-	}
-
-	public double getBaseVA() {
-		return VABase;
-	}
-
-	public double getNormMaxHKVA() {
-		return normMaxHKVA;
-	}
-
-	public double getEmergMaxHKVA() {
-		return emergMaxHKVA;
-	}
-
 	public double getThTau() {
 		return thermalTimeConst;
 	}
@@ -1376,198 +1299,8 @@ public class TransformerObj extends PDElement {
 		return mThermal;
 	}
 
-	public double getFLRise() {
-		return FLRise;
-	}
-
-	public double getHSRise() {
-		return HSRise;
-	}
-
-	public double getPctLoadLoss() {
-		return pctLoadLoss;
-	}
-
-	public double getPctNoLoadLoss() {
-		return pctNoLoadLoss;
-	}
-
-	// FIXME Private memebers in OpenDSS
-
-	public int getDeltaDirection() {
-		return deltaDirection;
-	}
-
-	public void setDeltaDirection(int direction) {
-		deltaDirection = direction;
-	}
-
-	public int getMaxWindings() {
-		return maxWindings;
-	}
-
-	public void setMaxWindings(int max) {
-		maxWindings = max;
-	}
-
-	public int[] getTermRef() {
-		return termRef;
-	}
-
-	public void setTermRef(int[] ref) {
-		termRef = ref;
-	}
-
-	public double getZBase() {
-		return ZBase;
-	}
-
-	public void setZBase(double zbase) {
-		ZBase = zbase;
-	}
-
 	public double[] getXSC() {
 		return XSC;
-	}
-
-	public void setXSC(double[] xsc) {
-		XSC = xsc;
-	}
-
-	public double getVABase() {
-		return VABase;
-	}
-
-	public void setVABase(double base) {
-		VABase = base;
-	}
-
-	public CMatrix getZB() {
-		return ZB;
-	}
-
-	public void setZB(CMatrix zb) {
-		ZB = zb;
-	}
-
-	public CMatrix getY_1Volt() {
-		return Y_1Volt;
-	}
-
-	public void setY_1Volt(CMatrix value) {
-		Y_1Volt = value;
-	}
-
-	public CMatrix getY_Term() {
-		return Y_Term;
-	}
-
-	public void setY_Term(CMatrix value) {
-		Y_Term = value;
-	}
-
-	public CMatrix getY_1Volt_NL() {
-		return Y_1Volt_NL;
-	}
-
-	public void setY1VoltNL(CMatrix value) {
-		Y_1Volt_NL = value;
-	}
-
-	public CMatrix getYTermNL() {
-		return Y_Term_NL;
-	}
-
-	public void setYTermNL(CMatrix value) {
-		Y_Term_NL = value;
-	}
-
-	public double getYTerminalFreqMult() {
-		return Y_Terminal_FreqMult;
-	}
-
-	public void setYTerminalFreqMult(double mult) {
-		Y_Terminal_FreqMult = mult;
-	}
-
-	public double getThermalTimeConst() {
-		return thermalTimeConst;
-	}
-
-	public void setThermalTimeConst(double timeConst) {
-		thermalTimeConst = timeConst;
-	}
-
-	public double getNThermal() {
-		return nThermal;
-	}
-
-	public void setNThermal(double value) {
-		nThermal = value;
-	}
-
-	public double getMThermal() {
-		return mThermal;
-	}
-
-	public void setMThermal(double value) {
-		mThermal = value;
-	}
-
-	public boolean isXHLChanged() {
-		return XHLChanged;
-	}
-
-	public void setXHLChanged(boolean changed) {
-		XHLChanged = changed;
-	}
-
-	public boolean isSubstation() {
-		return isSubstation;
-	}
-
-	public void setPPM_FloatFactor(double factor) {
-		ppmFloatFactor = factor;
-	}
-
-	public void setPctImag(double pct) {
-		pctImag = pct;
-	}
-
-	public void setXHL(double value) {
-		XHL = value;
-	}
-
-	public void setXHT(double value) {
-		XHT = value;
-	}
-
-	public void setXLT(double value) {
-		XLT = value;
-	}
-
-	public void setNormMaxHKVA(double max) {
-		normMaxHKVA = max;
-	}
-
-	public void setEmergMaxHKVA(double max) {
-		emergMaxHKVA = max;
-	}
-
-	public void setFLRise(double rise) {
-		FLRise = rise;
-	}
-
-	public void setHSRise(double rise) {
-		HSRise = rise;
-	}
-
-	public void setPctLoadLoss(double pct) {
-		this.pctLoadLoss = pct;
-	}
-
-	public void setPctNoLoadLoss(double pct) {
-		this.pctNoLoadLoss = pct;
 	}
 
 }

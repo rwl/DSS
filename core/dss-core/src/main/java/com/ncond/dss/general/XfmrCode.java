@@ -185,7 +185,7 @@ public class XfmrCode extends DSSClass {
 					axc.getWinding()[axc.getActiveWinding()].setRpu(0.01 * DSS.auxParser.makeDouble());
 					break;
 				case TAP:
-					axc.getWinding()[axc.getActiveWinding()].setPUTap(DSS.auxParser.makeDouble());
+					axc.getWinding()[axc.getActiveWinding()].setPuTap(DSS.auxParser.makeDouble());
 					break;
 				}
 			}
@@ -237,7 +237,7 @@ public class XfmrCode extends DSSClass {
 				axc.getWinding()[axc.getActiveWinding()].setKVA(parser.makeDouble());
 				break;
 			case 6:
-				axc.getWinding()[axc.getActiveWinding()].setPUTap(parser.makeDouble());
+				axc.getWinding()[axc.getActiveWinding()].setPuTap(parser.makeDouble());
 				break;
 			case 7:
 				axc.getWinding()[axc.getActiveWinding()].setRpu(parser.makeDouble() * 0.01);  // %R
@@ -408,7 +408,7 @@ public class XfmrCode extends DSSClass {
 				wdg.setKVLL(other.getWinding()[i].getKVLL());
 				wdg.setVBase(other.getWinding()[i].getVBase());
 				wdg.setKVA(other.getWinding()[i].getKVA());
-				wdg.setPUTap(other.getWinding()[i].getPUTap());
+				wdg.setPuTap(other.getWinding()[i].getPuTap());
 				wdg.setRpu(other.getWinding()[i].getRpu());
 				wdg.setRNeut(other.getWinding()[i].getRNeut());
 				wdg.setXNeut(other.getWinding()[i].getXNeut());

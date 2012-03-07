@@ -1306,7 +1306,7 @@ public class ExportResults {
 			for (LoadObj pElem : ckt.getLoads()) {
 				if (pElem.isEnabled()) {
 					writer.print(pElem.getName().toUpperCase());
-					writer.print(sep + pElem.getConnectedKVA());
+					writer.print(sep + pElem.getConnectedkVA());
 					writer.print(sep + pElem.getKVAAllocationFactor());
 					writer.print(sep + pElem.getNumPhases());
 					writer.print(sep + pElem.getKWBase());

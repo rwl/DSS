@@ -536,7 +536,7 @@ public class EnergyMeterObj extends MeterElement {
 			parenElem = (PDElement) branchList.getParent();
 			if (parenElem != null) {
 				cktElem.setOverloadEEN( Math.max(cktElem.getOverloadEEN(), parenElem.getOverloadEEN()) );
-				cktElem.setOverload_UE( Math.max(cktElem.getOverloadUE(), parenElem.getOverloadUE()) );
+				cktElem.setOverloadUE( Math.max(cktElem.getOverloadUE(), parenElem.getOverloadUE()) );
 			}
 
 			// mark loads (not generators) by the degree of overload if the meter's zone is to be considered radial

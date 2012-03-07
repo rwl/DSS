@@ -388,16 +388,16 @@ public class Load extends PCClass {
 				al.setKVABase(parser.makeDouble());
 				break;
 			case 23:
-				al.setPUMean(parser.makeDouble() / 100.0);
+				al.setPuMean(parser.makeDouble() / 100.0);
 				break;
 			case 24:
-				al.setPUStdDev(parser.makeDouble() / 100.0);
+				al.setPuStdDev(parser.makeDouble() / 100.0);
 				break;
 			case 25:
-				al.setCVRWattFactor(parser.makeDouble());
+				al.setCVRwattFactor(parser.makeDouble());
 				break;
 			case 26:
-				al.setCVRVArFactor(parser.makeDouble());
+				al.setCVRvarFactor(parser.makeDouble());
 				break;
 			case 27:
 				al.setKWh(parser.makeDouble());
@@ -409,7 +409,7 @@ public class Load extends PCClass {
 				al.setCFactor(parser.makeDouble());
 				break;
 			case 30:
-				al.setCVRShape(param);
+				al.setCVRshape(param);
 				break;
 			case 31:
 				al.setNumCustomers(parser.makeInteger());
@@ -475,7 +475,7 @@ public class Load extends PCClass {
 				break;
 			/*** see set_kwh, etc           28..30: LoadSpecType = 4;  // kWh, days, cfactor, PF */
 			case 30:
-				al.setCVRShapeObj((LoadShapeObj) DSS.loadShapeClass.find(al.getCVRShape()));
+				al.setCVRShapeObj((LoadShapeObj) DSS.loadShapeClass.find(al.getCVRshape()));
 				break;
 			}
 
@@ -517,13 +517,13 @@ public class Load extends PCClass {
 			al.setLoadSpecType(otherLoad.getLoadSpecType());
 			al.setWNominal(otherLoad.getWNominal());
 			al.setPFNominal(otherLoad.getPFNominal());
-			al.setVArNominal(otherLoad.getVArNominal());
+			al.setVarNominal(otherLoad.getVarNominal());
 			al.setConnection(otherLoad.getConnection());
 			al.setRNeut(otherLoad.getRNeut());
 			al.setXNeut(otherLoad.getXNeut());
 			al.setYearlyShape(otherLoad.getYearlyShape());
 			al.setYearlyShapeObj(otherLoad.getYearlyShapeObj());
-			al.setCVRShape(otherLoad.getCVRShape());
+			al.setCVRshape(otherLoad.getCVRshape());
 			al.setCVRShapeObj(otherLoad.getCVRShapeObj());
 			al.setDailyShape(otherLoad.getDailyShape());
 			al.setDailyShapeObj(otherLoad.getDailyShapeObj());
@@ -539,9 +539,9 @@ public class Load extends PCClass {
 			al.setFixed(otherLoad.isFixed());
 			al.setExemptFromLDCurve(otherLoad.isExemptFromLDCurve());
 			al.setKVAAllocationFactor(otherLoad.getKVAAllocationFactor());
-			al.setConnectedKVA(otherLoad.getConnectedKVA());
-			al.setCVRWattFactor(otherLoad.getCVRWattFactor());
-			al.setCVRVArFactor(otherLoad.getCVRVArFactor());
+			al.setConnectedKVA(otherLoad.getConnectedkVA());
+			al.setCVRwattFactor(otherLoad.getCVRwattFactor());
+			al.setCVRvarFactor(otherLoad.getCVRvarFactor());
 			al.setShapeIsActual(otherLoad.shapeIsActual());
 
 			al.setZIPVSize(otherLoad.getNZIPV());

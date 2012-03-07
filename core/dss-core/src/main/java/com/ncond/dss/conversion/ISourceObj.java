@@ -3,6 +3,9 @@ package com.ncond.dss.conversion;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+
 import org.apache.commons.math.complex.Complex;
 
 import com.ncond.dss.common.DSS;
@@ -20,6 +23,8 @@ import com.ncond.dss.shared.ComplexUtil;
  * sequence, use three single-phase ISource.
  *
  */
+@Data
+@EqualsAndHashCode(callSuper=true)
 public class ISourceObj extends PCElement {
 
 	private double amps;
@@ -227,56 +232,6 @@ public class ISourceObj extends PCElement {
 			edit();
 		}
 		super.makePosSequence();
-	}
-
-	public double getSrcFrequency() {
-		return srcFrequency;
-	}
-
-	public void setSrcFrequency(double frequency) {
-		srcFrequency = frequency;
-	}
-
-	// FIXME Private members in OpenDSS
-
-	public double getAmps() {
-		return amps;
-	}
-
-	public void setAmps(double value) {
-		amps = value;
-	}
-
-	public double getAngle() {
-		return angle;
-	}
-
-	public void setAngle(double ang) {
-		angle = ang;
-	}
-
-	public double getPhaseShift() {
-		return phaseShift;
-	}
-
-	public void setPhaseShift(double shift) {
-		phaseShift = shift;
-	}
-
-	public int getScanType() {
-		return scanType;
-	}
-
-	public void setScanType(int type) {
-		scanType = type;
-	}
-
-	public int getSequenceType() {
-		return sequenceType;
-	}
-
-	public void setSequenceType(int type) {
-		sequenceType = type;
 	}
 
 }

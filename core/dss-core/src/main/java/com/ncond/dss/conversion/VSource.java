@@ -307,7 +307,7 @@ public class VSource extends PCClass {
 				avs.setYPrimInvalid(true);
 
 				avs.setZ( new CMatrix(avs.getNumPhases()) );
-				avs.setZinv( new CMatrix(avs.getNumPhases()) );
+				avs.setZInv( new CMatrix(avs.getNumPhases()) );
 			}
 
 			avs.getZ().copyFrom(otherVSource.getZ());

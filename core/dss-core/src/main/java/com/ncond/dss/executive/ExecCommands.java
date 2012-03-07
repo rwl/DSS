@@ -2,11 +2,16 @@ package com.ncond.dss.executive;
 
 import java.io.File;
 
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+
 import com.ncond.dss.common.DSS;
 import com.ncond.dss.common.Util;
+import com.ncond.dss.delivery.LineObj;
 import com.ncond.dss.parser.Parser;
 import com.ncond.dss.shared.CommandList;
 
+@Data
 public class ExecCommands {
 
 	public static final int NumExecCommands = 98;
@@ -862,36 +867,8 @@ public class ExecCommands {
 		}
 	}
 
-	public String getLastCmdLine() {
-		return lastCmdLine;
-	}
-
-	public void setLastCmdLine(String line) {
-		lastCmdLine = line;
-	}
-
-	public String getRedirFile() {
-		return redirFile;
-	}
-
-	public void setRedirFile(String file) {
-		redirFile = file;
-	}
-
 	public String[] getExecCommand() {
 		return execCommand;
-	}
-
-	public void setExecCommand(String[] command) {
-		execCommand = command;
-	}
-
-	public CommandList getCommandList() {
-		return commandList;
-	}
-
-	public void setCommandList(CommandList list) {
-		commandList = list;
 	}
 
 	public String getExecCommand(int i) {
@@ -900,6 +877,10 @@ public class ExecCommands {
 
 	public String getCommandHelp(int i) {
 		return commandHelp[i];
+	}
+
+	public String[] getCommandHelp() {
+		return commandHelp;
 	}
 
 }

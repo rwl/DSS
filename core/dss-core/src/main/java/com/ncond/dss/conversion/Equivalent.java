@@ -111,7 +111,7 @@ public class Equivalent extends PCClass {
 				interpretAllBuses(param);
 				break;
 			case 2:
-				ae.setKvBase(parser.makeDouble());  // basekv
+				ae.setKVBase(parser.makeDouble());  // basekv
 				break;
 			case 3:
 				ae.setPerUnit(parser.makeDouble());  // pu
@@ -188,7 +188,7 @@ public class Equivalent extends PCClass {
 
 				if (ae.getZ() != null)
 					ae.setZ(null);
-				if (ae.getZinv() != null)
+				if (ae.getZInv() != null)
 					ae.setZInv(null);
 
 				ae.setZ(new CMatrix(ae.getNumPhases()));
@@ -198,7 +198,7 @@ public class Equivalent extends PCClass {
 			ae.getZ().copyFrom(otherEquivalent.getZ());
 			// ae.getZinv().copyFrom(OtherLine.getZinv());
 			ae.setVMag(otherEquivalent.getVMag());
-			ae.setKvBase(otherEquivalent.getKvBase());
+			ae.setKVBase(otherEquivalent.getKVBase());
 			ae.setPerUnit(otherEquivalent.getPerUnit());
 			ae.setAngle(otherEquivalent.getAngle());
 			ae.setEquivFrequency(otherEquivalent.getEquivFrequency());

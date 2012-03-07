@@ -3,6 +3,9 @@ package com.ncond.dss.delivery;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+
 import org.apache.commons.math.complex.Complex;
 
 import com.ncond.dss.common.DSS;
@@ -56,6 +59,8 @@ import com.ncond.dss.shared.MathUtil;
  *       Note that Rmatrix may be in parallel with Xmatrix (set parallel = Yes)
  *
  */
+@Data
+@EqualsAndHashCode(callSuper=true)
 public class ReactorObj extends PDElement {
 
 	private double R, Rp, Gp, X, kVArRating, kVRating;
@@ -503,118 +508,6 @@ public class ReactorObj extends PDElement {
 	@Override
 	public int injCurrents() {
 		throw new UnsupportedOperationException();
-	}
-
-	public double getR() {
-		return R;
-	}
-
-	public void setR(double r) {
-		R = r;
-	}
-
-	public double getRp() {
-		return Rp;
-	}
-
-	public void setRp(double rp) {
-		Rp = rp;
-	}
-
-	public double getGp() {
-		return Gp;
-	}
-
-	public void setGp(double gp) {
-		Gp = gp;
-	}
-
-	public double getX() {
-		return X;
-	}
-
-	public void setX(double x) {
-		X = x;
-	}
-
-	public double getKVArRating() {
-		return kVArRating;
-	}
-
-	public void setKVArRating(double kvarrating) {
-		this.kVArRating = kvarrating;
-	}
-
-	public double getKVRating() {
-		return kVRating;
-	}
-
-	public void setKVRating(double kvrating) {
-		this.kVRating = kvrating;
-	}
-
-	public double[] getRMatrix() {
-		return RMatrix;
-	}
-
-	public void setRMatrix(double[] rmatrix) {
-		RMatrix = rmatrix;
-	}
-
-	public double[] getGMatrix() {
-		return GMatrix;
-	}
-
-	public void setGMatrix(double[] gmatrix) {
-		GMatrix = gmatrix;
-	}
-
-	public double[] getXMatrix() {
-		return XMatrix;
-	}
-
-	public void setXMatrix(double[] xmatrix) {
-		XMatrix = xmatrix;
-	}
-
-	public double[] getBMatrix() {
-		return BMatrix;
-	}
-
-	public void setBMatrix(double[] bmatrix) {
-		BMatrix = bmatrix;
-	}
-
-	public int getConnection() {
-		return connection;
-	}
-
-	public void setConnection(int conn) {
-		connection = conn;
-	}
-
-	public int getSpecType() {
-		return specType;
-	}
-
-	public void setSpecType(int type) {
-		specType = type;
-	}
-
-	public boolean isParallel() {
-		return isParallel;
-	}
-
-	public void setParallel(boolean parallel) {
-		isParallel = parallel;
-	}
-
-	public boolean isRpSpecified() {
-		return RpSpecified;
-	}
-
-	public void setRpSpecified(boolean specified) {
-		RpSpecified = specified;
 	}
 
 }

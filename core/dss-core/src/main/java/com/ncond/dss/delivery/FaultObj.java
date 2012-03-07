@@ -3,6 +3,9 @@ package com.ncond.dss.delivery;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+
 import org.apache.commons.math.complex.Complex;
 
 import com.ncond.dss.common.DSS;
@@ -35,6 +38,8 @@ import com.ncond.dss.shared.MathUtil;
  * Fault may be designated as temporary. That is, after it is enabled, it will
  * disable itself if the fault current drops below the minAmps value.
  */
+@Data
+@EqualsAndHashCode(callSuper=true)
 public class FaultObj extends PDElement {
 
 	private double minAmps;
@@ -360,88 +365,6 @@ public class FaultObj extends PDElement {
 	@Override
 	public int injCurrents() {
 		throw new UnsupportedOperationException();
-	}
-
-	// FIXME Private members in OpenDSS
-
-	public double getMinAmps() {
-		return minAmps;
-	}
-
-	public void setMinAmps(double min) {
-		minAmps = min;
-	}
-
-	public boolean isTemporary() {
-		return isTemporary;
-	}
-
-	public void setTemporary(boolean temp) {
-		isTemporary = temp;
-	}
-
-	public boolean isCleared() {
-		return cleared;
-	}
-
-	public void setCleared(boolean value) {
-		cleared = value;
-	}
-
-	public boolean isOn() {
-		return isOn;
-	}
-
-	public void setOn(boolean on) {
-		isOn = on;
-	}
-
-	public double getOnTime() {
-		return onTime;
-	}
-
-	public void setOnTime(double value) {
-		onTime = value;
-	}
-
-	public double getRandomMult() {
-		return randomMult;
-	}
-
-	public void setRandomMult(double mult) {
-		randomMult = mult;
-	}
-
-	public double getG() {
-		return G;
-	}
-
-	public void setG(double g) {
-		G = g;
-	}
-
-	public double[] getGMatrix() {
-		return GMatrix;
-	}
-
-	public void setGMatrix(double[] value) {
-		GMatrix = value;
-	}
-
-	public double getStdDev() {
-		return stdDev;
-	}
-
-	public void setStdDev(double value) {
-		stdDev = value;
-	}
-
-	public int getSpecType() {
-		return specType;
-	}
-
-	public void setSpecType(int type) {
-		specType = type;
 	}
 
 }
