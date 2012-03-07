@@ -7,6 +7,9 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.List;
 
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+
 import com.ncond.dss.common.Bus;
 import com.ncond.dss.common.Circuit;
 import com.ncond.dss.common.CktElement;
@@ -16,10 +19,13 @@ import com.ncond.dss.common.Util;
 import com.ncond.dss.conversion.Generator;
 import com.ncond.dss.conversion.PCElement;
 import com.ncond.dss.delivery.PDElement;
+import com.ncond.dss.general.TShapeObj;
 import com.ncond.dss.parser.Parser;
 import com.ncond.dss.shared.CktTree;
 import com.ncond.dss.shared.CommandList;
 
+@Data
+@EqualsAndHashCode(callSuper=true)
 public class EnergyMeter extends MeterClass {
 
 	public static final int NumPropsThisClass = 17;
@@ -297,7 +303,7 @@ public class EnergyMeter extends MeterClass {
 				aem.setSeqLosses(Util.interpretYesNo(param));
 				break;
 			case 14:
-				aem.set3PhaseLosses(Util.interpretYesNo(param));
+				aem.setThreePhaseLosses(Util.interpretYesNo(param));
 				break;
 			case 15:
 				aem.setVBaseLosses(Util.interpretYesNo(param));
@@ -375,7 +381,7 @@ public class EnergyMeter extends MeterClass {
 			aem.setLineLosses(otherEnergyMeter.isLineLosses());
 			aem.setXfmrLosses(otherEnergyMeter.isXfmrLosses());
 			aem.setSeqLosses(otherEnergyMeter.isSeqLosses());
-			aem.set3PhaseLosses(otherEnergyMeter.is3PhaseLosses());
+			aem.setThreePhaseLosses(otherEnergyMeter.isThreePhaseLosses());
 			aem.setVBaseLosses(otherEnergyMeter.isVBaseLosses());
 			aem.setPhaseVoltageReport(otherEnergyMeter.isPhaseVoltageReport());
 
@@ -918,86 +924,6 @@ public class EnergyMeter extends MeterClass {
 		} catch (Exception e) {
 			DSS.doSimpleMsg("Error opening demand interval file \""+DSS.energyMeterClass.getDI_Dir()+"/DI_VoltExceptions.csv\" for writing."+DSS.CRLF+e.getMessage(), 541);
 		}
-	}
-
-	public boolean isSaveDemandInterval() {
-		return saveDemandInterval;
-	}
-
-	public boolean isDIVerbose() {
-		return DI_Verbose;
-	}
-
-	public double[] getDI_RegisterTotals() {
-		return DI_RegisterTotals;
-	}
-
-	public void setDI_RegisterTotals(double[] totals) {
-		DI_RegisterTotals = totals;
-	}
-
-	public String getDI_Dir() {
-		return DI_Dir;
-	}
-
-	public void setDI_Dir(String dir) {
-		DI_Dir = dir;
-	}
-
-	public FileWriter getDI_Totals() {
-		return DI_Totals;
-	}
-
-	public void setDI_Totals(FileWriter totals) {
-		DI_Totals = totals;
-	}
-
-	public FileWriter getMeterTotals() {
-		return meterTotals;
-	}
-
-	public void setMeterTotals(FileWriter totals) {
-		meterTotals = totals;
-	}
-
-	public SystemMeter getSystemMeter() {
-		return systemMeter;
-	}
-
-	public void setSystemMeter(SystemMeter meter) {
-		systemMeter = meter;
-	}
-
-	public boolean isDo_OverloadReport() {
-		return doOverloadReport;
-	}
-
-	public void setDoOverloadReport(boolean doReport) {
-		doOverloadReport = doReport;
-	}
-
-	public boolean isDo_VoltageExceptionReport() {
-		return doVoltageExceptionReport;
-	}
-
-	public void setDoVoltageExceptionReport(boolean doReport) {
-		doVoltageExceptionReport = doReport;
-	}
-
-	public boolean isOverLoadFileIsOpen() {
-		return overloadFileIsOpen;
-	}
-
-	public void setOverLoadFileIsOpen(boolean fileIsOpen) {
-		overloadFileIsOpen = fileIsOpen;
-	}
-
-	public boolean isVoltageFileIsOpen() {
-		return voltageFileIsOpen;
-	}
-
-	public void setVoltageFileIsOpen(boolean fileIsOpen) {
-		voltageFileIsOpen = fileIsOpen;
 	}
 
 }

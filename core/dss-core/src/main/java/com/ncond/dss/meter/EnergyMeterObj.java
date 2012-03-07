@@ -8,6 +8,9 @@ import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.util.List;
 
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+
 import org.apache.commons.math.complex.Complex;
 
 import com.ncond.dss.common.Bus;
@@ -64,6 +67,8 @@ import com.ncond.dss.shared.LineUnits;
  * Emergency min voltage must be less than normal min voltage.
  *
  */
+@Data
+@EqualsAndHashCode(callSuper=true)
 public class EnergyMeterObj extends MeterElement {
 
 	public static final int NumEMVbase = 7;
@@ -1657,7 +1662,7 @@ public class EnergyMeterObj extends MeterElement {
 			if (thisMeterDI_FileIsOpen)
 				closeDemandIntervalFile();
 
-			if (DSS.energyMeterClass.isDIVerbose()) {
+			if (DSS.energyMeterClass.isDI_Verbose()) {
 
 				DI_File = new FileWriter(makeDIFileName());
 				PrintWriter DI_Printer = new PrintWriter(DI_File);
@@ -1701,7 +1706,7 @@ public class EnergyMeterObj extends MeterElement {
 
 		SolutionObj sol = DSS.activeCircuit.getSolution();
 
-		if ((DSS.energyMeterClass.isDIVerbose()) && thisMeterDI_FileIsOpen) {
+		if ((DSS.energyMeterClass.isDI_Verbose()) && thisMeterDI_FileIsOpen) {
 			PrintWriter DI_Printer = new PrintWriter(DI_File);
 			DI_Printer.printf("%-.6g", sol.getDblHour());
 			for (i = 0; i < EnergyMeter.NUM_EM_REGISTERS; i++)
@@ -1749,7 +1754,7 @@ public class EnergyMeterObj extends MeterElement {
 			return;
 
 		try {
-			if (DSS.energyMeterClass.isDIVerbose()) {
+			if (DSS.energyMeterClass.isDI_Verbose()) {
 				fileName = makeDIFileName();  // creates directory if it doesn't exist
 				/* File must exist */
 				if (new File(fileName).exists()) {
@@ -1850,319 +1855,12 @@ public class EnergyMeterObj extends MeterElement {
 		throw new UnsupportedOperationException();
 	}
 
-	public String[] getRegisterNames() {
-		return registerNames;
-	}
-
-	public void setRegisterNames(String[] names) {
-		registerNames = names;
-	}
-
-	public CktTree getBranchList() {
-		return branchList;
-	}
-
-	public void setBranchList(CktTree list) {
-		branchList = list;
-	}
-
-	public double[] getRegisters() {
-		return registers;
-	}
-
-	public void setRegisters(double[] values) {
-		registers = values;
-	}
-
-	public double[] getDerivatives() {
-		return derivatives;
-	}
-
-	public void setDerivatives(double[] deriv) {
-		derivatives = deriv;
-	}
-
 	public double[] getTotalsMask() {
 		return totalsMask;
 	}
 
-	public void setTotalsMask(double[] totals) {
-		totalsMask = totals;
-	}
-
-
-	// FIXME Private members in OpenDSS
-
-	public boolean isFirstSampleAfterReset() {
-		return firstSampleAfterReset;
-	}
-
-	public void setFirstSampleAfterReset(boolean firstSample) {
-		firstSampleAfterReset = firstSample;
-	}
-
-	public boolean isExcessFlag() {
-		return excessFlag;
-	}
-
-	public void setExcessFlag(boolean excess) {
-		excessFlag = excess;
-	}
-
-	public boolean zoneIsRadial() {
-		return zoneIsRadial;
-	}
-
-	public void setZoneIsRadial(boolean isRadial) {
-		zoneIsRadial = isRadial;
-	}
-
-	public boolean isVoltageUEOnly() {
-		return voltageUEOnly;
-	}
-
-	public void setVoltageUEOnly(boolean value) {
-		voltageUEOnly = value;
-	}
-
-	public boolean isLocalOnly() {
-		return localOnly;
-	}
-
-	public void setLocalOnly(boolean local) {
-		localOnly = local;
-	}
-
 	public boolean hasFeeder() {
 		return hasFeeder;
-	}
-
-	public void setHasFeeder(boolean value) {
-		hasFeeder = value;
-	}
-
-	public boolean isLosses() {
-		return losses;
-	}
-
-	public void setLosses(boolean value) {
-		losses = value;
-	}
-
-	public boolean isLineLosses() {
-		return lineLosses;
-	}
-
-	public void setLineLosses(boolean losses) {
-		lineLosses = losses;
-	}
-
-	public boolean isXfmrLosses() {
-		return xfmrLosses;
-	}
-
-	public void setXfmrLosses(boolean losses) {
-		xfmrLosses = losses;
-	}
-
-	public boolean isSeqLosses() {
-		return seqLosses;
-	}
-
-	public void setSeqLosses(boolean losses) {
-		seqLosses = losses;
-	}
-
-	public boolean is3PhaseLosses() {
-		return threePhaseLosses;
-	}
-
-	public void set3PhaseLosses(boolean losses) {
-		threePhaseLosses = losses;
-	}
-
-	public boolean isVBaseLosses() {
-		return VBaseLosses;
-	}
-
-	public void setVBaseLosses(boolean losses) {
-		VBaseLosses = losses;
-	}
-
-	public boolean isPhaseVoltageReport() {
-		return phaseVoltageReport;
-	}
-
-	public void setPhaseVoltageReport(boolean report) {
-		phaseVoltageReport = report;
-	}
-
-	public FeederObj getFeederObj() {
-		return feederObj;
-	}
-
-	public void setFeederObj(FeederObj feeder) {
-		feederObj = feeder;
-	}
-
-	public String[] getDefinedZoneList() {
-		return definedZoneList;
-	}
-
-	public void setDefinedZoneList(String[] list) {
-		definedZoneList = list;
-	}
-
-	public int getDefinedZoneListSize() {
-		return definedZoneListSize;
-	}
-
-	public void setDefinedZoneListSize(int size) {
-		definedZoneListSize = size;
-	}
-
-	public double getMaxZoneKVANorm() {
-		return maxZoneKVANorm;
-	}
-
-	public void setMaxZoneKVANorm(double max) {
-		maxZoneKVANorm = max;
-	}
-
-	public double getMaxZoneKVAEmerg() {
-		return maxZoneKVAEmerg;
-	}
-
-	public void setMaxZoneKVAEmerg(double max) {
-		maxZoneKVAEmerg = max;
-	}
-
-	public double[] getVBaseTotalLosses() {
-		return VBaseTotalLosses;
-	}
-
-	public void setVBaseTotalLosses(double[] losses) {
-		VBaseTotalLosses = losses;
-	}
-
-	public double[] getVBaseLineLosses() {
-		return VBaseLineLosses;
-	}
-
-	public void setVBaseLineLosses(double[] losses) {
-		VBaseLineLosses = losses;
-	}
-
-	public double[] getVBaseLoadLosses() {
-		return VBaseLoadLosses;
-	}
-
-	public void setVBaseLoadLosses(double[] losses) {
-		VBaseLoadLosses = losses;
-	}
-
-	public double[] getVBaseNoLoadLosses() {
-		return VBaseNoLoadLosses;
-	}
-
-	public void setVBaseNoLoadLosses(double[] losses) {
-		VBaseNoLoadLosses = losses;
-	}
-
-	public double[] getVBaseLoad() {
-		return VBaseLoad;
-	}
-
-	public void setVBaseLoad(double[] load) {
-		VBaseLoad = load;
-	}
-
-	public double[] getVBaseList() {
-		return VBaseList;
-	}
-
-	public void setVBaseList(double[] list) {
-		VBaseList = list;
-	}
-
-	public int getVBaseCount() {
-		return VBaseCount;
-	}
-
-	public void setVBaseCount(int count) {
-		VBaseCount = count;
-	}
-
-	public int getMaxVBaseCount() {
-		return maxVBaseCount;
-	}
-
-	public void setMaxVBaseCount(int count) {
-		maxVBaseCount = count;
-	}
-
-	public double[] getVPhaseMax() {
-		return VPhaseMax;
-	}
-
-	public void setVPhaseMax(double[] max) {
-		VPhaseMax = max;
-	}
-
-	public double[] getVPhaseMin() {
-		return VPhaseMin;
-	}
-
-	public void setVPhaseMin(double[] min) {
-		VPhaseMin = min;
-	}
-
-	public double[] getVPhaseAccum() {
-		return VPhaseAccum;
-	}
-
-	public void setVPhaseAccum(double[] accum) {
-		VPhaseAccum = accum;
-	}
-
-	public int[] getVPhaseAccumCount() {
-		return VPhaseAccumCount;
-	}
-
-	public void setVPhaseAccumCount(int[] count) {
-		VPhaseAccumCount = count;
-	}
-
-	public FileWriter getVPhaseFile() {
-		return VPhaseFile;
-	}
-
-	public void setVPhaseFile(FileWriter file) {
-		VPhaseFile = file;
-	}
-
-	public boolean isVPhaseReportFileOpen() {
-		return VPhaseReportFileIsOpen;
-	}
-
-	public void setVPhaseReportFileOpen(boolean isOpen) {
-		VPhaseReportFileIsOpen = isOpen;
-	}
-
-	public FileWriter getDIFile() {
-		return DI_File;
-	}
-
-	public void setDIFile(FileWriter file) {
-		DI_File = file;
-	}
-
-	public boolean isThisMeterDIFileOpen() {
-		return thisMeterDI_FileIsOpen;
-	}
-
-	public void setThisMeterDIFileOpen(boolean isOpen) {
-		thisMeterDI_FileIsOpen = isOpen;
 	}
 
 }

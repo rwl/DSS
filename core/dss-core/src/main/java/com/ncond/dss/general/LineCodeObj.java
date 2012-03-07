@@ -3,6 +3,9 @@ package com.ncond.dss.general;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+
 import org.apache.commons.math.complex.Complex;
 
 import com.ncond.dss.common.DSS;
@@ -22,6 +25,8 @@ import com.ncond.dss.shared.LineUnits;
  * Then the values of that code can be retrieved via the public variables.
  *
  */
+@Data
+@EqualsAndHashCode(callSuper=true)
 public class LineCodeObj extends DSSObject {
 
 	private int neutralConductor;
@@ -324,185 +329,6 @@ public class LineCodeObj extends DSSObject {
 		} else {
 			DSS.doSimpleMsg("Cannot perform Kron Reduction on a 1-phase LineCode: LineCode." + getName(), 103);
 		}
-	}
-
-	public boolean isSymComponentsModel() {
-		return symComponentsModel;
-	}
-
-	public void setSymComponentsModel(boolean model) {
-		symComponentsModel = model;
-	}
-
-	public boolean isReduceByKron() {
-		return reduceByKron;
-	}
-
-	public void setReduceByKron(boolean reduce) {
-		reduceByKron = reduce;
-	}
-
-	public CMatrix getZ() {
-		return Z;
-	}
-
-	public void setZ(CMatrix z) {
-		Z = z;
-	}
-
-	public CMatrix getZinv() {
-		return Zinv;
-	}
-
-	public void setZinv(CMatrix zinv) {
-		Zinv = zinv;
-	}
-
-	public CMatrix getYC() {
-		return Yc;
-	}
-
-	public void setYc(CMatrix Yc) {
-		this.Yc = Yc;
-	}
-
-	public double getBaseFrequency() {
-		return baseFrequency;
-	}
-
-	public void setBaseFrequency(double frequency) {
-		baseFrequency = frequency;
-	}
-
-	public double getR1() {
-		return R1;
-	}
-
-	public void setR1(double r1) {
-		R1 = r1;
-	}
-
-	public double getX1() {
-		return X1;
-	}
-
-	public void setX1(double x1) {
-		X1 = x1;
-	}
-
-	public double getR0() {
-		return R0;
-	}
-
-	public void setR0(double r0) {
-		R0 = r0;
-	}
-
-	public double getX0() {
-		return X0;
-	}
-
-	public void setX0(double x0) {
-		X0 = x0;
-	}
-
-	public double getC1() {
-		return C1;
-	}
-
-	public void setC1(double c1) {
-		C1 = c1;
-	}
-
-	public double getC0() {
-		return C0;
-	}
-
-	public void setC0(double c0) {
-		C0 = c0;
-	}
-
-	public double getNormAmps() {
-		return normAmps;
-	}
-
-	public void setNormAmps(double amps) {
-		normAmps = amps;
-	}
-
-	public double getEmergAmps() {
-		return emergAmps;
-	}
-
-	public void setEmergAmps(double amps) {
-		emergAmps = amps;
-	}
-
-	public double getFaultRate() {
-		return faultRate;
-	}
-
-	public void setFaultRate(double rate) {
-		faultRate = rate;
-	}
-
-	public double getPctPerm() {
-		return pctPerm;
-	}
-
-	public void setPctPerm(double pct) {
-		pctPerm = pct;
-	}
-
-	public double getHrsToRepair() {
-		return hrsToRepair;
-	}
-
-	public void setHrsToRepair(double hrs) {
-		hrsToRepair = hrs;
-	}
-
-	public double getRg() {
-		return Rg;
-	}
-
-	public void setRg(double rg) {
-		Rg = rg;
-	}
-
-	public double getXg() {
-		return Xg;
-	}
-
-	public void setXg(double xg) {
-		Xg = xg;
-	}
-
-	public double getRho() {
-		return rho;
-	}
-
-	public void setRho(double r) {
-		this.rho = r;
-	}
-
-	public int getUnits() {
-		return units;
-	}
-
-	public void setUnits(int u) {
-		units = u;
-	}
-
-
-	// FIXME Private members in OpenDSS
-
-	public int getNeutralConductor() {
-		return neutralConductor;
-	}
-
-	public void setNeutralConductor(int neutral) {
-		neutralConductor = neutral;
 	}
 
 }

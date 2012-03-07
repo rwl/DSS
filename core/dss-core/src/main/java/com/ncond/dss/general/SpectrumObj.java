@@ -3,6 +3,9 @@ package com.ncond.dss.general;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+
 import org.apache.commons.math.complex.Complex;
 
 import com.ncond.dss.common.DSS;
@@ -16,6 +19,8 @@ import com.ncond.dss.shared.ComplexUtil;
  * Spectrum is shifted by the fundamental angle and stored in MultArray
  * so that the fundamental is at zero degrees phase shift.
  */
+@Data
+@EqualsAndHashCode(callSuper=true)
 public class SpectrumObj extends DSSObject {
 
 	private double[] puMagArray;
@@ -190,48 +195,6 @@ public class SpectrumObj extends DSSObject {
 			if (DSS.inRedirect)
 				DSS.redirectAbort = true;
 		}
-	}
-
-	public int getNumHarm() {
-		return numHarm;
-	}
-
-	public void setNumHarm(int num) {
-		numHarm = num;
-	}
-
-	public double[] getHarmArray() {
-		return harmArray;
-	}
-
-	public void setHarmArray(double[] array) {
-		harmArray = array;
-	}
-
-	// FIXME Private members in OpenDSS
-
-	public double[] getPUMagArray() {
-		return puMagArray;
-	}
-
-	public void setPUMagArray(double[] array) {
-		this.puMagArray = array;
-	}
-
-	public double[] getAngleArray() {
-		return angleArray;
-	}
-
-	public void setAngleArray(double[] array) {
-		angleArray = array;
-	}
-
-	public Complex[] getMultArray() {
-		return multArray;
-	}
-
-	public void setMultArray(Complex[] array) {
-		multArray = array;
 	}
 
 }

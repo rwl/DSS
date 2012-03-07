@@ -1025,7 +1025,7 @@ public class ExecOptions {
 					DSS.appendGlobalResult(String.format("%-.g", DSS.activeCircuit.getPctNormalFactor()));
 					break;
 				case 61:
-					if (DSS.energyMeterClass.isDIVerbose()) {
+					if (DSS.energyMeterClass.isDI_Verbose()) {
 						DSS.appendGlobalResult("Yes");
 					} else {
 						DSS.appendGlobalResult("No");
@@ -1055,14 +1055,14 @@ public class ExecOptions {
 					}
 					break;
 				case 67:
-					if (DSS.energyMeterClass.isDo_OverloadReport()) {
+					if (DSS.energyMeterClass.isDoOverloadReport()) {
 						DSS.appendGlobalResult("Yes");
 					} else {
 						DSS.appendGlobalResult("No");
 					}
 					break;
 				case 68:
-					if (DSS.energyMeterClass.isDo_VoltageExceptionReport()) {
+					if (DSS.energyMeterClass.isDoVoltageExceptionReport()) {
 						DSS.appendGlobalResult("Yes");
 					} else {
 						DSS.appendGlobalResult("No");

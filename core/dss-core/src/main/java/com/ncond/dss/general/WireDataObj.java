@@ -22,4 +22,5 @@ public class WireDataObj extends ConductorDataObj {
 	public void initPropertyValues(int arrayOffset) {
 		super.initPropertyValues(arrayOffset + WireData.NumPropsThisClass);
 	}
+
 }

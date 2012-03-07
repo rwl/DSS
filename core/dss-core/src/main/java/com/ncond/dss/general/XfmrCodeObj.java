@@ -3,6 +3,9 @@ package com.ncond.dss.general;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+
 import com.ncond.dss.common.DSS;
 import com.ncond.dss.common.DSSClass;
 import com.ncond.dss.common.Util;
@@ -10,6 +13,8 @@ import com.ncond.dss.delivery.Transformer;
 import com.ncond.dss.delivery.TransformerObj;
 import com.ncond.dss.delivery.Winding;
 
+@Data
+@EqualsAndHashCode(callSuper=true)
 public class XfmrCodeObj extends DSSObject {
 
 	private int nPhases;
@@ -368,172 +373,6 @@ public class XfmrCodeObj extends DSSObject {
 		setPropertyValue(32, "");
 
 		super.initPropertyValues(XfmrCode.NumPropsThisClass - 1);
-	}
-
-	// FIXME Private members in OpenDSS
-
-	public int getNPhases() {
-		return nPhases;
-	}
-
-	public void setNPhases(int num) {
-		nPhases = num;
-	}
-
-	public int getActiveWinding() {
-		return activeWinding;
-	}
-
-	public void setActiveWinding(int winding) {
-		activeWinding = winding;
-	}
-
-	public int getMaxWindings() {
-		return maxWindings;
-	}
-
-	public void setMaxWindings(int max) {
-		maxWindings = max;
-	}
-
-	public double getXHL() {
-		return XHL;
-	}
-
-	public void setXHL(double value) {
-		XHL = value;
-	}
-
-	public double getXHT() {
-		return XHT;
-	}
-
-	public void setXHT(double value) {
-		XHT = value;
-	}
-
-	public double getXLT() {
-		return XLT;
-	}
-
-	public void setXLT(double value) {
-		XLT = value;
-	}
-
-	public double[] getXSC() {
-		return XSC;
-	}
-
-	public void setXSC(double[] value) {
-		XSC = value;
-	}
-
-	public double getVABase() {
-		return VABase;
-	}
-
-	public void setVABase(double base) {
-		VABase = base;
-	}
-
-	public double getNormMaxHKVA() {
-		return normMaxHKVA;
-	}
-
-	public void setNormMaxHKVA(double max) {
-		normMaxHKVA = max;
-	}
-
-	public double getEmergMaxHKVA() {
-		return emergMaxHKVA;
-	}
-
-	public void setEmergMaxHKVA(double max) {
-		emergMaxHKVA = max;
-	}
-
-	public double getThermalTimeConst() {
-		return thermalTimeConst;
-	}
-
-	public void setThermalTimeConst(double timeConst) {
-		thermalTimeConst = timeConst;
-	}
-
-	public double getNThermal() {
-		return nThermal;
-	}
-
-	public void setNThermal(double n) {
-		this.nThermal = n;
-	}
-
-	public double getMThermal() {
-		return mThermal;
-	}
-
-	public void setMThermal(double m) {
-		this.mThermal = m;
-	}
-
-	public double getLRise() {
-		return LRise;
-	}
-
-	public void setLRise(double rise) {
-		LRise = rise;
-	}
-
-	public double getHSRise() {
-		return HSRise;
-	}
-
-	public void setHSRise(double rise) {
-		HSRise = rise;
-	}
-
-	public double getPctLoadLoss() {
-		return pctLoadLoss;
-	}
-
-	public void setPctLoadLoss(double pct) {
-		this.pctLoadLoss = pct;
-	}
-
-	public double getPctNoLoadLoss() {
-		return pctNoLoadLoss;
-	}
-
-	public void setPctNoLoadLoss(double pct) {
-		this.pctNoLoadLoss = pct;
-	}
-
-	public double getPpmFloatFactor() {
-		return ppmFloatFactor;
-	}
-
-	public void setPpmFloatFactor(double factor) {
-		this.ppmFloatFactor = factor;
-	}
-
-	public double getPctImag() {
-		return pctImag;
-	}
-
-	public void setPctImag(double pct) {
-		this.pctImag = pct;
-	}
-
-	public Winding[] getWinding() {
-		return winding;
-	}
-
-	public void setWinding(Winding[] values) {
-		winding = values;
-	}
-
-	public int getNumWindings() {
-		return numWindings;
 	}
 
 }

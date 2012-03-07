@@ -189,7 +189,7 @@ public class LineObj extends PDElement {
 				// copy matrices
 				Z.copyFrom(lc.getZ());
 				/*Zinv.copyFrom(lc.getZinv());*/  // no need to copy Zinv
-				Yc.copyFrom(lc.getYC());
+				Yc.copyFrom(lc.getYc());
 			} else {
 				recalcElementData();  // compute matrices
 			}

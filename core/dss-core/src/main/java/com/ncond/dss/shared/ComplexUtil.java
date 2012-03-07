@@ -5,9 +5,7 @@ import org.apache.commons.math.complex.ComplexUtils;
 
 public class ComplexUtil {
 
-	private ComplexUtil() {
-		super();
-	}
+	private ComplexUtil() {}
 
 	public static Complex pclx(double magn, double angle) {
 		return new Complex(magn * Math.cos(angle), magn * Math.sin(angle));

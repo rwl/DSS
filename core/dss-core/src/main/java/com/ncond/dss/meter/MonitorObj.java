@@ -7,6 +7,9 @@ import java.io.FileWriter;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+
 import org.apache.commons.math.complex.Complex;
 
 import com.ncond.dss.common.CktElement;
@@ -17,6 +20,7 @@ import com.ncond.dss.common.SolutionObj;
 import com.ncond.dss.common.Util;
 import com.ncond.dss.conversion.PCElement;
 import com.ncond.dss.delivery.TransformerObj;
+import com.ncond.dss.general.XYCurveObj;
 import com.ncond.dss.shared.ComplexUtil;
 import com.ncond.dss.shared.MathUtil;
 
@@ -75,6 +79,8 @@ import com.ncond.dss.shared.MathUtil;
  *  +64: Pos Seq only or average of phases
  *
  */
+@Data
+@EqualsAndHashCode(callSuper=true)
 public class MonitorObj extends MeterElement {
 
 	private static StringBuffer strBuffer = new StringBuffer();
@@ -881,169 +887,6 @@ public class MonitorObj extends MeterElement {
 	@Override
 	public int injCurrents() {
 		throw new UnsupportedOperationException();
-	}
-
-	public int getMode() {
-		return mode;
-	}
-
-	public void setMode(int value) {
-		mode = value;
-	}
-
-	public CharArrayWriter getMonitorStream() {
-		return monitorStream;
-	}
-
-	public void setMonitorStream(CharArrayWriter stream) {
-		monitorStream = stream;
-	}
-
-	public int getSampleCount() {
-		return sampleCount;
-	}
-
-	public void setSampleCount(int count) {
-		sampleCount = count;
-	}
-
-
-	// FIXME Private members in OpenDSS
-
-	public int getBufferSize() {
-		return bufferSize;
-	}
-
-	public void setBufferSize(int size) {
-		bufferSize = size;
-	}
-
-	public int getHour() {
-		return hour;
-	}
-
-	public void setHour(int hr) {
-		hour = hr;
-	}
-
-	public double getSec() {
-		return sec;
-	}
-
-	public void setSec(double s) {
-		sec = s;
-	}
-
-	public float[] getMonBuffer() {
-		return monBuffer;
-	}
-
-	public void setMonBuffer(float[] buffer) {
-		monBuffer = buffer;
-	}
-
-	public int getBufPtr() {
-		return bufPtr;
-	}
-
-	public void setBufPtr(int buf) {
-		bufPtr = buf;
-	}
-
-	public Complex[] getCurrentBuffer() {
-		return currentBuffer;
-	}
-
-	public void setCurrentBuffer(Complex[] buffer) {
-		currentBuffer = buffer;
-	}
-
-	public Complex[] getVoltageBuffer() {
-		return voltageBuffer;
-	}
-
-	public void setVoltageBuffer(Complex[] buffer) {
-		voltageBuffer = buffer;
-	}
-
-	public int getNumStateVars() {
-		return numStateVars;
-	}
-
-	public void setNumStateVars(int num) {
-		numStateVars = num;
-	}
-
-	public double[] getStateBuffer() {
-		return stateBuffer;
-	}
-
-	public void setStateBuffer(double[] buffer) {
-		stateBuffer = buffer;
-	}
-
-	public boolean isIncludeResidual() {
-		return includeResidual;
-	}
-
-	public void setIncludeResidual(boolean include) {
-		includeResidual = include;
-	}
-
-	public boolean isVIPolar() {
-		return VIPolar;
-	}
-
-	public void setVIPolar(boolean polar) {
-		VIPolar = polar;
-	}
-
-	public boolean isPPolar() {
-		return PPolar;
-	}
-
-	public void setPPolar(boolean polar) {
-		PPolar = polar;
-	}
-
-	public int getFileSignature() {
-		return fileSignature;
-	}
-
-	public void setFileSignature(int signature) {
-		fileSignature = signature;
-	}
-
-	public int getFileVersion() {
-		return fileVersion;
-	}
-
-	public void setFileVersion(int version) {
-		fileVersion = version;
-	}
-
-	public String getBufferFile() {
-		return bufferFile;
-	}
-
-	public void setBufferFile(String buffer) {
-		bufferFile = buffer;
-	}
-
-	public boolean isFileOpen() {
-		return isFileOpen;
-	}
-
-	public void setFileOpen(boolean isOpen) {
-		isFileOpen = isOpen;
-	}
-
-	public boolean isValidMonitor() {
-		return validMonitor;
-	}
-
-	public void setValidMonitor(boolean valid) {
-		validMonitor = valid;
 	}
 
 }

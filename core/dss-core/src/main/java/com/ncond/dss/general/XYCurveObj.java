@@ -3,6 +3,9 @@ package com.ncond.dss.general;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+
 import com.ncond.dss.common.DSSClass;
 
 /**
@@ -23,6 +26,8 @@ import com.ncond.dss.common.DSSClass;
  * one point to a line.
  *
  */
+@Data
+@EqualsAndHashCode(callSuper=true)
 public class XYCurveObj extends DSSObject {
 
 	private int lastValueAccessed,
@@ -303,56 +308,6 @@ public class XYCurveObj extends DSSObject {
 			setPropertyValue(arrayPropertyIndex, getPropertyValue(arrayPropertyIndex));
 
 		numPoints = num;  // now assign the value
-	}
-
-	// FIXME Private members in OpenDSS
-
-	public int getLastValueAccessed() {
-		return lastValueAccessed;
-	}
-
-	public void setLastValueAccessed(int lastValue) {
-		lastValueAccessed = lastValue;
-	}
-
-	public int getArrayPropertyIndex() {
-		return arrayPropertyIndex;
-	}
-
-	public void setArrayPropertyIndex(int index) {
-		arrayPropertyIndex = index;
-	}
-
-	public double getX() {
-		return X;
-	}
-
-	public void setX(double x) {
-		X = x;
-	}
-
-	public double getY() {
-		return Y;
-	}
-
-	public void setY(double y) {
-		Y = y;
-	}
-
-	public double[] getXValues() {
-		return XValues;
-	}
-
-	public void setXValues(double[] xvalues) {
-		XValues = xvalues;
-	}
-
-	public double[] getYValues() {
-		return YValues;
-	}
-
-	public void setYValues(double[] yvalues) {
-		YValues = yvalues;
 	}
 
 }

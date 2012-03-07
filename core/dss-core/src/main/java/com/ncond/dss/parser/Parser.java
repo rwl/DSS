@@ -1,15 +1,20 @@
 package com.ncond.dss.parser;
 
-import com.ncond.dss.common.DSS;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 
+import com.ncond.dss.common.DSS;
+import com.ncond.dss.general.XYCurveObj;
+
+@Data
 public class Parser {
 
 	private static final char CommentChar = '!';
 
-	private String cmdBuffer;
+	private String cmdString;
 	private int position;
 	private String parameterBuffer;
-	private String tokenBuffer;
+	private String token;
 	private String delimChars;
 	private String whiteSpaceChars;
 	private String beginQuoteChars;
@@ -123,10 +128,10 @@ public class Parser {
 	public void setCmdString(final String value) {
 		int[] mPosition;
 
-		cmdBuffer = value + " ";  // add some white space at end to get last param
+		cmdString = value + " ";  // add some white space at end to get last param
 
 		mPosition = new int[] {0};
-		skipWhiteSpace(cmdBuffer, mPosition);  // position at first non whitespace character
+		skipWhiteSpace(cmdString, mPosition);  // position at first non whitespace character
 		position = mPosition[0];  // passed by reference
 	}
 
@@ -275,14 +280,14 @@ public class Parser {
 	public String getNextParam() {
 		int[] mPosition;
 
-		if (position < cmdBuffer.length()) {
+		if (position < cmdString.length()) {
 			mPosition = new int[] {position};  // pass by reference
 			lastDelimiter = ' ';
 			// get entire token and put in token buffer
-			tokenBuffer = getToken(cmdBuffer, mPosition);
+			token = getToken(cmdString, mPosition);
 			if (lastDelimiter == '=') {
-				parameterBuffer = tokenBuffer;
-				tokenBuffer = getToken(cmdBuffer, mPosition);
+				parameterBuffer = token;
+				token = getToken(cmdString, mPosition);
 			} else {
 				// init to null string
 				parameterBuffer = "";
@@ -290,7 +295,7 @@ public class Parser {
 			position = mPosition[0];
 		} else {
 			parameterBuffer = "";
-			tokenBuffer = "";
+			token = "";
 		}
 		return parameterBuffer;
 	}
@@ -308,33 +313,33 @@ public class Parser {
 			getNextParam();
 
 		numNodes[0] = 0;
-		dotpos = tokenBuffer.indexOf('.');
+		dotpos = token.indexOf('.');
 		if (dotpos == -1) {
-			return tokenBuffer;
+			return token;
 		} else {
-			result = tokenBuffer.substring(0, dotpos).trim();  // bus name
-			tokenSave = tokenBuffer;
+			result = token.substring(0, dotpos).trim();  // bus name
+			tokenSave = token;
 			/* Now get nodes */
-			nodeBuffer = tokenBuffer.substring(dotpos, tokenBuffer.length() - dotpos) + " ";
+			nodeBuffer = token.substring(dotpos, token.length() - dotpos) + " ";
 
 			nodeBufferPos = new int[] {0};
 			delimSave = delimChars;
 			delimChars = ".";
-			tokenBuffer = getToken(nodeBuffer, nodeBufferPos);
+			token = getToken(nodeBuffer, nodeBufferPos);
 			try {
-				while (tokenBuffer.length() > 0) {
+				while (token.length() > 0) {
 					numNodes[0]++;
 					nodeArray[numNodes[0]] = makeInteger();
 					if (convertError)
 						nodeArray[numNodes[0]] = -1;  // indicate an error
-					tokenBuffer = getToken(nodeBuffer, nodeBufferPos);
+					token = getToken(nodeBuffer, nodeBufferPos);
 				}
 			} catch (Exception e) {
 				DSS.forms.messageDlg("Node buffer too small: " + e.getMessage(), true);
 			}
 
 			delimChars = delimSave;  // restore to original delimiters
-			tokenBuffer = tokenSave;
+			token = tokenSave;
 		}
 		return result;
 	}
@@ -354,21 +359,21 @@ public class Parser {
 				vectorBuffer[i] = 0.0;
 
 			/* now get vector values */
-			parseBuffer = tokenBuffer + " ";
+			parseBuffer = token + " ";
 
 			parseBufferPos[0] = 0;
 			delimSave  = delimChars;
 			delimChars = delimChars + matrixRowTerminator;
 
 			skipWhiteSpace(parseBuffer, parseBufferPos);
-			tokenBuffer = getToken(parseBuffer, parseBufferPos);
-			while (tokenBuffer.length() > 0) {
+			token = getToken(parseBuffer, parseBufferPos);
+			while (token.length() > 0) {
 				numElements += 1;
 				if (numElements <= expectedSize)
 					vectorBuffer[numElements] = makeDouble();
 				if (lastDelimiter == matrixRowTerminator)
 					break;
-				tokenBuffer = getToken(parseBuffer, parseBufferPos);
+				token = getToken(parseBuffer, parseBufferPos);
 			}
 
 			result = numElements;
@@ -377,7 +382,7 @@ public class Parser {
 		}
 
 		delimChars  = delimSave;  // restore to original delimiters
-		tokenBuffer = parseBuffer.substring(parseBufferPos[0], parseBuffer.length());  // prepare for next trip
+		token = parseBuffer.substring(parseBufferPos[0], parseBuffer.length());  // prepare for next trip
 
 		return result;
 	}
@@ -462,7 +467,7 @@ public class Parser {
 		if (autoIncrement)
 			getNextParam();
 
-		return tokenBuffer;
+		return token;
 	}
 
 	public int makeInteger() {
@@ -475,7 +480,7 @@ public class Parser {
 		if (autoIncrement)
 			getNextParam();
 
-		if (tokenBuffer.length() == 0) {
+		if (token.length() == 0) {
 			result = 0;
 		} else {
 			if (isQuotedString) {
@@ -483,7 +488,7 @@ public class Parser {
 				result = (int) Math.round(temp);
 			} else {
 				try {
-					result = Integer.valueOf(tokenBuffer);  // try direct conversion to integer
+					result = Integer.valueOf(token);  // try direct conversion to integer
 					code[0] = 0;
 				} catch (NumberFormatException e) {
 					code[0] = 1;  // index of the offending character
@@ -493,7 +498,7 @@ public class Parser {
 			if (code[0] != 0) {  // on error for integer conversion
 				// try again with an double result in case value specified in decimal or some other technique
 				try {
-					temp = Double.valueOf(tokenBuffer);
+					temp = Double.valueOf(token);
 					code[0] = 1;
 				} catch (NumberFormatException e) {
 					code[0] = 0;
@@ -502,7 +507,7 @@ public class Parser {
 					// not needed with throw ...  Result = 0;
 					convertError = true;
 //					throw new ParserProblem("Integer number conversion error for string: \""+TokenBuffer+"\"");
-					DSS.doErrorMsg("", "Integer number conversion error for string: \""+tokenBuffer+"\"", "", 0);
+					DSS.doErrorMsg("", "Integer number conversion error for string: \""+token+"\"", "", 0);
 				} else {
 					result = (int) Math.round(temp);
 				}
@@ -521,14 +526,14 @@ public class Parser {
 
 		convertError = false;
 
-		if (tokenBuffer.length() == 0) {
+		if (token.length() == 0) {
 			result = 0.0;
 		} else {
 			if (isQuotedString) {
 				result = interpretRPNString(code);
 			} else {
 				try {
-					result = Double.valueOf(tokenBuffer);
+					result = Double.valueOf(token);
 					code[0] = 0;
 				} catch (NumberFormatException e) {
 					code[0] = 1;  // index of the offending character
@@ -539,7 +544,7 @@ public class Parser {
 				// not needed with throw ... result = 0.0;
 				convertError = true;
 //				throw new ParserProblem("Floating point number conversion error for string: \""+TokenBuffer+"\"");
-				DSS.doErrorMsg("", "Floating point number conversion error for string: \""+tokenBuffer+"\"", "", 0);
+				DSS.doErrorMsg("", "Floating point number conversion error for string: \""+token+"\"", "", 0);
 			}
 		}
 
@@ -547,7 +552,7 @@ public class Parser {
 	}
 
 	public String getRemainder() {
-		return cmdBuffer.substring(position, cmdBuffer.length());
+		return cmdString.substring(position, cmdString.length());
 	}
 
 	/**
@@ -573,91 +578,35 @@ public class Parser {
 		String parseBuffer;
 
 		code[0] = 0;
-		parseBuffer = tokenBuffer + " ";
+		parseBuffer = token + " ";
 		parseBufferPos = new int[] {0};
 
 		skipWhiteSpace(parseBuffer, parseBufferPos);
-		tokenBuffer = getToken(parseBuffer, parseBufferPos);
+		token = getToken(parseBuffer, parseBufferPos);
 
-		while (tokenBuffer.length() > 0) {
+		while (token.length() > 0) {
 
 			try {
-				code[0] = processRPNCommand(tokenBuffer, RPNCalculator);
+				code[0] = processRPNCommand(token, RPNCalculator);
 			} catch (ParserProblem e) {
 				DSS.doErrorMsg("", e.getMessage(), "", 0);
 				if (code[0] > 0)
 					break;  // stop on any floating point error
 			}
 
-			tokenBuffer = getToken(parseBuffer, parseBufferPos);
+			token = getToken(parseBuffer, parseBufferPos);
 		}
 
 		double result = RPNCalculator.getX();
 
 		// prepare for next trip
-		tokenBuffer = parseBuffer.substring(parseBufferPos[0], parseBuffer.length());
+		token = parseBuffer.substring(parseBufferPos[0], parseBuffer.length());
 
 		return result;
 	}
 
-	public String getDelimChars() {
-		return delimChars;
-	}
-
-	public void setDelimChars(String chars) {
-		delimChars = chars;
-	}
-
-	public String getWhiteSpaceChars() {
-		return whiteSpaceChars;
-	}
-
-	public void setWhiteSpaceChars(String chars) {
-		whiteSpaceChars = chars;
-	}
-
-	public String getBeginQuoteChars() {
-		return beginQuoteChars;
-	}
-
-	public void setBeginQuoteChars(String chars) {
-		beginQuoteChars = chars;
-	}
-
-	public String getEndQuoteChars() {
-		return endQuoteChars;
-	}
-
-	public void setEndQuoteChars(String chars) {
-		endQuoteChars = chars;
-	}
-
-	public boolean isAutoIncrement() {
-		return autoIncrement;
-	}
-
-	public void setAutoIncrement(boolean auto) {
-		autoIncrement = auto;
-	}
-
-	public String getCmdString() {
-		return cmdBuffer;
-	}
-
 	public String getToken() {
-		return tokenBuffer;
-	}
-
-	public void setToken(String Value) {
-		tokenBuffer = Value;
-	}
-
-	public int getPosition() {
-		return position;
-	}
-
-	public void setPosition(int position) {
-		this.position = position;
+		return token;
 	}
 
 }

@@ -192,7 +192,7 @@ public class LineCode extends DSSClass {
 				break;
 			case 3:  // Yc matrix
 				factor = DSS.TWO_PI * activeLineCodeObj.getBaseFrequency() * 1.0e-9;
-				ZValues = activeLineCodeObj.getYC().asArray(nOrder);
+				ZValues = activeLineCodeObj.getYc().asArray(nOrder);
 				if (nOrder[0] == activeLineCodeObj.getNPhases())
 					for (j = 0; j < np2; j++)
 						ZValues[j] = new Complex(ZValues[j].getReal(), factor * matBuffer[j]);
@@ -357,7 +357,7 @@ public class LineCode extends DSSClass {
 
 			activeLineCodeObj.getZ().copyFrom(otherLineCode.getZ());
 			activeLineCodeObj.getZinv().copyFrom(otherLineCode.getZinv());
-			activeLineCodeObj.getYC().copyFrom(otherLineCode.getYC());
+			activeLineCodeObj.getYc().copyFrom(otherLineCode.getYc());
 			activeLineCodeObj.setBaseFrequency(otherLineCode.getBaseFrequency());
 			activeLineCodeObj.setR1(otherLineCode.getR1());
 			activeLineCodeObj.setX1(otherLineCode.getX1());

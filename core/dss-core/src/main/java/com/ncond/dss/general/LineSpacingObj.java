@@ -3,9 +3,14 @@ package com.ncond.dss.general;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+
 import com.ncond.dss.common.DSSClass;
 import com.ncond.dss.shared.LineUnits;
 
+@Data
+@EqualsAndHashCode(callSuper=true)
 public class LineSpacingObj extends DSSObject {
 
 	private int nConds;
@@ -97,56 +102,6 @@ public class LineSpacingObj extends DSSObject {
 
 	public int getNWires() {
 		return nConds;
-	}
-
-	public int getNPhases() {
-		return nPhases;
-	}
-
-	public int getUnits() {
-		return units;
-	}
-
-	// FIXME Private members in OpenDSS.
-
-	public int getNConds() {
-		return nConds;
-	}
-
-	public void setNConds(int num) {
-		nConds = num;
-	}
-
-	public double[] getX() {
-		return X;
-	}
-
-	public void setX(double[] x) {
-		X = x;
-	}
-
-	public double[] getY() {
-		return Y;
-	}
-
-	public void setY(double[] y) {
-		Y = y;
-	}
-
-	public boolean isDataChanged() {
-		return dataChanged;
-	}
-
-	public void setDataChanged(boolean changed) {
-		dataChanged = changed;
-	}
-
-	public void setNPhases(int num) {
-		nPhases = num;
-	}
-
-	public void setUnits(int value) {
-		units = value;
 	}
 
 }

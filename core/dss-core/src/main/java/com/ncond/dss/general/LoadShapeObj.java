@@ -3,6 +3,9 @@ package com.ncond.dss.general;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+
 import org.apache.commons.math.complex.Complex;
 
 import com.ncond.dss.common.DSSClass;
@@ -49,6 +52,8 @@ import com.ncond.dss.shared.MathUtil;
  * that the maximum value is 1.0.
  *
  */
+@Data
+@EqualsAndHashCode(callSuper=true)
 public class LoadShapeObj extends DSSObject {
 
 	private int lastValueAccessed;
@@ -476,93 +481,6 @@ public class LoadShapeObj extends DSSObject {
 	public void setStdDev(double stddev) {
 		stdDevCalculated = true;
 		stdDev[0] = stddev;
-	}
-
-	public int getNumPoints() {
-		return numPoints;
-	}
-
-	public double[] getHours() {
-		return hours;
-	}
-
-	public void setHours(double[] values) {
-		hours = values;
-	}
-
-	public double[] getPMultipliers() {
-		return PMultipliers;
-	}
-
-	public void setPMultipliers(double[] values) {
-		PMultipliers = values;
-	}
-
-	public double[] getQMultipliers() {
-		return QMultipliers;
-	}
-
-	public void setQMultipliers(double[] values) {
-		QMultipliers = values;
-	}
-
-	public void setInterval(double value) {
-		interval = value;
-	}
-
-	public double getMaxP() {
-		return maxP;
-	}
-
-	public void setMaxP(double max) {
-		maxP = max;
-	}
-
-	public double getMaxQ() {
-		return maxQ;
-	}
-
-	public void setMaxQ(double max) {
-		maxQ = max;
-	}
-
-	public boolean isUseActual() {
-		return useActual;
-	}
-
-	public void setUseActual(boolean value) {
-		useActual = value;
-	}
-
-	// Protected member in OpenDSS.
-
-	public boolean isStdDevCalculated() {
-		return stdDevCalculated;
-	}
-
-	public void setStdDevCalculated(boolean calculated) {
-		stdDevCalculated = calculated;
-	}
-
-	// Private member in OpenDSS.
-	public void setArrayPropertyIndex(int i) {
-		arrayPropertyIndex = i;
-	}
-
-	public double getBaseP() {
-		return baseP;
-	}
-
-	public void setBaseP(double baseP) {
-		this.baseP = baseP;
-	}
-
-	public double getBaseQ() {
-		return baseQ;
-	}
-
-	public void setBaseQ(double baseQ) {
-		this.baseQ = baseQ;
 	}
 
 }

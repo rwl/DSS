@@ -98,13 +98,13 @@ public class TCC_Curve extends DSSClass {
 				DSS.doSimpleMsg("Unknown parameter \"" + paramName + "\" for object \"" + getClassName() +"."+ atc.getName() + "\"", 420);
 				break;
 			case 0:
-				atc.setNPts(parser.makeInteger());
+				atc.setNpts(parser.makeInteger());
 				break;
 			case 1:
-				Util.interpretDblArray(param, atc.getNPts(), atc.getCValues());   // Parser.ParseAsVector(Npts, Multipliers);
+				Util.interpretDblArray(param, atc.getNpts(), atc.getCValues());   // Parser.ParseAsVector(Npts, Multipliers);
 				break;
 			case 2:
-				Util.interpretDblArray(param, atc.getNPts(), atc.getTValues());   // Parser.ParseAsVector(Npts, Hours);
+				Util.interpretDblArray(param, atc.getNpts(), atc.getTValues());   // Parser.ParseAsVector(Npts, Hours);
 				break;
 			default:
 				// inherited parameters
@@ -114,16 +114,16 @@ public class TCC_Curve extends DSSClass {
 
 			switch (paramPointer) {
 			case 0:  // reallocate arrays to correspond to npts
-				atc.setCValues( Util.resizeArray(atc.getCValues(), atc.getNPts()) );
-				atc.setLogC( Util.resizeArray(atc.getLogC(), atc.getNPts()) );
-				atc.setTValues( Util.resizeArray(atc.getTValues(), atc.getNPts()) );
-				atc.setLogT( Util.resizeArray(atc.getLogT(), atc.getNPts()) );
+				atc.setCValues( Util.resizeArray(atc.getCValues(), atc.getNpts()) );
+				atc.setLogC( Util.resizeArray(atc.getLogC(), atc.getNpts()) );
+				atc.setTValues( Util.resizeArray(atc.getTValues(), atc.getNpts()) );
+				atc.setLogT( Util.resizeArray(atc.getLogT(), atc.getNpts()) );
 				break;
 			case 1:
-				calcLogPoints(atc.getCValues(), atc.getLogC(), atc.getNPts());
+				calcLogPoints(atc.getCValues(), atc.getLogC(), atc.getNpts());
 				break;
 			case 2:
-				calcLogPoints(atc.getTValues(), atc.getLogT(), atc.getNPts());
+				calcLogPoints(atc.getTValues(), atc.getLogT(), atc.getNpts());
 				break;
 			}
 
@@ -141,18 +141,18 @@ public class TCC_Curve extends DSSClass {
 		TCC_CurveObj otherTCC_Curve = (TCC_CurveObj) find(name);
 		if (otherTCC_Curve != null) {
 			TCC_CurveObj atc = activeTCC_CurveObj;
-			atc.setNPts(otherTCC_Curve.getNPts());
-			atc.setCValues( Util.resizeArray(atc.getCValues(), atc.getNPts()) );
-			atc.setLogC( Util.resizeArray(atc.getLogC(), atc.getNPts()) );
-			atc.setTValues( Util.resizeArray(atc.getTValues(), atc.getNPts()) );
-			atc.setLogT( Util.resizeArray(atc.getLogT(), atc.getNPts()) );
-			for (i = 0; i < atc.getNPts(); i++)
+			atc.setNpts(otherTCC_Curve.getNpts());
+			atc.setCValues( Util.resizeArray(atc.getCValues(), atc.getNpts()) );
+			atc.setLogC( Util.resizeArray(atc.getLogC(), atc.getNpts()) );
+			atc.setTValues( Util.resizeArray(atc.getTValues(), atc.getNpts()) );
+			atc.setLogT( Util.resizeArray(atc.getLogT(), atc.getNpts()) );
+			for (i = 0; i < atc.getNpts(); i++)
 				atc.getCValues()[i] = otherTCC_Curve.getCValues()[i];
-			for (i = 0; i < atc.getNPts(); i++)
+			for (i = 0; i < atc.getNpts(); i++)
 				atc.getTValues()[i] = otherTCC_Curve.getTValues()[i];
-			for (i = 0; i < atc.getNPts(); i++)
+			for (i = 0; i < atc.getNpts(); i++)
 				atc.getLogC()[i] = otherTCC_Curve.getLogC()[i];
-			for (i = 0; i < atc.getNPts(); i++)
+			for (i = 0; i < atc.getNpts(); i++)
 				atc.getLogT()[i] = otherTCC_Curve.getLogT()[i];
 
 			for (i = 0; i < atc.getParentClass().getNumProperties(); i++)

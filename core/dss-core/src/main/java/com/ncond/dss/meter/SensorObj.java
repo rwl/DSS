@@ -3,17 +3,23 @@ package com.ncond.dss.meter;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+
 import org.apache.commons.math.complex.Complex;
 
 import com.ncond.dss.common.DSS;
 import com.ncond.dss.common.DSSClass;
 import com.ncond.dss.common.Util;
+import com.ncond.dss.general.XYCurveObj;
 
 /**
  * Sensor compares voltages and currents. Power quantities are converted to
  * current quantities based on rated kVBase, or actual voltage if voltage
  * measurement specified.
  */
+@Data
+@EqualsAndHashCode(callSuper=true)
 public class SensorObj extends MeterElement {
 
 	private boolean validSensor;
@@ -325,117 +331,6 @@ public class SensorObj extends MeterElement {
 
 	public void setAction(String value) {
 
-	}
-
-	public int getConn() {
-		return conn;
-	}
-
-	public double[] getSensorKW() {
-		return sensorKW;
-	}
-
-	public double[] getSensorKVAr() {
-		return sensorKVAr;
-	}
-
-	public double getKVBase() {
-		return kVBase;
-	}
-
-	public int getDeltaDirection() {
-		return deltaDirection;
-	}
-
-	public double getPctError() {
-		return pctError;
-	}
-
-	public void setPctError(double pct) {
-		this.pctError = pct;
-	}
-
-	public double getWeight() {
-		return weight;
-	}
-
-	public void setWeight(double w) {
-		weight = w;
-	}
-
-
-	// FIXME Private members in OpenDSS
-
-	public boolean isValidSensor() {
-		return validSensor;
-	}
-
-	public void setValidSensor(boolean valid) {
-		validSensor = valid;
-	}
-
-	public double getVBase() {
-		return VBase;
-	}
-
-	public void setVBase(double vbase) {
-		VBase = vbase;
-	}
-
-	public boolean isVSpecified() {
-		return VSpecified;
-	}
-
-	public void setVSpecified(boolean specified) {
-		VSpecified = specified;
-	}
-
-	public boolean isISpecified() {
-		return ISpecified;
-	}
-
-	public void setISpecified(boolean specified) {
-		ISpecified = specified;
-	}
-
-	public boolean isPSpecified() {
-		return PSpecified;
-	}
-
-	public void setPSpecified(boolean specified) {
-		PSpecified = specified;
-	}
-
-	public boolean isQSpecified() {
-		return QSpecified;
-	}
-
-	public void setQSpecified(boolean specified) {
-		QSpecified = specified;
-	}
-
-	public boolean isClearSpecified() {
-		return clearSpecified;
-	}
-
-	public void setClearSpecified(boolean clear) {
-		clearSpecified = clear;
-	}
-
-	public void setSensorKW(double[] kw) {
-		sensorKW = kw;
-	}
-
-	public void setSensorKVAr(double[] kvar) {
-		sensorKVAr = kvar;
-	}
-
-	public void setKVBase(double base) {
-		this.kVBase = base;
-	}
-
-	public void setDeltaDirection(int direction) {
-		deltaDirection = direction;
 	}
 
 }

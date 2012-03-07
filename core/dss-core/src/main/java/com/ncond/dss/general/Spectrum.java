@@ -113,10 +113,10 @@ public class Spectrum extends DSSClass {
 				Util.interpretDblArray(param, aso.getNumHarm(), aso.getHarmArray());
 				break;
 			case 2:
-				aso.setPUMagArray( Util.resizeArray(aso.getPUMagArray(), aso.getNumHarm()) );
-				Util.interpretDblArray(param, aso.getNumHarm(), aso.getPUMagArray());
+				aso.setPuMagArray( Util.resizeArray(aso.getPuMagArray(), aso.getNumHarm()) );
+				Util.interpretDblArray(param, aso.getNumHarm(), aso.getPuMagArray());
 				for (int i = 0; i < aso.getNumHarm(); i++)
-					aso.getPUMagArray()[i] = aso.getPUMagArray()[i] * 0.01;  // convert to per unit
+					aso.getPuMagArray()[i] = aso.getPuMagArray()[i] * 0.01;  // convert to per unit
 				break;
 			case 3:
 				aso.setAngleArray( Util.resizeArray(aso.getAngleArray(), aso.getNumHarm()) );
@@ -135,7 +135,7 @@ public class Spectrum extends DSSClass {
 			param = parser.makeString();
 		}
 
-		if (aso.getHarmArray() != null && aso.getPUMagArray() != null && aso.getAngleArray() != null)
+		if (aso.getHarmArray() != null && aso.getPuMagArray() != null && aso.getAngleArray() != null)
 			aso.setMultArray();
 
 		return result;
@@ -154,12 +154,12 @@ public class Spectrum extends DSSClass {
 			aso.setNumHarm(otherSpectrum.getNumHarm());
 
 			aso.setHarmArray( Util.resizeArray(aso.getHarmArray(), aso.getNumHarm()) );
-			aso.setPUMagArray( Util.resizeArray(aso.getPUMagArray(), aso.getNumHarm()) );
+			aso.setPuMagArray( Util.resizeArray(aso.getPuMagArray(), aso.getNumHarm()) );
 			aso.setAngleArray( Util.resizeArray(aso.getAngleArray(), aso.getNumHarm()) );
 
 			for (int i = 0; i < aso.getNumHarm(); i++) {
 				aso.getHarmArray()[i] = otherSpectrum.getHarmArray()[i];
-				aso.getPUMagArray()[i] = otherSpectrum.getPUMagArray()[i];
+				aso.getPuMagArray()[i] = otherSpectrum.getPuMagArray()[i];
 				aso.getAngleArray()[i] = otherSpectrum.getAngleArray()[i];
 			}
 
@@ -215,7 +215,7 @@ public class Spectrum extends DSSClass {
 			SpectrumObj aso = activeSpectrumObj;
 
 			aso.setHarmArray( Util.resizeArray(aso.getHarmArray(), aso.getNumHarm()) );
-			aso.setPUMagArray( Util.resizeArray(aso.getPUMagArray(), aso.getNumHarm()) );
+			aso.setPuMagArray( Util.resizeArray(aso.getPuMagArray(), aso.getNumHarm()) );
 			aso.setAngleArray( Util.resizeArray(aso.getAngleArray(), aso.getNumHarm()) );
 
 			int i = 0;
@@ -226,7 +226,7 @@ public class Spectrum extends DSSClass {
 				parser.getNextParam();
 				aso.getHarmArray()[i] = parser.makeDouble();
 				parser.getNextParam();
-				aso.getPUMagArray()[i] = parser.makeDouble() * 0.01;
+				aso.getPuMagArray()[i] = parser.makeDouble() * 0.01;
 				parser.getNextParam();
 				aso.getAngleArray()[i] = parser.makeDouble();
 				i += 1;

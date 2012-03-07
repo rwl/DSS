@@ -7,8 +7,8 @@ package com.ncond.dss.general;
  */
 public class OHLineConstants extends LineConstants {
 
-	public OHLineConstants(int NumConductors) {
-		super(NumConductors);
+	public OHLineConstants(int numConductors) {
+		super(numConductors);
 	}
 
 }

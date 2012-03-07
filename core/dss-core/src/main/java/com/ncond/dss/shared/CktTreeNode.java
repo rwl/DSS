@@ -1,8 +1,13 @@
 package com.ncond.dss.shared;
 
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+
 import com.ncond.dss.common.Util;
 import com.ncond.dss.general.DSSObject;
+import com.ncond.dss.general.XYCurveObj;
 
+@Data
 public class CktTreeNode {
 
 	private PointerList childBranches;  // TODO Replace with List and Iterator
@@ -14,7 +19,7 @@ public class CktTreeNode {
 	protected CktTreeNode parentBranch;
 	protected PointerList shuntObjects;  // generic objects attached to the tree at this node
 
-	protected Object cktObject;  // pointer to the circuit object referenced
+	protected DSSObject cktObject;  // pointer to the circuit object referenced
 	protected int fromBusReference;
 	protected int voltBaseIndex;
 	protected int fromTerminal;
@@ -22,7 +27,7 @@ public class CktTreeNode {
 	protected Object loopLineObj;
 
 
-	public CktTreeNode(CktTreeNode parent, Object selfObj) {
+	public CktTreeNode(CktTreeNode parent, DSSObject selfObj) {
 		super();
 		cktObject = selfObj;
 		parentBranch = parent;
@@ -114,88 +119,6 @@ public class CktTreeNode {
 
 	public DSSObject getNextObject() {
 		return (DSSObject) shuntObjects.getNext();
-	}
-
-	public DSSObject getCktObject() {
-		return (DSSObject) cktObject;
-	}
-
-	public void setCktObject(DSSObject ckt) {
-		cktObject = ckt;
-	}
-
-	public int getFromBusReference() {
-		return fromBusReference;
-	}
-
-	public void setFromBusReference(int reference) {
-		fromBusReference = reference;
-	}
-
-	public int getVoltBaseIndex() {
-		return voltBaseIndex;
-	}
-
-	public void setVoltBaseIndex(int index) {
-		voltBaseIndex = index;
-	}
-
-	public int getFromTerminal() {
-		return fromTerminal;
-	}
-
-	public void setFromTerminal(int terminal) {
-		fromTerminal = terminal;
-	}
-
-	public boolean isLoopedHere() {
-		return isLoopedHere;
-	}
-
-	public void setLoopedHere(boolean value) {
-		isLoopedHere = value;
-	}
-
-	public boolean isParallel() {
-		return isParallel;
-	}
-
-	public void setParallel(boolean value) {
-		isParallel = value;
-	}
-
-	public boolean isDangling() {
-		return isDangling;
-	}
-
-	public void setDangling(boolean value) {
-		isDangling = value;
-	}
-
-	public Object getLoopLineObj() {
-		return loopLineObj;
-	}
-
-	public void setLoopLineObj(Object lineObj) {
-		loopLineObj = lineObj;
-	}
-
-	// FIXME Protected members in OpenDSS
-
-	public boolean isChildAdded() {
-		return childAdded;
-	}
-
-	public void setChildAdded(boolean added) {
-		childAdded = added;
-	}
-
-	public int getLexicalLevel() {
-		return lexicalLevel;
-	}
-
-	public void setLexicalLevel(int level) {
-		lexicalLevel = level;
 	}
 
 }

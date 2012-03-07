@@ -3,6 +3,9 @@ package com.ncond.dss.general;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+
 import com.ncond.dss.common.DSSClass;
 
 /**
@@ -12,6 +15,8 @@ import com.ncond.dss.common.DSSClass;
  * Log-Log as traditional TCC or as over- or under-voltage definite time.
  *
  */
+@Data
+@EqualsAndHashCode(callSuper=true)
 public class TCC_CurveObj extends DSSObject {
 
 	private int lastValueAccessed,
@@ -221,58 +226,6 @@ public class TCC_CurveObj extends DSSObject {
 		setPropertyValue(2, "");   // vector of sec values
 
 		super.initPropertyValues(TCC_Curve.NumPropsThisClass - 1);
-	}
-
-	public int getNumPoints() {
-		return npts;
-	}
-
-	public int getLastValueAccessed() {
-		return lastValueAccessed;
-	}
-
-	public void setLastValueAccessed(int lastValue) {
-		lastValueAccessed = lastValue;
-	}
-
-	public int getNPts() {
-		return npts;
-	}
-
-	public void setNPts(int n) {
-		npts = n;
-	}
-
-	public double[] getLogT() {
-		return logT;
-	}
-
-	public void setLogT(double[] logt) {
-		logT = logt;
-	}
-
-	public double[] getLogC() {
-		return logC;
-	}
-
-	public void setLogC(double[] logc) {
-		logC = logc;
-	}
-
-	public double[] getCValues() {
-		return cValues;
-	}
-
-	public void setCValues(double[] values) {
-		cValues = values;
-	}
-
-	public double[] getTValues() {
-		return tValues;
-	}
-
-	public void setTValues(double[] values) {
-		tValues = values;
 	}
 
 }

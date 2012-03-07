@@ -1,5 +1,8 @@
 package com.ncond.dss.meter;
 
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+
 import org.apache.commons.math.complex.Complex;
 
 import com.ncond.dss.common.CktElement;
@@ -7,7 +10,10 @@ import com.ncond.dss.common.DSS;
 import com.ncond.dss.common.DSSClass;
 import com.ncond.dss.common.DSSClassDefs;
 import com.ncond.dss.common.Util;
+import com.ncond.dss.general.XYCurveObj;
 
+@Data
+@EqualsAndHashCode(callSuper=true)
 abstract public class MeterElement extends CktElement {
 
 	protected String elementName;
@@ -73,86 +79,6 @@ abstract public class MeterElement extends CktElement {
 	 */
 	public void takeSample() {
 		DSS.doSimpleMsg("Programming error: Reached base MeterElement class for takeSample."+DSS.CRLF+"Device: "+getName(), 723);
-	}
-
-	public String getElementName() {
-		return elementName;
-	}
-
-	public void setElementName(String name) {
-		elementName = name;
-	}
-
-	public CktElement getMeteredElement() {
-		return meteredElement;
-	}
-
-	public void setMeteredElement(CktElement element) {
-		meteredElement = element;
-	}
-
-	public int getMeteredTerminal() {
-		return meteredTerminal;
-	}
-
-	public void setMeteredTerminal(int terminal) {
-		meteredTerminal = terminal;
-	}
-
-	public boolean isMeteredElementChanged() {
-		return meteredElementChanged;
-	}
-
-	public void setMeteredElementChanged(boolean changed) {
-		meteredElementChanged = changed;
-	}
-
-	public double[] getSensorCurrent() {
-		return sensorCurrent;
-	}
-
-	public void setSensorCurrent(double[] current) {
-		sensorCurrent = current;
-	}
-
-	public double[] getSensorVoltage() {
-		return sensorVoltage;
-	}
-
-	public void setSensorVoltage(double[] voltage) {
-		sensorVoltage = voltage;
-	}
-
-	public double[] getPhsAllocationFactor() {
-		return phsAllocationFactor;
-	}
-
-	public void setPhsAllocationFactor(double[] factor) {
-		phsAllocationFactor = factor;
-	}
-
-	public Complex[] getCalculatedCurrent() {
-		return calculatedCurrent;
-	}
-
-	public void setCalculatedCurrent(Complex[] current) {
-		calculatedCurrent = current;
-	}
-
-	public Complex[] getCalculatedVoltage() {
-		return calculatedVoltage;
-	}
-
-	public void setCalculatedVoltage(Complex[] voltage) {
-		calculatedVoltage = voltage;
-	}
-
-	public double getAvgAllocFactor() {
-		return avgAllocFactor;
-	}
-
-	public void setAvgAllocFactor(double factor) {
-		avgAllocFactor = factor;
 	}
 
 }

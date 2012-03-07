@@ -3,8 +3,13 @@ package com.ncond.dss.general;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+
 import com.ncond.dss.common.DSSClass;
 
+@Data
+@EqualsAndHashCode(callSuper=true)
 public class TSDataObj extends CableDataObj {
 
 	private double diaShield;
@@ -52,32 +57,6 @@ public class TSDataObj extends CableDataObj {
 		setPropertyValue(1, "-1");
 		setPropertyValue(2, "20.0");
 		super.initPropertyValues(arrayOffset + TSData.NumPropsThisClass);
-	}
-
-	public double getDiaShield() {
-		return diaShield;
-	}
-
-	public double getTapeLayer() {
-		return tapeLayer;
-	}
-
-	public double getTapeLap() {
-		return tapeLap;
-	}
-
-	// FIXME Private members in OpenDSS
-
-	public void setDiaShield(double shield) {
-		diaShield = shield;
-	}
-
-	public void setTapeLayer(double layer) {
-		tapeLayer = layer;
-	}
-
-	public void setTapeLap(double lap) {
-		tapeLap = lap;
 	}
 
 }

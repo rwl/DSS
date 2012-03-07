@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
 
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+
 import com.ncond.dss.common.Circuit;
 import com.ncond.dss.common.CktElement;
 import com.ncond.dss.common.DSS;
@@ -11,9 +14,12 @@ import com.ncond.dss.common.Util;
 import com.ncond.dss.conversion.PCElement;
 import com.ncond.dss.delivery.PDElement;
 import com.ncond.dss.general.DSSObject;
+import com.ncond.dss.general.XYCurveObj;
 
+@Data
 public class CktTree {
 
+	@Data
 	public class ZoneEndsList {
 
 		private PointerList endNodeList;
@@ -37,14 +43,6 @@ public class CktTree {
 		public int get(int i, CktTreeNode node) {
 			node = (CktTreeNode) endNodeList.get(i);
 			return endBuses[i];
-		}
-
-		public int getNumEnds() {
-			return numEnds;
-		}
-
-		public void setNumEnds(int num) {
-			numEnds = num;
 		}
 
 	}
@@ -426,20 +424,20 @@ public class CktTree {
 		lstPC = null;
 	}
 
-	public CktTreeNode getPresentBranch() {
-		return presentBranch;
-	}
-
-	public void setPresentBranch(CktTreeNode branch) {
-		presentBranch = branch;
-	}
-
-	public ZoneEndsList getZoneEndsList() {
-		return zoneEndsList;
-	}
-
-	public void setZoneEndsList(ZoneEndsList list) {
-		zoneEndsList = list;
-	}
+//	public CktTreeNode getPresentBranch() {
+//		return presentBranch;
+//	}
+//
+//	public void setPresentBranch(CktTreeNode branch) {
+//		presentBranch = branch;
+//	}
+//
+//	public ZoneEndsList getZoneEndsList() {
+//		return zoneEndsList;
+//	}
+//
+//	public void setZoneEndsList(ZoneEndsList list) {
+//		zoneEndsList = list;
+//	}
 
 }

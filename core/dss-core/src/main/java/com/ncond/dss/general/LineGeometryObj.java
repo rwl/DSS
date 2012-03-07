@@ -3,6 +3,9 @@ package com.ncond.dss.general;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+
 import com.ncond.dss.common.DSS;
 import com.ncond.dss.common.DSSClass;
 import com.ncond.dss.common.Util;
@@ -22,6 +25,8 @@ import com.ncond.dss.shared.LineUnits;
  * Then the values of that code can be retrieved via the public variables.
  *
  */
+@Data
+@EqualsAndHashCode(callSuper=true)
 public class LineGeometryObj extends DSSObject {
 
 	public class LineGeometryProblem extends Exception {
@@ -38,7 +43,7 @@ public class LineGeometryObj extends DSSObject {
 	private int nConds;
 	private int nPhases;
 	private String[] condName;
-	private ConductorDataObj[] wireData;
+	private ConductorDataObj[] conductorData;
 	private double[] X;
 	private double[] Y;
 	private int[] units;
@@ -63,7 +68,7 @@ public class LineGeometryObj extends DSSObject {
 
 		phaseChoice = ConductorChoice.UNKNOWN;
 		condName = null;
-		wireData = null;
+		conductorData = null;
 		X = null;
 		Y = null;
 		units = null;
@@ -172,7 +177,7 @@ public class LineGeometryObj extends DSSObject {
 	}
 
 	public ConductorDataObj getConductorData(int i) {
-		return i < nConds ? wireData[i] : null;
+		return i < nConds ? conductorData[i] : null;
 	}
 
 	public int getNConds() {
@@ -345,7 +350,7 @@ public class LineGeometryObj extends DSSObject {
 		condName = new String[nConds];
 
 		/* Allocations */
-		wireData = new ConductorDataObj[nConds];
+		conductorData = new ConductorDataObj[nConds];
 		X        = new double[nConds];
 		Y        = new double[nConds];
 		units    = new int[nConds];
@@ -379,13 +384,13 @@ public class LineGeometryObj extends DSSObject {
 		for (int i = 0; i < nConds; i++) {
 			lineData.setX(i, units[i], X[i]);
 			lineData.setY(i, units[i], Y[i]);
-			lineData.setRadius(i, wireData[i].getRadiusUnits(), wireData[i].getRadius());
-			lineData.setGMR(i, wireData[i].getGmrUnits(), wireData[i].getGmr60());
-			lineData.setRdc(i, wireData[i].getResistanceUnits(), wireData[i].getRdc());
-			lineData.setRac(i, wireData[i].getResistanceUnits(), wireData[i].getR60());  // Rac
-			if (wireData[i] instanceof CNDataObj) {
+			lineData.setRadius(i, conductorData[i].getRadiusUnits(), conductorData[i].getRadius());
+			lineData.setGMR(i, conductorData[i].getGmrUnits(), conductorData[i].getGmr60());
+			lineData.setRdc(i, conductorData[i].getResistanceUnits(), conductorData[i].getRdc());
+			lineData.setRac(i, conductorData[i].getResistanceUnits(), conductorData[i].getR60());  // Rac
+			if (conductorData[i] instanceof CNDataObj) {
 				CNLineConstants cnlc = (CNLineConstants) lineData;
-				cnd = (CNDataObj) wireData[i];
+				cnd = (CNDataObj) conductorData[i];
 				cnlc.setEpsR(i, cnd.getEpsR());
 				cnlc.setInsLayer(i, cnd.getRadiusUnits(), cnd.getInsLayer());
 				cnlc.setDiaIns(i, cnd.getRadiusUnits(), cnd.getDiaIns());
@@ -394,9 +399,9 @@ public class LineGeometryObj extends DSSObject {
 				cnlc.setDiaStrand(i, cnd.getRadiusUnits(), cnd.getDiaStrand());
 				cnlc.setGmrStrand(i, cnd.getGmrUnits(), cnd.getGmrStrand());
 				cnlc.setRStrand(i, cnd.getResistanceUnits(), cnd.getRStrand());
-			} else if (wireData[i] instanceof TSDataObj) {
+			} else if (conductorData[i] instanceof TSDataObj) {
 				TSLineConstants tslc = (TSLineConstants) lineData;
-				tsd = (TSDataObj) wireData[i];
+				tsd = (TSDataObj) conductorData[i];
 				tslc.setEpsR(i, tsd.getEpsR());
 				tslc.setInsLayer(i, tsd.getRadiusUnits(), tsd.getInsLayer());
 				tslc.setDiaIns(i, tsd.getRadiusUnits(), tsd.getDiaIns());
@@ -448,7 +453,7 @@ public class LineGeometryObj extends DSSObject {
 		for (i = 0; i < nConds; i++)
 			condName[i] = wires[i].getName();
 		for (i = 0; i < nConds; i++)
-			wireData[i] = wires[i];
+			conductorData[i] = wires[i];
 		for (i = 0; i < nConds; i++)
 			X[i] = spc.getXCoord(i);
 		for (i = 0; i < nConds; i++)
@@ -467,122 +472,16 @@ public class LineGeometryObj extends DSSObject {
 		}
 	}
 
-	public int getUnits(int i) {
+	public int getUnit(int i) {
 		return units[i];
-	}
-
-	public int getNPhases() {
-		return nPhases;
-	}
-
-	public int getActiveCond() {
-		return activeCond;
 	}
 
 	public int getNWires() {
 		return nConds;
 	}
 
-	public double getNormAmps() {
-		return normAmps;
-	}
-
-	public void setNormAmps(double amps) {
-		normAmps = amps;
-	}
-
-	public double getEmergAmps() {
-		return emergAmps;
-	}
-
-	public void setEmergAmps(double amps) {
-		emergAmps = amps;
-	}
-
-	// FIXME Private members in OpenDSS.
-
-	public String[] getCondName() {
-		return condName;
-	}
-
-	public void setCondName(String[] name) {
-		this.condName = name;
-	}
-
 	public ConductorDataObj[] getConductorData() {
-		return wireData;
-	}
-
-	public void setConductorData(ConductorDataObj[] data) {
-		wireData = data;
-	}
-
-	public double[] getX() {
-		return X;
-	}
-
-	public void setX(double[] x) {
-		X = x;
-	}
-
-	public double[] getY() {
-		return Y;
-	}
-
-	public void setY(double[] y) {
-		Y = y;
-	}
-
-	public int[] getUnits() {
-		return units;
-	}
-
-	public void setUnits(int[] value) {
-		units = value;
-	}
-
-	public int getLastUnit() {
-		return lastUnit;
-	}
-
-	public void setLastUnit(int unit) {
-		lastUnit = unit;
-	}
-
-	public boolean isDataChanged() {
-		return dataChanged;
-	}
-
-	public void setDataChanged(boolean changed) {
-		dataChanged = changed;
-	}
-
-	public boolean isReduce() {
-		return reduce;
-	}
-
-	public void setReduce(boolean value) {
-		reduce = value;
-	}
-
-	public String getSpacingType() {
-		return spacingType;
-	}
-
-	public void setSpacingType(String type) {
-		spacingType = type;
-	}
-
-	public LineConstants getLineData() {
-		return lineData;
-	}
-
-	public void setLineData(LineConstants data) {
-		lineData = data;
-	}
-
-	public void setPhaseChoice(ConductorChoice choice) {
-		phaseChoice = choice;
+		return conductorData;
 	}
 
 }
