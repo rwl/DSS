@@ -154,84 +154,80 @@ public abstract class ShowResults {
 		}
 	}
 
-	private static void writeElementVoltages(PrintWriter pw, CktElement pElem, boolean LL) {
+	private static void writeElementVoltages(PrintWriter pw, CktElement elem, boolean LL) {
 		int nCond, nTerm, i, j, k, nref, bref;
 		String busName;
-		Complex volts;
+		Complex V;
 		double Vpu, Vmag;
 
 		Circuit ckt = DSS.activeCircuit;
 
-		nCond = pElem.getNumConds();
-		nTerm = pElem.getNumTerms();
+		nCond = elem.getNumConds();
+		nTerm = elem.getNumTerms();
 		k = -1;
-		busName = Util.pad( Util.stripExtension(pElem.getFirstBus()), maxBusNameLength );
-		pw.println("ELEMENT = \"" + pElem.getDSSClassName() + "." + pElem.getName().toUpperCase() + "\"");
+		busName = Util.pad(Util.stripExtension(elem.getFirstBus()), maxBusNameLength);
+		pw.println("ELEMENT = \"" + elem.getDSSClassName() + "." + elem.getName().toUpperCase() + "\"");
 		for (j = 0; j < nTerm; j++) {
 			for (i = 0; i < nCond; i++) {
 				k++;
-				nref = pElem.getNodeRef(k);
-				volts = ckt.getSolution().getNodeV(nref);
-				Vmag  = volts.abs() * 0.001;
+				nref = elem.getNodeRef(k);
+				V = ckt.getSolution().getNodeV(nref);
+				Vmag  = V.abs() * 0.001;
 				if (nref == 0) {
 					Vpu = 0.0;
 				} else {
 					bref = ckt.getMapNodeToBus(nref).busRef;
-					if (ckt.getBus(bref).getKVBase() != 0.0) {
-						Vpu = Vmag / ckt.getBus(bref).getKVBase();
+					if (ckt.getBus(bref - 1).getKVBase() != 0.0) {
+						Vpu = Vmag / ckt.getBus(bref - 1).getKVBase();
 					} else {
 						Vpu = 0.0;
 					}
 				}
 				if (LL) Vpu = Vpu / DSS.SQRT3;
-				pw.printf("%s  (%3d) %4d    %13.5g (%8.4g) /_ %6.1f", busName.toUpperCase(), nref, i,Vmag, Vpu, ComplexUtil.degArg(volts));
+				pw.printf("%s  (%3d) %4d    %13.5g (%8.4g) /_ %6.1f", busName.toUpperCase(),
+						nref, i,Vmag, Vpu, ComplexUtil.degArg(V));
 				pw.println();
 			}
-			if (j < nTerm)
+			if (j < nTerm - 1)
 				pw.println("------------");
-			busName = Util.pad( Util.stripExtension(pElem.getNextBus()), maxBusNameLength );
+			busName = Util.pad(Util.stripExtension(elem.getNextBus()), maxBusNameLength);
 		}
 	}
 
-	private static void writeElementDeltaVoltages(PrintWriter pw, CktElement pElem) {
-		int nCond, node1, node2, bus1, bus2, i;
+	private static void writeElementDeltaVoltages(PrintWriter pw, CktElement elem) {
+		int nCond, nref1, nref2, bref1, bref2, i;
 		double Vmag;
-		Complex volts1, volts2;
+		Complex V1, V2;
 		String elemName;
 
 		Circuit ckt = DSS.activeCircuit;
 
-		nCond = pElem.getNumConds();
+		nCond = elem.getNumConds();
+		elemName = Util.pad(elem.getDSSClassName() + "." + elem.getName().toUpperCase(), maxDeviceNameLength);
 
-		elemName = Util.pad(pElem.getDSSClassName() + "." + pElem.getName().toUpperCase(), maxDeviceNameLength);
 		for (i = 0; i < nCond; i++) {
-			node1 = pElem.getNodeRef(i);
-			node2 = pElem.getNodeRef(i + nCond);
-			if (node1 > 0) {
-				bus1  = ckt.getMapNodeToBus(node1).busRef;
-			} else {
-				bus1 = 0;
-			}
-			if (node2 > 0) {
-				bus2 = ckt.getMapNodeToBus(node2).busRef;
-			} else {
-				bus2 = 0;
-			}
-			if ((bus1 > 0) && (bus2 > 0)) {  // TODO Check zero based indexing
-				volts1 = ckt.getSolution().getNodeV(node1);  // OK if Node1 or Node2 = 0
-				volts2 = ckt.getSolution().getNodeV(node2);
-				volts1 = volts1.subtract(volts2);  // diff voltage
+			nref1 = elem.getNodeRef(i);
+			nref2 = elem.getNodeRef(i + nCond);
 
-				if (ckt.getBus(bus1).getKVBase() != ckt.getBus(bus2).getKVBase()) {
+			bref1 = nref1 > 0 ? ckt.getMapNodeToBus(nref1).busRef : 0;
+			bref2 = nref2 > 0 ? ckt.getMapNodeToBus(nref2).busRef : 0;
+
+			if ((bref1 > 0) && (bref2 > 0)) {
+				V1 = ckt.getSolution().getNodeV(nref1);  // OK if nref1 or nref2 = 0
+				V2 = ckt.getSolution().getNodeV(nref2);
+				V1 = V1.subtract(V2);  // diff voltage
+
+				if (ckt.getBus(bref1 - 1).getKVBase() != ckt.getBus(bref2 - 1).getKVBase()) {
 					Vmag = 0.0;
 				} else {
-					if (ckt.getBus(bus1).getKVBase() > 0.0) {
-						Vmag = volts1.abs() / (1000.0 * ckt.getBus(bus1).getKVBase()) * 100.0;
+					if (ckt.getBus(bref1 - 1).getKVBase() > 0.0) {
+						Vmag = V1.abs() / (1000.0 * ckt.getBus(bref1 - 1).getKVBase()) * 100.0;
 					} else {
 						Vmag = 0.0;
 					}
 				}
-				pw.printf("%s,  %4d,    %12.5g, %12.5g, %12.5g, %6.1f", elemName, i, volts1.abs(), Vmag, ckt.getBus(bus1).getKVBase(), ComplexUtil.degArg(volts1));
+				pw.printf("%s,  %4d,    %12.5g, %12.5g, %12.5g, %6.1f",
+					elemName, i, V1.abs(), Vmag, ckt.getBus(bref1).getKVBase(), ComplexUtil.degArg(V1));
 				pw.println();
 			}
 		}
@@ -244,7 +240,6 @@ public abstract class ShowResults {
 		FileWriter fw;
 		PrintWriter pw;
 		int i;
-
 		Circuit ckt = DSS.activeCircuit;
 
 		try {
@@ -262,11 +257,11 @@ public abstract class ShowResults {
 					pw.println("SYMMETRICAL COMPONENT VOLTAGES BY BUS (for 3-phase buses)");
 				}
 				pw.println();
-				pw.println(Util.pad("Bus", maxBusNameLength) + "  Mag:   V1 (kV)    p.u.     V2 (kV)   %V2/V1    V0 (kV)    %V0/V1");
+				pw.println(Util.pad("Bus", maxBusNameLength) +
+					"  Mag:   V1 (kV)    p.u.     V2 (kV)   %V2/V1    V0 (kV)    %V0/V1");
 				pw.println();
 				for (i = 0; i < ckt.getNumBuses(); i++)
 					writeSeqVoltages(pw, i, LL);
-
 				break;
 			case 1:
 				pw.println();
@@ -276,11 +271,11 @@ public abstract class ShowResults {
 					pw.println("NODE-GROUND VOLTAGES BY BUS & NODE");
 				}
 				pw.println();
-				pw.println(Util.pad("Bus", maxBusNameLength) + " Node    V (kV)    Angle      p.u.   Base kV");
+				pw.println(Util.pad("Bus", maxBusNameLength) +
+					" Node    V (kV)    Angle      p.u.   Base kV");
 				pw.println();
 				for (i = 0; i < ckt.getNumBuses(); i++)
 					writeBusVoltages(pw, i, LL);
-
 				break;
 			case 2:
 				pw.println();
@@ -288,21 +283,21 @@ public abstract class ShowResults {
 				pw.println();
 				pw.println("Power Delivery Elements");
 				pw.println();
-				pw.println(Util.pad("Bus", maxBusNameLength) + " (node ref)  Phase    Magnitude, kV (pu)    Angle");
+				pw.println(Util.pad("Bus", maxBusNameLength) +
+					" (node ref)  Phase    Magnitude, kV (pu)    Angle");
 				pw.println();
 
-
 				// sources first
-				for (CktElement pElem : ckt.getSources()) {
-					if (pElem.isEnabled())
-						writeElementVoltages(pw, pElem, LL);
+				for (CktElement elem : ckt.getSources()) {
+					if (elem.isEnabled())
+						writeElementVoltages(pw, elem, LL);
 					pw.println();
 				}
 
 				// PD elements first
-				for (CktElement pElem : ckt.getPDElements()) {
-					if (pElem.isEnabled())
-						writeElementVoltages(pw, pElem, LL);
+				for (CktElement elem : ckt.getPDElements()) {
+					if (elem.isEnabled())
+						writeElementVoltages(pw, elem, LL);
 					pw.println();
 				}
 
@@ -310,13 +305,14 @@ public abstract class ShowResults {
 				pw.println();
 				pw.println("Power Conversion Elements");
 				pw.println();
-				pw.println(Util.pad("Bus", maxBusNameLength) + " (node ref)  Phase    Magnitude, kV (pu)    Angle");
+				pw.println(Util.pad("Bus", maxBusNameLength) +
+					" (node ref)  Phase    Magnitude, kV (pu)    Angle");
 				pw.println();
 
 				// PC elements next
-				for (CktElement pElem : ckt.getPCElements()) {
-					if (pElem.isEnabled())
-						writeElementVoltages(pw, pElem, LL);
+				for (CktElement elem : ckt.getPCElements()) {
+					if (elem.isEnabled())
+						writeElementVoltages(pw, elem, LL);
 					pw.println();
 				}
 				break;
@@ -327,32 +323,32 @@ public abstract class ShowResults {
 
 			Util.fireOffEditor(fileName);
 		} catch (IOException e) {
-			// TODO: handle exception
+			DSS.doSimpleMsg("Error encountered showing bus voltages: " + e.getMessage(), -1);
 		}
 	}
 
-	private static void getI0I1I2(double I0, double I1, double I2, double CMax, int nPhases, int kOffset, Complex[] cBuffer) {
-		double CMag;
+	private static void getI0I1I2(double[] I0, double[] I1, double[] I2, double[] Cmax, int nPhases, int koffset, Complex[] cBuffer) {
+		double Cmag;
 		int i;
 		Complex[] Iph  = new Complex[3];
 		Complex[] I012 = new Complex[3];
 
 		if (nPhases >= 3) {
-			CMax = 0.0;
+			Cmax[0] = 0.0;
 			for (i = 0; i < 3; i++) {
-				Iph[i] = cBuffer[kOffset + i];
-				CMag = Iph[i].abs();
-				if (CMag > CMax) CMax = CMag;
+				Iph[i] = cBuffer[koffset + i];
+				Cmag = Iph[i].abs();
+				if (Cmag > Cmax[0]) Cmax[0] = Cmag;
 			}
 			MathUtil.phase2SymComp(Iph, I012);
-			I0 = I012[0].abs();
-			I1 = I012[1].abs();
-			I2 = I012[2].abs();
+			I0[0] = I012[0].abs();
+			I1[0] = I012[1].abs();
+			I2[0] = I012[2].abs();
 		} else {
-			I0 = 0.0;
-			I1 = cBuffer[1 + kOffset].abs();
-			I2 = 0.0;
-			CMax = I1;
+			I0[0] = 0.0;
+			I1[0] = cBuffer[1 + koffset].abs();
+			I2[0] = 0.0;
+			Cmax[0] = I1[0];
 		}
 	}
 
@@ -360,70 +356,62 @@ public abstract class ShowResults {
 			double I0, double I1, double I2, double CMax, double normAmps, double emergAmps,
 			int j, int DSSObjType) {
 
-		double INormal, IEmerg, I2I1, I0I1;
+		double Inormal, Iemerg, I2I1, I0I1;
 		String name;
 
-		INormal = 0.0;
-		IEmerg = 0.0;
-		if (j == 0) {  // TODO Check zero based indexing
-			name = paddedBrName;
-		} else {
-			name = Util.pad("   -", paddedBrName.length());
-		}
+		Inormal = 0.0;
+		Iemerg = 0.0;
 
-		if (I1 > 0.0) {
-			I2I1 = 100.0 * I2 / I1;
-		} else {
-			I2I1 = 0.0;
-		}
+		name = (j == 0) ? paddedBrName : Util.pad("   -", paddedBrName.length());
 
-		if (I1 > 0.0) {
-			I0I1 = 100.0 * I0 / I1;
-		} else {
-			I0I1 = 0.0;
-		}
-		if (((DSSClassDefs.CLASSMASK & DSSObjType) != DSSClassDefs.CAP_ELEMENT) && (j == 0)) {  // TODO Check zero based indexing
+		I2I1 = (I1 > 0.0) ? 100.0 * I2 / I1 : 0.0;
+		I0I1 = (I1 > 0.0) ? 100.0 * I0 / I1 : 0.0;
+
+		if (((DSSClassDefs.CLASSMASK & DSSObjType) != DSSClassDefs.CAP_ELEMENT) && (j == 0)) {
 			// only write overloads for non-capacitors and terminal 1
-			if (normAmps > 0.0) INormal = CMax / normAmps * 100.0;
-			if (emergAmps > 0.0) IEmerg = CMax / emergAmps * 100.0;
+			if (normAmps > 0.0) Inormal = CMax / normAmps * 100.0;
+			if (emergAmps > 0.0) Iemerg = CMax / emergAmps * 100.0;
 		}
 
 		pw.printf("%s %3d  %10.5g   %10.5g %8.2f  %10.5g %8.2f  %8.2f %8.2f",
-				name.toUpperCase(), j, I1, I2, I2I1, I0, I0I1, INormal, IEmerg);
+				name.toUpperCase(), j + 1, I1, I2, I2I1, I0, I0I1, Inormal, Iemerg);
 		pw.println();
 	}
 
-	private static void writeTerminalCurrents(PrintWriter pw, CktElement pElem, boolean showResidual) {
+	private static void writeTerminalCurrents(PrintWriter pw, CktElement elem, boolean showResidual) {
 		int j, i, k, nCond, nTerm;
 		Complex[] cBuffer;
 		String fromBus;
-		Complex CTotal;
+		Complex Ctotal;
 		double[] residPolar;
 
-		nCond = pElem.getNumConds();
-		nTerm = pElem.getNumTerms();
+		nCond = elem.getNumConds();
+		nTerm = elem.getNumTerms();
 
 		cBuffer = new Complex[nCond * nTerm];
-		pElem.getCurrents(cBuffer);
+		elem.getCurrents(cBuffer);
 		k = -1;
-		fromBus = Util.pad( Util.stripExtension(pElem.getFirstBus()), maxBusNameLength );
-		pw.println("ELEMENT = " + Util.fullName(pElem));
+		fromBus = Util.pad(Util.stripExtension(elem.getFirstBus()), maxBusNameLength);
+		pw.println("ELEMENT = " + Util.fullName(elem));
 		for (j = 0; j < nTerm; j++) {
-			CTotal = Complex.ZERO;
+			Ctotal = Complex.ZERO;
 			for (i = 0; i < nCond; i++) {
 				k++;
 				if (showResidual)
-					CTotal = CTotal.add(cBuffer[k]);
-				pw.printf("%s  %4d    %13.5g /_ %6.1f", fromBus.toUpperCase(), Util.getNodeNum(pElem.getNodeRef(k)), cBuffer[k].abs(), ComplexUtil.degArg(cBuffer[k]));
+					Ctotal = Ctotal.add(cBuffer[k]);
+				pw.printf("%s  %4d    %13.5g /_ %6.1f",
+					fromBus.toUpperCase(), Util.getNodeNum(elem.getNodeRef(k)),
+					cBuffer[k].abs(), ComplexUtil.degArg(cBuffer[k]));
 				pw.println();
 			}
-			if (showResidual && (pElem.getNumPhases() > 1)) {
-				residPolar = ComplexUtil.complexToPolarDeg(CTotal.negate());
-				pw.printf("%s Resid    %13.5g /_ %6.1f", fromBus.toUpperCase(), residPolar[0], residPolar[1]);
+			if (showResidual && (elem.getNumPhases() > 1)) {
+				residPolar = ComplexUtil.complexToPolarDeg(Ctotal.negate());
+				pw.printf("%s Resid    %13.5g /_ %6.1f",
+					fromBus.toUpperCase(), residPolar[0], residPolar[1]);
 				pw.println();
 			}
-			if (j < nTerm) pw.println("------------");  // TODO Check zero based indexing
-			fromBus = Util.pad( Util.stripExtension(pElem.getNextBus()), maxBusNameLength );
+			if (j < nTerm - 1) pw.println("------------");
+			fromBus = Util.pad(Util.stripExtension(elem.getNextBus()), maxBusNameLength);
 		}
 		pw.println();
 	}
@@ -434,7 +422,10 @@ public abstract class ShowResults {
 		PrintWriter pw;
 		Complex[] cBuffer;
 		int nCond, nTerm, j;
-		double I0 = 0, I1 = 0, I2 = 0, CMax = 0;
+		double[] I0 = new double[1];
+		double[] I1 = new double[1];
+		double[] I2 = new double[1];
+		double[] Cmax = new double[1];;
 
 		Circuit ckt = DSS.activeCircuit;
 
@@ -446,81 +437,81 @@ public abstract class ShowResults {
 			pw = new PrintWriter(fw);
 
 			switch (showOptionCode) {
-			case 0:  /* Sequence Currents */
-
+			case 0:  /* Sequence currents */
 				pw.println();
 				pw.println("SYMMETRICAL COMPONENT CURRENTS BY CIRCUIT ELEMENT (first 3 phases)");
 				pw.println();
-				pw.println(Util.pad("Element", maxDeviceNameLength + 2) + " Term      I1         I2         %I2/I1    I0         %I0/I1   %Normal %Emergency");
+				pw.println(Util.pad("Element", maxDeviceNameLength + 2) +
+					" Term      I1         I2         %I2/I1    I0         %I0/I1   %Normal %Emergency");
 				pw.println();
 
 				// sources first
-				for (CktElement pElem : ckt.getSources()) {
-					if (pElem.isEnabled()) {
-						nCond = pElem.getNumConds();
-						nTerm = pElem.getNumTerms();
+				for (CktElement elem : ckt.getSources()) {
+					if (elem.isEnabled()) {
+						nCond = elem.getNumConds();
+						nTerm = elem.getNumTerms();
 						cBuffer = new Complex[nCond * nTerm];
-						pElem.getCurrents(cBuffer);
+						elem.getCurrents(cBuffer);
 
 						for (j = 0; j < nTerm; j++) {
-							getI0I1I2(I0, I1, I2, CMax, pElem.getNumPhases(), (j - 1) * nCond, cBuffer);  // TODO Check pass be value
-							writeSeqCurrents(pw, Util.padDots( Util.fullName(pElem), maxDeviceNameLength + 2 ), I0, I1, I2, CMax, 0.0, 0.0, j, pElem.getObjType());
+							getI0I1I2(I0, I1, I2, Cmax, elem.getNumPhases(), j * nCond, cBuffer);
+							writeSeqCurrents(pw, Util.padDots(Util.fullName(elem), maxDeviceNameLength + 2),
+									I0[0], I1[0], I2[0], Cmax[0], 0.0, 0.0, j, elem.getObjType());
 						}
-						cBuffer = null;
 					}
 				}
 
 				// PD elements next
-				for (PDElement PDElem : ckt.getPDElements()) {
-					if (PDElem.isEnabled()) {
-						nCond = PDElem.getNumConds();
-						nTerm = PDElem.getNumTerms();
+				for (PDElement elem : ckt.getPDElements()) {
+					if (elem.isEnabled()) {
+						nCond = elem.getNumConds();
+						nTerm = elem.getNumTerms();
 						cBuffer = new Complex[nCond * nTerm];
-						PDElem.getCurrents(cBuffer);
+						elem.getCurrents(cBuffer);
 
 						for (j = 0; j < nTerm; j++) {
-							getI0I1I2(I0, I1, I2, CMax, PDElem.getNumPhases(), (j - 1) * nCond, cBuffer);
-							writeSeqCurrents(pw, Util.padDots( Util.fullName(PDElem), maxDeviceNameLength + 2 ), I0, I1, I2, CMax, PDElem.getNormAmps(), PDElem.getEmergAmps(), j, PDElem.getObjType());
+							getI0I1I2(I0, I1, I2, Cmax, elem.getNumPhases(), j * nCond, cBuffer);
+							writeSeqCurrents(pw, Util.padDots(Util.fullName(elem), maxDeviceNameLength + 2),
+									I0[0], I1[0], I2[0], Cmax[0], elem.getNormAmps(), elem.getEmergAmps(),
+									j, elem.getObjType());
 						}
-						cBuffer = null;
 					}
 				}
 
 				// PC elements next
-				for (PCElement PCElem : ckt.getPCElements()) {
-					if (PCElem.isEnabled()) {
-						nCond = PCElem.getNumConds();
-						nTerm = PCElem.getNumTerms();
+				for (PCElement elem : ckt.getPCElements()) {
+					if (elem.isEnabled()) {
+						nCond = elem.getNumConds();
+						nTerm = elem.getNumTerms();
 						cBuffer = new Complex[nCond * nTerm];
-						PCElem.getCurrents(cBuffer);
+						elem.getCurrents(cBuffer);
 
 						for (j = 0; j < nTerm; j++) {
-							getI0I1I2(I0, I1, I2, CMax, PCElem.getNumPhases(), (j - 1) * nCond, cBuffer);
-							writeSeqCurrents(pw, Util.padDots( Util.fullName(PCElem), maxDeviceNameLength + 2 ), I0, I1, I2, CMax, 0.0, 0.0, j, PCElem.getObjType());
+							getI0I1I2(I0, I1, I2, Cmax, elem.getNumPhases(), j * nCond, cBuffer);
+							writeSeqCurrents(pw, Util.padDots( Util.fullName(elem), maxDeviceNameLength + 2 ),
+									I0[0], I1[0], I2[0], Cmax[0], 0.0, 0.0, j, elem.getObjType());
 						}
-						cBuffer = null;
 					}
 				}
 
 				// faults next
-				for (CktElement pElem : ckt.getFaults()) {
-					if (pElem.isEnabled()) {
-						nCond = pElem.getNumConds();
-						nTerm = pElem.getNumTerms();
+				for (CktElement elem : ckt.getFaults()) {
+					if (elem.isEnabled()) {
+						nCond = elem.getNumConds();
+						nTerm = elem.getNumTerms();
 						cBuffer = new Complex[nCond * nTerm];
-						pElem.getCurrents(cBuffer);
+						elem.getCurrents(cBuffer);
 
 						for (j = 0; j < nTerm; j++) {
-							getI0I1I2(I0, I1, I2, CMax, pElem.getNumPhases(), (j - 1) * nCond, cBuffer);
-							writeSeqCurrents(pw, Util.padDots( Util.fullName(pElem), maxDeviceNameLength + 2 ), I0, I1, I2, CMax, 0.0, 0.0, j, pElem.getObjType());
+							getI0I1I2(I0, I1, I2, Cmax, elem.getNumPhases(), j * nCond, cBuffer);
+							writeSeqCurrents(pw, Util.padDots(Util.fullName(elem), maxDeviceNameLength + 2),
+									I0[0], I1[0], I2[0], Cmax[0], 0.0, 0.0, j, elem.getObjType());
 						}
-						cBuffer = null;
 					}
 				}
 
 				break;
 			case 1:  // element branch currents
-
 				pw.println();
 				pw.println("CIRCUIT ELEMENT CURRENTS");
 				pw.println();
@@ -532,20 +523,19 @@ public abstract class ShowResults {
 				pw.println();
 
 				// sources first
-				for (CktElement pElem : ckt.getSources())
-					if (pElem.isEnabled())
-						writeTerminalCurrents(pw, pElem, false);
+				for (CktElement elem : ckt.getSources())
+					if (elem.isEnabled())
+						writeTerminalCurrents(pw, elem, false);
 
 				// PD elements next
-				for (CktElement pElem : ckt.getPDElements())
-					if (pElem.isEnabled())
-						writeTerminalCurrents(pw, pElem, showResidual);
+				for (CktElement elem : ckt.getPDElements())
+					if (elem.isEnabled())
+						writeTerminalCurrents(pw, elem, showResidual);
 
 				// faults
-				for (CktElement pElem : ckt.getFaults())
-					if (pElem.isEnabled())
-						writeTerminalCurrents(pw, pElem, false);
-
+				for (CktElement elem : ckt.getFaults())
+					if (elem.isEnabled())
+						writeTerminalCurrents(pw, elem, false);
 
 				pw.println("= = = = = = = = = = = = = = = = = = =  = = = = = = = = = = =  = =");
 				pw.println();
@@ -555,9 +545,9 @@ public abstract class ShowResults {
 				pw.println();
 
 				// PC elements next
-				for (CktElement pElem : ckt.getPCElements())
-					if (pElem.isEnabled())
-						writeTerminalCurrents(pw, pElem, false);
+				for (CktElement elem : ckt.getPCElements())
+					if (elem.isEnabled())
+						writeTerminalCurrents(pw, elem, false);
 				break;
 			}
 			pw.close();
@@ -565,13 +555,14 @@ public abstract class ShowResults {
 
 			Util.fireOffEditor(fileName);
 		} catch (IOException e) {
-			DSS.doSimpleMsg("Exception raised in ShowCurrents: " + e.getMessage(), 2190);
+			DSS.doSimpleMsg("Error encountered showing currents: " + e.getMessage(), 2190);
 		}
 	}
 
 	/**
-	 * opt = 0: kVA
-	 * opt = 1: MVA
+	 * @param fileName
+	 * @param opt 0: kVA, 1: MVA
+	 * @param showOptionCode
 	 */
 	public static void showPowers(String fileName, int opt, int showOptionCode) {
 		String fromBus;
@@ -579,7 +570,7 @@ public abstract class ShowResults {
 		PrintWriter pw;
 		Complex[] cBuffer;
 		int nCond, nTerm, i, j, k;
-		Complex volts;
+		Complex V;
 		Complex S, Saccum;
 		int nref;
 		Complex[] Vph = new Complex[3];
@@ -600,124 +591,121 @@ public abstract class ShowResults {
 			cBuffer = new Complex[Util.getMaxCktElementSize()];
 
 			switch (showOptionCode) {
-			case 0:
-				/* Sequence Currents */
+			case 0: /* Sequence currents */
 				pw.println();
 				pw.println("SYMMETRICAL COMPONENT POWERS BY CIRCUIT ELEMENT (first 3 phases)                                     Excess Power");
 				pw.println();
 				switch (opt) {
 				case 1:
-					pw.println(Util.pad("Element", maxDeviceNameLength + 2) + " Term    P1(MW)   Q1(Mvar)       P2         Q2      P0      Q0       P_Norm      Q_Norm     P_Emerg    Q_Emerg");
+					pw.println(Util.pad("Element", maxDeviceNameLength + 2) +
+						" Term    P1(MW)   Q1(Mvar)       P2         Q2      P0      Q0       P_Norm      Q_Norm     P_Emerg    Q_Emerg");
 					break;
 				default:
-					pw.println(Util.pad("Element", maxDeviceNameLength + 2) + " Term    P1(kW)   Q1(kvar)       P2         Q2      P0      Q0       P_Norm      Q_Norm     P_Emerg    Q_Emerg");
+					pw.println(Util.pad("Element", maxDeviceNameLength + 2) +
+						" Term    P1(kW)   Q1(kvar)       P2         Q2      P0      Q0       P_Norm      Q_Norm     P_Emerg    Q_Emerg");
 					break;
 				}
 				pw.println();
 
 				// sources first
-				for (CktElement pElem : ckt.getSources()) {
-					if (pElem.isEnabled()) {
-						nCond = pElem.getNumConds();
-						nTerm = pElem.getNumTerms();
-						pElem.getCurrents(cBuffer);
+				for (CktElement elem : ckt.getSources()) {
+					if (elem.isEnabled()) {
+						nCond = elem.getNumConds();
+						nTerm = elem.getNumTerms();
+						elem.getCurrents(cBuffer);
 
 						for (j = 0; j < nTerm; j++) {
-							pw.print(Util.pad( Util.fullName(pElem), maxDeviceNameLength + 2) + j);
-							for (i = 0; i < Math.min(3, pElem.getNumPhases()); i++) {
-								k = (j - 1) * nCond + i;
-								nref = pElem.getNodeRef(k);
-								volts = ckt.getSolution().getNodeV(nref);
+							pw.print(Util.pad(Util.fullName(elem), maxDeviceNameLength + 2) + j + 1);
+							for (i = 0; i < Math.min(3, elem.getNumPhases()); i++) {
+								k = j * nCond + i;
+								nref = elem.getNodeRef(k);
+								V = ckt.getSolution().getNodeV(nref);
 								Iph[i] = cBuffer[k];
-								Vph[i] = volts;
+								Vph[i] = V;
 							}
-							if (pElem.getNumPhases() >= 3) {
+							if (elem.getNumPhases() >= 3) {
 								MathUtil.phase2SymComp(Iph, I012);
 								MathUtil.phase2SymComp(Vph, V012);
 							} else {
-								// Handle single phase and pos seq models
+								// handle single phase and pos seq models
 								V012[0] = Complex.ZERO;
 								I012[0] = Complex.ZERO;
+								V012[1] = ckt.isPositiveSequence() ? Vph[0] : Complex.ZERO;
+								I012[1] = ckt.isPositiveSequence() ? Iph[0] : Complex.ZERO;
 								V012[2] = Complex.ZERO;
 								I012[2] = Complex.ZERO;
-								if (ckt.isPositiveSequence()) {
-									V012[1] = Vph[0];
-									I012[1] = Iph[0];
-								} else {
-									V012[1] = Complex.ZERO;
-									I012[1] = Complex.ZERO;
-								}
 							}
 
 							S = V012[1].multiply( I012[1].conjugate() );
 							if (opt == 1) S = S.multiply(0.001);
 							pw.print(S.getReal() * 0.003);
 							pw.print(S.getImaginary() * 0.003);
+
 							S = V012[2].multiply( I012[2].conjugate() );
 							if (opt == 1) S = S.multiply(0.001);
 							pw.print(S.getReal() * 0.003);
 							pw.print(S.getImaginary() * 0.003);
+
 							S = V012[0].multiply( I012[0].conjugate() );
 							if (opt == 1) S = S.multiply(0.001);
 							pw.print(S.getReal() * 0.003);
 							pw.print(S.getImaginary() * 0.003);
+
 							pw.println();
 						}
 					}
 				}
 
 				// PD elements next
-				for (PDElement PDElem : ckt.getPDElements()) {
-					if (PDElem.isEnabled()) {
-						nCond = PDElem.getNumConds();
-						nTerm = PDElem.getNumTerms();
-						PDElem.getCurrents(cBuffer);
+				for (PDElement elem : ckt.getPDElements()) {
+					if (elem.isEnabled()) {
+						nCond = elem.getNumConds();
+						nTerm = elem.getNumTerms();
+						elem.getCurrents(cBuffer);
 
 						for (j = 0; j < nTerm; j++) {
-							pw.print(Util.pad( Util.fullName(PDElem), maxDeviceNameLength + 2) + j);
-							for (i = 0; i < Math.min(3, PDElem.getNumPhases()); i++) {
-								k = (j - 1) * nCond + i;
-								nref = PDElem.getNodeRef(k);
-								volts = ckt.getSolution().getNodeV(nref);
+							pw.print(Util.pad( Util.fullName(elem), maxDeviceNameLength + 2) + j + 1);
+							for (i = 0; i < Math.min(3, elem.getNumPhases()); i++) {
+								k = j * nCond + i;
+								nref = elem.getNodeRef(k);
+								V = ckt.getSolution().getNodeV(nref);
 								Iph[i] = cBuffer[k];
-								Vph[i] = volts;
-							}
-							if (PDElem.getNumPhases() >= 3) {
-								MathUtil.phase2SymComp(Iph, I012);
-								MathUtil.phase2SymComp(Vph, V012);
-							} else {  // Handle single phase and pos seq models
-								V012[0] = Complex.ZERO;
-								I012[0] = Complex.ZERO;
-								V012[1] = Complex.ZERO;
-								I012[1] = Complex.ZERO;
-								if (ckt.isPositiveSequence()) {
-									V012[1] = Vph[0];
-									I012[1] = Iph[0];
-								} else {
-									V012[1] = Complex.ZERO;
-									I012[1] = Complex.ZERO;
-								}
+								Vph[i] = V;
 							}
 
+							if (elem.getNumPhases() >= 3) {
+								MathUtil.phase2SymComp(Iph, I012);
+								MathUtil.phase2SymComp(Vph, V012);
+							} else {  // handle single phase and pos seq models
+								V012[0] = Complex.ZERO;
+								I012[0] = Complex.ZERO;
+								V012[1] = ckt.isPositiveSequence() ? Vph[0] : Complex.ZERO;
+								I012[1] = ckt.isPositiveSequence() ? Iph[0] : Complex.ZERO;
+								V012[2] = Complex.ZERO;
+								I012[2] = Complex.ZERO;
+							}
 							S = V012[1].multiply( I012[1].conjugate() );
 							if (opt == 1) S = S.multiply(0.001);
 							pw.print(S.getReal() * 0.003);
 							pw.print(S.getImaginary() * 0.003);
+
 							S = V012[2].multiply( I012[2].conjugate() );
 							if (opt == 1) S = S.multiply(0.001);
 							pw.print(S.getReal() * 0.003);
 							pw.print(S.getImaginary() * 0.003);
+
 							S = V012[0].multiply( I012[0].conjugate() );
 							if (opt == 1) S = S.multiply(0.001);
 							pw.print(S.getReal() * 0.003);
 							pw.print(S.getImaginary() * 0.003);
 
-							if (j == 0) {  // TODO Check zero based indexing
-								S = PDElem.getExcessKVANorm(0);
+							if (j == 0) {
+								S = elem.getExcessKVANorm(0);
 								if (opt == 1) S = S.multiply(0.001);
 								pw.print(S.getReal());
 								pw.print(S.getImaginary());
-								S = PDElem.getExcessKVAEmerg(1);  // TODO Check zero based indexing
+
+								S = elem.getExcessKVAEmerg(0);
 								if (opt == 1) S = S.multiply(0.001);
 								pw.print(S.getReal());
 								pw.print(S.getImaginary());
@@ -729,59 +717,55 @@ public abstract class ShowResults {
 				}
 
 				// PC elements next
-				for (PCElement PCElem : ckt.getPCElements()) {
-					if (PCElem.isEnabled()) {
-						nCond = PCElem.getNumConds();
-						nTerm = PCElem.getNumTerms();
-						PCElem.getCurrents(cBuffer);
+				for (PCElement elem : ckt.getPCElements()) {
+					if (elem.isEnabled()) {
+						nCond = elem.getNumConds();
+						nTerm = elem.getNumTerms();
+						elem.getCurrents(cBuffer);
 
 						for (j = 0; j < nTerm; j++) {
-							pw.print(Util.pad( Util.fullName(PCElem), maxDeviceNameLength + 2) + j);
-							for (i = 0; i < Math.min(3, PCElem.getNumPhases()); i++) {
-								k = (j - 1) * nCond + i;  // TODO Check zero based indexing
-								nref = PCElem.getNodeRef(k);
-								volts = ckt.getSolution().getNodeV(nref);
+							pw.print(Util.pad(Util.fullName(elem), maxDeviceNameLength + 2) + j + 1);
+							for (i = 0; i < Math.min(3, elem.getNumPhases()); i++) {
+								k = j * nCond + i;
+								nref = elem.getNodeRef(k);
+								V = ckt.getSolution().getNodeV(nref);
 								Iph[i] = cBuffer[k];
-								Vph[i] = volts;
+								Vph[i] = V;
 							}
 
-							if (PCElem.getNumPhases() >= 3) {
+							if (elem.getNumPhases() >= 3) {
 								MathUtil.phase2SymComp(Iph, I012);
 								MathUtil.phase2SymComp(Vph, V012);
-							} else {  // Handle single phase and pos seq models
+							} else {  // handle single phase and pos seq models
 								V012[0] = Complex.ZERO;
 								I012[0] = Complex.ZERO;
+								V012[1] = ckt.isPositiveSequence() ? Vph[0] : Complex.ZERO;
+								I012[1] = ckt.isPositiveSequence() ? Iph[0] : Complex.ZERO;
 								V012[2] = Complex.ZERO;
-								I012[3] = Complex.ZERO;
-								if (ckt.isPositiveSequence()) {
-									V012[1] = Vph[0];
-									I012[1] = Iph[0];
-								} else {
-									V012[1] = Complex.ZERO;
-									I012[2] = Complex.ZERO;
-								}
+								I012[2] = Complex.ZERO;
 							}
 
 							S = V012[1].multiply( I012[1].conjugate() );
 							if (opt == 1) S = S.multiply(0.001);
 							pw.print(S.getReal() * 0.003);
 							pw.print(S.getImaginary() * 0.003);
+
 							S = V012[2].multiply( I012[2].conjugate() );
 							if (opt == 1) S = S.multiply(0.001);
 							pw.print(S.getReal() * 0.003);
 							pw.print(S.getImaginary() * 0.003);
+
 							S = V012[0].multiply( I012[0].conjugate() );
 							if (opt == 1) S = S.multiply(0.001);
 							pw.print(S.getReal() * 0.003);
 							pw.print(S.getImaginary() * 0.003);
 
 							pw.println();
-
 						}
 					}
 				}
 				break;
-			case 1:  /* Branch Powers */
+			case 1:  /* Branch powers */
 				pw.println();
 				pw.println("CIRCUIT ELEMENT POWER FLOW");
 				pw.println();
@@ -791,72 +775,76 @@ public abstract class ShowResults {
 				pw.println();
 				switch (opt) {
 				case 1:
-					pw.println(Util.pad("  Bus", maxBusNameLength) + " Phase     MW     +j   Mvar         MVA         PF");
+					pw.println(Util.pad("  Bus", maxBusNameLength) +
+						" Phase     MW     +j   Mvar         MVA         PF");
 					break;
 				default:
-					pw.println(Util.pad("  Bus", maxBusNameLength) + " Phase     kW     +j   kvar         kVA         PF");
+					pw.println(Util.pad("  Bus", maxBusNameLength) +
+						" Phase     kW     +j   kvar         kVA         PF");
 					break;
 				}
 				pw.println();
 
-
-				for (CktElement pElem : ckt.getSources()) {
-					if (pElem.isEnabled()) {
-						nCond = pElem.getNumConds();
-						nTerm = pElem.getNumTerms();
-						pElem.getCurrents(cBuffer);
+				for (CktElement elem : ckt.getSources()) {
+					if (elem.isEnabled()) {
+						nCond = elem.getNumConds();
+						nTerm = elem.getNumTerms();
+						elem.getCurrents(cBuffer);
 						k = -1;
-						fromBus = Util.pad( Util.stripExtension(pElem.getFirstBus()), maxBusNameLength );
-						pw.println("ELEMENT = " + Util.fullName(pElem));
+						fromBus = Util.pad(Util.stripExtension(elem.getFirstBus()), maxBusNameLength);
+						pw.println("ELEMENT = " + Util.fullName(elem));
 						for (j = 0; j < nTerm; j++) {
 							Saccum = Complex.ZERO;
 							for (i = 0; i < nCond; i++) {
 								k++;
-								nref = pElem.getNodeRef(k);
-								volts = ckt.getSolution().getNodeV(nref);
-								S = volts.multiply( cBuffer[k].conjugate() );
-								if (/* (pElem.getNPhases() == 1) and */ ckt.isPositiveSequence())
+								nref = elem.getNodeRef(k);
+								V = ckt.getSolution().getNodeV(nref);
+								S = V.multiply(cBuffer[k].conjugate());
+								if (ckt.isPositiveSequence()) // && elem.getNumPhases() == 1)
 									S = S.multiply(3.0);
 								if (opt == 1) S = S.multiply(0.001);
 								Saccum = Saccum.add(S);
-								pw.print(fromBus.toUpperCase() + "  " + Util.getNodeNum(pElem.getNodeRef(k)) + "    " + S.getReal() / 1000.0 + " +j " + S.getImaginary() / 1000.0);
+								pw.print(fromBus.toUpperCase() + "  " + Util.getNodeNum(elem.getNodeRef(k)) +
+									"    " + S.getReal() / 1000.0 + " +j " + S.getImaginary() / 1000.0);
 								pw.println("   " + S.abs() / 1000.0 + "     " + Util.powerFactor(S));
 							}
-							pw.print(Util.padDots("   TERMINAL TOTAL", maxBusNameLength + 10) + Saccum.getReal() / 1000.0 + " +j " + Saccum.getImaginary() / 1000.0);
+							pw.print(Util.padDots("   TERMINAL TOTAL", maxBusNameLength + 10) +
+								Saccum.getReal() / 1000.0 + " +j " + Saccum.getImaginary() / 1000.0);
 							pw.println("   " + Saccum.abs() / 1000.0 + "     " + Util.powerFactor(Saccum));
-							fromBus = Util.pad( Util.stripExtension(pElem.getNextBus()), maxBusNameLength );
+							fromBus = Util.pad( Util.stripExtension(elem.getNextBus()), maxBusNameLength );
 						}
 					}
 					pw.println();
 				}
 
-
 				// PD elements next
-				for (CktElement pElem : ckt.getPDElements()) {
-					if (pElem.isEnabled()) {
-						nCond = pElem.getNumConds();
-						nTerm = pElem.getNumTerms();
-						pElem.getCurrents(cBuffer);
-						k = 0;
-						fromBus = Util.pad( Util.stripExtension(pElem.getFirstBus()), maxBusNameLength );
-						pw.println("ELEMENT = " + Util.fullName(pElem));
+				for (CktElement elem : ckt.getPDElements()) {
+					if (elem.isEnabled()) {
+						nCond = elem.getNumConds();
+						nTerm = elem.getNumTerms();
+						elem.getCurrents(cBuffer);
+						k = -1;
+						fromBus = Util.pad( Util.stripExtension(elem.getFirstBus()), maxBusNameLength );
+						pw.println("ELEMENT = " + Util.fullName(elem));
 						for (j = 0; j < nTerm; j++) {
 							Saccum = Complex.ZERO;
 							for (i = 0; i < nCond; i++) {
 								k++;
-								nref = pElem.getNodeRef(k);
-								volts = ckt.getSolution().getNodeV(nref);
-								S = volts.multiply(cBuffer[k].conjugate());
-								if (/* (pElem.getNPhases() == 1) and */ ckt.isPositiveSequence())
+								nref = elem.getNodeRef(k);
+								V = ckt.getSolution().getNodeV(nref);
+								S = V.multiply(cBuffer[k].conjugate());
+								if (ckt.isPositiveSequence())  // && (pElem.getNPhases() == 1)
 									S = S.multiply(3.0);
 								if (opt == 1) S = S.multiply(0.001);
 								Saccum = Saccum.add(S);
- 								pw.print(fromBus.toUpperCase() + "  " + Util.getNodeNum(pElem.getNodeRef(k)) + "    " + S.getReal() / 1000.0 + " +j " + S.getImaginary() / 1000.0);
+ 								pw.print(fromBus.toUpperCase() + "  " + Util.getNodeNum(elem.getNodeRef(k)) +
+ 									"    " + S.getReal() / 1000.0 + " +j " + S.getImaginary() / 1000.0);
 								pw.println("   " + S.abs() / 1000.0 + "     " + Util.powerFactor(S));
 							}
-							pw.print(Util.padDots("   TERMINAL TOTAL", maxBusNameLength + 10) + Saccum.getReal() / 1000.0 + " +j " + Saccum.getImaginary() / 1000.0);
+							pw.print(Util.padDots("   TERMINAL TOTAL", maxBusNameLength + 10) +
+								Saccum.getReal() / 1000.0 + " +j " + Saccum.getImaginary() / 1000.0);
 							pw.println("   " + Saccum.abs() / 1000.0 + "     " + Util.powerFactor(Saccum));
-							fromBus = Util.pad( Util.stripExtension(pElem.getNextBus()), maxBusNameLength );
+							fromBus = Util.pad( Util.stripExtension(elem.getNextBus()), maxBusNameLength );
 						}
 					}
 					pw.println();
@@ -877,59 +865,57 @@ public abstract class ShowResults {
 				pw.println();
 
 				// PC elements next
-				for (CktElement pElem : ckt.getPCElements()) {
-					if (pElem.isEnabled()) {
-						nCond = pElem.getNumConds();
-						nTerm = pElem.getNumTerms();
-						pElem.getCurrents(cBuffer);
+				for (CktElement elem : ckt.getPCElements()) {
+					if (elem.isEnabled()) {
+						nCond = elem.getNumConds();
+						nTerm = elem.getNumTerms();
+						elem.getCurrents(cBuffer);
 						k = -1;
-						fromBus = Util.pad( Util.stripExtension(pElem.getFirstBus()), maxBusNameLength );
-						pw.println("ELEMENT = " + Util.fullName(pElem));
+						fromBus = Util.pad(Util.stripExtension(elem.getFirstBus()), maxBusNameLength);
+						pw.println("ELEMENT = " + Util.fullName(elem));
 						for (j = 0; j < nTerm; j++) {
 							Saccum = Complex.ZERO;
 							for (i = 0; i < nCond; i++) {
 								k++;
-								nref = pElem.getNodeRef(k);
-								volts = ckt.getSolution().getNodeV(nref);
-								S = volts.multiply(cBuffer[k].conjugate());
-								if (/* (pElem.getNPhases() == 1) and */ ckt.isPositiveSequence())
+								nref = elem.getNodeRef(k);
+								V = ckt.getSolution().getNodeV(nref);
+								S = V.multiply(cBuffer[k].conjugate());
+								if (ckt.isPositiveSequence())  // && elem.getNumPhases() == 1
 									S = S.multiply(3.0);
 								if (opt == 1) S = S.multiply(0.001);
 								Saccum = Saccum.add(S);
-								pw.print(fromBus.toUpperCase() + "  " + Util.getNodeNum(pElem.getNodeRef(k)) + "    " + S.getReal() / 1000.0 + " +j " + S.getImaginary() / 1000.0);
+								pw.print(fromBus.toUpperCase() + "  " + Util.getNodeNum(elem.getNodeRef(k)) +
+									"    " + S.getReal() / 1000.0 + " +j " + S.getImaginary() / 1000.0);
 								pw.println("   " + S.abs() / 1000.0 + "     " + Util.powerFactor(S));
 							}
-							pw.print(Util.padDots("   TERMINAL TOTAL", maxBusNameLength + 10) + Saccum.getReal() / 1000.0 + " +j " + Saccum.getImaginary() / 1000.0);
+							pw.print(Util.padDots("   TERMINAL TOTAL", maxBusNameLength + 10) +
+								Saccum.getReal() / 1000.0 + " +j " + Saccum.getImaginary() / 1000.0);
 							pw.println("   " + Saccum.abs() / 1000.0 + "     " + Util.powerFactor(Saccum));
-							fromBus = Util.pad( Util.stripExtension(pElem.getNextBus()), maxBusNameLength );
+							fromBus = Util.pad( Util.stripExtension(elem.getNextBus()), maxBusNameLength );
 						}
 					}
 					pw.println();
 				}
 				break;
 			}
-
 			pw.println();
 			S = ckt.getLosses().multiply(0.001);
 			if (opt == 1) S = S.multiply(0.001);
 			pw.println("Total Circuit Losses = " + S.getReal() + " +j " + S.getImaginary());
-
-			cBuffer = null;
 
 			pw.close();
 			fw.close();
 
 			Util.fireOffEditor(fileName);
 		} catch (IOException e) {
-			// TODO: handle exception
+			DSS.doSimpleMsg("Error encountered showing powers: " + e.getMessage(), 2190);
 		}
 	}
 
 	/**
-	 * Check all terminals of cktelement to see if bus connected to busreference.
+	 * Check all terminals of cktElement to see if bus connected to busreference.
 	 */
 	private static boolean checkBusReference(CktElement cktElem, int busReference, int terminalIndex) {
-
 		for (int i = 0; i < cktElem.getNumTerms(); i++)
 			if (cktElem.getTerminal(i).getBusRef() == busReference) {
 				terminalIndex = i;  // FIXME pass by reference
@@ -1064,7 +1050,10 @@ public abstract class ShowResults {
 		FileWriter fw;
 		PrintWriter pw;
 		int j = 0, nCond, nTerm;
-		double I0 = 0, I1 = 0, I2 = 0, CMax = 0;
+		double[] I0 = new double[1];
+		double[] I1 = new double[1];
+		double[] I2 = new double[1];
+		double[] CMax = new double[1];
 		Complex[] cBuffer;  // allocate to max total conductors
 		int busReference;
 		int jTerm = 0;
@@ -1114,7 +1103,7 @@ public abstract class ShowResults {
 
 							for (j = 0; j < nTerm; j++) {
 								getI0I1I2(I0, I1, I2, CMax, pElem.getNumPhases(), (j - 1) * nCond, cBuffer);
-								writeSeqCurrents(pw, Util.padDots(Util.fullName(pElem), maxDeviceNameLength + 2), I0, I1, I2, CMax, 0.0, 0.0, j, pElem.getObjType());
+								writeSeqCurrents(pw, Util.padDots(Util.fullName(pElem), maxDeviceNameLength + 2), I0[0], I1[0], I2[0], CMax[0], 0.0, 0.0, j, pElem.getObjType());
 							}
 						}
 				}
@@ -1130,7 +1119,7 @@ public abstract class ShowResults {
 
 							for (j = 0; j < nTerm; j++) {
 								getI0I1I2(I0, I1, I2, CMax, PDElem.getNumPhases(), (j - 1) * nCond, cBuffer);
-								writeSeqCurrents(pw, Util.padDots(Util.fullName(PDElem), maxDeviceNameLength + 2), I0, I1, I2, CMax, 0.0, 0.0, j, PDElem.getObjType());
+								writeSeqCurrents(pw, Util.padDots(Util.fullName(PDElem), maxDeviceNameLength + 2), I0[0], I1[0], I2[0], CMax[0], 0.0, 0.0, j, PDElem.getObjType());
 							}
 						}
 				}
@@ -1145,7 +1134,7 @@ public abstract class ShowResults {
 
 							for (j = 0; j < nTerm; j++) {
 								getI0I1I2(I0, I1, I2, CMax, PCElem.getNumPhases(), (j - 1) * nCond, cBuffer);
-								writeSeqCurrents(pw, Util.padDots(Util.fullName(PCElem), maxDeviceNameLength + 2), I0, I1, I2, CMax, 0.0, 0.0, j, PCElem.getObjType());
+								writeSeqCurrents(pw, Util.padDots(Util.fullName(PCElem), maxDeviceNameLength + 2), I0[0], I1[0], I2[0], CMax[0], 0.0, 0.0, j, PCElem.getObjType());
 							}
 						}
 				}
