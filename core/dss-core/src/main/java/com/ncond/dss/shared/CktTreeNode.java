@@ -1,13 +1,12 @@
 package com.ncond.dss.shared;
 
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 
 import com.ncond.dss.common.Util;
 import com.ncond.dss.general.DSSObject;
-import com.ncond.dss.general.XYCurveObj;
 
-@Data
+@Getter @Setter
 public class CktTreeNode {
 
 	private PointerList childBranches;  // TODO Replace with List and Iterator

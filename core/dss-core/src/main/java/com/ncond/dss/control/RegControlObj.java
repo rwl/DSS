@@ -6,8 +6,8 @@ import java.io.FileWriter;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 
 import org.apache.commons.math.complex.Complex;
 
@@ -28,8 +28,7 @@ import com.ncond.dss.shared.ComplexUtil;
  * Transformer to be controlled must already exist.
  *
  */
-@Data
-@EqualsAndHashCode(callSuper=true)
+@Getter @Setter
 public class RegControlObj extends ControlElem {
 
 	private static int lastChange;

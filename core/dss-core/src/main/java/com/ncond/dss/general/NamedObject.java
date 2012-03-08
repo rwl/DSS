@@ -9,9 +9,10 @@ package com.ncond.dss.general;
 
 import java.util.UUID;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data
+@Getter @Setter
 public class NamedObject {
 
 	/**

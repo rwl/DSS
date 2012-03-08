@@ -3,16 +3,15 @@ package com.ncond.dss.common;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 
 import org.apache.commons.math.complex.Complex;
 
 import com.ncond.dss.general.DSSObject;
 import com.ncond.dss.shared.CMatrix;
 
-@Data
-@EqualsAndHashCode(callSuper=true)
+@Getter @Setter
 abstract public class CktElement extends DSSObject {
 
 	private String[] busNames;

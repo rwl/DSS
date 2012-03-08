@@ -1,9 +1,8 @@
 package com.ncond.dss.shared.test;
 
-import com.ncond.dss.shared.HashList;
-import com.ncond.dss.shared.HashList;
-
 import junit.framework.TestCase;
+
+import com.ncond.dss.shared.HashList;
 
 public class HashListTest extends TestCase {
 
@@ -13,6 +12,7 @@ public class HashListTest extends TestCase {
 
 	HashList hl;
 
+	@Override
 	protected void setUp() throws Exception {
 		hl = new HashList(28);
 

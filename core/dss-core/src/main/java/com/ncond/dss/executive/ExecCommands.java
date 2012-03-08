@@ -2,16 +2,15 @@ package com.ncond.dss.executive;
 
 import java.io.File;
 
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 
 import com.ncond.dss.common.DSS;
 import com.ncond.dss.common.Util;
-import com.ncond.dss.delivery.LineObj;
 import com.ncond.dss.parser.Parser;
 import com.ncond.dss.shared.CommandList;
 
-@Data
+@Getter @Setter
 public class ExecCommands {
 
 	public static final int NumExecCommands = 98;

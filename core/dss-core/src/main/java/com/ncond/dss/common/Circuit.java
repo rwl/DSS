@@ -6,8 +6,8 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 
 import org.apache.commons.math.complex.Complex;
 
@@ -39,8 +39,7 @@ import com.ncond.dss.shared.CktTree;
 import com.ncond.dss.shared.Dynamics;
 import com.ncond.dss.shared.HashList;
 
-@Data
-@EqualsAndHashCode(callSuper=true)
+@Getter @Setter
 public class Circuit extends NamedObject {
 
 	public enum ReductionStrategyType {

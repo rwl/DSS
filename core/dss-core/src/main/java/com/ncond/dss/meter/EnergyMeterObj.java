@@ -8,8 +8,8 @@ import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.util.List;
 
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 
 import org.apache.commons.math.complex.Complex;
 
@@ -67,8 +67,7 @@ import com.ncond.dss.shared.LineUnits;
  * Emergency min voltage must be less than normal min voltage.
  *
  */
-@Data
-@EqualsAndHashCode(callSuper=true)
+@Getter @Setter
 public class EnergyMeterObj extends MeterElement {
 
 	public static final int NumEMVbase = 7;

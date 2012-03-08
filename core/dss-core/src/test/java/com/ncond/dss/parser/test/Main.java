@@ -1,7 +1,6 @@
 package com.ncond.dss.parser.test;
 
 import com.ncond.dss.executive.Executive;
-import com.ncond.dss.executive.Executive;
 
 public class Main {
 

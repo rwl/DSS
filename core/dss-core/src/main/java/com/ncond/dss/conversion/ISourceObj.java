@@ -3,8 +3,8 @@ package com.ncond.dss.conversion;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 
 import org.apache.commons.math.complex.Complex;
 
@@ -23,8 +23,7 @@ import com.ncond.dss.shared.ComplexUtil;
  * sequence, use three single-phase ISource.
  *
  */
-@Data
-@EqualsAndHashCode(callSuper=true)
+@Getter @Setter
 public class ISourceObj extends PCElement {
 
 	private double amps;

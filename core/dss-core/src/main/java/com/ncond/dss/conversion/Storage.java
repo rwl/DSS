@@ -4,8 +4,8 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 
 import org.apache.commons.math.complex.Complex;
 
@@ -16,8 +16,7 @@ import com.ncond.dss.general.LoadShapeObj;
 import com.ncond.dss.parser.Parser;
 import com.ncond.dss.shared.CommandList;
 
-@Data
-@EqualsAndHashCode(callSuper=true)
+@Getter @Setter
 public class Storage extends PCClass {
 
 	public static final int NumStorageRegisters = 6;

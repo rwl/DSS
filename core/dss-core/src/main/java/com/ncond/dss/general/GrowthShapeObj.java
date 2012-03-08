@@ -3,14 +3,13 @@ package com.ncond.dss.general;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 
 import com.ncond.dss.common.DSSClass;
 import com.ncond.dss.common.Util;
 
-@Data
-@EqualsAndHashCode(callSuper=true)
+@Getter @Setter
 public class GrowthShapeObj extends DSSObject {
 
 	/** Number of points in curve */

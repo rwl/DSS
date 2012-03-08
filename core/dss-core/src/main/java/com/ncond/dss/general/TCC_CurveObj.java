@@ -3,8 +3,8 @@ package com.ncond.dss.general;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 
 import com.ncond.dss.common.DSSClass;
 
@@ -15,8 +15,7 @@ import com.ncond.dss.common.DSSClass;
  * Log-Log as traditional TCC or as over- or under-voltage definite time.
  *
  */
-@Data
-@EqualsAndHashCode(callSuper=true)
+@Getter @Setter
 public class TCC_CurveObj extends DSSObject {
 
 	private int lastValueAccessed,

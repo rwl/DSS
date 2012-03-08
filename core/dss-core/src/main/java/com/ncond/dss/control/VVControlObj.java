@@ -5,8 +5,8 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 
 import org.apache.commons.math.complex.Complex;
 
@@ -19,8 +19,7 @@ import com.ncond.dss.conversion.GeneratorObj;
 import com.ncond.dss.general.XYCurveObj;
 import com.ncond.dss.shared.PointerList;
 
-@Data
-@EqualsAndHashCode(callSuper=true)
+@Getter @Setter
 public class VVControlObj extends ControlElem {
 
 	private static final int NONE = 0;

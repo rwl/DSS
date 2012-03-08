@@ -1,7 +1,7 @@
 package com.ncond.dss.meter;
 
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 
 import org.apache.commons.math.complex.Complex;
 
@@ -11,8 +11,7 @@ import com.ncond.dss.common.DSSClass;
 import com.ncond.dss.common.DSSClassDefs;
 import com.ncond.dss.common.Util;
 
-@Data
-@EqualsAndHashCode(callSuper=true)
+@Getter @Setter
 abstract public class MeterElement extends CktElement {
 
 	protected String elementName;

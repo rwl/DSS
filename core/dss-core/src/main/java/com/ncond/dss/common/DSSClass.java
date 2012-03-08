@@ -1,6 +1,7 @@
 package com.ncond.dss.common;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 import com.ncond.dss.general.DSSObject;
 import com.ncond.dss.parser.Parser;
@@ -12,7 +13,7 @@ import com.ncond.dss.shared.PointerList;
  * Base class for all DSS collection classes.
  * Keeps track of objects of each class, dispatches edits, etc.
  */
-@Data
+@Getter @Setter
 abstract public class DSSClass {
 
 	public static com.ncond.dss.common.DSSClasses DSSClasses;

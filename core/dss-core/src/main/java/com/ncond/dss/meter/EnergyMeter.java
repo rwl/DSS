@@ -7,8 +7,8 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.List;
 
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 
 import com.ncond.dss.common.Bus;
 import com.ncond.dss.common.Circuit;
@@ -19,13 +19,11 @@ import com.ncond.dss.common.Util;
 import com.ncond.dss.conversion.Generator;
 import com.ncond.dss.conversion.PCElement;
 import com.ncond.dss.delivery.PDElement;
-import com.ncond.dss.general.TShapeObj;
 import com.ncond.dss.parser.Parser;
 import com.ncond.dss.shared.CktTree;
 import com.ncond.dss.shared.CommandList;
 
-@Data
-@EqualsAndHashCode(callSuper=true)
+@Getter @Setter
 public class EnergyMeter extends MeterClass {
 
 	public static final int NumPropsThisClass = 17;

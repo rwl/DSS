@@ -1,15 +1,14 @@
 package com.ncond.dss.common;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import org.apache.commons.math.complex.Complex;
 
 import com.ncond.dss.general.NamedObject;
 import com.ncond.dss.shared.CMatrix;
 
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-
-@Data
-@EqualsAndHashCode(callSuper=true)
+@Getter @Setter
 public class Bus extends NamedObject {
 
 	public static class NodeBus {

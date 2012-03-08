@@ -3,23 +3,21 @@ package com.ncond.dss.meter;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 
 import org.apache.commons.math.complex.Complex;
 
 import com.ncond.dss.common.DSS;
 import com.ncond.dss.common.DSSClass;
 import com.ncond.dss.common.Util;
-import com.ncond.dss.general.XYCurveObj;
 
 /**
  * Sensor compares voltages and currents. Power quantities are converted to
  * current quantities based on rated kVBase, or actual voltage if voltage
  * measurement specified.
  */
-@Data
-@EqualsAndHashCode(callSuper=true)
+@Getter @Setter
 public class SensorObj extends MeterElement {
 
 	private boolean validSensor;

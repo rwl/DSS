@@ -5,8 +5,8 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.PrintStream;
 
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 
 import org.apache.commons.math.complex.Complex;
 
@@ -41,8 +41,7 @@ import com.ncond.dss.shared.MathUtil;
  * TODO: Complete harmonics mode algorithm (generator mode is implemented)
  *
  */
-@Data
-@EqualsAndHashCode(callSuper=true)
+@Getter @Setter
 public class StorageObj extends PCElement {
 
 	private static final Complex CDOUBLEONE = new Complex(1.0, 1.0);

@@ -1,12 +1,11 @@
 package com.ncond.dss.parser;
 
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 
 import com.ncond.dss.common.DSS;
-import com.ncond.dss.general.XYCurveObj;
 
-@Data
+@Getter @Setter
 public class Parser {
 
 	private static final char CommentChar = '!';

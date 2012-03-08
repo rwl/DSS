@@ -1,7 +1,7 @@
 package com.ncond.dss.control;
 
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 
 import com.ncond.dss.common.Bus;
 import com.ncond.dss.common.CktElement;
@@ -9,8 +9,7 @@ import com.ncond.dss.common.DSS;
 import com.ncond.dss.common.DSSClass;
 import com.ncond.dss.common.DSSClassDefs;
 
-@Data
-@EqualsAndHashCode(callSuper=true)
+@Getter @Setter
 abstract public class ControlElem extends CktElement {
 
 	public static final double USER_BASE_ACTION_CODE = 100;

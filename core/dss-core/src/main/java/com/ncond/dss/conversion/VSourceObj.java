@@ -3,8 +3,8 @@ package com.ncond.dss.conversion;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 
 import org.apache.commons.math.complex.Complex;
 
@@ -16,8 +16,7 @@ import com.ncond.dss.parser.Parser;
 import com.ncond.dss.shared.CMatrix;
 import com.ncond.dss.shared.ComplexUtil;
 
-@Data
-@EqualsAndHashCode(callSuper=true)
+@Getter @Setter
 public class VSourceObj extends PCElement {
 
 	private double MVAsc3;

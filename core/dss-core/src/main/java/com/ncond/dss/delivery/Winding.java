@@ -1,10 +1,11 @@
 package com.ncond.dss.delivery;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 import com.ncond.dss.common.DSS;
 
-@Data
+@Getter @Setter
 public class Winding {
 
 	private int connection;

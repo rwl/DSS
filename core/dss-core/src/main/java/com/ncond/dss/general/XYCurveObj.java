@@ -3,8 +3,8 @@ package com.ncond.dss.general;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 
 import com.ncond.dss.common.DSSClass;
 
@@ -26,8 +26,7 @@ import com.ncond.dss.common.DSSClass;
  * one point to a line.
  *
  */
-@Data
-@EqualsAndHashCode(callSuper=true)
+@Getter @Setter
 public class XYCurveObj extends DSSObject {
 
 	private int lastValueAccessed,

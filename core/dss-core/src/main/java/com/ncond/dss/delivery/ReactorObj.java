@@ -3,8 +3,8 @@ package com.ncond.dss.delivery;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 
 import org.apache.commons.math.complex.Complex;
 
@@ -59,8 +59,7 @@ import com.ncond.dss.shared.MathUtil;
  *       Note that Rmatrix may be in parallel with Xmatrix (set parallel = Yes)
  *
  */
-@Data
-@EqualsAndHashCode(callSuper=true)
+@Getter @Setter
 public class ReactorObj extends PDElement {
 
 	private double R, Rp, Gp, X, kVArRating, kVRating;

@@ -3,8 +3,8 @@ package com.ncond.dss.common;
 import java.io.PrintStream;
 import java.util.ArrayList;
 
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 
 import org.apache.commons.math.complex.Complex;
 
@@ -25,8 +25,7 @@ import com.ncond.dss.shared.CktTree;
  * Feeders are not saved. This is implicit with the EnergyMeter saving.
  *
  */
-@Data
-@EqualsAndHashCode(callSuper=true)
+@Getter @Setter
 public class FeederObj extends PCElement {
 
 	private ArrayList<CktElement> sequenceList;

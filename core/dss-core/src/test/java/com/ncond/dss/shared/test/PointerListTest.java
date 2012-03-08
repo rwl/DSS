@@ -1,9 +1,8 @@
 package com.ncond.dss.shared.test;
 
-import com.ncond.dss.shared.PointerList;
-import com.ncond.dss.shared.PointerList;
-
 import junit.framework.TestCase;
+
+import com.ncond.dss.shared.PointerList;
 
 public class PointerListTest extends TestCase {
 

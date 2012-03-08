@@ -3,8 +3,8 @@ package com.ncond.dss.control;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 
 import org.apache.commons.math.complex.Complex;
 
@@ -27,8 +27,7 @@ import com.ncond.dss.delivery.CapacitorObj;
  *
  * Capacitor to be controlled must already exist.
  */
-@Data
-@EqualsAndHashCode(callSuper=true)
+@Getter @Setter
 public class CapControlObj extends ControlElem {
 
 	public enum CapControlType {

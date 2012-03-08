@@ -3,8 +3,8 @@ package com.ncond.dss.general;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 
 import org.apache.commons.math.complex.Complex;
 
@@ -19,8 +19,7 @@ import com.ncond.dss.shared.ComplexUtil;
  * Spectrum is shifted by the fundamental angle and stored in MultArray
  * so that the fundamental is at zero degrees phase shift.
  */
-@Data
-@EqualsAndHashCode(callSuper=true)
+@Getter @Setter
 public class SpectrumObj extends DSSObject {
 
 	private double[] puMagArray;

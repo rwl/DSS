@@ -1,8 +1,8 @@
 package com.ncond.dss.parser.test;
 
-import com.ncond.dss.parser.Parser;
-
 import junit.framework.TestCase;
+
+import com.ncond.dss.parser.Parser;
 
 public class ParserTest extends TestCase {
 
@@ -10,11 +10,13 @@ public class ParserTest extends TestCase {
 	private Parser parser;
 	private String param;
 
+	@Override
 	protected void setUp() throws Exception {
 		super.setUp();
 		parser = Parser.getAuxInstance();
 	}
 
+	@Override
 	protected void tearDown() throws Exception {
 		super.tearDown();
 	}

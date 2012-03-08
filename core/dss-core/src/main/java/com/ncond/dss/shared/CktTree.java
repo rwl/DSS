@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
 
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 
 import com.ncond.dss.common.Circuit;
 import com.ncond.dss.common.CktElement;
@@ -14,12 +14,11 @@ import com.ncond.dss.common.Util;
 import com.ncond.dss.conversion.PCElement;
 import com.ncond.dss.delivery.PDElement;
 import com.ncond.dss.general.DSSObject;
-import com.ncond.dss.general.XYCurveObj;
 
-@Data
+@Getter @Setter
 public class CktTree {
 
-	@Data
+	@Getter @Setter
 	public class ZoneEndsList {
 
 		private PointerList endNodeList;

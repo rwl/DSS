@@ -2,8 +2,8 @@ package com.ncond.dss.conversion;
 
 import java.io.PrintStream;
 
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 
 import org.apache.commons.math.complex.Complex;
 
@@ -16,8 +16,7 @@ import com.ncond.dss.common.SolutionObj;
 import com.ncond.dss.general.SpectrumObj;
 import com.ncond.dss.meter.MeterElement;
 
-@Data
-@EqualsAndHashCode(callSuper=true)
+@Getter @Setter
 public abstract class PCElement extends CktElement {
 
 	private boolean ITerminalUpdated;

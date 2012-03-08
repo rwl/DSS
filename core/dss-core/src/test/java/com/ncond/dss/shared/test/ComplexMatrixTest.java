@@ -1,17 +1,17 @@
 package com.ncond.dss.shared.test;
 
+import junit.framework.TestCase;
+
 import org.apache.commons.math.complex.Complex;
 
 import com.ncond.dss.shared.CMatrix;
-import com.ncond.dss.shared.CMatrix;
-
-import junit.framework.TestCase;
 
 public class ComplexMatrixTest extends TestCase {
 
 	int n = 6;
 	CMatrix cm;
 
+	@Override
 	protected void setUp() throws Exception {
 		int i, j;
 		cm = new CMatrix(n);

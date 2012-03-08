@@ -7,8 +7,8 @@ import java.io.FileWriter;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 
 import org.apache.commons.math.complex.Complex;
 
@@ -20,7 +20,6 @@ import com.ncond.dss.common.SolutionObj;
 import com.ncond.dss.common.Util;
 import com.ncond.dss.conversion.PCElement;
 import com.ncond.dss.delivery.TransformerObj;
-import com.ncond.dss.general.XYCurveObj;
 import com.ncond.dss.shared.ComplexUtil;
 import com.ncond.dss.shared.MathUtil;
 
@@ -79,8 +78,7 @@ import com.ncond.dss.shared.MathUtil;
  *  +64: Pos Seq only or average of phases
  *
  */
-@Data
-@EqualsAndHashCode(callSuper=true)
+@Getter @Setter
 public class MonitorObj extends MeterElement {
 
 	private static StringBuffer strBuffer = new StringBuffer();

@@ -6,8 +6,8 @@ import java.io.FileWriter;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 
 import org.apache.commons.math.complex.Complex;
 
@@ -38,8 +38,7 @@ import com.ncond.dss.shared.MathUtil;
  *   Define state vars and dynamics mode behavior
  *   Complete Harmonics mode algorithm (generator mode is implemented)
  */
-@Data
-@EqualsAndHashCode(callSuper=true)
+@Getter @Setter
 public class PVSystemObj extends PCElement {
 
 	private static final Complex CDOUBLEONE = new Complex(1.0, 1.0);

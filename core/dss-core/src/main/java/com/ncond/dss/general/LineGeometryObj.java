@@ -3,8 +3,8 @@ package com.ncond.dss.general;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 
 import com.ncond.dss.common.DSS;
 import com.ncond.dss.common.DSSClass;
@@ -25,8 +25,7 @@ import com.ncond.dss.shared.LineUnits;
  * Then the values of that code can be retrieved via the public variables.
  *
  */
-@Data
-@EqualsAndHashCode(callSuper=true)
+@Getter @Setter
 public class LineGeometryObj extends DSSObject {
 
 	public class LineGeometryProblem extends Exception {

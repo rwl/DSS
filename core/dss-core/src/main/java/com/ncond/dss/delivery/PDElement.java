@@ -1,7 +1,7 @@
 package com.ncond.dss.delivery;
 
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 
 import org.apache.commons.math.complex.Complex;
 
@@ -12,8 +12,7 @@ import com.ncond.dss.common.DSSClassDefs;
 import com.ncond.dss.common.SolutionObj;
 import com.ncond.dss.meter.MeterElement;
 
-@Data
-@EqualsAndHashCode(callSuper=true)
+@Getter @Setter
 abstract public class PDElement extends CktElement {
 
 	protected double normAmps,

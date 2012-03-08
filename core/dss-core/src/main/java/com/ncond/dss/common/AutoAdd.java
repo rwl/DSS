@@ -5,9 +5,10 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 
-import org.apache.commons.math.complex.Complex;
+import lombok.Getter;
+import lombok.Setter;
 
-import lombok.Data;
+import org.apache.commons.math.complex.Complex;
 
 import com.ncond.dss.conversion.Generator;
 import com.ncond.dss.delivery.Capacitor;
@@ -24,7 +25,7 @@ import com.ncond.dss.shared.HashList;
  * There is one of these per circuit.
  *
  */
-@Data
+@Getter @Setter
 public class AutoAdd {
 
 	private Generator generatorClass;

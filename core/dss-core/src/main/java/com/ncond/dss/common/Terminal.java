@@ -1,8 +1,9 @@
 package com.ncond.dss.common;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data
+@Getter @Setter
 public class Terminal {
 
 	private int numCond;

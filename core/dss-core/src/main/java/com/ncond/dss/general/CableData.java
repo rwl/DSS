@@ -1,14 +1,9 @@
 package com.ncond.dss.general;
 
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-
 import com.ncond.dss.common.DSS;
 import com.ncond.dss.common.DSSClassDefs;
-import com.ncond.dss.delivery.LineObj;
 import com.ncond.dss.parser.Parser;
 
-@EqualsAndHashCode(callSuper=true)
 public class CableData extends ConductorData {
 
 	private int numCableClassProps;

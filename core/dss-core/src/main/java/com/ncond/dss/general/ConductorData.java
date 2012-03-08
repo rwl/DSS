@@ -1,17 +1,15 @@
 package com.ncond.dss.general;
 
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 
 import com.ncond.dss.common.DSS;
 import com.ncond.dss.common.DSSClass;
 import com.ncond.dss.common.DSSClassDefs;
-import com.ncond.dss.delivery.LineObj;
 import com.ncond.dss.parser.Parser;
 import com.ncond.dss.shared.LineUnits;
 
-@Data
-@EqualsAndHashCode(callSuper=true)
+@Getter @Setter
 abstract public class ConductorData extends DSSClass {
 
 	public static final String LineUnitsHelp = "{mi|kft|km|m|Ft|in|cm|mm} Default=none.";

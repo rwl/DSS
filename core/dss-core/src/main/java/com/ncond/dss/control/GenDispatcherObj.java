@@ -5,8 +5,8 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 
 import org.apache.commons.math.complex.Complex;
 
@@ -26,8 +26,7 @@ import com.ncond.dss.conversion.GeneratorObj;
  *
  *   new genDispatcher.name=myName element=devClass.name terminal=[ 1|2|...] capacitorList=(gen1 gen2 ...)
  */
-@Data
-@EqualsAndHashCode(callSuper=true)
+@Getter @Setter
 public class GenDispatcherObj extends ControlElem {
 
 	private double kWLimit,

@@ -7,8 +7,8 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 
 import org.apache.commons.math.complex.Complex;
 import org.apache.commons.math.complex.ComplexUtils;
@@ -71,8 +71,7 @@ import com.ncond.dss.shared.MathUtil;
  *   Dutycycle: Defaults to Daily shape
  *
  */
-@Data
-@EqualsAndHashCode(callSuper=true)
+@Getter @Setter
 public class GeneratorObj extends PCElement {
 
 	/** Number of energy meter registers. */

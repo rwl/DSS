@@ -3,8 +3,8 @@ package com.ncond.dss.delivery;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 
 import org.apache.commons.math.complex.Complex;
 
@@ -51,8 +51,7 @@ import com.ncond.dss.shared.ComplexUtil;
  *       Microfarads.
  *
  */
-@Data
-@EqualsAndHashCode(callSuper=true)
+@Getter @Setter
 public class CapacitorObj extends PDElement {
 
 	private double[] C,
