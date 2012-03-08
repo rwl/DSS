@@ -2,6 +2,7 @@ package com.ncond.dss.common;
 
 import java.io.PrintStream;
 import java.util.ArrayList;
+import java.util.List;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -13,9 +14,9 @@ import com.ncond.dss.shared.CMatrix;
 import com.ncond.dss.shared.CktTree;
 
 /**
- * Feeders get created from energy meters if Radial is set to yes and meter
- * zones are already computed.  If Radial=Yes and the MeterZones are reset,
- * then the feeders are redefined.  If Radial is subsequently set to NO or a
+ * Feeders get created from energy meters if radial is set to yes and meter
+ * zones are already computed.  If radial=yes and the MeterZones are reset,
+ * then the feeders are redefined.  If radial is subsequently set to no or a
  * solution mode is used that doesn't utilize feeders, the get currents
  * routines will not do anything.
  *
@@ -23,24 +24,23 @@ import com.ncond.dss.shared.CktTree;
  * to be.
  *
  * Feeders are not saved. This is implicit with the EnergyMeter saving.
- *
  */
 @Getter @Setter
 public class FeederObj extends PCElement {
 
-	private ArrayList<CktElement> sequenceList;
-	private ArrayList<CktElement> shuntList;
+	private List<CktElement> sequenceList;
+	private List<CktElement> shuntList;
 
 	private CktElement rootElement;
 	private int fromTerminalOffset;
 
 	protected boolean isSynched;
 
-	public FeederObj(DSSClass ParClass, String MeterName) {
-		super(ParClass);
+	public FeederObj(DSSClass parClass, String meterName) {
+		super(parClass);
 
-		setName(MeterName.toLowerCase());
-		objType = ParClass.getClassType();  // this will be a current source (PCElement)
+		setName(meterName.toLowerCase());
+		objType = parClass.getClassType();  // this will be a current source (PCElement)
 
 		sequenceList = new ArrayList<CktElement>(50);
 		shuntList = new ArrayList<CktElement>(50);
@@ -55,7 +55,7 @@ public class FeederObj extends PCElement {
 
 	public void initializeFeeder(CktTree branchList) {
 		int bref;
-		CktElement pElement, pShunt;
+		CktElement elem, shunt;
 
 		sequenceList.clear();  // get rid of any previous definitions
 		shuntList.clear();
@@ -76,28 +76,26 @@ public class FeederObj extends PCElement {
 			setNodeRef(0, rootElement.getNodeRef(fromTerminalOffset));
 
 			// build the sequence list and shunt list
-			pElement = rootElement;
-			while (pElement != null) {
-				sequenceList.add(pElement);
+			elem = rootElement;
+			while (elem != null) {
+				sequenceList.add(elem);
 
 				// mark all the to buses for this branch as radial buses
 				branchList.getPresentBranch().resetToBusList();  // reset pointer to first to bus
-				for (int i = 0; i < pElement.getNumTerms() - 1; i++) {
+				for (int i = 0; i < elem.getNumTerms() - 1; i++) {
 					bref = branchList.getPresentBranch().getToBusReference();  // each call pops off a new one
 					if (bref > 0)
-						DSS.activeCircuit.getBus(bref).setRadialBus(true);
+						DSS.activeCircuit.getBus(bref - 1).setRadialBus(true);
 				}
 
-				pShunt = (CktElement) branchList.getPresentBranch().getFirstObject();
-				while (pShunt != null) {
-					shuntList.add(pShunt);
-					pShunt = (CktElement) branchList.getPresentBranch().getNextObject();
+				shunt = (CktElement) branchList.getPresentBranch().getFirstObject();
+				while (shunt != null) {
+					shuntList.add(shunt);
+					shunt = (CktElement) branchList.getPresentBranch().getNextObject();
 				}
-				pElement = (CktElement) branchList.goForward();
+				elem = (CktElement) branchList.goForward();
 			}
-
 			isSynched = true;
-
 			setCktElementFeederFlags(true);
 		}
 	}
@@ -109,15 +107,9 @@ public class FeederObj extends PCElement {
 
 	@Override
 	public void calcYPrim() {
-		// for now, YPrim is null
-
-		// build only YPrim_Series
+		// build only YPrimSeries
 		if (isYprimInvalid()) {
-			if (YPrimSeries != null)
-				YPrimSeries = null;
 			YPrimSeries = new CMatrix(YOrder);
-			if (YPrim != null)
-				YPrim = null;
 			YPrim = new CMatrix(YOrder);
 		} else {
 			YPrimSeries.clear();
@@ -135,7 +127,8 @@ public class FeederObj extends PCElement {
 
 	/**
 	 * Total currents into a feeder which are equal to the currents into the first element.
-	 * Return the currents in the from terminal of the first element in the sequence list.
+	 *
+	 * @return currents in the from terminal of the first element in the sequence list.
 	 */
 	@Override
 	public void getCurrents(Complex[] curr) {
@@ -167,7 +160,7 @@ public class FeederObj extends PCElement {
 
 	@Override
 	public void initPropertyValues(int arrayOffset) {
-		super.initPropertyValues(Feeder.NumPropsThisClass);
+		super.initPropertyValues(Feeder.NumPropsThisClass - 1);
 	}
 
 	/**
@@ -179,11 +172,8 @@ public class FeederObj extends PCElement {
 	}
 
 	public void setCktElementFeederFlags(boolean value) {
-		for (int i = 0; i < shuntList.size(); i++)
-			shuntList.get(i).setPartOfFeeder(value);
-
-		for (int i = 0; i < sequenceList.size(); i++)
-			sequenceList.get(i).setPartOfFeeder(value);
+		for (CktElement shunt : shuntList) shunt.setPartOfFeeder(value);
+		for (CktElement seq : sequenceList) seq.setPartOfFeeder(value);
 	}
 
 }

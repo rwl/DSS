@@ -35,15 +35,14 @@ public abstract class ShowResults {
 	private static int maxDeviceNameLength = 30;
 
 	private static void setMaxBusNameLength() {
-		maxBusNameLength = 4;
 		Circuit ckt = DSS.activeCircuit;
+		maxBusNameLength = 4;
 		for (int i = 0; i < ckt.getNumBuses(); i++)
 			maxBusNameLength = Math.max(maxBusNameLength, ckt.getBusList().get(i).length());
 	}
 
 	private static void setMaxDeviceNameLength() {
 		String devName, devClassName;
-
 		Circuit ckt = DSS.activeCircuit;
 
 		maxDeviceNameLength = 0;
@@ -71,7 +70,7 @@ public abstract class ShowResults {
 			if (LL) {
 				for (j = 0; j < 3; j++) {
 					k = j + 1;
-					if (k > 3) k = 1;  // TODO Check zero based indexing
+					if (k >= 3) k = 0;
 					VLL[j] = Vph[j].subtract(Vph[k]);
 				}
 				MathUtil.phase2SymComp(VLL, V012);
@@ -89,7 +88,7 @@ public abstract class ShowResults {
 			V2 = 0.0;
 		}
 
-		V1 = V1 / 1000.0;  /* Convert to kV */
+		V1 = V1 / 1000.0;  // convert to kV
 		V2 = V2 / 1000.0;
 		V0 = V0 / 1000.0;
 
@@ -109,13 +108,15 @@ public abstract class ShowResults {
 			V0V1 = 0.0;
 		}
 
-		pw.printf("%s %9.4g  %9.4g  %9.4g  %9.4g %9.4g %9.4g", Util.pad(ckt.getBusList().get(i), maxBusNameLength), V1, Vpu, V2, V2V1, V0, V0V1);
+		pw.printf("%s %9.4g  %9.4g  %9.4g  %9.4g %9.4g %9.4g",
+			Util.pad(ckt.getBusList().get(i), maxBusNameLength),
+			V1, Vpu, V2, V2V1, V0, V0V1);
 		pw.println();
 	}
 
 	private static void writeBusVoltages(PrintWriter pw, int i, boolean LL) {
 		int nref, j, k;
-		Complex volts;
+		Complex V;
 		double Vmag, Vpu;
 		String bName;
 
@@ -123,30 +124,32 @@ public abstract class ShowResults {
 
 		for (j = 0; j < ckt.getBus(i).getNumNodesThisBus(); j++) {
 			nref = ckt.getBus(i).getRef(j);
-			volts = ckt.getSolution().getNodeV(nref);
+			V = ckt.getSolution().getNodeV(nref);
 
-			if (LL && (j < 4)) {  // TODO Check zero based indexing
+			if (LL && (j < 3)) {
 				// convert to line-line assuming no more than 3 phases
 				k = j + 1;
-				if (k > 3) k = 1;  // TODO Check zero based indexing
-				if (k <= ckt.getBus(i).getNumNodesThisBus()) {
+				if (k >= 3) k = 0;
+				if (k < ckt.getBus(i).getNumNodesThisBus()) {
 					nref = ckt.getBus(i).getRef(k);
-					volts = volts.subtract( ckt.getSolution().getNodeV(nref) );
+					V = V.subtract( ckt.getSolution().getNodeV(nref) );
 				}
 			}
-			Vmag = volts.abs() * 0.001;
+			Vmag = V.abs() * 0.001;
 			if (ckt.getBus(i).getKVBase() != 0.0) {
 				Vpu = Vmag / ckt.getBus(i).getKVBase();
 			} else {
 				Vpu = 0.0;
 			}
 			if (LL) Vpu = Vpu / DSS.SQRT3;
-			if (j == 0) {  // TODO Check zero based indexing
+			if (j == 0) {
 				bName = Util.padDots(ckt.getBusList().get(i), maxBusNameLength);
 			} else {
 				bName = Util.pad("   -", maxBusNameLength);
 			}
-			pw.printf("%s %2d %10.5g /_ %6.1f %9.5g %9.3f", bName.toUpperCase(), ckt.getBus(i).getNum(j), Vmag, ComplexUtil.degArg(volts), Vpu, ckt.getBus(i).getKVBase() * DSS.SQRT3);
+			pw.printf("%s %2d %10.5g /_ %6.1f %9.5g %9.3f",
+				bName.toUpperCase(), ckt.getBus(i).getNum(j), Vmag,
+				ComplexUtil.degArg(V), Vpu, ckt.getBus(i).getKVBase() * DSS.SQRT3);
 			pw.println();
 		}
 	}

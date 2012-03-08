@@ -19,7 +19,7 @@ public class CktTreeNode {
 	protected PointerList shuntObjects;  // generic objects attached to the tree at this node
 
 	protected DSSObject cktObject;  // pointer to the circuit object referenced
-	protected int fromBusReference;
+	protected int fromBusReference;  // one based bus reference
 	protected int voltBaseIndex;
 	protected int fromTerminal;
 	protected boolean isLoopedHere, isParallel, isDangling;
@@ -37,7 +37,7 @@ public class CktTreeNode {
 		}
 		childBranches   = new PointerList(2);
 		shuntObjects    = new PointerList(1);
-		fromBusReference = -1;
+		fromBusReference = 0;
 		voltBaseIndex    = -1;  // index to voltage base list used by EnergyMeter and maybe others
 		numToBuses = 0;
 		toBusList = null;
@@ -95,7 +95,7 @@ public class CktTreeNode {
 			toBusPtr += 1;
 			if (toBusPtr >= numToBuses) {
 				toBusPtr = -1;  // ready for next sequence of access
-				return -1;
+				return 0;
 			} else {
 				return toBusList[toBusPtr];
 			}

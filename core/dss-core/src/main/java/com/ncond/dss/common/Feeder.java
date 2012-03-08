@@ -39,7 +39,8 @@ public class Feeder extends PCClass {
 		//propertyName[0] = "bus1";
 
 		// define Property help values
-		//propertyHelp[0] = "Name of bus to which source is connected."+DSSGlobals.CRLF+"bus1=busname"+DSSGlobals.CRLF+"bus1=busname.1.2.3";
+		//propertyHelp[0] = "Name of bus to which source is connected." + DSS.CRLF +
+		//"bus1=busname" + DSS.CRLF + "bus1=busname.1.2.3";
 
 		activeProperty = NumPropsThisClass - 1;
 		super.defineProperties();  // add defs of inherited properties to bottom of list
@@ -77,8 +78,6 @@ public class Feeder extends PCClass {
 		activeFeederObj = (FeederObj) elementList.getActive();
 		DSS.activeCircuit.setActiveCktElement((CktElement) activeFeederObj);
 
-		int result = 0;
-
 		int paramPointer = -1;
 		String paramName = Parser.getInstance().getNextParam();
 		String param = Parser.getInstance().makeString();
@@ -94,7 +93,8 @@ public class Feeder extends PCClass {
 
 			switch (paramPointer) {
 			case -1:
-				DSS.doSimpleMsg("Unknown parameter \"" + paramName + "\" for object \"" + getClassName() +"."+ activeFeederObj.getName() + "\"", 630);
+				DSS.doSimpleMsg("Unknown parameter \"" + paramName + "\" for object \"" +
+						getClassName() +"."+ activeFeederObj.getName() + "\"", 630);
 				break;
 			default:
 				classEdit(activeFeederObj, paramPointer - NumPropsThisClass);
@@ -108,19 +108,19 @@ public class Feeder extends PCClass {
 		activeFeederObj.recalcElementData();
 		activeFeederObj.setYPrimInvalid(true);
 
-		return result;
+		return 0;
 	}
 
 	@Override
 	protected int makeLike(String otherFeederName) {
-		int result = 0;
+		int success = 0;
 
 		/* See if we can find this name in the present collection */
 		FeederObj otherFeeder = (FeederObj) find(otherFeederName);
 		if (otherFeeder != null) {
 			if (activeFeederObj.getNumPhases() != otherFeeder.getNumPhases()) {
 				activeFeederObj.setNumPhases(otherFeeder.getNumPhases());
-				activeFeederObj.setNumConds(activeFeederObj.getNumPhases());  // forces reallocation of terminal stuff
+				activeFeederObj.setNumConds(activeFeederObj.getNumPhases());  // forces reallocation of terminal arrays
 
 				activeFeederObj.setYOrder(activeFeederObj.getNumConds() * activeFeederObj.getNumTerms());
 				activeFeederObj.setYPrimInvalid(true);
@@ -133,12 +133,12 @@ public class Feeder extends PCClass {
 			for (int i = 0; i < activeFeederObj.getParentClass().getNumProperties(); i++) {
 				activeFeederObj.setPropertyValue(i, otherFeeder.getPropertyValue(i));
 			}
-			result = 1;
+			success = 1;
 		} else {
 			DSS.doSimpleMsg("Error in Feeder makeLike: \"" + otherFeederName + "\" not found.", 631);
 		}
 
-		return result;
+		return success;
 	}
 
 	@Override

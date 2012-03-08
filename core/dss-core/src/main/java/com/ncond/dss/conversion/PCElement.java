@@ -132,7 +132,7 @@ public abstract class PCElement extends CktElement {
 
 	@Override
 	public void initPropertyValues(int arrayOffset) {
-		propertyValue[arrayOffset + 1] = spectrum;
+		setPropertyValue(arrayOffset + 1, spectrum);
 
 		super.initPropertyValues(arrayOffset + 1);
 	}
