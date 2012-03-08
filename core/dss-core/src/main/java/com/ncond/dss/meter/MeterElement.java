@@ -10,7 +10,6 @@ import com.ncond.dss.common.DSS;
 import com.ncond.dss.common.DSSClass;
 import com.ncond.dss.common.DSSClassDefs;
 import com.ncond.dss.common.Util;
-import com.ncond.dss.general.XYCurveObj;
 
 @Data
 @EqualsAndHashCode(callSuper=true)
@@ -79,6 +78,38 @@ abstract public class MeterElement extends CktElement {
 	 */
 	public void takeSample() {
 		DSS.doSimpleMsg("Programming error: Reached base MeterElement class for takeSample."+DSS.CRLF+"Device: "+getName(), 723);
+	}
+
+	public double getSensorCurrent(int idx) {
+		return sensorCurrent[idx];
+	}
+
+	public double getSensorVoltage(int idx) {
+		return sensorVoltage[idx];
+	}
+
+	public Complex getCalculatedCurrent(int idx) {
+		return calculatedCurrent[idx];
+	}
+
+	public Complex getCalculatedVoltage(int idx) {
+		return calculatedVoltage[idx];
+	}
+
+	public double[] getSensorCurrent() {
+		return sensorCurrent;
+	}
+
+	public double[] getSensorVoltage() {
+		return sensorVoltage;
+	}
+
+	public Complex[] getCalculatedCurrent() {
+		return calculatedCurrent;
+	}
+
+	public Complex[] getCalculatedVoltage() {
+		return calculatedVoltage;
 	}
 
 }

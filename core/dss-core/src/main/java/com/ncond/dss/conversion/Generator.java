@@ -604,6 +604,10 @@ public class Generator extends PCClass {
 			pGen.takeSample();
 	}
 
+	public String getRegisterName(int idx) {
+		return registerNames[idx];
+	}
+
 	public String[] getRegisterNames() {
 		return registerNames;
 	}

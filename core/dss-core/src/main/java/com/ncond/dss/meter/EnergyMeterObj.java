@@ -1838,6 +1838,11 @@ public class EnergyMeterObj extends MeterElement {
 		}
 	}
 
+	@Override
+	public int injCurrents() {
+		throw new UnsupportedOperationException();
+	}
+
 	private String makeDIFileName() {
 		return DSS.energyMeterClass.getDI_Dir() + "/" + getName() + ".csv";
 	}
@@ -1846,13 +1851,12 @@ public class EnergyMeterObj extends MeterElement {
 		return registers[idx];
 	}
 
-	public double getTotalsMask(int idx) {
-		return totalsMask[idx];
+	public String getRegisterName(int idx) {
+		return registerNames[idx];
 	}
 
-	@Override
-	public int injCurrents() {
-		throw new UnsupportedOperationException();
+	public double getTotalsMask(int idx) {
+		return totalsMask[idx];
 	}
 
 	public double[] getTotalsMask() {

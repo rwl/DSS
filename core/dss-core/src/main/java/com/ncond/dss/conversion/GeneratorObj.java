@@ -2190,4 +2190,8 @@ public class GeneratorObj extends PCElement {
 		return PFNominal;
 	}
 
+	public double getRegister(int idx) {
+		return registers[idx];
+	}
+
 }
