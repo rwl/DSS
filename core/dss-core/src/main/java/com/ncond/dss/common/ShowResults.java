@@ -915,19 +915,19 @@ public abstract class ShowResults {
 	/**
 	 * Check all terminals of cktElement to see if bus connected to busreference.
 	 */
-	private static boolean checkBusReference(CktElement cktElem, int busReference, int terminalIndex) {
-		for (int i = 0; i < cktElem.getNumTerms(); i++)
+	private static boolean checkBusReference(CktElement cktElem, int busReference, int[] terminalIndex) {
+		for (int i = 0; i < cktElem.getNumTerms(); i++) {
 			if (cktElem.getTerminal(i).getBusRef() == busReference) {
-				terminalIndex = i;  // FIXME pass by reference
+				terminalIndex[0] = i;
 				return true;
 			}
-
+		}
 		return false;
 	}
 
 	private static void writeTerminalPowerSeq(PrintWriter pw, CktElement cktElem, int j, int opt) {
 		int i, k, nCond, nref;
-		Complex volts, S;
+		Complex V, S;
 		Complex[] Vph = new Complex[3];
 		Complex[] V012 = new Complex[3];
 		Complex[] Iph = new Complex[3];
@@ -936,136 +936,126 @@ public abstract class ShowResults {
 
 		Circuit ckt = DSS.activeCircuit;
 
-		try {
-			/* Allocate cBuffer big enough for this circuit element */
-			cBuffer = new Complex[cktElem.getYOrder()];
+		/* Allocate cBuffer big enough for this circuit element */
+		cBuffer = new Complex[cktElem.getYOrder()];
 
-			nCond = cktElem.getNumConds();
-			cktElem.getCurrents(cBuffer);
-			pw.print(Util.pad( Util.fullName(cktElem), maxDeviceNameLength + 2) + j);
-			for (i = 0; i < Math.min(cktElem.getNumPhases(), 3); i++) {
-				k = (j - 1) * nCond + i;  // TODO Check zero based indexing
-				nref = cktElem.getNodeRef(k);
-				volts = ckt.getSolution().getNodeV(nref);
-				Iph[i] = cBuffer[k];
-				Vph[i] = volts;
-			}
+		nCond = cktElem.getNumConds();
+		cktElem.getCurrents(cBuffer);
 
-			if (cktElem.getNumPhases() >= 3) {
-				MathUtil.phase2SymComp(Iph, I012);
-				MathUtil.phase2SymComp(Vph, V012);
-			} else {  // handle single phase and pos seq models
-				V012[0] = Complex.ZERO;
-				I012[0] = Complex.ZERO;
-				V012[2] = Complex.ZERO;
-				I012[2] = Complex.ZERO;
-				if (ckt.isPositiveSequence()) {
-					V012[1] = Vph[0];
-					I012[1] = Iph[0];
-				} else {
-					V012[1] = Complex.ZERO;
-					I012[1] = Complex.ZERO;
-				}
-			}
-
-			// pos seq or single phase
-			switch (cktElem.getNumPhases()) {
-			case 1:
-				S = Vph[0].multiply( Iph[0].conjugate() );
-				break;
-			case 2:
-				S = Vph[0].multiply( Iph[0].conjugate() ).add(Vph[1].multiply( Iph[2].conjugate() ));
-				break;
-			default:
-				S = V012[1].multiply( I012[1].conjugate() );
-				break;
-			}
-
-			if (opt == 1) S = S.multiply(0.001);
-			pw.print(S.getReal() * 0.003);
-			pw.print(S.getImaginary() * 0.003);
-			S = V012[2].multiply( I012[2].conjugate() );
-			if (opt == 1) S = S.multiply(0.001);
-			pw.print(S.getReal() * 0.003);
-			pw.print(S.getImaginary() * 0.003);
-			S = V012[0].multiply( I012[0].conjugate() );
-			if (opt == 1) S = S.multiply(0.001);
-			pw.print(S.getReal() * 0.003);
-			pw.print(S.getImaginary() * 0.003);
-
-			pw.println();
-		} finally  {
-			cBuffer = null;
+		pw.print(Util.pad(Util.fullName(cktElem), maxDeviceNameLength + 2) + j + 1);
+		for (i = 0; i < Math.min(cktElem.getNumPhases(), 3); i++) {
+			k = j * nCond + i;
+			nref = cktElem.getNodeRef(k);
+			V = ckt.getSolution().getNodeV(nref);
+			Iph[i] = cBuffer[k];
+			Vph[i] = V;
 		}
+
+		if (cktElem.getNumPhases() >= 3) {
+			MathUtil.phase2SymComp(Iph, I012);
+			MathUtil.phase2SymComp(Vph, V012);
+		} else {  // handle single phase and pos seq models
+			V012[0] = Complex.ZERO;
+			I012[0] = Complex.ZERO;
+			V012[1] = ckt.isPositiveSequence() ? Vph[0] : Complex.ZERO;
+			I012[1] = ckt.isPositiveSequence() ? Iph[0] : Complex.ZERO;
+			V012[2] = Complex.ZERO;
+			I012[2] = Complex.ZERO;
+		}
+
+		switch (cktElem.getNumPhases()) {  // pos seq or single phase
+		case 1:
+			S = Vph[0].multiply( Iph[0].conjugate() );
+			break;
+		case 2:
+			S = Vph[0].multiply( Iph[0].conjugate() ).add(Vph[1].multiply( Iph[2].conjugate() ));
+			break;
+		default:
+			S = V012[1].multiply( I012[1].conjugate() );
+			break;
+		}
+
+		if (opt == 1) S = S.multiply(0.001);
+		pw.print(S.getReal() * 0.003);
+		pw.print(S.getImaginary() * 0.003);
+
+		S = V012[2].multiply( I012[2].conjugate() );
+		if (opt == 1) S = S.multiply(0.001);
+		pw.print(S.getReal() * 0.003);
+		pw.print(S.getImaginary() * 0.003);
+
+		S = V012[0].multiply( I012[0].conjugate() );
+		if (opt == 1) S = S.multiply(0.001);
+		pw.print(S.getReal() * 0.003);
+		pw.print(S.getImaginary() * 0.003);
+
+		pw.println();
 	}
 
 	private static void writeTerminalPower(PrintWriter pw, CktElement cktElem, int jTerm, int opt) {
 		int i, k, nCond, nref;
-		Complex volts, S;
+		Complex V, S;
 		Complex Saccum;
-		Complex[] cBuffer;  // allocate to max total conductors
+		Complex[] cBuffer;
 		String fromBus;
 
 		Circuit ckt = DSS.activeCircuit;
 
-		try {
-			cBuffer = new Complex[cktElem.getYOrder()];
+		cBuffer = new Complex[cktElem.getYOrder()];  // allocate to max total conductors
 
-			nCond = cktElem.getNumConds();
-			cktElem.getCurrents(cBuffer);
-			fromBus = Util.pad(Util.stripExtension(cktElem.getBus(jTerm)), 12);
-			pw.println("ELEMENT = " + Util.pad(Util.fullName(cktElem), maxDeviceNameLength + 2));
+		nCond = cktElem.getNumConds();
+		cktElem.getCurrents(cBuffer);
+		fromBus = Util.pad(Util.stripExtension(cktElem.getBus(jTerm)), 12);
+		pw.println("ELEMENT = " + Util.pad(Util.fullName(cktElem), maxDeviceNameLength + 2));
 
-			Saccum = Complex.ZERO;
-			for (i = 0; i < nCond; i++) {
-				k = (jTerm - 1) * nCond + i;  // TODO Check zero based indexing
-				nref = cktElem.getNodeRef(k);
-				volts = ckt.getSolution().getNodeV(nref);
-				S = volts.multiply( cBuffer[k].conjugate() );
-				if (/* (CktElem.getNPhases() == 1) and */ ckt.isPositiveSequence())
-					S = S.multiply(3.0);
-				if (opt == 1) S = S.multiply(0.001);
-				Saccum = Saccum.add(S);
-				pw.printf("%s %4d %10.5g +j %10.5g    %10.5g    %8.4f",
-						fromBus.toUpperCase(), Util.getNodeNum(cktElem.getNodeRef(k)), S.getReal() / 1000.0, S.getImaginary() / 1000.0,
-						S.abs() / 1000.0 , Util.powerFactor(S));
-				pw.println();
-			}
-			pw.printf(" TERMINAL TOTAL   %10.5g +j %10.5g    %10.5g    %8.4f",
-					Saccum.getReal() / 1000.0, Saccum.getImaginary() / 1000.0, Saccum.abs() / 1000.0,
-					Util.powerFactor(Saccum));
+		Saccum = Complex.ZERO;
+		for (i = 0; i < nCond; i++) {
+			k = jTerm * nCond + i;
+			nref = cktElem.getNodeRef(k);
+			V = ckt.getSolution().getNodeV(nref);
+			S = V.multiply( cBuffer[k].conjugate() );
+			if (ckt.isPositiveSequence())  // && cktElem.getNumPhases() == 1
+				S = S.multiply(3.0);
+			if (opt == 1) S = S.multiply(0.001);
+			Saccum = Saccum.add(S);
+			pw.printf("%s %4d %10.5g +j %10.5g    %10.5g    %8.4f",
+					fromBus.toUpperCase(), Util.getNodeNum(cktElem.getNodeRef(k)),
+					S.getReal() / 1000.0, S.getImaginary() / 1000.0,
+					S.abs() / 1000.0 , Util.powerFactor(S));
 			pw.println();
-		} finally {
-			cBuffer = null;
 		}
+		pw.printf(" TERMINAL TOTAL   %10.5g +j %10.5g    %10.5g    %8.4f",
+				Saccum.getReal() / 1000.0,
+				Saccum.getImaginary() / 1000.0, Saccum.abs() / 1000.0,
+				Util.powerFactor(Saccum));
+		pw.println();
 	}
 
 	/**
 	 * Report power flow around a specified bus.
 	 *
-	 * opt = 0: kVA
-	 * opt = 1: MVA
+	 * @param opt 0: kVA 1: MVA
 	 */
 	public static void showBusPowers(String fileName, String busName, int opt, int showOptionCode) {
 		FileWriter fw;
 		PrintWriter pw;
-		int j = 0, nCond, nTerm;
+		int[] j = new int[1];
+		int nCond, nTerm;
 		double[] I0 = new double[1];
 		double[] I1 = new double[1];
 		double[] I2 = new double[1];
 		double[] CMax = new double[1];
 		Complex[] cBuffer;  // allocate to max total conductors
-		int busReference;
-		int jTerm = 0;
-
+		int busRef;
+		int[] jTerm = new int[1];
 		Circuit ckt = DSS.activeCircuit;
 
 		setMaxDeviceNameLength();
 
 		/* Get bus reference */
-		busReference = ckt.getBusList().find(busName);
-		if (busReference == 0) {
-			DSS.doSimpleMsg("Bus \""+busName.toUpperCase()+"\" not found.", 219);
+		busRef = ckt.getBusList().find(busName) + 1;
+		if (busRef == 0) {
+			DSS.doSimpleMsg("Bus \"" + busName.toUpperCase() + "\" not found.", 219);
 			return;
 		}
 		try {
@@ -1077,12 +1067,11 @@ public abstract class ShowResults {
 			switch (showOptionCode) {
 			case 0:
 				/* Write bus voltage */
-
 				pw.println();
 				pw.println("  Bus   Mag:    V1 (kV)  p.u.    V2 (kV)  %V2/V1  V0 (kV)  %V0/V1");
 				pw.println();
 
-				writeSeqVoltages(pw, busReference, false);
+				writeSeqVoltages(pw, busRef, false);
 
 				/* Sequence currents */
 				pw.println();
@@ -1092,51 +1081,56 @@ public abstract class ShowResults {
 				pw.println();
 
 				// sources first
-				for (CktElement pElem : ckt.getSources()) {
-					if (pElem.isEnabled())
-						if (checkBusReference(pElem, busReference, j)) {
+				for (CktElement elem : ckt.getSources()) {
+					if (elem.isEnabled()) {
+						if (checkBusReference(elem, busRef, j)) {
+							/* FIXME: Use j set by checkBusReference */
+							nCond = elem.getNumConds();
+							nTerm = elem.getNumTerms();
+							elem.getCurrents(cBuffer);
 
-							/* Use j set by checkBusReference */
-							nCond = pElem.getNumConds();
-							nTerm = pElem.getNumTerms();
-							pElem.getCurrents(cBuffer);
-
-							for (j = 0; j < nTerm; j++) {
-								getI0I1I2(I0, I1, I2, CMax, pElem.getNumPhases(), (j - 1) * nCond, cBuffer);
-								writeSeqCurrents(pw, Util.padDots(Util.fullName(pElem), maxDeviceNameLength + 2), I0[0], I1[0], I2[0], CMax[0], 0.0, 0.0, j, pElem.getObjType());
+							for (j[0] = 0; j[0] < nTerm; j[0]++) {
+								getI0I1I2(I0, I1, I2, CMax, elem.getNumPhases(), j[0] * nCond, cBuffer);
+								writeSeqCurrents(pw, Util.padDots(Util.fullName(elem), maxDeviceNameLength + 2),
+										I0[0], I1[0], I2[0], CMax[0], 0.0, 0.0, j[0], elem.getObjType());
 							}
 						}
+					}
 				}
 
 				// PD elements next
-				for (PDElement PDElem : ckt.getPDElements()) {
-					if (PDElem.isEnabled())
-						if (checkBusReference(PDElem, busReference, j)) {  // Is this connected to the bus
+				for (PDElement elem : ckt.getPDElements()) {
+					if (elem.isEnabled()) {
+						if (checkBusReference(elem, busRef, j)) {  // is this connected to the bus
 							/* Use j set by CheckBusReference */
-							nCond = PDElem.getNumConds();
-							nTerm = PDElem.getNumTerms();
-							PDElem.getCurrents(cBuffer);
+							nCond = elem.getNumConds();
+							nTerm = elem.getNumTerms();
+							elem.getCurrents(cBuffer);
 
-							for (j = 0; j < nTerm; j++) {
-								getI0I1I2(I0, I1, I2, CMax, PDElem.getNumPhases(), (j - 1) * nCond, cBuffer);
-								writeSeqCurrents(pw, Util.padDots(Util.fullName(PDElem), maxDeviceNameLength + 2), I0[0], I1[0], I2[0], CMax[0], 0.0, 0.0, j, PDElem.getObjType());
+							for (j[0] = 0; j[0] < nTerm; j[0]++) {
+								getI0I1I2(I0, I1, I2, CMax, elem.getNumPhases(), j[0] * nCond, cBuffer);
+								writeSeqCurrents(pw, Util.padDots(Util.fullName(elem), maxDeviceNameLength + 2),
+										I0[0], I1[0], I2[0], CMax[0], 0.0, 0.0, j[0], elem.getObjType());
 							}
 						}
+					}
 				}
 
 				// PC elements next
-				for (PCElement PCElem : ckt.getPCElements()) {
-					if (PCElem.isEnabled())
-						if (checkBusReference(PCElem, busReference, j)) {
-							nCond = PCElem.getNumConds();
-							nTerm = PCElem.getNumTerms();
-							PCElem.getCurrents(cBuffer);
+				for (PCElement elem : ckt.getPCElements()) {
+					if (elem.isEnabled()) {
+						if (checkBusReference(elem, busRef, j)) {
+							nCond = elem.getNumConds();
+							nTerm = elem.getNumTerms();
+							elem.getCurrents(cBuffer);
 
-							for (j = 0; j < nTerm; j++) {
-								getI0I1I2(I0, I1, I2, CMax, PCElem.getNumPhases(), (j - 1) * nCond, cBuffer);
-								writeSeqCurrents(pw, Util.padDots(Util.fullName(PCElem), maxDeviceNameLength + 2), I0[0], I1[0], I2[0], CMax[0], 0.0, 0.0, j, PCElem.getObjType());
+							for (j[0] = 0; j[0] < nTerm; j[0]++) {
+								getI0I1I2(I0, I1, I2, CMax, elem.getNumPhases(), j[0] * nCond, cBuffer);
+								writeSeqCurrents(pw, Util.padDots(Util.fullName(elem), maxDeviceNameLength + 2),
+										I0[0], I1[0], I2[0], CMax[0], 0.0, 0.0, j[0], elem.getObjType());
 							}
 						}
+					}
 				}
 
 				/* Sequence powers */
@@ -1154,37 +1148,39 @@ public abstract class ShowResults {
 				pw.println();
 
 				// sources first
-				for (CktElement pElem : ckt.getSources()) {
-					if (pElem.isEnabled())
-						if (checkBusReference(pElem, busReference, j)) {
+				for (CktElement elem : ckt.getSources()) {
+					if (elem.isEnabled()) {
+						if (checkBusReference(elem, busRef, j)) {
 							/* Use j set by checkBusReference */
-							writeTerminalPowerSeq(pw, pElem, j, opt);
+							writeTerminalPowerSeq(pw, elem, j[0], opt);
 						}
+					}
 				}
 
 				// PD elements next
-				for (PDElement PDElem : ckt.getPDElements()) {
-					if (PDElem.isEnabled())
-						if (checkBusReference(PDElem, busReference, j)) {  // Is this connected to the bus
-							writeTerminalPowerSeq(pw, PDElem, j, opt);
+				for (PDElement elem : ckt.getPDElements()) {
+					if (elem.isEnabled()) {
+						if (checkBusReference(elem, busRef, j)) {  // is this connected to the bus
+							writeTerminalPowerSeq(pw, elem, j[0], opt);
 						}
+					}
 				}
 
 				// PC elements next
-				for (PCElement PCElem : ckt.getPCElements()) {
-					if (PCElem.isEnabled())
-						if (checkBusReference(PCElem, busReference, j)) {
-							writeTerminalPowerSeq(pw, PCElem, j, opt);
+				for (PCElement elem : ckt.getPCElements()) {
+					if (elem.isEnabled()) {
+						if (checkBusReference(elem, busRef, j)) {
+							writeTerminalPowerSeq(pw, elem, j[0], opt);
 						}
+					}
 				}
-
 				break;
 			case 1:
 				/* Write bus voltage */
 				pw.println();
 				pw.println("  Bus   (node ref)  Node       V (kV)    Angle    p.u.   Base kV");
 				pw.println();
-				writeBusVoltages(pw, busReference, false);
+				writeBusVoltages(pw, busRef - 1, false);
 
 				/* Element currents */
 				pw.println();
@@ -1198,21 +1194,23 @@ public abstract class ShowResults {
 				pw.println();
 
 				// sources first
-				for (CktElement pElem : ckt.getSources()) {
-					if (pElem.isEnabled())
-						if (checkBusReference(pElem, busReference, j)) {
-							writeTerminalCurrents(pw, pElem, false);
+				for (CktElement elem : ckt.getSources()) {
+					if (elem.isEnabled()) {
+						if (checkBusReference(elem, busRef, j)) {
+							writeTerminalCurrents(pw, elem, false);
 							pw.println();
 						}
+					}
 				}
 
 				// PD elements first
-				for (CktElement pElem : ckt.getPDElements()) {
-					if (pElem.isEnabled())
-						if (checkBusReference(pElem, busReference, j)) {
-							writeTerminalCurrents(pw, pElem, true);
+				for (CktElement elem : ckt.getPDElements()) {
+					if (elem.isEnabled()) {
+						if (checkBusReference(elem, busRef, j)) {
+							writeTerminalCurrents(pw, elem, true);
 							pw.println();
 						}
+					}
 				}
 
 				pw.println("= = = = = = = = = = = = = = = = = = =  = = = = = = = = = = =  = =");
@@ -1223,12 +1221,13 @@ public abstract class ShowResults {
 				pw.println();
 
 				// PC elements next
-				for (CktElement pElem : ckt.getPCElements()) {
-					if (pElem.isEnabled())
-						if (checkBusReference(pElem, busReference, j)) {
-							writeTerminalCurrents(pw, pElem, false);
+				for (CktElement elem : ckt.getPCElements()) {
+					if (elem.isEnabled()) {
+						if (checkBusReference(elem, busRef, j)) {
+							writeTerminalCurrents(pw, elem, false);
 							pw.println();
 						}
+					}
 				}
 
 				/* Branch powers */
@@ -1248,28 +1247,30 @@ public abstract class ShowResults {
 				pw.println();
 
 				// sources first
-				for (CktElement pElem : ckt.getSources()) {
-					if (pElem.isEnabled())
-						if (checkBusReference(pElem, busReference, j)) {
-							writeTerminalPower(pw, pElem, j, opt);
+				for (CktElement elem : ckt.getSources()) {
+					if (elem.isEnabled()) {
+						if (checkBusReference(elem, busRef, j)) {
+							writeTerminalPower(pw, elem, j[0], opt);
 							pw.println();
 						}
+					}
 				}
 
 				// PD elements first
-				for (CktElement pElem : ckt.getPDElements()) {
-					if (pElem.isEnabled())
-						if (checkBusReference(pElem, busReference, jTerm)) {
-							writeTerminalPower(pw, pElem, jTerm, opt);
+				for (CktElement elem : ckt.getPDElements()) {
+					if (elem.isEnabled()) {
+						if (checkBusReference(elem, busRef, jTerm)) {
+							writeTerminalPower(pw, elem, jTerm[0], opt);
 							/* Get the other bus for the report */
-							if (jTerm == 1) {
-								jTerm = 2;
+							if (jTerm[0] == 0) {
+								jTerm[0] = 1;
 							} else {
-								jTerm = 1;  // may sometimes give wrong terminal if more than 2 terminals
+								jTerm[0] = 0;  // may sometimes give wrong terminal if more than 2 terminals
 							}
-							writeTerminalPower(pw, pElem, jTerm, opt);
+							writeTerminalPower(pw, elem, jTerm[0], opt);
 							pw.println();
 						}
+					}
 				}
 
 				pw.println("= = = = = = = = = = = = = = = = = = =  = = = = = = = = = = =  = =");
@@ -1285,24 +1286,22 @@ public abstract class ShowResults {
 				pw.println();
 
 				// PC elements next
-				for (PCElement pElem : ckt.getPCElements()) {
-					if (pElem.isEnabled())
-						if (checkBusReference(pElem, busReference, jTerm)) {
-							writeTerminalPower(pw, pElem, jTerm, opt);
+				for (PCElement elem : ckt.getPCElements()) {
+					if (elem.isEnabled()) {
+						if (checkBusReference(elem, busRef, jTerm)) {
+							writeTerminalPower(pw, elem, jTerm[0], opt);
 							pw.println();
 						}
+					}
 				}
 				break;
 			}
-
-			cBuffer = null;
-
 			pw.close();
 			fw.close();
 
 			Util.fireOffEditor(fileName);
 		} catch (IOException e) {
-			// TODO: handle exception
+			DSS.doSimpleMsg("Error encountered showing bus powers: " + e.getMessage(), 2190);
 		}
 	}
 
