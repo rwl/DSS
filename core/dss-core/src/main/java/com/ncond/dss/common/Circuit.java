@@ -488,7 +488,7 @@ public class Circuit extends NamedObject {
 						// find index in new bus for j-th node in old bus
 						jdx = buses[idx].findIdx(bus.getNum(j));
 						if (jdx > -1)
-							buses[idx].getVBus()[jdx] = bus.getVBus()[j];
+							buses[idx].getVBus()[jdx] = bus.getVBus(j);
 					}
 				}
 			}

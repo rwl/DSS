@@ -1307,23 +1307,22 @@ public abstract class ShowResults {
 
 	public static void showFaultStudy(String fileName) {
 		int i, iBus, iphs;
-		CMatrix YFault, ZFault;
-		Complex[] VFault;  /* Big temp array */
+		CMatrix Yfault, Zfault;
+		Complex[] Vfault;
 		FileWriter fw;
 		PrintWriter pw;
-		Complex GFault, IFault;
+		Complex Gfault, Ifault;
 		double Vphs;
 		double currMag;
 		Bus bus;
+
+		Circuit ckt = DSS.activeCircuit;
 
 		setMaxBusNameLength();
 
 		try {
 			fw = new FileWriter(fileName);
 			pw = new PrintWriter(fw);
-
-			Circuit ckt = DSS.activeCircuit;
-			SolutionObj sol = ckt.getSolution();
 
 			/* Set source voltage injection currents */
 
@@ -1340,18 +1339,16 @@ public abstract class ShowResults {
 				pw.print(Util.pad(Util.encloseQuotes(ckt.getBusList().get(iBus).toUpperCase()) + ",", maxBusNameLength + 2));
 				for (i = 0; i < bus.getNumNodesThisBus(); i++) {
 					currMag = bus.getBusCurrent(i).abs();
-					if (i > 1)
-						pw.print(", ");
-						pw.print(currMag);
-						if (currMag > 0.0) {
-							pw.print(", " + MathUtil.getXR( bus.getVBus()[i].divide( bus.getBusCurrent(i) ) ));
-						} else {
-							pw.print(",   N/A");
-						}
+					if (i > 0) pw.print(", ");
+					pw.print(currMag);
+					if (currMag > 0.0) {
+						pw.print(", " + MathUtil.getXR(bus.getVBus(i).divide(bus.getBusCurrent(i))));
+					} else {
+						pw.print(",   N/A");
+					}
 				}
 				pw.println();
 			}
-
 			pw.println();
 
 			/* One phase faults */
@@ -1366,14 +1363,14 @@ public abstract class ShowResults {
 			for (iBus = 0; iBus < ckt.getNumBuses(); iBus++) {
 				/* Bus Norton equivalent current, Isc has been previously computed */
 				bus = ckt.getBus(iBus);
-				ZFault = new CMatrix(bus.getNumNodesThisBus());
-				ZFault.copyFrom(bus.getZsc());
+				Zfault = new CMatrix(bus.getNumNodesThisBus());
+				Zfault.copyFrom(bus.getZsc());
 
 				for (iphs = 0; iphs < bus.getNumNodesThisBus(); iphs++) {
-					IFault = bus.getVBus()[iphs].divide( bus.getZsc().get(iphs, iphs) );
-					pw.print(Util.pad( Util.encloseQuotes(ckt.getBusList().get(iBus).toUpperCase()), maxBusNameLength + 2) + iphs + IFault.abs() + "   ");
+					Ifault = bus.getVBus(iphs).divide( bus.getZsc().get(iphs, iphs) );
+					pw.print(Util.pad(Util.encloseQuotes(ckt.getBusList().get(iBus).toUpperCase()), maxBusNameLength + 2) + (iphs+1) + Ifault.abs() + "   ");
 					for (i = 0; i < bus.getNumNodesThisBus(); i++) {
-						Vphs = bus.getVBus()[i].subtract( bus.getZsc().get(i, iphs).multiply(IFault) ).abs();
+						Vphs = bus.getVBus(i).subtract(bus.getZsc().get(i, iphs).multiply(Ifault)).abs();
 						if (bus.getKVBase() > 0.0) {
 							Vphs = 0.001 * Vphs / bus.getKVBase();
 							pw.print(" " + Vphs);
@@ -1385,7 +1382,7 @@ public abstract class ShowResults {
 				}
 				/* Now, put it in the Css array where it belongs */
 
-				ZFault = null;
+				Zfault = null;
 			}
 
 			/* Node-node faults */
@@ -1400,24 +1397,25 @@ public abstract class ShowResults {
 			for (iBus = 0; iBus < ckt.getNumBuses(); iBus++) {
 				/* Bus Norton equivalent current, Isc has been previously computed */
 				bus = ckt.getBus(iBus);
-				YFault = new CMatrix(bus.getNumNodesThisBus());
-				VFault = new Complex[bus.getNumNodesThisBus()];
+				Yfault = new CMatrix(bus.getNumNodesThisBus());
+				Vfault = new Complex[bus.getNumNodesThisBus()];
 
-				GFault = new Complex(10000.0, 0.0);
+				Gfault = new Complex(10000.0, 0.0);
 
 				for (iphs = 0; iphs < bus.getNumNodesThisBus(); iphs++) {
-					YFault.copyFrom(bus.getYsc());
-					YFault.add(iphs, iphs, GFault);
-					YFault.add(iphs + 1, iphs + 1, GFault);
-					YFault.addSym(iphs, iphs + 1, GFault.negate());
+					Yfault.copyFrom(bus.getYsc());
+					Yfault.add(iphs, iphs, Gfault);
+					Yfault.add(iphs + 1, iphs + 1, Gfault);
+					Yfault.addSym(iphs, iphs + 1, Gfault.negate());
 
 					/* Solve for injection currents */
-					YFault.invert();
-					YFault.vMult(VFault, bus.getBusCurrent());  /* Gets voltage appearing at fault */
+					Yfault.invert();
+					Yfault.vMult(Vfault, bus.getBusCurrent());  /* Gets voltage appearing at fault */
 
-					pw.print(Util.pad(Util.encloseQuotes(ckt.getBusList().get(iBus)), maxBusNameLength + 2) + iphs + (iphs + 1) + VFault[iphs].subtract(VFault[iphs + 1]).multiply(GFault).abs() + "   ");
+					pw.print(Util.pad(Util.encloseQuotes(ckt.getBusList().get(iBus)), maxBusNameLength + 2) +
+						(iphs+1) + (iphs+2) + Vfault[iphs].subtract(Vfault[iphs+1]).multiply(Gfault).abs() + "   ");
 					for (i = 0; i < bus.getNumNodesThisBus(); i++) {
-						Vphs = VFault[i].abs();
+						Vphs = Vfault[i].abs();
 						if (bus.getKVBase() > 0.0) {
 							Vphs = 0.001 * Vphs / bus.getKVBase();
 							pw.print(" " + Vphs);
@@ -1426,32 +1424,32 @@ public abstract class ShowResults {
 						}
 					}
 					pw.println();
-
 				}
 			}
 			/* Now, put it in the Css array where it belongs */
-			VFault = null;
-			YFault = null;
+
+			Vfault = null;
+			Yfault = null;
 
 			pw.close();
 			fw.close();
 
 			Util.fireOffEditor(fileName);
 		} catch (IOException e) {
-			// TODO: handle exception
+			DSS.doSimpleMsg("Error encountered showing fault study: " + e.getMessage(), -1);
 		}
 	}
 
-	private static void writeElementRecord(PrintWriter pw, CktElement pElem) {
+	private static void writeElementRecord(PrintWriter pw, CktElement elem) {
 		int nTerm, j;
 		String busName;
 
-		nTerm = pElem.getNumTerms();
-		busName = Util.pad(Util.stripExtension(pElem.getFirstBus()), maxBusNameLength);
-		pw.print(Util.pad(Util.fullName(pElem), maxDeviceNameLength + 2) + " ");
+		nTerm = elem.getNumTerms();
+		busName = Util.pad(Util.stripExtension(elem.getFirstBus()), maxBusNameLength);
+		pw.print(Util.pad(Util.fullName(elem), maxDeviceNameLength + 2) + " ");
 		for (j = 0; j < nTerm; j++) {
 			pw.print(busName.toUpperCase() + " ");
-			busName = Util.pad(Util.stripExtension(pElem.getNextBus()), maxBusNameLength);
+			busName = Util.pad(Util.stripExtension(elem.getNextBus()), maxBusNameLength);
 		}
 		pw.println();
 	}
@@ -1462,8 +1460,8 @@ public abstract class ShowResults {
 	public static void showElements(String fileName, String className) {
 		FileWriter fw;
 		PrintWriter pw;
-		FileWriter fwDisabled;
-		PrintWriter pwDisabled;
+		FileWriter fw_disabled;
+		PrintWriter pw_disabled;
 		int i;
 		String disabledFileName;
 
@@ -1476,17 +1474,17 @@ public abstract class ShowResults {
 			fw = new FileWriter(fileName);
 			pw = new PrintWriter(fw);
 
-			disabledFileName = Util.stripExtension(fileName) + "_Disabled.txt";
-			fwDisabled = new FileWriter(disabledFileName);
-			pwDisabled = new PrintWriter(fw);
+			disabledFileName = Util.stripExtension(fileName) + "_disabled.txt";
+			fw_disabled = new FileWriter(disabledFileName);
+			pw_disabled = new PrintWriter(fw);
 
 			if (className.length() > 0) {
-				// Just give a list of active elements of a particular class
+				// just give a list of active elements of a particular class
 				if (DSSClassDefs.setObjectClass(className)) {
-					pw.println("All Elements in Class \"" + className + "\"");
+					pw.println("All elements in class \"" + className + "\"");
 					pw.println();
-					pwDisabled.println("All DISABLED Elements in Class \"" + className + "\"");
-					pwDisabled.println();
+					pw_disabled.println("All disabled elements in class \"" + className + "\"");
+					pw_disabled.println();
 					DSS.activeDSSClass = DSS.DSSClassList.get(DSS.lastClassReferenced);
 					for (i = 0; i < DSS.activeDSSClass.getElementCount(); i++) {
 						DSS.activeDSSClass.setActiveElement(i);
@@ -1494,7 +1492,7 @@ public abstract class ShowResults {
 							if (((CktElement) DSS.activeDSSObject).isEnabled()) {
 								pw.println(DSS.activeDSSObject.getName().toUpperCase());
 							} else {
-								pwDisabled.println(DSS.activeDSSObject.getName().toUpperCase());
+								pw_disabled.println(DSS.activeDSSObject.getName().toUpperCase());
 							}
 						} else {
 							pw.println(DSS.activeDSSObject.getName().toUpperCase());  // non cktelements
@@ -1502,65 +1500,74 @@ public abstract class ShowResults {
 					}
 				}
 			} else {
-				// Default - just do PD and PC Element in active circuit
+				// default - just do PD and PC element in active circuit
+				pw.println();
+				pw.println("Elements in active circuit: " + ckt.getName());
+				pw.println();
+				pw.println("Power delivery elements");
+				pw.println();
+				pw.println(Util.pad("Element", maxDeviceNameLength + 2) +
+					Util.pad(" Bus1", maxBusNameLength) +
+					Util.pad(" Bus2", maxBusNameLength) +
+					Util.pad(" Bus3", maxBusNameLength) + " ...");
+				pw.println();
 
-				pw.println();
-				pw.println("Elements in Active Circuit: " + ckt.getName());
-				pw.println();
-				pw.println("Power Delivery Elements");
-				pw.println();
-				pw.println(Util.pad("Element", maxDeviceNameLength + 2) + Util.pad(" Bus1", maxBusNameLength) + Util.pad(" Bus2", maxBusNameLength) + Util.pad(" Bus3", maxBusNameLength) + " ...");
-				pw.println();
-
-
-				pwDisabled.println();
-				pwDisabled.println("DISABLED Elements in Active Circuit: " + ckt.getName());
-				pwDisabled.println();
-				pwDisabled.println("DISABLED Power Delivery Elements");
-				pwDisabled.println();
-				pwDisabled.println(Util.pad("DISABLED Element", maxDeviceNameLength + 2) + Util.pad(" Bus1", maxBusNameLength) + Util.pad(" Bus2", maxBusNameLength) + Util.pad(" Bus3", maxBusNameLength) + " ...");
-				pwDisabled.println();
+				pw_disabled.println();
+				pw_disabled.println("Disabled elements in active circuit: " + ckt.getName());
+				pw_disabled.println();
+				pw_disabled.println("Disabled power delivery elements");
+				pw_disabled.println();
+				pw_disabled.println(Util.pad("Disabled element", maxDeviceNameLength + 2) +
+					Util.pad(" Bus1", maxBusNameLength) +
+					Util.pad(" Bus2", maxBusNameLength) +
+					Util.pad(" Bus3", maxBusNameLength) + " ...");
+				pw_disabled.println();
 
 				// PD elements first
-				for (CktElement pElem : ckt.getPDElements()) {
-					if (pElem.isEnabled()) {
-						writeElementRecord(pw, pElem);
+				for (CktElement elem : ckt.getPDElements()) {
+					if (elem.isEnabled()) {
+						writeElementRecord(pw, elem);
 					} else {
-						writeElementRecord(pwDisabled, pElem);
+						writeElementRecord(pw_disabled, elem);
 					}
 				}
 
 				pw.println();
-				pw.println("Power Conversion Elements");
+				pw.println("Power conversion elements");
 				pw.println();
-				pw.println(Util.pad("Element", maxDeviceNameLength + 2) + Util.pad(" Bus1", maxBusNameLength) + Util.pad(" Bus2", maxBusNameLength) + Util.pad(" Bus3", maxBusNameLength) + " ...");
+				pw.println(Util.pad("Element", maxDeviceNameLength + 2) +
+					Util.pad(" Bus1", maxBusNameLength) +
+					Util.pad(" Bus2", maxBusNameLength) +
+					Util.pad(" Bus3", maxBusNameLength) + " ...");
 				pw.println();
 
-				pwDisabled.println();
-				pwDisabled.println("DISABLED Power Conversion Elements");
-				pwDisabled.println();
-				pwDisabled.println(Util.pad("DISABLED Element", maxDeviceNameLength + 2) + Util.pad(" Bus1", maxBusNameLength) + Util.pad(" Bus2", maxBusNameLength) + Util.pad(" Bus3", maxBusNameLength) + " ...");
-				pwDisabled.println();
+				pw_disabled.println();
+				pw_disabled.println("Disabled power conversion elements");
+				pw_disabled.println();
+				pw_disabled.println(Util.pad("Disabled element", maxDeviceNameLength + 2) +
+					Util.pad(" Bus1", maxBusNameLength) +
+					Util.pad(" Bus2", maxBusNameLength) +
+					Util.pad(" Bus3", maxBusNameLength) + " ...");
+				pw_disabled.println();
 
 				// PC elements next
-				for (CktElement pElem : ckt.getPCElements()) {
-					if (pElem.isEnabled()) {
-						writeElementRecord(pw, pElem);
+				for (CktElement elem : ckt.getPCElements()) {
+					if (elem.isEnabled()) {
+						writeElementRecord(pw, elem);
 					} else {
-						writeElementRecord(pwDisabled, pElem);
+						writeElementRecord(pw_disabled, elem);
 					}
 				}
 			}
-
 			pw.close();
 			fw.close();
-			pwDisabled.close();
-			fwDisabled.close();
+			pw_disabled.close();
+			fw_disabled.close();
 
 			Util.fireOffEditor(disabledFileName);
 			Util.fireOffEditor(fileName);
 		} catch (IOException e) {
-			// TODO: handle exception
+			DSS.doSimpleMsg("Error encountered showing elements: " + e.getMessage(), -1);
 		}
 	}
 
@@ -1571,7 +1578,7 @@ public abstract class ShowResults {
 		FileWriter fw;
 		PrintWriter pw;
 		int i, j;
-		Bus pBus;
+		Bus bus;
 
 		Circuit ckt = DSS.activeCircuit;
 
@@ -1583,45 +1590,46 @@ public abstract class ShowResults {
 			pw = new PrintWriter(fw);
 
 			pw.println();
-			pw.println("BUSES AND NODES IN ACTIVE CIRCUIT: " + ckt.getName());
+			pw.println("Buses and nodes in active circuit: " + ckt.getName());
 			pw.println();
-			pw.println(Util.pad("     ", maxBusNameLength) + "                         Coord                        Number of     Nodes ");
-			pw.println(Util.pad("  Bus", maxBusNameLength) + "    Base kV             (x, y)            Keep?       Nodes      connected ...");
+			pw.println(Util.pad("     ", maxBusNameLength) +
+				"                         Coord                        Number of     Nodes ");
+			pw.println(Util.pad("  Bus", maxBusNameLength) +
+				"    Base kV             (x, y)            Keep?       Nodes      connected ...");
 			pw.println();
 			for (i = 0; i < ckt.getNumBuses(); i++) {
 				pw.print(Util.pad(Util.encloseQuotes(ckt.getBusList().get(i)), maxBusNameLength) + " ");
-				pBus = ckt.getBus(i);
-				if (pBus.getKVBase() > 0.0) {
-					pw.print(pBus.getKVBase() * DSS.SQRT3);
+				bus = ckt.getBus(i);
+				if (bus.getKVBase() > 0.0) {
+					pw.print(bus.getKVBase() * DSS.SQRT3);
 				} else {
 					pw.print("   NA ");
 				}
 				pw.print("          (");
-				if (pBus.isCoordDefined()) {
-					pw.printf(" %-13.11g, %-13.11g)", pBus.getX(), pBus.getY());
+				if (bus.isCoordDefined()) {
+					pw.printf(" %-13.11g, %-13.11g)", bus.getX(), bus.getY());
 				} else {
 					pw.print("           NA,            NA )");
 				}
-				if (pBus.isKeep()) {
+				if (bus.isKeep()) {
 					pw.print("     Yes  ");
 				} else {
 					pw.print("     No  ");
 				}
 				pw.print("     ");
-				pw.print(pBus.getNumNodesThisBus());
+				pw.print(bus.getNumNodesThisBus());
 				pw.print("       ");
-				for (j = 0; j < pBus.getNumNodesThisBus(); j++) {
-					pw.print(pBus.getNum(j) + " ");
+				for (j = 0; j < bus.getNumNodesThisBus(); j++) {
+					pw.print(bus.getNum(j) + " ");
 				}
 				pw.println();
 			}
-
 			pw.close();
 			fw.close();
 
 			Util.fireOffEditor(fileName);
 		} catch (IOException e) {
-			// TODO: handle exception
+			DSS.doSimpleMsg("Error encountered showing buses: " + e.getMessage(), -1);
 		}
 	}
 
@@ -1633,6 +1641,7 @@ public abstract class ShowResults {
 		PrintWriter pw;
 		int i, j;
 		EnergyMeter meterClass;
+		EnergyMeterObj mtr;
 
 		Circuit ckt = DSS.activeCircuit;
 
@@ -1641,46 +1650,45 @@ public abstract class ShowResults {
 			pw = new PrintWriter(fw);
 
 			pw.println();
-			pw.println("ENERGY METER VALUES");
+			pw.println("Energy meter values");
 			pw.println();
 			pw.println("Registers:");
-			meterClass = (EnergyMeter) DSSClassDefs.getDSSClass("Energymeter");
-			if (meterClass == null)
-				return;
+			meterClass = (EnergyMeter) DSSClassDefs.getDSSClass("EnergyMeter");
+			if (meterClass == null) return;
+
 			if (meterClass.getElementCount() == 0) {
-				pw.println("No Energymeter Elements Defined.");
+				pw.println("No EnergyMeter Elements Defined.");
 			} else {
-				EnergyMeterObj pMeter = ckt.getEnergyMeters().get(0);  // write registernames for first meter only
+				mtr = ckt.getEnergyMeters().get(0);  // write register names for first meter only
 				for (i = 0; i < EnergyMeter.NUM_EM_REGISTERS; i++)
-					pw.println("Reg " + String.valueOf(i) + " = " + pMeter.getRegisterNames()[i]);
+					pw.println("Reg " + (i+1) + " = " + mtr.getRegisterName(i));
 				pw.println();
 
-				if (pMeter != null) {
+				if (mtr != null) {
 					pw.print("Meter        ");
 					for (i = 0; i < EnergyMeter.NUM_EM_REGISTERS; i++)
-						pw.print(Util.pad("   Reg " + String.valueOf(i), 11));
+						pw.print(Util.pad("   Reg " + (i+1), 11));
 					pw.println();
 					pw.println();
 				}
 
-				for (EnergyMeterObj pElem : ckt.getEnergyMeters()) {
-					if (pElem != null) {
-						if (pElem.isEnabled()) {
-							pw.print(Util.pad(pElem.getName(), 12));
+				for (EnergyMeterObj elem : ckt.getEnergyMeters()) {
+					if (elem != null) {
+						if (elem.isEnabled()) {
+							pw.print(Util.pad(elem.getName(), 12));
 							for (j = 0; j < EnergyMeter.NUM_EM_REGISTERS; j++)
-								pw.print(pElem.getRegister(j) + " ");
+								pw.print(elem.getRegister(j) + " ");
 						}
 					}
 					pw.println();
 				}
 			}
-
 			pw.close();
 			fw.close();
 
 			Util.fireOffEditor(fileName);
 		} catch (IOException e) {
-			// TODO: handle exception
+			DSS.doSimpleMsg("Error encountered showing meters: " + e.getMessage(), -1);
 		}
 	}
 
@@ -1703,22 +1711,22 @@ public abstract class ShowResults {
 			pw.println("GENERATOR ENERGY METER VALUES");
 			pw.println();
 
-			GeneratorObj pGen = ckt.getGenerators().get(0);
-			if (pGen != null) {
-				generatorClass = (Generator) pGen.getParentClass();
+			GeneratorObj gen = ckt.getGenerators().get(0);
+			if (gen != null) {
+				generatorClass = (Generator) gen.getParentClass();
 				pw.print("Generator          ");
 				for (i = 0; i < Generator.NumGenRegisters; i++)
-					pw.print(Util.pad(generatorClass.getRegisterNames()[i], 11));
+					pw.print(Util.pad(generatorClass.getRegisterName(i), 11));
 				pw.println();
 				pw.println();
 			}
 
-			for (GeneratorObj pElem : ckt.getGenerators()) {
-				if (pElem != null) {
-					if (pElem.isEnabled()) {
-						pw.print(Util.pad(pElem.getName(), 12));
+			for (GeneratorObj elem : ckt.getGenerators()) {
+				if (elem != null) {
+					if (elem.isEnabled()) {
+						pw.print(Util.pad(elem.getName(), 12));
 						for (j = 0; j < Generator.NumGenRegisters; j++) {
-							pw.print(pElem.getRegisters()[j] + " ");
+							pw.print(elem.getRegister(j) + " ");
 						}
 					}
 				}
@@ -1730,7 +1738,45 @@ public abstract class ShowResults {
 
 			Util.fireOffEditor(fileName);
 		} catch (IOException e) {
-			// TODO: handle exception
+			DSS.doSimpleMsg("Error encountered showing gen meters: " + e.getMessage(), -1);
+		}
+	}
+
+	public static void showRegulatorTaps(String fileName) {
+		FileWriter fw;
+		PrintWriter pw;
+		int iWind;
+		TransformerObj t;
+
+		try {
+			fw = new FileWriter(fileName);
+			pw = new PrintWriter(fw);
+
+			pw.println();
+			pw.println("Controlled transformer tap settings");
+			pw.println();
+			pw.println("Name            Tap      Min       Max     Step  Position");
+			pw.println();
+
+			Circuit ckt = DSS.activeCircuit;
+
+			for (RegControlObj reg : ckt.getRegControls()) {
+				t = reg.getTransformer();
+				iWind = reg.getWinding();
+				pw.print(Util.pad(t.getName(), 12) + " ");
+				pw.printf("%8.5f %8.5f %8.5f %8.5f     %d",
+					t.getPresentTap(iWind), t.getMinTap(iWind),
+					t.getMaxTap(iWind), t.getTapIncrement(iWind),
+					tapPosition(reg.getTransformer(), iWind));
+				pw.println();
+			};
+
+			pw.close();
+			fw.close();
+
+			Util.fireOffEditor(fileName);
+		} catch (IOException e) {
+			DSS.doSimpleMsg("Error encountered showing regulator taps: " + e.getMessage(), -1);
 		}
 	}
 
@@ -1741,51 +1787,17 @@ public abstract class ShowResults {
 		return (int) Math.round((xfmr.getPresentTap(iWind) - 1.0) / xfmr.getTapIncrement(iWind));
 	}
 
-	public static void showRegulatorTaps(String fileName) {
-		FileWriter fw;
-		PrintWriter pw;
-		int iWind;
-
-		try {
-			fw = new FileWriter(fileName);
-			pw = new PrintWriter(fw);
-
-			pw.println();
-			pw.println("CONTROLLED TRANSFORMER TAP SETTINGS");
-			pw.println();
-			pw.println("Name            Tap      Min       Max     Step  Position");
-			pw.println();
-
-			Circuit ckt = DSS.activeCircuit;
-
-			for (RegControlObj pReg : ckt.getRegControls()) {
-				TransformerObj t = pReg.getTransformer();
-				iWind = pReg.getWinding();
-				pw.print(Util.pad(t.getName(), 12) + " ");
-				pw.printf("%8.5f %8.5f %8.5f %8.5f     %d", t.getPresentTap(iWind), t.getMinTap(iWind), t.getMaxTap(iWind), t.getTapIncrement(iWind), tapPosition(pReg.getTransformer(), iWind));
-				pw.println();
-			};
-
-			pw.close();
-			fw.close();
-
-			Util.fireOffEditor(fileName);
-		} catch (IOException e) {
-			// TODO: handle exception
-		}
-	}
-
 	public static void showMeterZone(String fileName) {
 		FileWriter fw;
 		PrintWriter pw;
 		int i;
-		EnergyMeterObj pMtr;
-		EnergyMeter pMtrClass;
-		PDElement PDElem;
+		EnergyMeterObj mtr;
+		EnergyMeter meterClass;
+		PDElement elem;
 		LoadObj loadElem;
-		String paramName;
+		@SuppressWarnings("unused") String paramName;
 		String param;
-
+		CktTreeNode pb;
 
 		Parser parser = Parser.getInstance();
 
@@ -1794,56 +1806,60 @@ public abstract class ShowResults {
 			paramName = parser.getNextParam();
 			param = parser.makeString();
 
-			fileName = fileName+"_"+param+".txt";
+			fileName = fileName + "_" + param + ".txt";
 
 			fw = new FileWriter(fileName);
 			pw = new PrintWriter(fw);
 
 			DSS.globalResult = fileName;
 
-			pMtrClass = (EnergyMeter) DSS.DSSClassList.get(DSS.classNames.find("energymeter"));
+			meterClass = (EnergyMeter) DSS.DSSClassList.get(DSS.classNames.find("energymeter"));
 
 			if (param.length() > 0) {
-				pMtr = (EnergyMeterObj) pMtrClass.find(param);  // FIXME make generic
-				if (pMtr == null) {
+				mtr = (EnergyMeterObj) meterClass.find(param);
+				if (mtr == null) {
 					DSS.doSimpleMsg("EnergyMeter \"" + param + "\" not found.", 220);
 				} else {
-					if (pMtr.getBranchList() != null) {
+					if (mtr.getBranchList() != null) {
 						pw.println("Branches and Load in Zone for EnergyMeter " + param);
 						pw.println();
 
-						PDElem = (PDElement) pMtr.getBranchList().getFirst();
-						while (PDElem != null) {
-							for (i = 0; i < pMtr.getBranchList().getLevel(); i++)
-								pw.print(TABCHAR);
-							//F.print(pMtr.getBranchList().getLevel() +" ");
-							pw.print(PDElem.getParentClass().getClassName() + "." + PDElem.getName());
-							CktTreeNode pb = pMtr.getBranchList().getPresentBranch();
-							if (pb.isParallel())
-								pw.print("(PARALLEL:" + ((CktElement) pb.getLoopLineObj()).getName()+")");
-							if (pb.isLoopedHere())
-								pw.print("(LOOP:" + ((CktElement) pb.getLoopLineObj()).getParentClass().getClassName()+"."+((CktElement) pb.getLoopLineObj()).getName()+")");
+						elem = (PDElement) mtr.getBranchList().getFirst();
+						while (elem != null) {
+							for (i = 0; i < mtr.getBranchList().getLevel(); i++) pw.print(TABCHAR);
+							//pw.print(mtr.getBranchList().getLevel() + " ");
+							pw.print(elem.getParentClass().getClassName() + "." + elem.getName());
 
-							if (PDElem.getSensorObj() != null) {
-								pw.printf(" (Sensor: %s.%s) ", PDElem.getSensorObj().getParentClass().getClassName(), PDElem.getSensorObj().getName());
+							pb = mtr.getBranchList().getPresentBranch();
+							if (pb.isParallel())
+								pw.print("(Parallel:" + ((CktElement) pb.getLoopLineObj()).getName()+")");
+							if (pb.isLoopedHere()) {
+								pw.print("(Loop:" + ((CktElement) pb.getLoopLineObj()).getParentClass().getClassName() + "." +
+										((CktElement) pb.getLoopLineObj()).getName()+")");
+							}
+
+							if (elem.getSensorObj() != null) {
+								pw.printf(" (Sensor: %s.%s) ", elem.getSensorObj().getParentClass().getClassName(),
+										elem.getSensorObj().getName());
 							} else {
-								pw.print(" (Sensor: NIL)");
+								pw.print(" (Sensor: null)");
 							}
 							pw.println();
-							loadElem = (LoadObj) pMtr.getBranchList().getFirstObject();
+							loadElem = (LoadObj) mtr.getBranchList().getFirstObject();
 							while (loadElem != null) {
-								for (i = 0; i < pMtr.getBranchList().getLevel() + 1; i++)
-									pw.print(TABCHAR);
+								for (i = 0; i < mtr.getBranchList().getLevel() + 1; i++) pw.print(TABCHAR);
 								pw.print(loadElem.getParentClass().getClassName() + "." + loadElem.getName());
+
 								if (loadElem.getSensorObj() != null) {
-									pw.printf(" (Sensor: %s.%s) ", loadElem.getSensorObj().getParentClass().getClassName(), loadElem.getSensorObj().getName());
+									pw.printf(" (Sensor: %s.%s) ", loadElem.getSensorObj().getParentClass().getClassName(),
+											loadElem.getSensorObj().getName());
 								} else {
-									pw.print(" (Sensor: NIL)");
+									pw.print(" (Sensor: null)");
 								}
 								pw.println();
-								loadElem = (LoadObj) pMtr.getBranchList().getNextObject();
+								loadElem = (LoadObj) mtr.getBranchList().getNextObject();
 							}
-							PDElem = (PDElement) pMtr.getBranchList().goForward();
+							elem = (PDElement) mtr.getBranchList().goForward();
 						}
 					}
 				}
@@ -1854,7 +1870,7 @@ public abstract class ShowResults {
 			pw.close();
 			fw.close();
 		} catch (IOException e) {
-			// TODO: handle exception
+			DSS.doSimpleMsg("Error encountered showing meter zones: " + e.getMessage(), -1);
 		} finally {
 			paramName = parser.getNextParam();
 			param = parser.makeString();
@@ -1874,7 +1890,7 @@ public abstract class ShowResults {
 		FileWriter fw;
 		PrintWriter pw;
 		Complex[] cBuffer;  // allocate to max total conductors
-		int NCond, i, j, k;
+		int nCond, i, j, k;
 		Complex[] Iph = new Complex[3];
 		Complex[] I012 = new Complex[3];
 		double I0, I1, I2, Cmag, Cmax;
@@ -1892,29 +1908,28 @@ public abstract class ShowResults {
 
 			/* Sequence currents */
 			pw.println();
-			pw.println("Power Delivery Element Overload Report");
+			pw.println("Power delivery element overload report");
 			pw.println();
-			pw.println("SYMMETRICAL COMPONENT CURRENTS BY CIRCUIT ELEMENT ");
+			pw.println("Symmetrical component currents by circuit element");
 			pw.println();
 			pw.println("Element                      Term    I1      I2    %I2/I1    I0    %I0/I1 %Normal   %Emergency");
 			pw.println();
 
 			// PD elements
-			for (PDElement PDElem : ckt.getPDElements()) {
-				if (PDElem.isEnabled())
-					if ((DSSClassDefs.CLASSMASK & PDElem.getObjType()) != DSSClassDefs.CAP_ELEMENT) {  // ignore capacitors
-						NCond = PDElem.getNumConds();
-						PDElem.getCurrents(cBuffer);
+			for (PDElement elem : ckt.getPDElements()) {
+				if (elem.isEnabled()) {
+					if ((DSSClassDefs.CLASSMASK & elem.getObjType()) != DSSClassDefs.CAP_ELEMENT) {  // ignore capacitors
+						nCond = elem.getNumConds();
+						elem.getCurrents(cBuffer);
 
 						for (j = 0; j < 1; j++) {  // check only terminal 1 for overloads
-							if (PDElem.getNumPhases() >= 3) {
+							if (elem.getNumPhases() >= 3) {
 								Cmax = 0.0;
 								for (i = 0; i < 3; i++) {
-									k = (j - 1) * NCond + i;
+									k = j * nCond + i;
 									Iph[i] = cBuffer[k];
 									Cmag = Iph[i].abs();
-									if (Cmag > Cmax)
-										Cmax = Cmag;
+									if (Cmag > Cmax) Cmax = Cmag;
 								}
 								MathUtil.phase2SymComp(Iph, I012);
 								I0 = I012[0].abs();
@@ -1922,14 +1937,14 @@ public abstract class ShowResults {
 								I2 = I012[2].abs();
 							} else {
 								I0 = 0.0;
-								I1 = cBuffer[1 + (j - 1) * NCond].abs();
+								I1 = cBuffer[1 + j * nCond].abs();
 								I2 = 0.0;
 								Cmax = I1;
 							}
 
-							if ((PDElem.getNormAmps() > 0.0) || (PDElem.getEmergAmps() > 0.0)) {
-								if ((Cmax > PDElem.getNormAmps()) || (Cmax > PDElem.getEmergAmps())) {
-									pw.print(Util.pad(Util.fullName(PDElem), maxDeviceNameLength + 2) + j);
+							if ((elem.getNormAmps() > 0.0) || (elem.getEmergAmps() > 0.0)) {
+								if ((Cmax > elem.getNormAmps()) || (Cmax > elem.getEmergAmps())) {
+									pw.print(Util.pad(Util.fullName(elem), maxDeviceNameLength + 2) + (j+1));
 									pw.print(I1);
 									pw.print(I2);
 									if (I1 > 0.0) {
@@ -1943,13 +1958,13 @@ public abstract class ShowResults {
 									} else {
 										pw.print("     0.0");
 									}
-									if (PDElem.getNormAmps() > 0.0) {
-										pw.print(Cmax / PDElem.getNormAmps() * 100.0);
+									if (elem.getNormAmps() > 0.0) {
+										pw.print(Cmax / elem.getNormAmps() * 100.0);
 									} else {
 										pw.print("     0.0");
 									}
-									if (PDElem.getEmergAmps() > 0.0) {
-										pw.print(Cmax / PDElem.getEmergAmps() * 100.0);
+									if (elem.getEmergAmps() > 0.0) {
+										pw.print(Cmax / elem.getEmergAmps() * 100.0);
 									} else {
 										pw.print("     0.0");
 									}
@@ -1958,6 +1973,7 @@ public abstract class ShowResults {
 							}
 						}
 					}
+				}
 			}
 
 			pw.close();
@@ -1965,14 +1981,13 @@ public abstract class ShowResults {
 
 			Util.fireOffEditor(fileName);
 		} catch (IOException e) {
-			// TODO: handle exception
+			DSS.doSimpleMsg("Error encountered showing overloads: " + e.getMessage(), -1);
 		}
 	}
 
 	public static void showUnserved(String fileName, boolean UE_Only) {
 		FileWriter fw;
 		PrintWriter pw;
-//		LoadObj PLoad;
 		boolean doIt;
 
 		Circuit ckt = DSS.activeCircuit;
@@ -1982,29 +1997,27 @@ public abstract class ShowResults {
 			pw = new PrintWriter(fw);
 
 			pw.println();
-			pw.println("UNSERVED  LOAD  REPORT");
+			pw.println("Unserved load report");
 			pw.println();
 			pw.println("Load Element        Bus        Load kW  EEN Factor  UE Factor");
 			pw.println();
 
 			// load
-			for (LoadObj pLoad : ckt.getLoads()) {
-				if (pLoad.isEnabled()) {
+			for (LoadObj load : ckt.getLoads()) {
+				if (load.isEnabled()) {
 					doIt = false;
 					if (UE_Only) {
-						if (pLoad.getUnserved())
-							doIt = true;
+						doIt = load.getUnserved();
 					} else {
-						if (pLoad.getExceedsNormal())
-							doIt = true;
+						doIt = load.getExceedsNormal();
 					}
 
 					if (doIt) {
-						pw.print(Util.pad(pLoad.getName(), 20));
-						pw.print(Util.pad(pLoad.getBus(0), 10));
-						pw.print(pLoad.getKWBase());
-						pw.print(pLoad.getEEN_Factor());
-						pw.print(pLoad.getUE_Factor());
+						pw.print(Util.pad(load.getName(), 20));
+						pw.print(Util.pad(load.getBus(0), 10));
+						pw.print(load.getKWBase());
+						pw.print(load.getEEN_Factor());
+						pw.print(load.getUE_Factor());
 						pw.println();
 					}
 				}
@@ -2015,20 +2028,14 @@ public abstract class ShowResults {
 
 			Util.fireOffEditor(fileName);
 		} catch (IOException e) {
-			// TODO: handle exception
+			DSS.doSimpleMsg("Error encountered showing unserved: " + e.getMessage(), -1);
 		}
 	}
 
 	public static void showLosses(String fileName) {
 		FileWriter fw;
 		PrintWriter pw;
-
-		Complex kLosses,
-			totalLosses,
-			lineLosses,
-			transLosses,
-			termPower,
-			loadPower;
+		Complex kLosses, totalLosses, lineLosses, transLosses, termPower, loadPower;
 
 		Circuit ckt = DSS.activeCircuit;
 
@@ -2040,9 +2047,9 @@ public abstract class ShowResults {
 
 			/* Sequence currents */
 			pw.println();
-			pw.println("LOSSES REPORT");
+			pw.println("Losses report");
 			pw.println();
-			pw.println("Power Delivery Element Loss Report");
+			pw.println("Power delivery element loss report");
 			pw.println();
 			pw.println("Element                  kW Losses    % of Power   kvar Losses");
 			pw.println();
@@ -2052,19 +2059,21 @@ public abstract class ShowResults {
 			transLosses = Complex.ZERO;
 
 			// PD elements
-			for (PDElement PDElem : ckt.getPDElements()) {
-				if (PDElem.isEnabled()) {
+			for (PDElement elem : ckt.getPDElements()) {
+				if (elem.isEnabled()) {
 					/*if ((DSSClassDefs.CLASSMASK & PDElem.getDSSObjType()) != DSSClassDefs.CAP_ELEMENT) {*/    // Ignore capacitors
-					kLosses = PDElem.getLosses().multiply(0.001);   // kW Losses in element
+					kLosses = elem.getLosses().multiply(0.001);   // kW Losses in element
 					totalLosses = totalLosses.add(kLosses);
-					termPower = PDElem.getPower(1).multiply(0.001);  // terminal 1 power  TODO Check zero based indexing
+					termPower = elem.getPower(0).multiply(0.001);  // terminal 1 power  TODO Check zero based indexing
 
-					if ((DSSClassDefs.CLASSMASK & PDElem.getObjType()) == DSSClassDefs.XFMR_ELEMENT)
+					if ((DSSClassDefs.CLASSMASK & elem.getObjType()) == DSSClassDefs.XFMR_ELEMENT)
 						transLosses = transLosses.add(kLosses);
-					if ((DSSClassDefs.CLASSMASK & PDElem.getObjType()) == DSSClassDefs.LINE_ELEMENT)
+
+					if ((DSSClassDefs.CLASSMASK & elem.getObjType()) == DSSClassDefs.LINE_ELEMENT)
 						lineLosses = lineLosses.add(kLosses);
 
-					pw.print(Util.pad(Util.fullName(PDElem), maxDeviceNameLength + 2));
+					pw.print(Util.pad(Util.fullName(elem), maxDeviceNameLength + 2));
+
 					pw.printf("%10.5f, ", kLosses.getReal());
 					if ((termPower.getReal() > 0.0) && (kLosses.getReal() > 0.0009)) {
 						pw.print(kLosses.getReal() / Math.abs(termPower.getReal()) * 100.0);
@@ -2077,23 +2086,22 @@ public abstract class ShowResults {
 			}
 
 			pw.println();
-			pw.println(Util.pad("LINE LOSSES=", 30) + lineLosses.getReal() + " kW");
-			pw.println(Util.pad("TRANSFORMER LOSSES=", 30) + transLosses.getReal() + " kW");
+			pw.println(Util.pad("Line losses=", 30) + lineLosses.getReal() + " kW");
+			pw.println(Util.pad("Transformer losses=", 30) + transLosses.getReal() + " kW");
 			pw.println();
-			pw.println(Util.pad("TOTAL LOSSES=", 30) + totalLosses.getReal() + " kW");
+			pw.println(Util.pad("Total losses=", 30) + totalLosses.getReal() + " kW");
 
 			loadPower = Complex.ZERO;
 			// sum the total load kW being served in the circuit model
-			for (PCElement PCElem : ckt.getLoads()) {
-				if (PCElem.isEnabled()) {
-					loadPower = loadPower.add(PCElem.getPower(1));
-				}
+			for (PCElement elem : ckt.getLoads()) {
+				if (elem.isEnabled())
+					loadPower = loadPower.add(elem.getPower(0));
 			}
 			loadPower = loadPower.multiply(0.001);
 
 			pw.println();
-			pw.println(Util.pad("TOTAL LOAD POWER = ", 30) + Math.abs(loadPower.getReal()) + " kW");
-			pw.print(Util.pad("Percent Losses for Circuit = ", 30));
+			pw.println(Util.pad("Total load power = ", 30) + Math.abs(loadPower.getReal()) + " kW");
+			pw.print(Util.pad("Percent losses for circuit = ", 30));
 			if (loadPower.getReal() != 0.0)
 				pw.println(Math.abs(totalLosses.getReal() / loadPower.getReal()) * 100.0 + " %");
 
@@ -2102,7 +2110,7 @@ public abstract class ShowResults {
 
 			Util.fireOffEditor(fileName);
 		} catch (IOException e) {
-			// TODO: handle exception
+			DSS.doSimpleMsg("Error encountered showing losses: " + e.getMessage(), -1);
 		}
 	}
 
@@ -2119,17 +2127,17 @@ public abstract class ShowResults {
 
 			/* Sequence currents */
 			pw.println();
-			pw.println("VARIABLES REPORT");
+			pw.println("Variables report");
 			pw.println();
-			pw.println("Present values of all variables in PC Elements in the circuit.");
+			pw.println("Present values of all variables in PC elements in the circuit.");
 			pw.println();
 
-			for (PCElement PCElem : ckt.getPCElements()) {
-				if (PCElem.isEnabled() && (PCElem.numVariables() > 0)) {
-					pw.println("ELEMENT: " + PCElem.getParentClass().getClassName() + "." + PCElem.getName());
-					pw.println("No. of variables: " + PCElem.numVariables());
-					for (i = 0; i < PCElem.numVariables(); i++)
-						pw.println("  " + PCElem.variableName(i) + " = " + String.format("%-.6g", PCElem.getVariable(i)));
+			for (PCElement elem : ckt.getPCElements()) {
+				if (elem.isEnabled() && (elem.numVariables() > 0)) {
+					pw.println("Element: " + elem.getParentClass().getClassName() + "." + elem.getName());
+					pw.println("No. of variables: " + elem.numVariables());
+					for (i = 0; i < elem.numVariables(); i++)
+						pw.println("  " + elem.variableName(i) + " = " + String.format("%-.6g", elem.getVariable(i)));
 					pw.println();
 				}
 			}
@@ -2138,7 +2146,7 @@ public abstract class ShowResults {
 
 			Util.fireOffEditor(fileName);
 		} catch (IOException e) {
-			// TODO: handle exception
+			DSS.doSimpleMsg("Error encountered showing variables: " + e.getMessage(), -1);
 		}
 	}
 
@@ -2147,22 +2155,21 @@ public abstract class ShowResults {
 	 */
 	public static void showIsolated(String fileName) {
 		CktTree branchList, subArea;  // all circuit elements
-
 		FileWriter fw;
 		PrintWriter pw;
-		CktElement testElem, testBranch, pElem;
-
+		CktElement testElem, testBranch, elem;
 		int i, j;
 
 		Circuit ckt = DSS.activeCircuit;
 
 		// make sure bus list is built
 		if (ckt.isBusNameRedefined()) ckt.reProcessBusDefs();
+
 		/* Initialize all circuit elements to not checked */
-		for (CktElement TestElement : ckt.getCktElements()) {
-			TestElement.setChecked(false);
-			for (i = 0; i < TestElement.getNumTerms(); i++) {
-				TestElement.getTerminal(i).setChecked(false);
+		for (CktElement testElement : ckt.getCktElements()) {
+			testElement.setChecked(false);
+			for (i = 0; i < testElement.getNumTerms(); i++) {
+				testElement.getTerminal(i).setChecked(false);
 			}
 		}
 
@@ -2180,10 +2187,10 @@ public abstract class ShowResults {
 			pw = new PrintWriter(fw);
 
 			pw.println();
-			pw.println("ISOLATED CIRCUIT ELEMENT REPORT");
+			pw.println("Isolated circuit element report");
 			pw.println();
 			pw.println();
-			pw.println("***  THE FOLLOWING BUSES HAVE NO CONNECTION TO THE SOURCE ***");
+			pw.println("*** The following values have no connection to the source ***");
 			pw.println();
 
 			for (j = 0; j < ckt.getNumBuses(); j++) {
@@ -2192,56 +2199,61 @@ public abstract class ShowResults {
 			}
 
 			pw.println();
-			pw.println("***********  THE FOLLOWING SUB NETWORKS ARE ISOLATED ************");
+			pw.println("*********** The following sub networks are isolated ************");
 			pw.println();
 
-			for (CktElement TestElement : ckt.getCktElements()) {
-				if (TestElement.isEnabled())
-					if (!TestElement.isChecked())
-						if ((TestElement.getObjType() & DSSClassDefs.BASECLASSMASK) == DSSClassDefs.PD_ELEMENT) {
-							subArea = CktTree.getIsolatedSubArea(TestElement);
-							pw.println("*** START SUBAREA ***");
+			for (CktElement testElement : ckt.getCktElements()) {
+				if (testElement.isEnabled()) {
+					if (!testElement.isChecked()) {
+						if ((testElement.getObjType() & DSSClassDefs.BASECLASSMASK) == DSSClassDefs.PD_ELEMENT) {
+							subArea = CktTree.getIsolatedSubArea(testElement);
+							pw.println("*** Start subarea ***");
 
-							testBranch = (CktElement) subArea.getFirst();  // TODO Implement
+							testBranch = (CktElement) subArea.getFirst();
 							while (testBranch != null) {
-								pw.println("(" + subArea.getLevel() + ") " + testBranch.getParentClass().getClassName() + "." + testBranch.getName());
-								pElem = (CktElement) subArea.getFirstObject();
-								while (pElem != null) {
-									pw.println("[SHUNT], " + pElem.getParentClass().getClassName() + "." + pElem.getName());
-									pElem = (CktElement) subArea.getNextObject();
+								pw.println("(" + subArea.getLevel() + ") " +
+									testBranch.getParentClass().getClassName() + "." +
+									testBranch.getName());
+								elem = (CktElement) subArea.getFirstObject();
+								while (elem != null) {
+									pw.println("[SHUNT], " + elem.getParentClass().getClassName() + "." + elem.getName());
+									elem = (CktElement) subArea.getNextObject();
 								}
 								testBranch = (CktElement) subArea.goForward();
 							}
-							subArea = null;
 							pw.println();
 						}
+					}
+				}
 			}
 
 			pw.println();
-			pw.println("***********  THE FOLLOWING ENABLED ELEMENTS ARE ISOLATED ************");
+			pw.println("*********** The following enabled elements are isolated ************");
 			pw.println();
 
 			/* Mark all controls, energy meters and monitors as checked so they don"t show up */
 
 			for (i = 0; i < ckt.getControls().size(); i++)
 				((CktElement) ckt.getControls().get(i)).setChecked(true);
+
 			for (i = 0; i < ckt.getMeterElements().size(); i++)
 				((CktElement) ckt.getMeterElements().get(i)).setChecked(true);
 
-			for (CktElement TestElement : ckt.getCktElements()) {
-				if (TestElement.isEnabled()) {
-					if (!TestElement.isChecked()) {
-						pw.print("\"" + TestElement.getParentClass().getClassName() + "." + TestElement.getName() + "\"");
+			for (CktElement testElement : ckt.getCktElements()) {
+				if (testElement.isEnabled()) {
+					if (!testElement.isChecked()) {
+						pw.print("\"" + testElement.getParentClass().getClassName() + "." +
+							testElement.getName() + "\"");
 						pw.print("  Buses:");
-						for (j = 0; j < TestElement.getNumTerms(); j++)
-							pw.print("  \"" + TestElement.getBus(j) + "\"");
+						for (j = 0; j < testElement.getNumTerms(); j++)
+							pw.print("  \"" + testElement.getBus(j) + "\"");
 						pw.println();
 					}
 				}
 			}
 
 			pw.println();
-			pw.println("***  THE FOLLOWING BUSES ARE NOT CONNECTED TO ANY POWER DELIVERY ELEMENT ***");
+			pw.println("*** The following buses are not connected to any power delivery element ***");
 			pw.println();
 
 			for (j = 0; j < ckt.getNumBuses(); j++) {
@@ -2250,29 +2262,30 @@ public abstract class ShowResults {
 			}
 
 			pw.println();
-			pw.println("***********  CONNECTED CIRCUIT ELEMENT TREE ************");
+			pw.println("*********** Connected circuit element tree ************");
 			pw.println();
 			pw.println("(Lexical Level) Element name");
 			pw.println();
 
-			testBranch = (CktElement) branchList.getFirst();  // FIXME Make generic
+			testBranch = (CktElement) branchList.getFirst();
 			while (testBranch != null) {
-				pw.println("(" + branchList.getLevel() + ") " + testBranch.getParentClass().getClassName() + "." + testBranch.getName());
+				pw.println("(" + branchList.getLevel() + ") " +
+					testBranch.getParentClass().getClassName() + "." + testBranch.getName());
+
 				testElem = (CktElement) branchList.getFirstObject();
 				while (testElem != null) {
-					pw.println("[SHUNT], " + testElem.getParentClass().getClassName() + "." + testElem.getName());
+					pw.println("[SHUNT], " + testElem.getParentClass().getClassName() + "." +
+							testElem.getName());
 					testElem = (CktElement) branchList.getNextObject();
 				}
 				testBranch = (CktElement) branchList.goForward();
 			}
-
-			branchList = null;
 			pw.close();
 			fw.close();
 
 			Util.fireOffEditor(fileName);
 		} catch (IOException e) {
-			// TODO: handle exception
+			DSS.doSimpleMsg("Error encountered showing isolated buses and branches: " + e.getMessage(), -1);
 		}
 	}
 
@@ -2286,21 +2299,20 @@ public abstract class ShowResults {
 			fw = new FileWriter(fileName);
 			pw = new PrintWriter(fw);
 
-			pw.println("Power Delivery Elements Normal and Emergency (max) Ratings");
+			pw.println("Power delivery elements normal and emergency (max) ratings");
 			pw.println();
 
-			for (PDElement PDElem : ckt.getPDElements()) {
-				pw.print("\"" + PDElem.getParentClass().getClassName() + "." + PDElem.getName() + "\" normamps=");
-				pw.printf("%-.4g,  %-.4g  !Amps", PDElem.getNormAmps(), PDElem.getEmergAmps());
+			for (PDElement elem : ckt.getPDElements()) {
+				pw.print("\"" + elem.getParentClass().getClassName() + "." + elem.getName() + "\" normamps=");
+				pw.printf("%-.4g,  %-.4g  !Amps", elem.getNormAmps(), elem.getEmergAmps());
 				pw.println();
-
 			}
 			pw.close();
 			fw.close();
 
 			Util.fireOffEditor(fileName);
 		} catch (IOException e) {
-			// TODO: handle exception
+			DSS.doSimpleMsg("Error encountered showing ratings: " + e.getMessage(), -1);
 		}
 	}
 
@@ -2310,39 +2322,41 @@ public abstract class ShowResults {
 	public static void showLoops(String fileName) {
 		FileWriter fw;
 		PrintWriter pw;
-		PDElement PDElem;
+		PDElement elem;
 		int hMeter;
-		EnergyMeterObj pMtr;
-
+		EnergyMeterObj mtr;
+		CktTreeNode pb;
 
 		try {
 			fw = new FileWriter(fileName);
 			pw = new PrintWriter(fw);
 
-			pw.println("Loops and Paralleled Lines in all EnergyMeter Zones");
+			pw.println("Loops and paralleled lines in all EnergyMeter zones");
 			pw.println();
 
 			hMeter = DSS.energyMeterClass.getFirst();
+			while (hMeter >= 0) {
+				mtr = (EnergyMeterObj) DSS.activeDSSObject;
 
-			while (hMeter > 0) {
-
-				pMtr = (EnergyMeterObj) DSS.activeDSSObject;
-
-				if (pMtr.getBranchList() != null) {
-
-					PDElem = (PDElement) pMtr.getBranchList().getFirst();
-					while (PDElem != null) {
-
-						CktTreeNode pb = pMtr.getBranchList().getPresentBranch();
-						if (pb.isParallel())
-							pw.println("(" + pMtr.getName() + ") " + PDElem.getParentClass().getClassName() + "." + PDElem.getName().toUpperCase() +": PARALLEL WITH " + ((CktElement) pb.getLoopLineObj()).getParentClass().getClassName() + "." + ((CktElement) pb.getLoopLineObj()).getName());
-						if (pb.isLoopedHere())
-							pw.println("(" + pMtr.getName() + ") " + PDElem.getParentClass().getClassName() + "." + PDElem.getName().toUpperCase() + ": LOOPED TO     " + ((CktElement) pb.getLoopLineObj()).getParentClass().getClassName() + "." + ((CktElement) pb.getLoopLineObj()).getName());
-
-						PDElem = (PDElement) pMtr.getBranchList().goForward();
+				if (mtr.getBranchList() != null) {
+					elem = (PDElement) mtr.getBranchList().getFirst();
+					while (elem != null) {
+						pb = mtr.getBranchList().getPresentBranch();
+						if (pb.isParallel()) {
+							pw.println("(" + mtr.getName() + ") " +
+								elem.getParentClass().getClassName() + "." + elem.getName().toUpperCase() +
+								": Parallel with" + ((CktElement) pb.getLoopLineObj()).getParentClass().getClassName() + "." +
+								((CktElement) pb.getLoopLineObj()).getName());
+						}
+						if (pb.isLoopedHere()) {
+							pw.println("(" + mtr.getName() + ") " +
+								elem.getParentClass().getClassName() + "." + elem.getName().toUpperCase() +
+								": Looped to     " + ((CktElement) pb.getLoopLineObj()).getParentClass().getClassName() + "." +
+								((CktElement) pb.getLoopLineObj()).getName());
+						}
+						elem = (PDElement) mtr.getBranchList().goForward();
 					}
 				}
-
 				hMeter = DSS.energyMeterClass.getNext();
 			}
 			pw.close();
@@ -2350,19 +2364,8 @@ public abstract class ShowResults {
 
 			Util.fireOffEditor(fileName);
 		} catch (IOException e) {
-			// TODO: handle exception
+			DSS.doSimpleMsg("Error encountered showing loops: " + e.getMessage(), -1);
 		}
-	}
-
-	private static void topoLevelTabs(PrintWriter pw, int nLevel) {
-		int nTabs, i;
-
-		nTabs = 30;
-		if (nLevel < nTabs) nTabs = nLevel;
-		for (i = 0; i < nTabs; i++)
-			pw.print(TABCHAR);
-		if (nLevel > nTabs)
-			pw.printf("(* %d *)", nLevel);
 	}
 
 	public static void showTopology(String fileRoot) {
@@ -2491,6 +2494,17 @@ public abstract class ShowResults {
 		} catch (IOException e) {
 			// TODO: handle exception
 		}
+	}
+
+	private static void topoLevelTabs(PrintWriter pw, int nLevel) {
+		int nTabs, i;
+
+		nTabs = 30;
+		if (nLevel < nTabs) nTabs = nLevel;
+		for (i = 0; i < nTabs; i++)
+			pw.print(TABCHAR);
+		if (nLevel > nTabs)
+			pw.printf("(* %d *)", nLevel);
 	}
 
 	public static void showLineConstants(String fileNm, double freq, int units, double rho) {

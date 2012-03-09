@@ -1308,7 +1308,7 @@ public class SolutionObj extends DSSObject {
 			bus = ckt.getBus(i);
 			if (bus.getVBus() != null)
 				for (int j = 0; j < bus.getNumNodesThisBus(); j++)
-					nodeV[bus.getRef(j)] = bus.getVBus()[j];
+					nodeV[bus.getRef(j)] = bus.getVBus(j);
 		}
 	}
 
