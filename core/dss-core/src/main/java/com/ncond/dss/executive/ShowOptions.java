@@ -470,7 +470,7 @@ public class ShowOptions {
 			ShowResults.showNodeCurrentSum(DSS.dataDirectory + DSS.circuitName_ + "NodeMismatch.txt");
 			break;
 		case 29:
-			ShowResults.showkVBaseMismatch(DSS.dataDirectory + DSS.circuitName_ + "kVBaseMismatch.txt");
+			ShowResults.showKVBaseMismatch(DSS.dataDirectory + DSS.circuitName_ + "kVBaseMismatch.txt");
 			break;
 		case 30:
 			ShowResults.showDeltaV(DSS.dataDirectory + DSS.circuitName_ + "DeltaV.txt");
