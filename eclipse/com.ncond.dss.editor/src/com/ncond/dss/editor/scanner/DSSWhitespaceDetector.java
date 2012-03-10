@@ -1,4 +1,4 @@
-package com.ncond.edss.editor.scanner;
+package com.ncond.dss.editor.scanner;
 
 import org.eclipse.jface.text.rules.IWhitespaceDetector;
 

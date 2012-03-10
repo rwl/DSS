@@ -1,10 +1,10 @@
-package com.ncond.edss.editor.scanner;
+package com.ncond.dss.editor.scanner;
 
 import org.eclipse.jface.text.rules.*;
 import org.eclipse.jface.text.*;
 
-import com.ncond.edss.editor.ColorManager;
-import com.ncond.edss.editor.IDSSColorConstants;
+import com.ncond.dss.editor.ColorManager;
+import com.ncond.dss.editor.IDSSColorConstants;
 
 public class DSSScanner extends RuleBasedScanner {
 

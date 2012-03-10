@@ -8,8 +8,8 @@
             extensions="dss"
             icon="icons/dss_file.gif"
             contributorClass="org.eclipse.ui.texteditor.BasicTextEditorActionContributor"
-            class="com.ncond.edss.editor.DSSEditor"
-            id="com.ncond.edss.editor.DSSEditor">
+            class="com.ncond.dss.editor.DSSEditor"
+            id="com.ncond.dss.editor.DSSEditor">
       </editor>
    </extension>
 

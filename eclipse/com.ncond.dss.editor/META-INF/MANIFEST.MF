@@ -1,12 +1,13 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: edss-script-editor
-Bundle-SymbolicName: edss-script-editor; singleton:=true
+Bundle-Name: DSS Editor
+Bundle-SymbolicName: com.ncond.dss.editor; singleton:=true
 Bundle-Version: 1.0.0.qualifier
-Bundle-Activator: com.ncond.edss.editor.Activator
+Bundle-Activator: com.ncond.dss.editor.Activator
+Bundle-Vendor: Richard Lincoln
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
  org.eclipse.jface.text,
  org.eclipse.ui.editors
-Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-ActivationPolicy: lazy

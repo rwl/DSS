@@ -1,4 +1,4 @@
-package com.ncond.edss.editor;
+package com.ncond.dss.editor;
 
 import java.util.HashMap;
 import java.util.Iterator;

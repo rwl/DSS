@@ -1,4 +1,4 @@
-package com.ncond.edss.editor;
+package com.ncond.dss.editor;
 
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.TextAttribute;
@@ -10,7 +10,7 @@ import org.eclipse.jface.text.rules.Token;
 import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.jface.text.source.SourceViewerConfiguration;
 
-import com.ncond.edss.editor.scanner.DSSPartitionScanner;
+import com.ncond.dss.editor.scanner.DSSPartitionScanner;
 
 public class DSSConfiguration extends SourceViewerConfiguration {
 

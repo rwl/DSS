@@ -1,4 +1,4 @@
-package com.ncond.edss.editor.scanner;
+package com.ncond.dss.editor.scanner;
 
 import java.util.ArrayList;
 import java.util.List;
