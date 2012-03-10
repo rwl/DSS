@@ -42,16 +42,6 @@ import com.ncond.dss.shared.HashList;
 @Getter @Setter
 public class Circuit extends NamedObject {
 
-	public enum ReductionStrategyType {
-		DEFAULT,
-		STUBS,
-		TAP_ENDS,
-		MERGE_PARALLEL,
-		BREAK_LOOP,
-		DANGLING,
-		SWITCHES
-	}
-
 	public class CktElementDef {
 		public int cktElementClass;
 		public int devHandle;
@@ -172,7 +162,7 @@ public class Circuit extends NamedObject {
 
 	protected String currentDirectory;
 
-	protected ReductionStrategyType reductionStrategy;
+	protected ReductionStrategy reductionStrategy;
 	protected double reductionMaxAngle, reductionZmag;
 	protected String reductionStrategyString;
 
@@ -185,7 +175,7 @@ public class Circuit extends NamedObject {
 	protected boolean markSwitches;
 	protected boolean markTransformers;
 
-	protected int activeLoadShapeClass;
+	protected SequentialTime activeLoadShapeClass;
 
 	public Circuit(String aName) {
 		super("Circuit");
@@ -324,7 +314,7 @@ public class Circuit extends NamedObject {
 		savedBuses = null;
 		savedBusNames = null;
 
-		reductionStrategy = ReductionStrategyType.DEFAULT;
+		reductionStrategy = ReductionStrategy.DEFAULT;
 		reductionMaxAngle = 15.0;
 		reductionZmag = 0.02;
 
@@ -444,7 +434,7 @@ public class Circuit extends NamedObject {
 		if (value != loadMultiplier) {
 			// may have to change the Y matrix if the load multiplier has changed
 			switch (solution.getLoadModel()) {
-			case DSS.ADMITTANCE:
+			case ADMITTANCE:
 				invalidateAllPCElements();
 				break;
 			}

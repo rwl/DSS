@@ -6,6 +6,7 @@ import java.io.FileWriter;
 
 import com.ncond.dss.common.DSS;
 import com.ncond.dss.common.DSSClassDefs;
+import com.ncond.dss.common.Randomization;
 import com.ncond.dss.common.Util;
 import com.ncond.dss.general.LoadShapeObj;
 import com.ncond.dss.parser.Parser;
@@ -576,12 +577,12 @@ public class Generator extends PCClass {
 		if (handle == 0) {  // init all
 			for (int i = 0; i < elementList.size(); i++) {
 				p = (GeneratorObj) elementList.get(i);
-				p.randomize(0);
+				p.randomize(Randomization.NONE);
 			}
 		} else {
 			setActiveElement(handle);
 			p = (GeneratorObj) getActiveObj();
-			p.randomize(0);
+			p.randomize(Randomization.NONE);
 		}
 
 		DSS.doSimpleMsg("Need to implement Generator.init()", -1);

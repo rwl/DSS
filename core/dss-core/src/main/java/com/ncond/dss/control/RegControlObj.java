@@ -337,7 +337,7 @@ public class RegControlObj extends ControlElem {
 				TransformerObj pElem = (TransformerObj) getControlledElement();
 
 				switch (sol.getControlMode()) {
-				case DSS.CTRLSTATIC:
+				case CTRLSTATIC:
 					tapChangeToMake = atLeastOneTap(pendingTapChange, pElem.getTapIncrement(tapWinding));
 					if (debugTrace)
 						regWriteTraceRecord(tapChangeToMake);
@@ -347,7 +347,7 @@ public class RegControlObj extends ControlElem {
 					setPendingTapChange(0.0);  // reset to no change; program will determine if another needed
 					armed = false;
 
-				case DSS.EVENTDRIVEN:
+				case EVENTDRIVEN:
 					tapChangeToMake = oneInDirectionOf(pendingTapChange, pElem.getTapIncrement(tapWinding));
 					if (debugTrace)
 						regWriteTraceRecord(tapChangeToMake);
@@ -358,7 +358,7 @@ public class RegControlObj extends ControlElem {
 						armed = false;
 					}
 
-				case DSS.TIMEDRIVEN:
+				case TIMEDRIVEN:
 					tapChangeToMake = oneInDirectionOf(pendingTapChange, pElem.getTapIncrement(tapWinding));
 					if (debugTrace)
 						regWriteTraceRecord(tapChangeToMake);

@@ -373,43 +373,43 @@ public class Util {
 	/**
 	 * Interpret solution control mode.
 	 */
-	public static int interpretControlMode(String s) {
+	public static ControlMode interpretControlMode(String s) {
 		String slc = s.toLowerCase();
 
 		switch (slc.charAt(0)) {
 		case 'o':
-			return DSS.CONTROLSOFF;
+			return ControlMode.CONTROLSOFF;
 		case 'e':
-			return DSS.EVENTDRIVEN;  // "event"
+			return ControlMode.EVENTDRIVEN;  // "event"
 		case 't':
-			return DSS.TIMEDRIVEN;   // "time"
+			return ControlMode.TIMEDRIVEN;   // "time"
 		default:
-			return DSS.CTRLSTATIC;
+			return ControlMode.CTRLSTATIC;
 		}
 	}
 
-	public static int interpretLoadModel(String s) {
-		int result;
+	public static LoadModel interpretLoadModel(String s) {
+		LoadModel lm;
 		String s2 = s.toLowerCase();
 
 		switch (s2.charAt(0)) {
 		case 'a':
-			result = DSS.ADMITTANCE;
+			lm = LoadModel.ADMITTANCE;
 			break;
 		case 'p':
-			result = DSS.POWERFLOW;
+			lm = LoadModel.POWERFLOW;
 			break;
 		default:
-			result = DSS.ADMITTANCE;
+			lm = LoadModel.ADMITTANCE;
 			break;
 		}
 
 		/* If this represents a change, invalidate all the PC Yprims */
 		Circuit ckt = DSS.activeCircuit;
-		if (result != ckt.getSolution().getLoadModel())
+		if (lm != ckt.getSolution().getLoadModel())
 			ckt.invalidateAllPCElements();
 
-		return result;
+		return lm;
 	}
 
 	/**
@@ -435,31 +435,31 @@ public class Util {
 	 * Interpret the type of random variation in the load.
 	 * none|gaussian|uniform|lognormal
 	 */
-	public static int interpretRandom(String s) {
+	public static Randomization interpretRandom(String s) {
 		String slc = s.toLowerCase();
 
 		switch (slc.charAt(0)) {
 		case 'g':
-			return DSS.GAUSSIAN;
+			return Randomization.GAUSSIAN;
 		case 'u':
-			return DSS.UNIFORM;
+			return Randomization.UNIFORM;
 		case 'l':
-			return DSS.LOGNORMAL;
+			return Randomization.LOGNORMAL;
 		default:
-			return 0;  // no variation for any other entry
+			return Randomization.NONE;  // no variation for any other entry
 		}
 	}
 
 	/**
 	 * Type of device to automatically add. Default is capacitor.
 	 */
-	public static int interpretAddType(String s) {
+	public static AutoAddType interpretAddType(String s) {
 		String slc = s.toLowerCase();
 		switch (slc.charAt(0)) {
 		case 'g':
-			return DSS.GENADD;
+			return AutoAddType.GEN;
 		default:
-			return DSS.CAPADD;
+			return AutoAddType.CAP;
 		}
 	}
 
@@ -921,13 +921,13 @@ public class Util {
 		Circuit ckt = DSS.activeCircuit;
 		if (ckt != null) {
 			switch (ckt.getSolution().getControlMode()) {
-			case DSS.CTRLSTATIC:
+			case CTRLSTATIC:
 				return "STATIC";
-			case DSS.EVENTDRIVEN:
+			case EVENTDRIVEN:
 				return "EVENT";
-			case DSS.TIMEDRIVEN:
+			case TIMEDRIVEN:
 				return "TIME";
-			case DSS.CONTROLSOFF:
+			case CONTROLSOFF:
 				return "OFF";
 			default:
 				return "UNKNOWN";
@@ -941,13 +941,13 @@ public class Util {
 		Circuit ckt = DSS.activeCircuit;
 		if (ckt != null) {
 			switch (ckt.getSolution().getRandomType()) {
-			case 0:
+			case NONE:
 				return "None";
-			case DSS.GAUSSIAN:
+			case GAUSSIAN:
 				return "Gaussian";
-			case DSS.UNIFORM:
+			case UNIFORM:
 				return "Uniform";
-			case DSS.LOGNORMAL:
+			case LOGNORMAL:
 				return "LogNormal";
 			default:
 				return "Unknown";
@@ -961,7 +961,7 @@ public class Util {
 		Circuit ckt = DSS.activeCircuit;
 
 		switch (ckt.getSolution().getLoadModel()) {
-		case DSS.ADMITTANCE:
+		case ADMITTANCE:
 			return "Admittance";
 		default:
 			return "PowerFlow";
@@ -2241,42 +2241,42 @@ public class Util {
 		return result;
 	}
 
-	public static int interpretLoadShapeClass(String s) {
+	public static SequentialTime interpretLoadShapeClass(String s) {
 		String ss = s.toLowerCase();
-		int result = DSS.USENONE;
+		SequentialTime result = SequentialTime.NONE;
 
 		switch (ss.charAt(0)) {
 		case 'd':
 			switch (ss.charAt(1)) {
 			case 'a':
-				result = DSS.USEDAILY;
+				result = SequentialTime.DAILY;
 				break;
 			case 'u':
-				result = DSS.USEDUTY;
+				result = SequentialTime.DUTY;
 				break;
 			}
 		case 'y':
-			result = DSS.USEYEARLY;
+			result = SequentialTime.YEARLY;
 			break;
 		case 'n':
-			result = DSS.USENONE;
+			result = SequentialTime.NONE;
 			break;
 		}
 		return result;
 	}
 
-	public static int interpretEarthModel(String s) {
+	public static EarthModel interpretEarthModel(String s) {
 		String ss = s.toLowerCase();
-		int result = DSS.SIMPLECARSON;
+		EarthModel result = EarthModel.SIMPLECARSON;
 		switch (ss.charAt(0)) {
 		case 'c':
-			result = DSS.SIMPLECARSON;
+			result = EarthModel.SIMPLECARSON;
 			break;
 		case 'f':
-			result = DSS.FULLCARSON;
+			result = EarthModel.FULLCARSON;
 			break;
 		case 'd':
-			result = DSS.DERI;
+			result = EarthModel.DERI;
 			break;
 		}
 		return result;
@@ -2284,26 +2284,26 @@ public class Util {
 
 	public static String getActiveLoadShapeClass() {
 		switch (DSS.activeCircuit.getActiveLoadShapeClass()) {
-		case DSS.USEDAILY:
+		case DAILY:
 			return "Daily";
-		case DSS.USEYEARLY:
+		case YEARLY:
 			return "Yearly";
-		case DSS.USEDUTY:
+		case DUTY:
 			return "Duty";
-		case DSS.USENONE:
+		case NONE:
 			return "None";
 		default:
 			return "None";
 		}
 	}
 
-	public static String getEarthModel(int n) {
+	public static String getEarthModel(EarthModel n) {
 		switch (n) {
-		case DSS.SIMPLECARSON:
+		case SIMPLECARSON:
 			return "Carson";
-		case DSS.FULLCARSON:
+		case FULLCARSON:
 			return "FullCarson";
-		case DSS.DERI:
+		case DERI:
 			return "Deri";
 		default:
 			return "Carson";

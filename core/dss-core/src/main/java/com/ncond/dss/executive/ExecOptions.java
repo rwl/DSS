@@ -884,10 +884,10 @@ public class ExecOptions {
 					break;
 				case 31:
 					switch (DSS.activeCircuit.getAutoAddObj().getAddType()) {
-					case DSS.GENADD:
+					case GEN:
 						DSS.appendGlobalResult("generator");
 						break;
-					case DSS.CAPADD:
+					case CAP:
 						DSS.appendGlobalResult("capacitor");
 						break;
 					}

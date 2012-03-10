@@ -3,6 +3,7 @@ package com.ncond.dss.executive;
 import com.ncond.dss.common.CIMProfileChoice;
 import com.ncond.dss.common.DSS;
 import com.ncond.dss.common.ExportResults;
+import com.ncond.dss.common.ProfilePlot;
 import com.ncond.dss.common.Util;
 import com.ncond.dss.meter.MonitorObj;
 import com.ncond.dss.parser.Parser;
@@ -143,7 +144,7 @@ public class ExportOptions {
 
 		int MVAOpt = 0;
 		boolean UEOnlyOpt = false;
-		phasesToPlot = DSS.PROFILE3PH;  // init this to get rid of compiler warning
+		phasesToPlot = ProfilePlot.THREEPH.phs();  // init this to get rid of compiler warning
 
 		switch (paramPointer) {
 		case 8:  // trap export powers command and look for MVA/kVA option
@@ -177,19 +178,19 @@ public class ExportOptions {
 		case 31:  /* Get phases to plot */
 			parser.getNextParam();
 			parm2 = parser.makeString();
-			phasesToPlot = DSS.PROFILE3PH;  // the default
+			phasesToPlot = ProfilePlot.THREEPH.phs();  // the default
 			if (Util.compareTextShortest(parm2, "default") == 0) {
-				phasesToPlot = DSS.PROFILE3PH;
+				phasesToPlot = ProfilePlot.THREEPH.phs();
 			} else if (Util.compareTextShortest(parm2, "all") == 0) {
-				phasesToPlot = DSS.PROFILEALL;
+				phasesToPlot = ProfilePlot.ALL.phs();
 			} else if (Util.compareTextShortest(parm2, "primary") == 0) {
-				phasesToPlot = DSS.PROFILEALLPRI;
+				phasesToPlot = ProfilePlot.ALLPRI.phs();
 			} else if (Util.compareTextShortest(parm2, "ll3ph") == 0) {
-				phasesToPlot = DSS.PROFILELL;
+				phasesToPlot = ProfilePlot.LL.phs();
 			} else if (Util.compareTextShortest(parm2, "llall") == 0) {
-				phasesToPlot = DSS.PROFILELLALL;
+				phasesToPlot = ProfilePlot.LLALL.phs();
 			} else if (Util.compareTextShortest(parm2, "llprimary") == 0) {
-				phasesToPlot = DSS.PROFILELLPRI;
+				phasesToPlot = ProfilePlot.LLPRI.phs();
 			} else if (parm2.length() == 1) {
 				phasesToPlot = parser.makeInteger();
 			}

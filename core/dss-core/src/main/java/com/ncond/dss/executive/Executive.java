@@ -62,8 +62,6 @@ public class Executive {
 
 	@Override
 	protected void finalize() throws Throwable {
-		DSS.writeDSS_Registry();
-
 		DSS.clearAllCircuits();
 
 		ExecCommands.getInstance().setCommandList(null);

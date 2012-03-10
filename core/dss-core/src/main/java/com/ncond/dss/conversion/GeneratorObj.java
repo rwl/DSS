@@ -16,6 +16,8 @@ import org.apache.commons.math.complex.ComplexUtils;
 import com.ncond.dss.common.Circuit;
 import com.ncond.dss.common.DSS;
 import com.ncond.dss.common.DSSClass;
+import com.ncond.dss.common.LoadModel;
+import com.ncond.dss.common.Randomization;
 import com.ncond.dss.common.SolutionObj;
 import com.ncond.dss.common.Util;
 import com.ncond.dss.general.LoadShapeObj;
@@ -279,18 +281,18 @@ public class GeneratorObj extends PCElement {
 	/**
 	 * 0 = reset to 1.0; 1 = Gaussian around mean and std Dev; 2 = uniform
 	 */
-	public void randomize(int opt) {
+	public void randomize(Randomization opt) {
 		switch (opt) {
-		case 0:
+		case NONE:
 			randomMult = 1.0;
 			break;
-		case DSS.GAUSSIAN:
+		case GAUSSIAN:
 			randomMult = MathUtil.gauss(yearlyShapeObj.getMean(), yearlyShapeObj.getStdDev());
 			break;
-		case DSS.UNIFORM:
+		case UNIFORM:
 			randomMult = Math.random();  // number between 0 and 1.0
 			break;
-		case DSS.LOGNORMAL:
+		case LOGNORMAL:
 			randomMult = MathUtil.quasiLognormal(yearlyShapeObj.getMean());
 			break;
 		}
@@ -381,13 +383,13 @@ public class GeneratorObj extends PCElement {
 					factor = ckt.getGenMultiplier();
 					// this mode allows use of one class of load shape
 					switch (ckt.getActiveLoadShapeClass()) {
-					case DSS.USEDAILY:
+					case DAILY:
 						calcDailyMult(sol.getDblHour());
 						break;
-					case DSS.USEYEARLY:
+					case YEARLY:
 						calcYearlyMult(sol.getDblHour());
 						break;
-					case DSS.USEDUTY:
+					case DUTY:
 						calcDutyMult(sol.getDblHour());
 						break;
 					default:
@@ -654,7 +656,7 @@ public class GeneratorObj extends PCElement {
 			YPrim.clear();
 		}
 
-		if (DSS.activeCircuit.getSolution().getLoadModel() == DSS.POWERFLOW) {
+		if (DSS.activeCircuit.getSolution().getLoadModel() == LoadModel.POWERFLOW) {
 
 			// 12-7-99 we'll start with Yeq in system matrix
 			setNominalGeneration();

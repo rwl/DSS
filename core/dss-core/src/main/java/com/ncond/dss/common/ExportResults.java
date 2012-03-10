@@ -1538,7 +1538,7 @@ public class ExportResults {
 						cktElem = ckt.getActiveCktElement();
 						pw.println(cktElem.getParentClass().getClassName() + "." + cktElem.getName().toUpperCase());
 
-						cValues = cktElem.getYPrimValues(DSS.ALL_YPRIM);
+						cValues = cktElem.getYPrimValues(YPrimType.ALL_YPRIM);
 						for (i = 0; i < cktElem.getYOrder(); i++) {
 							for (j = 0; j < cktElem.getYOrder(); j++)
 								pw.printf("%-13.10g, %-13.10g, ",
@@ -1910,20 +1910,14 @@ public class ExportResults {
 			pw.print("Name, Distance1, puV1, Distance2, puV2, Color, Thickness, Linetype, Markcenter, Centercode, NodeCode, NodeWidth,");
 
 			/* New graph created before this routine is entered */
-			switch (phasesToPlot) {
-			case DSS.PROFILELL:
+			if (phasesToPlot == ProfilePlot.LL.phs())
 				s = "L-L Voltage Profile";
-				break;
-			case DSS.PROFILELLALL:
+			else if (phasesToPlot == ProfilePlot.LLALL.phs())
 				s = "L-L Voltage Profile";
-				break;
-			case DSS.PROFILELLPRI:
+			else if (phasesToPlot == ProfilePlot.LLPRI.phs())
 				s = "L-L Voltage Profile";
-				break;
-			default:
+			else
 				s = "L-N Voltage Profile";
-				break;
-			}
 
 			pw.println("Title=" + s + ", Distance in km");
 
@@ -1940,9 +1934,8 @@ public class ExportResults {
 
 						/* Now determine which phase to plot */
 						if ((bus1.getKVBase() > 0.0) && (bus2.getKVBase() > 0.0)) {
-							switch (phasesToPlot) {
 							/* 3ph only */
-							case DSS.PROFILE3PH:
+							if (phasesToPlot == ProfilePlot.THREEPH.phs()) {
 								if ((presentCktElement.getNumPhases() >= 3) && (bus1.getKVBase() > 1.0))
 									for (phs = 1; phs <= 3; phs++) {
 										puV1 = sol.getNodeV( bus1.getRef(bus1.findIdx(phs)) ).abs() / bus1.getKVBase() / 1000.0;
@@ -1951,9 +1944,9 @@ public class ExportResults {
 										writeNewLine(pw, presentCktElement.getName(), bus1.getDistFromMeter(), puV1, bus2.getDistFromMeter(),
 												puV2, phs, 2, 0, 0, 0, ckt.getNodeMarkerCode(), ckt.getNodeMarkerWidth());
 									}
-								break;
+							}
 							/* Plot all phases present (between 1 and 3) */
-							case DSS.PROFILEALL:
+							else if (phasesToPlot == ProfilePlot.ALL.phs()) {
 								for (phs = 1; phs <= 3; phs++)
 									if ((bus1.findIdx(phs) >= 0) && (bus2.findIdx(phs) >= 0)) {
 										lineType = (bus1.getKVBase() < 1.0) ? 2 : 0;
@@ -1963,9 +1956,9 @@ public class ExportResults {
 										writeNewLine(pw, presentCktElement.getName(), bus1.getDistFromMeter(), puV1, bus2.getDistFromMeter(),
 												puV2, phs, 2, lineType, 0, 0, ckt.getNodeMarkerCode(), ckt.getNodeMarkerWidth());
 									}
-								break;
+							}
 							/* Plot all phases present (between 1 and 3) for primary only */
-							case DSS.PROFILEALLPRI:
+							else if (phasesToPlot == ProfilePlot.ALLPRI.phs()) {
 								if (bus1.getKVBase() > 1.0)
 									for (phs = 1; phs <= 3; phs++)
 										if ((bus1.findIdx(phs) >= 0) && (bus2.findIdx(phs) >= 0)) {
@@ -1976,8 +1969,7 @@ public class ExportResults {
 											writeNewLine(pw, presentCktElement.getName(), bus1.getDistFromMeter(), puV1, bus2.getDistFromMeter(),
 													puV2, phs, 2, lineType, 0, 0, ckt.getNodeMarkerCode(), ckt.getNodeMarkerWidth());
 										}
-								break;
-							case DSS.PROFILELL:
+							} else if (phasesToPlot == ProfilePlot.LL.phs()) {
 								if (presentCktElement.getNumPhases() >= 3)
 									for (phs = 1; phs <= 3; phs++) {
 										iphs2 = phs + 1;
@@ -1992,8 +1984,7 @@ public class ExportResults {
 													phs, 2, lineType, 0, 0, ckt.getNodeMarkerCode(), ckt.getNodeMarkerWidth());
 										}
 									}
-								break;
-							case DSS.PROFILELLALL:
+							} else if (phasesToPlot == ProfilePlot.LLALL.phs()) {
 								for (phs = 1; phs <= 3; phs++) {
 									iphs2 = phs + 1;
 									if (iphs2 > 3) iphs2 = 1;
@@ -2007,8 +1998,7 @@ public class ExportResults {
 												phs, 2, lineType, 0, 0, ckt.getNodeMarkerCode(), ckt.getNodeMarkerWidth());
 									}
 								}
-								break;
-							case DSS.PROFILELLPRI:
+							} else if (phasesToPlot == ProfilePlot.LLPRI.phs()) {
 								if (bus1.getKVBase() > 1.0) {
 									for (phs = 1; phs <= 3; phs++) {
 										iphs2 = phs + 1;
@@ -2024,8 +2014,7 @@ public class ExportResults {
 										}
 									}
 								}
-								break;
-							default:  // plot just the selected phase
+							} else {  // plot just the selected phase
 								phs = phasesToPlot;
 								if ((bus1.findIdx(phs) >= 0) && (bus2.findIdx(phs) >= 0)) {
 									lineType = (bus1.getKVBase() < 1.0) ? 2 : 0;
@@ -2035,7 +2024,6 @@ public class ExportResults {
 									writeNewLine(pw, presentCktElement.getName(), bus1.getDistFromMeter(), puV1, bus2.getDistFromMeter(),
 											puV2, phs, 2, lineType, 0, 0, ckt.getNodeMarkerCode(), ckt.getNodeMarkerWidth());
 								}
-								break;
 							}
 						}
 					}

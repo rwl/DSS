@@ -11,6 +11,7 @@ import org.apache.commons.math.complex.Complex;
 import com.ncond.dss.common.Circuit;
 import com.ncond.dss.common.DSS;
 import com.ncond.dss.common.DSSClass;
+import com.ncond.dss.common.EarthModel;
 import com.ncond.dss.common.Util;
 import com.ncond.dss.control.ControlElem;
 import com.ncond.dss.general.ConductorChoice;
@@ -41,7 +42,7 @@ public class LineObj extends PDElement {
 	private ConductorChoice phaseChoice;
 	private boolean rhoSpecified;
 	private boolean lineCodeSpecified;
-	private int earthModel;
+	private EarthModel earthModel;
 	private boolean capSpecified;  // to make sure user specifies C in some form
 
 	protected CMatrix ZInv;
@@ -661,7 +662,7 @@ public class LineObj extends PDElement {
 		setPropertyValue(19, "NONE");
 		setPropertyValue(20, "");
 		setPropertyValue(21, "");
-		setPropertyValue(22, Util.getEarthModel(DSS.SIMPLECARSON));
+		setPropertyValue(22, Util.getEarthModel(EarthModel.SIMPLECARSON));
 
 		super.initPropertyValues(Line.NumPropsThisClass - 1);
 

@@ -11,6 +11,7 @@ import org.apache.commons.math.complex.Complex;
 
 import com.ncond.dss.common.DSS;
 import com.ncond.dss.common.DSSClassDefs;
+import com.ncond.dss.common.Randomization;
 import com.ncond.dss.common.Util;
 import com.ncond.dss.general.LoadShapeObj;
 import com.ncond.dss.parser.Parser;
@@ -688,12 +689,12 @@ public class Storage extends PCClass {
 		if (handle == -1) {  // init all
 			for (int i = 0; i < elementList.size(); i++) {
 				pElem = (StorageObj) elementList.get(i);
-				pElem.randomize(0);
+				pElem.randomize(Randomization.NONE);
 			}
 		} else {
 			setActiveElement(handle);
 			pElem = (StorageObj) getActiveObj();
-			pElem.randomize(0);
+			pElem.randomize(Randomization.NONE);
 		}
 
 		DSS.doSimpleMsg("Need to implement Storage.init", -1);

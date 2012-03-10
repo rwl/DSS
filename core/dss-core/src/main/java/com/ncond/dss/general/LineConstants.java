@@ -282,10 +282,10 @@ public class LineConstants {
 		Yj = Math.abs(Y[j]);
 
 		switch (DSS.activeEarthModel) {
-		case DSS.SIMPLECARSON:
+		case SIMPLECARSON:
 			result = new Complex(w * MU0 / 8.0, (w * MU0 / TWO_PI) * Math.log(658.5 * Math.sqrt(rhoEarth / frequency)));
 			break;
-		case DSS.FULLCARSON:
+		case FULLCARSON:
 			/* notation from Tleis book Power System Modelling and Fault Analysis */
 			if (i == j) {
 				thetaij = 0.0;
@@ -311,7 +311,7 @@ public class LineConstants {
 			result = result.multiply(w * MU0 / Math.PI);
 			break;
 
-		case DSS.DERI:
+		case DERI:
 			if (i != j) {
 				hterm  = new Complex(Yi + Yj, 0.0).add( ComplexUtil.invert(me).multiply(2.0) );
 				xterm  = new Complex(X[i] - X[j], 0.0);
@@ -334,13 +334,13 @@ public class LineConstants {
 		Complex alpha, I0I1, result = null;
 
 		switch (DSS.activeEarthModel) {
-		case DSS.SIMPLECARSON:
+		case SIMPLECARSON:
 			result = new Complex(Rac[i], w * MU0/ (8 * Math.PI));
 			break;
-		case DSS.FULLCARSON:  // no skin effect
+		case FULLCARSON:  // no skin effect
 			result = new Complex(Rac[i], w * MU0 / (8 * Math.PI));
 			break;
-		case DSS.DERI:  // with skin effect model
+		case DERI:  // with skin effect model
 			/* Assume round conductor */
 			alpha = C1_j1.multiply( Math.sqrt(frequency * MU0 / Rdc[i]) );
 			if (alpha.abs() > 35.0) {

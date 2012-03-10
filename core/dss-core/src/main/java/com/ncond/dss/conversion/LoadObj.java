@@ -11,6 +11,8 @@ import org.apache.commons.math.complex.Complex;
 import com.ncond.dss.common.Circuit;
 import com.ncond.dss.common.DSS;
 import com.ncond.dss.common.DSSClass;
+import com.ncond.dss.common.LoadModel;
+import com.ncond.dss.common.Randomization;
 import com.ncond.dss.common.SolutionObj;
 import com.ncond.dss.common.Util;
 import com.ncond.dss.general.GrowthShapeObj;
@@ -223,22 +225,22 @@ public class LoadObj extends PCElement {
 	 * 1 = Gaussian around mean and std dev
 	 * 2 = uniform
 	 */
-	public void randomize(int opt) {
+	public void randomize(Randomization opt) {
 		switch (opt) {
-		case 0:
+		case NONE:
 			randomMult = 1.0;
 			break;
-		case DSS.GAUSSIAN:
+		case GAUSSIAN:
 			if (yearlyShapeObj != null) {
 				randomMult = MathUtil.gauss(yearlyShapeObj.getMean(), yearlyShapeObj.getStdDev());
 			} else {
 				randomMult = MathUtil.gauss(puMean, puStdDev);
 			}
 			break;
-		case DSS.UNIFORM:
+		case UNIFORM:
 			randomMult = Math.random();  // number between 0 and 1.0
 			break;
-		case DSS.LOGNORMAL:
+		case LOGNORMAL:
 			if (yearlyShapeObj != null) {
 				randomMult = MathUtil.quasiLognormal(yearlyShapeObj.getMean());
 			} else {
@@ -359,13 +361,13 @@ public class LoadObj extends PCElement {
 					factor = factor * ckt.getLoadMultiplier();
 				// this mode allows use of one class of load shape
 				switch (ckt.getActiveLoadShapeClass()) {
-				case DSS.USEDAILY:
+				case DAILY:
 					calcDailyMult(sol.getDblHour());
 					break;
-				case DSS.USEYEARLY:
+				case YEARLY:
 					calcYearlyMult(sol.getDblHour());
 					break;
-				case DSS.USEDUTY:
+				case DUTY:
 					calcDutyMult(sol.getDblHour());
 					break;
 				default:
@@ -379,13 +381,13 @@ public class LoadObj extends PCElement {
 					factor = factor * ckt.getLoadMultiplier();
 				// this mode allows use of one class of load shape
 				switch (ckt.getActiveLoadShapeClass()) {
-				case DSS.USEDAILY:
+				case DAILY:
 					calcDailyMult(sol.getDblHour());
 					break;
-				case DSS.USEYEARLY:
+				case YEARLY:
 					calcYearlyMult(sol.getDblHour());
 					break;
-				case DSS.USEDUTY:
+				case DUTY:
 					calcDutyMult(sol.getDblHour());
 					break;
 				default:
@@ -611,7 +613,7 @@ public class LoadObj extends PCElement {
 			YPrim.clear();
 		}
 
-		if (DSS.activeCircuit.getSolution().getLoadModel() == DSS.POWERFLOW) {
+		if (DSS.activeCircuit.getSolution().getLoadModel() == LoadModel.POWERFLOW) {
 
 			setNominalLoad();  // same as admittance model
 			calcYPrimMatrix(YPrimShunt);

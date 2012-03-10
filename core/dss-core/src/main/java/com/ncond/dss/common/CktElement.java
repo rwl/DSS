@@ -278,17 +278,17 @@ abstract public class CktElement extends DSSObject {
 		return enabled;
 	}
 
-	public CMatrix getYPrimMatrix(int opt) {
+	public CMatrix getYPrimMatrix(YPrimType opt) {
 		CMatrix Y = null;
 
 		switch (opt) {
-		case DSS.ALL_YPRIM:
+		case ALL_YPRIM:
 			Y = YPrim;
 			break;
-		case DSS.SERIES:
+		case SERIES:
 			Y = YPrimSeries;
 			break;
-		case DSS.SHUNT:
+		case SHUNT:
 			Y = YPrimShunt;
 			break;
 		}
@@ -299,19 +299,19 @@ abstract public class CktElement extends DSSObject {
 	/**
 	 * Returns the storage arrays for fast access.
 	 */
-	public Complex[] getYPrimValues(int opt) {
+	public Complex[] getYPrimValues(YPrimType opt) {
 		Complex[] result = null;
 
 		switch (opt) {
-		case DSS.ALL_YPRIM:
+		case ALL_YPRIM:
 			if (YPrim != null)
 				result = YPrim.asArray();
 			break;
-		case DSS.SERIES:
+		case SERIES:
 			if (YPrimSeries != null)
 				result = YPrimSeries.asArray();
 			break;
-		case DSS.SHUNT:
+		case SHUNT:
 			if (YPrimShunt != null)
 				result = YPrimShunt.asArray();
 			break;

@@ -17,11 +17,11 @@ import org.apache.commons.math.complex.Complex;
 
 import com.ncond.dss.common.Bus;
 import com.ncond.dss.common.Circuit;
-import com.ncond.dss.common.Circuit.ReductionStrategyType;
 import com.ncond.dss.common.CktElement;
 import com.ncond.dss.common.DSS;
 import com.ncond.dss.common.DSSClass;
 import com.ncond.dss.common.DSSClassDefs;
+import com.ncond.dss.common.ReductionStrategy;
 import com.ncond.dss.common.Solution;
 import com.ncond.dss.common.SolutionAlgs;
 import com.ncond.dss.common.SolutionObj;
@@ -1866,35 +1866,35 @@ public class ExecHelper {
 		DSS.auxParser.getNextParam();
 		String param2 = DSS.auxParser.makeString();
 
-		DSS.activeCircuit.setReductionStrategy(ReductionStrategyType.DEFAULT);
+		DSS.activeCircuit.setReductionStrategy(ReductionStrategy.DEFAULT);
 		if (param.length() == 0)
 			return;  // no option given
 
 		switch (param.charAt(0)) {
 		case 'B':
-			DSS.activeCircuit.setReductionStrategy(ReductionStrategyType.BREAK_LOOP);
+			DSS.activeCircuit.setReductionStrategy(ReductionStrategy.BREAK_LOOP);
 			break;
 		case 'D':
-			DSS.activeCircuit.setReductionStrategy(ReductionStrategyType.DEFAULT);
+			DSS.activeCircuit.setReductionStrategy(ReductionStrategy.DEFAULT);
 			break;
 		case 'E':
-			DSS.activeCircuit.setReductionStrategy(ReductionStrategyType.DANGLING);
+			DSS.activeCircuit.setReductionStrategy(ReductionStrategy.DANGLING);
 			break;
 		case 'M':
-			DSS.activeCircuit.setReductionStrategy(ReductionStrategyType.MERGE_PARALLEL);
+			DSS.activeCircuit.setReductionStrategy(ReductionStrategy.MERGE_PARALLEL);
 			break;
 		case 'T':
-			DSS.activeCircuit.setReductionStrategy(ReductionStrategyType.TAP_ENDS);
+			DSS.activeCircuit.setReductionStrategy(ReductionStrategy.TAP_ENDS);
 			DSS.activeCircuit.setReductionMaxAngle(15.0);  // default
 			if (param2.length() > 0)
 				DSS.activeCircuit.setReductionMaxAngle(DSS.auxParser.makeDouble());
 			break;
 		case 'S':  // stubs
 			if (Util.compareTextShortest(param, "SWITCH") == 0) {
-				DSS.activeCircuit.setReductionStrategy(ReductionStrategyType.SWITCHES);
+				DSS.activeCircuit.setReductionStrategy(ReductionStrategy.SWITCHES);
 			} else {
 				DSS.activeCircuit.setReductionZmag(0.02);
-				DSS.activeCircuit.setReductionStrategy(ReductionStrategyType.STUBS);
+				DSS.activeCircuit.setReductionStrategy(ReductionStrategy.STUBS);
 				if (param2.length() > 0)
 					DSS.activeCircuit.setReductionZmag(DSS.auxParser.makeDouble());
 			}

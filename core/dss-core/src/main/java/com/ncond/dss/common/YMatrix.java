@@ -135,10 +135,10 @@ public class YMatrix extends CSparseSolve {
 			if (pElem.isEnabled()) {
 				switch (BuildOption) {
 				case WHOLEMATRIX:
-					CmatArray = pElem.getYPrimValues(DSS.ALL_YPRIM);
+					CmatArray = pElem.getYPrimValues(YPrimType.ALL_YPRIM);
 					break;
 				case SERIESONLY:
-					CmatArray = pElem.getYPrimValues(DSS.SERIES);
+					CmatArray = pElem.getYPrimValues(YPrimType.SERIES);
 					break;
 				}
 				// new function adding primitive Y matrix to KLU system Y matrix

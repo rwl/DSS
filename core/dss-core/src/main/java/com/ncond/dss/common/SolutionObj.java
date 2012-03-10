@@ -32,11 +32,11 @@ public class SolutionObj extends DSSObject {
 	protected Complex[] auxCurrents;   // for injections like AutoAdd
 	protected boolean controlActionsDone;
 	protected int controlIteration;
-	protected int controlMode;         // EVENTDRIVEN, TIMEDRIVEN
+	protected ControlMode controlMode;
 	protected double convergenceTolerance;
 	protected boolean convergedFlag;
-	protected int defaultControlMode;  // EVENTDRIVEN, TIMEDRIVEN
-	protected int defaultLoadModel;    // 1=POWERFLOW  2=ADMITTANCE
+	protected ControlMode defaultControlMode;
+	protected LoadModel defaultLoadModel;
 	protected boolean doAllHarmonics;
 	protected boolean dynamicsAllowed;
 	protected DynamicsRec dynaVars = new DynamicsRec();
@@ -60,7 +60,7 @@ public class SolutionObj extends DSSObject {
 	protected boolean isDynamicModel;
 	protected boolean isHarmonicModel;
 	protected int iteration;
-	protected int loadModel;        // 1=POWERFLOW  2=ADMITTANCE
+	protected LoadModel loadModel;
 	protected boolean lastSolutionWasDirect;
 	protected boolean loadsNeedUpdating;
 	protected int maxControlIterations;
@@ -70,7 +70,7 @@ public class SolutionObj extends DSSObject {
 	protected double[] nodeVBase;
 	protected int numberOfTimes;    // number of times to solve
 	protected boolean preserveNodeVoltages;
-	protected int randomType;       // 0 = NONE; 1 = GAUSSIAN; 2 = UNIFORM
+	protected Randomization randomType;
 	protected boolean seriesYInvalid;
 	protected int solutionCount;    // counter incremented for each solution
 	protected boolean solutionInitialized;
@@ -129,7 +129,7 @@ public class SolutionObj extends DSSObject {
 		harmonicList[4] = 13.0;
 
 		solutionInitialized = false;
-		loadModel = DSS.POWERFLOW;
+		loadModel = LoadModel.POWERFLOW;
 		defaultLoadModel = loadModel;
 		lastSolutionWasDirect = false;
 
@@ -150,11 +150,11 @@ public class SolutionObj extends DSSObject {
 		solutionCount = 0;
 
 		dynaVars.solutionMode = Dynamics.SNAPSHOT;
-		controlMode           = DSS.CTRLSTATIC;
+		controlMode           = ControlMode.CTRLSTATIC;
 		defaultControlMode    = controlMode;
 		algorithm             = Solution.NORMALSOLVE;
 
-		randomType    = DSS.GAUSSIAN;  // default to Gaussian
+		randomType    = Randomization.GAUSSIAN;  // default to Gaussian
 		numberOfTimes = 100;
 		intervalHrs   = 1.0;
 
@@ -801,7 +801,7 @@ public class SolutionObj extends DSSObject {
 	 * @throws SolverError
 	 */
 	public int solveCircuit() throws SolverError {
-		if (loadModel == DSS.ADMITTANCE) {
+		if (loadModel == LoadModel.ADMITTANCE) {
 			try {
 				solveDirect();  // no sense horsing around when it's all admittance
 			} catch (SolverProblem e) {
@@ -901,14 +901,14 @@ public class SolutionObj extends DSSObject {
 
 		switch (controlMode) {
 		// execute the nearest set of control actions time-wise.
-		case DSS.CTRLSTATIC:
+		case CTRLSTATIC:
 			if (ckt.getControlQueue().isEmpty()) {
 				controlActionsDone = true;
 			} else {
 				ckt.getControlQueue().doNearestActions(xHour, xSec);  // ignore time advancement
 			}
 			break;
-		case DSS.EVENTDRIVEN:
+		case EVENTDRIVEN:
 			mHour = new int[1];
 			mSec = new double[1];
 			succ = ckt.getControlQueue().doNearestActions(mHour, mSec);  // advances time
@@ -917,7 +917,7 @@ public class SolutionObj extends DSSObject {
 			if (!succ)
 				controlActionsDone = true;
 			break;
-		case DSS.TIMEDRIVEN:
+		case TIMEDRIVEN:
 			if (!ckt.getControlQueue().doActions(intHour, dynaVars.t))
 				controlActionsDone = true;
 			break;
@@ -946,7 +946,7 @@ public class SolutionObj extends DSSObject {
 	 * @throws ControlProblem
 	 */
 	public void sampleDoControlActions() throws ControlProblem {
-		if (controlMode == DSS.CONTROLSOFF) {
+		if (controlMode == ControlMode.CONTROLSOFF) {
 			controlActionsDone = true;
 		} else {
 			sampleControlDevices();
@@ -1003,11 +1003,11 @@ public class SolutionObj extends DSSObject {
 			break;
 		case Dynamics.DUTYCYCLE:
 			dynaVars.h  = 1.0;
-			controlMode = DSS.TIMEDRIVEN;
+			controlMode = ControlMode.TIMEDRIVEN;
 			break;
 		case Dynamics.DYNAMICMODE:
 			dynaVars.h     = 0.001;
-			controlMode    = DSS.TIMEDRIVEN;
+			controlMode    = ControlMode.TIMEDRIVEN;
 			isDynamicModel = true;
 			preserveNodeVoltages = true;  // need to do this in case Y changes during this mode
 			break;
@@ -1044,9 +1044,9 @@ public class SolutionObj extends DSSObject {
 			ckt.getAutoAddObj().setModeChanged(true);
 			break;
 		case Dynamics.HARMONICMODE:
-			controlMode     = DSS.CONTROLSOFF;
+			controlMode     = ControlMode.CONTROLSOFF;
 			isHarmonicModel = true;
-			loadModel       = DSS.ADMITTANCE;
+			loadModel       = LoadModel.ADMITTANCE;
 			preserveNodeVoltages = true;  // need to do this in case Y changes during this mode
 			break;
 		}

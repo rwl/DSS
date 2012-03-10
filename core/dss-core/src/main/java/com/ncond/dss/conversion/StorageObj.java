@@ -13,6 +13,7 @@ import org.apache.commons.math.complex.Complex;
 import com.ncond.dss.common.Circuit;
 import com.ncond.dss.common.DSS;
 import com.ncond.dss.common.DSSClass;
+import com.ncond.dss.common.Randomization;
 import com.ncond.dss.common.SolutionObj;
 import com.ncond.dss.common.Util;
 import com.ncond.dss.general.LoadShapeObj;
@@ -383,18 +384,18 @@ public class StorageObj extends PCElement {
 	/**
 	 * 0 = reset to 1.0; 1 = Gaussian around mean and std dev; 2 = uniform
 	 */
-	public void randomize(int opt) {
+	public void randomize(Randomization opt) {
 		switch (opt) {
-		case 0:
+		case NONE:
 			randomMult = 1.0;
 			break;
-		case DSS.GAUSSIAN:
+		case GAUSSIAN:
 			randomMult = MathUtil.gauss(yearlyShapeObj.getMean(), yearlyShapeObj.getStdDev());
 			break;
-		case DSS.UNIFORM:
+		case UNIFORM:
 			randomMult = Math.random();  // number between 0 and 1.0
 			break;
-		case DSS.LOGNORMAL:
+		case LOGNORMAL:
 			randomMult = MathUtil.quasiLognormal(yearlyShapeObj.getMean());
 			break;
 		}

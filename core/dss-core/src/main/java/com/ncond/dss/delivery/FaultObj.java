@@ -8,6 +8,7 @@ import lombok.Setter;
 
 import org.apache.commons.math.complex.Complex;
 
+import com.ncond.dss.common.ControlMode;
 import com.ncond.dss.common.DSS;
 import com.ncond.dss.common.DSSClass;
 import com.ncond.dss.common.SolutionObj;
@@ -105,13 +106,13 @@ public class FaultObj extends PDElement {
 		SolutionObj sol = DSS.activeCircuit.getSolution();
 
 		switch (sol.getRandomType()) {
-		case DSS.GAUSSIAN:
+		case GAUSSIAN:
 			randomMult = MathUtil.gauss(1.0, stdDev);
 			break;
-		case DSS.UNIFORM:
+		case UNIFORM:
 			randomMult = Math.random();
 			break;
-		case DSS.LOGNORMAL:
+		case LOGNORMAL:
 			randomMult = MathUtil.quasiLognormal(1.0);
 			break;
 		default:
@@ -243,12 +244,12 @@ public class FaultObj extends PDElement {
 		pw.close();
 	}
 
-	public void checkStatus(int controlMode) {
+	public void checkStatus(ControlMode controlMode) {
 
 		switch (controlMode) {
-		case DSS.CTRLSTATIC:  /* Leave it however it is defined by other processes */
+		case CTRLSTATIC:  /* Leave it however it is defined by other processes */
 			break;
-		case DSS.EVENTDRIVEN:
+		case EVENTDRIVEN:
 			if (!isOn) {
 				/* Turn it on unless it has been previously cleared */
 				if (Util.presentTimeInSec() > onTime && !cleared) {
@@ -266,7 +267,7 @@ public class FaultObj extends PDElement {
 					}
 			}
 			break;
-		case DSS.TIMEDRIVEN:  // identical to event driven case.
+		case TIMEDRIVEN:  // identical to event driven case.
 			if (!isOn) {
 				/* Turn it on unless it has been previously cleared */
 				if (Util.presentTimeInSec() > onTime && !cleared) {

@@ -53,7 +53,7 @@ public class AutoAdd {
 
 	/* AutoAdd mode variables */
 	protected double genKW, genPF, genKVAr, capKVAr;
-	protected int addType;
+	protected AutoAddType addType;
 
 	protected boolean modeChanged;
 
@@ -67,7 +67,7 @@ public class AutoAdd {
 		genKW   = 1000.0;
 		genPF   = 1.0;
 		capKVAr = 600.0;
-		addType = DSS.GENADD;
+		addType = AutoAddType.GEN;
 		lastAddedGenerator = 0;
 		lastAddedCapacitor = 0;
 
@@ -268,8 +268,8 @@ public class AutoAdd {
 		Circuit ckt = DSS.activeCircuit;
 		SolutionObj sol = ckt.getSolution();
 
-		if (sol.getLoadModel() == DSS.ADMITTANCE) {
-			sol.setLoadModel(DSS.POWERFLOW);
+		if (sol.getLoadModel() == LoadModel.ADMITTANCE) {
+			sol.setLoadModel(LoadModel.POWERFLOW);
 			sol.setSystemYChanged(true);  // force rebuild of system Y without loads
 		}
 
@@ -313,12 +313,12 @@ public class AutoAdd {
 		sol.setGeneratorDispRef();
 
 		/* Turn regulators and caps off while we are searching */
-		sol.setControlMode(DSS.CONTROLSOFF);
+		sol.setControlMode(ControlMode.CONTROLSOFF);
 
 		setBaseLosses();  /* Establish base values */
 
 		switch (addType) {
-		case DSS.GENADD:
+		case GEN:
 			if (ckt.isPositiveSequence()) {
 				testGenKW = genKW / 3.0;
 			} else {
@@ -410,7 +410,7 @@ public class AutoAdd {
 			}
 
 			/* Put control mode back to default before inserting generator for real */
-			sol.setControlMode(DSS.CTRLSTATIC);
+			sol.setControlMode(ControlMode.CTRLSTATIC);
 			sol.setUseAuxCurrents(false);
 
 			if (minLossBus > 0) {
@@ -447,7 +447,7 @@ public class AutoAdd {
 			DSS.forms.progressHide();
 
 			break;
-		case DSS.CAPADD:
+		case CAP:
 			minLossBus = 0;  // null string
 			maxLossImproveFactor = -1.0e50;  // very large negative number
 			minBusPhases = 3;
@@ -522,7 +522,7 @@ public class AutoAdd {
 			}
 
 			/* Put control mode back to default before inserting capacitor for real */
-			sol.setControlMode(DSS.CTRLSTATIC);
+			sol.setControlMode(ControlMode.CTRLSTATIC);
 			sol.setUseAuxCurrents(false);
 
 			if (minLossBus > 0) {
@@ -567,7 +567,7 @@ public class AutoAdd {
 		SolutionObj sol = ckt.getSolution();
 
 		switch (addType) {
-		case DSS.GENADD:
+		case GEN:
 			/* For buses with voltage != 0, add into aux current array */
 			for (int i = 0; i < phases; i++) {
 				nodeRef = ckt.getBus(busIndex).getRef(i);
@@ -589,7 +589,7 @@ public class AutoAdd {
 				}
 			}
 			break;
-		case DSS.CAPADD:
+		case CAP:
 			/* For buses with voltage != 0, add into aux current array */
 			for (int i = 0; i < phases; i++) {
 				nodeRef = ckt.getBus(busIndex).getRef(i);

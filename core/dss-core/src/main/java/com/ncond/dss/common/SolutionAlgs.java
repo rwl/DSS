@@ -358,10 +358,10 @@ public class SolutionAlgs {
 
 					// always set loadMultiplier with prop in case matrix must be rebuilt
 					switch (sol.getRandomType()) {
-					case DSS.UNIFORM:
+					case UNIFORM:
 						ckt.setLoadMultiplier(Math.random());  // number between 0 and 1
 						break;
-					case DSS.GAUSSIAN:
+					case GAUSSIAN:
 						ckt.setLoadMultiplier(MathUtil.gauss(ckt.getDefaultDailyShapeObj().getMean(),
 								ckt.getDefaultDailyShapeObj().getStdDev()));
 						break;
@@ -428,14 +428,14 @@ public class SolutionAlgs {
 				if (!DSS.solutionAbort) {
 					// always set loadMultiplier with prop in case matrix must be rebuilt
 					switch (sol.getRandomType()) {
-					case DSS.UNIFORM:
+					case UNIFORM:
 						ckt.setLoadMultiplier(Math.random());  // number between 0 and 1
 						break;
-					case DSS.GAUSSIAN:
+					case GAUSSIAN:
 						ckt.setLoadMultiplier(MathUtil.gauss(ckt.getDefaultDailyShapeObj().getMean(),
 								ckt.getDefaultDailyShapeObj().getStdDev()));
 						break;
-					case DSS.LOGNORMAL:
+					case LOGNORMAL:
 						ckt.setLoadMultiplier(MathUtil.quasiLognormal(ckt.getDefaultDailyShapeObj().getMean()));
 						break;
 					}
@@ -632,7 +632,7 @@ public class SolutionAlgs {
 		SolutionObj sol = ckt.getSolution();
 
 		try {
-			sol.setLoadModel(DSS.ADMITTANCE);   // all direct solution
+			sol.setLoadModel(LoadModel.ADMITTANCE);   // all direct solution
 			ckt.setLoadMultiplier(1.0);  // always set loadMultiplier with prop in case matrix must be rebuilt
 			sol.setIntHour(0);
 			sol.setDblHour(0.0);  // use hour to denote case number
@@ -762,7 +762,7 @@ public class SolutionAlgs {
 		DSS.forms.showPctProgress(0);
 		DSS.forms.progressCaption("Computing open-circuit voltages");
 
-		sol.setLoadModel(DSS.ADMITTANCE);
+		sol.setLoadModel(LoadModel.ADMITTANCE);
 		disableAllFaults();
 		sol.solveDirect();  // this gets the open circuit voltages and bus lists corrected
 

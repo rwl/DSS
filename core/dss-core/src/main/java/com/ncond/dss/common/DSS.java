@@ -40,51 +40,7 @@ public class DSS {
 	public static final double EPSILON = 1.0e-12;   // default tiny floating point
 	public static final double EPSILON2 = 1.0e-3;   // default for real number mismatch testing
 
-	/* Load model types for solution */
-	public static final int POWERFLOW  = 1;
-	public static final int ADMITTANCE = 2;
-
-	/* For YPrim matrices */
-	public static final int ALL_YPRIM = 0;
-	public static final int SERIES = 1;
-	public static final int SHUNT  = 2;
-
-	/* Control modes */
-	public static final int CONTROLSOFF = -1;
-	public static final int EVENTDRIVEN =  1;
-	public static final int TIMEDRIVEN  =  2;
-	public static final int CTRLSTATIC  =  0;
-
-	/* Randomization constants */
-	public static final int GAUSSIAN  = 1;
-	public static final int UNIFORM   = 2;
-	public static final int LOGNORMAL = 3;
-
-	/* AutoAdd constants */
-	public static final int GENADD = 1;
-	public static final int CAPADD = 2;
-
-	/* Errors */
 	public static final int SOLUTION_ABORT = 99;
-
-	/* For general sequential time simulations */
-	public static final int USEDAILY  = 0;
-	public static final int USEYEARLY = 1;
-	public static final int USEDUTY   = 2;
-	public static final int USENONE   =-1;
-
-	/* Earth model */
-	public static final int SIMPLECARSON  = 1;
-	public static final int FULLCARSON    = 2;
-	public static final int DERI          = 3;
-
-	/* Profile plot constants */
-	public static final int PROFILE3PH    = 9999;  // some big number > likely no. of phases
-	public static final int PROFILEALL    = 9998;
-	public static final int PROFILEALLPRI = 9997;
-	public static final int PROFILELLALL  = 9996;
-	public static final int PROFILELLPRI  = 9995;
-	public static final int PROFILELL     = 9994;
 
 	/* 120-degree shift constant */
 	public static final Complex CALPHA = new Complex(-0.5, -0.866025);
@@ -98,13 +54,6 @@ public class DSS {
 
 	/* Variables */
 	public static boolean debugFirstTime = true;
-//	public static File debugFile;
-//	public static String DSSIniFileName = "OpenDSSPanel.ini";
-//	public static String programName = "OpenDSS";
-	// Registry   (See Executive)
-//	public static IniRegSave DSS_Registry = IniRegSave("\\Software\\OpenDSS");
-
-//	public static boolean isDLL = false;
 	public static boolean noFormsAllowed = false;
 
 	public static Circuit activeCircuit;
@@ -126,8 +75,8 @@ public class DSS {
 	public static int errorNumber = 0;
 	public static String lastErrorMessage = "";
 
-	public static int defaultEarthModel = DERI;
-	public static int activeEarthModel = defaultEarthModel;
+	public static EarthModel defaultEarthModel = EarthModel.DERI;
+	public static EarthModel activeEarthModel = defaultEarthModel;
 
 	public static String lastFileCompiled = "";
 	public static boolean lastCommandWasCompile = false;
@@ -418,18 +367,6 @@ public class DSS {
 	public static String getDSSVersion() {
 		// TODO: Implement getDSSVersion()
 		return "Unknown.";
-	}
-
-	public static void readDSS_Registry() {
-		throw new UnsupportedOperationException();
-	}
-
-	public static void writeDSS_Registry() {
-		throw new UnsupportedOperationException();
-	}
-
-	public static boolean isDSSDLL(String fname) {
-		throw new UnsupportedOperationException();
 	}
 
 }

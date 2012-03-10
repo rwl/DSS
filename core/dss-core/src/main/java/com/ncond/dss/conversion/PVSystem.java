@@ -9,6 +9,7 @@ import lombok.Setter;
 
 import com.ncond.dss.common.DSS;
 import com.ncond.dss.common.DSSClassDefs;
+import com.ncond.dss.common.Randomization;
 import com.ncond.dss.common.Util;
 import com.ncond.dss.general.LoadShapeObj;
 import com.ncond.dss.general.TShapeObj;
@@ -588,13 +589,13 @@ public class PVSystem extends PCClass {
 		if (handle == 0) {  // init all
 			p = (PVSystemObj) elementList.getFirst();
 			while (p != null) {
-				p.randomize(0);
+				p.randomize(Randomization.NONE);
 				p = (PVSystemObj) elementList.getNext();
 			}
 		} else {
 			setActiveElement(handle);
 			p = (PVSystemObj) getActiveObj();
-			p.randomize(0);
+			p.randomize(Randomization.NONE);
 		}
 
 		DSS.doSimpleMsg("Need to implement PVSystem.init", -1);

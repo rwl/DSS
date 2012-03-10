@@ -2771,7 +2771,7 @@ public abstract class ShowResults {
 							ace.getParentClass().getClassName() + "." + ace.getName());
 					pw.println();
 
-					cValues = ace.getYPrimValues(DSS.ALL_YPRIM);
+					cValues = ace.getYPrimValues(YPrimType.ALL_YPRIM);
 					if (cValues != null) {
 						pw.println();
 						pw.println("G matrix (conductance), S");

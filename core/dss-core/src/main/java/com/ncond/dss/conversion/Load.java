@@ -2,6 +2,7 @@ package com.ncond.dss.conversion;
 
 import com.ncond.dss.common.DSS;
 import com.ncond.dss.common.DSSClassDefs;
+import com.ncond.dss.common.Randomization;
 import com.ncond.dss.general.GrowthShapeObj;
 import com.ncond.dss.general.LoadShapeObj;
 import com.ncond.dss.parser.Parser;
@@ -568,12 +569,12 @@ public class Load extends PCClass {
 		if (handle == 0) {
 			for (int i = 0; i < elementList.size(); i++) {
 				pLoad = (LoadObj) elementList.get(i);
-				pLoad.randomize(0);
+				pLoad.randomize(Randomization.NONE);
 			}
 		} else {
 			setActiveElement(handle);
 			pLoad = (LoadObj) getActiveObj();
-			pLoad.randomize(0);
+			pLoad.randomize(Randomization.NONE);
 		}
 
 		DSS.doSimpleMsg("Need to finish implementation Load.init", -1);
