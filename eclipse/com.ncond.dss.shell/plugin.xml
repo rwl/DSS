@@ -15,7 +15,7 @@
          id="product"
          point="org.eclipse.core.runtime.products">
       <product
-            application="shell-rcp-app.application"
+            application="com.ncond.dss.shell.application"
             name="DSS">
          <property
                name="appName"

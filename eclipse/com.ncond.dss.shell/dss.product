@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?pde version="3.5"?>
 
-<product name="DSS" id="shell-rcp-app.product" application="shell-rcp-app.application" version="1.0.0" useFeatures="false" includeLaunchers="true">
-
+<product name="DSS" id="com.ncond.dss.shell.product" application="com.ncond.dss.shell.application" version="1.0.0" useFeatures="false" includeLaunchers="true">
 
    <configIni use="default">
    </configIni>
@@ -14,7 +13,6 @@
 
    <windowImages/>
 
-
    <launcher name="dss">
       <solaris/>
       <win useIco="false">
@@ -22,12 +20,11 @@
       </win>
    </launcher>
 
-
    <vm>
    </vm>
 
-
    <plugins>
+      <plugin id="com.ncond.dss.shell"/>
       <plugin id="javax.transaction" fragment="true"/>
       <plugin id="org.eclipse.core.contenttype"/>
       <plugin id="org.eclipse.core.jobs"/>
@@ -39,7 +36,6 @@
       <plugin id="org.eclipse.equinox.registry"/>
       <plugin id="org.eclipse.equinox.weaving.hook" fragment="true"/>
       <plugin id="org.eclipse.osgi"/>
-      <plugin id="shell-rcp-app"/>
    </plugins>
 
 

@@ -1,4 +1,4 @@
-package com.ncond.dss.shell.rcp;
+package com.ncond.dss.shell;
 
 import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;
