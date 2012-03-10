@@ -12,8 +12,6 @@ public class Solution extends DSSClass {
 
 	public static SolutionObj activeSolutionObj;
 
-//	private static File fDebug;
-
 	public static final int NumPropsThisClass = 1;
 
 	public Solution() {
@@ -34,6 +32,7 @@ public class Solution extends DSSClass {
 	@Override
 	protected void defineProperties() {
 		numProperties = NumPropsThisClass;
+
 		countProperties();  // get inherited property count
 		allocatePropertyArrays();
 
@@ -41,7 +40,7 @@ public class Solution extends DSSClass {
 		propertyName[0] = "-------";
 
 		// define property help values
-		propertyHelp[0] = "Use Set Command to set Solution properties.";
+		propertyHelp[0] = "Use Set command to set solution properties.";
 
 		activeProperty = NumPropsThisClass - 1;
 		super.defineProperties();  // add defs of inherited properties to bottom of list
@@ -51,6 +50,7 @@ public class Solution extends DSSClass {
 	public int newObject(String objName) {
 		// make a new solution object and add it to solution class list
 		activeSolutionObj = new SolutionObj(this, objName);
+
 		// this one is different than the rest of the objects
 		return addObjectToList(activeSolutionObj);
 	}
@@ -61,7 +61,6 @@ public class Solution extends DSSClass {
 
 		// This is all we do here now...
 		activeSolutionObj.solve();
-
 		return 0;
 	}
 

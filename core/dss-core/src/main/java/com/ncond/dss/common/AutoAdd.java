@@ -236,9 +236,9 @@ public class AutoAdd {
 	 *
 	 * @throws ControlProblem
 	 * @throws SolverError
-	 * @throws SolveProblem
+	 * @throws SolverProblem
 	 */
-	public int solve() throws SolverError, ControlProblem, SolveProblem {
+	public int solve() throws SolverError, ControlProblem, SolverProblem {
 
 		double lossImproveFactor, maxLossImproveFactor;
 		int minLossBus, minBusPhases;

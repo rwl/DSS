@@ -260,7 +260,7 @@ public class SolutionObj extends DSSObject {
 				DSS.doSimpleMsg("Unknown solution mode.", 481);
 				break;
 			}
-		} catch (SolveProblem e) {
+		} catch (SolverProblem e) {
 			DSS.doSimpleMsg("Error encountered in Solve: " + e.getMessage(), 482);
 			DSS.solutionAbort = true;
 		} catch (SolverError e) {
@@ -407,7 +407,7 @@ public class SolutionObj extends DSSObject {
 		}
 	}
 
-	private void setGenerator_dQdV() throws SolverError, SolveProblem {
+	private void setGenerator_dQdV() throws SolverError, SolverProblem {
 		boolean didOne = false;
 		double genDispSave;
 
@@ -461,7 +461,7 @@ public class SolutionObj extends DSSObject {
 		try {
 			if (didOne)  // reset initial solution
 				solveZeroLoadSnapShot();
-		} catch (SolveProblem e) {
+		} catch (SolverProblem e) {
 			DSS.doSimpleMsg("From setGenerator dQdV, solveZeroLoadSnapShot: " + DSS.CRLF + e.getMessage()  + YMatrix.checkYMatrixforZeroes(), 7071);
 			throw new SolverError("Aborting");
 		}
@@ -478,9 +478,9 @@ public class SolutionObj extends DSSObject {
 	 * InjCurr are the current injected into the node (need to reverse
 	 * current direction for loads).
 	 *
-	 * @throws SolveProblem
+	 * @throws SolverProblem
 	 */
-	private void doNormalSolution() throws SolveProblem {
+	private void doNormalSolution() throws SolverProblem {
 		iteration = 0;
 
 		Circuit ckt = DSS.activeCircuit;
@@ -528,9 +528,9 @@ public class SolutionObj extends DSSObject {
 	 * For Loads, termCurr = (Sload / V)*
 	 * For Generators, termCurr = -(Sgen / V)
 	 *
-	 * @throws SolveProblem *
+	 * @throws SolverProblem *
 	 */
-	private void doNewtonSolution() throws SolveProblem {
+	private void doNewtonSolution() throws SolverProblem {
 		Circuit ckt = DSS.activeCircuit;
 
 		dV = Util.resizeArray(dV, ckt.getNumNodes() + 1);  // make sure this is always big enough
@@ -567,7 +567,7 @@ public class SolutionObj extends DSSObject {
 		}
 	}
 
-	public void doPFlowSolution() throws SolverError, SolveProblem {
+	public void doPFlowSolution() throws SolverError, SolverProblem {
 
 		solutionCount += 1;  // unique number for this solution
 
@@ -581,7 +581,7 @@ public class SolutionObj extends DSSObject {
 			try {
 				//solveZeroLoadSnapShot();
 				solveYDirect();  // 8-14-06 this should give a better answer than zero load snapshot
-			} catch (SolveProblem e) {
+			} catch (SolverProblem e) {
 				DSS.doSimpleMsg("From doPFlowSolution().solveYDirect(): " + DSS.CRLF + e.getMessage() + YMatrix.checkYMatrixforZeroes(), 7072);
 				throw new SolverError("Aborting");
 			}
@@ -590,7 +590,7 @@ public class SolutionObj extends DSSObject {
 
 			try {
 				setGenerator_dQdV();  // set dQdV for model 3 generators
-			} catch (SolveProblem e) {
+			} catch (SolverProblem e) {
 				DSS.doSimpleMsg("From doPFlowSolution.setGeneratordQdV(): " + DSS.CRLF + e.getMessage() + YMatrix.checkYMatrixforZeroes(), 7073);
 				throw new SolverError("Aborting");
 			}
@@ -615,9 +615,9 @@ public class SolutionObj extends DSSObject {
 	/**
 	 * Solve without load for initialization purposes.
 	 *
-	 * @throws SolveProblem
+	 * @throws SolverProblem
 	 */
-	public int solveZeroLoadSnapShot() throws SolveProblem {
+	public int solveZeroLoadSnapShot() throws SolverProblem {
 
 		if (systemYChanged || seriesYInvalid)
 			YMatrix.buildYMatrix(YMatrix.SERIESONLY, true);  // side effect: allocates V
@@ -629,7 +629,7 @@ public class SolutionObj extends DSSObject {
 
 		/* Make the series Y matrix the active matrix */
 		if (YSeries == null)
-			throw new SolveProblem("Series Y matrix not built yet in solveZeroLoadSnapshot().");
+			throw new SolverProblem("Series Y matrix not built yet in solveZeroLoadSnapshot().");
 		Y = YSeries;
 
 		if (DSS.activeCircuit.isLogEvents())
@@ -678,7 +678,7 @@ public class SolutionObj extends DSSObject {
 			ckt.setZonesLocked(bZoneLock);
 			ckt.doResetMeterZones();
 
-		} catch (SolveProblem e) {
+		} catch (SolverProblem e) {
 			DSS.doSimpleMsg("From setVoltageBases().solveZeroLoadSnapShot(): " + DSS.CRLF + e.getMessage() + YMatrix.checkYMatrixforZeroes(), 7075);
 			throw new SolverError("Aborting");
 		}
@@ -696,9 +696,9 @@ public class SolutionObj extends DSSObject {
 	 * Snapshot checks with matrix rebuild.
 	 *
 	 * @throws ControlProblem
-	 * @throws SolveProblem
+	 * @throws SolverProblem
 	 */
-	public void checkControls() throws ControlProblem, SolveProblem {
+	public void checkControls() throws ControlProblem, SolverProblem {
 		if (controlIteration < maxControlIterations) {
 			if (convergedFlag) {
 				if (DSS.activeCircuit.isLogEvents())
@@ -719,9 +719,9 @@ public class SolutionObj extends DSSObject {
 	 *
 	 * @throws SolverError
 	 * @throws ControlProblem
-	 * @throws SolveProblem
+	 * @throws SolverProblem
 	 */
-	public int solveSnap() throws SolverError, ControlProblem, SolveProblem {
+	public int solveSnap() throws SolverError, ControlProblem, SolverProblem {
 		int result = 0;
 		int totalIterations = 0;
 
@@ -766,9 +766,9 @@ public class SolutionObj extends DSSObject {
 	/**
 	 * Solve for now once, direct solution.
 	 *
-	 * @throws SolveProblem
+	 * @throws SolverProblem
 	 */
-	public int solveDirect() throws SolveProblem {
+	public int solveDirect() throws SolverProblem {
 		loadsNeedUpdating = true;  // force possible update of loads and generators
 
 		if (systemYChanged)
@@ -804,7 +804,7 @@ public class SolutionObj extends DSSObject {
 		if (loadModel == DSS.ADMITTANCE) {
 			try {
 				solveDirect();  // no sense horsing around when it's all admittance
-			} catch (SolveProblem e) {
+			} catch (SolverProblem e) {
 				DSS.doSimpleMsg("From solveSnap().solveDirect(): " + DSS.CRLF + e.getMessage() + YMatrix.checkYMatrixforZeroes(), 7075);
 				throw new SolverError("Aborting");
 			}
@@ -813,7 +813,7 @@ public class SolutionObj extends DSSObject {
 				if (systemYChanged)
 					YMatrix.buildYMatrix(YMatrix.WHOLEMATRIX, true);  // Side effect: allocates V
 				doPFlowSolution();
-			} catch (SolveProblem e) {
+			} catch (SolverProblem e) {
 				DSS.doSimpleMsg("From solveSnap().doPFlowSolution(): " + DSS.CRLF + e.getMessage() + YMatrix.checkYMatrixforZeroes(), 7074);
 				throw new SolverError("Aborting");
 			}
@@ -1243,9 +1243,9 @@ public class SolutionObj extends DSSObject {
 	/**
 	 * *************  MAIN SOLVER CALL *************
 	 *
-	 * @throws SolveProblem
+	 * @throws SolverProblem
 	 */
-	private int solveSystem(Complex[] V) throws SolveProblem {
+	private int solveSystem(Complex[] V) throws SolverProblem {
 		int retCode;
 		long iRes = 0;
 		double dRes = 0;
@@ -1272,7 +1272,7 @@ public class SolutionObj extends DSSObject {
 			iRes = ip[0];
 			//YMatrix.getSingularCol(Y, iRes);
 		} catch (Exception e) {
-			throw new SolveProblem("Error solving system Y matrix. Sparse matrix solver reports numerical error: " + e.getMessage());
+			throw new SolverProblem("Error solving system Y matrix. Sparse matrix solver reports numerical error: " + e.getMessage());
 		}
 
 		return retCode;
@@ -1316,9 +1316,9 @@ public class SolutionObj extends DSSObject {
 	 * Similar to solveDirect(); used for initialization.
 	 * Solves present Y matrix with no injection sources except voltage and current sources.
 	 *
-	 * @throws SolveProblem
+	 * @throws SolverProblem
 	 */
-	public int solveYDirect() throws SolveProblem {
+	public int solveYDirect() throws SolverProblem {
 		zeroInjCurr();  // side effect: allocates injCurr
 		getSourceInjCurrents();
 		if (isDynamicModel) getPCInjCurr();  // Need this in dynamics mode to pick up additional injections
@@ -1367,6 +1367,14 @@ public class SolutionObj extends DSSObject {
 
 	public boolean loadsNeedUpdating() {
 		return loadsNeedUpdating;
+	}
+
+	public double getHarmonic(int idx) {
+		return harmonicList[idx];
+	}
+
+	public double getHarmonic() {
+		return harmonic;
 	}
 
 }

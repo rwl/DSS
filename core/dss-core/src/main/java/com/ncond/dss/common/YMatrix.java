@@ -39,17 +39,17 @@ public class YMatrix extends CSparseSolve {
 				pElem.calcYPrim();
 	}
 
-	public static void resetSparseMatrix(UUID[] Y, int size) throws SolveProblem {
+	public static void resetSparseMatrix(UUID[] Y, int size) throws SolverProblem {
 		if (Y[0] != null) {
 			if (deleteSparseSet(Y[0]) < 1)  // get rid of existing one before making a new one
-				throw new SolveProblem("Error deleting system Y Matrix in resetSparseMatrix. Problem with sparse matrix solver.");
+				throw new SolverProblem("Error deleting system Y Matrix in resetSparseMatrix. Problem with sparse matrix solver.");
 			Y[0] = null;
 		}
 
 		// make a new sparse set
 		Y[0] = newSparseSet(size);
 		if (Y[0] == null)  // raise an exception  TODO Check zero based indexing
-			throw new SolveProblem("Error creating system Y Matrix. Problem with sparse matrix solver.");
+			throw new SolverProblem("Error creating system Y Matrix. Problem with sparse matrix solver.");
 	}
 
 	public static void initializeNodeVbase() {
@@ -67,9 +67,9 @@ public class YMatrix extends CSparseSolve {
 	/**
 	 * Builds designated Y matrix for system and allocates solution arrays.
 	 *
-	 * @throws SolveProblem
+	 * @throws SolverProblem
 	 */
-	public static void buildYMatrix(int BuildOption, boolean AllocateVI) throws SolveProblem {
+	public static void buildYMatrix(int BuildOption, boolean AllocateVI) throws SolverProblem {
 		UUID[] pY = new UUID[1];
 		int YMatrixSize;
 		Complex[] CmatArray;
@@ -144,7 +144,7 @@ public class YMatrix extends CSparseSolve {
 				// new function adding primitive Y matrix to KLU system Y matrix
 				if (CmatArray != null)
 					if (addPrimitiveMatrix(sol.getY(), pElem.getYOrder(), pElem.getNodeRef(), 1, CmatArray, 1) < 0)  // TODO Check zero based indexing
-						throw new SolveProblem("Node index out of range adding to System Y Matrix");
+						throw new SolverProblem("Node index out of range adding to System Y Matrix");
 			}  // if enabled
 		}
 

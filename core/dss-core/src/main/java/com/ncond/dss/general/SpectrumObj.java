@@ -196,4 +196,8 @@ public class SpectrumObj extends DSSObject {
 		}
 	}
 
+	public double getHarmonic(int idx) {
+		return harmArray[idx];
+	}
+
 }
