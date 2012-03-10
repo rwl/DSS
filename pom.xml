@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>com.ncond.dss</groupId>
+  <artifactId>com.ncond.dss.root</artifactId>
+  <packaging>pom</packaging>
+  <version>0.0.1-SNAPSHOT</version>
+  <name>DSS</name>
+  <description>DSS (Distribution System Simulator) is an unbalanced multi-phase circuit simulator for next-generation smart grid research.</description>
+  <inceptionYear>2011</inceptionYear>
+
+  <modules>
+    <!-- NB: Update the <dependencyManagement> section in this pom.xml if you add/remove/rename any module below! -->
+    <module>core</module>
+    <module>shell</module>
+    <module>eclipse</module>
+    <module>vaadin</module>
+  </modules>
+
+  <developers>
+    <developer>
+      <name>Richard Lincoln</name>
+      <id>rwl</id>
+      <email>r.w.lincoln@gmail.com</email>
+      <timezone>+0</timezone>
+    </developer>
+  </developers>
+
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>com.ncond.dss.core</groupId>
+        <artifactId>com.ncond.dss.core.root</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.ncond.dss.shell</groupId>
+        <artifactId>com.ncond.dss.shell.root</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.ncond.dss.eclipse</groupId>
+        <artifactId>com.ncond.dss.eclipse.root</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.ncond.dss.vaadin</groupId>
+        <artifactId>com.ncond.dss.vaadin.root</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
+</project>

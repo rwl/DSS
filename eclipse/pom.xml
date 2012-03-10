@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>com.ncond.dss</groupId>
+    <artifactId>com.ncond.dss.root</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+    <relativePath>..</relativePath>
+  </parent>
+  <groupId>com.ncond.dss.eclipse</groupId>
+  <artifactId>com.ncond.dss.eclipse.root</artifactId>
+  <packaging>pom</packaging>
+  <name>eDSS</name>
+  <description>Provides Eclipse plug-ins for working with DSS.</description>
+  <inceptionYear>2011</inceptionYear>
+
+  <properties>
+    <tycho-version>0.11.1</tycho-version>
+  </properties>
+
+  <modules>
+    <module>com.ncond.dss.editor</module>
+    <module>com.ncond.dss.shell</module>
+  </modules>
+
+  <repositories>
+    <repository>
+	  <id>indigo</id>
+	  <layout>p2</layout>
+	  <url>http://download.eclipse.org/releases/indigo/</url>
+    </repository>
+  </repositories>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.sonatype.tycho</groupId>
+        <artifactId>tycho-maven-plugin</artifactId>
+        <version>${tycho-version}</version>
+        <extensions>true</extensions>
+      </plugin>
+
+      <plugin>
+        <groupId>org.sonatype.tycho</groupId>
+          <artifactId>target-platform-configuration</artifactId>
+          <version>${tycho-version}</version>
+          <configuration>
+            <resolver>p2</resolver>
+          </configuration>
+      </plugin>
+    </plugins>
+  </build>
+</project>
