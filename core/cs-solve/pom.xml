@@ -6,21 +6,17 @@
     <version>0.0.1-SNAPSHOT</version>
     <relativePath>..</relativePath>
   </parent>
-  <artifactId>klu-solve</artifactId>
-  <name>KLU Solve</name>
-  <description>Provides an interface to JKLU.</description>
+  <artifactId>cs-solve</artifactId>
+  <name>CSparseJ Solve</name>
+  <description>Provides an interface to CXSparseJ.</description>
   <dependencies>
-    <dependency>
-      <groupId>com.ncond.dss.core</groupId>
-      <artifactId>cs-solve</artifactId>
-    </dependency>
     <dependency>
       <groupId>edu.ufl.cise</groupId>
       <artifactId>CXSparseJ</artifactId>
     </dependency>
     <dependency>
-      <groupId>edu.ufl.cise</groupId>
-      <artifactId>KLUJ</artifactId>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-math</artifactId>
     </dependency>
   </dependencies>
   <build>
