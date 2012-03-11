@@ -7,9 +7,8 @@
     <artifactId>root</artifactId>
     <version>0.0.1-SNAPSHOT</version>
   </parent>
-  <artifactId>com.ncond.dss.shell</artifactId>
+  <artifactId>com.ncond.dss.shell.feature</artifactId>
   <version>1.0.0-SNAPSHOT</version>
-  <name>DSS Shell RCP App</name>
-  <description>A headless Eclipse RCP shell application.</description>
-  <packaging>eclipse-plugin</packaging>
+  <name>DSS Shell Feature</name>
+  <packaging>eclipse-feature</packaging>
 </project>

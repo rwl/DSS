@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?pde version="3.5"?>
 
-<product name="DSS" id="com.ncond.dss.shell.product" application="com.ncond.dss.shell.application" version="1.0.0" useFeatures="false" includeLaunchers="true">
+<product name="DSS" id="com.ncond.dss.shell.product" application="com.ncond.dss.shell.application" version="1.0.0" useFeatures="true" includeLaunchers="true">
 
    <configIni use="default">
    </configIni>
@@ -24,7 +24,7 @@
    </vm>
 
    <plugins>
-      <plugin id="com.ncond.dss.shell"/>
+      <plugin id="com.ncond.dss.shell" version="1.0.0.qualifier"/>
       <plugin id="javax.transaction" fragment="true"/>
       <plugin id="org.eclipse.core.contenttype"/>
       <plugin id="org.eclipse.core.jobs"/>
@@ -37,6 +37,11 @@
       <plugin id="org.eclipse.equinox.weaving.hook" fragment="true"/>
       <plugin id="org.eclipse.osgi"/>
    </plugins>
+
+   <features>
+      <feature id="com.ncond.dss.shell.feature"/>
+      <feature id="org.eclipse.rcp"/>
+   </features>
 
 
 </product>

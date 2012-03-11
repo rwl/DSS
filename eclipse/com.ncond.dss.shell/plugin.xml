@@ -3,11 +3,11 @@
 <plugin>
 
    <extension
-         id="application"
+         id="com.ncond.dss.shell.application"
          point="org.eclipse.core.runtime.applications">
       <application>
          <run
-               class="com.ncond.dss.shell.rcp.DSSApplication">
+               class="com.ncond.dss.shell.DSSApplication">
          </run>
       </application>
    </extension>
