@@ -2,11 +2,11 @@
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>com.ncond.dss.core</groupId>
-    <artifactId>com.ncond.dss.core.root</artifactId>
+    <artifactId>root</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <relativePath>../pom.xml</relativePath>
+    <relativePath>..</relativePath>
   </parent>
-  <artifactId>com.ncond.dss.core.cdpsm</artifactId>
+  <artifactId>cdpsm</artifactId>
   <name>DSS CDPSM</name>
   <description>Provides support for the Common Distribution Power System Model.</description>
   <dependencies>

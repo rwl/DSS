@@ -3,44 +3,20 @@
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>com.ncond.dss</groupId>
-    <artifactId>com.ncond.dss.root</artifactId>
+    <artifactId>root</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <relativePath>../pom.xml</relativePath>
+    <relativePath>..</relativePath>
   </parent>
   <groupId>com.ncond.dss.core</groupId>
-  <artifactId>com.ncond.dss.core.root</artifactId>
+  <artifactId>root</artifactId>
   <packaging>pom</packaging>
   <name>DSS Core</name>
   <description>Provides the core circuit model and solver interface.</description>
-  <inceptionYear>2011</inceptionYear>
   <modules>
     <module>dss</module>
-    <module>klu-solve</module>
+    <module>cs-solve</module>
+    <!-- <module>klu-solve</module> -->
     <module>ind-mach-012a</module>
     <module>cdpsm</module>
   </modules>
-  <dependencyManagement>
-    <dependencies>
-      <dependency>
-        <groupId>com.ncond.dss.core</groupId>
-          <artifactId>com.ncond.dss.core.dss</artifactId>
-          <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>com.ncond.dss.core</groupId>
-          <artifactId>com.ncond.dss.core.klu-solve</artifactId>
-          <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>com.ncond.dss.core</groupId>
-          <artifactId>com.ncond.dss.core.ind-mach-012a</artifactId>
-          <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>com.ncond.dss.core</groupId>
-          <artifactId>com.ncond.dss.core.cdpsm</artifactId>
-          <version>${project.version}</version>
-      </dependency>
-    </dependencies>
-  </dependencyManagement>
 </project>

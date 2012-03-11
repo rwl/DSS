@@ -2,17 +2,17 @@
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>com.ncond.dss.core</groupId>
-    <artifactId>com.ncond.dss.core.root</artifactId>
+    <artifactId>root</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <relativePath>../pom.xml</relativePath>
+    <relativePath>..</relativePath>
   </parent>
-  <artifactId>com.ncond.dss.core.ind-mach-012a</artifactId>
+  <artifactId>ind-mach-012a</artifactId>
   <name>Induction Machine 012a</name>
   <description>Provides induction machine model 012a.</description>
   <dependencies>
     <dependency>
       <groupId>com.ncond.dss.core</groupId>
-      <artifactId>com.ncond.dss.core.dss</artifactId>
+      <artifactId>dss</artifactId>
     </dependency>
   </dependencies>
 </project>

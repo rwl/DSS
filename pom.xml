@@ -2,7 +2,7 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.ncond.dss</groupId>
-  <artifactId>com.ncond.dss.root</artifactId>
+  <artifactId>root</artifactId>
   <packaging>pom</packaging>
   <version>0.0.1-SNAPSHOT</version>
   <name>DSS</name>
@@ -28,25 +28,85 @@
 
   <dependencyManagement>
     <dependencies>
+      <!-- Third-party dependencies -->
+      <dependency>
+        <groupId>org.apache.commons</groupId>
+        <artifactId>commons-math</artifactId>
+        <version>2.1</version>
+      </dependency>
+      <dependency>
+        <groupId>junit</groupId>
+        <artifactId>junit</artifactId>
+        <version>3.8.2</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.projectlombok</groupId>
+        <artifactId>lombok</artifactId>
+        <version>0.10.8</version>
+      </dependency>
+      <dependency>
+        <groupId>jline</groupId>
+        <artifactId>jline</artifactId>
+        <version>0.9.94</version>
+      </dependency>
+      <!-- Aggregator dependencies -->
       <dependency>
         <groupId>com.ncond.dss.core</groupId>
-        <artifactId>com.ncond.dss.core.root</artifactId>
+        <artifactId>root</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>com.ncond.dss.shell</groupId>
-        <artifactId>com.ncond.dss.shell.root</artifactId>
+        <artifactId>root</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>com.ncond.dss.eclipse</groupId>
-        <artifactId>com.ncond.dss.eclipse.root</artifactId>
+        <artifactId>root</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>com.ncond.dss.vaadin</groupId>
-        <artifactId>com.ncond.dss.vaadin.root</artifactId>
+        <artifactId>root</artifactId>
         <version>${project.version}</version>
+      </dependency>
+      <!-- Core dependencies -->
+      <dependency>
+        <groupId>com.ncond.dss.core</groupId>
+          <artifactId>dss</artifactId>
+          <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.ncond.dss.core</groupId>
+          <artifactId>klu-solve</artifactId>
+          <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.ncond.dss.core</groupId>
+          <artifactId>cs-solve</artifactId>
+          <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.ncond.dss.core</groupId>
+          <artifactId>ind-mach-012a</artifactId>
+          <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.ncond.dss.core</groupId>
+          <artifactId>cdpsm</artifactId>
+          <version>${project.version}</version>
+      </dependency>
+      <!-- SuiteSparse dependencies -->
+      <dependency>
+        <groupId>edu.ufl.cise</groupId>
+        <artifactId>CXSparseJ</artifactId>
+        <version>2.2.6-SNAPSHOT</version>
+      </dependency>
+      <dependency>
+        <groupId>edu.ufl.cise</groupId>
+        <artifactId>KLUJ</artifactId>
+        <version>1.1.1-SNAPSHOT</version>
       </dependency>
     </dependencies>
   </dependencyManagement>

@@ -2,21 +2,20 @@
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>com.ncond.dss.shell</groupId>
-    <artifactId>com.ncond.dss.shell.root</artifactId>
+    <artifactId>root</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <relativePath>../pom.xml</relativePath>
+    <relativePath>..</relativePath>
   </parent>
-  <artifactId>com.ncond.dss.shell.jline</artifactId>
+  <artifactId>shell-jline</artifactId>
   <version>0.0.1-SNAPSHOT</version>
   <dependencies>
     <dependency>
       <groupId>jline</groupId>
       <artifactId>jline</artifactId>
-      <version>0.9.94</version>
     </dependency>
     <dependency>
       <groupId>com.ncond.dss.core</groupId>
-      <artifactId>com.ncond.dss.core.dss</artifactId>
+      <artifactId>dss</artifactId>
     </dependency>
   </dependencies>
 </project>

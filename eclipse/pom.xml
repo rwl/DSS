@@ -4,12 +4,12 @@
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>com.ncond.dss</groupId>
-    <artifactId>com.ncond.dss.root</artifactId>
+    <artifactId>root</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <relativePath>..</relativePath>
   </parent>
   <groupId>com.ncond.dss.eclipse</groupId>
-  <artifactId>com.ncond.dss.eclipse.root</artifactId>
+  <artifactId>root</artifactId>
   <packaging>pom</packaging>
   <name>eDSS</name>
   <description>Provides Eclipse plug-ins for working with DSS.</description>
@@ -22,6 +22,8 @@
   <modules>
     <module>com.ncond.dss.editor</module>
     <module>com.ncond.dss.shell</module>
+    <module>com.ncond.dss.shell.feature</module>
+    <module>com.ncond.dss.shell.product</module>
   </modules>
 
   <repositories>
@@ -47,8 +49,36 @@
           <version>${tycho-version}</version>
           <configuration>
             <resolver>p2</resolver>
-          </configuration>
+            <environments>
+            <environment>
+              <os>linux</os>
+              <ws>gtk</ws>
+              <arch>x86</arch>
+            </environment>
+            <environment>
+              <os>linux</os>
+              <ws>gtk</ws>
+              <arch>x86_64</arch>
+            </environment>
+            <environment>
+              <os>win32</os>
+              <ws>win32</ws>
+              <arch>x86</arch>
+            </environment>
+            <environment>
+              <os>win32</os>
+              <ws>win32</ws>
+              <arch>x86_64</arch>
+            </environment>
+            <environment>
+              <os>macosx</os>
+              <ws>cocoa</ws>
+              <arch>x86_64</arch>
+            </environment>
+          </environments>
+        </configuration>
       </plugin>
+
     </plugins>
   </build>
 </project>

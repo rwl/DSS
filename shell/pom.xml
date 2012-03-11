@@ -3,12 +3,12 @@
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>com.ncond.dss</groupId>
-    <artifactId>com.ncond.dss.root</artifactId>
+    <artifactId>root</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <relativePath>..</relativePath>
   </parent>
   <groupId>com.ncond.dss.shell</groupId>
-  <artifactId>com.ncond.dss.shell.root</artifactId>
+  <artifactId>root</artifactId>
   <packaging>pom</packaging>
   <name>DSS Shell</name>
   <description>Provides a shell interface to DSS.</description>
