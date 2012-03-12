@@ -488,12 +488,12 @@ public class Util {
 		}
 	}
 
-	public static int interpretSolveAlg(String s) {
+	public static Algorithm interpretSolveAlg(String s) {
 		String slc = s.toLowerCase().substring(0, 2);
 		if (slc.equalsIgnoreCase("ne")) {
-			return Solution.NEWTONSOLVE;
+			return Algorithm.NEWTON;
 		} else {
-			return Solution.NORMALSOLVE;
+			return Algorithm.NORMAL;
 		}
 	}
 

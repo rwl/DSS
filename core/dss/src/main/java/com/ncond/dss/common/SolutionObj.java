@@ -28,7 +28,7 @@ public class SolutionObj extends DSSObject {
 	private Complex[] dV;
 	private double frequency;
 
-	protected int algorithm;           // NORMALSOLVE or NEWTONSOLVE
+	protected Algorithm algorithm;
 	protected Complex[] auxCurrents;   // for injections like AutoAdd
 	protected boolean controlActionsDone;
 	protected int controlIteration;
@@ -113,11 +113,11 @@ public class SolutionObj extends DSSObject {
 		harmonic = 1.0;
 
 		frequencyChanged = true;  // force building of YPrim matrices
-		doAllHarmonics   = true;
-		firstIteration   = true;
-		dynamicsAllowed  = false;
-		systemYChanged   = true;
-		seriesYInvalid   = true;
+		doAllHarmonics = true;
+		firstIteration = true;
+		dynamicsAllowed = false;
+		systemYChanged = true;
+		seriesYInvalid = true;
 
 		/* Define default harmonic list */
 		harmonicListSize = 5;
@@ -137,26 +137,26 @@ public class SolutionObj extends DSSObject {
 		YSystem = null;
 		Y = null;
 
-		nodeV      = null;
-		dV         = null;
-		currents   = null;
-		auxCurrents= null;
-		VMagSaved  = null;
+		nodeV = null;
+		dV = null;
+		currents = null;
+		auxCurrents = null;
+		VMagSaved = null;
 		errorSaved = null;
-		nodeVBase  = null;
+		nodeVBase = null;
 
 		useAuxCurrents = false;
 
 		solutionCount = 0;
 
 		dynaVars.solutionMode = Dynamics.SNAPSHOT;
-		controlMode           = ControlMode.CTRLSTATIC;
-		defaultControlMode    = controlMode;
-		algorithm             = Solution.NORMALSOLVE;
+		controlMode = ControlMode.CTRLSTATIC;
+		defaultControlMode = controlMode;
+		algorithm = Algorithm.NORMAL;
 
-		randomType    = Randomization.GAUSSIAN;  // default to Gaussian
+		randomType = Randomization.GAUSSIAN;  // default to Gaussian
 		numberOfTimes = 100;
-		intervalHrs   = 1.0;
+		intervalHrs = 1.0;
 
 		initPropertyValues(0);
 	}
@@ -165,15 +165,16 @@ public class SolutionObj extends DSSObject {
 	 * Main solution dispatch.
 	 */
 	public void solve() {
+		Circuit ckt = DSS.activeCircuit;
 
-		DSS.activeCircuit.setSolved(false);
+		ckt.setSolved(false);
 		DSS.solutionWasAttempted = true;
 
 		DSS.forms.initProgressForm();  // initialize progress form;
 
 		/* Check of some special conditions that must be met before executing solutions */
 
-		if (DSS.activeCircuit.getEmergMinVolts() >= DSS.activeCircuit.getNormalMinVolts()) {
+		if (ckt.getEmergMinVolts() >= ckt.getNormalMinVolts()) {
 			DSS.doSimpleMsg("Error: Emergency Min Voltage Must Be Less Than Normal Min Voltage!" +
 					DSS.CRLF + "Solution Not Executed.", 480);
 			return;
@@ -187,9 +188,7 @@ public class SolutionObj extends DSSObject {
 		}
 
 		try {
-
 			/* Main solution algorithm dispatcher */
-			Circuit ckt = DSS.activeCircuit;
 
 			switch (year) {
 			case 0:
@@ -200,9 +199,7 @@ public class SolutionObj extends DSSObject {
 				break;
 			}
 
-//			fireInitControls();
-
-			/* checkFaultStatus;  ???? needed here?? */
+			/* checkFaultStatus();  ???? needed here?? */
 
 			switch (dynaVars.solutionMode) {
 			case Dynamics.SNAPSHOT:
@@ -261,74 +258,69 @@ public class SolutionObj extends DSSObject {
 				break;
 			}
 		} catch (SolverProblem e) {
-			DSS.doSimpleMsg("Error encountered in Solve: " + e.getMessage(), 482);
+			DSS.doSimpleMsg("Solver problem encountered: " + e.getMessage(), 482);
 			DSS.solutionAbort = true;
 		} catch (SolverError e) {
-			// TODO Handle solver error
+			DSS.doSimpleMsg("Solver error encountered: " + e.getMessage(), 483);
+			DSS.solutionAbort = true;
 		} catch (ControlProblem e) {
-			// TODO Handle control problem
+			DSS.doSimpleMsg("Control problem encountered: " + e.getMessage(), 484);
+			DSS.solutionAbort = true;
 		}
 	}
 
 	private boolean converged() {
-		boolean result;
-		double VMag;
+		double Vmag;
 		Circuit ckt = DSS.activeCircuit;
 
 		// base convergence on voltage magnitude
 
 		maxError = 0.0;
 		for (int i = 0; i < ckt.getNumNodes(); i++) {
-			VMag = nodeV[i].abs();
+			Vmag = nodeV[i].abs();
 
 			/* If base specified, use it; otherwise go on present magnitude */
 			if (nodeVBase[i] > 0.0) {
-				errorSaved[i] = Math.abs(VMag - VMagSaved[i]) / nodeVBase[i];
+				errorSaved[i] = Math.abs(Vmag - VMagSaved[i]) / nodeVBase[i];
 			} else {
-				if (VMag != 0.0)
-					errorSaved[i] = Math.abs(1.0 - VMagSaved[i] / VMag);
+				if (Vmag != 0.0)
+					errorSaved[i] = Math.abs(1.0 - VMagSaved[i] / Vmag);
 			}
 
-			VMagSaved[i] = VMag;  // for next go-'round
+			VMagSaved[i] = Vmag;  // for next go-'round
 
 			maxError = Math.max(maxError, errorSaved[i]);  // update max error
 		}
 
-		/* $IFDEF debugtrace */
-//		FileWriter F = new FileWriter("DebugTrace.csv", true);
-//		BufferedWriter FDebug = new BufferedWriter(F);
-//		if (Iteration == 1) {
-//			FDebug.write("Iter");
-//			for (int i = 0; i < ckt.getNumNodes(); i++)
-//				FDebug.write(", " + ckt.getBusList().get(ckt.getMapNodeToBus()[i].BusRef) + "." + ckt.getMapNodeToBus()[i].NodeNum);  // TODO Implement colon syntax
-//			FDebug.newLine();
-//		}
-//		/* ***** */  // FIXME Format number widths
-//		FDebug.write(Iteration);
-//		for (int i = 0; i < ckt.getNumNodes(); i++)
-//			FDebug.write(", " + VmagSaved[i]);
-//		FDebug.newLine();
-//		FDebug.write("Err");
-//		for (int i = 0; i < ckt.getNumNodes(); i++)
-//			FDebug.write(", " + String.format("%-.5g", ErrorSaved[i]));
-//		FDebug.newLine();
-//		FDebug.write("Curr");
-//		for (int i = 0; i < ckt.getNumNodes(); i++)
-//			FDebug.write(", " + Currents[i].abs());
-//		FDebug.newLine();
-//		/* ***** */
-//		FDebug.close();
-		/* $ENDIF */
-
-		if (maxError <= convergenceTolerance) {
-			result = true;
-		} else {
-			result = false;
+		/* $IFDEF debugtrace
+		FileWriter fw = new FileWriter("DebugTrace.csv", true);
+		PrintWriter pw = new PrintWriter(fw);
+		if (iteration == 0) {
+			pw.print("Iter");
+			for (int i = 1; i <= ckt.getNumNodes(); i++)
+				pw.print(", " + ckt.getBusList().get(ckt.getMapNodeToBus(i).busRef) + "." + ckt.getMapNodeToBus(i).nodeNum);
+			pw.println();
 		}
+		// FIXME format number widths
+		pw.print(iteration);
+		for (int i = 0; i < ckt.getNumNodes(); i++)
+			pw.print(", " + VMagSaved[i]);
+		pw.println();
+		pw.print("Err");
+		for (int i = 0; i < ckt.getNumNodes(); i++)
+			pw.printf(", %-.5g" , errorSaved[i]);
+		pw.println();
+		pw.print("Curr");
+		for (int i = 0; i < ckt.getNumNodes(); i++)
+			pw.print(", " + currents[i].abs());
+		pw.println();
+		pw.close();
+		fw.close();
+		$ENDIF */
 
-		convergedFlag = result;
+		convergedFlag = maxError <= convergenceTolerance;
 
-		return result;
+		return convergedFlag;
 	}
 
 	/**
@@ -347,64 +339,66 @@ public class SolutionObj extends DSSObject {
 	 * Set the global generator dispatch reference.
 	 */
 	public void setGeneratorDispRef() {
+		double ref;
 		Circuit ckt = DSS.activeCircuit;
 
 		switch (dynaVars.solutionMode) {
 		case Dynamics.SNAPSHOT:
-			ckt.setGeneratorDispatchReference(ckt.getLoadMultiplier() * ckt.getDefaultGrowthFactor());
+			ref = ckt.getLoadMultiplier() * ckt.getDefaultGrowthFactor();
 			break;
 		case Dynamics.YEARLYMODE:
-			ckt.setGeneratorDispatchReference(ckt.getDefaultGrowthFactor() * ckt.getDefaultHourMult().getReal());
+			ref = ckt.getDefaultGrowthFactor() * ckt.getDefaultHourMult().getReal();
 			break;
 		case Dynamics.DAILYMODE:
-			ckt.setGeneratorDispatchReference(ckt.getLoadMultiplier() * ckt.getDefaultGrowthFactor() * ckt.getDefaultHourMult().getReal());
+			ref = ckt.getLoadMultiplier() * ckt.getDefaultGrowthFactor() * ckt.getDefaultHourMult().getReal();
 			break;
 		case Dynamics.DUTYCYCLE:
-			ckt.setGeneratorDispatchReference(ckt.getLoadMultiplier() * ckt.getDefaultGrowthFactor() * ckt.getDefaultHourMult().getReal());
+			ref = ckt.getLoadMultiplier() * ckt.getDefaultGrowthFactor() * ckt.getDefaultHourMult().getReal();
 			break;
 		case Dynamics.GENERALTIME:
-			ckt.setGeneratorDispatchReference(ckt.getLoadMultiplier() * ckt.getDefaultGrowthFactor() * ckt.getDefaultHourMult().getReal());
+			ref = ckt.getLoadMultiplier() * ckt.getDefaultGrowthFactor() * ckt.getDefaultHourMult().getReal();
 			break;
 		case Dynamics.DYNAMICMODE:
-			ckt.setGeneratorDispatchReference(ckt.getLoadMultiplier() * ckt.getDefaultGrowthFactor());
+			ref = ckt.getLoadMultiplier() * ckt.getDefaultGrowthFactor();
 			break;
 		case Dynamics.HARMONICMODE:
-			ckt.setGeneratorDispatchReference(ckt.getLoadMultiplier() * ckt.getDefaultGrowthFactor());
+			ref = ckt.getLoadMultiplier() * ckt.getDefaultGrowthFactor();
 			break;
 		case Dynamics.MONTECARLO1:
-			ckt.setGeneratorDispatchReference(ckt.getLoadMultiplier() * ckt.getDefaultGrowthFactor());
+			ref = ckt.getLoadMultiplier() * ckt.getDefaultGrowthFactor();
 			break;
 		case Dynamics.MONTECARLO2:
-			ckt.setGeneratorDispatchReference(ckt.getLoadMultiplier() * ckt.getDefaultGrowthFactor() * ckt.getDefaultHourMult().getReal());
+			ref = ckt.getLoadMultiplier() * ckt.getDefaultGrowthFactor() * ckt.getDefaultHourMult().getReal();
 			break;
 		case Dynamics.MONTECARLO3:
-			ckt.setGeneratorDispatchReference(ckt.getLoadMultiplier() * ckt.getDefaultGrowthFactor() * ckt.getDefaultHourMult().getReal());
+			ref = ckt.getLoadMultiplier() * ckt.getDefaultGrowthFactor() * ckt.getDefaultHourMult().getReal();
 			break;
 		case Dynamics.PEAKDAY:
-			ckt.setGeneratorDispatchReference(ckt.getLoadMultiplier() * ckt.getDefaultGrowthFactor() * ckt.getDefaultHourMult().getReal());
+			ref = ckt.getLoadMultiplier() * ckt.getDefaultGrowthFactor() * ckt.getDefaultHourMult().getReal();
 			break;
 		case Dynamics.LOADDURATION1:
-			ckt.setGeneratorDispatchReference(ckt.getLoadMultiplier() * ckt.getDefaultGrowthFactor() * ckt.getDefaultHourMult().getReal());
+			ref = ckt.getLoadMultiplier() * ckt.getDefaultGrowthFactor() * ckt.getDefaultHourMult().getReal();
 			break;
 		case Dynamics.LOADDURATION2:
-			ckt.setGeneratorDispatchReference(ckt.getLoadMultiplier() * ckt.getDefaultGrowthFactor() * ckt.getDefaultHourMult().getReal());
+			ref = ckt.getLoadMultiplier() * ckt.getDefaultGrowthFactor() * ckt.getDefaultHourMult().getReal();
 			break;
 		case Dynamics.DIRECT:
-			ckt.setGeneratorDispatchReference(ckt.getLoadMultiplier() * ckt.getDefaultGrowthFactor());
+			ref = ckt.getLoadMultiplier() * ckt.getDefaultGrowthFactor();
 			break;
 		case Dynamics.MONTEFAULT:
-			ckt.setGeneratorDispatchReference(1.0);  // Monte Carlo fault cases solve at peak load only base case
+			ref = 1.0;  // Monte Carlo fault cases solve at peak load only base case
 			break;
 		case Dynamics.FAULTSTUDY:
-			ckt.setGeneratorDispatchReference(1.0);
+			ref = 1.0;
 			break;
 		case Dynamics.AUTOADDFLAG:
-			ckt.setGeneratorDispatchReference(ckt.getDefaultGrowthFactor());  // peak load only
+			ref = ckt.getDefaultGrowthFactor();  // peak load only
 			break;
 		default:
 			DSS.doSimpleMsg("Unknown solution mode.", 483);
-			break;
+			return;
 		}
+		ckt.setGeneratorDispatchReference(ref);
 	}
 
 	private void setGenerator_dQdV() throws SolverError, SolverProblem {
@@ -417,13 +411,12 @@ public class SolutionObj extends DSSObject {
 		genDispSave = ckt.getGeneratorDispatchReference();
 		ckt.setGeneratorDispatchReference(1000.0);
 
-		for (GeneratorObj pGen : ckt.getGenerators()) {
-			if (pGen.isEnabled()) {
-
+		for (GeneratorObj gen : ckt.getGenerators()) {
+			if (gen.isEnabled()) {
 				// for PV generator models only ...
-				if (pGen.getGenModel() == 3) {
+				if (gen.getGenModel() == 3) {
 
-					pGen.initDQDVCalc();
+					gen.initDQDVCalc();
 
 					// solve at base var setting
 					iteration = 0;
@@ -431,12 +424,12 @@ public class SolutionObj extends DSSObject {
 						iteration += 1;
 						zeroInjCurr();
 						getSourceInjCurrents();
-						pGen.injCurrents();  // get generator currents with nominal vars
+						gen.injCurrents();  // get generator currents with nominal vars
 						solveSystem(nodeV);
 					}
 
-					pGen.rememberQV();  // remember Q and V
-					pGen.bumpUpQ();
+					gen.rememberQV();  // remember Q and V
+					gen.bumpUpQ();
 
 					// solve after changing vars
 					iteration = 0;
@@ -444,25 +437,24 @@ public class SolutionObj extends DSSObject {
 						iteration += 1;
 						zeroInjCurr();
 						getSourceInjCurrents();
-						pGen.injCurrents();  // get generator currents with nominal vars
+						gen.injCurrents();  // get generator currents with nominal vars
 						solveSystem(nodeV);
 					}
 
-					pGen.calcDQDV(); // bssed on remembered Q and V and present values of same
-					pGen.resetStartPoint();
+					gen.calcDQDV(); // bssed on remembered Q and V and present values of same
+					gen.resetStartPoint();
 
 					didOne = true;
 				}
 			}
 		}
 
-		// restore generator dispatch reference
-		ckt.setGeneratorDispatchReference(genDispSave);
+		ckt.setGeneratorDispatchReference(genDispSave);  // restore generator dispatch reference
 		try {
-			if (didOne)  // reset initial solution
-				solveZeroLoadSnapShot();
+			if (didOne) solveZeroLoadSnapShot();  // reset initial solution
 		} catch (SolverProblem e) {
-			DSS.doSimpleMsg("From setGenerator dQdV, solveZeroLoadSnapShot: " + DSS.CRLF + e.getMessage()  + YMatrix.checkYMatrixforZeroes(), 7071);
+			DSS.doSimpleMsg("From setGenerator_dQdV, solveZeroLoadSnapShot: " + DSS.CRLF +
+					e.getMessage()  + YMatrix.checkYMatrixforZeroes(), 7071);
 			throw new SolverError("Aborting");
 		}
 	}
@@ -470,9 +462,9 @@ public class SolutionObj extends DSSObject {
 	/**
 	 * Normal fixed-point solution.
 	 *
-	 *   Vn+1 = [Y]-1 Injcurr
+	 *   Vn+1 = [Y]-1 injCurr
 	 *
-	 * Where Injcurr includes only PC elements (loads, generators, etc.)
+	 * Where injCurr includes only PC elements (loads, generators, etc.)
 	 * i.e., the shunt elements.
 	 *
 	 * InjCurr are the current injected into the node (need to reverse
@@ -481,18 +473,18 @@ public class SolutionObj extends DSSObject {
 	 * @throws SolverProblem
 	 */
 	private void doNormalSolution() throws SolverProblem {
-		iteration = 0;
-
 		Circuit ckt = DSS.activeCircuit;
+
+		iteration = 0;
 
 		/* **** Main iteration loop **** */
 		while ((!converged() || iteration <= 1) && (iteration < maxIterations)) {
 			iteration += 1;
 
 			if (ckt.isLogEvents())
-				Util.logThisEvent("Solution Iteration " + String.valueOf(iteration));
+				Util.logThisEvent("Solution iteration: " + iteration);
 
-			/* Get injcurrents for all PC devices */
+			/* Get inj currents for all PC devices */
 			zeroInjCurr();
 			getSourceInjCurrents();  // sources
 			getPCInjCurr();  // get the injection currents from all the power conversion devices and feeders
@@ -502,12 +494,13 @@ public class SolutionObj extends DSSObject {
 				YMatrix.buildYMatrix(YMatrix.WHOLEMATRIX, false);  // does not realloc V, I
 
 			if (useAuxCurrents)
-				addInAuxCurrents(Solution.NORMALSOLVE);
+				addInAuxCurrents(Algorithm.NORMAL);
 
-			// solve for voltages      /* Note: nodeV[0] = 0 + j0 always */
 			if (ckt.isLogEvents())
 				Util.logThisEvent("Solve sparse set doNormalSolution ...");
-			solveSystem(nodeV);
+
+			solveSystem(nodeV);  // solve for voltages
+
 			loadsNeedUpdating = false;
 		}
 	}
@@ -515,7 +508,7 @@ public class SolutionObj extends DSSObject {
 	/**
 	 * Newton iteration.
 	 *
-	 *   Vn+1 =  Vn - [Y]-1 Termcurr
+	 *   Vn+1 =  Vn - [Y]-1 termCurr
 	 *
 	 * Where termCurr includes currents from all elements and we are
 	 * attempting to get the  currents to sum to zero at all nodes.
@@ -523,10 +516,10 @@ public class SolutionObj extends DSSObject {
 	 * TermCurr is the sum of all currents going into the terminals of
 	 * the elements.
 	 *
-	 * For PD Elements, termCurr = Yprim*V
+	 * For PD elements, termCurr = Yprim*V
 	 *
-	 * For Loads, termCurr = (Sload / V)*
-	 * For Generators, termCurr = -(Sgen / V)
+	 * For loads, termCurr = (Sload / V)*
+	 * For generators, termCurr = -(Sgen / V)
 	 *
 	 * @throws SolverProblem *
 	 */
@@ -552,7 +545,7 @@ public class SolutionObj extends DSSObject {
 				YMatrix.buildYMatrix(YMatrix.WHOLEMATRIX, false);  // does not realloc V, I
 
 			if (useAuxCurrents)
-				addInAuxCurrents(Solution.NEWTONSOLVE);
+				addInAuxCurrents(Algorithm.NEWTON);
 
 			// solve for change in voltages
 			solveSystem(dV);
@@ -561,13 +554,16 @@ public class SolutionObj extends DSSObject {
 
 			// compute new guess at voltages
 			for (int i = 0; i < ckt.getNumNodes(); i++) {  // 0 node is always 0
-				nodeV[i] = new Complex(nodeV[i].getReal() - dV[i].getReal(),
-						nodeV[i].getImaginary() - dV[i].getImaginary());
+				nodeV[i] = new Complex(
+					nodeV[i].getReal() - dV[i].getReal(),
+					nodeV[i].getImaginary() - dV[i].getImaginary()
+				);
 			}
 		}
 	}
 
 	public void doPFlowSolution() throws SolverError, SolverProblem {
+		Circuit ckt = DSS.activeCircuit;
 
 		solutionCount += 1;  // unique number for this solution
 
@@ -575,23 +571,26 @@ public class SolutionObj extends DSSObject {
 			YMatrix.initializeNodeVbase();  // for convergence test
 
 		if (!solutionInitialized) {
+			if (ckt.isLogEvents())
+				Util.logThisEvent("Initializing solution");
 
-			if (DSS.activeCircuit.isLogEvents())
-				Util.logThisEvent("Initializing Solution");
 			try {
 				//solveZeroLoadSnapShot();
-				solveYDirect();  // 8-14-06 this should give a better answer than zero load snapshot
+				solveYDirect();  // this should give a better answer than zero load snapshot
 			} catch (SolverProblem e) {
-				DSS.doSimpleMsg("From doPFlowSolution().solveYDirect(): " + DSS.CRLF + e.getMessage() + YMatrix.checkYMatrixforZeroes(), 7072);
+				DSS.doSimpleMsg("From doPFlowSolution(), solveYDirect(): " + DSS.CRLF +
+						e.getMessage() + YMatrix.checkYMatrixforZeroes(), 7072);
 				throw new SolverError("Aborting");
 			}
+
 			if (DSS.solutionAbort)
 				return;  // initialization can result in abort
 
 			try {
 				setGenerator_dQdV();  // set dQdV for model 3 generators
 			} catch (SolverProblem e) {
-				DSS.doSimpleMsg("From doPFlowSolution.setGeneratordQdV(): " + DSS.CRLF + e.getMessage() + YMatrix.checkYMatrixforZeroes(), 7073);
+				DSS.doSimpleMsg("From doPFlowSolution(), setGeneratordQdV(): " + DSS.CRLF +
+						e.getMessage() + YMatrix.checkYMatrixforZeroes(), 7073);
 				throw new SolverError("Aborting");
 			}
 
@@ -600,15 +599,15 @@ public class SolutionObj extends DSSObject {
 		}
 
 		switch (algorithm) {
-		case Solution.NORMALSOLVE:
+		case NORMAL:
 			doNormalSolution();
 			break;
-		case Solution.NEWTONSOLVE:
+		case NEWTON:
 			doNewtonSolution();
 			break;
 		}
 
-		DSS.activeCircuit.setSolved(convergedFlag);
+		ckt.setSolved(convergedFlag);
 		lastSolutionWasDirect = false;
 	}
 
@@ -624,7 +623,7 @@ public class SolutionObj extends DSSObject {
 
 		solutionCount += 1;  // unique number for this solution
 
-		zeroInjCurr();  // Side effect: allocates InjCurr
+		zeroInjCurr();  // side effect: allocates injCurr
 		getSourceInjCurrents();  // Vsource and Isource only
 
 		/* Make the series Y matrix the active matrix */
@@ -633,13 +632,12 @@ public class SolutionObj extends DSSObject {
 		Y = YSeries;
 
 		if (DSS.activeCircuit.isLogEvents())
-			Util.logThisEvent("Solve Sparse Set ZeroLoadSnapshot ...");
+			Util.logThisEvent("Solve sparse set zeroLoadSnapshot ...");
 
 		solveSystem(nodeV);  // also sets voltages in radial part of the circuit if radial solution
 
 		/* Reset the main system Y as the solution matrix */
-		if ((YSystem != null) && !DSS.solutionAbort)
-			Y = YSystem;
+		if ((YSystem != null) && !DSS.solutionAbort) Y = YSystem;
 
 		return 0;
 	}
@@ -651,6 +649,8 @@ public class SolutionObj extends DSSObject {
 	 */
 	public void setVoltageBases() throws SolverError {
 		boolean bZoneCalc, bZoneLock;
+		double kVBase;
+		Bus bus;
 		Circuit ckt = DSS.activeCircuit;
 
 		try {
@@ -665,8 +665,9 @@ public class SolutionObj extends DSSObject {
 			solveZeroLoadSnapShot();
 
 			for (int i = 0; i < ckt.getNumBuses(); i++) {
-				Bus bus = ckt.getBus(i);
-				bus.setKVBase( Util.nearestBasekV( nodeV[ bus.getRef(0) ].abs() * 0.001732 ) / DSS.SQRT3);  // l-n base kV
+				bus = ckt.getBus(i);
+				kVBase = Util.nearestBasekV( getNodeV(bus.getRef(0)).abs() * 0.001732 ) / DSS.SQRT3;
+				bus.setKVBase(kVBase);  // l-n base kV
 			}
 
 			YMatrix.initializeNodeVbase();  // for convergence test
@@ -679,7 +680,8 @@ public class SolutionObj extends DSSObject {
 			ckt.doResetMeterZones();
 
 		} catch (SolverProblem e) {
-			DSS.doSimpleMsg("From setVoltageBases().solveZeroLoadSnapShot(): " + DSS.CRLF + e.getMessage() + YMatrix.checkYMatrixforZeroes(), 7075);
+			DSS.doSimpleMsg("From setVoltageBases(), solveZeroLoadSnapShot(): " + DSS.CRLF +
+					e.getMessage() + YMatrix.checkYMatrixforZeroes(), 7075);
 			throw new SolverError("Aborting");
 		}
 	}
@@ -702,16 +704,20 @@ public class SolutionObj extends DSSObject {
 		if (controlIteration < maxControlIterations) {
 			if (convergedFlag) {
 				if (DSS.activeCircuit.isLogEvents())
-					Util.logThisEvent("Control Iteration " + String.valueOf(controlIteration));
+					Util.logThisEvent("Control iteration: " + controlIteration);
+
 				sampleDoControlActions();
 				checkFaultStatus();
 			} else {
-				controlActionsDone = true;  // stop solution process if failure to converge
+				// stop solution process if failure to converge
+				controlActionsDone = true;
 			}
 		}
 
-		if (systemYChanged)
-			YMatrix.buildYMatrix(YMatrix.WHOLEMATRIX, false);  // rebuild Y matrix, but V stays same
+		if (systemYChanged) {
+			// rebuild Y matrix, but V stays same
+			YMatrix.buildYMatrix(YMatrix.WHOLEMATRIX, false);
+		}
 	}
 
 	/**
@@ -732,10 +738,6 @@ public class SolutionObj extends DSSObject {
 
 			result = solveCircuit();  // do circuit solution w/o checking controls
 
-			/* Now check controls */
-			/* TODO $IFDEF DLL_ENGINE */
-//			fire_checkControls();
-			/* TODO $ENDIF */
 			checkControls();
 
 			/* For reporting max iterations per control iteration */
@@ -743,20 +745,17 @@ public class SolutionObj extends DSSObject {
 				mostIterationsDone = iteration;
 
 			totalIterations = totalIterations + iteration;
-
 		}
 
 		if (!controlActionsDone && (controlIteration >= maxControlIterations)) {
-			DSS.doSimpleMsg("Warning: max control iterations exceeded. " + DSS.CRLF + "Tip: Show eventLog to debug control settings.", 485);
-			DSS.solutionAbort = true;  // this will stop this message in dynamic power flow modes
+			DSS.doSimpleMsg("Warning: max control iterations exceeded. " + DSS.CRLF +
+					"Tip: Show eventLog to debug control settings.", 485);
+			// this will stop this message in dynamic power flow modes
+			DSS.solutionAbort = true;
 		}
 
 		if (DSS.activeCircuit.isLogEvents())
 			Util.logThisEvent("Solution done");
-
-		/* TODO $IFDEF DLL_ENGINE */
-//		fire_StepControls();
-		/* $ENDIF */
 
 		iteration = totalIterations;  /* so that it reports a more interesting number */
 
@@ -805,16 +804,18 @@ public class SolutionObj extends DSSObject {
 			try {
 				solveDirect();  // no sense horsing around when it's all admittance
 			} catch (SolverProblem e) {
-				DSS.doSimpleMsg("From solveSnap().solveDirect(): " + DSS.CRLF + e.getMessage() + YMatrix.checkYMatrixforZeroes(), 7075);
+				DSS.doSimpleMsg("From solveSnap(), solveDirect(): " + DSS.CRLF +
+						e.getMessage() + YMatrix.checkYMatrixforZeroes(), 7075);
 				throw new SolverError("Aborting");
 			}
 		} else {
 			try {
 				if (systemYChanged)
-					YMatrix.buildYMatrix(YMatrix.WHOLEMATRIX, true);  // Side effect: allocates V
+					YMatrix.buildYMatrix(YMatrix.WHOLEMATRIX, true);  // side effect: allocates V
 				doPFlowSolution();
 			} catch (SolverProblem e) {
-				DSS.doSimpleMsg("From solveSnap().doPFlowSolution(): " + DSS.CRLF + e.getMessage() + YMatrix.checkYMatrixforZeroes(), 7074);
+				DSS.doSimpleMsg("From solveSnap().doPFlowSolution(): " + DSS.CRLF +
+						e.getMessage() + YMatrix.checkYMatrixforZeroes(), 7074);
 				throw new SolverError("Aborting");
 			}
 		}
@@ -831,15 +832,145 @@ public class SolutionObj extends DSSObject {
 	 */
 	private void getPCInjCurr() {
 		Circuit ckt = DSS.activeCircuit;
-		for (PCElement pElem : ckt.getPCElements())
-			if (pElem.isEnabled())
-				pElem.injCurrents();  // uses nodeRef to add current into injCurr array
+
+		for (PCElement elem : ckt.getPCElements())
+			if (elem.isEnabled())
+				elem.injCurrents();  // uses nodeRef to add current into injCurr array
 	}
 
 	@Override
 	public void dumpProperties(OutputStream out, boolean complete) {
-		// TODO Translate this method
-		throw new UnsupportedOperationException();
+		int i, j;
+		DSSClass pc;
+		AutoAdd autoAdd;
+
+		// for dumping the matrix in compressed columns
+		int p, nBus, nNZ;
+		UUID Y;
+		int[] ColPtr, RowIdx, ip = new int[1];
+		Complex[] cVals;
+
+		Circuit ckt = DSS.activeCircuit;
+		PrintWriter pw = new PrintWriter(out);
+
+		pw.println( "! Options");
+
+		//super.dumpProperties(out, complete);
+
+		pw.println( "! numNodes = " + ckt.getNumNodes());
+
+		pc = getParentClass();
+		for (i = 0; i < pc.getNumProperties(); i++) {
+			pw.println("set " + pc.getPropertyName(i) + "=" + getPropertyValue(i));
+		}
+
+		pw.println("set mode=" + Util.getSolutionModeID());
+		pw.println("set controlMode=" + Util.getControlModeID());
+		pw.println("set random=" + Util.getRandomModeID());
+		pw.println("set hour=" + intHour);
+		pw.println("set sec=" + String.format("%-g", dynaVars.t));
+		pw.println("set year=" + year);
+		pw.println("set frequency=" + String.format("%-g", frequency));
+		pw.println("set stepsize=" + String.format("%-g", dynaVars.h));
+		pw.println("set number=" + numberOfTimes);
+		pw.println("set circuit=" + ckt.getName());
+		pw.println("set editor=" + DSS.defaultEditor);
+		pw.println("set tolerance=" + String.format("%-g", convergenceTolerance));
+		pw.println("set maxiter=" + maxIterations);
+		pw.println("set loadmodel=" + getLoadModel());
+
+		pw.println("set loadmult=" + String.format("%-g", ckt.getLoadMultiplier()));
+		pw.println("set normVminPU=" + String.format("%-g", ckt.getNormalMinVolts()));
+		pw.println("set normVmaxPU=" + String.format("%-g", ckt.getNormalMaxVolts()));
+		pw.println("set emergVminPU=" + String.format("%-g", ckt.getEmergMinVolts()));
+		pw.println("set emergVmaxPU=" + String.format("%-g", ckt.getEmergMaxVolts()));
+		pw.println("set %mean=" + String.format("%-.4g", ckt.getDefaultDailyShapeObj().getMean() * 100.0));
+		pw.println("set %stddev=" + String.format("%-.4g", ckt.getDefaultDailyShapeObj().getStdDev() * 100.0));
+		pw.println("set LDCurve=" + ckt.getLoadDurCurve());  // load duration curve
+		pw.println("set %growth=" + String.format("%-.4g", ((ckt.getDefaultGrowthRate() - 1.0) * 100.0)));  // default growth rate
+		autoAdd = ckt.getAutoAddObj();
+		pw.println("set genkw=" + String.format("%-g", autoAdd.getGenKW()));
+		pw.println("set genpf=" + String.format("%-g", autoAdd.getGenPF()));
+		pw.println("set capkvar=" + String.format("%-g", autoAdd.getCapKVAr()));
+		pw.print("set addtype=");
+		switch (autoAdd.getAddType()) {
+		case GEN:
+			pw.println("generator");
+			break;
+		default:
+			pw.println("capacitor");
+			break;
+		}
+		pw.print("set allowduplicates=");
+		pw.println(ckt.isDuplicatesAllowed() ? "yes" : "no");
+		pw.print("set zonelock=");
+		pw.println(ckt.isZonesLocked() ? "yes" : "no");
+		pw.println("set ueweight=" + ckt.getUEWeight());
+		pw.println("set lossweight=" + ckt.getLossWeight());
+		pw.println("set ueregs=" + Util.intArrayToString(ckt.getUERegs(), ckt.getNumUERegs()));
+		pw.println("set lossregs=" + Util.intArrayToString(ckt.getLossRegs(), ckt.getNumLossRegs()));
+		pw.print("set voltageBases=(");  //  changes the default voltage base rules
+		i = 0;
+		while (ckt.getLegalVoltageBases()[i] > 0.0) {
+			pw.print(ckt.getLegalVoltageBases()[i]);
+			i++;
+		}
+		pw.println(")");
+		switch (algorithm) {
+		case NORMAL:
+			pw.println("set algorithm=normal");
+			break;
+		default:
+			pw.println("set algorithm=newton");
+			break;
+		}
+		pw.print("set trapezoidal=");
+		pw.println(ckt.isTrapezoidalIntegration() ? "yes" : "no");
+		pw.println("set genmult=" + String.format("%-g", ckt.getGenMultiplier()));
+
+		pw.println("set basefrequency=" + String.format("%-g", ckt.getFundamental()));
+
+		pw.print("set harmonics=(");  // changes the default voltage base rules
+		if (doAllHarmonics) {
+			pw.print("all");
+		} else {
+			for (i = 0; i < harmonicListSize; i++) {
+				pw.printf("%-g, ", harmonicList[i]);
+			}
+		}
+		pw.println(")");
+		pw.println("set maxControlIter=" + maxControlIterations);
+		pw.println();
+
+		if (complete) {
+			Y = ckt.getSolution().getY();
+
+			// get the compressed columns out of KLU
+			YMatrix.factorSparseMatrix(Y);  // no extra work if already done
+			YMatrix.getNNZ(Y, ip);
+			nNZ = ip[0];
+			YMatrix.getSize(Y, ip);
+			nBus = ip[0];
+			ColPtr = new int[nBus + 1];
+			RowIdx = new int[nNZ];
+			cVals = new Complex[nNZ];
+			YMatrix.getCompressedMatrix(Y, nBus + 1, nNZ, ColPtr, RowIdx, cVals);
+
+			pw.println("System Y matrix (lower triangle by columns)");
+			pw.println();
+			pw.println("  row  col               G               B");
+			pw.println();
+
+			// traverse the compressed column format
+			for (j = 0; j < nBus; j++) {
+				for (p = ColPtr[j]; p < ColPtr[j + 1]; p++) {
+					i = RowIdx[p];  // the zero-based row
+					pw.printf("[%4d,%4d] = %12.5g + j%12.5g", i, j,
+						cVals[p].getReal(), cVals[p].getImaginary());
+					pw.println();
+				}
+			}
+		}
 	}
 
 	/**
@@ -1060,7 +1191,7 @@ public class SolutionObj extends DSSObject {
 		Util.doResetControls();
 	}
 
-	private void addInAuxCurrents(int solveType) {
+	private void addInAuxCurrents(Algorithm solveType) {
 		Circuit ckt = DSS.activeCircuit;
 
 		//for (int i = 0; i < ckt.getNumNodes(); i++)

@@ -559,7 +559,7 @@ public class AutoAdd {
 	 * Compute injection currents for generator or capacitor and add into
 	 * system currents array.
 	 */
-	public void addCurrents(int solveType) {
+	public void addCurrents(Algorithm solveType) {
 		Complex busV, current;
 		int nodeRef;
 
@@ -576,11 +576,11 @@ public class AutoAdd {
 					if ((busV.getReal() != 0.0) || (busV.getImaginary() != 0.0)) {
 						/* Current into the system network */
 						switch (solveType) {
-						case Solution.NEWTONSOLVE:
+						case NEWTON:
 							current = genVA.divide(busV).conjugate().negate();  // terminal current
 							sol.setCurrent(nodeRef, sol.getCurrent(nodeRef).add(current));
 							break;
-						case Solution.NORMALSOLVE:
+						case NORMAL:
 							current = genVA.divide(busV).conjugate();  // injection current
 							sol.setCurrent(nodeRef, sol.getCurrent(nodeRef).add(current));
 							break;
@@ -598,11 +598,11 @@ public class AutoAdd {
 					if (busV.getReal() != 0.0 || busV.getImaginary() != 0.0) {
 						/* Current into the system network */
 						switch (solveType) {
-						case Solution.NEWTONSOLVE:
+						case NEWTON:
 							current = new Complex(0.0, Ycap).multiply(busV);  // terminal current
 							sol.setCurrent(nodeRef, sol.getCurrent(nodeRef).add(current));
 							break;
-						case Solution.NORMALSOLVE:
+						case NORMAL:
 							current = new Complex(0.0, -Ycap).multiply(busV);  // injection current
 							sol.setCurrent(nodeRef, sol.getCurrent(nodeRef).add(current));
 							break;

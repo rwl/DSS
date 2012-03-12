@@ -927,10 +927,10 @@ public class ExecOptions {
 					break;
 				case 39:
 					switch (DSS.activeCircuit.getSolution().getAlgorithm()) {
-					case Solution.NORMALSOLVE:
+					case NORMAL:
 						DSS.appendGlobalResult("normal");
 						break;
-					case Solution.NEWTONSOLVE:
+					case NEWTON:
 						DSS.appendGlobalResult("newton");
 						break;
 					}

@@ -7,9 +7,6 @@ import com.ncond.dss.shared.CommandList;
  */
 public class Solution extends DSSClass {
 
-	public static final int NORMALSOLVE = 0;
-	public static final int NEWTONSOLVE = 1;
-
 	public static SolutionObj activeSolutionObj;
 
 	public static final int NumPropsThisClass = 1;
