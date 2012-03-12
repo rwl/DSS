@@ -8,6 +8,7 @@ import java.io.DataInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -490,16 +491,14 @@ public class Util {
 	 * Set all elements of a double array.
 	 */
 	public static void initDblArray(int numValues, double[] xArray, double value) {
-		for (int i = 0; i < numValues; i++)
-			xArray[i] = value;
+		for (int i = 0; i < numValues; i++) xArray[i] = value;
 	}
 
 	/**
 	 * Set all elements of a integer array.
 	 */
 	public static void initIntArray(int numValues, int[] xArray, int value) {
-		for (int i = 0; i < numValues; i++)
-			xArray[i] = value;
+		for (int i = 0; i < numValues; i++) xArray[i] = value;
 	}
 
 	/**
@@ -508,104 +507,90 @@ public class Util {
 	 * calling routine. File is assumed to have one value per line.
 	 */
 	public static int interpretDblArray(String s, int maxValues, double[] resultArray) {
-		FileInputStream fis = null;
-		BufferedInputStream bis = null;
-		DataInputStream dis = null;
 		String csvFileName;
 		int csvColumn;
 		boolean csvHeader;
 		String inputLine;
 		int iskip;
+		FileReader fr;
+		BufferedReader br;
 
-		DSS.auxParser.setCmdString(s);
-		String parmName = DSS.auxParser.getNextParam();
-		String param = DSS.auxParser.makeString();
+		Parser parser = DSS.auxParser;
+
+		parser.setCmdString(s);
+		String parmName = parser.getNextParam();
+		String param = parser.makeString();
 		int result = maxValues;  // default return value
 
 		/* Syntax can be either a list of numeric values or a file specification: File= ... */
 
 		if (parmName.equalsIgnoreCase("file")) {
-			/* Default values */
-			if (param.equals("%%result%%")) {
-				csvFileName = DSS.lastResultFile;
-			} else {
-				csvFileName = param;
-			}
+			csvFileName = param.equals("%%result%%") ? DSS.lastResultFile : param;
 
 			if (!new File(csvFileName).exists()) {
 				DSS.doSimpleMsg(String.format("CSV file \"%s\" does not exist", csvFileName), 70401);
 				return result;
 			}
 
-			// default options
 			csvColumn = 0;
 			csvHeader = false;
 
 			// look for other options  (may be in either order)
-			parmName = DSS.auxParser.getNextParam();
-			param = DSS.auxParser.makeString();
+			parmName = parser.getNextParam();
+			param = parser.makeString();
 			while (param.length() > 0) {
 				if (Util.compareTextShortest(parmName, "column") == 0)
-					csvColumn = DSS.auxParser.makeInteger();
+					csvColumn = parser.makeInteger();
 				if (Util.compareTextShortest(parmName, "header") == 0)
 					csvHeader = Util.interpretYesNo(param);
-				parmName = DSS.auxParser.getNextParam();
-				param = DSS.auxParser.makeString();
+				parmName = parser.getNextParam();
+				param = parser.makeString();
 			}
 
 			// load the list from a file
 			try {
-				// FIXME Use BufferedReader not BufferedInputStream
-				fis = new FileInputStream(csvFileName);
-				bis = new BufferedInputStream(fis);
-				dis = new DataInputStream(bis);
+				fr = new FileReader(csvFileName);
+				br = new BufferedReader(fr);
 
-				if (csvHeader) dis.readLine();  // skip the header row
+				if (csvHeader) br.readLine();  // skip the header row
 
 				for (int i = 0; i < maxValues; i++) {
 					try {
-						if (dis.available() != 0) {
-							inputLine = dis.readLine();
-							DSS.auxParser.setCmdString(inputLine);
+						if ((inputLine = br.readLine()) != null) {
+							parser.setCmdString(inputLine);
 							for (iskip = 0; iskip < csvColumn; iskip++) {
-								parmName = DSS.auxParser.getNextParam();
-								resultArray[i] = DSS.auxParser.makeDouble();
+								parmName = parser.getNextParam();
+								resultArray[i] = parser.makeDouble();
 							}
 						} else {
-							result = i - 1;  // this will be different if less found;  TODO Check zero based indexing
+							result = i;  // this will be different if less found
 							break;
 						}
 					} catch (Exception e) {
-						DSS.doSimpleMsg(String.format("Error reading %d-th numeric array value from file: \"%s\" Error is:", i, param, e.getMessage()), 705);
-						result = i - 1;
+						DSS.doSimpleMsg(String.format("Error reading %d-th numeric array value from file: \"%s\" Error is:",
+								i, param, e.getMessage()), 705);
+						result = i;
 						break;
 					}
 				}
-				fis.close();
-				bis.close();
-				dis.close();
+				fr.close();
+				br.close();
 			} catch (FileNotFoundException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				DSS.doSimpleMsg("Error encountered reading numeric array: " + e.getMessage(), -1);
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				DSS.doSimpleMsg("Error encountered reading numeric array: " + e.getMessage(), -1);
 			}
 		} else if ((parmName.length() > 0) && (compareTextShortest(parmName, "dblfile") == 0)) {
 			// load the list from a file of doubles (no checking done on type of data)
 			throw new UnsupportedOperationException();
-			// TODO Implement this section
 		} else if ((parmName.length() > 0) && (compareTextShortest(parmName, "sngfile") == 0)) {
 			// load the list from a file of singles (no checking done on type of data)
 			throw new UnsupportedOperationException();
-			// TODO Implement this section
 		} else {
 			// parse list of values off input string
-
-			// parse Values of array list
 			for (int i = 0; i < maxValues; i++) {
-				resultArray[i] = DSS.auxParser.makeDouble();  // fills array with zeros if we run out of numbers
-				DSS.auxParser.getNextParam();
+				resultArray[i] = parser.makeDouble();  // fills array with zeros if we run out of numbers
+				parser.getNextParam();
 			}
 		}
 		return result;
@@ -617,13 +602,15 @@ public class Util {
 	 * calling routine. File is assumed to have one value per line.
 	 */
 	public static int interpretIntArray(String s, int maxValues, int[] resultArray) {
-		FileInputStream fis = null;
-		BufferedInputStream bis = null;
-		DataInputStream dis = null;
+		FileReader fr;
+		BufferedReader br;
+		String parmName, param, inputLine;
 
-		DSS.auxParser.setCmdString(s);
-		String parmName = DSS.auxParser.getNextParam();
-		String param = DSS.auxParser.makeString();
+		Parser parser = DSS.auxParser;
+
+		parser.setCmdString(s);
+		parmName = parser.getNextParam();
+		param = parser.makeString();
 		int result = maxValues;  // default return value
 
 		/* Syntax can be either a list of numeric values or a file specification: File= ... */
@@ -631,42 +618,36 @@ public class Util {
 		if (parmName.equalsIgnoreCase("file")) {
 			// load the list from a file
 			try {
-				// FIXME Use BufferedReader not BufferedInputStream
-				fis = new FileInputStream(param);
-				bis = new BufferedInputStream(fis);
-				dis = new DataInputStream(bis);
+				fr = new FileReader(param);
+				br = new BufferedReader(fr);
 
 				for (int i = 0; i < maxValues; i++) {
 					try {
-						if (dis.available() != 0) {
-							resultArray[i] = dis.readInt();
+						if ((inputLine = br.readLine()) != null) {
+							resultArray[i] = Integer.parseInt(inputLine);
 						} else {
-							result = i - 1;  // this will be different if less found;  TODO Check zero based indexing
+							result = i;  // this will be different if less found
 							break;
 						}
 					} catch (Exception e) {
-						DSS.doSimpleMsg(String.format("Error trying to read numeric array values from file: \""+param +"\"  Error is: "+e.getMessage()), 706);
-						result = i - 1;
+						DSS.doSimpleMsg(String.format("Error trying to read numeric array values from file: \"" +
+								param + "\"  Error is: " + e.getMessage()), 706);
+						result = i;
 						break;
 					}
 				}
-				fis.close();
-				bis.close();
-				dis.close();
+				fr.close();
+				br.close();
 			} catch (FileNotFoundException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				DSS.doSimpleMsg("Error encountered reading numeric array: " + e.getMessage(), -1);
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				DSS.doSimpleMsg("Error encountered reading numeric array: " + e.getMessage(), -1);
 			}
 
 		} else {  // parse list of values off input string
-
-			// parse values of array list
 			for (int i = 0; i < maxValues; i++) {
-				resultArray[i] = DSS.auxParser.makeInteger();  // fills array with zeros if we run out of numbers
-				DSS.auxParser.getNextParam();
+				resultArray[i] = parser.makeInteger();  // fills array with zeros if we run out of numbers
+				parser.getNextParam();
 			}
 		}
 		return result;
@@ -678,7 +659,8 @@ public class Util {
 	public static double interpretTimeStepSize(String s) {
 		char ch;
 		String s2;
-		double result;
+		double stepsize;
+		SolutionObj sol = DSS.activeCircuit.getSolution();
 
 		/* Try to convert and see if we get an error */
 		try {
@@ -686,32 +668,32 @@ public class Util {
 		} catch (NumberFormatException e) {
 			/* Error occurred so must have a units specifier */
 			ch = s.charAt(s.length() - 1);  // get last character
-			s2 = s.substring(0, s.length() - 2);
+			s2 = s.substring(0, s.length() - 1);
 			try {
-				result = Double.valueOf(s2);
+				stepsize = Double.parseDouble(s2);
 				switch (ch) {
 				case 'h':
-					result = result * 3600.0;
+					stepsize = stepsize * 3600.0;
 					break;
 				case 'm':
-					result = result * 60.0;
+					stepsize = stepsize * 60.0;
 					break;
 				case 's':
-					// do nothing
-					break;
+					break;  // do nothing
 				default:
-					result = DSS.activeCircuit.getSolution().getDynaVars().h;  // don't change it
-					DSS.doSimpleMsg("Error in specification of stepSize: \"" + s +"\" Units can only be h, m, or s (single char only) ", 99934);
+					stepsize = sol.getDynaVars().h;  // don't change it
+					DSS.doSimpleMsg("Error in specification of stepSize: \"" +
+						s +"\" units can only be h, m, or s (single char only) ", 99934);
 					break;
 				}
 			} catch (NumberFormatException ee) {
-				result = DSS.activeCircuit.getSolution().getDynaVars().h; // don't change it
+				stepsize = sol.getDynaVars().h;  // don't change it
 				DSS.doSimpleMsg("Error in specification of stepSize: " + s, 99933);
-				return result;
+				return stepsize;
 			}
 		}
 
-		return result;
+		return stepsize;
 	}
 
 	/**
@@ -720,28 +702,27 @@ public class Util {
 	 * have one value per line.
 	 */
 	public static void interpretAndAllocStrArray(String s, int size, String[] resultArray) {
+		FileReader fr;
+		BufferedReader br;
+		String parmName, param;
+		Parser parser = DSS.auxParser;
 
-		// throw away any previous allocation
-		resultArray = new String[0];
-
-		// now reallocate
 		int maxSize = 100;  // initialize
 		size = 0;
-		resultArray = new String[maxSize];
+		resultArray = new String[maxSize];  // throw away any previous allocation
 
-		DSS.auxParser.setCmdString(s);
-		String parmName = DSS.auxParser.getNextParam();
-		String param = DSS.auxParser.makeString();
+		parser.setCmdString(s);
+		parmName = parser.getNextParam();
+		param = parser.makeString();
 
 		/* Syntax can be either a list of string values or a file specification:  File= ... */
 		if (parmName.equalsIgnoreCase("file")) {
 			// load the list from a file
 			try {
-				FileInputStream fileStream = new FileInputStream(param);
-				DataInputStream dataStream = new DataInputStream(fileStream);
-				BufferedReader reader = new BufferedReader(new InputStreamReader(dataStream));
+				fr = new FileReader(param);
+				br = new BufferedReader(fr);
 
-				while ((param = reader.readLine()) != null) {
+				while ((param = br.readLine()) != null) {
 					if (param != "") {  // ignore blank lines in file
 						size += 1;
 						if (size > maxSize) {
@@ -751,16 +732,14 @@ public class Util {
 						resultArray[size] = param;
 					}
 				}
-				fileStream.close();
-				dataStream.close();
-				reader.close();
+				fr.close();
+				br.close();
 			} catch (Exception e) {
-				DSS.doSimpleMsg("Error trying to read numeric array values from a file. Error is: "+e.getMessage(), 707);
+				DSS.doSimpleMsg("Error trying to read numeric array values from a file: " +
+						e.getMessage(), 707);
 			}
 
 		} else {  // parse list of values off input string
-
-			// parse values of array list
 			while (param != "") {
 				size += 1;
 				if (size > maxSize) {
@@ -768,8 +747,8 @@ public class Util {
 					resultArray = resizeArray(resultArray, maxSize);
 				}
 				resultArray[size] = param;
-				parmName = DSS.auxParser.getNextParam();
-				param = DSS.auxParser.makeString();
+				parmName = parser.getNextParam();
+				param = parser.makeString();
 			}
 		}
 
@@ -783,44 +762,44 @@ public class Util {
 	 * have one value per line.
 	 */
 	public static void interpretStringListArray(String s, List<String> resultList) {
-		String nextParam;
+		FileReader fr;
+		BufferedReader br;
+		String param, paramName, nextParam;
+		Parser parser = DSS.auxParser;
 
 		// throw away any previous allocation
 		resultList.clear();
 
-		DSS.auxParser.setCmdString(s);
-		String parmName = DSS.auxParser.getNextParam();
-		String param = DSS.auxParser.makeString();
+		parser.setCmdString(s);
+		paramName = parser.getNextParam();
+		param = parser.makeString();
 
 		/* Syntax can be either a list of string values or a file specification:  File= ... */
 
-		if (parmName.equalsIgnoreCase("file")) {
+		if (paramName.equalsIgnoreCase("file")) {
 			// load the list from a file
 			try {
-				FileInputStream fileStream = new FileInputStream(param);
-				DataInputStream dataStream = new DataInputStream(fileStream);
-				BufferedReader reader = new BufferedReader(new InputStreamReader(dataStream));
+				fr = new FileReader(param);
+				br = new BufferedReader(fr);
 
-				while ((param = reader.readLine()) != null) {
-					DSS.auxParser.setCmdString(param);
-					parmName = DSS.auxParser.getNextParam();
-					nextParam = DSS.auxParser.makeString();
-					if (nextParam.length() > 0)  // Ignore Blank Lines in File
+				while ((param = br.readLine()) != null) {
+					parser.setCmdString(param);
+					paramName = parser.getNextParam();
+					nextParam = parser.makeString();
+					if (nextParam.length() > 0)  // ignore blank lines in file
 						resultList.add(nextParam);
 				}
-				fileStream.close();
-				dataStream.close();
-				reader.close();
+				fr.close();
+				br.close();
 			} catch (Exception e) {
-				DSS.doSimpleMsg("Error trying to read numeric array values from a file. Error is: "+e.getMessage(), 708);
+				DSS.doSimpleMsg("Error trying to read numeric array values from a file: " +
+						e.getMessage(), 708);
 			}
 		} else {  // parse list of values off input string
-
-			// parse values of array list
 			while (param != "") {
 				resultList.add(param);
-				parmName = DSS.auxParser.getNextParam();
-				param = DSS.auxParser.makeString();
+				paramName = parser.getNextParam();
+				param = parser.makeString();
 			}
 		}
 	}
@@ -863,25 +842,25 @@ public class Util {
 		case LOADDURATION2:
 			return "LD2";
 		case PEAKDAY:
-			return "Peakday";
+			return "PeakDay";
 		case DUTYCYCLE:
-			return "DUtycycle";
+			return "DutyCycle";
 		case DIRECT:
-			return "DIrect";
+			return "Direct";
 		case DYNAMICMODE:
-			return "DYnamic";
+			return "Dynamic";
 		case MONTEFAULT:
 			return "MF";
 		case FAULTSTUDY:
-			return "Faultstudy";
+			return "FaultStudy";
 		case AUTOADDFLAG:
-			return "Autoadd";
+			return "AutoAdd";
 		case HARMONICMODE:
 			return "Harmonic";
 		case GENERALTIME:
 			return "Time";
 		default:
-			return "UNKNOWN";
+			return "Unknown";
 		}
 	}
 
@@ -890,7 +869,7 @@ public class Util {
 		if (ckt != null) {
 			return getSolutionModeIDName(ckt.getSolution().getMode());
 		} else {
-			return "UNKNOWN";
+			return "Unknown";
 		}
 	}
 
@@ -899,18 +878,18 @@ public class Util {
 		if (ckt != null) {
 			switch (ckt.getSolution().getControlMode()) {
 			case CTRLSTATIC:
-				return "STATIC";
+				return "Static";
 			case EVENTDRIVEN:
-				return "EVENT";
+				return "Event";
 			case TIMEDRIVEN:
-				return "TIME";
+				return "Time";
 			case CONTROLSOFF:
-				return "OFF";
+				return "Off";
 			default:
-				return "UNKNOWN";
+				return "Unknown";
 			}
 		} else {
-			return "UNKNOWN";
+			return "Unknown";
 		}
 	}
 
@@ -947,25 +926,25 @@ public class Util {
 
 	public static int[] parseIntArray(int[] iarray, int[] count, String s) {
 		String param = " ";
+		Parser parser = DSS.auxParser;
 
-		// parse the line once to get the count of tokens on string, S
-		DSS.auxParser.setCmdString(s);
+		// parse the line once to get the count of tokens on string
+		parser.setCmdString(s);
 		count[0] = 0;
 		while (param.length() > 0) {
-			DSS.auxParser.getNextParam();
-			param     = DSS.auxParser.makeString();
-			if (param.length() > 0)
-				count[0]++;
+			parser.getNextParam();
+			param = parser.makeString();
+			if (param.length() > 0) count[0]++;
 		}
 
 		// reallocate iarray to new size
 		iarray = resizeArray(iarray, count[0]);
 
-		// Parse again for real
-		DSS.auxParser.setCmdString(s);
+		// parse again for real
+		parser.setCmdString(s);
 		for (int i = 0; i < count[0]; i++) {
-			DSS.auxParser.getNextParam();
-			iarray[i] = DSS.auxParser.makeInteger();
+			parser.getNextParam();
+			iarray[i] = parser.makeInteger();
 		}
 
 		return iarray;
@@ -999,26 +978,22 @@ public class Util {
 	}
 
 	public static boolean isStubLine(CktElement elem) {
-		double ZTest;
+		double Ztest;
 		LineObj lineElement = (LineObj) elem;
 
 		/* Get positive sequence or equivalent from matrix */
 		if (lineElement.isSymComponentsModel()) {
-			ZTest = new Complex(lineElement.getR1(), lineElement.getX1()).abs() * lineElement.getLen();
+			Ztest = new Complex(lineElement.getR1(), lineElement.getX1()).abs() * lineElement.getLen();
 		} else {
 			/* Get impedance from Z matrix */   /* Zs - Zm */
 			if (lineElement.getNumPhases() > 1) {
-				ZTest = lineElement.getZ().get(0, 0).subtract(lineElement.getZ().get(0, 1)).abs() * lineElement.getLen();
+				Ztest = lineElement.getZ().get(0, 0).subtract(lineElement.getZ().get(0, 1)).abs() * lineElement.getLen();
 			} else {
-				ZTest = lineElement.getZ().get(0, 0).abs() * lineElement.getLen();
+				Ztest = lineElement.getZ().get(0, 0).abs() * lineElement.getLen();
 			}
 		}
 
-		if (ZTest <= DSS.activeCircuit.getReductionZmag()) {
-			return true;
-		} else {
-			return false;
-		}
+		 return Ztest <= DSS.activeCircuit.getReductionZmag();
 	}
 
 	/**
@@ -1026,12 +1001,11 @@ public class Util {
 	 * active circuit.  Use full name if given, else assume last class referenced.
 	 */
 	public static int getCktElementIndex(String fullObjName) {
-
 		int devClassIndex, devIndex;
+		Circuit ckt = DSS.activeCircuit;
 		String[] devClassName = new String[1];
 		String[] devName = new String[1];
 
-		int result = -1;  // default return value
 		parseObjectClassandName(fullObjName, devClassName, devName);
 		devClassIndex = DSS.classNames.find(devClassName[0]);
 		if (devClassIndex == -1)
@@ -1039,24 +1013,19 @@ public class Util {
 
 		// since there could be devices of the same name of different classes,
 		// loop until we find one of the correct class
-		Circuit ckt = DSS.activeCircuit;
 		devIndex = ckt.getDeviceList().find(devName[0]);
-		while (devIndex > -1) {
+		while (devIndex >= 0) {
 			if (ckt.getDeviceRef()[devIndex].cktElementClass == devClassIndex)
 				return devIndex;  // found a match
 			devIndex = ckt.getDeviceList().findNext();
 		}
-
-		return result;
+		return -1;
 	}
 
 	public static String strReal(double value, int numDecimals) {
 		try {
-			StringWriter sw = new StringWriter();
-			PrintWriter pw = new PrintWriter(sw);
 			String fmt = String.format("%%.%df", numDecimals);
-			pw.printf(fmt, value);
-			return sw.toString();
+			return String.format(fmt, value);
 		} catch (Exception e) {
 			return "*****";
 		}
