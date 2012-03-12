@@ -1,4 +1,4 @@
-package com.ncond.dss.common;
+package com.ncond.dss.common.exceptions;
 
 public class SolverProblem extends Exception {
 

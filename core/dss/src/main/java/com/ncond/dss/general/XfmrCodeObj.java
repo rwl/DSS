@@ -152,10 +152,10 @@ public class XfmrCodeObj extends DSSObject {
 				pw.println("~ " + "Wdg=" + i);
 			}
 			switch (wdg.getConnection()) {
-			case 0:
+			case WYE:
 				pw.println("~ conn=wye");
 				break;
-			case 1:
+			case DELTA:
 				pw.println("~ conn=delta");
 				break;
 			}
@@ -230,10 +230,10 @@ public class XfmrCodeObj extends DSSObject {
 			break;
 		case 3:
 			switch (winding[activeWinding].getConnection()) {
-			case 0:
+			case WYE:
 				result = "wye ";
 				break;
-			case 1:
+			case DELTA:
 				result = "delta ";
 				break;
 			}
@@ -259,10 +259,10 @@ public class XfmrCodeObj extends DSSObject {
 		case 10:
 			for (int i = 0; i < numWindings; i++)
 				switch (winding[i].getConnection()) {
-				case 0:
+				case WYE:
 					result = result + "wye, ";
 					break;
-				case 1:
+				case DELTA:
 					result = result + "delta, ";
 					break;
 				}

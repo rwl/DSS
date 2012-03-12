@@ -12,6 +12,9 @@ import lombok.Setter;
 import org.apache.commons.math.complex.Complex;
 
 import com.ncond.dss.common.Bus.NodeBus;
+import com.ncond.dss.common.types.ReductionStrategy;
+import com.ncond.dss.common.types.SequentialTime;
+import com.ncond.dss.common.types.SolutionMode;
 import com.ncond.dss.control.CapControlObj;
 import com.ncond.dss.control.ControlElem;
 import com.ncond.dss.control.RegControlObj;
@@ -36,7 +39,6 @@ import com.ncond.dss.meter.MonitorObj;
 import com.ncond.dss.meter.SensorObj;
 import com.ncond.dss.parser.Parser;
 import com.ncond.dss.shared.CktTree;
-import com.ncond.dss.shared.Dynamics;
 import com.ncond.dss.shared.HashList;
 
 @Getter @Setter
@@ -722,7 +724,7 @@ public class Circuit extends NamedObject {
 			return success;
 		}
 
-		solution.setMode(Dynamics.SNAPSHOT);
+		solution.setMode(SolutionMode.SNAPSHOT);
 		setLoadMultiplier(capacityStart);
 		capacityFound = false;
 

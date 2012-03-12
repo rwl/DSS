@@ -16,6 +16,7 @@ import com.ncond.dss.common.DSS;
 import com.ncond.dss.common.DSSClass;
 import com.ncond.dss.common.SolutionObj;
 import com.ncond.dss.common.Util;
+import com.ncond.dss.common.types.Connection;
 import com.ncond.dss.delivery.TransformerObj;
 import com.ncond.dss.shared.ComplexUtil;
 
@@ -406,7 +407,7 @@ public class RegControlObj extends ControlElem {
 		boolean tapChangeIsNeeded;
 		int i, ii;
 		TransformerObj controlledTransformer;
-		int transformerConnection;
+		Connection transformerConnection;
 
 		Circuit ckt = DSS.activeCircuit;
 		controlledTransformer = (TransformerObj) getControlledElement();
@@ -487,10 +488,10 @@ public class RegControlObj extends ControlElem {
 			computeVTerminal();  // computes the voltage at the bus being regulated
 			for (i = 0; i < getNumPhases(); i++) {
 				switch (transformerConnection) {
-				case 0:  // wye
+				case WYE:
 					VBuffer[i] = VTerminal[i];
 					break;
-				case 1:  // delta
+				case DELTA:
 					// get next phase in sequence using transformer obj rotate
 					ii = controlledTransformer.rotatePhases(i);
 					VBuffer[i] = VTerminal[i].subtract( VTerminal[ii] );

@@ -12,6 +12,7 @@ import com.ncond.dss.common.DSS;
 import com.ncond.dss.common.DSSClass;
 import com.ncond.dss.common.SolutionObj;
 import com.ncond.dss.common.Util;
+import com.ncond.dss.common.types.Connection;
 import com.ncond.dss.general.XfmrCodeObj;
 import com.ncond.dss.parser.Parser;
 import com.ncond.dss.shared.CMatrix;
@@ -167,10 +168,10 @@ public class TransformerObj extends PDElement {
 				iHVolt = 2;
 			}
 			switch (winding[iHVolt].getConnection()) {
-			case 0:
+			case WYE:
 				deltaDirection = 1;
 				break;
-			case 1:
+			case DELTA:
 				deltaDirection = -1;
 				break;
 			default:
@@ -213,7 +214,7 @@ public class TransformerObj extends PDElement {
 		for (i = 0; i < numWindings; i++) {
 			w = winding[i];  // get the actual turns voltage base for each winding
 			switch (w.getConnection()) {
-			case 0:
+			case WYE:
 				switch (nPhases) {  // wye
 				case 2:
 					w.setVBase(w.getKVLL() * DSS.InvSQRT3x1000);  // assume 3-phase for 2-phase designation
@@ -226,7 +227,7 @@ public class TransformerObj extends PDElement {
 					break;
 				}
 				break;
-			case 1:
+			case DELTA:
 				w.setVBase(w.getKVLL() * 1000.0);  // delta
 				break;
 			}
@@ -241,10 +242,10 @@ public class TransformerObj extends PDElement {
 		/* Normal and emergency terminal current rating for UE check */
 		VFactor = 1.0;  // ensure initialization
 		switch (winding[0].getConnection()) {
-		case 0:
+		case WYE:
 			VFactor = winding[0].getVBase() * 0.001;  // wye
 			break;
-		case 1:
+		case DELTA:
 			switch (nPhases) {
 			case 1:
 				VFactor = winding[0].getVBase() * 0.001;
@@ -339,13 +340,13 @@ public class TransformerObj extends PDElement {
 			for (i = 0; i < nPhases; i++) {
 				for (j = 0; j < numWindings; j++) {
 					switch (winding[i].getConnection()) {
-					case 0:  // Wye
+					case WYE:
 						termRef[k] = j * nConds + i;
 						k += 1;
 						termRef[k] = j * nConds;
 						break;
 					/* **** WILL THIS WORK for 2-PHASE OPEN DELTA ???? Need to check this sometime */
-					case 1:  // Delta
+					case DELTA:
 						termRef[k] = j * nConds + i;
 						k += 1;
 						termRef[k] = j * nConds + rotatePhases(i);  // connect to next phase in sequence
@@ -419,10 +420,10 @@ public class TransformerObj extends PDElement {
 			}
 
 			switch (W.getConnection()) {
-			case 0:
+			case WYE:
 				pw.println("~ conn=wye");
 				break;
-			case 1:
+			case DELTA:
 				pw.println("~ conn=delta");
 				break;
 			}
@@ -576,11 +577,11 @@ public class TransformerObj extends PDElement {
 		}
 	}
 
-	public int getWdgConnection(int i) {
+	public Connection getWdgConnection(int i) {
 		if (i >= 0 && i < numWindings) {
 			return winding[i].getConnection();
 		} else {
-			return 0;
+			return Connection.WYE;
 		}
 	}
 
@@ -643,10 +644,10 @@ public class TransformerObj extends PDElement {
 			neutTerm = nPhases + k + 1;
 			for (i = 0; i < nPhases; i++) {
 				switch (winding[iWind].getConnection()) {
-				case 0:  // wye
+				case WYE:
 					VBuffer[i] = VTerminal[i + k].subtract( VTerminal[neutTerm] );
 					break;
-				case 1:  // delta
+				case DELTA:
 					ii = rotatePhases(i);  // get next phase in sequence
 					VBuffer[i] = VTerminal[i + k].subtract( VTerminal[ii + k] );
 					break;
@@ -724,10 +725,10 @@ public class TransformerObj extends PDElement {
 			break;
 		case 4:
 			switch (winding[activeWinding].getConnection()) {
-			case 0:
+			case WYE:
 				result = "wye ";
 				break;
-			case 1:
+			case DELTA:
 				result = "delta ";
 				break;
 			}
@@ -758,10 +759,10 @@ public class TransformerObj extends PDElement {
 		case 12:
 			for (i = 0; i < numWindings; i++)
 				switch (winding[i].getConnection()) {
-				case 0:
+				case WYE:
 					result = result + "wye, ";
 					break;
-				case 1:
+				case DELTA:
 					result = result + "delta, ";
 					break;
 				}
@@ -959,7 +960,7 @@ public class TransformerObj extends PDElement {
 
 		for (i = 0; i < numWindings; i++) {
 			w = winding[i];
-			if (nPhases > 1 || w.getConnection() != 0) {
+			if (nPhases > 1 || w.getConnection() != Connection.WYE) {
 				s = s + String.format(" %-.5g", w.getKVLL() / DSS.SQRT3);
 			} else {
 				s = s + String.format(" %-.5g", w.getKVLL());
@@ -989,7 +990,7 @@ public class TransformerObj extends PDElement {
 		/* Account for neutral impedances */
 		for (i = 0; i < numWindings; i++) {
 			w = winding[i];
-			if (w.getConnection() == 0) {
+			if (w.getConnection() == Connection.WYE) {
 				// handle wye, but ignore delta (and open wye)
 				if (w.getRNeut() >= 0) {
 					// <0 is flag for open neutral (Ignore)

@@ -27,8 +27,7 @@ public class Terminal {
 	}
 
 	public void setActiveConductor(int value) {
-		if (value >= 0 & value < numCond)
-			activeConductor = value;
+		if (value >= 0 & value < numCond) activeConductor = value;
 	}
 
 	public Conductor getConductor(int idx) {

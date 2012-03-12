@@ -3,6 +3,7 @@ package com.ncond.dss.delivery;
 import com.ncond.dss.common.DSS;
 import com.ncond.dss.common.DSSClassDefs;
 import com.ncond.dss.common.Util;
+import com.ncond.dss.common.types.Connection;
 import com.ncond.dss.general.XfmrCode;
 import com.ncond.dss.parser.Parser;
 import com.ncond.dss.shared.CommandList;
@@ -416,21 +417,21 @@ public class Transformer extends PDClass {
 
 		switch (s.toLowerCase().charAt(0)) {
 		case 'y':
-			aw.setConnection(0);  /* Wye */
+			aw.setConnection(Connection.WYE);
 			break;
 		case 'w':
-			aw.setConnection(0);  /* Wye */
+			aw.setConnection(Connection.WYE);
 			break;
 		case 'd':
-			aw.setConnection(1);  /* Delta or Line-Line */
+			aw.setConnection(Connection.DELTA);
 			break;
 		case 'l':
 			switch (s.toLowerCase().charAt(1)) {
 			case 'n':
-				aw.setConnection(0);
+				aw.setConnection(Connection.WYE);
 				break;
 			case 'l':
-				aw.setConnection(1);
+				aw.setConnection(Connection.DELTA);
 				break;
 			}
 			break;

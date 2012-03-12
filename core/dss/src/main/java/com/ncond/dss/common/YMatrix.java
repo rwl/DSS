@@ -7,6 +7,8 @@ import net.sourceforge.klusolve.CSparseSolve;
 import org.apache.commons.math.complex.Complex;
 
 import com.ncond.dss.common.Bus.NodeBus;
+import com.ncond.dss.common.exceptions.SolverProblem;
+import com.ncond.dss.common.types.YPrimType;
 
 
 public class YMatrix extends CSparseSolve {

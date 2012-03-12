@@ -11,16 +11,16 @@ import org.apache.commons.math.complex.Complex;
 import com.ncond.dss.common.Circuit;
 import com.ncond.dss.common.DSS;
 import com.ncond.dss.common.DSSClass;
-import com.ncond.dss.common.LoadModel;
-import com.ncond.dss.common.Randomization;
 import com.ncond.dss.common.SolutionObj;
 import com.ncond.dss.common.Util;
+import com.ncond.dss.common.types.LoadModel;
+import com.ncond.dss.common.types.Randomization;
+import com.ncond.dss.common.types.SolutionMode;
 import com.ncond.dss.general.GrowthShapeObj;
 import com.ncond.dss.general.LoadShapeObj;
 import com.ncond.dss.parser.Parser;
 import com.ncond.dss.shared.CMatrix;
 import com.ncond.dss.shared.ComplexUtil;
-import com.ncond.dss.shared.Dynamics;
 import com.ncond.dss.shared.MathUtil;
 
 @Getter @Setter
@@ -323,39 +323,39 @@ public class LoadObj extends PCElement {
 			factor = growthFactor(sol.getYear());  // for fixed loads, consider only growth factor
 		} else {
 			switch (sol.getMode()) {
-			case Dynamics.SNAPSHOT:
+			case SNAPSHOT:
 				if (exemptFromLDCurve) {
 					factor = growthFactor(sol.getYear());
 				} else {
 					factor = ckt.getLoadMultiplier() * growthFactor(sol.getYear());
 				}
 				break;
-			case Dynamics.HARMONICMODE:
+			case HARMONICMODE:
 				if (exemptFromLDCurve) {
 					factor = growthFactor(sol.getYear());
 				} else {
 					factor = ckt.getLoadMultiplier() * growthFactor(sol.getYear());
 				}
 				break;
-			case Dynamics.DAILYMODE:
+			case DAILYMODE:
 				factor = growthFactor(sol.getYear());
 				if (!exemptFromLDCurve)
 					factor = factor * ckt.getLoadMultiplier();
 				calcDailyMult(sol.getDblHour());
 				break;
-			case Dynamics.YEARLYMODE:
+			case YEARLYMODE:
 				factor = ckt.getLoadMultiplier() * growthFactor(sol.getYear());
 				calcYearlyMult(sol.getDblHour());
 				if (loadModel == 4)
 					calcCVRMult(sol.getDblHour());
 				break;
-			case Dynamics.DUTYCYCLE:
+			case DUTYCYCLE:
 				factor = growthFactor(sol.getYear());
 				if (!exemptFromLDCurve)
 					factor = factor * ckt.getLoadMultiplier();
 				calcDutyMult(sol.getDblHour());
 				break;
-			case Dynamics.GENERALTIME:
+			case GENERALTIME:
 				factor = growthFactor(sol.getYear());
 				if (!exemptFromLDCurve)
 					factor = factor * ckt.getLoadMultiplier();
@@ -375,7 +375,7 @@ public class LoadObj extends PCElement {
 					break;
 				}
 				break;
-			case Dynamics.DYNAMICMODE:
+			case DYNAMICMODE:
 				factor = growthFactor(sol.getYear());
 				if (!exemptFromLDCurve)
 					factor = factor * ckt.getLoadMultiplier();
@@ -395,41 +395,41 @@ public class LoadObj extends PCElement {
 					break;
 				}
 				break;
-			case Dynamics.MONTECARLO1:
+			case MONTECARLO1:
 				randomize(sol.getRandomType());
 				factor = randomMult * growthFactor(sol.getYear());
 				if (!exemptFromLDCurve)
 					factor = factor * ckt.getLoadMultiplier();
 				break;
-			case Dynamics.MONTECARLO2:
+			case MONTECARLO2:
 				factor = growthFactor(sol.getYear());
 				calcDailyMult(sol.getDblHour());
 				if (!exemptFromLDCurve)
 					factor = factor * ckt.getLoadMultiplier();
 				break;
-			case Dynamics.MONTECARLO3:
+			case MONTECARLO3:
 				factor = growthFactor(sol.getYear());
 				calcDailyMult(sol.getDblHour());
 				if (!exemptFromLDCurve)
 					factor = factor * ckt.getLoadMultiplier();
 				break;
-			case Dynamics.LOADDURATION1:
+			case LOADDURATION1:
 				factor = growthFactor(sol.getYear());
 				calcDailyMult(sol.getDblHour());
 				if (!exemptFromLDCurve)
 					factor = factor * ckt.getLoadMultiplier();
 				break;
-			case Dynamics.LOADDURATION2:
+			case LOADDURATION2:
 				factor = growthFactor(sol.getYear());
 				calcDailyMult(sol.getDblHour());
 				if (!exemptFromLDCurve)
 					factor = factor * ckt.getLoadMultiplier();
 				break;
-			case Dynamics.PEAKDAY:
+			case PEAKDAY:
 				factor = growthFactor(sol.getYear());
 				calcDailyMult(sol.getDblHour());
 				break;
-			case Dynamics.AUTOADDFLAG:
+			case AUTOADDFLAG:
 				factor = growthFactor(sol.getYear());  // loadMult = 1.0 by default
 				break;
 			default:

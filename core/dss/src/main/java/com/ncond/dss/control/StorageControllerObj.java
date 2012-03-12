@@ -16,10 +16,10 @@ import com.ncond.dss.common.DSS;
 import com.ncond.dss.common.DSSClass;
 import com.ncond.dss.common.SolutionObj;
 import com.ncond.dss.common.Util;
+import com.ncond.dss.common.types.SolutionMode;
 import com.ncond.dss.conversion.Storage;
 import com.ncond.dss.conversion.StorageObj;
 import com.ncond.dss.general.LoadShapeObj;
-import com.ncond.dss.shared.Dynamics;
 
 /**
  * A control element that is connected to a terminal
@@ -845,19 +845,19 @@ public class StorageControllerObj extends ControlElem {
 
 		// get multiplier
 		switch (sol.getMode()) {
-		case Dynamics.DAILYMODE:
+		case DAILYMODE:
 			calcDailyMult(sol.getDblHour());  // daily dispatch curve
 			break;
-		case Dynamics.YEARLYMODE:
+		case YEARLYMODE:
 			calcYearlyMult(sol.getDblHour());
 			break;
-		case Dynamics.LOADDURATION2:
+		case LOADDURATION2:
 			calcDailyMult(sol.getDblHour());
 			break;
-		case Dynamics.PEAKDAY:
+		case PEAKDAY:
 			calcDailyMult(sol.getDblHour());
 			break;
-		case Dynamics.DUTYCYCLE:
+		case DUTYCYCLE:
 			calcDutyMult(sol.getDblHour()) ;
 			break;
 		}

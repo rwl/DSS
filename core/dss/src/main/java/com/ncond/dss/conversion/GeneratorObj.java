@@ -16,15 +16,15 @@ import org.apache.commons.math.complex.ComplexUtils;
 import com.ncond.dss.common.Circuit;
 import com.ncond.dss.common.DSS;
 import com.ncond.dss.common.DSSClass;
-import com.ncond.dss.common.LoadModel;
-import com.ncond.dss.common.Randomization;
 import com.ncond.dss.common.SolutionObj;
 import com.ncond.dss.common.Util;
+import com.ncond.dss.common.types.LoadModel;
+import com.ncond.dss.common.types.Randomization;
+import com.ncond.dss.common.types.SolutionMode;
 import com.ncond.dss.general.LoadShapeObj;
 import com.ncond.dss.parser.Parser;
 import com.ncond.dss.shared.CMatrix;
 import com.ncond.dss.shared.ComplexUtil;
-import com.ncond.dss.shared.Dynamics;
 import com.ncond.dss.shared.GeneratorVars;
 import com.ncond.dss.shared.MathUtil;
 
@@ -364,22 +364,22 @@ public class GeneratorObj extends PCElement {
 				factor = 1.0;  // for fixed generators, set constant
 			} else {
 				switch (sol.getMode()) {
-				case Dynamics.SNAPSHOT:
+				case SNAPSHOT:
 					factor = ckt.getGenMultiplier() * 1.0;
 					break;
-				case Dynamics.DAILYMODE:
+				case DAILYMODE:
 					factor = ckt.getGenMultiplier();
 					calcDailyMult(sol.getDblHour());  // daily dispatch curve
 					break;
-				case Dynamics.YEARLYMODE:
+				case YEARLYMODE:
 					factor = ckt.getGenMultiplier();
 					calcYearlyMult(sol.getDblHour());
 					break;
-				case Dynamics.DUTYCYCLE:
+				case DUTYCYCLE:
 					factor = ckt.getGenMultiplier();
 					calcDutyMult(sol.getDblHour());
 					break;
-				case Dynamics.GENERALTIME:  // general sequential time simulation
+				case GENERALTIME:  // general sequential time simulation
 					factor = ckt.getGenMultiplier();
 					// this mode allows use of one class of load shape
 					switch (ckt.getActiveLoadShapeClass()) {
@@ -397,39 +397,39 @@ public class GeneratorObj extends PCElement {
 						break;
 					}
 					break;
-				case Dynamics.MONTECARLO1:
+				case MONTECARLO1:
 					factor = ckt.getGenMultiplier() * 1.0;
 					break;
-				case Dynamics.MONTEFAULT:
+				case MONTEFAULT:
 					factor = ckt.getGenMultiplier() * 1.0;
 					break;
-				case Dynamics.FAULTSTUDY:
+				case FAULTSTUDY:
 					factor = ckt.getGenMultiplier() * 1.0;
 					break;
-				case Dynamics.DYNAMICMODE:
+				case DYNAMICMODE:
 					factor = ckt.getGenMultiplier() * 1.0;
 					break;
-				case Dynamics.MONTECARLO2:
+				case MONTECARLO2:
 					factor = ckt.getGenMultiplier();
 					calcDailyMult(sol.getDblHour());
 					break;
-				case Dynamics.MONTECARLO3:
+				case MONTECARLO3:
 					factor = ckt.getGenMultiplier();
 					calcDailyMult(sol.getDblHour());
 					break;
-				case Dynamics.LOADDURATION1:
+				case LOADDURATION1:
 					factor = ckt.getGenMultiplier();
 					calcDailyMult(sol.getDblHour());
 					break;
-				case Dynamics.LOADDURATION2:
+				case LOADDURATION2:
 					factor = ckt.getGenMultiplier();
 					calcDailyMult(sol.getDblHour());
 					break;
-				case Dynamics.PEAKDAY:
+				case PEAKDAY:
 					factor = ckt.getGenMultiplier();
 					calcDailyMult(sol.getDblHour());
 					break;
-				case Dynamics.AUTOADDFLAG:
+				case AUTOADDFLAG:
 					factor = 1.0;
 					break;
 				default:

@@ -21,12 +21,13 @@ import com.ncond.dss.common.CktElement;
 import com.ncond.dss.common.DSS;
 import com.ncond.dss.common.DSSClass;
 import com.ncond.dss.common.DSSClassDefs;
-import com.ncond.dss.common.ReductionStrategy;
 import com.ncond.dss.common.Solution;
-import com.ncond.dss.common.SolutionAlgs;
 import com.ncond.dss.common.SolutionObj;
-import com.ncond.dss.common.SolverError;
 import com.ncond.dss.common.Util;
+import com.ncond.dss.common.exceptions.SolverError;
+import com.ncond.dss.common.types.ReductionStrategy;
+import com.ncond.dss.common.types.SolutionAlgs;
+import com.ncond.dss.common.types.SolutionMode;
 import com.ncond.dss.conversion.GeneratorObj;
 import com.ncond.dss.conversion.Load;
 import com.ncond.dss.conversion.LoadObj;
@@ -47,7 +48,6 @@ import com.ncond.dss.plot.DSSGraphDeclarations;
 import com.ncond.dss.plot.DSSPlot;
 import com.ncond.dss.shared.CommandList;
 import com.ncond.dss.shared.ComplexUtil;
-import com.ncond.dss.shared.Dynamics;
 import com.ncond.dss.shared.MathUtil;
 import com.ncond.dss.shared.PstCalc;
 
@@ -1492,8 +1492,8 @@ public class ExecHelper {
 		Circuit ckt = DSS.activeCircuit;
 
 		ckt.setLoadMultiplier(1.0);  // setter has side effects
-		if (ckt.getSolution().getMode() != Dynamics.SNAPSHOT)
-			ckt.getSolution().setMode( Dynamics.SNAPSHOT );  // resets meters, etc. if not in snapshot mode
+		if (ckt.getSolution().getMode() != SolutionMode.SNAPSHOT)
+			ckt.getSolution().setMode( SolutionMode.SNAPSHOT );  // resets meters, etc. if not in snapshot mode
 		ckt.getSolution().solve();  /* Make guess based on present allocationfactors */
 
 		/* Allocation loop -- make maxAllocationIterations iterations */

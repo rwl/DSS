@@ -4,11 +4,12 @@ import lombok.Getter;
 import lombok.Setter;
 
 import com.ncond.dss.common.DSS;
+import com.ncond.dss.common.types.Connection;
 
 @Getter @Setter
 public class Winding {
 
-	private int connection;
+	private Connection connection;
 	private double kVLL,
 		VBase,
 		kVA,
@@ -26,7 +27,7 @@ public class Winding {
 
 	public Winding() {
 		super();
-		connection = 0;
+		connection = Connection.WYE;
 		kVLL       = 12.47;
 		VBase      = kVLL / DSS.SQRT3 * 1000.0;
 		kVA        = 1000.0;

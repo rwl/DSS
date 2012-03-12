@@ -12,13 +12,21 @@ import lombok.Setter;
 import org.apache.commons.math.complex.Complex;
 
 import com.ncond.dss.common.Bus.NodeBus;
+import com.ncond.dss.common.exceptions.ControlProblem;
+import com.ncond.dss.common.exceptions.SolverError;
+import com.ncond.dss.common.exceptions.SolverProblem;
+import com.ncond.dss.common.types.Algorithm;
+import com.ncond.dss.common.types.ControlMode;
+import com.ncond.dss.common.types.LoadModel;
+import com.ncond.dss.common.types.Randomization;
+import com.ncond.dss.common.types.SolutionAlgs;
+import com.ncond.dss.common.types.SolutionMode;
 import com.ncond.dss.control.ControlElem;
 import com.ncond.dss.conversion.GeneratorObj;
 import com.ncond.dss.conversion.PCElement;
 import com.ncond.dss.delivery.FaultObj;
 import com.ncond.dss.general.DSSObject;
 import com.ncond.dss.shared.ComplexUtil;
-import com.ncond.dss.shared.Dynamics;
 import com.ncond.dss.shared.DynamicsRec;
 
 @Getter @Setter
@@ -149,7 +157,7 @@ public class SolutionObj extends DSSObject {
 
 		solutionCount = 0;
 
-		dynaVars.solutionMode = Dynamics.SNAPSHOT;
+		dynaVars.solutionMode = SolutionMode.SNAPSHOT;
 		controlMode = ControlMode.CTRLSTATIC;
 		defaultControlMode = controlMode;
 		algorithm = Algorithm.NORMAL;
@@ -202,55 +210,55 @@ public class SolutionObj extends DSSObject {
 			/* checkFaultStatus();  ???? needed here?? */
 
 			switch (dynaVars.solutionMode) {
-			case Dynamics.SNAPSHOT:
+			case SNAPSHOT:
 				solveSnap();
 				break;
-			case Dynamics.YEARLYMODE:
+			case YEARLYMODE:
 				SolutionAlgs.solveYearly();
 				break;
-			case Dynamics.DAILYMODE:
+			case DAILYMODE:
 				SolutionAlgs.solveDaily();
 				break;
-			case Dynamics.DUTYCYCLE:
+			case DUTYCYCLE:
 				SolutionAlgs.solveDuty();
 				break;
-			case Dynamics.DYNAMICMODE:
+			case DYNAMICMODE:
 				SolutionAlgs.solveDynamic();
 				break;
-			case Dynamics.MONTECARLO1:
+			case MONTECARLO1:
 				SolutionAlgs.solveMonte1();
 				break;
-			case Dynamics.MONTECARLO2:
+			case MONTECARLO2:
 				SolutionAlgs.solveMonte2();
 				break;
-			case Dynamics.MONTECARLO3:
+			case MONTECARLO3:
 				SolutionAlgs.solveMonte3();
 				break;
-			case Dynamics.PEAKDAY:
+			case PEAKDAY:
 				SolutionAlgs.solvePeakDay();
 				break;
-			case Dynamics.LOADDURATION1:
+			case LOADDURATION1:
 				SolutionAlgs.solveLD1();
 				break;
-			case Dynamics.LOADDURATION2:
+			case LOADDURATION2:
 				SolutionAlgs.solveLD2();
 				break;
-			case Dynamics.DIRECT:
+			case DIRECT:
 				solveDirect();
 				break;
-			case Dynamics.MONTEFAULT:
+			case MONTEFAULT:
 				SolutionAlgs.solveMonteFault();  // Monte Carlo fault cases
 				break;
-			case Dynamics.FAULTSTUDY:
+			case FAULTSTUDY:
 				SolutionAlgs.solveFaultStudy();
 				break;
-			case Dynamics.AUTOADDFLAG:
+			case AUTOADDFLAG:
 				ckt.getAutoAddObj().solve();
 				break;
-			case Dynamics.HARMONICMODE:
+			case HARMONICMODE:
 				SolutionAlgs.solveHarmonic();
 				break;
-			case Dynamics.GENERALTIME:
+			case GENERALTIME:
 				SolutionAlgs.solveGeneralTime();
 				break;
 			default:
@@ -343,55 +351,55 @@ public class SolutionObj extends DSSObject {
 		Circuit ckt = DSS.activeCircuit;
 
 		switch (dynaVars.solutionMode) {
-		case Dynamics.SNAPSHOT:
+		case SNAPSHOT:
 			ref = ckt.getLoadMultiplier() * ckt.getDefaultGrowthFactor();
 			break;
-		case Dynamics.YEARLYMODE:
+		case YEARLYMODE:
 			ref = ckt.getDefaultGrowthFactor() * ckt.getDefaultHourMult().getReal();
 			break;
-		case Dynamics.DAILYMODE:
+		case DAILYMODE:
 			ref = ckt.getLoadMultiplier() * ckt.getDefaultGrowthFactor() * ckt.getDefaultHourMult().getReal();
 			break;
-		case Dynamics.DUTYCYCLE:
+		case DUTYCYCLE:
 			ref = ckt.getLoadMultiplier() * ckt.getDefaultGrowthFactor() * ckt.getDefaultHourMult().getReal();
 			break;
-		case Dynamics.GENERALTIME:
+		case GENERALTIME:
 			ref = ckt.getLoadMultiplier() * ckt.getDefaultGrowthFactor() * ckt.getDefaultHourMult().getReal();
 			break;
-		case Dynamics.DYNAMICMODE:
+		case DYNAMICMODE:
 			ref = ckt.getLoadMultiplier() * ckt.getDefaultGrowthFactor();
 			break;
-		case Dynamics.HARMONICMODE:
+		case HARMONICMODE:
 			ref = ckt.getLoadMultiplier() * ckt.getDefaultGrowthFactor();
 			break;
-		case Dynamics.MONTECARLO1:
+		case MONTECARLO1:
 			ref = ckt.getLoadMultiplier() * ckt.getDefaultGrowthFactor();
 			break;
-		case Dynamics.MONTECARLO2:
+		case MONTECARLO2:
 			ref = ckt.getLoadMultiplier() * ckt.getDefaultGrowthFactor() * ckt.getDefaultHourMult().getReal();
 			break;
-		case Dynamics.MONTECARLO3:
+		case MONTECARLO3:
 			ref = ckt.getLoadMultiplier() * ckt.getDefaultGrowthFactor() * ckt.getDefaultHourMult().getReal();
 			break;
-		case Dynamics.PEAKDAY:
+		case PEAKDAY:
 			ref = ckt.getLoadMultiplier() * ckt.getDefaultGrowthFactor() * ckt.getDefaultHourMult().getReal();
 			break;
-		case Dynamics.LOADDURATION1:
+		case LOADDURATION1:
 			ref = ckt.getLoadMultiplier() * ckt.getDefaultGrowthFactor() * ckt.getDefaultHourMult().getReal();
 			break;
-		case Dynamics.LOADDURATION2:
+		case LOADDURATION2:
 			ref = ckt.getLoadMultiplier() * ckt.getDefaultGrowthFactor() * ckt.getDefaultHourMult().getReal();
 			break;
-		case Dynamics.DIRECT:
+		case DIRECT:
 			ref = ckt.getLoadMultiplier() * ckt.getDefaultGrowthFactor();
 			break;
-		case Dynamics.MONTEFAULT:
+		case MONTEFAULT:
 			ref = 1.0;  // Monte Carlo fault cases solve at peak load only base case
 			break;
-		case Dynamics.FAULTSTUDY:
+		case FAULTSTUDY:
 			ref = 1.0;
 			break;
-		case Dynamics.AUTOADDFLAG:
+		case AUTOADDFLAG:
 			ref = ckt.getDefaultGrowthFactor();  // peak load only
 			break;
 		default:
@@ -975,15 +983,22 @@ public class SolutionObj extends DSSObject {
 
 	/**
 	 * Difference between two node voltages.
+	 *
+	 * @param iref one based node ref
+	 * @param jref one based node ref
+	 * @return
 	 */
-	public Complex vDiff(int i, int j) {
-		return nodeV[i].subtract(nodeV[j]);  // V1-V2;
+	public Complex vDiff(int iref, int jref) {
+		return nodeV[iref - 1].subtract(nodeV[jref - 1]);  // V1-V2;
 	}
 
 	public void writeConvergenceReport(String fileName) {
+		int i;
 		NodeBus nb;
 		FileWriter fw;
 		PrintWriter f;
+
+		Circuit ckt = DSS.activeCircuit;
 
 		try {
 			fw = new FileWriter(fileName);
@@ -993,40 +1008,36 @@ public class SolutionObj extends DSSObject {
 			f.println("-------------------");
 			f.println("Convergence Report:");
 			f.println("-------------------");
-			f.println("\"Bus.Node\", \"Error\", \"|V|\",\"Vbase\"");
+			f.println("\"Bus.node\", \"Error\", \"|V|\",\"Vbase\"");
 
-			Circuit ckt = DSS.activeCircuit;
-
-			for (int i = 0; i < ckt.getNumNodes(); i++) {
-				nb = ckt.getMapNodeToBus(i);
-				f.print("\"" + Util.pad((ckt.getBusList().get(nb.busRef)+"."+String.valueOf(nb.nodeNum)+"\""), 18) );
+			for (i = 0; i < ckt.getNumNodes(); i++) {
+				nb = ckt.getMapNodeToBus(i + 1);
+				f.print("\"" + Util.pad((ckt.getBusList().get(nb.busRef - 1) + "." + nb.nodeNum + "\""), 18));
 				f.printf(", %10.5s", errorSaved[i]);
 				f.printf(", %14s", VMagSaved[i]);
-				f.printf(", %14s", nodeVBase[i]);  // TODO Check text padding
+				f.printf(", %14s", nodeVBase[i]);
 				f.println();
 			}
 
 			f.println();
-			f.printf("Max Error = %10.5s", maxError);
+			f.printf("Max error = %10.5s", maxError);
 			f.close();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			DSS.doSimpleMsg("Error encountered writing convergence report: " + e.getMessage(), -1);
 		} finally {
 			Util.fireOffEditor(fileName);
 		}
 	}
 
 	private void sumAllCurrents() {
-		Circuit ckt = DSS.activeCircuit;
-		for (CktElement pElem : ckt.getCktElements())
-			pElem.sumCurrents();  // sum terminal currents into system currents array
+		for (CktElement elem : DSS.activeCircuit.getCktElements())
+			elem.sumCurrents();  // sum terminal currents into system currents array
 	}
 
 	public void doControlActions() {
 		boolean succ;
-		int[] mHour, xHour = new int[1];
-		double[] mSec, xSec = new double[1];
+		int[] xHour = new int[1];
+		double[] xSec = new double[1];
 
 		Circuit ckt = DSS.activeCircuit;
 
@@ -1040,13 +1051,10 @@ public class SolutionObj extends DSSObject {
 			}
 			break;
 		case EVENTDRIVEN:
-			mHour = new int[1];
-			mSec = new double[1];
-			succ = ckt.getControlQueue().doNearestActions(mHour, mSec);  // advances time
-			intHour = mHour[1];
-			dynaVars.t = mSec[0];
-			if (!succ)
-				controlActionsDone = true;
+			succ = ckt.getControlQueue().doNearestActions(xHour, xSec);  // advances time
+			intHour = xHour[0];
+			dynaVars.t = xSec[0];
+			controlActionsDone = !succ;
 			break;
 		case TIMEDRIVEN:
 			if (!ckt.getControlQueue().doActions(intHour, dynaVars.t))
@@ -1056,17 +1064,17 @@ public class SolutionObj extends DSSObject {
 	}
 
 	public void sampleControlDevices() throws ControlProblem {
-		ControlElem controlDevice = null;
+		ControlElem controlDevice;
 		Circuit ckt = DSS.activeCircuit;
+
 		try {
 			// sample all controls and set action times in control queue.
 			for (int i = 0; i < ckt.getControls().size(); i++) {
 				controlDevice = ckt.getControls().get(i);
-				if (controlDevice.isEnabled())
-					controlDevice.sample();
+				if (controlDevice.isEnabled()) controlDevice.sample();
 			}
 		} catch (Exception e) {
-			DSS.doSimpleMsg("Error sampling control device \""+controlDevice.getName()+"\""+DSS.CRLF+"Error = "+e.getMessage(), 484);
+			DSS.doSimpleMsg("Error encountered sampling control device: " + e.getMessage(), 484);
 			throw new ControlProblem("Solution aborted.");
 		}
 	}
@@ -1088,101 +1096,99 @@ public class SolutionObj extends DSSObject {
 		}
 	}
 
-	public void setMode(int value) {
+	public void setMode(SolutionMode value) {
 		Circuit ckt = DSS.activeCircuit;
 
-		intHour    = 0;
+		intHour = 0;
 		dynaVars.t = 0.0;
 		updateDblHour();
 
 		ckt.setTrapezoidalIntegration(false);
 
-		if (!okForDynamics(value))
-			return;
-		if (!okForHarmonics(value))
-			return;
+		if (!okForDynamics(value)) return;
+		if (!okForHarmonics(value)) return;
 
 		dynaVars.solutionMode = value;
 
 		controlMode = defaultControlMode;  // revert to default mode
-		loadModel   = defaultLoadModel;
+		loadModel = defaultLoadModel;
 
-		isDynamicModel  = false;
+		isDynamicModel = false;
 		isHarmonicModel = false;
 
-		solutionInitialized  = false;  // reinitialize solution when mode set (except dynamics)
+		solutionInitialized = false;  // reinitialize solution when mode set (except dynamics)
 		preserveNodeVoltages = false;  // don't do this unless we have to
 
 		// reset defaults for solution modes
 		switch (dynaVars.solutionMode) {
-		case Dynamics.PEAKDAY:
-			dynaVars.h    = 3600.0;
+		case PEAKDAY:
+			dynaVars.h = 3600.0;
 			numberOfTimes = 24;
 			break;
-		case Dynamics.DAILYMODE:
-			dynaVars.h    = 3600.0;
+		case DAILYMODE:
+			dynaVars.h = 3600.0;
 			numberOfTimes = 24;
 			break;
-		case Dynamics.SNAPSHOT:
-			intervalHrs   = 1.0;
+		case SNAPSHOT:
+			intervalHrs = 1.0;
 			numberOfTimes = 1;
 			break;
-		case Dynamics.YEARLYMODE:
-			intervalHrs   = 1.0;
-			dynaVars.h    = 3600.0;
+		case YEARLYMODE:
+			intervalHrs = 1.0;
+			dynaVars.h = 3600.0;
 			numberOfTimes = 8760;
 			break;
-		case Dynamics.DUTYCYCLE:
-			dynaVars.h  = 1.0;
+		case DUTYCYCLE:
+			dynaVars.h = 1.0;
 			controlMode = ControlMode.TIMEDRIVEN;
 			break;
-		case Dynamics.DYNAMICMODE:
-			dynaVars.h     = 0.001;
-			controlMode    = ControlMode.TIMEDRIVEN;
+		case DYNAMICMODE:
+			dynaVars.h = 0.001;
+			controlMode = ControlMode.TIMEDRIVEN;
 			isDynamicModel = true;
 			preserveNodeVoltages = true;  // need to do this in case Y changes during this mode
 			break;
-		case Dynamics.GENERALTIME:
-			intervalHrs   = 1.0;
-			dynaVars.h    = 3600.0;
+		case GENERALTIME:
+			intervalHrs = 1.0;
+			dynaVars.h = 3600.0;
 			numberOfTimes = 1;  // just one time step per solve call expected
 			break;
-		case Dynamics.MONTECARLO1:
-			intervalHrs    = 1.0;
+		case MONTECARLO1:
+			intervalHrs = 1.0;
 			break;
-		case Dynamics.MONTECARLO2:
-			dynaVars.h     = 3600.0;
+		case MONTECARLO2:
+			dynaVars.h = 3600.0;
 			break;
-		case Dynamics.MONTECARLO3:
-			intervalHrs    = 1.0;
+		case MONTECARLO3:
+			intervalHrs = 1.0;
 			break;
-		case Dynamics.MONTEFAULT:
+		case MONTEFAULT:
 			isDynamicModel = true;
 			break;
-		case Dynamics.FAULTSTUDY:
+		case FAULTSTUDY:
 			isDynamicModel = true;
 			break;
-		case Dynamics.LOADDURATION1:
+		case LOADDURATION1:
 			dynaVars.h = 3600.0;
 			ckt.setTrapezoidalIntegration(true);
 			break;
-		case Dynamics.LOADDURATION2:
+		case LOADDURATION2:
 			intHour = 1;
 			ckt.setTrapezoidalIntegration(true);
 			break;
-		case Dynamics.AUTOADDFLAG:
+		case AUTOADDFLAG:
 			intervalHrs = 1.0;
 			ckt.getAutoAddObj().setModeChanged(true);
 			break;
-		case Dynamics.HARMONICMODE:
-			controlMode     = ControlMode.CONTROLSOFF;
+		case HARMONICMODE:
+			controlMode = ControlMode.CONTROLSOFF;
 			isHarmonicModel = true;
-			loadModel       = LoadModel.ADMITTANCE;
+			loadModel = LoadModel.ADMITTANCE;
 			preserveNodeVoltages = true;  // need to do this in case Y changes during this mode
 			break;
 		}
 
-		/* Moved here 9-8-2007 so that mode is changed before reseting monitors, etc. */
+		/* Moved here so that mode is changed before reseting monitors, etc. */
 
 		// reset meters and monitors
 		DSS.monitorClass.resetAll();
@@ -1196,24 +1202,20 @@ public class SolutionObj extends DSSObject {
 
 		//for (int i = 0; i < ckt.getNumNodes(); i++)
 		//	currents[i] = currents[i].add(auxCurrents[i]);
-		// for now, only AutoAddObj uses this.
 
-		if (dynaVars.solutionMode == Dynamics.AUTOADDFLAG)
+		// for now, only AutoAddObj uses this.
+		if (dynaVars.solutionMode == SolutionMode.AUTOADDFLAG)
 			ckt.getAutoAddObj().addCurrents(solveType);
 	}
 
 	public void zeroAuxCurrents() {
-		Circuit ckt = DSS.activeCircuit;
-
-		for (int i = 0; i < ckt.getNumNodes(); i++)
+		for (int i = 0; i < DSS.activeCircuit.getNumNodes(); i++)
 			auxCurrents[i] = Complex.ZERO;
 	}
 
 	public void checkFaultStatus() {
-		Circuit ckt = DSS.activeCircuit;
-
-		for (FaultObj pFault : ckt.getFaults())
-			pFault.checkStatus(controlMode);
+		for (FaultObj fault : DSS.activeCircuit.getFaults())
+			fault.checkStatus(controlMode);
 	}
 
 	/**
@@ -1224,25 +1226,24 @@ public class SolutionObj extends DSSObject {
 	private void getMachineInjCurrents() {
 		// do machines in dynamics mode
 		if (isDynamicModel) {
-			Circuit ckt = DSS.activeCircuit;
-			for (GeneratorObj pElem : ckt.getGenerators())
-				if (pElem.isEnabled())
-					pElem.injCurrents();  // uses nodeRef to add current into injCurr array
+			for (GeneratorObj elem : DSS.activeCircuit.getGenerators())
+				if (elem.isEnabled())
+					elem.injCurrents();  // uses nodeRef to add current into injCurr array
 		}
 	}
 
-	private boolean okForDynamics(int value) {
+	private boolean okForDynamics(SolutionMode value) {
 		boolean valueIsDynamic;
-		boolean result = true;
+		boolean ok = true;
 
 		switch (value) {
-		case Dynamics.MONTEFAULT:
+		case MONTEFAULT:
 			valueIsDynamic = true;
 			break;
-		case Dynamics.DYNAMICMODE:
+		case DYNAMICMODE:
 			valueIsDynamic = true;
 			break;
-		case Dynamics.FAULTSTUDY:
+		case FAULTSTUDY:
 			valueIsDynamic = true;
 			break;
 		default:
@@ -1255,52 +1256,49 @@ public class SolutionObj extends DSSObject {
 			Util.invalidateAllPCElements();  // force recomp of YPrims when we leave dynamics mode
 
 		if (!isDynamicModel && valueIsDynamic) {  // see if conditions right for going into dynamics
-
 			if (DSS.activeCircuit.isSolved()) {
 				Util.calcInitialMachineStates();  // set state variables for machines (loads and generators)
 			} else {
 				/* Raise error message if not solved */
 				DSS.doSimpleMsg("Circuit must be solved in a non-dynamic mode before entering dynamics or fault study modes!" + DSS.CRLF +
 						"If you attempted to solve, then the solution has not yet converged.", 486);
-				if (DSS.inRedirect)
-					DSS.redirectAbort = true;
-				result = false;
+				if (DSS.inRedirect) DSS.redirectAbort = true;
+				ok = false;
 			}
 		}
-		return result;
+		return ok;
 	}
 
 	/**
 	 * When we go in and out of harmonics mode, we have to do some special things.
 	 */
-	private boolean okForHarmonics(int value) {
-		boolean result = true;
+	private boolean okForHarmonics(SolutionMode value) {
+		boolean ok = true;
 		Circuit ckt = DSS.activeCircuit;
 
-		if (isHarmonicModel && !(value == Dynamics.HARMONICMODE)) {
+		if (isHarmonicModel && !(value == SolutionMode.HARMONICMODE)) {
 			Util.invalidateAllPCElements();  // force recomp of YPrims when we leave harmonics mode
 			frequency = ckt.getFundamental();   // resets everything to norm
 		}
 
-		if (!isHarmonicModel && (value == Dynamics.HARMONICMODE)) {  // see if conditions right for going into harmonics
-
+		if (!isHarmonicModel && (value == SolutionMode.HARMONICMODE)) {  // see if conditions right for going into harmonics
 			if (ckt.isSolved() && (frequency == ckt.getFundamental())) {
 				if (!Util.initializeForHarmonics()) {  // set state variables for machines (loads and generators) and sources
-					result = false;
-					if (DSS.inRedirect)
-						DSS.redirectAbort = true;
+					ok = false;
+					if (DSS.inRedirect) DSS.redirectAbort = true;
 				}
 			} else {
 				DSS.doSimpleMsg("Circuit must be solved in a fundamental frequency power flow or direct mode before entering harmonics mode!", 487);
-				if (DSS.inRedirect)
-					DSS.redirectAbort = true;
-				result = false;
+				if (DSS.inRedirect) DSS.redirectAbort = true;
+				ok = false;
 			}
 		}
-		return result;
+		return ok;
 	}
 
 	public void setFrequency(double value) {
+		Circuit ckt = DSS.activeCircuit;
+
 		if (frequency != value) {
 			frequencyChanged = true;  // force rebuild of all Y primitives
 			systemYChanged = true;    // force rebuild of system Y
@@ -1308,7 +1306,6 @@ public class SolutionObj extends DSSObject {
 
 		frequency = value;
 
-		Circuit ckt = DSS.activeCircuit;
 		if (ckt != null)
 			harmonic = frequency / ckt.getFundamental();  // make sure harmonic stays in synch
 	}
@@ -1330,9 +1327,7 @@ public class SolutionObj extends DSSObject {
 	}
 
 	public void setYear(int value) {
-
-		if (DSS.DIFilesAreOpen)
-			DSS.energyMeterClass.closeAllDIFiles();
+		if (DSS.DIFilesAreOpen) DSS.energyMeterClass.closeAllDIFiles();
 
 		year = value;
 		intHour = 0;  /* Change year, start over */
@@ -1343,30 +1338,31 @@ public class SolutionObj extends DSSObject {
 	}
 
 	public void saveVoltages() {
-		FileWriter fd;
-		PrintWriter f;
-		Complex volts;
+		int i, j;
+		FileWriter fw;
+		PrintWriter pw;
+		Complex V;
 		String busName;
+		Circuit ckt = DSS.activeCircuit;
 
 		try {
-			fd = new FileWriter(DSS.circuitName_ + "SavedVoltages.txt");
-			f = new PrintWriter(fd);
+			fw = new FileWriter(DSS.circuitName_ + "SavedVoltages.txt");
+			pw = new PrintWriter(fw);
 
-			Circuit ckt = DSS.activeCircuit;
-
-			for (int i = 0; i < ckt.getNumBuses(); i++) {
+			for (i = 0; i < ckt.getNumBuses(); i++) {
 				busName = ckt.getBusList().get(i);
-				for (int j = 0; j < ckt.getBus(i).getNumNodesThisBus(); j++) {
-					volts = nodeV[ckt.getBus(i).getRef(j)];
-					f.println(busName + ", " + ckt.getBus(i).getNum(j) + String.format(", %-.7g, %-.7g", volts.abs(), ComplexUtil.degArg(volts)));
+				for (j = 0; j < ckt.getBus(i).getNumNodesThisBus(); j++) {
+					V = getNodeV(ckt.getBus(i).getRef(j));
+					pw.println(busName + ", " + ckt.getBus(i).getNum(j) +
+						String.format(", %-.7g, %-.7g", V.abs(), ComplexUtil.degArg(V)));
 				}
 			}
 
-			f.close();
+			pw.close();
 			DSS.globalResult = DSS.circuitName_ + "SavedVoltages.txt";
 
 		} catch (Exception e) {
-			DSS.doSimpleMsg("Error opening saved voltages file: "+e.getMessage(), 488);
+			DSS.doSimpleMsg("Error opening saved voltages file: " + e.getMessage(), 488);
 			return;
 		}
 	}
@@ -1378,8 +1374,6 @@ public class SolutionObj extends DSSObject {
 	 */
 	private int solveSystem(Complex[] V) throws SolverProblem {
 		int retCode;
-		long iRes = 0;
-		double dRes = 0;
 		double[] dp = new double[1];
 		int[] ip = new int[1];
 
@@ -1391,19 +1385,17 @@ public class SolutionObj extends DSSObject {
 			retCode = YMatrix.solveSparseSet(Y, V, 1, currents, 1);  // solve for present injCurr
 
 			/* information functions */
-			//YMatrix.getFlops(Y, dRes);
-			//YMatrix.getRGrowth(Y, dRes);
-			YMatrix.getRCond(Y, dp);
-			dRes = dp[0];
-			//YMatrix.getCondEst(Y, dRes); // this can be expensive
-			//YMatrix.getSize(Y, iRes);
-			YMatrix.getNNZ(Y, ip);
-			iRes = ip[0];
-			YMatrix.getSparseNNZ(Y, ip);
-			iRes = ip[0];
-			//YMatrix.getSingularCol(Y, iRes);
+			//YMatrix.getFlops(Y, dp);
+			//YMatrix.getRGrowth(Y, dp);
+			//YMatrix.getRCond(Y, dp);
+			//YMatrix.getCondEst(Y, dp);  // this can be expensive
+			//YMatrix.getSize(Y, ip);
+			//YMatrix.getNNZ(Y, ip);
+			//YMatrix.getSparseNNZ(Y, ip);
+			//YMatrix.getSingularCol(Y, ip);
 		} catch (Exception e) {
-			throw new SolverProblem("Error solving system Y matrix. Sparse matrix solver reports numerical error: " + e.getMessage());
+			throw new SolverProblem("Error solving system Y matrix. Sparse matrix solver reports numerical error: " +
+					e.getMessage());
 		}
 
 		return retCode;
@@ -1422,9 +1414,10 @@ public class SolutionObj extends DSSObject {
 
 		for (int i = 0; i < ckt.getNumBuses(); i++) {
 			bus = ckt.getBus(i);
-			if (bus.getVBus() != null)
+			if (bus.getVBus() != null) {
 				for (int j = 0; j < bus.getNumNodesThisBus(); j++)
-					bus.getVBus()[j] = nodeV[bus.getRef(j)];
+					bus.getVBus()[j] = getNodeV(bus.getRef(j));
+			}
 		}
 	}
 
@@ -1437,9 +1430,10 @@ public class SolutionObj extends DSSObject {
 
 		for (int i = 0; i < ckt.getNumBuses(); i++) {
 			bus = ckt.getBus(i);
-			if (bus.getVBus() != null)
+			if (bus.getVBus() != null) {
 				for (int j = 0; j < bus.getNumNodesThisBus(); j++)
 					nodeV[bus.getRef(j)] = bus.getVBus(j);
+			}
 		}
 	}
 
@@ -1488,7 +1482,7 @@ public class SolutionObj extends DSSObject {
 		currents[nref - 1] = current;
 	}
 
-	public int getMode() {
+	public SolutionMode getMode() {
 		return dynaVars.solutionMode;
 	}
 

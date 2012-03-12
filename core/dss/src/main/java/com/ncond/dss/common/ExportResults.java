@@ -12,6 +12,9 @@ import java.util.UUID;
 
 import org.apache.commons.math.complex.Complex;
 
+import com.ncond.dss.common.types.CIMProfileChoice;
+import com.ncond.dss.common.types.ProfilePlot;
+import com.ncond.dss.common.types.YPrimType;
 import com.ncond.dss.conversion.Generator;
 import com.ncond.dss.conversion.GeneratorObj;
 import com.ncond.dss.conversion.LoadObj;

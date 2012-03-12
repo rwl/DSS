@@ -10,6 +10,13 @@ import lombok.Setter;
 
 import org.apache.commons.math.complex.Complex;
 
+import com.ncond.dss.common.exceptions.ControlProblem;
+import com.ncond.dss.common.exceptions.SolverError;
+import com.ncond.dss.common.exceptions.SolverProblem;
+import com.ncond.dss.common.types.Algorithm;
+import com.ncond.dss.common.types.AutoAddType;
+import com.ncond.dss.common.types.ControlMode;
+import com.ncond.dss.common.types.LoadModel;
 import com.ncond.dss.conversion.Generator;
 import com.ncond.dss.delivery.Capacitor;
 import com.ncond.dss.delivery.PDElement;

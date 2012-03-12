@@ -9,6 +9,7 @@ import java.util.List;
 
 import org.apache.commons.math.complex.Complex;
 
+import com.ncond.dss.common.types.EarthModel;
 import com.ncond.dss.control.VVControl;
 import com.ncond.dss.conversion.PVSystem;
 import com.ncond.dss.conversion.Storage;

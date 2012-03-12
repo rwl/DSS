@@ -2,7 +2,7 @@ package com.ncond.dss.conversion;
 
 import com.ncond.dss.common.DSS;
 import com.ncond.dss.common.DSSClassDefs;
-import com.ncond.dss.common.Randomization;
+import com.ncond.dss.common.types.Randomization;
 import com.ncond.dss.general.GrowthShapeObj;
 import com.ncond.dss.general.LoadShapeObj;
 import com.ncond.dss.parser.Parser;

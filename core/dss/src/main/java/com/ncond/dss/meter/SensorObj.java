@@ -11,6 +11,7 @@ import org.apache.commons.math.complex.Complex;
 import com.ncond.dss.common.DSS;
 import com.ncond.dss.common.DSSClass;
 import com.ncond.dss.common.Util;
+import com.ncond.dss.common.types.Connection;
 
 /**
  * Sensor compares voltages and currents. Power quantities are converted to
@@ -26,7 +27,7 @@ public class SensorObj extends MeterElement {
 	private double kVBase;  // value specified
 	private double VBase;   // in volts
 
-	private int conn;
+	private Connection conn;
 
 	private boolean VSpecified, ISpecified, PSpecified, QSpecified;
 
@@ -50,7 +51,7 @@ public class SensorObj extends MeterElement {
 		weight = 1.0;
 		pctError = 1.0;
 
-		setConn(0);  // wye
+		setConn(Connection.WYE);
 
 		clearSensor();
 
@@ -116,14 +117,14 @@ public class SensorObj extends MeterElement {
 
 	private void recalcVbase() {
 		switch (conn) {
-		case 0:
+		case WYE:
 			if (nPhases == 1) {
 				VBase = kVBase * 1000.0;
 			} else {
 				VBase = kVBase * 1000.0 / DSS.SQRT3;
 			}
 			break;
-		case 1:
+		case DELTA:
 			VBase = kVBase * 1000.0;
 			break;
 		}
@@ -167,7 +168,7 @@ public class SensorObj extends MeterElement {
 		meteredElement.getCurrents(calculatedCurrent);
 		computeVTerminal();
 		switch (conn) {
-		case 1:
+		case DELTA:
 			for (int i = 0; i < nPhases; i++)
 				calculatedVoltage[i] = VTerminal[i].subtract( VTerminal[rotatePhases(i)] );
 			break;
@@ -322,7 +323,7 @@ public class SensorObj extends MeterElement {
 	/**
 	 * Connection code.
 	 */
-	public void setConn(int value) {
+	public void setConn(Connection value) {
 		conn = value;
 		recalcVbase();
 	}

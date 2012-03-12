@@ -1,7 +1,16 @@
-package com.ncond.dss.common;
+package com.ncond.dss.common.types;
 
 import org.apache.commons.math.complex.Complex;
 
+import com.ncond.dss.common.Bus;
+import com.ncond.dss.common.Circuit;
+import com.ncond.dss.common.DSS;
+import com.ncond.dss.common.SolutionObj;
+import com.ncond.dss.common.Util;
+import com.ncond.dss.common.YMatrix;
+import com.ncond.dss.common.exceptions.ControlProblem;
+import com.ncond.dss.common.exceptions.SolverError;
+import com.ncond.dss.common.exceptions.SolverProblem;
 import com.ncond.dss.conversion.ISourceObj;
 import com.ncond.dss.conversion.PCElement;
 import com.ncond.dss.conversion.VSourceObj;

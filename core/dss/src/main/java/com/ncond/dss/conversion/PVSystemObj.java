@@ -14,16 +14,16 @@ import org.apache.commons.math.complex.Complex;
 import com.ncond.dss.common.Circuit;
 import com.ncond.dss.common.DSS;
 import com.ncond.dss.common.DSSClass;
-import com.ncond.dss.common.Randomization;
 import com.ncond.dss.common.SolutionObj;
 import com.ncond.dss.common.Util;
+import com.ncond.dss.common.types.Randomization;
+import com.ncond.dss.common.types.SolutionMode;
 import com.ncond.dss.general.LoadShapeObj;
 import com.ncond.dss.general.TShapeObj;
 import com.ncond.dss.general.XYCurveObj;
 import com.ncond.dss.parser.Parser;
 import com.ncond.dss.shared.CMatrix;
 import com.ncond.dss.shared.ComplexUtil;
-import com.ncond.dss.shared.Dynamics;
 import com.ncond.dss.shared.MathUtil;
 
 /**
@@ -381,57 +381,57 @@ public class PVSystemObj extends PCElement {
 
 			// check dispatch to see what state the PVSystem element should be in
 			switch (sol.getMode()) {
-			case Dynamics.SNAPSHOT:
+			case SNAPSHOT:
 				/* Just solve for the present kW, kVAr */  // don't check for state change
 				break;
-			case Dynamics.DAILYMODE:
+			case DAILYMODE:
 				calcDailyMult(sol.getDblHour());
 				calcDailyTemperature(sol.getDblHour());
 				break;
-			case Dynamics.YEARLYMODE:
+			case YEARLYMODE:
 				calcYearlyMult(sol.getDblHour());
 				calcYearlyTemperature(sol.getDblHour());
 				break;
-			case Dynamics.MONTECARLO1:
+			case MONTECARLO1:
 				// do nothing yet
 				break;
-			case Dynamics.MONTEFAULT:
+			case MONTEFAULT:
 				// do nothing yet
 				break;
-			case Dynamics.FAULTSTUDY:
+			case FAULTSTUDY:
 				// do nothing yet
 				break;
-			case Dynamics.DYNAMICMODE:
+			case DYNAMICMODE:
 				// do nothing yet
 				break;
 
 				// assume daily curve, if any, for the following
-			case Dynamics.MONTECARLO2:
+			case MONTECARLO2:
 				calcDailyMult(sol.getDblHour());
 				calcDailyTemperature(sol.getDblHour());
 				break;
-			case Dynamics.MONTECARLO3:
+			case MONTECARLO3:
 				calcDailyMult(sol.getDblHour());
 				calcDailyTemperature(sol.getDblHour());
 				break;
-			case Dynamics.LOADDURATION1:
+			case LOADDURATION1:
 				calcDailyMult(sol.getDblHour());
 				calcDailyTemperature(sol.getDblHour());
 				break;
-			case Dynamics.LOADDURATION2:
+			case LOADDURATION2:
 				calcDailyMult(sol.getDblHour());
 				calcDailyTemperature(sol.getDblHour());
 				break;
-			case Dynamics.PEAKDAY:
+			case PEAKDAY:
 				calcDailyMult(sol.getDblHour());
 				calcDailyTemperature(sol.getDblHour());
 				break;
 
-			case Dynamics.DUTYCYCLE:
+			case DUTYCYCLE:
 				calcDutyMult(sol.getDblHour());
 				calcDutyTemperature(sol.getDblHour());
 				break;
-			case Dynamics.AUTOADDFLAG:
+			case AUTOADDFLAG:
 				// do nothing
 				break;
 			}

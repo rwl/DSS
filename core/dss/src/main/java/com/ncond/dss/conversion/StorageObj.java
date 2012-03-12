@@ -13,14 +13,14 @@ import org.apache.commons.math.complex.Complex;
 import com.ncond.dss.common.Circuit;
 import com.ncond.dss.common.DSS;
 import com.ncond.dss.common.DSSClass;
-import com.ncond.dss.common.Randomization;
 import com.ncond.dss.common.SolutionObj;
 import com.ncond.dss.common.Util;
+import com.ncond.dss.common.types.Randomization;
+import com.ncond.dss.common.types.SolutionMode;
 import com.ncond.dss.general.LoadShapeObj;
 import com.ncond.dss.parser.Parser;
 import com.ncond.dss.shared.CMatrix;
 import com.ncond.dss.shared.ComplexUtil;
-import com.ncond.dss.shared.Dynamics;
 import com.ncond.dss.shared.MathUtil;
 
 /**
@@ -505,43 +505,43 @@ public class StorageObj extends PCElement {
 			default:  // dispatch off element's load shapes, if any
 
 				switch (sol.getMode()) {
-				case Dynamics.SNAPSHOT:
+				case SNAPSHOT:
 					/* Just solve for the present kW, kvar */  // don't check for state change
 					break;
-				case Dynamics.DAILYMODE:
+				case DAILYMODE:
 					calcDailyMult(sol.getDblHour());  // daily dispatch curve
 					break;
-				case Dynamics.YEARLYMODE:
+				case YEARLYMODE:
 					calcYearlyMult(sol.getDblHour());
 					break;
-				/*case Dynamics.MONTECARLO1:  // do nothing for these modes
+				/*case MONTECARLO1:  // do nothing for these modes
 					break;
-				case Dynamics.MONTEFAULT:
+				case MONTEFAULT:
 					break;
-				case Dynamics.FAULTSTUDY:
+				case FAULTSTUDY:
 					break;
-				case Dynamics.DYNAMICMODE:
+				case DYNAMICMODE:
 					break;*/
 				// assume daily curve, if any, for the following
-				case Dynamics.MONTECARLO2:
+				case MONTECARLO2:
 					calcDailyMult(sol.getDblHour());
 					break;
-				case Dynamics.MONTECARLO3:
+				case MONTECARLO3:
 					calcDailyMult(sol.getDblHour());
 					break;
-				case Dynamics.LOADDURATION1:
+				case LOADDURATION1:
 					calcDailyMult(sol.getDblHour());
 					break;
-				case Dynamics.LOADDURATION2:
+				case LOADDURATION2:
 					calcDailyMult(sol.getDblHour());
 					break;
-				case Dynamics.PEAKDAY:
+				case PEAKDAY:
 					calcDailyMult(sol.getDblHour());
 					break;
-				case Dynamics.DUTYCYCLE:
+				case DUTYCYCLE:
 					CalcDutyMult(sol.getDblHour());
 					break;
-				case Dynamics.AUTOADDFLAG:
+				case AUTOADDFLAG:
 					break;
 				}
 				break;

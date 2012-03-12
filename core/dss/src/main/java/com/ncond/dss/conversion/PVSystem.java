@@ -9,8 +9,8 @@ import lombok.Setter;
 
 import com.ncond.dss.common.DSS;
 import com.ncond.dss.common.DSSClassDefs;
-import com.ncond.dss.common.Randomization;
 import com.ncond.dss.common.Util;
+import com.ncond.dss.common.types.Randomization;
 import com.ncond.dss.general.LoadShapeObj;
 import com.ncond.dss.general.TShapeObj;
 import com.ncond.dss.general.XYCurveObj;

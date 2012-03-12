@@ -22,6 +22,15 @@ import org.apache.commons.math.complex.ComplexUtils;
 
 import com.ncond.dss.common.Bus.NodeBus;
 import com.ncond.dss.common.Circuit.CktElementDef;
+import com.ncond.dss.common.types.Algorithm;
+import com.ncond.dss.common.types.AutoAddType;
+import com.ncond.dss.common.types.Connection;
+import com.ncond.dss.common.types.ControlMode;
+import com.ncond.dss.common.types.EarthModel;
+import com.ncond.dss.common.types.LoadModel;
+import com.ncond.dss.common.types.Randomization;
+import com.ncond.dss.common.types.SequentialTime;
+import com.ncond.dss.common.types.SolutionMode;
 import com.ncond.dss.control.ControlElem;
 import com.ncond.dss.conversion.LoadObj;
 import com.ncond.dss.conversion.PCElement;
@@ -39,7 +48,6 @@ import com.ncond.dss.meter.EnergyMeterObj;
 import com.ncond.dss.parser.Parser;
 import com.ncond.dss.shared.CMatrix;
 import com.ncond.dss.shared.ComplexUtil;
-import com.ncond.dss.shared.Dynamics;
 import com.ncond.dss.shared.HashList;
 
 public class Util {
@@ -49,22 +57,17 @@ public class Util {
 	private static final String PAD_DOTS_STRING =
 			" ................................................."; // 50 dots
 
-	private Util() {
-
-	}
+	private Util() {}
 
 	public static String expandFileName(String child) {
-		if (child.length() == 0)
-			return "";
+		if (child.length() == 0) return "";
 
-		if (new File(child).isAbsolute())
-			return child;
+		if (new File(child).isAbsolute()) return child;
 
 		try {
 			return new File(DSS.currentDirectory, child).getCanonicalPath();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			DSS.doSimpleMsg("Error encountered in Util.expandFileName(): " + e.getMessage(), -1);
 		}
 		return null;
 	}
@@ -77,113 +80,91 @@ public class Util {
 
 	public static int[] resizeArray(int[] oldArray, int newSize) {
 		int[] newArray = new int[newSize];
-		if (oldArray == null)
-			return newArray;
+		if (oldArray == null) return newArray;
 		int oldSize = oldArray.length;
 		int length = Math.min(oldSize, newSize);
-		if (length > 0)
-			System.arraycopy(oldArray, 0, newArray, 0, length);
+		if (length > 0) System.arraycopy(oldArray, 0, newArray, 0, length);
 		return newArray;
 	}
 
 	public static double[] resizeArray(double[] oldArray, int newSize) {
 		double[] newArray = new double[newSize];
-		if (oldArray == null)
-			return newArray;
+		if (oldArray == null) return newArray;
 		int oldSize = oldArray.length;
 		int length = Math.min(oldSize, newSize);
-		if (length > 0)
-			System.arraycopy(oldArray, 0, newArray, 0, length);
+		if (length > 0) System.arraycopy(oldArray, 0, newArray, 0, length);
 		return newArray;
 	}
 
 	public static String[] resizeArray(String[] oldArray, int newSize) {
 		String[] newArray = new String[newSize];
-		if (oldArray == null)
-			return newArray;
+		if (oldArray == null) return newArray;
 		int oldSize = oldArray.length;
 		int length = Math.min(oldSize, newSize);
-		if (length > 0)
-			System.arraycopy(oldArray, 0, newArray, 0, length);
+		if (length > 0) System.arraycopy(oldArray, 0, newArray, 0, length);
 		return newArray;
 	}
 
 	public static Complex[] resizeArray(Complex[] oldArray, int newSize) {
 		Complex[] newArray = new Complex[newSize];
-		if (oldArray == null)
-			return newArray;
+		if (oldArray == null) return newArray;
 		int oldSize = oldArray.length;
 		int length = Math.min(oldSize, newSize);
-		if (length > 0)
-			System.arraycopy(oldArray, 0, newArray, 0, length);
+		if (length > 0) System.arraycopy(oldArray, 0, newArray, 0, length);
 		return newArray;
 	}
 
 	public static DSSObject[] resizeArray(DSSObject[] oldArray, int newSize) {
 		DSSObject[] newArray = new DSSObject[newSize];
-		if (oldArray == null)
-			return newArray;
+		if (oldArray == null) return newArray;
 		int oldSize = oldArray.length;
 		int length = Math.min(oldSize, newSize);
-		if (length > 0)
-			System.arraycopy(oldArray, 0, newArray, 0, length);
+		if (length > 0) System.arraycopy(oldArray, 0, newArray, 0, length);
 		return newArray;
 	}
 
 	public static CktElementDef[] resizeArray(CktElementDef[] oldArray, int newSize) {
 		CktElementDef[] newArray = new CktElementDef[newSize];
-		if (oldArray == null)
-			return newArray;
+		if (oldArray == null) return newArray;
 		int oldSize = oldArray.length;
 		int length = Math.min(oldSize, newSize);
-		if (length > 0)
-			System.arraycopy(oldArray, 0, newArray, 0, length);
+		if (length > 0) System.arraycopy(oldArray, 0, newArray, 0, length);
 		return newArray;
 	}
 
 	public static Bus[] resizeArray(Bus[] oldArray, int newSize) {
 		Bus[] newArray = new Bus[newSize];
-		if (oldArray == null)
-			return newArray;
+		if (oldArray == null) return newArray;
 		int oldSize = oldArray.length;
 		int length = Math.min(oldSize, newSize);
-		if (length > 0)
-			System.arraycopy(oldArray, 0, newArray, 0, length);
+		if (length > 0) System.arraycopy(oldArray, 0, newArray, 0, length);
 		return newArray;
 	}
 
 	public static NodeBus[] resizeArray(NodeBus[] oldArray, int newSize) {
 		NodeBus[] newArray = new NodeBus[newSize];
-		if (oldArray == null)
-			return newArray;
+		if (oldArray == null) return newArray;
 		int oldSize = oldArray.length;
 		int length = Math.min(oldSize, newSize);
-		if (length > 0)
-			System.arraycopy(oldArray, 0, newArray, 0, length);
+		if (length > 0) System.arraycopy(oldArray, 0, newArray, 0, length);
 		return newArray;
 	}
 
 	public static Terminal[] resizeArray(Terminal[] oldArray, int newSize) {
 		Terminal[] newArray = new Terminal[newSize];
-		if (oldArray == null)
-			oldArray = newArray;
-
+		if (oldArray == null) oldArray = newArray;
 		int oldSize = oldArray.length;
-
 		int length = Math.min(oldSize, newSize);
-		if (length > 0)
-			System.arraycopy(oldArray, 0, newArray, 0, length);
+		if (length > 0) System.arraycopy(oldArray, 0, newArray, 0, length);
 		return newArray;
 	}
 
 	public static Winding[] resizeArray(Winding[] oldArray, int newSize) {
 		Winding[] newArray = new Winding[newSize];
-		if (oldArray == null)
-			return newArray;
+		if (oldArray == null) return newArray;
 		int oldSize = oldArray.length;
 		int length = Math.min(oldSize, newSize);
-		if (length > 0)
-			System.arraycopy(oldArray, 0, newArray, 0, length);
+		if (length > 0) System.arraycopy(oldArray, 0, newArray, 0, length);
 		return newArray;
 	}
 
@@ -203,14 +184,14 @@ public class Util {
 	 * Pad out a string with blanks to width characters.
 	 */
 	public static String pad(String s, int width) {
-		return s.substring(0, s.length()) + PAD_STRING.substring(0, width - s.length());
+		return s + PAD_STRING.substring(0, width - s.length());
 	}
 
 	/**
 	 * Pad out a string with dots to width characters.
 	 */
 	public static String padDots(String s, int width) {
-		return s.substring(0, s.length()) + PAD_DOTS_STRING.substring(0, width - s.length());
+		return s + PAD_DOTS_STRING.substring(0, width - s.length());
 	}
 
 	/**
@@ -220,8 +201,8 @@ public class Util {
 		return pad(s, width).substring(0, width);
 	}
 
-	public static String fullName(CktElement pElem) {
-		return encloseQuotes(pElem.getDSSClassName() + "." + pElem.getName().toUpperCase());
+	public static String fullName(CktElement elem) {
+		return encloseQuotes(elem.getDSSClassName() + "." + elem.getName().toUpperCase());
 	}
 
 	/**
@@ -229,8 +210,7 @@ public class Util {
 	 */
 	public static String stripExtension(String s) {
 		int dotpos = s.indexOf('.');
-		if (dotpos == -1)
-			dotpos = s.length();
+		if (dotpos == -1) dotpos = s.length();
 		return s.substring(0, dotpos);
 	}
 
@@ -255,48 +235,53 @@ public class Util {
 	 * Put array values in parentheses separated by commas.
 	 */
 	public static String intArrayToString(int[] iarray, int count) {
-
-		String result = "[NULL]";  // FIXME: use StringBuilder
 		if (count > 0) {
-			result = "[";
+			StringBuilder sb = new StringBuilder("[");
 			for (int i = 0; i < count; i++) {
-				result = result + String.valueOf(iarray[i]);
-				if (i != count - 1)
-					result = result + ", ";
+				sb.append(iarray[i]);
+				if (i < count - 1) sb.append(", ");
 			}
-			result = result + "]";
+			sb.append("]");
+			return sb.toString();
+		} else {
+			return "[null]";
 		}
-		return result;
 	}
 
 	/**
 	 * Put array values in brackets separated by commas.
 	 */
 	public static String dblArrayToString(double[] dblarray, int count) {
-		String result = "[NULL]";
 		if (count > 0) {
-			result = String.format("[%.10g", dblarray[0]);
+			StringBuilder sb = new StringBuilder();
+			sb.append(String.format("[%.10g", dblarray[0]));
 			for (int i = 1; i < count; i++) {
-				result = result + String.format(", %.10g", dblarray[i]);
+				sb.append(String.format(", %.10g", dblarray[i]));
 			}
-			result = result + "]";
+			sb.append("]");
+			return sb.toString();
+		} else {
+			return "[null]";
 		}
-		return result;
 	}
 
 	/**
 	 * Put array values in brackets separated by commas.
 	 */
 	public static String cmplxArrayToString(Complex[] cpxarray, int count) {
-		String result = "[NULL]";
 		if (count > 0) {
-			result = String.format("[%.10g +j %.10g",  cpxarray[0].getReal(), cpxarray[0].getImaginary());
+			StringBuilder sb = new StringBuilder();
+			sb.append(String.format("[%.10g +j %.10g",
+				cpxarray[0].getReal(), cpxarray[0].getImaginary()));
 			for (int i = 1; i < count; i++) {
-				result = result + String.format(", %.10g +j %.10g", cpxarray[i].getReal(), cpxarray[i].getImaginary());
+				sb.append(String.format(", %.10g +j %.10g",
+					cpxarray[i].getReal(), cpxarray[i].getImaginary()));
 			}
-			result = result + "]";
+			sb.append("]");
+			return sb.toString();
+		} else {
+			return "[null]";
 		}
-		return result;
 	}
 
 	public static String encloseQuotes(String s) {
@@ -307,66 +292,64 @@ public class Util {
 	 * Interpret solution mode. Could be: "nominal", "daily",  "yearly",
 	 *   "montecarlo", "dutycycle",  "loadduration", "peakdays", etc.
 	 */
-	public static int interpretSolveMode(String s) {
-		String slc;
-
-		slc = s.toLowerCase();
+	public static SolutionMode interpretSolveMode(String s) {
+		String slc = s.toLowerCase();
 
 		switch (slc.charAt(0)) {
 		case 's':
-			return Dynamics.SNAPSHOT;
+			return SolutionMode.SNAPSHOT;
 		case 'd':
 			switch (slc.charAt(1)) {
 			case 'u':
-				return Dynamics.DUTYCYCLE;
+				return SolutionMode.DUTYCYCLE;
 			case 'i':
-				return Dynamics.DIRECT;
+				return SolutionMode.DIRECT;
 			case 'y':
-				return Dynamics.DYNAMICMODE;
+				return SolutionMode.DYNAMICMODE;
 			default:
-				return Dynamics.DAILYMODE;
+				return SolutionMode.DAILYMODE;
 			}
 		case 'f':
-			return Dynamics.FAULTSTUDY;
+			return SolutionMode.FAULTSTUDY;
 		case 'h':
-			return Dynamics.HARMONICMODE;
+			return SolutionMode.HARMONICMODE;
 		case 'y':
-			return Dynamics.YEARLYMODE;
+			return SolutionMode.YEARLYMODE;
 		case 'm':
 			switch (slc.charAt(1)) {
 			case '1':
-				return Dynamics.MONTECARLO1;
+				return SolutionMode.MONTECARLO1;
 			case '2':
-				return Dynamics.MONTECARLO2;
+				return SolutionMode.MONTECARLO2;
 			case '3':
-				return Dynamics.MONTECARLO3;
+				return SolutionMode.MONTECARLO3;
 			case 'f':
-				return Dynamics.MONTEFAULT;
+				return SolutionMode.MONTEFAULT;
 			default:
-				return Dynamics.MONTECARLO1;
+				return SolutionMode.MONTECARLO1;
 			}
 		case 'p':
-			return Dynamics.PEAKDAY;
+			return SolutionMode.PEAKDAY;
 		case 'a':
-			return Dynamics.AUTOADDFLAG;
+			return SolutionMode.AUTOADDFLAG;
 		case 'l':
 			switch (slc.charAt(1)) {
 			case 'd':
 				switch (slc.charAt(2)) {
 				case '1':
-					return Dynamics.LOADDURATION1;
+					return SolutionMode.LOADDURATION1;
 				case '2':
-					return Dynamics.LOADDURATION2;
+					return SolutionMode.LOADDURATION2;
 				default:
-					return Dynamics.LOADDURATION1;
+					return SolutionMode.LOADDURATION1;
 				}
 			default:
-				return Dynamics.LOADDURATION1;
+				return SolutionMode.LOADDURATION1;
 			}
 		case 't':
-			return Dynamics.GENERALTIME;
+			return SolutionMode.GENERALTIME;
 		default:
-			return Dynamics.SNAPSHOT;
+			return SolutionMode.SNAPSHOT;
 		}
 	}
 
@@ -374,9 +357,7 @@ public class Util {
 	 * Interpret solution control mode.
 	 */
 	public static ControlMode interpretControlMode(String s) {
-		String slc = s.toLowerCase();
-
-		switch (slc.charAt(0)) {
+		switch (s.toLowerCase().charAt(0)) {
 		case 'o':
 			return ControlMode.CONTROLSOFF;
 		case 'e':
@@ -390,9 +371,9 @@ public class Util {
 
 	public static LoadModel interpretLoadModel(String s) {
 		LoadModel lm;
-		String s2 = s.toLowerCase();
+		Circuit ckt = DSS.activeCircuit;
 
-		switch (s2.charAt(0)) {
+		switch (s.toLowerCase().charAt(0)) {
 		case 'a':
 			lm = LoadModel.ADMITTANCE;
 			break;
@@ -405,9 +386,9 @@ public class Util {
 		}
 
 		/* If this represents a change, invalidate all the PC Yprims */
-		Circuit ckt = DSS.activeCircuit;
-		if (lm != ckt.getSolution().getLoadModel())
+		if (lm != ckt.getSolution().getLoadModel()) {
 			ckt.invalidateAllPCElements();
+		}
 
 		return lm;
 	}
@@ -416,8 +397,7 @@ public class Util {
 	 * Interpret yes/no properties - can also be true/false.
 	 */
 	public static boolean interpretYesNo(String s) {
-		String s2 = s.toLowerCase();
-		switch (s2.charAt(0)) {
+		switch (s.toLowerCase().charAt(0)) {
 		case 'y':
 			return true;
 		case 't':
@@ -436,9 +416,7 @@ public class Util {
 	 * none|gaussian|uniform|lognormal
 	 */
 	public static Randomization interpretRandom(String s) {
-		String slc = s.toLowerCase();
-
-		switch (slc.charAt(0)) {
+		switch (s.toLowerCase().charAt(0)) {
 		case 'g':
 			return Randomization.GAUSSIAN;
 		case 'u':
@@ -454,8 +432,7 @@ public class Util {
 	 * Type of device to automatically add. Default is capacitor.
 	 */
 	public static AutoAddType interpretAddType(String s) {
-		String slc = s.toLowerCase();
-		switch (slc.charAt(0)) {
+		switch (s.toLowerCase().charAt(0)) {
 		case 'g':
 			return AutoAddType.GEN;
 		default:
@@ -468,23 +445,23 @@ public class Util {
 	 *   delta or LL    Result = 1
 	 *   Y, wye, or LN  Result = 0
 	 */
-	public static int interpretConnection(String s) {
+	public static Connection interpretConnection(String s) {
 		switch (s.toLowerCase().charAt(0)) {
 		case 'y':
-			return 0;  // wye
+			return Connection.WYE;
 		case 'w':
-			return 0;  // wye
+			return Connection.WYE;
 		case 'd':
-			return 1;  // delta or line-Line
+			return Connection.DELTA;
 		case 'l':
 			switch (s.toLowerCase().charAt(1)) {
 			case 'n':
-				return 0;
+				return Connection.WYE;  // LN
 			case 'l':
-				return 1;
+				return Connection.DELTA;  // LL
 			}
 		default:
-			return 0;
+			return Connection.WYE;
 		}
 	}
 
@@ -866,42 +843,42 @@ public class Util {
 		}
 	}
 
-	public static String getSolutionModeIDName(int idx) {
+	public static String getSolutionModeIDName(SolutionMode idx) {
 
 		switch (idx) {
-		case Dynamics.SNAPSHOT:
+		case SNAPSHOT:
 			return "Snap";
-		case Dynamics.DAILYMODE:
+		case DAILYMODE:
 			return "Daily";
-		case Dynamics.YEARLYMODE:
+		case YEARLYMODE:
 			return "Yearly";
-		case Dynamics.MONTECARLO1:
+		case MONTECARLO1:
 			return "M1";
-		case Dynamics.MONTECARLO2:
+		case MONTECARLO2:
 			return "M2";
-		case Dynamics.MONTECARLO3:
+		case MONTECARLO3:
 			return "M3";
-		case Dynamics.LOADDURATION1:
+		case LOADDURATION1:
 			return "LD1";
-		case Dynamics.LOADDURATION2:
+		case LOADDURATION2:
 			return "LD2";
-		case Dynamics.PEAKDAY:
+		case PEAKDAY:
 			return "Peakday";
-		case Dynamics.DUTYCYCLE:
+		case DUTYCYCLE:
 			return "DUtycycle";
-		case Dynamics.DIRECT:
+		case DIRECT:
 			return "DIrect";
-		case Dynamics.DYNAMICMODE:
+		case DYNAMICMODE:
 			return "DYnamic";
-		case Dynamics.MONTEFAULT:
+		case MONTEFAULT:
 			return "MF";
-		case Dynamics.FAULTSTUDY:
+		case FAULTSTUDY:
 			return "Faultstudy";
-		case Dynamics.AUTOADDFLAG:
+		case AUTOADDFLAG:
 			return "Autoadd";
-		case Dynamics.HARMONICMODE:
+		case HARMONICMODE:
 			return "Harmonic";
-		case Dynamics.GENERALTIME:
+		case GENERALTIME:
 			return "Time";
 		default:
 			return "UNKNOWN";

@@ -8,6 +8,7 @@ import lombok.Setter;
 
 import org.apache.commons.math.complex.Complex;
 
+import com.ncond.dss.common.types.YPrimType;
 import com.ncond.dss.general.DSSObject;
 import com.ncond.dss.shared.CMatrix;
 

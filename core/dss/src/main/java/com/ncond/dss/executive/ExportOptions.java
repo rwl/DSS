@@ -1,10 +1,10 @@
 package com.ncond.dss.executive;
 
-import com.ncond.dss.common.CIMProfileChoice;
 import com.ncond.dss.common.DSS;
 import com.ncond.dss.common.ExportResults;
-import com.ncond.dss.common.ProfilePlot;
 import com.ncond.dss.common.Util;
+import com.ncond.dss.common.types.CIMProfileChoice;
+import com.ncond.dss.common.types.ProfilePlot;
 import com.ncond.dss.meter.MonitorObj;
 import com.ncond.dss.parser.Parser;
 import com.ncond.dss.shared.CommandList;

@@ -8,14 +8,14 @@ import lombok.Setter;
 
 import org.apache.commons.math.complex.Complex;
 
-import com.ncond.dss.common.ControlMode;
 import com.ncond.dss.common.DSS;
 import com.ncond.dss.common.DSSClass;
 import com.ncond.dss.common.SolutionObj;
 import com.ncond.dss.common.Util;
+import com.ncond.dss.common.types.ControlMode;
+import com.ncond.dss.common.types.SolutionMode;
 import com.ncond.dss.parser.Parser;
 import com.ncond.dss.shared.CMatrix;
-import com.ncond.dss.shared.Dynamics;
 import com.ncond.dss.shared.MathUtil;
 
 /**
@@ -152,7 +152,7 @@ public class FaultObj extends PDElement {
 
 		// make sure randomMult is 1.0 if not solution mode MonteFault
 
-		if (DSS.activeCircuit.getSolution().getMode() != Dynamics.MONTEFAULT)
+		if (DSS.activeCircuit.getSolution().getMode() != SolutionMode.MONTEFAULT)
 			randomMult = 1.0;
 
 		if (randomMult == 0.0)
