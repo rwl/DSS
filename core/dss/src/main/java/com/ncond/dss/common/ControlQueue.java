@@ -89,7 +89,7 @@ public class ControlQueue {
 		pAction.controlElement = owner;
 
 		if (debugTrace) {
-			writeTraceRecord(owner.getName(), code, owner.getDblTraceParameter(),
+			writeTraceRecord(owner.getName(), code, owner.getTraceParameter(),
 					String.format("Handle %d pushed onto stack", ctrlHandle));
 		}
 
@@ -132,7 +132,7 @@ public class ControlQueue {
 			pElem = pop(t, code, proxyHdl, hdl);
 			while (pElem != null) {
 				if (debugTrace) {
-					writeTraceRecord(pElem.getName(), code[0], pElem.getDblTraceParameter(),
+					writeTraceRecord(pElem.getName(), code[0], pElem.getTraceParameter(),
 							String.format("Pop Handle %d Do Nearest Action", hdl));
 				}
 				pElem.doPendingAction(code[0], proxyHdl[0]);
@@ -183,7 +183,7 @@ public class ControlQueue {
 		pElem = action.controlElement;
 		if (debugTrace) {
 			s = popped ? "by Pop function" : "by control device";
-			writeTraceRecord(pElem.getName(), action.actionCode, pElem.getDblTraceParameter(),
+			writeTraceRecord(pElem.getName(), action.actionCode, pElem.getTraceParameter(),
 					String.format("Handle %d deleted from queue %s", action.actionHandle, s));
 		}
 		actionList.remove(i);
@@ -203,7 +203,7 @@ public class ControlQueue {
 			ControlElem pElem = pop(t, code, proxyHdl, hdl);
 			while (pElem != null) {
 				if (debugTrace) {
-					writeTraceRecord(pElem.getName(), code[0], pElem.getDblTraceParameter(),
+					writeTraceRecord(pElem.getName(), code[0], pElem.getTraceParameter(),
 							String.format("Pop handle %d do action", hdl));
 				}
 				pElem.doPendingAction(code[0], proxyHdl[0]);

@@ -28,9 +28,9 @@ public class GenDispatcher extends ControlClass {
 
 	@Override
 	protected void defineProperties() {
-
 		numProperties = GenDispatcher.NumPropsThisClass;
 		countProperties();  // get inherited property count
+
 		allocatePropertyArrays();
 
 		// define property names
@@ -60,9 +60,8 @@ public class GenDispatcher extends ControlClass {
 	}
 
 	@Override
-	public int newObject(String ObjName) {
-
-		DSS.activeCircuit.setActiveCktElement(new GenDispatcherObj(this, ObjName));
+	public int newObject(String objName) {
+		DSS.activeCircuit.setActiveCktElement(new GenDispatcherObj(this, objName));
 		return addObjectToList(DSS.activeDSSObject);
 	}
 
@@ -74,13 +73,12 @@ public class GenDispatcher extends ControlClass {
 		activeGenDispatcherObj = (GenDispatcherObj) elementList.getActive();
 		DSS.activeCircuit.setActiveCktElement(activeGenDispatcherObj);
 
-		int result = 0;
-
-		GenDispatcherObj agd = activeGenDispatcherObj;
+		GenDispatcherObj elem = activeGenDispatcherObj;
 
 		int paramPointer = -1;
 		String paramName = parser.getNextParam();
 		String param = parser.makeString();
+
 		while (param.length() > 0) {
 			if (paramName.length() == 0) {
 				paramPointer += 1;
@@ -89,64 +87,64 @@ public class GenDispatcher extends ControlClass {
 			}
 
 			if (paramPointer >= 0 && paramPointer < numProperties)
-				agd.setPropertyValue(paramPointer, param);
+				elem.setPropertyValue(paramPointer, param);
 
 			switch (paramPointer) {
 			case -1:
-				DSS.doSimpleMsg("Unknown parameter \"" + paramName + "\" for object \"" + getClassName() +"."+ agd.getName() + "\"", 364);
+				DSS.doSimpleMsg("Unknown parameter \"" + paramName + "\" for object \"" +
+						getClassName() + "." + elem.getName() + "\"", 364);
 				break;
 			case 0:
-				agd.setElementName(param.toLowerCase());
+				elem.setElementName(param.toLowerCase());
 				break;
 			case 1:
-				agd.setElementTerminalIdx(parser.makeInteger() - 1);
+				elem.setElementTerminalIdx(parser.makeInteger() - 1);
 				break;
 			case 2:
-				agd.setKWLimit(parser.makeDouble());
+				elem.setKWLimit(parser.makeDouble());
 				break;
 			case 3:
-				agd.setKWBand(parser.makeDouble());
+				elem.setKWBand(parser.makeDouble());
 				break;
 			case 4:
-				agd.setKVArLimit(parser.makeDouble());
+				elem.setKVArLimit(parser.makeDouble());
 				break;
 			case 5:
-				Util.interpretStringListArray(param, agd.getGeneratorNameList());
+				Util.interpretStringListArray(param, elem.getGeneratorNames());
 				break;
 			case 6:
-				agd.setListSize(agd.getGeneratorNameList().size());
-				if (agd.getListSize() > 0) {
-					agd.setWeights( Util.resizeArray(agd.getWeights(), agd.getListSize()) );
+				elem.setListSize(elem.getGeneratorNames().size());
+				if (elem.getListSize() > 0) {
+					elem.setWeights(Util.resizeArray(elem.getWeights(), elem.getListSize()));
 
-					Util.interpretDblArray(param, agd.getListSize(), agd.getWeights());
+					Util.interpretDblArray(param, elem.getListSize(), elem.getWeights());
 				}
 				break;
 			default:
 				// inherited parameters
-				classEdit(activeGenDispatcherObj, paramPointer - GenDispatcher.NumPropsThisClass);
+				classEdit(activeGenDispatcherObj, paramPointer - NumPropsThisClass);
 				break;
 			}
 
 			switch (paramPointer) {
 			case 3:
-				agd.setHalfKWBand(agd.getKWBand() / 2.0);
+				elem.setHalfKWBand(elem.getKWBand() / 2.0);
 				break;
 			case 5:  // levelize the list
-				agd.getGenPointerList().clear();  // clear this for resetting on first sample
-				agd.setListSize(agd.getGeneratorNameList().size());
-				agd.setWeights( Util.resizeArray(agd.getWeights(), agd.getListSize()) );
-				for (int i = 0; i < agd.getListSize(); i++)
-					agd.getWeights()[i] = 1.0;
+				elem.getGenerators().clear();  // clear this for resetting on first sample
+				elem.setListSize(elem.getGeneratorNames().size());
+				elem.setWeights( Util.resizeArray(elem.getWeights(), elem.getListSize()) );
+				for (int i = 0; i < elem.getListSize(); i++)
+					elem.getWeights()[i] = 1.0;
 				break;
 			}
 
 			paramName = parser.getNextParam();
 			param = parser.makeString();
 		}
+		elem.recalcElementData();
 
-		agd.recalcElementData();
-
-		return result;
+		return 0;
 	}
 
 	@Override
@@ -157,29 +155,28 @@ public class GenDispatcher extends ControlClass {
 
 	@Override
 	protected int makeLike(String genDispatcherName) {
-		int result = 0;
-
 		/* See if we can find this GenDispatcher name in the present collection */
 		GenDispatcherObj otherGenDispatcher = (GenDispatcherObj) find(genDispatcherName);
+
 		if (otherGenDispatcher != null) {
-			GenDispatcherObj agd = activeGenDispatcherObj;
+			GenDispatcherObj elem = activeGenDispatcherObj;
 
-			agd.setNumPhases(otherGenDispatcher.getNumPhases());
-			agd.setNumConds(otherGenDispatcher.getNumConds());  // force reallocation of terminal stuff
+			elem.setNumPhases(otherGenDispatcher.getNumPhases());
+			elem.setNumConds(otherGenDispatcher.getNumConds());  // force reallocation of terminal stuff
 
-			agd.setElementName(otherGenDispatcher.getElementName());
-			agd.setControlledElement(otherGenDispatcher.getControlledElement());  // pointer to target circuit element
-			agd.setMonitoredElement(otherGenDispatcher.getMonitoredElement());  // pointer to target circuit element
+			elem.setElementName(otherGenDispatcher.getElementName());
+			elem.setControlledElement(otherGenDispatcher.getControlledElement());  // pointer to target circuit element
+			elem.setMonitoredElement(otherGenDispatcher.getMonitoredElement());  // pointer to target circuit element
 
-			agd.setElementTerminalIdx(otherGenDispatcher.getElementTerminalIdx());
+			elem.setElementTerminalIdx(otherGenDispatcher.getElementTerminalIdx());
 
-			for (int i = 0; i < agd.getParentClass().getNumProperties(); i++)
-				agd.setPropertyValue(i, otherGenDispatcher.getPropertyValue(i));
+			for (int i = 0; i < elem.getParentClass().getNumProperties(); i++)
+				elem.setPropertyValue(i, otherGenDispatcher.getPropertyValue(i));
 		} else {
 			DSS.doSimpleMsg("Error in GenDispatcher makeLike: \"" + genDispatcherName + "\" not found.", 370);
 		}
 
-		return result;
+		return 0;
 	}
 
 }

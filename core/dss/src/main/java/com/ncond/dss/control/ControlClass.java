@@ -30,10 +30,8 @@ public abstract class ControlClass extends CktElementClass {
 
 	@Override
 	protected int classEdit(DSSObject activeControlObj, int paramPointer) {
-
 		if (paramPointer >= 0)
 			super.classEdit(activeControlObj, paramPointer - numControlClassProps);
-
 		return 0;
 	}
 

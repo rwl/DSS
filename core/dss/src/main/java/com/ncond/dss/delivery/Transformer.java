@@ -218,22 +218,22 @@ public class Transformer extends PDClass {
 				interpretConnection(param);
 				break;
 			case 5:
-				at.getWinding()[at.getActiveWinding()].setKVLL(parser.makeDouble());
+				at.getWinding(at.getActiveWinding()).setKVLL(parser.makeDouble());
 				break;
 			case 6:
-				at.getWinding()[at.getActiveWinding()].setKVA(parser.makeDouble());
+				at.getWinding(at.getActiveWinding()).setKVA(parser.makeDouble());
 				break;
 			case 7:
-				at.getWinding()[at.getActiveWinding()].setPuTap(parser.makeDouble());
+				at.getWinding(at.getActiveWinding()).setPuTap(parser.makeDouble());
 				break;
 			case 8:
-				at.getWinding()[at.getActiveWinding()].setRpu(parser.makeDouble() * 0.01);  // %R
+				at.getWinding(at.getActiveWinding()).setRpu(parser.makeDouble() * 0.01);  // %R
 				break;
 			case 9:
-				at.getWinding()[at.getActiveWinding()].setRNeut(parser.makeDouble());
+				at.getWinding(at.getActiveWinding()).setRNeut(parser.makeDouble());
 				break;
 			case 10:
-				at.getWinding()[at.getActiveWinding()].setXNeut(parser.makeDouble());
+				at.getWinding(at.getActiveWinding()).setXNeut(parser.makeDouble());
 				break;
 			case 11:
 				interpretAllBuses(param);
@@ -293,13 +293,13 @@ public class Transformer extends PDClass {
 				at.setSubstation(Util.interpretYesNo(param));
 				break;
 			case 30:
-				at.getWinding()[at.getActiveWinding()].setMaxTap(parser.makeDouble());
+				at.getWinding(at.getActiveWinding()).setMaxTap(parser.makeDouble());
 				break;
 			case 31:
-				at.getWinding()[at.getActiveWinding()].setMinTap(parser.makeDouble());
+				at.getWinding(at.getActiveWinding()).setMinTap(parser.makeDouble());
 				break;
 			case 32:
-				at.getWinding()[at.getActiveWinding()].setNumTaps(parser.makeInteger());
+				at.getWinding(at.getActiveWinding()).setNumTaps(parser.makeInteger());
 				break;
 			case 33:
 				at.setSubstationName(param);
@@ -335,20 +335,20 @@ public class Transformer extends PDClass {
 				// default all winding kVAs to first winding so latter do not have to be specified
 				if (at.getActiveWinding() == 0) {
 					for (int i = 1; i < at.getNumWindings(); i++)
-						at.getWinding()[i].setKVA(at.getWinding()[0].getKVA());
-					at.setNormMaxHKVA(1.1 * at.getWinding()[0].getKVA());  // defaults for new winding rating
-					at.setEmergMaxHKVA(1.5 * at.getWinding()[0].getKVA());
+						at.getWinding(i).setKVA(at.getWinding(0).getKVA());
+					at.setNormMaxHKVA(1.1 * at.getWinding(0).getKVA());  // defaults for new winding rating
+					at.setEmergMaxHKVA(1.5 * at.getWinding(0).getKVA());
 				} else if (at.getNumWindings() == 2) {
-					at.getWinding()[0].setKVA(at.getWinding()[1].getKVA());  // for 2-winding, force both kVAs to be same
+					at.getWinding(0).setKVA(at.getWinding(1).getKVA());  // for 2-winding, force both kVAs to be same
 				}
 				break;
 			case 8:
 				// update loadLossKW if winding %r changed, using only windings 1 and 2
-				at.setPctLoadLoss( (at.getWinding()[0].getRpu() + at.getWinding()[1].getRpu()) * 100.0 );
+				at.setPctLoadLoss( (at.getWinding(0).getRpu() + at.getWinding(1).getRpu()) * 100.0 );
 				break;
 			case 14:
-				at.setNormMaxHKVA(1.1 * at.getWinding()[0].getKVA());  // defaults for new winding rating
-				at.setEmergMaxHKVA(1.5 * at.getWinding()[0].getKVA());
+				at.setNormMaxHKVA(1.1 * at.getWinding(0).getKVA());  // defaults for new winding rating
+				at.setEmergMaxHKVA(1.5 * at.getWinding(0).getKVA());
 				break;
 			case 16:
 				at.setXHLChanged(true);
@@ -364,11 +364,11 @@ public class Transformer extends PDClass {
 					at.getXSC()[i] = at.getXSC()[i] * 0.01;  // convert to per unit
 				break;
 			case 25:  // assume load loss is split evenly between windings 1 and 2
-				at.getWinding()[0].setRpu( at.getPctLoadLoss() / 2.0 / 100.0 );
-				at.getWinding()[1].setRpu( at.getWinding()[0].getRpu() );
+				at.getWinding(0).setRpu( at.getPctLoadLoss() / 2.0 / 100.0 );
+				at.getWinding(1).setRpu( at.getWinding(0).getRpu() );
 				break;
 			case 36:
-				at.setPctLoadLoss( (at.getWinding()[0].getRpu() + at.getWinding()[1].getRpu()) * 100.0 );  // update
+				at.setPctLoadLoss( (at.getWinding(0).getRpu() + at.getWinding(1).getRpu()) * 100.0 );  // update
 			}
 
 			// YPrim invalidation on anything that changes impedance values
@@ -413,7 +413,7 @@ public class Transformer extends PDClass {
 	 */
 	private void interpretConnection(String s) {
 		TransformerObj at = activeTransfObj;
-		Winding aw = at.getWinding()[ at.getActiveWinding() ];
+		Winding aw = at.getWinding(at.getActiveWinding());
 
 		switch (s.toLowerCase().charAt(0)) {
 		case 'y':
@@ -494,7 +494,7 @@ public class Transformer extends PDClass {
 			DSS.auxParser.getNextParam();  // ignore any parameter name  not expecting any
 			dataStr = DSS.auxParser.makeString();
 			if (dataStr.length() > 0)
-				at.getWinding()[at.getActiveWinding()].setKVLL(DSS.auxParser.makeDouble());
+				at.getWinding(at.getActiveWinding()).setKVLL(DSS.auxParser.makeDouble());
 		}
 	}
 
@@ -513,7 +513,7 @@ public class Transformer extends PDClass {
 			DSS.auxParser.getNextParam();  // ignore any parameter name not expecting any
 			dataStr = DSS.auxParser.makeString();
 			if (dataStr.length() > 0)
-				at.getWinding()[at.getActiveWinding()].setKVA(DSS.auxParser.makeDouble());
+				at.getWinding(at.getActiveWinding()).setKVA(DSS.auxParser.makeDouble());
 		}
 	}
 
@@ -532,7 +532,7 @@ public class Transformer extends PDClass {
 			DSS.auxParser.getNextParam();  // ignore any parameter name not expecting any
 			dataStr = DSS.auxParser.makeString();
 			if (dataStr.length() > 0)
-				at.getWinding()[at.getActiveWinding()].setRpu(DSS.auxParser.makeDouble() * 0.01);
+				at.getWinding(at.getActiveWinding()).setRpu(DSS.auxParser.makeDouble() * 0.01);
 		}
 	}
 
@@ -551,7 +551,7 @@ public class Transformer extends PDClass {
 			DSS.auxParser.getNextParam();  // ignore any parameter name, not expecting any
 			dataStr = DSS.auxParser.makeString();
 			if (dataStr.length() > 0)
-				at.getWinding()[at.getActiveWinding()].setPuTap(DSS.auxParser.makeDouble());
+				at.getWinding(at.getActiveWinding()).setPuTap(DSS.auxParser.makeDouble());
 		}
 	}
 
@@ -573,20 +573,20 @@ public class Transformer extends PDClass {
 			at.setYPrimInvalid(true);
 
 			for (i = 0; i < at.getNumWindings(); i++) {
-				Winding w = at.getWinding()[i];
-				w.setConnection(otherTransf.getWinding()[i].getConnection());
-				w.setKVLL(otherTransf.getWinding()[i].getKVLL());
-				w.setVBase(otherTransf.getWinding()[i].getVBase());
-				w.setKVA(otherTransf.getWinding()[i].getKVA());
-				w.setPuTap(otherTransf.getWinding()[i].getPuTap());
-				w.setRpu(otherTransf.getWinding()[i].getRpu());
-				w.setRNeut(otherTransf.getWinding()[i].getRNeut());
-				w.setXNeut(otherTransf.getWinding()[i].getXNeut());
+				Winding w = at.getWinding(i);
+				w.setConnection(otherTransf.getWinding(i).getConnection());
+				w.setKVLL(otherTransf.getWinding(i).getKVLL());
+				w.setVBase(otherTransf.getWinding(i).getVBase());
+				w.setKVA(otherTransf.getWinding(i).getKVA());
+				w.setPuTap(otherTransf.getWinding(i).getPuTap());
+				w.setRpu(otherTransf.getWinding(i).getRpu());
+				w.setRNeut(otherTransf.getWinding(i).getRNeut());
+				w.setXNeut(otherTransf.getWinding(i).getXNeut());
 				// copy the taps
-				w.setTapIncrement(otherTransf.getWinding()[i].getTapIncrement());
-				w.setMinTap(otherTransf.getWinding()[i].getMinTap());
-				w.setMaxTap(otherTransf.getWinding()[i].getMaxTap());
-				w.setNumTaps(otherTransf.getWinding()[i].getNumTaps());
+				w.setTapIncrement(otherTransf.getWinding(i).getTapIncrement());
+				w.setMinTap(otherTransf.getWinding(i).getMinTap());
+				w.setMaxTap(otherTransf.getWinding(i).getMaxTap());
+				w.setNumTaps(otherTransf.getWinding(i).getNumTaps());
 			}
 
 			at.setTermRef();

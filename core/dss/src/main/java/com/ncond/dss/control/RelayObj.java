@@ -199,8 +199,8 @@ public class RelayObj extends ControlElem {
 						DSS.doSimpleMsg("Relay "+getName()+": Monitored element for generic relay is not a PC element.", 385);
 					} else {
 						PCElement pElem = (PCElement) monitoredElement;
-						monitorVarIndex = pElem.lookupVariable(monitorVariable);
-						if (monitorVarIndex < 0)
+						monitorVarIdx = pElem.lookupVariable(monitorVariable);
+						if (monitorVarIdx < 0)
 							DSS.doSimpleMsg("Relay "+getName()+": Monitor variable \""+monitorVariable+"\" does not exist.", 386);
 					}
 					break;
@@ -556,13 +556,13 @@ public class RelayObj extends ControlElem {
 	private void genericLogic() {
 		Circuit ckt;
 		PCElement pElem = (PCElement) monitoredElement;
-		double varValue = pElem.getVariable(monitorVarIndex);
+		double varValue = pElem.getVariable(monitorVarIdx);
 
 		/* Check for trip */
 		if (varValue >  overTrip || varValue < underTrip) {
 			if (!armedForOpen) {  // push the trip operation and arm to trip
 				ckt = DSS.activeCircuit;
-				relayTarget = pElem.variableName(monitorVarIndex);
+				relayTarget = pElem.variableName(monitorVarIdx);
 				lastEventHandle = ckt.getControlQueue().push(ckt.getSolution().getIntHour(), ckt.getSolution().getDynaVars().t + delayTime + breakerTime, ControlAction.OPEN, 0, this);
 				operationCount = numReclose + 1;  // force a lockout
 				armedForOpen = true;

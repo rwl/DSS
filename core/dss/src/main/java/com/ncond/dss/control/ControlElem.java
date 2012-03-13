@@ -5,7 +5,6 @@ import lombok.Setter;
 
 import com.ncond.dss.common.Bus;
 import com.ncond.dss.common.CktElement;
-import com.ncond.dss.common.DSS;
 import com.ncond.dss.common.DSSClass;
 import com.ncond.dss.common.DSSClassDefs;
 
@@ -22,17 +21,17 @@ abstract public class ControlElem extends CktElement {
 	protected String controlledBusName;
 	protected Bus controlledBus;
 	protected String monitorVariable;
-	protected int monitorVarIndex;
-	protected double timeDelay, dblTraceParameter;
+	protected int monitorVarIdx;
+	protected double timeDelay, traceParameter;
 	protected boolean showEventLog;
 
 	public ControlElem(DSSClass parClass) {
 		super(parClass);
 
 		objType = DSSClassDefs.CTRL_ELEMENT;
-		dblTraceParameter = 0.0;
+		traceParameter = 0.0;
 		monitorVariable = "";
-		monitorVarIndex = 0;
+		monitorVarIdx = 0;
 		controlledElement = null;
 		showEventLog = true;
 	}
@@ -40,20 +39,14 @@ abstract public class ControlElem extends CktElement {
 	/**
 	 * Do the action that is pending from last sample.
 	 */
-	public void doPendingAction(int code, int proxyHdl) {
-		DSS.doSimpleMsg("Programming error: Reached base class for doPendingAction."+DSS.CRLF+"Device: "+getDSSClassName()+"."+getName(), 460);
-	}
+	abstract public void doPendingAction(int code, int proxyHdl);
 
-	public void reset() {
-		DSS.doSimpleMsg("Programming error: Reached base class for reset."+DSS.CRLF+"Device: "+getDSSClassName()+"."+getName(), 461);
-	}
+	abstract public void reset();
 
 	/**
 	 * Sample control quantities and set action times in control queue.
 	 */
-	public void sample() {
-		DSS.doSimpleMsg("Programming error: Reached base class for sample."+DSS.CRLF+"Device: "+getDSSClassName()+"."+getName(), 462);
-	}
+	abstract public void sample();
 
 	public void setControlledElement(CktElement value) {
 		try {

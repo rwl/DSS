@@ -310,40 +310,40 @@ public class CapControl extends ControlClass {
 		/* See if we can find this CapControl name in the present collection */
 		CapControlObj other = (CapControlObj) find(capControlName);
 		if (other != null) {
-			CapControlObj acc = activeCapControlObj;
+			CapControlObj elem = activeCapControlObj;
 
-			acc.setNumPhases(other.getNumPhases());
-			acc.setNumConds(other.getNumConds());  // force reallocation of terminal stuff
+			elem.setNumPhases(other.getNumPhases());
+			elem.setNumConds(other.getNumConds());  // force reallocation of terminal stuff
 
-			acc.setElementName(other.getElementName());
-			acc.setCapacitorName(other.getCapacitorName());
-			acc.setControlledElement(other.getControlledElement());  // target circuit element
-			acc.setMonitoredElement(other.getMonitoredElement());    // target circuit element
+			elem.setElementName(other.getElementName());
+			elem.setCapacitorName(other.getCapacitorName());
+			elem.setControlledElement(other.getControlledElement());  // target circuit element
+			elem.setMonitoredElement(other.getMonitoredElement());    // target circuit element
 
-			acc.setElementTerminalIdx(other.getElementTerminalIdx());
-			acc.setPTRatio(other.getPTRatio());
-			acc.setCTRatio(other.getCTRatio());
-			acc.setControlType(other.getControlType());
-			acc.setPresentState(other.getPresentState());
-			acc.setShouldSwitch(other.isShouldSwitch());
-			acc.setCondOffset(other.getCondOffset());
+			elem.setElementTerminalIdx(other.getElementTerminalIdx());
+			elem.setPTRatio(other.getPTRatio());
+			elem.setCTRatio(other.getCTRatio());
+			elem.setControlType(other.getControlType());
+			elem.setPresentState(other.getPresentState());
+			elem.setShouldSwitch(other.isShouldSwitch());
+			elem.setCondOffset(other.getCondOffset());
 
-			acc.setOnValue(other.getOnValue());
-			acc.setOffValue(other.getOffValue());
-			acc.setPFOnValue(other.getPFOnValue());
-			acc.setPFOffValue(other.getPFOffValue());
+			elem.setOnValue(other.getOnValue());
+			elem.setOffValue(other.getOffValue());
+			elem.setPFOnValue(other.getPFOnValue());
+			elem.setPFOffValue(other.getPFOffValue());
 
-			acc.setCTPhaseIdx(other.getCTPhaseIdx());
-			acc.setPTPhaseIdx(other.getPTPhaseIdx());
+			elem.setCTPhaseIdx(other.getCTPhaseIdx());
+			elem.setPTPhaseIdx(other.getPTPhaseIdx());
 
-			acc.setVOverride(other.isVOverride());
-			acc.setVOverrideBusSpecified(other.isVOverrideBusSpecified());
-			acc.setVOverrideBusName(other.getVOverrideBusName());
+			elem.setVOverride(other.isVOverride());
+			elem.setVOverrideBusSpecified(other.isVOverrideBusSpecified());
+			elem.setVOverrideBusName(other.getVOverrideBusName());
 
-		        acc.setShowEventLog(other.isShowEventLog());
+		        elem.setShowEventLog(other.isShowEventLog());
 
-			for (i = 0; i < acc.getParentClass().getNumProperties(); i++)
-				acc.setPropertyValue(i, other.getPropertyValue(i));
+			for (i = 0; i < elem.getParentClass().getNumProperties(); i++)
+				elem.setPropertyValue(i, other.getPropertyValue(i));
 		} else {
 			DSS.doSimpleMsg("Error in CapControl makeLike: \"" + capControlName + "\" not found.", 360);
 		}

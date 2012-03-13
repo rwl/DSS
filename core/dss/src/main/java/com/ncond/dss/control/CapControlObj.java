@@ -817,7 +817,7 @@ public class CapControlObj extends ControlElem {
 
 	public void setPendingChange(ControlAction value) {
 		pendingChange = value;
-		dblTraceParameter = value.code();
+		traceParameter = value.code();
 	}
 
 }

@@ -509,7 +509,7 @@ public class VVControlObj extends ControlElem {
 
 	public void setPendingChange(final int Value) {
 		pendingChange = Value;
-		setDblTraceParameter(Value);
+		setTraceParameter(Value);
 	}
 
 	@Override

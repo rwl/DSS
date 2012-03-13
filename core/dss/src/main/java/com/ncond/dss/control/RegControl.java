@@ -3,6 +3,7 @@ package com.ncond.dss.control;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
+import java.io.IOException;
 
 import com.ncond.dss.common.DSS;
 import com.ncond.dss.common.DSSClassDefs;
@@ -13,11 +14,11 @@ import com.ncond.dss.shared.CommandList;
 public class RegControl extends ControlClass {
 
 	public static final int AVGPHASES = -1;
-	public static final int MAXPHASE  = -2;
-	public static final int MINPHASE  = -3;
+	public static final int MAXPHASE = -2;
+	public static final int MINPHASE = -3;
 
 	public static final int ACTION_TAPCHANGE = 0;
-	public static final int ACTION_REVERSE   = 1;
+	public static final int ACTION_REVERSE = 1;
 
 	public static final int NumPropsThisClass = 26;
 
@@ -26,7 +27,7 @@ public class RegControl extends ControlClass {
 	public RegControl() {
 		super();
 
-		className   = "RegControl";
+		className = "RegControl";
 		classType = classType + DSSClassDefs.REG_CONTROL;
 
 		defineProperties();
@@ -39,9 +40,9 @@ public class RegControl extends ControlClass {
 
 	@Override
 	protected void defineProperties() {
-
 		numProperties = RegControl.NumPropsThisClass;
 		countProperties();  // get inherited property count
+
 		allocatePropertyArrays();
 
 		// define property names
@@ -141,13 +142,12 @@ public class RegControl extends ControlClass {
 		activeRegControlObj = (RegControlObj) elementList.getActive();
 		DSS.activeCircuit.setActiveCktElement(activeRegControlObj);
 
-		int result = 0;
-
-		RegControlObj arc = activeRegControlObj;
+		RegControlObj elem = activeRegControlObj;
 
 		int paramPointer = -1;
 		String paramName = parser.getNextParam();
 		String param = parser.makeString();
+
 		while (param.length() > 0) {
 			if (paramName.length() == 0) {
 				paramPointer += 1;
@@ -156,129 +156,131 @@ public class RegControl extends ControlClass {
 			}
 
 			if (paramPointer >= 0 && (paramPointer < numProperties))
-				arc.setPropertyValue(paramPointer, param);
+				elem.setPropertyValue(paramPointer, param);
 
 			switch (paramPointer) {
 			case -1:
-				DSS.doSimpleMsg("Unknown parameter \"" + paramName + "\" for object \"" + getClassName() +"."+ arc.getName() + "\"", 120);
+				DSS.doSimpleMsg("Unknown parameter \"" + paramName + "\" for object \"" +
+						getClassName() +"."+ elem.getName() + "\"", 120);
 				break;
 			case 0:
-				arc.setElementName("Transformer." + param.toLowerCase());
+				elem.setElementName("Transformer." + param.toLowerCase());
 				break;
 			case 1:
-				arc.setElementTerminalIdx(parser.makeInteger() - 1);
+				elem.setElementTerminalIdx(parser.makeInteger() - 1);
 				break;
 			case 2:
-				arc.setVreg(parser.makeDouble());
+				elem.setVreg(parser.makeDouble());
 				break;
 			case 3:
-				arc.setBandwidth(parser.makeDouble());
+				elem.setBandwidth(parser.makeDouble());
 				break;
 			case 4:
-				arc.setPTRatio(parser.makeDouble());
+				elem.setPTRatio(parser.makeDouble());
 				break;
 			case 5:
-				arc.setCTRating(parser.makeDouble());
+				elem.setCTRating(parser.makeDouble());
 				break;
 			case 6:
-				arc.setR(parser.makeDouble());
+				elem.setR(parser.makeDouble());
 				break;
 			case 7:
-				arc.setX(parser.makeDouble());
+				elem.setX(parser.makeDouble());
 				break;
 			case 8:
-				arc.setRegulatedBus(param);
+				elem.setRegulatedBus(param);
 				break;
 			case 9:
-				arc.setTimeDelay(parser.makeDouble());
+				elem.setTimeDelay(parser.makeDouble());
 				break;
 			case 10:
-				arc.setReversible(Util.interpretYesNo(param));
+				elem.setReversible(Util.interpretYesNo(param));
 				break;
 			case 11:
-				arc.setRevVreg(parser.makeDouble());
+				elem.setRevVreg(parser.makeDouble());
 				break;
 			case 12:
-				arc.setRevBandwidth(parser.makeDouble());
+				elem.setRevBandwidth(parser.makeDouble());
 				break;
 			case 13:
-				arc.setRevR(parser.makeDouble());
+				elem.setRevR(parser.makeDouble());
 				break;
 			case 14:
-				arc.setRevX(parser.makeDouble());
+				elem.setRevX(parser.makeDouble());
 				break;
 			case 15:
-				arc.setTapDelay(parser.makeDouble());
+				elem.setTapDelay(parser.makeDouble());
 				break;
 			case 16:
-				arc.setDebugTrace(Util.interpretYesNo(param));
+				elem.setDebugTrace(Util.interpretYesNo(param));
 				break;
 			case 17:
-				arc.setTapLimitPerChange(Math.max(0, parser.makeInteger()));
+				elem.setTapLimitPerChange(Math.max(0, parser.makeInteger()));
 				break;
 			case 18:
-				arc.setInverseTime(Util.interpretYesNo(param));
+				elem.setInverseTime(Util.interpretYesNo(param));
 				break;
 			case 19:
-				arc.setTapWindingIdx(parser.makeInteger() - 1);
+				elem.setTapWindingIdx(parser.makeInteger() - 1);
 				break;
 			case 20:
-				arc.setVLimit(parser.makeDouble());
-				if (arc.getVLimit() > 0.0) {
-					arc.setVLimitActive(true);
+				elem.setVLimit(parser.makeDouble());
+				if (elem.getVLimit() > 0.0) {
+					elem.setVLimitActive(true);
 				} else {
-					arc.setVLimitActive(false);
+					elem.setVLimitActive(false);
 				}
 				break;
 			case 21:
 				if (Util.compareTextShortest(param, "max") == 0) {
-					arc.setPTPhase(MAXPHASE);
+					elem.setPTPhaseIdx(MAXPHASE);
 				} else if (Util.compareTextShortest(param, "min") == 0) {
-					arc.setPTPhase(MINPHASE);
+					elem.setPTPhaseIdx(MINPHASE);
 				} else {
-					arc.setPTPhase(Math.max(1, parser.makeInteger()));
+					elem.setPTPhaseIdx(Math.max(0, parser.makeInteger() - 1));
 				}
 				break;
 			case 22:
-				arc.setKWRevPowerThreshold(parser.makeDouble());
+				elem.setKWRevPowerThreshold(parser.makeDouble());
 				break;
 			case 23:
-				arc.setRevDelay(parser.makeDouble());
+				elem.setRevDelay(parser.makeDouble());
 				break;
 			case 24:
-				arc.setReverseNeutral(Util.interpretYesNo(param));
+				elem.setReverseNeutral(Util.interpretYesNo(param));
 				break;
 			case 25:
-				arc.setShowEventLog(Util.interpretYesNo(param));
+				elem.setShowEventLog(Util.interpretYesNo(param));
 			default:
 				// inherited parameters
-				classEdit(activeRegControlObj, paramPointer - RegControl.NumPropsThisClass);
+				classEdit(activeRegControlObj, paramPointer - NumPropsThisClass);
 				break;
 			}
 
 			switch (paramPointer) {
 			case 1:
-				arc.setTapWindingIdx(arc.getElementTerminalIdx());  // resets if property re-assigned
-				arc.setPropertyValue(19, param);
+				elem.setTapWindingIdx(elem.getElementTerminalIdx());  // resets if property re-assigned
+				elem.setPropertyValue(19, param);
 				break;
 			case 16:
-				if (arc.isDebugTrace()) {
+				if (elem.isDebugTrace()) {
 					try {
-						File TraceFile = new File(DSS.dataDirectory + "REG_"+arc.getName()+".csv");
-						FileWriter TraceStream = new FileWriter(TraceFile, false);
-						BufferedWriter TraceBuffer = new BufferedWriter(TraceStream);
+						File file = new File(DSS.dataDirectory + "REG_" + elem.getName() + ".csv");
+						FileWriter fw = new FileWriter(file, false);
+						BufferedWriter bw = new BufferedWriter(fw);
 
-						TraceBuffer.write("Hour, Sec, ControlIteration, Iterations, LoadMultiplier, Present Tap, Pending Change, Actual Change, Increment, Min Tap, Max Tap");
-						TraceBuffer.newLine();
-						TraceBuffer.close();
-						TraceStream.close();
-					} catch (Exception e) {
-						// TODO: handle exception
+						bw.write("Hour, Sec, ControlIteration, Iterations, LoadMultiplier, Present Tap, " +
+							"Pending Change, Actual Change, Increment, Min Tap, Max Tap");
+						bw.newLine();
+						bw.close();
+						fw.close();
+					} catch (IOException e) {
+						DSS.doSimpleMsg("Error writing RegControl debug trace: " + e.getMessage(), -1);
 					}
 				}
 				break;
 			case 22:
-				arc.setRevPowerThreshold(arc.getKWRevPowerThreshold() * 1000.0);
+				elem.setRevPowerThreshold(elem.getKWRevPowerThreshold() * 1000.0);
 				break;
 			}
 
@@ -286,61 +288,59 @@ public class RegControl extends ControlClass {
 			param = parser.makeString();
 		}
 
-		arc.recalcElementData();
+		elem.recalcElementData();
 
-		return result;
+		return 0;
 	}
 
 	@Override
 	protected int makeLike(String regControlName) {
-		int result = 0;
-
 		/* See if we can find this RegControl name in the present collection */
-		RegControlObj otherRegControl = (RegControlObj) find(regControlName);
-		if (otherRegControl != null) {
+		RegControlObj other = (RegControlObj) find(regControlName);
 
-			RegControlObj arc = activeRegControlObj;
+		if (other != null) {
+			RegControlObj elem = activeRegControlObj;
 
-			arc.setNumPhases(otherRegControl.getNumPhases());
-			arc.setNumConds(otherRegControl.getNumConds());  // force reallocation of terminal stuff
+			elem.setNumPhases(other.getNumPhases());
+			elem.setNumConds(other.getNumConds());  // force reallocation of terminal stuff
 
-			arc.setElementName(otherRegControl.getElementName());
-			arc.setControlledElement(otherRegControl.getControlledElement());  // pointer to target circuit element
-			arc.setElementTerminalIdx(otherRegControl.getElementTerminalIdx());
-			arc.setVreg(otherRegControl.getVreg());
-			arc.setBandwidth(otherRegControl.getBandwidth());
-			arc.setPTRatio(otherRegControl.getPTRatio());
-			arc.setCTRating(otherRegControl.getCTRating());
-			arc.setR(otherRegControl.getR());
-			arc.setX(otherRegControl.getX());
-			arc.setRegulatedBus(otherRegControl.getRegulatedBus());
-			arc.setTimeDelay(otherRegControl.getTimeDelay());
-			arc.setReversible(otherRegControl.isReversible());
-			arc.setRevVreg(otherRegControl.getRevVreg());
-			arc.setRevBandwidth(otherRegControl.getRevBandwidth());
-			arc.setRevR(otherRegControl.getRevR());
-			arc.setRevX(otherRegControl.getRevX());
-			arc.setTapDelay(otherRegControl.getTapDelay());
-			arc.setTapWindingIdx(otherRegControl.getTapWindingIdx());
-			arc.setInverseTime(otherRegControl.isInverseTime());
-			arc.setTapLimitPerChange(otherRegControl.getTapLimitPerChange());
-			arc.setTapLimitPerChange(otherRegControl.getTapLimitPerChange());
-			arc.setKWRevPowerThreshold(otherRegControl.getKWRevPowerThreshold());
-			arc.setRevPowerThreshold(otherRegControl.getRevPowerThreshold());
-			arc.setRevDelay(otherRegControl.getRevDelay());
-			arc.setReverseNeutral(otherRegControl.isReverseNeutral());
-			arc.setShowEventLog(otherRegControl.isShowEventLog());
+			elem.setElementName(other.getElementName());
+			elem.setControlledElement(other.getControlledElement());  // pointer to target circuit element
+			elem.setElementTerminalIdx(other.getElementTerminalIdx());
+			elem.setVreg(other.getVreg());
+			elem.setBandwidth(other.getBandwidth());
+			elem.setPTRatio(other.getPTRatio());
+			elem.setCTRating(other.getCTRating());
+			elem.setR(other.getR());
+			elem.setX(other.getX());
+			elem.setRegulatedBus(other.getRegulatedBus());
+			elem.setTimeDelay(other.getTimeDelay());
+			elem.setReversible(other.isReversible());
+			elem.setRevVreg(other.getRevVreg());
+			elem.setRevBandwidth(other.getRevBandwidth());
+			elem.setRevR(other.getRevR());
+			elem.setRevX(other.getRevX());
+			elem.setTapDelay(other.getTapDelay());
+			elem.setTapWindingIdx(other.getTapWindingIdx());
+			elem.setInverseTime(other.isInverseTime());
+			elem.setTapLimitPerChange(other.getTapLimitPerChange());
+			elem.setTapLimitPerChange(other.getTapLimitPerChange());
+			elem.setKWRevPowerThreshold(other.getKWRevPowerThreshold());
+			elem.setRevPowerThreshold(other.getRevPowerThreshold());
+			elem.setRevDelay(other.getRevDelay());
+			elem.setReverseNeutral(other.isReverseNeutral());
+			elem.setShowEventLog(other.isShowEventLog());
 			//arc.setDebugTrace(OtherRegControl.isDebugTrace();  always default to no
 
-			arc.setPTPhase(otherRegControl.getPTPhase());
+			elem.setPTPhaseIdx(other.getPTPhaseIdx());
 
-			for (int i = 0; i < arc.getParentClass().getNumProperties(); i++)
-				arc.setPropertyValue(i, otherRegControl.getPropertyValue(i));
+			for (int i = 0; i < elem.getParentClass().getNumProperties(); i++)
+				elem.setPropertyValue(i, other.getPropertyValue(i));
 		} else {
-			DSS.doSimpleMsg("Error in RegControl makeLike: \"" + regControlName + "\" not found.",121);
+			DSS.doSimpleMsg("Error in RegControl makeLike: \"" + regControlName + "\" not found.", 121);
 		}
 
-		return result;
+		return 0;
 	}
 
 	@Override

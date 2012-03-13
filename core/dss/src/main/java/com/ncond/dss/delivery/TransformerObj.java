@@ -1303,4 +1303,8 @@ public class TransformerObj extends PDElement {
 		return XSC;
 	}
 
+	public Winding getWinding(int idx) {
+		return winding[idx];
+	}
+
 }
