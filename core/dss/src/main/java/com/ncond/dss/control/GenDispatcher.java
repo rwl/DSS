@@ -99,7 +99,7 @@ public class GenDispatcher extends ControlClass {
 				agd.setElementName(param.toLowerCase());
 				break;
 			case 1:
-				agd.setElementTerminal(parser.makeInteger());
+				agd.setElementTerminalIdx(parser.makeInteger() - 1);
 				break;
 			case 2:
 				agd.setKWLimit(parser.makeDouble());
@@ -171,7 +171,7 @@ public class GenDispatcher extends ControlClass {
 			agd.setControlledElement(otherGenDispatcher.getControlledElement());  // pointer to target circuit element
 			agd.setMonitoredElement(otherGenDispatcher.getMonitoredElement());  // pointer to target circuit element
 
-			agd.setElementTerminal(otherGenDispatcher.getElementTerminal());
+			agd.setElementTerminalIdx(otherGenDispatcher.getElementTerminalIdx());
 
 			for (int i = 0; i < agd.getParentClass().getNumProperties(); i++)
 				agd.setPropertyValue(i, otherGenDispatcher.getPropertyValue(i));

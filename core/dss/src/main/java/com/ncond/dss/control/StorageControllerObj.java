@@ -103,7 +103,7 @@ public class StorageControllerObj extends ControlElem {
 
 		elementName       = "";
 		setControlledElement(null);  // not used in this control
-		elementTerminal   = 0;
+		elementTerminalIdx   = 0;
 		monitoredElement  = null;
 
 		storageNameList  = new ArrayList<String>();
@@ -301,7 +301,7 @@ public class StorageControllerObj extends ControlElem {
 		int devIndex = Util.getCktElementIndex(elementName);
 		if (devIndex >= 0) {
 			monitoredElement = DSS.activeCircuit.getCktElements().get(devIndex);
-			if (elementTerminal > monitoredElement.getNumTerms()) {
+			if (elementTerminalIdx > monitoredElement.getNumTerms()) {
 				DSS.doErrorMsg("StorageController: \"" + getName() + "\"",
 						"Terminal no. \"" +"\" does not exist.",
 						"Re-specify terminal no.", 371);
@@ -309,7 +309,7 @@ public class StorageControllerObj extends ControlElem {
 				setNumPhases( monitoredElement.getNumPhases() );
 				setNumConds(nPhases);
 				// sets name of i-th terminal's connected bus in StorageController's bus list
-				setBus(0, monitoredElement.getBus(elementTerminal));
+				setBus(0, monitoredElement.getBus(elementTerminalIdx));
 			}
 		} else {
 			DSS.doSimpleMsg("Monitored element in StorageController."+getName()+ " does not exist:\""+elementName+"\"", 372);
@@ -339,7 +339,7 @@ public class StorageControllerObj extends ControlElem {
 		if (monitoredElement != null) {
 			setNumPhases( monitoredElement.getNumPhases() );
 			setNumConds(nPhases);
-			setBus(0, monitoredElement.getBus(elementTerminal));
+			setBus(0, monitoredElement.getBus(elementTerminalIdx));
 		}
 		super.makePosSequence();
 	}
@@ -624,7 +624,7 @@ public class StorageControllerObj extends ControlElem {
 			skipKWDispatch   = false;
 
 			//MonitoredElement.ActiveTerminalIdx = ElementTerminal;
-			S = monitoredElement.getPower(elementTerminal);  // power in active terminal
+			S = monitoredElement.getPower(elementTerminalIdx);  // power in active terminal
 			switch (dischargeMode) {
 			// following load; try to keep load below kW Target
 			case StorageController.FOLLOW:

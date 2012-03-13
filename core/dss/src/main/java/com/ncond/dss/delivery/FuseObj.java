@@ -37,7 +37,7 @@ public class FuseObj extends ControlElem {
 	private double delayTime;
 
 	private String monitoredElementName;
-	private int monitoredElementTerminal;
+	private int monitoredElementTerminalIdx;
 	private CktElement monitoredElement;
 
 	/* Handle to control queue actions */
@@ -64,10 +64,10 @@ public class FuseObj extends ControlElem {
 
 		elementName = "";
 		setControlledElement(null);
-		elementTerminal = 0;
+		elementTerminalIdx = 0;
 
 		monitoredElementName = "";
-		monitoredElementTerminal = 0;
+		monitoredElementTerminalIdx = 0;
 		monitoredElement = null;
 
 		fuseCurve = Fuse.getTccCurve("tlink");
@@ -100,16 +100,16 @@ public class FuseObj extends ControlElem {
 			setNumPhases( monitoredElement.getNumPhases() );  // force number of phases to be same
 			if (getNumPhases() > Fuse.FUSEMAXDIM)
 				DSS.doSimpleMsg("Warning: Fuse "+getName()+": Number of phases > max fuse dimension.", 404);
-			if (monitoredElementTerminal >= monitoredElement.getNumTerms()) {
+			if (monitoredElementTerminalIdx >= monitoredElement.getNumTerms()) {
 				DSS.doErrorMsg("Fuse: \"" + getName() + "\"",
 						"Terminal no. \"" +"\" does not exist.",
 						"Re-specify terminal no.", 404);
 			} else {
 				// sets name of i-th terminal's connected bus in fuse's bus list
-				setBus(0, monitoredElement.getBus(monitoredElementTerminal));
+				setBus(0, monitoredElement.getBus(monitoredElementTerminalIdx));
 				// allocate a buffer big enough to hold everything from the monitored element
 				cBuffer = Util.resizeArray(cBuffer, monitoredElement.getYOrder());
-				condOffset = monitoredElementTerminal * monitoredElement.getNumConds();  // for speedy sampling
+				condOffset = monitoredElementTerminalIdx * monitoredElement.getNumConds();  // for speedy sampling
 			}
 		}
 
@@ -118,7 +118,7 @@ public class FuseObj extends ControlElem {
 		devIndex = Util.getCktElementIndex(elementName);
 		if (devIndex >= 0) {  // both CktElement and monitored element must already exist
 			setControlledElement( DSS.activeCircuit.getCktElements().get(devIndex) );
-			getControlledElement().setActiveTerminalIdx(elementTerminal);  // make the 1st terminal active
+			getControlledElement().setActiveTerminalIdx(elementTerminalIdx);  // make the 1st terminal active
 
 			for (i = 0; i < Math.min(Fuse.FUSEMAXDIM, getControlledElement().getNumPhases()); i++) {
 				if (getControlledElement().isConductorClosed(i)) {  // check state of i-th phase of active terminal
@@ -174,7 +174,7 @@ public class FuseObj extends ControlElem {
 	@Override
 	public void doPendingAction(int phs, int proxyHdl) {
 		if (phs <= Fuse.FUSEMAXDIM) {
-			getControlledElement().setActiveTerminalIdx(elementTerminal);  // set active terminal of CktElement to terminal 1
+			getControlledElement().setActiveTerminalIdx(elementTerminalIdx);  // set active terminal of CktElement to terminal 1
 			switch (presentState[phs]) {
 			case CLOSE:
 				if (readyToBlow[phs]) {  // ignore if we became disarmed in meantime
@@ -192,7 +192,7 @@ public class FuseObj extends ControlElem {
 
 	public void interpretFuseAction(String action) {
 		if (getControlElement() != null) {
-			getControlledElement().setActiveTerminalIdx(elementTerminal);  // set active terminal
+			getControlledElement().setActiveTerminalIdx(elementTerminalIdx);  // set active terminal
 			switch (action.toLowerCase().charAt(0)) {
 			case 'o':
 				getControlledElement().setConductorClosed(0, false);  // open all phases of active terminal   TODO Check zero based indexing
@@ -215,7 +215,7 @@ public class FuseObj extends ControlElem {
 		double CMag;
 		double tripTime;
 
-		getControlledElement().setActiveTerminalIdx(elementTerminal);
+		getControlledElement().setActiveTerminalIdx(elementTerminalIdx);
 		monitoredElement.getCurrents(cBuffer);
 
 		for (int i = 0; i < Math.min(Fuse.FUSEMAXDIM, monitoredElement.getNumPhases()); i++) {
@@ -288,7 +288,7 @@ public class FuseObj extends ControlElem {
 				readyToBlow[i] = false;
 			for (i = 0; i < Math.min(Fuse.FUSEMAXDIM, getControlledElement().getNumPhases()); i++)
 				hAction[i] = 0;
-			getControlledElement().setActiveTerminalIdx(elementTerminal);  // set active terminal
+			getControlledElement().setActiveTerminalIdx(elementTerminalIdx);  // set active terminal
 			getControlledElement().setConductorClosed(0, true);            // close all phases of active terminal
 		}
 	}

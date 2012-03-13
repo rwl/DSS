@@ -54,7 +54,7 @@ public class GenDispatcherObj extends ControlElem {
 
 		elementName   = "";
 		setControlledElement(null);  // not used in this control
-		elementTerminal  = 1;
+		elementTerminalIdx  = 1;
 		monitoredElement = null;
 
 		generatorNameList = new ArrayList<String>();
@@ -79,13 +79,13 @@ public class GenDispatcherObj extends ControlElem {
 		int devIndex = Util.getCktElementIndex(elementName);
 		if (devIndex >= 0) {
 			monitoredElement = DSS.activeCircuit.getCktElements().get(devIndex);
-			if (elementTerminal > monitoredElement.getNumTerms()) {
+			if (elementTerminalIdx > monitoredElement.getNumTerms()) {
 				DSS.doErrorMsg("GenDispatcher: \"" + getName() + "\"",
 						"Terminal no. \"" +"\" does not exist.",
 						"Re-specify terminal no.", 371);
 			} else {
 				// sets name of i-th terminal's connected bus in GenDispatcher's buslist
-				setBus(0, monitoredElement.getBus(elementTerminal));
+				setBus(0, monitoredElement.getBus(elementTerminalIdx));
 			}
 		} else {
 			DSS.doSimpleMsg("Monitored Element in GenDispatcher."+getName()+" does not exist:\""+elementName+"\"", 372);
@@ -100,7 +100,7 @@ public class GenDispatcherObj extends ControlElem {
 		if (monitoredElement != null) {
 			setNumPhases(getControlledElement().getNumPhases());
 			setNumConds(nPhases);
-			setBus(0, monitoredElement.getBus(elementTerminal));
+			setBus(0, monitoredElement.getBus(elementTerminalIdx));
 		}
 		super.makePosSequence();
 	}
@@ -163,7 +163,7 @@ public class GenDispatcherObj extends ControlElem {
 		if (listSize > 0) {
 
 			//MonitoredElement.ActiveTerminalIdx = ElementTerminal;
-			S = monitoredElement.getPower(elementTerminal);  // power in active terminal
+			S = monitoredElement.getPower(elementTerminalIdx);  // power in active terminal
 
 			PDiff = S.getReal() * 0.001 - kWLimit;
 

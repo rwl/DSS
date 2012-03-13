@@ -3,6 +3,7 @@ package com.ncond.dss.delivery;
 import com.ncond.dss.common.DSS;
 import com.ncond.dss.common.DSSClassDefs;
 import com.ncond.dss.common.Util;
+import com.ncond.dss.common.types.Connection;
 import com.ncond.dss.parser.Parser;
 import com.ncond.dss.shared.CommandList;
 
@@ -116,31 +117,31 @@ public class Capacitor extends PDClass {
 		String testS = s.toLowerCase();
 		switch (testS.charAt(0)) {
 		case 'y':
-			aco.setConnection(0);  /* Wye */
+			aco.setConnection(Connection.WYE);  /* Wye */
 			break;
 		case 'w':
-			aco.setConnection(0);  /* Wye */
+			aco.setConnection(Connection.WYE);  /* Wye */
 			break;
 		case 'd':
-			aco.setConnection(1);  /* Delta or Line-Line */
+			aco.setConnection(Connection.DELTA);  /* Delta or Line-Line */
 			break;
 		case 'l':
 			switch (testS.charAt(1)) {
 			case 'n':
-				aco.setConnection(0);
+				aco.setConnection(Connection.WYE);
 				break;
 			case 'l':
-				aco.setConnection(1);
+				aco.setConnection(Connection.DELTA);
 				break;
 			}
 			break;
 		}
 
 		switch (aco.getConnection()) {
-		case 1:
+		case DELTA:
 			aco.setNumTerms(1);  // force reallocation of terminals
 			break;
-		case 0:
+		case WYE:
 			if (aco.getNumTerms() != 2)
 				aco.setNumTerms(2);
 			break;

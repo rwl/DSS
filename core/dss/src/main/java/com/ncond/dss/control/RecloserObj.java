@@ -47,7 +47,7 @@ public class RecloserObj extends ControlElem {
 		TDPhFast;
 
 	private String monitoredElementName;
-	private int monitoredElementTerminal;
+	private int monitoredElementTerminalIdx;
 	private CktElement monitoredElement;
 
 	private ControlAction presentState;
@@ -73,10 +73,10 @@ public class RecloserObj extends ControlElem {
 
 		elementName = "";
 		setControlledElement(null);
-		elementTerminal = 0;
+		elementTerminalIdx = 0;
 
 		monitoredElementName = "";
-		monitoredElementTerminal = 1;
+		monitoredElementTerminalIdx = 1;
 		monitoredElement = null;
 
 		phaseFast     = Recloser.getTCC_Curve("a");
@@ -130,16 +130,16 @@ public class RecloserObj extends ControlElem {
 		if (devIndex >= 0) {
 			monitoredElement = ckt.getCktElements().get(devIndex);
 			setNumPhases(monitoredElement.getNumPhases());  // force number of phases to be same
-			if (monitoredElementTerminal >= monitoredElement.getNumTerms()) {
+			if (monitoredElementTerminalIdx >= monitoredElement.getNumTerms()) {
 				DSS.doErrorMsg("Recloser: \"" + getName() + "\"",
 						"Terminal no. \"" +"\" does not exist.",
 						"Re-specify terminal no.", 392);
 			} else {
 				// sets name of i-th terminal's connected bus in Recloser's bus list
-				setBus(0, monitoredElement.getBus(monitoredElementTerminal));
+				setBus(0, monitoredElement.getBus(monitoredElementTerminalIdx));
 				// allocate a buffer big enough to hold everything from the monitored element
 				cBuffer = Util.resizeArray(cBuffer, monitoredElement.getYOrder());
-				condOffset = monitoredElementTerminal * monitoredElement.getNumConds();  // for speedy sampling
+				condOffset = monitoredElementTerminalIdx * monitoredElement.getNumConds();  // for speedy sampling
 			}
 		}
 
@@ -150,7 +150,7 @@ public class RecloserObj extends ControlElem {
 
 			setControlledElement( ckt.getCktElements().get(devIndex) );
 
-			getControlledElement().setActiveTerminalIdx(elementTerminal);  // make the 1st terminal active
+			getControlledElement().setActiveTerminalIdx(elementTerminalIdx);  // make the 1st terminal active
 			if (getControlledElement().isConductorClosed(-1)) {  // check state of phases of active terminal
 				presentState = ControlAction.CLOSE;
 				lockedOut = false;
@@ -177,10 +177,10 @@ public class RecloserObj extends ControlElem {
 		if (monitoredElement != null) {
 			setNumPhases( monitoredElement.getNumPhases() );
 			setNumConds(nPhases);
-			setBus(0, monitoredElement.getBus(elementTerminal));
+			setBus(0, monitoredElement.getBus(elementTerminalIdx));
 			// allocate a buffer big enough to hold everything from the monitored element
 			cBuffer = Util.resizeArray(cBuffer, monitoredElement.getYOrder());
-			condOffset = elementTerminal * monitoredElement.getNumConds();  // for speedy sampling
+			condOffset = elementTerminalIdx * monitoredElement.getNumConds();  // for speedy sampling
 		}
 		super.makePosSequence();
 	}
@@ -208,7 +208,7 @@ public class RecloserObj extends ControlElem {
 	@Override
 	public void doPendingAction(int code, int proxyHdl) {
 
-		getControlledElement().setActiveTerminalIdx(elementTerminal);  // set active terminal of CktElement to terminal 1
+		getControlledElement().setActiveTerminalIdx(elementTerminalIdx);  // set active terminal of CktElement to terminal 1
 
 		if (code == ControlAction.OPEN.code()) {
 			switch (presentState) {
@@ -260,7 +260,7 @@ public class RecloserObj extends ControlElem {
 	public void interpretRecloserAction(String action) {
 
 		if (getControlledElement() != null) {
-			getControlledElement().setActiveTerminalIdx(elementTerminal);  // set active terminal
+			getControlledElement().setActiveTerminalIdx(elementTerminalIdx);  // set active terminal
 			switch (action.toLowerCase().charAt(0)) {
 			case 'o':
 				getControlledElement().setConductorClosed(-1, false);  // open all phases of active terminal
@@ -295,7 +295,7 @@ public class RecloserObj extends ControlElem {
 		double groundTime, phaseTime, tripTime, timeTest;
 		double TDPhase, TDGround;
 
-		getControlledElement().setActiveTerminalIdx(elementTerminal);
+		getControlledElement().setActiveTerminalIdx(elementTerminalIdx);
 
 		if (getControlledElement().isConductorClosed(-1)) {  // check state of phases of active terminal
 			presentState = ControlAction.CLOSE;
@@ -445,7 +445,7 @@ public class RecloserObj extends ControlElem {
 		phaseTarget    = false;
 
 		if (getControlledElement() != null) {
-			getControlledElement().setActiveTerminalIdx(elementTerminal);  // set active terminal
+			getControlledElement().setActiveTerminalIdx(elementTerminalIdx);  // set active terminal
 			getControlledElement().setConductorClosed(-1, true);            // close all phases of active terminal
 		}
 	}

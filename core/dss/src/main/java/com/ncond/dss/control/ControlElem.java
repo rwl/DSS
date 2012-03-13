@@ -17,7 +17,7 @@ abstract public class ControlElem extends CktElement {
 	private CktElement controlledElement;
 
 	protected String elementName;
-	protected int elementTerminal;
+	protected int elementTerminalIdx;
 	/* If different than terminal */
 	protected String controlledBusName;
 	protected Bus controlledBus;

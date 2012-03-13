@@ -94,7 +94,7 @@ public class SwtControl extends ControlClass {
 				asc.setElementName(param.toLowerCase());
 				break;
 			case 1:
-				asc.setElementTerminal(parser.makeInteger());
+				asc.setElementTerminalIdx(parser.makeInteger() - 1);
 				break;
 			case 2:
 				asc.interpretSwitchAction(param);
@@ -133,7 +133,7 @@ public class SwtControl extends ControlClass {
 			asc.setNumConds(otherSwtControl.getNumConds());  // force reallocation of terminal stuff
 
 			asc.setElementName(otherSwtControl.getElementName());
-			asc.setElementTerminal(otherSwtControl.getElementTerminal());
+			asc.setElementTerminalIdx(otherSwtControl.getElementTerminalIdx());
 			asc.setControlledElement(otherSwtControl.getControlledElement());  // pointer to target circuit element
 
 			asc.setTimeDelay(otherSwtControl.getTimeDelay());

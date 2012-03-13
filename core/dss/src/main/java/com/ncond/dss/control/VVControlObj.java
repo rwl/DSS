@@ -65,7 +65,7 @@ public class VVControlObj extends ControlElem {
 
 		elementName = "";
 		setControlledElement(null);
-		elementTerminal = 0;
+		elementTerminalIdx = 0;
 		monitoredElement = null;
 		generatorNameList = new ArrayList<String>();
 		weights = null;
@@ -109,16 +109,16 @@ public class VVControlObj extends ControlElem {
 		devIndex = Util.getCktElementIndex(elementName);
 		if (devIndex >= 0) {
 			monitoredElement = DSS.activeCircuit.getCktElements().get(devIndex);
-			if (elementTerminal > monitoredElement.getNumTerms()) {
+			if (elementTerminalIdx > monitoredElement.getNumTerms()) {
 				DSS.doErrorMsg("VVCControl: \"" + getName() + "\"",
-						"Terminal no. \"" + String.format("%-d", elementTerminal)
+						"Terminal no. \"" + String.format("%-d", elementTerminalIdx)
 						+ "\" does not exist.", "Re-specify terminal no.", 371);
 			} else {
 				// sets name of i-th terminal's connected bus in VVCControl's buslist
-				setBus(0, monitoredElement.getBus( elementTerminal ));
+				setBus(0, monitoredElement.getBus( elementTerminalIdx ));
 			}
 			Util.resizeArray(cBuffer, monitoredElement.getYOrder());
-			condOffset = (elementTerminal - 1) * monitoredElement.getNumConds();
+			condOffset = (elementTerminalIdx - 1) * monitoredElement.getNumConds();
 			// for speedy sampling
 		} else {
 			DSS.doSimpleMsg("Monitored Element in VVCControl." + getName() +
@@ -156,7 +156,7 @@ public class VVControlObj extends ControlElem {
 		}
 
 		if (monitoredElement != null) {
-			setBus(0, monitoredElement.getBus( elementTerminal ));
+			setBus(0, monitoredElement.getBus( elementTerminalIdx ));
 			// allocate a buffer big enough to hold everything from the monitored element
 			//Utilities.resizeArray(cBuffer, MonitoredElement.getYorder());
 			//CondOffset = (elementTerminal - 1) * MonitoredElement.getNConds();  // for speedy sampling
@@ -220,7 +220,7 @@ public class VVControlObj extends ControlElem {
 		// we need P and/or we need Q
 		if (pendingChange == CHANGEVARLEVEL) {
 
-			SMonitoredElement = monitoredElement.getPower( elementTerminal );  // S is in VA
+			SMonitoredElement = monitoredElement.getPower( elementTerminalIdx );  // S is in VA
 			// PMonitoredElement = SMonitoredElement.getReal();
 			QMonitoredElement = SMonitoredElement.getImaginary();
 
@@ -303,7 +303,7 @@ public class VVControlObj extends ControlElem {
 			cBuffer = monitoredElement.getVTerminal();
 
 			// get the basekV for the monitored bus
-			baseKV = DSS.activeCircuit.getBus( terminals[elementTerminal].getBusRef() ).getKVBase();
+			baseKV = DSS.activeCircuit.getBus( terminals[elementTerminalIdx].getBusRef() ).getKVBase();
 			VAvg = 0;
 
 			// calculate the average voltage
@@ -366,7 +366,7 @@ public class VVControlObj extends ControlElem {
 		case 0:
 			return monitoredElement.getDisplayName();
 		case 1:
-			return String.format("%-d", elementTerminal);
+			return String.format("%-d", elementTerminalIdx);
 		case 2:
 			return String.format("%-.3g", vvc_VMaxPU);
 		case 3:

@@ -166,7 +166,7 @@ public class RegControl extends ControlClass {
 				arc.setElementName("Transformer." + param.toLowerCase());
 				break;
 			case 1:
-				arc.setElementTerminal(parser.makeInteger());
+				arc.setElementTerminalIdx(parser.makeInteger() - 1);
 				break;
 			case 2:
 				arc.setVreg(parser.makeDouble());
@@ -220,7 +220,7 @@ public class RegControl extends ControlClass {
 				arc.setInverseTime(Util.interpretYesNo(param));
 				break;
 			case 19:
-				arc.setTapWinding(parser.makeInteger());
+				arc.setTapWindingIdx(parser.makeInteger() - 1);
 				break;
 			case 20:
 				arc.setVLimit(parser.makeDouble());
@@ -258,7 +258,7 @@ public class RegControl extends ControlClass {
 
 			switch (paramPointer) {
 			case 1:
-				arc.setTapWinding(arc.getElementTerminal());  // resets if property re-assigned
+				arc.setTapWindingIdx(arc.getElementTerminalIdx());  // resets if property re-assigned
 				arc.setPropertyValue(19, param);
 				break;
 			case 16:
@@ -306,7 +306,7 @@ public class RegControl extends ControlClass {
 
 			arc.setElementName(otherRegControl.getElementName());
 			arc.setControlledElement(otherRegControl.getControlledElement());  // pointer to target circuit element
-			arc.setElementTerminal(otherRegControl.getElementTerminal());
+			arc.setElementTerminalIdx(otherRegControl.getElementTerminalIdx());
 			arc.setVreg(otherRegControl.getVreg());
 			arc.setBandwidth(otherRegControl.getBandwidth());
 			arc.setPTRatio(otherRegControl.getPTRatio());
@@ -321,7 +321,7 @@ public class RegControl extends ControlClass {
 			arc.setRevR(otherRegControl.getRevR());
 			arc.setRevX(otherRegControl.getRevX());
 			arc.setTapDelay(otherRegControl.getTapDelay());
-			arc.setTapWinding(otherRegControl.getTapWinding());
+			arc.setTapWindingIdx(otherRegControl.getTapWindingIdx());
 			arc.setInverseTime(otherRegControl.isInverseTime());
 			arc.setTapLimitPerChange(otherRegControl.getTapLimitPerChange());
 			arc.setTapLimitPerChange(otherRegControl.getTapLimitPerChange());

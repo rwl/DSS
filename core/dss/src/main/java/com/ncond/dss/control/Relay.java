@@ -177,13 +177,13 @@ public class Relay extends ControlClass {
 					ar.setMonitoredElementName(param.toLowerCase());
 					break;
 				case 1:
-					ar.setMonitoredElementTerminal(parser.makeInteger());
+					ar.setMonitoredElementTerminalIdx(parser.makeInteger() - 1);
 					break;
 				case 2:
 					ar.setElementName(param.toLowerCase());
 					break;
 				case 3:
-					ar.setElementTerminal(parser.makeInteger());
+					ar.setElementTerminalIdx(parser.makeInteger() - 1);
 					break;
 				case 4:
 					ar.interpretRelayType(param);
@@ -278,7 +278,7 @@ public class Relay extends ControlClass {
 					ar.setElementName(ar.getMonitoredElementName());
 					break;
 				case 1:
-					ar.setElementTerminal(ar.getMonitoredElementTerminal());
+					ar.setElementTerminalIdx(ar.getMonitoredElementTerminalIdx());
 					break;
 				case 4:  /* Set default reclose intervals */
 					switch (param.toLowerCase().charAt(0)) {
@@ -318,12 +318,12 @@ public class Relay extends ControlClass {
 			ar.setNumConds(otherRelay.getNumConds());  // force reallocation of terminal stuff
 
 			ar.setElementName(otherRelay.getElementName());
-			ar.setElementTerminal(otherRelay.getElementTerminal());
+			ar.setElementTerminalIdx(otherRelay.getElementTerminalIdx());
 			ar.setControlledElement(otherRelay.getControlledElement());  // target circuit element
 
 			ar.setMonitoredElement(otherRelay.getMonitoredElement());  // target circuit element
 			ar.setMonitoredElementName(otherRelay.getMonitoredElementName());  // target circuit element
-			ar.setMonitoredElementTerminal(otherRelay.getMonitoredElementTerminal());  // target circuit element
+			ar.setMonitoredElementTerminalIdx(otherRelay.getMonitoredElementTerminalIdx());  // target circuit element
 
 			ar.setPhaseCurve(otherRelay.getPhaseCurve());
 			ar.setGroundCurve(otherRelay.getGroundCurve());

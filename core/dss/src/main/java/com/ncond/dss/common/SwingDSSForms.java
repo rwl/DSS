@@ -7,8 +7,8 @@ import javax.swing.JOptionPane;
 
 public class SwingDSSForms implements DSSForms {
 
-	private static boolean controlPanelCreated;
-//	private static ControlPanel ControlPanel;
+//	private static boolean controlPanelCreated;
+//	private static ControlPanel controlPanel;
 
 	private static boolean rebuildHelpForm;
 

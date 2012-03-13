@@ -8,8 +8,8 @@ public class CommandLineDSSForms implements DSSForms {
 
 	private static Scanner sc = new Scanner(System.in);
 
-	private boolean controlPanelCreated;
-//	private static ControlPanel ControlPanel;
+//	private boolean controlPanelCreated;
+//	private static ControlPanel controlPanel;
 
 	private boolean rebuildHelpForm;
 

@@ -577,7 +577,7 @@ public class SolutionObj extends DSSObject {
 		solutionCount += 1;  // unique number for this solution
 
 		if (voltageBaseChanged)
-			YMatrix.initializeNodeVbase();  // for convergence test
+			YMatrix.initializeNodeVBase();  // for convergence test
 
 		if (!solutionInitialized) {
 			if (ckt.isLogEvents())
@@ -679,7 +679,7 @@ public class SolutionObj extends DSSObject {
 				bus.setKVBase(kVBase);  // l-n base kV
 			}
 
-			YMatrix.initializeNodeVbase();  // for convergence test
+			YMatrix.initializeNodeVBase();  // for convergence test
 
 			ckt.setSolved(true);
 
@@ -1224,14 +1224,14 @@ public class SolutionObj extends DSSObject {
 	 * that does not get the injection currents for PC elements normally. In
 	 * dynamics mode, generators are voltage sources ...
 	 */
-	private void getMachineInjCurrents() {
-		// do machines in dynamics mode
-		if (isDynamicModel) {
-			for (GeneratorObj elem : DSS.activeCircuit.getGenerators())
-				if (elem.isEnabled())
-					elem.injCurrents();  // uses nodeRef to add current into injCurr array
-		}
-	}
+//	private void getMachineInjCurrents() {
+//		// do machines in dynamics mode
+//		if (isDynamicModel) {
+//			for (GeneratorObj elem : DSS.activeCircuit.getGenerators())
+//				if (elem.isEnabled())
+//					elem.injCurrents();  // uses nodeRef to add current into injCurr array
+//		}
+//	}
 
 	private boolean okForDynamics(SolutionMode value) {
 		boolean valueIsDynamic;
@@ -1375,8 +1375,8 @@ public class SolutionObj extends DSSObject {
 	 */
 	private int solveSystem(Complex[] V) throws SolverProblem {
 		int retCode;
-		double[] dp = new double[1];
-		int[] ip = new int[1];
+		//double[] dp = new double[1];
+		//int[] ip = new int[1];
 
 		/* Note: NodeV[0] = 0 + j0 always. Therefore, pass the address of the element 1 of the array. */
 		try {

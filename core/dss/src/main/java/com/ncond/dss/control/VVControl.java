@@ -165,7 +165,7 @@ public class VVControl extends ControlClass {
 				avc.setElementName(param.toLowerCase());
 				break;
 			case 1:
-				avc.setElementTerminal(parser.makeInteger());
+				avc.setElementTerminalIdx(parser.makeInteger() - 1);
 				break;
 			case 2:
 				avc.setVvc_VMaxPU(parser.makeDouble());
@@ -270,7 +270,7 @@ public class VVControl extends ControlClass {
 			// target circuit element
 			avc.setMonitoredElement(otherVVCControl.getMonitoredElement());
 			// monitored circuit element
-			avc.setElementTerminal(otherVVCControl.getElementTerminal());
+			avc.setElementTerminalIdx(otherVVCControl.getElementTerminalIdx());
 			avc.setCondOffset(otherVVCControl.getCondOffset());
 			avc.setDeltaVTolerance(otherVVCControl.getDeltaVTolerance());
 

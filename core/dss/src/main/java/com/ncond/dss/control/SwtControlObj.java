@@ -30,7 +30,7 @@ public class SwtControlObj extends ControlElem {
 
 		elementName   = "";
 		setControlledElement(null);
-		elementTerminal = 0;
+		elementTerminalIdx = 0;
 		presentState  = ControlAction.CLOSE;
 		locked        = false;
 		timeDelay     = 120.0;
@@ -46,7 +46,7 @@ public class SwtControlObj extends ControlElem {
 			setControlledElement(DSS.activeCircuit.getCktElements().get(devIndex));
 			setNumPhases( getControlledElement().getNumPhases() );
 			setNumConds(nPhases);
-			getControlledElement().setActiveTerminalIdx(elementTerminal);
+			getControlledElement().setActiveTerminalIdx(elementTerminalIdx);
 			if (!locked) {
 				switch (presentState) {
 				case OPEN:
@@ -58,7 +58,7 @@ public class SwtControlObj extends ControlElem {
 				}
 			}
 			// attach controller bus to the switch bus - no space allocated for monitored variables
-			setBus(0, getControlledElement().getBus(elementTerminal));
+			setBus(0, getControlledElement().getBus(elementTerminalIdx));
 		} else {
 			setControlledElement(null);  // element not found
 			DSS.doErrorMsg("SwtControl: \"" + getName() + "\"", "CktElement Element \""+ elementName + "\" not found.",
@@ -74,7 +74,7 @@ public class SwtControlObj extends ControlElem {
 		if (getControlledElement() != null) {
 			setNumPhases( getControlledElement().getNumPhases() );
 			setNumConds(nPhases);
-			setBus(0, getControlledElement().getBus(elementTerminal));
+			setBus(0, getControlledElement().getBus(elementTerminalIdx));
 		}
 		super.makePosSequence();
 	}
@@ -102,7 +102,7 @@ public class SwtControlObj extends ControlElem {
 	@Override
 	public void doPendingAction(int code, int proxyHdl) {
 		if (!locked) {
-			getControlledElement().setActiveTerminalIdx(elementTerminal);
+			getControlledElement().setActiveTerminalIdx(elementTerminalIdx);
 			if (code == ControlAction.OPEN.code() && presentState == ControlAction.CLOSE) {
 				getControlledElement().setConductorClosed(-1, false);  // open all phases of active terminal
 				Util.appendToEventLog("SwtControl."+getName(), "Opened");
@@ -127,7 +127,7 @@ public class SwtControlObj extends ControlElem {
 			}
 
 			if (getControlledElement() != null) {
-				getControlledElement().setActiveTerminalIdx(elementTerminal);
+				getControlledElement().setActiveTerminalIdx(elementTerminalIdx);
 				switch (presentState) {
 				case OPEN:
 					getControlledElement().setConductorClosed(-1, false);
@@ -145,7 +145,7 @@ public class SwtControlObj extends ControlElem {
 	 */
 	@Override
 	public void sample() {
-		getControlledElement().setActiveTerminalIdx(elementTerminal);
+		getControlledElement().setActiveTerminalIdx(elementTerminalIdx);
 		if (getControlledElement().isConductorClosed(-1)) {  // check state of phases of active terminal
 			presentState = ControlAction.CLOSE;
 		} else {
@@ -181,7 +181,7 @@ public class SwtControlObj extends ControlElem {
 		presentState = ControlAction.CLOSE;
 		locked       = false;
 		if (getControlledElement() != null) {
-			getControlledElement().setActiveTerminalIdx(elementTerminal);  // set active terminal
+			getControlledElement().setActiveTerminalIdx(elementTerminalIdx);  // set active terminal
 			getControlledElement().setConductorClosed(-1, true);  // close all phases of active terminal
 		}
 	}

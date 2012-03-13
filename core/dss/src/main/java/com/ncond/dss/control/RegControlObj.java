@@ -62,7 +62,7 @@ public class RegControlObj extends ControlElem {
 	private File traceFile;
 
 	private int tapLimitPerChange;
-	private int tapWinding;
+	private int tapWindingIdx;
 	private boolean inverseTime;
 	private double VLimit;
 	private boolean VLimitActive;
@@ -113,8 +113,8 @@ public class RegControlObj extends ControlElem {
 
 		elementName = "";
 		setControlledElement(null);
-		elementTerminal = 0;
-		tapWinding = elementTerminal;
+		elementTerminalIdx = 0;
+		tapWindingIdx = elementTerminalIdx;
 
 		VBuffer = null;
 		CBuffer = null;
@@ -160,7 +160,7 @@ public class RegControlObj extends ControlElem {
 			}
 
 			if (getControlledElement().getDSSClassName().equalsIgnoreCase("transformer")) {
-				if (elementTerminal > getControlledElement().getNumTerms()) {
+				if (elementTerminalIdx > getControlledElement().getNumTerms()) {
 					DSS.doErrorMsg("RegControl: \"" + getName() + "\"", "Winding no. \"" +"\" does not exist.",
 							"Respecify monitored winding no.", 122);
 				} else {
@@ -169,7 +169,7 @@ public class RegControlObj extends ControlElem {
 					if (usingRegulatedBus) {
 						setBus(0, regulatedBus);  // hopefully this will actually exist
 					} else {
-						setBus(0, getControlledElement().getBus(elementTerminal));
+						setBus(0, getControlledElement().getBus(elementTerminalIdx));
 					}
 					// buffer to hold regulator voltages
 					VBuffer = Util.resizeArray(VBuffer, getControlledElement().getNumPhases());
@@ -339,20 +339,20 @@ public class RegControlObj extends ControlElem {
 
 				switch (sol.getControlMode()) {
 				case CTRLSTATIC:
-					tapChangeToMake = atLeastOneTap(pendingTapChange, pElem.getTapIncrement(tapWinding));
+					tapChangeToMake = atLeastOneTap(pendingTapChange, pElem.getTapIncrement(tapWindingIdx));
 					if (debugTrace)
 						regWriteTraceRecord(tapChangeToMake);
-					pElem.setPresentTap(tapWinding, pElem.getPresentTap(tapWinding) + tapChangeToMake);
+					pElem.setPresentTap(tapWindingIdx, pElem.getPresentTap(tapWindingIdx) + tapChangeToMake);
 					if (showEventLog)
-						Util.appendToEventLog("Regulator." + getControlledElement().getName(), String.format(" Changed %d taps to %-.6g.", lastChange, pElem.getPresentTap(tapWinding)));
+						Util.appendToEventLog("Regulator." + getControlledElement().getName(), String.format(" Changed %d taps to %-.6g.", lastChange, pElem.getPresentTap(tapWindingIdx)));
 					setPendingTapChange(0.0);  // reset to no change; program will determine if another needed
 					armed = false;
 
 				case EVENTDRIVEN:
-					tapChangeToMake = oneInDirectionOf(pendingTapChange, pElem.getTapIncrement(tapWinding));
+					tapChangeToMake = oneInDirectionOf(pendingTapChange, pElem.getTapIncrement(tapWindingIdx));
 					if (debugTrace)
 						regWriteTraceRecord(tapChangeToMake);
-					pElem.setPresentTap(tapWinding, pElem.getPresentTap(tapWinding) + tapChangeToMake);
+					pElem.setPresentTap(tapWindingIdx, pElem.getPresentTap(tapWindingIdx) + tapChangeToMake);
 					if (pendingTapChange != 0.0) {
 						ckt.getControlQueue().push(sol.getIntHour(), sol.getDynaVars().t + tapDelay, 0, 0, this);
 					} else {
@@ -360,15 +360,15 @@ public class RegControlObj extends ControlElem {
 					}
 
 				case TIMEDRIVEN:
-					tapChangeToMake = oneInDirectionOf(pendingTapChange, pElem.getTapIncrement(tapWinding));
+					tapChangeToMake = oneInDirectionOf(pendingTapChange, pElem.getTapIncrement(tapWindingIdx));
 					if (debugTrace)
 						regWriteTraceRecord(tapChangeToMake);
-					pElem.setPresentTap(tapWinding, pElem.getPresentTap(tapWinding) + tapChangeToMake);
+					pElem.setPresentTap(tapWindingIdx, pElem.getPresentTap(tapWindingIdx) + tapChangeToMake);
 					if (showEventLog)
-						Util.appendToEventLog("Regulator." + getControlledElement().getName(), String.format(" Changed %d tap to %-.6g.", lastChange, pElem.getPresentTap(tapWinding)));
+						Util.appendToEventLog("Regulator." + getControlledElement().getName(), String.format(" Changed %d tap to %-.6g.", lastChange, pElem.getPresentTap(tapWindingIdx)));
 					if (debugTrace)
 						regWriteDebugRecord(String.format("--- Regulator.%s Changed %d tap to %-.6g.",
-								pElem.getControlElement().getName(), lastChange, pElem.getPresentTap(tapWinding)));
+								pElem.getControlElement().getName(), lastChange, pElem.getPresentTap(tapWindingIdx)));
 
 					if (pendingTapChange != 0.0) {
 						ckt.getControlQueue().push(sol.getIntHour(), sol.getDynaVars().t + tapDelay, 0, 0, this);
@@ -422,7 +422,7 @@ public class RegControlObj extends ControlElem {
 
 					if (!reversePending) {  // if reverse is already pending, don't send any more messages
 
-						fwdPower = -controlledTransformer.getPower(elementTerminal).getReal();  // Watts
+						fwdPower = -controlledTransformer.getPower(elementTerminalIdx).getReal();  // Watts
 						if (fwdPower < -revPowerThreshold) {
 
 							if (debugTrace)
@@ -438,7 +438,7 @@ public class RegControlObj extends ControlElem {
 				} else {
 					// if reversed look to see if power is back in forward direction
 					if (!reversePending) {
-						fwdPower = -controlledTransformer.getPower(elementTerminal).getReal();  // Watts
+						fwdPower = -controlledTransformer.getPower(elementTerminalIdx).getReal();  // Watts
 						if (fwdPower > revPowerThreshold) {
 
 							if (debugTrace)
@@ -459,10 +459,10 @@ public class RegControlObj extends ControlElem {
 						if (!armed) {
 
 							setPendingTapChange(0.0);
-							if (Math.abs(controlledTransformer.getPresentTap(tapWinding) - 1.0) > DSS.EPSILON) {
+							if (Math.abs(controlledTransformer.getPresentTap(tapWindingIdx) - 1.0) > DSS.EPSILON) {
 
-								increment = controlledTransformer.getTapIncrement(tapWinding);
-								setPendingTapChange( Math.round((1.0 - controlledTransformer.getPresentTap(tapWinding)) / increment) * increment );
+								increment = controlledTransformer.getTapIncrement(tapWindingIdx);
+								setPendingTapChange( Math.round((1.0 - controlledTransformer.getPresentTap(tapWindingIdx)) / increment) * increment );
 								if ((pendingTapChange != 0.0) && (!armed)) {
 
 									if (debugTrace)
@@ -484,7 +484,7 @@ public class RegControlObj extends ControlElem {
 
 		if (usingRegulatedBus) {
 
-			transformerConnection = controlledTransformer.getWinding()[elementTerminal].getConnection();
+			transformerConnection = controlledTransformer.getWinding()[elementTerminalIdx].getConnection();
 			computeVTerminal();  // computes the voltage at the bus being regulated
 			for (i = 0; i < getNumPhases(); i++) {
 				switch (transformerConnection) {
@@ -499,7 +499,7 @@ public class RegControlObj extends ControlElem {
 				}
 			}
 		} else {
-			controlledTransformer.getWindingVoltages(elementTerminal, VBuffer);
+			controlledTransformer.getWindingVoltages(elementTerminalIdx, VBuffer);
 		}
 
 		VControl = getControlVoltage(VBuffer, getNumPhases(), PTRatio);
@@ -509,7 +509,7 @@ public class RegControlObj extends ControlElem {
 
 			if (usingRegulatedBus) {
 
-				controlledTransformer.getWindingVoltages(elementTerminal,
+				controlledTransformer.getWindingVoltages(elementTerminalIdx,
 						VBuffer);
 				VLocalBus = ComplexUtil.divide(VBuffer[1], PTRatio).abs();
 			} else {
@@ -523,7 +523,7 @@ public class RegControlObj extends ControlElem {
 		if ((!usingRegulatedBus) && LDCActive) {
 
 			getControlledElement().getCurrents(CBuffer);
-			ILDC  = ComplexUtil.divide(CBuffer[getControlledElement().getNumConds() * elementTerminal + controlledPhase], CTRating);
+			ILDC  = ComplexUtil.divide(CBuffer[getControlledElement().getNumConds() * elementTerminalIdx + controlledPhase], CTRating);
 			if (inReverseMode) {
 				VLDC  = new Complex(revR, revX).multiply(ILDC);
 			} else {
@@ -552,13 +552,13 @@ public class RegControlObj extends ControlElem {
 			if (VLimitActive)
 				if (VLocalBus > VLimit)
 					VBoost = VLimit - VLocalBus;
-			boostNeeded = VBoost * PTRatio / controlledTransformer.getBaseVoltage(elementTerminal);  // per unit winding boost needed
-			increment = controlledTransformer.getTapIncrement(tapWinding);
+			boostNeeded = VBoost * PTRatio / controlledTransformer.getBaseVoltage(elementTerminalIdx);  // per unit winding boost needed
+			increment = controlledTransformer.getTapIncrement(tapWindingIdx);
 			setPendingTapChange( Math.round(boostNeeded / increment) * increment );  // make sure it is an even increment
 
 			/* If tap is another winding or in reverse mode, it has to move
 			 * the other way to accomplish the change */
-			if (tapWinding != elementTerminal || inReverseMode)
+			if (tapWindingIdx != elementTerminalIdx || inReverseMode)
 				setPendingTapChange(-pendingTapChange);
 
 			// send initial tap change message to control queue
@@ -568,14 +568,14 @@ public class RegControlObj extends ControlElem {
 				// now see if any tap change is possible in desired direction, else ignore
 				if (pendingTapChange > 0.0) {
 
-					if (controlledTransformer.getPresentTap(tapWinding) < controlledTransformer.getMaxTap(tapWinding)) {
+					if (controlledTransformer.getPresentTap(tapWindingIdx) < controlledTransformer.getMaxTap(tapWindingIdx)) {
 						ckt.getControlQueue().push(ckt.getSolution().getIntHour(),
 								ckt.getSolution().getDynaVars().t + computeTimeDelay(VActual),
 								RegControl.ACTION_TAPCHANGE, 0, this);
 						armed = true;  // armed to change taps
 					}
 				} else {
-					if (controlledTransformer.getPresentTap(tapWinding) > controlledTransformer.getMinTap(tapWinding)) {
+					if (controlledTransformer.getPresentTap(tapWindingIdx) > controlledTransformer.getMinTap(tapWindingIdx)) {
 						ckt.getControlQueue().push(ckt.getSolution().getIntHour(),
 								ckt.getSolution().getDynaVars().t + computeTimeDelay(VActual),
 								RegControl.ACTION_TAPCHANGE, 0, this);
@@ -599,23 +599,23 @@ public class RegControlObj extends ControlElem {
 	 * Report tapped winding.
 	 */
 	public int getWinding() {
-		return tapWinding;
+		return tapWindingIdx;
 	}
 
 	public double getMinTap() {
-		return getTransformer().getMinTap(tapWinding);
+		return getTransformer().getMinTap(tapWindingIdx);
 	}
 
 	public double getMaxTap() {
-		return getTransformer().getMaxTap(tapWinding);
+		return getTransformer().getMaxTap(tapWindingIdx);
 	}
 
 	public double getTapIncrement() {
-		return getTransformer().getTapIncrement(tapWinding);
+		return getTransformer().getTapIncrement(tapWindingIdx);
 	}
 
 	public int getNumTaps() {
-		return getTransformer().getNumTaps(tapWinding);
+		return getTransformer().getNumTaps(tapWindingIdx);
 	}
 
 	private void regWriteDebugRecord(String s) {
@@ -656,12 +656,12 @@ public class RegControlObj extends ControlElem {
 						ckt.getSolution().getControlIteration() + sep +
 						ckt.getSolution().getIteration() + sep +
 						ckt.getLoadMultiplier() + sep +
-						pElem.getPresentTap(elementTerminal) + sep +
+						pElem.getPresentTap(elementTerminalIdx) + sep +
 						pendingTapChange + sep +
 						tapChangeMade + sep +
-						pElem.getTapIncrement(elementTerminal) + sep +
-						pElem.getMinTap(elementTerminal) + sep +
-						pElem.getMaxTap(elementTerminal));
+						pElem.getTapIncrement(elementTerminalIdx) + sep +
+						pElem.getMinTap(elementTerminalIdx) + sep +
+						pElem.getMaxTap(elementTerminalIdx));
 				bw.newLine();
 
 				bw.close();
@@ -737,7 +737,7 @@ public class RegControlObj extends ControlElem {
 				if (usingRegulatedBus) {
 					setBus(0, regulatedBus);  // hopefully this will actually exist
 				} else {
-					setBus(0, getControlledElement().getBus(elementTerminal));
+					setBus(0, getControlledElement().getBus(elementTerminalIdx));
 					// buffer to hold regulator voltages
 					VBuffer = Util.resizeArray(VBuffer, getControlledElement().getNumPhases());
 					CBuffer = Util.resizeArray(CBuffer, getControlledElement().getYOrder());

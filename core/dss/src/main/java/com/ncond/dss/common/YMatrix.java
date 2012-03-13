@@ -19,45 +19,45 @@ public class YMatrix extends CSparseSolve {
 	private static void reCalcAllYPrims() {
 		Circuit ckt = DSS.activeCircuit;
 		if (ckt.isLogEvents())
-			Util.logThisEvent("Recalc All Yprims");
-		for (CktElement pElem : ckt.getCktElements())
-			pElem.calcYPrim();
+			Util.logThisEvent("Recalc all Yprims");
+		for (CktElement elem : ckt.getCktElements())
+			elem.calcYPrim();
 	}
 
 	/**
-	 * Recalc YPrims only for those circuit elements that have had changes
+	 * Recalc Yprims only for those circuit elements that have had changes
 	 * since last solution.
 	 */
 	private static void reCalcInvalidYPrims() {
 		Circuit ckt = DSS.activeCircuit;
 		if (ckt.isLogEvents())
-			Util.logThisEvent("Recalc Invalid Yprims");
-		for (CktElement pElem : ckt.getCktElements())
-			if (pElem.isYprimInvalid())
-				pElem.calcYPrim();
+			Util.logThisEvent("Recalc invalid Yprims");
+		for (CktElement elem : ckt.getCktElements())
+			if (elem.isYprimInvalid()) elem.calcYPrim();
 	}
 
 	public static void resetSparseMatrix(UUID[] Y, int size) throws SolverProblem {
 		if (Y[0] != null) {
 			if (deleteSparseSet(Y[0]) < 1)  // get rid of existing one before making a new one
-				throw new SolverProblem("Error deleting system Y Matrix in resetSparseMatrix. Problem with sparse matrix solver.");
+				throw new SolverProblem("Error deleting system Y matrix in resetSparseMatrix. Problem with sparse matrix solver.");
 			Y[0] = null;
 		}
 
 		// make a new sparse set
 		Y[0] = newSparseSet(size);
-		if (Y[0] == null)  // raise an exception  TODO Check zero based indexing
-			throw new SolverProblem("Error creating system Y Matrix. Problem with sparse matrix solver.");
+
+		if (Y[0] == null)
+			throw new SolverProblem("Error creating system Y matrix. Problem with sparse matrix solver.");
 	}
 
-	public static void initializeNodeVbase() {
+	public static void initializeNodeVBase() {
 		NodeBus nb;
 		Circuit ckt = DSS.activeCircuit;
 		SolutionObj sol = ckt.getSolution();
 
 		for (int i = 0; i < ckt.getNumNodes(); i++) {
-			nb = ckt.getMapNodeToBus(i);
-			sol.getNodeVBase()[i] = ckt.getBus(nb.busRef).getKVBase() * 1000.0;
+			nb = ckt.getMapNodeToBus(i + 1);
+			sol.getNodeVBase()[i] = ckt.getBus(nb.busRef - 1).getKVBase() * 1000.0;
 			sol.setVoltageBaseChanged(false);
 		}
 	}
@@ -67,13 +67,12 @@ public class YMatrix extends CSparseSolve {
 	 *
 	 * @throws SolverProblem
 	 */
-	public static void buildYMatrix(BuildOption buildOption, boolean AllocateVI) throws SolverProblem {
-		UUID[] pY = new UUID[1];
+	public static void buildYMatrix(BuildOption buildOption, boolean allocateVI) throws SolverProblem {
+		UUID[] Y = new UUID[1];
 		int YMatrixSize;
-		Complex[] CmatArray;
+		Complex[] cArray = null;
 
-		CmatArray = null;
-		// new function to log KLUSolve.DLL function calls
+		// log KLU solve function calls
 		//setLogFile("KLU_Log.txt", 1);
 
 		Circuit ckt = DSS.activeCircuit;
@@ -91,15 +90,15 @@ public class YMatrix extends CSparseSolve {
 
 		switch (buildOption) {
 		case WHOLEMATRIX:
-			pY[0] = sol.getYSystem();
-			resetSparseMatrix(pY, YMatrixSize);
-			sol.setYSystem(pY[0]);
+			Y[0] = sol.getYSystem();
+			resetSparseMatrix(Y, YMatrixSize);
+			sol.setYSystem(Y[0]);
 			sol.setY(sol.getYSystem());
 			break;
 		case SERIESONLY:
-			pY[0] = sol.getYSeries();
-			resetSparseMatrix(pY, YMatrixSize);
-			sol.setYSeries(pY[0]);
+			Y[0] = sol.getYSeries();
+			resetSparseMatrix(Y, YMatrixSize);
+			sol.setYSeries(Y[0]);
 			sol.setY(sol.getYSeries());
 			break;
 		}
@@ -129,41 +128,36 @@ public class YMatrix extends CSparseSolve {
 			}
 
 		// add in Yprims for all devices
-		for (CktElement pElem : ckt.getCktElements()) {
-			if (pElem.isEnabled()) {
+		for (CktElement elem : ckt.getCktElements()) {
+			if (elem.isEnabled()) {
 				switch (buildOption) {
 				case WHOLEMATRIX:
-					CmatArray = pElem.getYPrimValues(YPrimType.ALL_YPRIM);
+					cArray = elem.getYPrimValues(YPrimType.ALL_YPRIM);
 					break;
 				case SERIESONLY:
-					CmatArray = pElem.getYPrimValues(YPrimType.SERIES);
+					cArray = elem.getYPrimValues(YPrimType.SERIES);
 					break;
 				}
 				// new function adding primitive Y matrix to KLU system Y matrix
-				if (CmatArray != null)
-					if (addPrimitiveMatrix(sol.getY(), pElem.getYOrder(), pElem.getNodeRef(), 1, CmatArray, 1) < 0)  // TODO Check zero based indexing
-						throw new SolverProblem("Node index out of range adding to System Y Matrix");
-			}  // if enabled
+				if (cArray != null) {
+					if (addPrimitiveMatrix(sol.getY(), elem.getYOrder(), elem.getNodeRef(), 1, cArray, 1) < 1)
+						throw new SolverProblem("Node index out of range adding to system Y matrix");
+				}
+			}
 		}
 
 		// allocate voltage and current vectors if requested
-		if (AllocateVI) {
+		if (allocateVI) {
 			if (ckt.isLogEvents())
-				Util.logThisEvent("ReAllocating Solution Arrays");
-			sol.setNodeV( Util.resizeArray(sol.getNodeV(), ckt.getNumNodes() + 1) );  // allocate system voltage array - allow for zero element
-			sol.getNodeV()[0] = Complex.ZERO;  // TODO Check zero based indexing
-			sol.setCurrents( Util.resizeArray(sol.getCurrents(), ckt.getNumNodes() + 1) );  // allocate system current array
-			sol.setAuxCurrents( Util.resizeArray(sol.getAuxCurrents(), ckt.getNumNodes()) );  // allocate system current array
-			if (sol.getVMagSaved() != null)
-				sol.setVMagSaved(new double[0]);
-			if (sol.getErrorSaved() != null)
-				sol.setErrorSaved(new double[0]);
-			if (sol.getNodeVBase() != null)
-				sol.setNodeVBase(new double[0]);
-			sol.setVMagSaved(new double[ckt.getNumNodes()]);   // zero fill
-			sol.setErrorSaved(new double[ckt.getNumNodes()]);  // zero fill
-			sol.setNodeVBase(new double[ckt.getNumNodes()]);   // zero fill
-			initializeNodeVbase();
+				Util.logThisEvent("Reallocating solution arrays");
+			sol.setNodeV(Util.resizeArray(sol.getNodeV(), ckt.getNumNodes() + 1));  // allocate system voltage array - allow for zero element
+			sol.getNodeV()[0] = Complex.ZERO;
+			sol.setCurrents(Util.resizeArray(sol.getCurrents(), ckt.getNumNodes() + 1));  // allocate system current array
+			sol.setAuxCurrents(Util.resizeArray(sol.getAuxCurrents(), ckt.getNumNodes()));  // allocate system current array
+			sol.setVMagSaved(new double[ckt.getNumNodes()]);
+			sol.setErrorSaved(new double[ckt.getNumNodes()]);
+			sol.setNodeVBase(new double[ckt.getNumNodes()]);
+			initializeNodeVBase();
 		}
 
 		switch (buildOption) {
@@ -176,12 +170,11 @@ public class YMatrix extends CSparseSolve {
 			break;
 		}
 
-		// seleted RCD only done now on mode change
+		// only done now on mode change
 		//sol.setSolutionInitialized(false);  // require initialization of voltages if Y changed
 
 		if (sol.isPreserveNodeVoltages())
 			sol.restoreNodeVFromVbus();
-
 	}
 
 	/**
@@ -191,53 +184,52 @@ public class YMatrix extends CSparseSolve {
 		Complex[] c = new Complex[1];
 		UUID Y;
 		int[] sCol = new int[1];
-		long nIslands, iCount, iFirst;
+		long nIslands, count, first;
 		int[] cliques;
 		NodeBus nb;
-
 		Circuit ckt = DSS.activeCircuit;
 
-		String s = "";
+		StringBuilder sb = new StringBuilder();
 
 		Y = ckt.getSolution().getY();
 		for (int i = 0; i < ckt.getNumNodes(); i++) {
 			getMatrixElement(Y, i, i, c);
 			if (c[0].abs() == 0.0) {
-				nb = ckt.getMapNodeToBus(i);
-				s += String.format("%sZero diagonal for bus %s, node %d",
-					DSS.CRLF, ckt.getBusList().get(nb.busRef), nb.nodeNum);
+				nb = ckt.getMapNodeToBus(i + 1);
+				sb.append(String.format("%sZero diagonal for bus %s, node %d",
+					DSS.CRLF, ckt.getBusList().get(nb.busRef), nb.nodeNum));
 			}
 		}
 
 		// new diagnostics
-		getSingularCol(Y, sCol);  // returns a 0-based node number  TODO Check zero based indexing
+		getSingularCol(Y, sCol);  // returns a 0-based node number
 		if (sCol[0] >= 0) {
-			nb = ckt.getMapNodeToBus(sCol[0]);
-			s += String.format("%sMatrix singularity at bus %s, node %d",
-				DSS.CRLF, ckt.getBusList().get(nb.busRef), sCol);
+			nb = ckt.getMapNodeToBus(sCol[0] + 1);
+			sb.append(String.format("%sMatrix singularity at bus %s, node %d",
+				DSS.CRLF, ckt.getBusList().get(nb.busRef), sCol[0]));
 		}
 
 		cliques = new int[ckt.getNumNodes()];
 		nIslands = findIslands(Y, ckt.getNumNodes(), cliques);
 		if (nIslands > 1) {
-			s += String.format("%sFound %d electrical islands:", DSS.CRLF, nIslands);
+			sb.append(String.format("%sFound %d electrical islands:", DSS.CRLF, nIslands));
 			for (int i = 0; i < nIslands; i++) {
-				iCount = 0;
-				iFirst = 0;
+				count = 0;
+				first = 0;
 				for (int p = 0; p < ckt.getNumNodes(); p++) {
 					if (cliques[p] == i) {
-						iCount += 1;
-						if (iFirst == 0)
-							iFirst = p + 1;
+						count += 1;
+						if (first == 0)
+							first = p + 1;
 					}
 				}
-				nb = ckt.getMapNodeToBus((int) iFirst);
-				s += String.format("%s  #%d has %d nodes, including bus %s (node %d)",
-					DSS.CRLF, i, iCount, ckt.getBusList().get(nb.busRef), iFirst);
+				nb = ckt.getMapNodeToBus((int) first + 1);
+				sb.append(String.format("%s  #%d has %d nodes, including bus %s (node %d)",
+					DSS.CRLF, i+1, count, ckt.getBusList().get(nb.busRef - 1), first + 1));
 			}
 		}
 
-		return s;
+		return sb.toString();
 	}
 
 }

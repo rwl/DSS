@@ -161,13 +161,13 @@ public class Recloser extends ControlClass {
 				ar.setMonitoredElementName(param.toLowerCase());
 				break;
 			case 1:
-				ar.setMonitoredElementTerminal(parser.makeInteger());
+				ar.setMonitoredElementTerminalIdx(parser.makeInteger() - 1);
 				break;
 			case 2:
 				ar.setElementName(param.toLowerCase());
 				break;
 			case 3:
-				ar.setElementTerminal(parser.makeInteger());
+				ar.setElementTerminalIdx(parser.makeInteger() - 1);
 				break;
 			case 4:
 				ar.setNumFast(parser.makeInteger());
@@ -235,7 +235,7 @@ public class Recloser extends ControlClass {
 				ar.setElementName(ar.getMonitoredElementName());
 				break;
 			case 1:
-				ar.setElementTerminal(ar.getMonitoredElementTerminal());
+				ar.setElementTerminalIdx(ar.getMonitoredElementTerminalIdx());
 				break;
 			}
 
@@ -267,12 +267,12 @@ public class Recloser extends ControlClass {
 			ar.setNumConds(otherRecloser.getNumConds());  // force reallocation of terminal stuff
 
 			ar.setElementName(otherRecloser.getElementName());
-			ar.setElementTerminal(otherRecloser.getElementTerminal());
+			ar.setElementTerminalIdx(otherRecloser.getElementTerminalIdx());
 			ar.setControlledElement(otherRecloser.getControlledElement());  // pointer to target circuit element
 
 			ar.setMonitoredElement(otherRecloser.getMonitoredElement());  // pointer to target circuit element
 			ar.setMonitoredElementName(otherRecloser.getMonitoredElementName());  // pointer to target circuit element
-			ar.setMonitoredElementTerminal(otherRecloser.getMonitoredElementTerminal());  // pointer to target circuit element
+			ar.setMonitoredElementTerminalIdx(otherRecloser.getMonitoredElementTerminalIdx());  // pointer to target circuit element
 
 			ar.setPhaseDelayed(otherRecloser.getPhaseDelayed());
 			ar.setGroundDelayed(otherRecloser.getGroundDelayed());

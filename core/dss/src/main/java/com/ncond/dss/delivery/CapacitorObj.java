@@ -11,6 +11,7 @@ import org.apache.commons.math.complex.Complex;
 import com.ncond.dss.common.DSS;
 import com.ncond.dss.common.DSSClass;
 import com.ncond.dss.common.Util;
+import com.ncond.dss.common.types.Connection;
 import com.ncond.dss.parser.Parser;
 import com.ncond.dss.shared.CMatrix;
 import com.ncond.dss.shared.ComplexUtil;
@@ -72,7 +73,7 @@ public class CapacitorObj extends PDElement {
 	private int specType;
 
 	/* 0 or 1 for wye (default) or delta, respectively */
-	protected int connection;
+	protected Connection connection;
 
 	public CapacitorObj(DSSClass parClass, String capacitorName) {
 		super(parClass);
@@ -112,7 +113,7 @@ public class CapacitorObj extends PDElement {
 		Util.initDblArray(numSteps, C,
 				1.0 / (DSS.TWO_PI * baseFrequency * Math.pow(kVRating, 2) * 1000.0 / kVArRating[0]));
 
-		connection = 0;  // 0 or 1 for wye (default) or delta, respectively
+		connection = Connection.WYE;
 		specType = 1;  // 1=kvar, 2=Cuf, 3=Cmatrix
 
 		normAmps = kVArRating[0] * DSS.SQRT3 / kVRating * 1.35;  // 135%
@@ -140,7 +141,7 @@ public class CapacitorObj extends PDElement {
 		switch (specType) {
 		case 1:// kvar
 			switch (connection) {
-			case 1:  // line-to-line
+			case DELTA:  // line-to-line
 				phaseKV = kVRating;
 				break;
 			default:  // line-to-neutral
@@ -164,7 +165,7 @@ public class CapacitorObj extends PDElement {
 			break;
 		case 2:  // Cuf
 			switch (connection) {
-			case 1:  // line-to-line
+			case DELTA:  // line-to-line
 				phaseKV = kVRating;
 				break;
 			default:  // line-to-neutral
@@ -265,10 +266,10 @@ public class CapacitorObj extends PDElement {
 
 		pw.println("~ " + parentClass.getPropertyName(4) + "=" + getKVRating());
 		switch (getConnection()) {
-		case 0:
+		case WYE:
 			pw.println("~ " + parentClass.getPropertyName(5) + "=wye");
 			break;
-		case 1:
+		case DELTA:
 			pw.println("~ " + parentClass.getPropertyName(6) + "=delta");
 			break;
 		}
@@ -336,8 +337,7 @@ public class CapacitorObj extends PDElement {
 		if (getNumPhases() > 1) {
 			switch (getSpecType()) {
 			case 1:  // kvar
-
-				if (getNumPhases() > 1 || getConnection() != 0) {
+				if (getNumPhases() > 1 || getConnection() != connection.WYE) {
 					phaseKV = getKVRating() / DSS.SQRT3;
 				} else {
 					phaseKV = getKVRating();
@@ -522,7 +522,7 @@ public class CapacitorObj extends PDElement {
 		case 1:
 			value = new Complex(0.0, getC()[iStep] * w);
 			switch (getConnection()) {
-			case 1:  // line-line
+			case DELTA:  // line-line
 				value2 = value.multiply(2.0);
 				value = value.negate();
 				for (i = 0; i < getNumPhases(); i++) {
@@ -548,7 +548,7 @@ public class CapacitorObj extends PDElement {
 
 			value = new Complex(0.0, getC()[iStep] * w);
 			switch (getConnection()) {
-			case 1:  // line-line
+			case DELTA:  // line-line
 				value2 = value.multiply(2.0);
 				value = value.negate();
 				for (i = 0; i < getNumPhases(); i++) {
@@ -590,7 +590,7 @@ public class CapacitorObj extends PDElement {
 			case 1:
 
 				switch (getConnection()) {
-				case 1:  // line-line
+				case DELTA:  // line-line
 					/* Add a little bit to each phase so it will invert */
 					for (i = 0; i < getNumPhases(); i++)
 						YPrimWork.set(i, i, YPrimWork.get(i, i).multiply(1.000001));
@@ -609,7 +609,7 @@ public class CapacitorObj extends PDElement {
 			case 2:  // identical to case 1
 
 				switch (getConnection()) {
-				case 1:  // line-line
+				case DELTA:  // line-line
 					/* Add a little bit to each phase so it will invert */
 					for (i = 0; i < getNumPhases(); i++)
 						YPrimWork.set(i, i, YPrimWork.get(i, i).multiply(1.000001));

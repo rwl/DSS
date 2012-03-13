@@ -87,7 +87,7 @@ public class RelayObj extends ControlElem {
 		underTrip;
 
 	private String monitoredElementName;
-	private int monitoredElementTerminal;
+	private int monitoredElementTerminalIdx;
 	private CktElement monitoredElement;
 
 	private ControlAction presentState;
@@ -118,10 +118,10 @@ public class RelayObj extends ControlElem {
 
 		elementName   = "";
 		setControlledElement(null);
-		elementTerminal = 0;
+		elementTerminalIdx = 0;
 
 		monitoredElementName = "";
-		monitoredElementTerminal = 0;
+		monitoredElementTerminalIdx = 0;
 		monitoredElement = null;
 
 		relayTarget = "";
@@ -182,16 +182,16 @@ public class RelayObj extends ControlElem {
 		if (devIndex >= 0) {
 			monitoredElement = DSS.activeCircuit.getCktElements().get(devIndex);
 			setNumPhases( monitoredElement.getNumPhases() );  // force number of phases to be same
-			if (monitoredElementTerminal > monitoredElement.getNumTerms()) {
+			if (monitoredElementTerminalIdx > monitoredElement.getNumTerms()) {
 				DSS.doErrorMsg("Relay: \"" + getName() + "\"",
 						"Terminal no. \"" +"\" does not exist.",
 						"Re-specify terminal no.", 384);
 			} else {
 				// sets name of i-th terminal's connected bus in Relay's bus list
-				setBus(0, monitoredElement.getBus(monitoredElementTerminal));
+				setBus(0, monitoredElement.getBus(monitoredElementTerminalIdx));
 				// allocate a buffer big enough to hold everything from the monitored element
 				cBuffer = Util.resizeArray(cBuffer, monitoredElement.getYOrder());
-				condOffset = monitoredElementTerminal * monitoredElement.getNumConds();  // for speedy sampling
+				condOffset = monitoredElementTerminalIdx * monitoredElement.getNumConds();  // for speedy sampling
 
 				switch (controlType) {
 				case Relay.GENERIC:
@@ -213,7 +213,7 @@ public class RelayObj extends ControlElem {
 		if (devIndex >= 0) {
 			// both CktElement and monitored element must already exist
 			setControlledElement( DSS.activeCircuit.getCktElements().get(devIndex) );
-			getControlledElement().setActiveTerminalIdx(elementTerminal);  // make the 1 st terminal active
+			getControlledElement().setActiveTerminalIdx(elementTerminalIdx);  // make the 1 st terminal active
 			if (getControlledElement().isConductorClosed(-1)) {  // check state of phases of active terminal
 				presentState = ControlAction.CLOSE;
 				lockedOut = false;
@@ -255,10 +255,10 @@ public class RelayObj extends ControlElem {
 		if (monitoredElement != null) {
 			setNumPhases( monitoredElement.getNumPhases() );
 			setNumConds(nPhases);
-			setBus(0, monitoredElement.getBus(elementTerminal));
+			setBus(0, monitoredElement.getBus(elementTerminalIdx));
 			// allocate a buffer big enough to hold everything from the monitored element
 			cBuffer = Util.resizeArray(cBuffer, monitoredElement.getYOrder());
-			condOffset = (elementTerminal - 1) * monitoredElement.getNumConds();  // for speedy sampling
+			condOffset = (elementTerminalIdx - 1) * monitoredElement.getNumConds();  // for speedy sampling
 		}
 
 		switch (nPhases) {
@@ -298,7 +298,7 @@ public class RelayObj extends ControlElem {
 	@Override
 	public void doPendingAction(int code, int proxyHdl) {
 
-		getControlledElement().setActiveTerminalIdx(elementTerminal);  // set active terminal of CktElement to terminal 1
+		getControlledElement().setActiveTerminalIdx(elementTerminalIdx);  // set active terminal of CktElement to terminal 1
 
 		if (code == ControlAction.OPEN.code()) {
 			switch (presentState) {
@@ -345,7 +345,7 @@ public class RelayObj extends ControlElem {
 	public void interpretRelayAction(String action) {
 
 		if (getControlledElement() != null) {
-			getControlledElement().setActiveTerminalIdx(elementTerminal);  // set active terminal
+			getControlledElement().setActiveTerminalIdx(elementTerminalIdx);  // set active terminal
 			switch (action.toLowerCase().charAt(0)) {
 			case 'o':
 				getControlledElement().setConductorClosed(-1, false);  // open all phases of active terminal
@@ -372,7 +372,7 @@ public class RelayObj extends ControlElem {
 	@Override
 	public void sample() {
 
-		getControlledElement().setActiveTerminalIdx(elementTerminal);
+		getControlledElement().setActiveTerminalIdx(elementTerminalIdx);
 		if (getControlledElement().isConductorClosed(-1)) {  // check state of phases of active terminal
 			presentState = ControlAction.CLOSE;
 		} else {
@@ -454,7 +454,7 @@ public class RelayObj extends ControlElem {
 		nextTripTime   = -1.0;  // not set to trip
 
 		if (getControlledElement() != null) {
-			getControlledElement().setActiveTerminalIdx(elementTerminal);  // set active terminal
+			getControlledElement().setActiveTerminalIdx(elementTerminalIdx);  // set active terminal
 			getControlledElement().setConductorClosed(-1, true);  // close all phases of active terminal
 		}
 	}
@@ -587,9 +587,9 @@ public class RelayObj extends ControlElem {
 		int iOffset;
 		Complex[] I012 = new Complex[3];
 
-		monitoredElement.setActiveTerminalIdx(monitoredElementTerminal);
+		monitoredElement.setActiveTerminalIdx(monitoredElementTerminalIdx);
 		monitoredElement.getCurrents(cBuffer);
-		iOffset = monitoredElementTerminal * monitoredElement.getNumConds();  // offset for active terminal
+		iOffset = monitoredElementTerminalIdx * monitoredElement.getNumConds();  // offset for active terminal
 		MathUtil.phase2SymComp(cBuffer[iOffset + 1], I012);
 		negSeqCurrentMag = I012[2].abs();
 		if (negSeqCurrentMag >= pickupAmps46) {
@@ -733,7 +733,7 @@ public class RelayObj extends ControlElem {
 		Complex S;
 
 		//MonitoredElement.ActiveTerminalIdx = MonitoredElementTerminal;
-		S = monitoredElement.getPower(monitoredElementTerminal);
+		S = monitoredElement.getPower(monitoredElementTerminalIdx);
 		if (S.getReal() < 0.0) {
 			if (Math.abs(S.getReal()) > phaseInst * 1000.0) {
 				if (!armedForOpen) {  // push the trip operation and arm to trip
@@ -761,7 +761,7 @@ public class RelayObj extends ControlElem {
 
 		if (!lockedOut) {
 			/* *** Fix so that fastest trip time applies *** */
-			monitoredElement.getTermVoltages(monitoredElementTerminal, cBuffer);
+			monitoredElement.getTermVoltages(monitoredElementTerminalIdx, cBuffer);
 
 			VMin = 1.e50;
 			VMax = 0.0;
@@ -865,7 +865,7 @@ public class RelayObj extends ControlElem {
 		double negSeqVoltageMag;
 		Complex[] V012 = new Complex[3];
 
-		monitoredElement.getTermVoltages(monitoredElementTerminal, cBuffer);
+		monitoredElement.getTermVoltages(monitoredElementTerminalIdx, cBuffer);
 		MathUtil.phase2SymComp(cBuffer, V012);  // phase to symmetrical components
 		negSeqVoltageMag = V012[2].abs();
 

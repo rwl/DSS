@@ -251,7 +251,7 @@ public class StorageController extends ControlClass {
 				asc.setElementName(param.toLowerCase());
 				break;
 			case StorageController.TERMINAL:
-				asc.setElementTerminal(parser.makeInteger());
+				asc.setElementTerminalIdx(parser.makeInteger() - 1);
 				break;
 			case StorageController.KW_TARGET:
 				asc.setKWTarget(parser.makeDouble());
@@ -419,7 +419,7 @@ public class StorageController extends ControlClass {
 			asc.setElementName(otherStorageController.getElementName());
 			asc.setControlledElement(otherStorageController.getControlledElement());  // pointer to target circuit element
 			asc.setMonitoredElement(otherStorageController.getMonitoredElement());  // pointer to target circuit element
-			asc.setElementTerminal(otherStorageController.getElementTerminal());
+			asc.setElementTerminalIdx(otherStorageController.getElementTerminalIdx());
 
 			asc.setKWTarget(otherStorageController.getKWTarget());
 			asc.setKWThreshold(otherStorageController.getKWThreshold());

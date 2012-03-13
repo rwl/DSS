@@ -3,7 +3,6 @@ package com.ncond.dss.control;
 import com.ncond.dss.common.DSS;
 import com.ncond.dss.common.DSSClassDefs;
 import com.ncond.dss.common.Util;
-import com.ncond.dss.control.CapControlObj.CapControlType;
 import com.ncond.dss.parser.Parser;
 import com.ncond.dss.shared.CommandList;
 
@@ -14,6 +13,7 @@ public class CapControl extends ControlClass {
 	public static final int AVGPHASES = -1;
 	public static final int MAXPHASE  = -2;
 	public static final int MINPHASE  = -3;
+
 	public static final int SRPINHIBITRELEASE = 222; // just some unused number
 
 	public static final int NumPropsThisClass = 18;
@@ -34,8 +34,8 @@ public class CapControl extends ControlClass {
 
 	@Override
 	protected void defineProperties() {
-
 		numProperties = CapControl.NumPropsThisClass;
+
 		countProperties();   // get inherited property count
 		allocatePropertyArrays();
 
@@ -119,15 +119,12 @@ public class CapControl extends ControlClass {
 
 	@Override
 	public int edit() {
+		CapControlObj elem;
 		Parser parser = Parser.getInstance();
 
 		// continue parsing with contents of parser
-		activeCapControlObj = (CapControlObj) elementList.getActive();
+		elem = activeCapControlObj = (CapControlObj) elementList.getActive();
 		DSS.activeCircuit.setActiveCktElement(activeCapControlObj);
-
-		int result = 0;
-
-		CapControlObj acc = activeCapControlObj;
 
 		int paramPointer = -1;
 		String paramName = parser.getNextParam();
@@ -140,149 +137,152 @@ public class CapControl extends ControlClass {
 			}
 
 			if ((paramPointer >= 0) && (paramPointer < numProperties))
-				acc.setPropertyValue(paramPointer, param);
+				elem.setPropertyValue(paramPointer, param);
 
 			switch (paramPointer) {
 			case -1:
-				DSS.doSimpleMsg("Unknown parameter \"" + paramName + "\" for object \"" + getClassName() +"."+ acc.getName() + "\"", 352);
+				DSS.doSimpleMsg("Unknown parameter \"" + paramName + "\" for object \"" +
+						getClassName() +"."+ elem.getName() + "\"", 352);
 				break;
 			case 0:
-				acc.setElementName(param.toLowerCase());
+				elem.setElementName(param.toLowerCase());
 				break;
 			case 1:
-				acc.setElementTerminal(parser.makeInteger());
+				elem.setElementTerminalIdx(parser.makeInteger());
 				break;
 			case 2:
-				acc.setCapacitorName("capacitor." + param);
+				elem.setCapacitorName("capacitor." + param);
 				break;
 			case 3:
 				switch (param.toLowerCase().charAt(0)) {
 				case 'c':
-					acc.setControlType(CapControlType.CURRENT);
+					elem.setControlType(CapControlType.CURRENT);
 					break;
 				case 'v':
-					acc.setControlType(CapControlType.VOLTAGE);
+					elem.setControlType(CapControlType.VOLTAGE);
 					break;
 				case 'k':
-					acc.setControlType(CapControlType.KVAR);
+					elem.setControlType(CapControlType.KVAR);
 					break;
 				case 't':
-					acc.setControlType(CapControlType.TIME);
+					elem.setControlType(CapControlType.TIME);
 					break;
 				case 'p':
-					acc.setControlType(CapControlType.PF);
+					elem.setControlType(CapControlType.PF);
 					break;
 				case 's':
-					acc.setControlType(CapControlType.SRP);
+					elem.setControlType(CapControlType.SRP);
 					break;
 				default:
-					DSS.doSimpleMsg(String.format("Unrecognized CapControl type: \"%s\" (CapControl.%s)", param, acc.getName()), 352);
+					DSS.doSimpleMsg(String.format("Unrecognized CapControl type: \"%s\" (CapControl.%s)",
+							param, elem.getName()), 352);
 					break;
 				}
 				break;
 			case 4:
-				acc.setPTRatio(parser.makeDouble());
+				elem.setPTRatio(parser.makeDouble());
 				break;
 			case 5:
-				acc.setCTRatio(parser.makeDouble());
+				elem.setCTRatio(parser.makeDouble());
 				break;
 			case 6:
-				acc.setOnValue(parser.makeDouble());
+				elem.setOnValue(parser.makeDouble());
 				break;
 			case 7:
-				acc.setOffValue(parser.makeDouble());
+				elem.setOffValue(parser.makeDouble());
 				break;
 			case 8:
-				acc.setOnDelay(parser.makeDouble());
+				elem.setOnDelay(parser.makeDouble());
 				break;
 			case 9:
-				acc.setVOverride(Util.interpretYesNo(param));
+				elem.setVOverride(Util.interpretYesNo(param));
 				break;
 			case 10:
-				acc.setVMax(parser.makeDouble());
+				elem.setVMax(parser.makeDouble());
 				break;
 			case 11:
-				acc.setVMin(parser.makeDouble());
+				elem.setVMin(parser.makeDouble());
 				break;
 			case 12:
-				acc.setOffDelay(parser.makeDouble());
+				elem.setOffDelay(parser.makeDouble());
 				break;
 			case 13:
-				acc.setDeadTime(parser.makeDouble());
+				elem.setDeadTime(parser.makeDouble());
 				break;
 			case 14:
 				if (Util.compareTextShortest(param, "avg") == 0) {
-					acc.setCTPhase(CapControl.AVGPHASES);
+					elem.setCTPhaseIdx(CapControl.AVGPHASES);
 				} else if (Util.compareTextShortest(param, "max") == 0) {
-					acc.setCTPhase(CapControl.MAXPHASE);
+					elem.setCTPhaseIdx(CapControl.MAXPHASE);
 				} else if (Util.compareTextShortest(param, "min") == 0) {
-					acc.setCTPhase(CapControl.MINPHASE);
+					elem.setCTPhaseIdx(CapControl.MINPHASE);
 				} else {
-					acc.setCTPhase( Math.max(1, parser.makeInteger()) );
+					elem.setCTPhaseIdx(Math.max(0, parser.makeInteger() - 1));
 				}
 				break;
 			case 15:
 				if (Util.compareTextShortest(param, "avg") == 0) {
-					acc.setPTPhase(CapControl.AVGPHASES);
+					elem.setPTPhaseIdx(CapControl.AVGPHASES);
 				} else if (Util.compareTextShortest(param, "max") == 0) {
-					acc.setPTPhase(CapControl.MAXPHASE);
+					elem.setPTPhaseIdx(CapControl.MAXPHASE);
 				} else if (Util.compareTextShortest(param, "min") == 0) {
-					acc.setPTPhase(CapControl.MINPHASE);
+					elem.setPTPhaseIdx(CapControl.MINPHASE);
 				} else {
-					acc.setPTPhase( Math.max(1, parser.makeInteger()) );
+					elem.setPTPhaseIdx(Math.max(0, parser.makeInteger() - 1));
 				}
 				break;
 			case 16:
-				acc.setVOverrideBusSpecified(true);
-				acc.setVOverrideBusName(param);
+				elem.setVOverrideBusSpecified(true);
+				elem.setVOverrideBusName(param);
 			case 17:
-				acc.setShowEventLog( Util.interpretYesNo(param) );
+				elem.setShowEventLog(Util.interpretYesNo(param));
 			default:
 				// inherited parameters
-				classEdit(activeCapControlObj, paramPointer - CapControl.NumPropsThisClass);
+				classEdit(elem, paramPointer - CapControl.NumPropsThisClass);
 				break;
 			}
 
-
 			/* PF controller changes */
-			if (acc.getControlType() == CapControlType.PF) {
+			if (elem.getControlType() == CapControlType.PF) {
 				switch (paramPointer) {
 				case 3:
-					acc.setPFOnValue(0.95);  // defaults
-					acc.setPFOffValue(1.05);
+					elem.setPFOnValue(0.95);  // defaults
+					elem.setPFOffValue(1.05);
 					break;
 				case 6:
-					if ((acc.getOnValue() >= -1.0) && (acc.getOnValue() <= 1.0)) {
-						if (acc.getOnValue() < 0.0) {
-							acc.setPFOnValue( 2.0 + acc.getOnValue());
+					if ((elem.getOnValue() >= -1.0) && (elem.getOnValue() <= 1.0)) {
+						if (elem.getOnValue() < 0.0) {
+							elem.setPFOnValue(2.0 + elem.getOnValue());
 						} else {
-							acc.setPFOnValue(acc.getOnValue());
+							elem.setPFOnValue(elem.getOnValue());
 						}
 					} else {
-						DSS.doSimpleMsg("Invalid PF on value for CapControl."+acc.getName(), 353);
+						DSS.doSimpleMsg("Invalid PF on value for CapControl." + elem.getName(), 353);
 					}
 					break;
 				case 7:
-					if ((acc.getOffValue() >= -1.0) && (acc.getOffValue() <= 1.0)) {
-						if (acc.getOffValue() < 0.0) {
-							acc.setPFOffValue(2.0 + acc.getOffValue());
+					if ((elem.getOffValue() >= -1.0) && (elem.getOffValue() <= 1.0)) {
+						if (elem.getOffValue() < 0.0) {
+							elem.setPFOffValue(2.0 + elem.getOffValue());
 						} else {
-							acc.setPFOffValue(acc.getOffValue());
+							elem.setPFOffValue(elem.getOffValue());
 						}
 					} else {
-						DSS.doSimpleMsg("Invalid PF off value for CapControl."+acc.getName(), 35301);
+						DSS.doSimpleMsg("Invalid PF off value for CapControl." + elem.getName(), 35301);
 					}
 					break;
 				case 14:
-					if (acc.getCTPhase() > acc.getNumPhases()) {
-						DSS.doSimpleMsg(String.format("Error: Monitored phase(%d) must be less than or equal to number of phases(%d). ", acc.getCTPhase(), acc.getNumPhases()), 35302);
-						acc.setCTPhase(1);
+					if (elem.getCTPhaseIdx() >= elem.getNumPhases()) {
+						DSS.doSimpleMsg(String.format("Error: Monitored phase(%d) must be less than or equal to number of phases(%d). ",
+							elem.getCTPhaseIdx() + 1, elem.getNumPhases()), 35302);
+						elem.setCTPhaseIdx(0);
 					}
 					break;
 				case 15:
-					if (acc.getPTPhase() > acc.getNumPhases()) {
-						DSS.doSimpleMsg(String.format("Error: Monitored phase(%d) must be less than or equal to number of phases(%d). ", acc.getPTPhase(), acc.getNumPhases()), 35303);
-						acc.setPTPhase(1);
+					if (elem.getPTPhaseIdx() >= elem.getNumPhases()) {
+						DSS.doSimpleMsg(String.format("Error: Monitored phase(%d) must be less than or equal to number of phases(%d). ",
+								elem.getPTPhaseIdx() + 1, elem.getNumPhases()), 35303);
+						elem.setPTPhaseIdx(0);
 					}
 					break;
 				}
@@ -292,9 +292,9 @@ public class CapControl extends ControlClass {
 			param = parser.makeString();
 		}
 
-		acc.recalcElementData();
+		elem.recalcElementData();
 
-		return result;
+		return 0;
 	}
 
 	@Override
@@ -305,51 +305,50 @@ public class CapControl extends ControlClass {
 
 	@Override
 	protected int makeLike(String capControlName) {
-		int i, result = 0;
+		int i;
 
 		/* See if we can find this CapControl name in the present collection */
-		CapControlObj otherCapControl = (CapControlObj) find(capControlName);
-		if (otherCapControl != null) {
+		CapControlObj other = (CapControlObj) find(capControlName);
+		if (other != null) {
 			CapControlObj acc = activeCapControlObj;
 
-			acc.setNumPhases(otherCapControl.getNumPhases());
-			acc.setNumConds(otherCapControl.getNumConds());  // force reallocation of terminal stuff
+			acc.setNumPhases(other.getNumPhases());
+			acc.setNumConds(other.getNumConds());  // force reallocation of terminal stuff
 
-			acc.setElementName(otherCapControl.getElementName());
-			acc.setCapacitorName(otherCapControl.getCapacitorName());
-			acc.setControlledElement(otherCapControl.getControlledElement());  // pointer to target circuit element
-			acc.setMonitoredElement(otherCapControl.getMonitoredElement());    // pointer to target circuit element
+			acc.setElementName(other.getElementName());
+			acc.setCapacitorName(other.getCapacitorName());
+			acc.setControlledElement(other.getControlledElement());  // target circuit element
+			acc.setMonitoredElement(other.getMonitoredElement());    // target circuit element
 
-			acc.setElementTerminal(otherCapControl.getElementTerminal());
-			acc.setPTRatio(otherCapControl.getPTRatio());
-			acc.setCTRatio(otherCapControl.getCTRatio());
-			acc.setControlType(otherCapControl.getControlType());
-			acc.setPresentState(otherCapControl.getPresentState());
-			acc.setShouldSwitch(otherCapControl.isShouldSwitch());
-			acc.setCondOffset(otherCapControl.getCondOffset());
+			acc.setElementTerminalIdx(other.getElementTerminalIdx());
+			acc.setPTRatio(other.getPTRatio());
+			acc.setCTRatio(other.getCTRatio());
+			acc.setControlType(other.getControlType());
+			acc.setPresentState(other.getPresentState());
+			acc.setShouldSwitch(other.isShouldSwitch());
+			acc.setCondOffset(other.getCondOffset());
 
-			acc.setOnValue(otherCapControl.getOnValue());
-			acc.setOffValue(otherCapControl.getOffValue());
-			acc.setPFOnValue(otherCapControl.getPFOnValue());
-			acc.setPFOffValue(otherCapControl.getPFOffValue());
+			acc.setOnValue(other.getOnValue());
+			acc.setOffValue(other.getOffValue());
+			acc.setPFOnValue(other.getPFOnValue());
+			acc.setPFOffValue(other.getPFOffValue());
 
-			acc.setCTPhase(otherCapControl.getCTPhase());
-			acc.setPTPhase(otherCapControl.getPTPhase());
+			acc.setCTPhaseIdx(other.getCTPhaseIdx());
+			acc.setPTPhaseIdx(other.getPTPhaseIdx());
 
-			acc.setVOverride(otherCapControl.isVOverride());
-			acc.setVOverrideBusSpecified(otherCapControl.isVOverrideBusSpecified());
-			acc.setVOverrideBusName(otherCapControl.getVOverrideBusName());
+			acc.setVOverride(other.isVOverride());
+			acc.setVOverrideBusSpecified(other.isVOverrideBusSpecified());
+			acc.setVOverrideBusName(other.getVOverrideBusName());
 
-		        acc.setShowEventLog(otherCapControl.isShowEventLog());
+		        acc.setShowEventLog(other.isShowEventLog());
 
 			for (i = 0; i < acc.getParentClass().getNumProperties(); i++)
-				acc.setPropertyValue(i, otherCapControl.getPropertyValue(i));
-
+				acc.setPropertyValue(i, other.getPropertyValue(i));
 		} else {
 			DSS.doSimpleMsg("Error in CapControl makeLike: \"" + capControlName + "\" not found.", 360);
 		}
 
-		return result;
+		return 0;
 	}
 
 }

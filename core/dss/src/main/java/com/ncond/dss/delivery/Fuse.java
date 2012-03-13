@@ -127,13 +127,13 @@ public class Fuse extends ControlClass {
 				af.setMonitoredElementName(param.toLowerCase());
 				break;
 			case 1:
-				af.setMonitoredElementTerminal(parser.makeInteger());
+				af.setMonitoredElementTerminalIdx(parser.makeInteger() - 1);
 				break;
 			case 2:
 				af.setElementName(param.toLowerCase());
 				break;
 			case 3:
-				af.setElementTerminal(parser.makeInteger());
+				af.setElementTerminalIdx(parser.makeInteger() - 1);
 				break;
 			case 4:
 				af.setFuseCurve(getTccCurve(param));
@@ -160,7 +160,7 @@ public class Fuse extends ControlClass {
 				af.setElementName(af.getMonitoredElementName());
 				break;
 			case 1:
-				af.setElementTerminal(af.getMonitoredElementTerminal());
+				af.setElementTerminalIdx(af.getMonitoredElementTerminalIdx());
 				break;
 			}
 
@@ -186,12 +186,12 @@ public class Fuse extends ControlClass {
 			af.setNumConds(otherFuse.getNumConds()); // force reallocation of terminal stuff
 
 			af.setElementName(otherFuse.getElementName());
-			af.setElementTerminal(otherFuse.getElementTerminal());
+			af.setElementTerminalIdx(otherFuse.getElementTerminalIdx());
 			af.setControlledElement(otherFuse.getControlledElement());  // target circuit element
 
 			af.setMonitoredElement(otherFuse.getMonitoredElement());  // target circuit element
 			af.setMonitoredElementName(otherFuse.getMonitoredElementName());  // target circuit element
-			af.setMonitoredElementTerminal(otherFuse.getMonitoredElementTerminal());  // target circuit element
+			af.setMonitoredElementTerminalIdx(otherFuse.getMonitoredElementTerminalIdx());  // target circuit element
 
 			af.setFuseCurve(otherFuse.getFuseCurve());
 			af.setRatedCurrent(otherFuse.getRatedCurrent());
