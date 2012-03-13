@@ -16,6 +16,7 @@ import com.ncond.dss.common.exceptions.ControlProblem;
 import com.ncond.dss.common.exceptions.SolverError;
 import com.ncond.dss.common.exceptions.SolverProblem;
 import com.ncond.dss.common.types.Algorithm;
+import com.ncond.dss.common.types.BuildOption;
 import com.ncond.dss.common.types.ControlMode;
 import com.ncond.dss.common.types.LoadModel;
 import com.ncond.dss.common.types.Randomization;
@@ -499,7 +500,7 @@ public class SolutionObj extends DSSObject {
 
 			// the above call could change the primitive Y matrix, so have to check
 			if (systemYChanged)
-				YMatrix.buildYMatrix(YMatrix.WHOLEMATRIX, false);  // does not realloc V, I
+				YMatrix.buildYMatrix(BuildOption.WHOLEMATRIX, false);  // does not realloc V, I
 
 			if (useAuxCurrents)
 				addInAuxCurrents(Algorithm.NORMAL);
@@ -550,7 +551,7 @@ public class SolutionObj extends DSSObject {
 
 			// call to current calc could change YPrim for some devices
 			if (systemYChanged)
-				YMatrix.buildYMatrix(YMatrix.WHOLEMATRIX, false);  // does not realloc V, I
+				YMatrix.buildYMatrix(BuildOption.WHOLEMATRIX, false);  // does not realloc V, I
 
 			if (useAuxCurrents)
 				addInAuxCurrents(Algorithm.NEWTON);
@@ -627,7 +628,7 @@ public class SolutionObj extends DSSObject {
 	public int solveZeroLoadSnapShot() throws SolverProblem {
 
 		if (systemYChanged || seriesYInvalid)
-			YMatrix.buildYMatrix(YMatrix.SERIESONLY, true);  // side effect: allocates V
+			YMatrix.buildYMatrix(BuildOption.SERIESONLY, true);  // side effect: allocates V
 
 		solutionCount += 1;  // unique number for this solution
 
@@ -724,7 +725,7 @@ public class SolutionObj extends DSSObject {
 
 		if (systemYChanged) {
 			// rebuild Y matrix, but V stays same
-			YMatrix.buildYMatrix(YMatrix.WHOLEMATRIX, false);
+			YMatrix.buildYMatrix(BuildOption.WHOLEMATRIX, false);
 		}
 	}
 
@@ -779,7 +780,7 @@ public class SolutionObj extends DSSObject {
 		loadsNeedUpdating = true;  // force possible update of loads and generators
 
 		if (systemYChanged)
-			YMatrix.buildYMatrix(YMatrix.WHOLEMATRIX, true);  // side effect: allocates V
+			YMatrix.buildYMatrix(BuildOption.WHOLEMATRIX, true);  // side effect: allocates V
 
 		solutionCount += 1;  // unique number for this solution
 
@@ -819,7 +820,7 @@ public class SolutionObj extends DSSObject {
 		} else {
 			try {
 				if (systemYChanged)
-					YMatrix.buildYMatrix(YMatrix.WHOLEMATRIX, true);  // side effect: allocates V
+					YMatrix.buildYMatrix(BuildOption.WHOLEMATRIX, true);  // side effect: allocates V
 				doPFlowSolution();
 			} catch (SolverProblem e) {
 				DSS.doSimpleMsg("From solveSnap().doPFlowSolution(): " + DSS.CRLF +
@@ -919,8 +920,8 @@ public class SolutionObj extends DSSObject {
 		pw.println("set lossregs=" + Util.intArrayToString(ckt.getLossRegs(), ckt.getNumLossRegs()));
 		pw.print("set voltageBases=(");  //  changes the default voltage base rules
 		i = 0;
-		while (ckt.getLegalVoltageBases()[i] > 0.0) {
-			pw.print(ckt.getLegalVoltageBases()[i]);
+		while (ckt.getLegalVoltageBase(i) > 0.0) {
+			pw.print(ckt.getLegalVoltageBase(i));
 			i++;
 		}
 		pw.println(")");

@@ -28,12 +28,14 @@ import com.ncond.dss.shared.ComplexUtil;
 import com.ncond.dss.shared.LineUnits;
 import com.ncond.dss.shared.MathUtil;
 
-public abstract class ShowResults {
+public class ShowResults {
 
 	private static final char TABCHAR = '\u0009';
 
 	private static int maxBusNameLength = 12;
 	private static int maxDeviceNameLength = 30;
+
+	public ShowResults() {}
 
 	private static void setMaxBusNameLength() {
 		Circuit ckt = DSS.activeCircuit;

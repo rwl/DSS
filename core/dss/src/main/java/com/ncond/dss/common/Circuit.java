@@ -1079,4 +1079,8 @@ public class Circuit extends NamedObject {
 		return mapNodeToBus;
 	}
 
+	public double getLegalVoltageBase(int idx) {
+		return legalVoltageBases[idx];
+	}
+
 }

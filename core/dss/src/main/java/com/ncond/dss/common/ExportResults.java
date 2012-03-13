@@ -34,7 +34,7 @@ import com.ncond.dss.shared.MathUtil;
 
 public class ExportResults {
 
-	private ExportResults() { }
+	private ExportResults() {}
 
 	/**
 	 * Export symmetrical component bus voltages.

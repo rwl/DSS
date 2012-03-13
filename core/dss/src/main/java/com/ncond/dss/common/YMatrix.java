@@ -8,17 +8,13 @@ import org.apache.commons.math.complex.Complex;
 
 import com.ncond.dss.common.Bus.NodeBus;
 import com.ncond.dss.common.exceptions.SolverProblem;
+import com.ncond.dss.common.types.BuildOption;
 import com.ncond.dss.common.types.YPrimType;
 
 
 public class YMatrix extends CSparseSolve {
 
-	/* Options for building Y matrix */
-	public static final int SERIESONLY = 1;
-	public static final int WHOLEMATRIX = 2;
-
-	private YMatrix() {
-	}
+	private YMatrix() {}
 
 	private static void reCalcAllYPrims() {
 		Circuit ckt = DSS.activeCircuit;
@@ -71,7 +67,7 @@ public class YMatrix extends CSparseSolve {
 	 *
 	 * @throws SolverProblem
 	 */
-	public static void buildYMatrix(int BuildOption, boolean AllocateVI) throws SolverProblem {
+	public static void buildYMatrix(BuildOption buildOption, boolean AllocateVI) throws SolverProblem {
 		UUID[] pY = new UUID[1];
 		int YMatrixSize;
 		Complex[] CmatArray;
@@ -93,7 +89,7 @@ public class YMatrix extends CSparseSolve {
 
 		YMatrixSize = ckt.getNumNodes();
 
-		switch (BuildOption) {
+		switch (buildOption) {
 		case WHOLEMATRIX:
 			pY[0] = sol.getYSystem();
 			resetSparseMatrix(pY, YMatrixSize);
@@ -123,7 +119,7 @@ public class YMatrix extends CSparseSolve {
 		sol.setFrequencyChanged(false);
 
 		if (ckt.isLogEvents())
-			switch (BuildOption) {
+			switch (buildOption) {
 			case WHOLEMATRIX:
 				Util.logThisEvent("Building whole Y matrix");
 				break;
@@ -135,7 +131,7 @@ public class YMatrix extends CSparseSolve {
 		// add in Yprims for all devices
 		for (CktElement pElem : ckt.getCktElements()) {
 			if (pElem.isEnabled()) {
-				switch (BuildOption) {
+				switch (buildOption) {
 				case WHOLEMATRIX:
 					CmatArray = pElem.getYPrimValues(YPrimType.ALL_YPRIM);
 					break;
@@ -170,7 +166,7 @@ public class YMatrix extends CSparseSolve {
 			initializeNodeVbase();
 		}
 
-		switch (BuildOption) {
+		switch (buildOption) {
 		case WHOLEMATRIX:
 			sol.setSeriesYInvalid(true);  // indicate that the series matrix may not match
 			sol.setSystemYChanged(false);
