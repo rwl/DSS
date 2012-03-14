@@ -2999,7 +2999,7 @@ public class ShowResults {
 				bus = ckt.getBus(load.getTerminal(0).getBusRef() - 1);
 				busName = ckt.getBusList().get(load.getTerminal(0).getBusRef() - 1);
 				if (bus.getKVBase() != 0.0) {
-					if ((load.getNumPhases() == 1) && (load.getConnection() == 0)) {
+					if ((load.getNumPhases() == 1) && (load.getConnection() == Connection.WYE)) {
 						if (Math.abs(load.getKVLoadBase() - bus.getKVBase()) > 0.10 * bus.getKVBase()) {
 							pw.printf("!!!!! Voltage base mismatch, Load.%s.kV=%.6g, Bus %s LN kvBase = %.6g",
 								load.getName(), load.getKVLoadBase(), load.getBus(0), bus.getKVBase());

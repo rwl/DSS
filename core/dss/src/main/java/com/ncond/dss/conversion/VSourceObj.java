@@ -12,6 +12,7 @@ import com.ncond.dss.common.DSS;
 import com.ncond.dss.common.DSSClass;
 import com.ncond.dss.common.SolutionObj;
 import com.ncond.dss.common.Util;
+import com.ncond.dss.general.SpectrumObj;
 import com.ncond.dss.parser.Parser;
 import com.ncond.dss.shared.CMatrix;
 import com.ncond.dss.shared.ComplexUtil;
@@ -23,18 +24,18 @@ public class VSourceObj extends PCElement {
 	private double MVAsc1;
 	private double Isc3;
 	private double Isc1;
-	private int ZSpecType;
+	private ZSpecType ZspecType;
 	private double R1, X1;
 	private double R0, X0;
 	private double X1R1;
 	private double X0R0;
 
-	private int scanType;
-	private int sequenceType;
+	private SequenceType scanType;
+	private SequenceType sequenceType;
 
 	protected CMatrix Z;  // base frequency series Z matrix
-	protected CMatrix ZInv;
-	protected double VMag;
+	protected CMatrix Zinv;
+	protected double Vmag;
 
 	protected double kVBase;
 	protected double perUnit;
@@ -50,26 +51,27 @@ public class VSourceObj extends PCElement {
 		setNumPhases(3);
 		nConds = 3;
 		setNumTerms(2);  // now a 2-terminal device
-		Z        = null;
-		ZInv     = null;
-		//Basefrequency = 60.0;  // set in base class
-		MVAsc3   = 2000.0;
-		MVAsc1   = 2100.0;
-		ZSpecType = 1;  // default to MVAsc
-		R1       = 1.65;
-		X1       = 6.6;
-		R0       = 1.9;
-		X0       = 5.7;
-		Isc3     = 10000.0;
-		Isc1     = 10540.0;
-		kVBase   = 115.0;
-		X1R1     = 4.0;
-		X0R0     = 3.0;
-		perUnit  = 1.0;
+
+		Z = null;
+		Zinv = null;
+
+		MVAsc3 = 2000.0;
+		MVAsc1 = 2100.0;
+		ZspecType = ZSpecType.MVASC;
+		R1 = 1.65;
+		X1 = 6.6;
+		R0 = 1.9;
+		X0 = 5.7;
+		Isc3 = 10000.0;
+		Isc1 = 10540.0;
+		kVBase = 115.0;
+		X1R1 = 4.0;
+		X0R0 = 3.0;
+		perUnit = 1.0;
 		srcFrequency = baseFrequency;
-		angle    = 0.0;
-		scanType = 1;
-		sequenceType = 1;
+		angle = 0.0;
+		scanType = SequenceType.POS;
+		sequenceType = SequenceType.POS;
 
 		spectrum = "defaultvsource";
 
@@ -81,7 +83,6 @@ public class VSourceObj extends PCElement {
 
 	@Override
 	public void recalcElementData() {
-
 		Complex Zs, Zm;
 		int i, j;
 
@@ -89,14 +90,10 @@ public class VSourceObj extends PCElement {
 		double Rs, Xs, Rm, Xm;
 
 		// for a source, nPhases = nCond, for now
-		Z    = new CMatrix(nPhases);
-		ZInv = new CMatrix(nPhases);
+		Z  = new CMatrix(nPhases);
+		Zinv = new CMatrix(nPhases);
 
-		if (nPhases == 1) {
-			factor = 1.0;
-		} else {
-			factor = DSS.SQRT3;
-		}
+		factor = nPhases == 1 ? 1.0 : DSS.SQRT3;
 
 		Rs = 0.0;
 		Rm = 0.0;
@@ -104,27 +101,23 @@ public class VSourceObj extends PCElement {
 		Xm = 0.0;
 
 		/* Calculate the short circuit impedance and make all other spec types agree */
-		switch (ZSpecType) {
-		case 1:  // MVAsc
-			X1   = Math.pow(kVBase, 2) / MVAsc3 / Math.sqrt(1.0 + 1.0 / Math.pow(X1R1, 2));
-			Xs   = Math.pow(kVBase, 2) / MVAsc1 / Math.sqrt(1.0 + 1.0 / Math.pow(X0R0, 2));  // approx
-			R1   = X1 / X1R1;
-			Xm   = Xs - X1;
-			X0   = (Xs + 2.0 * Xm);
-			R0   = X0 / X0R0;
+		switch (ZspecType) {
+		case MVASC:
+			X1 = Math.pow(kVBase, 2) / MVAsc3 / Math.sqrt(1.0 + 1.0 / Math.pow(X1R1, 2));
+			Xs = Math.pow(kVBase, 2) / MVAsc1 / Math.sqrt(1.0 + 1.0 / Math.pow(X0R0, 2));  // approx
+			R1 = X1 / X1R1;
+			Xm = Xs - X1;
+			X0 = (Xs + 2.0 * Xm);
+			R0 = X0 / X0R0;
 			Isc3 = MVAsc3 * 1000.0 / (DSS.SQRT3 * kVBase);
-			Isc1 = MVAsc1 * 1000.0 /(factor * kVBase);
+			Isc1 = MVAsc1 * 1000.0 / (factor * kVBase);
 
-			if (nPhases == 1) {
-				Rs = Xs / X0R0;
-			} else {
-				Rs = (2.0 * R1 + R0) / 3.0;
-			}
+			Rs = (nPhases == 1) ? Xs / X0R0 : (2.0 * R1 + R0) / 3.0;
 
 			Rm = (R0 - R1) / 3.0;
 			break;
 
-		case 2:  // Isc
+		case ISC:
 			MVAsc3 = DSS.SQRT3 * kVBase * Isc3 / 1000.0;
 			MVAsc1 = factor * kVBase * Isc1 / 1000.0;
 			X1 = Math.pow(kVBase, 2) / MVAsc3 / Math.sqrt(1.0 + 1.0 / Math.pow(X1R1, 2));
@@ -134,16 +127,12 @@ public class VSourceObj extends PCElement {
 			X0 = (Xs + 2.0 * Xm);
 			R0 = X0 / X0R0;
 
-			if (nPhases == 1) {
-				Rs = Xs / X0R0;
-			} else {
-				Rs = (2.0 * R1 + R0) / 3.0;
-			}
+			Rs = (nPhases == 1) ? Xs / X0R0 : (2.0 * R1 + R0) / 3.0;
 
 			Rm = (R0 - R1) / 3.0;
 			break;
 
-		case 3:  // Z1, Z0; specified
+		case Z1Z0:
 			Isc3 = kVBase * 1000.0 / DSS.SQRT3 / new Complex(R1, X1).abs();
 
 			if (nPhases == 1) {  // force Z0 to be Z1 so Zs is same as Z1
@@ -153,13 +142,13 @@ public class VSourceObj extends PCElement {
 			Rs = (2.0 * R1 + R0) / 3.0;
 			Xs = (2.0 * X1 + X0) / 3.0;
 
-			Isc1   = kVBase * 1000.0 / factor / new Complex(Rs, Xs).abs();
+			Isc1 = kVBase * 1000.0 / factor / new Complex(Rs, Xs).abs();
 			MVAsc3 = DSS.SQRT3 * kVBase * Isc3 / 1000.0;
 			MVAsc1 = factor * kVBase * Isc1 / 1000.0;
-			Xm     = Xs - X1;
+			Xm = Xs - X1;
 
-			Rs     = (2.0 * R1 + R0) / 3.0;
-			Rm     = (R0 - R1) / 3.0;
+			Rs = (2.0 * R1 + R0) / 3.0;
+			Rm = (R0 - R1) / 3.0;
 			break;
 		}
 
@@ -171,22 +160,24 @@ public class VSourceObj extends PCElement {
 
 		for (i = 0; i < nPhases; i++) {
 			Z.set(i, i, Zs);
-			for (j = 0; j < i - 1; j++)
+			for (j = 0; j < i - 1; j++) {
 				Z.setSym(i, j, Zm);
+			}
 		}
 
 		switch (nPhases) {
 		case 1:
-			VMag = kVBase * perUnit * 1000.0;
+			Vmag = kVBase * perUnit * 1000.0;
 			break;
 		default:
-			VMag = kVBase * perUnit * 1000.0 / 2.0 / Math.sin((180.0 / nPhases) * Math.PI / 180.0);
+			Vmag = kVBase * perUnit * 1000.0 / 2.0 / Math.sin((180.0 / nPhases) * Math.PI / 180.0);
 			break;
 		}
 
-		setSpectrumObj( (com.ncond.dss.general.SpectrumObj) DSS.spectrumClass.find(getSpectrum()) );
+		setSpectrumObj((SpectrumObj) DSS.spectrumClass.find(getSpectrum()));
 		if (getSpectrumObj() == null)
-			DSS.doSimpleMsg("Spectrum object \"" + getSpectrum() + "\" for device VSource."+getName()+" not found.", 324);
+			DSS.doSimpleMsg("Spectrum object \"" + getSpectrum() + "\" for device VSource." +
+					getName() + " not found.", 324);
 
 		setInjCurrent( Util.resizeArray(getInjCurrent(), YOrder) );
 	}
@@ -196,7 +187,6 @@ public class VSourceObj extends PCElement {
 		Complex value;
 		int i, j;
 		double freqMultiplier;
-
 
 		// build only YPrim_Series
 		if (isYprimInvalid()) {
@@ -214,27 +204,31 @@ public class VSourceObj extends PCElement {
 		for (i = 0; i < nPhases; i++) {
 			for (j = 0; j < nPhases; j++) {
 				value = Z.get(i, j);
-				value = new Complex(value.getReal(), value.getImaginary() * freqMultiplier);  /* Modify from base freq */
-				ZInv.set(i, j, value);
+				value = new Complex(
+					value.getReal(),
+					value.getImaginary() * freqMultiplier
+				);  /* Modify from base freq */
+				Zinv.set(i, j, value);
 			}
 		}
 
-		ZInv.invert();  /* Invert in place */
+		Zinv.invert();  /* Invert in place */
 
-		if (ZInv.getErrorCode() > 0) {
+		if (Zinv.getErrorCode() > 0) {
 			/* If error, put in large series conductance */
 			DSS.doErrorMsg("VsourceObj.calcYPrim", "Matrix inversion error for VSource \"" + getName() + "\"",
 					"Invalid impedance specified. Replaced with small resistance.", 325);
-			ZInv.clear();
-			for (i = 0; i < nPhases; i++)
-				ZInv.set(i, i, new Complex(1.0 / DSS.EPSILON, 0.0));
+			Zinv.clear();
+			for (i = 0; i < nPhases; i++) {
+				Zinv.set(i, i, new Complex(1.0 / DSS.EPSILON, 0.0));
+			}
 		}
 
 		// YPrim_Series.copyFrom(Zinv);
 
 		for (i = 0; i < nPhases; i++) {
 			for (j = 0; j < nPhases; j++) {
-				value = ZInv.get(i, j);
+				value = Zinv.get(i, j);
 				YPrimSeries.set(i, j, value);
 				YPrimSeries.set(i + nPhases, j + nPhases, value);
 				YPrimSeries.setSym(i + nPhases, j, value.negate());
@@ -255,6 +249,8 @@ public class VSourceObj extends PCElement {
 		Complex VHarm;
 		double srcHarmonic;
 
+		SolutionObj sol = DSS.activeCircuit.getSolution();
+
 		try {
 			/* This formulation will theoretically handle voltage sources of any
 			 * number of phases assuming they are equally displaced in time.
@@ -262,29 +258,26 @@ public class VSourceObj extends PCElement {
 
 			switch (nPhases) {
 			case 1:
-				VMag = kVBase * perUnit * 1000.0;
+				Vmag = kVBase * perUnit * 1000.0;
 				break;
 			default:
-				VMag = kVBase * perUnit * 1000.0 / 2.0 / Math.sin((180.0 / nPhases) * Math.PI / 180.0);
+				Vmag = kVBase * perUnit * 1000.0 / 2.0 / Math.sin((180.0 / nPhases) * Math.PI / 180.0);
 				break;
 			}
 
-			SolutionObj sol = DSS.activeCircuit.getSolution();
-
 			if (sol.isHarmonicModel()) {
-
 				srcHarmonic = sol.getFrequency() / srcFrequency;
-				VHarm = getSpectrumObj().getMult(srcHarmonic).multiply(VMag);  // base voltage for this harmonic
+				VHarm = getSpectrumObj().getMult(srcHarmonic).multiply(Vmag);  // base voltage for this harmonic
 				VHarm = Util.rotatePhasorDeg(VHarm, srcHarmonic, angle);  // rotate for phase 1 shift
 				for (i = 0; i < nPhases; i++) {
 					VTerminal[i] = VHarm;
 					VTerminal[i + nPhases] = Complex.ZERO;
 					if (i < nPhases)
 						switch (scanType) {
-						case 1:
+						case POS:
 							VHarm = Util.rotatePhasorDeg(VHarm, 1.0, -360.0 / nPhases); // maintain pos seq
 							break;
-						case 0:
+						case ZERO:
 							// do nothing for zero sequence; all the same.
 							break;
 						default:
@@ -295,27 +288,27 @@ public class VSourceObj extends PCElement {
 			} else {
 
 				if (Math.abs(sol.getFrequency() - srcFrequency) > DSS.EPSILON2)
-					VMag = 0.0;  // solution frequency and source frequency don't match
+					Vmag = 0.0;  // solution frequency and source frequency don't match
+
 				/* NOTE: RE-uses VTerminal space */
 				for (i = 0; i < nPhases; i++) {
 					switch (sequenceType) {
-					case -1:
-						VTerminal[i] = ComplexUtil.polarDeg2Complex(VMag, (360.0 + angle + (i-1)* 360.0/nPhases));  // neg seq
+					case NONE:
+						VTerminal[i] = ComplexUtil.polarDeg2Complex(Vmag, (360.0 + angle + i * 360.0/nPhases));  // neg seq
 						break;
-					case 0:
-						VTerminal[i] = ComplexUtil.polarDeg2Complex(VMag, (360.0 + angle));  // all the same for zero sequence
+					case ZERO:
+						VTerminal[i] = ComplexUtil.polarDeg2Complex(Vmag, (360.0 + angle));  // all the same for zero sequence
 						break;
 					default:
-						VTerminal[i] = ComplexUtil.polarDeg2Complex(VMag, (360.0 + angle - (i-1) * 360.0 / nPhases));
+						VTerminal[i] = ComplexUtil.polarDeg2Complex(Vmag, (360.0 + angle - i * 360.0 / nPhases));
 						break;
 					}
 					VTerminal[i + nPhases] = Complex.ZERO;  // see comments in getInjCurrents
 				}
 			}
 		} catch (Exception e) {
-			DSS.doSimpleMsg("Error computing voltages for VSource."+getName()+". Check specification. Aborting.", 326);
-			if (DSS.inRedirect)
-				DSS.redirectAbort = true;
+			DSS.doSimpleMsg("Error computing voltages for VSource." + getName() + ". Check specification. Aborting.", 326);
+			if (DSS.inRedirect) DSS.redirectAbort = true;
 		}
 	}
 
@@ -330,16 +323,16 @@ public class VSourceObj extends PCElement {
 
 	@Override
 	public void getCurrents(Complex[] curr) {
+		SolutionObj sol = DSS.activeCircuit.getSolution();
 
 		try {
-			SolutionObj sol = DSS.activeCircuit.getSolution();
-
 			for (int i = 0; i < YOrder; i++)
 				VTerminal[i] = sol.getNodeV(nodeRef[i]);
 
 			YPrim.vMult(curr, VTerminal);  // current from elements in system Y
 
 			getInjCurrents(complexBuffer);  // get present value of inj currents
+
 			// add together with Yprim currents
 			for (int i = 0; i < YOrder; i++)
 				curr[i] = curr[i].subtract(complexBuffer[i]);
@@ -381,7 +374,7 @@ public class VSourceObj extends PCElement {
 		if (complete) {
 			pw.println();
 			pw.println("baseFrequency=" + baseFrequency);
-			pw.println("vMag=" + VMag);
+			pw.println("vMag=" + Vmag);
 			pw.println("zMatrix=");
 			for (int i = 0; i < nPhases; i++) {
 				for (int j = 0; j < i; j++) {
@@ -396,8 +389,6 @@ public class VSourceObj extends PCElement {
 
 	@Override
 	public void initPropertyValues(int arrayOffset) {
-
-		/* PropertyValue allocated in DSSObject constructor */
 		setPropertyValue(0, getBus(0));
 		setPropertyValue(1, "115");
 		setPropertyValue(2, "1");

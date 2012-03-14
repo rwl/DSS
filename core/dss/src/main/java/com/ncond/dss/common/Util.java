@@ -1036,11 +1036,11 @@ public class Util {
 
 			for (LoadObj load : DSS.activeCircuit.getLoads()) {
 				switch (load.getLoadSpecType()) {
-				case 3:
+				case XFKVA_ALLOCATIONFACTOR_PF:
 					pw.println("Load." + load.getName() + ".allocationFactor=" +
 						String.format("%-.5g", load.getKVAAllocationFactor()));
 					break;
-				case 4:
+				case KWH_KWHDAYS24_CFACTOR_PF:
 					pw.println("Load." + load.getName() + ".CFactor=" +
 						String.format("%-.5g", load.getCFactor()));
 					break;

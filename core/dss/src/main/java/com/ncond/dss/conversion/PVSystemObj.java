@@ -1,8 +1,8 @@
 package com.ncond.dss.conversion;
 
-import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
+import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 
@@ -19,6 +19,7 @@ import com.ncond.dss.common.Util;
 import com.ncond.dss.common.types.Connection;
 import com.ncond.dss.common.types.Randomization;
 import com.ncond.dss.general.LoadShapeObj;
+import com.ncond.dss.general.SpectrumObj;
 import com.ncond.dss.general.TShapeObj;
 import com.ncond.dss.general.XYCurveObj;
 import com.ncond.dss.parser.Parser;
@@ -34,10 +35,10 @@ import com.ncond.dss.shared.MathUtil;
  * The PVsystem element is assumed balanced over the no. of phases defined.
  *
  * TODO:
- *   Make connection to User model
+ *   Make connection to user model
  *   Yprim for various modes
  *   Define state vars and dynamics mode behavior
- *   Complete Harmonics mode algorithm (generator mode is implemented)
+ *   Complete harmonics mode algorithm (generator mode is implemented)
  */
 @Getter @Setter
 public class PVSystemObj extends PCElement {
@@ -130,7 +131,7 @@ public class PVSystemObj extends PCElement {
 	private XYCurveObj powerTempCurveObj;
 
 	private int FClass;
-	private int voltageModel;  // variation with voltage
+	private PVSystemModel voltageModel;  // variation with voltage
 	private double PFNominal;
 
 	private double[] registers = new double[PVSystem.NumPVSystemRegisters];
@@ -167,7 +168,7 @@ public class PVSystemObj extends PCElement {
 		powerTempCurve    = "";
 
 		connection        = Connection.WYE;
-		voltageModel      = 1;  // typical fixed kW negative load
+		voltageModel      = PVSystemModel.PQ;  // typical fixed kW negative load
 		FClass            = 1;
 
 		PVSystemSolutionCount     = -1;  // for keep track of the present solution in injCurrent calcs
@@ -372,10 +373,10 @@ public class PVSystemObj extends PCElement {
 		shapeFactor = CDOUBLEONE;  // init here; changed by curve routine
 		TShapeValue = 25.0;  // init here; changed by curve routine
 
-		// check to make sure the PVSystem element is on
 		Circuit ckt = DSS.activeCircuit;
 		SolutionObj sol = ckt.getSolution();
 
+		// check to make sure the PVSystem element is on
 		if (!(sol.isDynamicModel() || sol.isHarmonicModel())) {
 			// leave PVSystem element in whatever state it was prior to entering dynamic mode
 
@@ -393,31 +394,16 @@ public class PVSystemObj extends PCElement {
 				calcYearlyTemperature(sol.getDblHour());
 				break;
 			case MONTECARLO1:
-				// do nothing yet
-				break;
 			case MONTEFAULT:
-				// do nothing yet
-				break;
 			case FAULTSTUDY:
-				// do nothing yet
-				break;
 			case DYNAMICMODE:
 				// do nothing yet
 				break;
 
 				// assume daily curve, if any, for the following
 			case MONTECARLO2:
-				calcDailyMult(sol.getDblHour());
-				calcDailyTemperature(sol.getDblHour());
-				break;
 			case MONTECARLO3:
-				calcDailyMult(sol.getDblHour());
-				calcDailyTemperature(sol.getDblHour());
-				break;
 			case LOADDURATION1:
-				calcDailyMult(sol.getDblHour());
-				calcDailyTemperature(sol.getDblHour());
-				break;
 			case LOADDURATION2:
 				calcDailyMult(sol.getDblHour());
 				calcDailyTemperature(sol.getDblHour());
@@ -426,7 +412,6 @@ public class PVSystemObj extends PCElement {
 				calcDailyMult(sol.getDblHour());
 				calcDailyTemperature(sol.getDblHour());
 				break;
-
 			case DUTYCYCLE:
 				calcDutyMult(sol.getDblHour());
 				calcDutyTemperature(sol.getDblHour());
@@ -441,13 +426,16 @@ public class PVSystemObj extends PCElement {
 			QNominalPerPhase = 1000.0 * kVArOut  / getNumPhases();
 
 			switch (voltageModel) {
-			case 3:
+			case USER:
 				//****  Fix this when user model gets connected in
-				//YEQ = new Complex(0.0, -StoreVARs.Xd).invert();  // gets negated in calcYPrim
+				//Yeq = new Complex(0.0, -storeVARs.Xd).invert();  // gets negated in calcYPrim
 				break;
 
 			default:
-				Yeq = ComplexUtil.divide(new Complex(PNominalPerPhase, -QNominalPerPhase), MathUtil.sqr(VBase) );  // VBase must be L-N for 3-phase
+				Yeq = ComplexUtil.divide(new Complex(
+					PNominalPerPhase,
+					-QNominalPerPhase
+				), MathUtil.sqr(VBase) );  // VBase must be L-N for 3-phase
 
 				if (VMinPU != 0.0) {
 					Yeq95 = ComplexUtil.divide(Yeq, MathUtil.sqr(VMinPU));  // at 95% voltage
@@ -468,7 +456,6 @@ public class PVSystemObj extends PCElement {
 
 	@Override
 	public void recalcElementData() {
-
 		VBase95 = VMinPU * VBase;
 		VBase105 = VMaxPU * VBase;
 
@@ -504,9 +491,9 @@ public class PVSystemObj extends PCElement {
 				DSS.doSimpleMsg("Warning: Duty temperature shape: \""+ dutyTShape +"\" not found.", 5651);
 
 		if (getSpectrum().length() > 0) {
-			setSpectrumObj( (com.ncond.dss.general.SpectrumObj) DSS.spectrumClass.find(getSpectrum()) );
+			setSpectrumObj( (SpectrumObj) DSS.spectrumClass.find(getSpectrum()) );
 			if (getSpectrumObj() == null)
-				DSS.doSimpleMsg("Error: Spectrum \""+getSpectrum()+"\" not found.", 566);
+				DSS.doSimpleMsg("Error: Spectrum \"" + getSpectrum() + "\" not found.", 566);
 		} else {
 			setSpectrumObj(null);
 		}
@@ -514,11 +501,10 @@ public class PVSystemObj extends PCElement {
 		// initialize to zero - defaults to PQ PVSystem element
 		// solution object will reset after circuit modifications
 
-		setInjCurrent( Util.resizeArray(getInjCurrent(), YOrder) );
+		setInjCurrent(Util.resizeArray(getInjCurrent(), YOrder));
 
 		/* Update any user-written models */
-		if (userModel.exists())
-			userModel.updateModel();
+		if (userModel.exists()) userModel.updateModel();
 	}
 
 	private void calcYPrimMatrix(CMatrix YMatrix) {
@@ -532,7 +518,7 @@ public class PVSystemObj extends PCElement {
 		YPrimFreq = sol.getFrequency();
 		freqMultiplier = YPrimFreq / baseFrequency;
 
-		if (/*sol.isDynamicModel() ||*/ sol.isHarmonicModel()) {
+		if (sol.isHarmonicModel()) {  /*|| sol.isDynamicModel()*/
 			/* Yeq is computed from %R and %X -- inverse of Rthev + j Xthev */
 			Y = Yeq;  // L-N value computed in initialization routines
 
@@ -544,8 +530,8 @@ public class PVSystemObj extends PCElement {
 				switch (connection) {
 				case WYE:
 					YMatrix.set(i, i, Y);
-					YMatrix.add(nConds - 1, nConds - 1, Y);
-					YMatrix.setSym(i, nConds - 1, Yij);
+					YMatrix.add(nConds-1, nConds-1, Y);
+					YMatrix.setSym(i, nConds-1, Yij);
 					break;
 				case DELTA:
 					YMatrix.set(i, i, Y);
@@ -570,7 +556,7 @@ public class PVSystemObj extends PCElement {
 				Yij = Y.negate();
 				for (i = 0; i < nPhases; i++) {
 					YMatrix.set(i, i, Y);
-					YMatrix.add(nConds, nConds, Y);
+					YMatrix.add(nConds-1, nConds-1, Y);
 					YMatrix.setSym(i, nConds, Yij);
 				}
 				break;
@@ -579,8 +565,7 @@ public class PVSystemObj extends PCElement {
 				Yij = Y.negate();
 				for (i = 0; i < nPhases; i++) {
 					j = i + 1;
-					if (j >= nConds)
-						j = 0;  // wrap around for closed connections
+					if (j >= nConds) j = 0;  // wrap around for closed connections
 					YMatrix.add(i, i, Y);
 					YMatrix.add(j, j, Y);
 					YMatrix.addSym(i, j, Yij);
@@ -597,11 +582,9 @@ public class PVSystemObj extends PCElement {
 
 		// determine state of the inverter
 		if (inverterON) {
-			if (panelKW < cutOutKW)
-				inverterON = false;
+			if (panelKW < cutOutKW) inverterON = false;
 		} else {
-			if (panelKW >= cutInKW)
-				inverterON = true;
+			if (panelKW >= cutInKW) inverterON = true;
 		}
 
 		// set inverter output; defaults to 100% of the panelkW if no efficiency curve spec'd
@@ -654,7 +637,7 @@ public class PVSystemObj extends PCElement {
 	@Override
 	public void calcYPrim() {
 		// build only shunt Yprim
-		// build a dummy Yprim Series so that calcV does not fail
+		// build a dummy Yprim series so that calcV does not fail
 		if (isYprimInvalid()) {
 			YPrimShunt = new CMatrix(YOrder);
 			YPrimSeries = new CMatrix(YOrder);
@@ -687,13 +670,12 @@ public class PVSystemObj extends PCElement {
 		switch (connection) {
 		case WYE:
 			termArray[i] = termArray[i].add(curr);
-			termArray[nConds - 1] = termArray[nConds - 1].add(curr.negate());  // neutral
+			termArray[nConds-1] = termArray[nConds-1].add(curr.negate());  // neutral
 			break;
 		case DELTA:
 			termArray[i] = termArray[i].add(curr);
 			int j = i + 1;
-			if (j >= nConds)
-				j = 0;  // wrap
+			if (j >= nConds) j = 0;  // wrap
 			termArray[j] = termArray[j].add(curr.negate());
 			break;
 		}
@@ -701,34 +683,33 @@ public class PVSystemObj extends PCElement {
 
 	private void writeTraceRecord(String s) {
 		int i;
-
 		try {
 			if (!DSS.inShowResults) {
 				FileWriter fw = new FileWriter(traceFile, true);
-				BufferedWriter bw = new BufferedWriter(fw);
-				bw.write(String.format("%-.g, %d, %-.g, ",
+				PrintWriter pw = new PrintWriter(fw);
+				pw.printf("%-.g, %d, %-.g, ",
 						DSS.activeCircuit.getSolution().getDynaVars().t,
 						DSS.activeCircuit.getSolution().getIteration(),
-						DSS.activeCircuit.getLoadMultiplier()) +
-						Util.getSolutionModeID() + ", " +
+						DSS.activeCircuit.getLoadMultiplier());
+				pw.print(Util.getSolutionModeID() + ", " +
 						Util.getLoadModel() + ", " +
 						voltageModel + ", " +
 						(QNominalPerPhase * 3.0 / 1.0e6) + ", " +
 						(PNominalPerPhase * 3.0 / 1.0e6) + ", " +
 						s + ", ");
 				for (i = 0; i < nPhases; i++)
-					bw.write(getInjCurrent(i).abs() + ", ");
+					pw.write(getInjCurrent(i).abs() + ", ");
 				for (i = 0; i < nPhases; i++)
-					bw.write(getITerminal(i).abs() + ", ");
+					pw.write(getITerminal(i).abs() + ", ");
 				for (i = 0; i < nPhases; i++)
-					bw.write(getVTerminal(i).abs() + ", ");
+					pw.write(getVTerminal(i).abs() + ", ");
 
-				bw.newLine();
-				bw.close();
+				pw.println();
+				pw.close();
 				fw.close();
 			}
-		} catch (Exception e) {
-			// FIXME handle exception
+		} catch (IOException e) {
+			DSS.doSimpleMsg("Error writing trace record: " + e.getMessage(), -1);
 		}
 	}
 
@@ -757,7 +738,10 @@ public class PVSystemObj extends PCElement {
 				} else if (VMag > VBase105) {
 					curr = Yeq105.multiply(V);  // above 105% use an impedance model
 				} else {
-					curr = new Complex(PNominalPerPhase, QNominalPerPhase).divide(V).conjugate();  // between 95% -105%, constant PQ
+					curr = new Complex(
+						PNominalPerPhase,
+						QNominalPerPhase
+					).divide(V).conjugate();  // between 95% -105%, constant PQ
 				}
 				break;
 
@@ -768,7 +752,10 @@ public class PVSystemObj extends PCElement {
 				} else if (VMag > VBase105) {
 					curr = ComplexUtil.divide(Yeq105, 3.0).multiply(V);  // above 105% use an impedance model
 				} else {
-					curr = new Complex(PNominalPerPhase, QNominalPerPhase).divide(V).conjugate();  // between 95% -105%, constant PQ
+					curr = new Complex(
+						PNominalPerPhase,
+						QNominalPerPhase
+					).divide(V).conjugate();  // between 95% -105%, constant PQ
 				}
 				break;
 			}
@@ -808,7 +795,6 @@ public class PVSystemObj extends PCElement {
 	 * Compute total terminal current from User-written model
 	 */
 	private void doUserModel() {
-
 		calcYPrimContribution(getInjCurrent());  // init injCurrent array
 
 		if (userModel.exists()) {  // check automatically selects the user model if true
@@ -816,9 +802,10 @@ public class PVSystemObj extends PCElement {
 			setITerminalUpdated(true);
 			// negate currents from user model for power flow PVSystem element model
 			for (int i = 0; i < nConds; i++)
-				getInjCurrent()[i] = getInjCurrent(i).add( ITerminal[i].negate() );
+				getInjCurrent()[i] = getInjCurrent(i).add(ITerminal[i].negate());
 		} else {
-			DSS.doSimpleMsg("PVSystem." + getName() + " model designated to use user-written model, but user-written model is not defined.", 567);
+			DSS.doSimpleMsg("PVSystem." + getName() +
+				" model designated to use user-written model, but user-written model is not defined.", 567);
 		}
 	}
 
@@ -843,9 +830,9 @@ public class PVSystemObj extends PCElement {
 		Complex e;
 		double PVSystemHarmonic;
 
-		computeVTerminal();
-
 		SolutionObj sol = DSS.activeCircuit.getSolution();
+
+		computeVTerminal();
 
 		PVSystemHarmonic = sol.getFrequency() / PVSystemFundamental;
 		if (getSpectrumObj() != null) {
@@ -884,8 +871,7 @@ public class PVSystemObj extends PCElement {
 		case DELTA:
 			for (i = 0; i < nPhases; i++) {
 				j = i + 1;
-				if (j >= nConds)
-					j = 0;
+				if (j >= nConds) j = 0;
 				VTerminal[i] = sol.vDiff(nodeRef[i], nodeRef[j]);
 			}
 			break;
@@ -893,8 +879,6 @@ public class PVSystemObj extends PCElement {
 
 		PVSystemSolutionCount = sol.getSolutionCount();
 	}
-
-	/*private void calcVterminal()*/
 
 	/**
 	 * This is where the power gets computed.
@@ -915,13 +899,13 @@ public class PVSystemObj extends PCElement {
 		} else {
 			// compute currents and put into injTemp array
 			switch (voltageModel) {
-			case 1:
+			case PQ:
 				doConstantPQPVsystemObj();
 				break;
-			case 2:
+			case Z:
 				doConstantZPVsystemObj();
 				break;
-			case 3:
+			case USER:
 				doUserModel();
 				break;
 			default:
@@ -930,7 +914,7 @@ public class PVSystemObj extends PCElement {
 			}
 		}
 
-		/* When this is done, ITerminal is up to date */
+		/* ITerminal is now up to date */
 	}
 
 	/**
@@ -958,8 +942,7 @@ public class PVSystemObj extends PCElement {
 		}
 		super.getTerminalCurrents(curr);
 
-		if (debugTrace)
-			writeTraceRecord("TotalCurrent");
+		if (debugTrace) writeTraceRecord("TotalCurrent");
 	}
 
 	@Override
@@ -971,8 +954,7 @@ public class PVSystemObj extends PCElement {
 
 		calcInjCurrentArray();          // difference between currents in YPrim and total terminal current
 
-		if (debugTrace)
-			writeTraceRecord("Injection");
+		if (debugTrace) writeTraceRecord("Injection");
 
 		// add into system injection current array
 
@@ -986,13 +968,11 @@ public class PVSystemObj extends PCElement {
 	 */
 	@Override
 	public void getInjCurrents(Complex[] curr) {
-
 		calcInjCurrentArray();  // difference between currents in YPrim and total current
 
 		try {
 			// copy into buffer array
-			for (int i = 0; i < YOrder; i++)
-				curr[i] = getInjCurrent(i);
+			for (int i = 0; i < YOrder; i++) curr[i] = getInjCurrent(i);
 		} catch (Exception e) {
 			DSS.doErrorMsg("PVSystem object: \"" + getName() + "\" in getInjCurrents method.",
 					e.getMessage(), "Current buffer not big enough.", 568);
@@ -1027,7 +1007,7 @@ public class PVSystemObj extends PCElement {
 	 */
 	public void takeSample() {
 		Complex S;
-		double SMag;
+		double Smag;
 		double hourValue;
 
 		Circuit ckt = DSS.activeCircuit;
@@ -1036,7 +1016,7 @@ public class PVSystemObj extends PCElement {
 		// compute energy in PVSystem element branch
 		if (isEnabled()) {
 			S = new Complex(getPresentKW(), getPresentKVAr());
-			SMag = S.abs();
+			Smag = S.abs();
 			hourValue = 1.0;
 
 			if (ckt.isTrapezoidalIntegration()) {
@@ -1044,27 +1024,24 @@ public class PVSystemObj extends PCElement {
 				 * Don't need to for gen off and normal integration.
 				 */
 				if (ckt.isPositiveSequence()) {
-					S    = S.multiply(3.0);
-					SMag = 3.0 * SMag;
+					S = S.multiply(3.0);
+					Smag = 3.0 * Smag;
 				}
-				integrate            (regKWh,   S.getReal(), sol.getIntervalHrs());   // accumulate the power
-				integrate            (regKVArh, S.getImaginary(), sol.getIntervalHrs());
-				setDragHandRegister  (regMaxKW, Math.abs(S.getReal()));
-				setDragHandRegister  (regMaxKVA, SMag);
-				integrate            (regHours, hourValue, sol.getIntervalHrs());  // accumulate hours in operation
-				integrate            (regPrice, S.getReal() * ckt.getPriceSignal(), sol.getIntervalHrs());  // accumulate hours in operation
+				integrate            (regKWh,    S.getReal(), sol.getIntervalHrs());   // accumulate the power
+				integrate            (regKVArh,  S.getImaginary(), sol.getIntervalHrs());
+				setDragHandRegister  (regMaxKW,  Math.abs(S.getReal()));
+				setDragHandRegister  (regMaxKVA, Smag);
+				integrate            (regHours,  hourValue, sol.getIntervalHrs());  // accumulate hours in operation
+				integrate            (regPrice,  S.getReal() * ckt.getPriceSignal(), sol.getIntervalHrs());  // accumulate hours in operation
 				firstSampleAfterReset = false;
 			}
 		}
 	}
 
-	// private void setKWandKvarOut()
-
 	/**
 	 * Update PVSystem elements based on present kW and IntervalHrs variable.
 	 */
-	// FIXME Private method in OpenDSS
-	public void updatePVSystem() {
+	protected void updatePVSystem() {
 		// do nothing
 	}
 
@@ -1128,16 +1105,16 @@ public class PVSystemObj extends PCElement {
 		computeITerminal();  // get present value of current
 
 		switch (connection) {
-		case WYE:  /* wye - neutral is explicit */
-			Va = sol.getNodeV(nodeRef[0]).subtract(sol.getNodeV( nodeRef[nConds - 1] ));
+		case WYE:
+			Va = sol.getNodeV(nodeRef[0]).subtract(sol.getNodeV(nodeRef[nConds - 1]));
 			break;
 		case DELTA:
 			Va = sol.getNodeV(nodeRef[0]);
 			break;
 		}
 
-		e = Va.subtract( ITerminal[0].multiply(new Complex(RThev, XThev)) );
-		VThevHarm = e.abs();   // establish base mag and angle
+		e = Va.subtract(ITerminal[0].multiply(new Complex(RThev, XThev)));
+		VThevHarm = e.abs();  // establish base mag and angle
 		thetaHarm = e.getArgument();
 	}
 
@@ -1154,7 +1131,7 @@ public class PVSystemObj extends PCElement {
 	 */
 	@Override
 	public void integrateStates() {
-
+		// do nothing
 	}
 
 	/**
@@ -1164,8 +1141,7 @@ public class PVSystemObj extends PCElement {
 	public double getVariable(int i) {
 		int n, k;
 
-		if (i < 0)
-			return -9999.0;  // error return value; no state vars  FIXME throw exception
+		if (i < 0) return -9999.0;  // error return value; no state vars  FIXME throw exception
 
 		// for now, report kWh stored and mode
 		switch (i) {
@@ -1180,9 +1156,8 @@ public class PVSystemObj extends PCElement {
 		default:
 			if (userModel.exists()) {
 				n = userModel.numVars();
-				k = i - PVSystem.NumPVSystemVariables;  // TODO Check zero based indexing
-				if (k < n)
-					return userModel.getVariable(k);
+				k = i - PVSystem.NumPVSystemVariables;
+				if (k < n) return userModel.getVariable(k);
 			}
 			break;
 		}
@@ -1193,8 +1168,7 @@ public class PVSystemObj extends PCElement {
 	public void setVariable(int i, double value) {
 		int n, k;
 
-		if (i < 0)
-			return;  // no variables to set
+		if (i < 0) return;  // no variables to set
 
 		switch (i) {
 		case 0:
@@ -1212,8 +1186,8 @@ public class PVSystemObj extends PCElement {
 		default:
 			if (userModel.exists()) {
 				n = userModel.numVars();
-				k = (i - PVSystem.NumPVSystemVariables) ;
-				if (k < n) {  // TODO Check zero based indexing
+				k = i - PVSystem.NumPVSystemVariables;
+				if (k < n) {
 					userModel.setVariable(k, value);
 					return;
 				}
@@ -1233,19 +1207,16 @@ public class PVSystemObj extends PCElement {
 
 	@Override
 	public int numVariables() {
-		int result = PVSystem.NumPVSystemVariables;
+		int num = PVSystem.NumPVSystemVariables;
 		if (userModel.exists())
-			result = result + userModel.numVars();
-		return result;
+			num = num + userModel.numVars();
+		return num;
 	}
 
 	@Override
 	public String variableName(int i) {
-		final int buffSize = 255;
-
 		int n, i2;
-		//char[] Buff = new char[BuffSize];
-		int pName;
+		String[] pName;
 		String result = "";
 
 		if (i < 0) return result;
@@ -1261,12 +1232,12 @@ public class PVSystemObj extends PCElement {
 			return "Efficiency";
 		default:
 			if (userModel.exists()) {
-				pName = 0;
+				pName = new String[1];
 				n = userModel.numVars();
 				i2 = i - PVSystem.NumPVSystemVariables;
 				if (i2 < n) {
-					userModel.getVarName(i2, pName, buffSize);
-					return String.valueOf(pName);
+					userModel.getVarName(i2, pName);
+					return pName[0];
 				}
 			}
 			break;
@@ -1282,7 +1253,7 @@ public class PVSystemObj extends PCElement {
 		String s;
 		double V;
 
-		s = "Phases=1 conn=wye";
+		s = "phases=1 conn=wye";
 
 		// make sure voltage is line-neutral
 		if (nPhases > 1 || connection != Connection.WYE) {
@@ -1305,11 +1276,7 @@ public class PVSystemObj extends PCElement {
 	@Override
 	public void setConductorClosed(int index, boolean value) {
 		// just turn PVSystem element on or off
-		if (value) {
-			PVSystemObjSwitchOpen = false;
-		} else {
-			PVSystemObjSwitchOpen = true;
-		}
+		PVSystemObjSwitchOpen = !value;
 	}
 
 	public void setPowerFactor(double value) {
@@ -1341,8 +1308,7 @@ public class PVSystemObj extends PCElement {
 	}
 
 	private void setDragHandRegister(int reg, double value) {
-		if (value > registers[reg])
-			registers[reg] = value;
+		if (value > registers[reg]) registers[reg] = value;
 	}
 
 	public double getPowerFactor() {

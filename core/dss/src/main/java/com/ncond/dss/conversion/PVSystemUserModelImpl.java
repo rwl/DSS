@@ -5,6 +5,7 @@ import org.apache.commons.math.complex.Complex;
 import com.ncond.dss.common.DSSCallBacks;
 import com.ncond.dss.shared.DynamicsRec;
 
+@SuppressWarnings("unused")
 public class PVSystemUserModelImpl implements PVSystemUserModel {
 
 	private int handle;  // handle to DLL containing user model
@@ -120,7 +121,7 @@ public class PVSystemUserModelImpl implements PVSystemUserModel {
 
 	}
 
-	public void getVarName(int varNum, int varName, int maxlen) {
+	public void getVarName(int varNum, String[] varName) {
 
 	}
 

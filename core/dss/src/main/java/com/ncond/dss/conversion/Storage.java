@@ -12,6 +12,7 @@ import org.apache.commons.math.complex.Complex;
 import com.ncond.dss.common.DSS;
 import com.ncond.dss.common.DSSClassDefs;
 import com.ncond.dss.common.Util;
+import com.ncond.dss.common.types.Connection;
 import com.ncond.dss.common.types.Randomization;
 import com.ncond.dss.general.LoadShapeObj;
 import com.ncond.dss.parser.Parser;
@@ -22,25 +23,6 @@ public class Storage extends PCClass {
 
 	public static final int NumStorageRegisters = 6;
 	public static final int NumStorageVariables = 7;
-
-	public static final int CHARGING    = -1;
-	public static final int IDLING      =  0;
-	public static final int DISCHARGING =  1;
-
-	/* Dispatch modes */
-	public static final int DEFAULT = 0;
-	public static final int LOAD_MODE = 1;
-	public static final int PRICE_MODE = 2;
-	public static final int EXTERNAL_MODE = 3;
-	public static final int FOLLOW = 4;
-
-	/*
-	 * To add a property,
-	 *   1) add a property constant to this list
-	 *   2) add a handler to the case statement in the edit function
-	 *   3) add a statement(s) to initPropertyValues function to initialize the string value
-	 *   4) add any special handlers to dumpProperties and getPropertyValue, if needed
-	 */
 
 	public static final int KV         =  2;
 	public static final int KW         =  3;
@@ -275,10 +257,10 @@ public class Storage extends PCClass {
 		StorageObj as = activeStorageObj;
 
 		switch (as.getConnection()) {
-		case 0:
+		case WYE:
 			as.setNumConds(as.getNumPhases() + 1);
 			break;
-		case 1:
+		case DELTA:
 			switch (as.getNumPhases()) {
 			case 1:
 				as.setNumConds(as.getNumPhases() + 1);  // L-L
@@ -313,21 +295,21 @@ public class Storage extends PCClass {
 		String testS = s.toLowerCase();
 		switch (testS.charAt(0)) {
 		case 'y':
-			as.setConnection(0);  /* Wye */
+			as.setConnection(Connection.WYE);
 			break;
 		case 'w':
-			as.setConnection(0);  /* Wye */
+			as.setConnection(Connection.WYE);
 			break;
 		case 'd':
-			as.setConnection(1);  /* Delta or Line-Line */
+			as.setConnection(Connection.DELTA);
 			break;
 		case 'l':
 			switch (testS.charAt(1)) {
 			case 'n':
-				as.setConnection(0);
+				as.setConnection(Connection.WYE);
 				break;
 			case 'l':
-				as.setConnection(1);
+				as.setConnection(Connection.DELTA);
 				break;
 			}
 			break;
@@ -356,18 +338,18 @@ public class Storage extends PCClass {
 		as.setYPrimInvalid(true);
 	}
 
-	private int interpretDispMode(String s) {
+	private DispatchMode interpretDispMode(String s) {
 		switch (s.toLowerCase().charAt(0)) {
 		case 'e':
-			return EXTERNAL_MODE;
+			return DispatchMode.EXTERNAL;
 		case 'f':
-			return FOLLOW;
+			return DispatchMode.FOLLOW;
 		case 'l':
-			return LOAD_MODE;
+			return DispatchMode.LOAD;
 		case 'p':
-			return PRICE_MODE;
+			return DispatchMode.PRICE;
 		default:
-			return DEFAULT;
+			return DispatchMode.DEFAULT;
 		}
 	}
 

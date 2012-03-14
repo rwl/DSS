@@ -14,7 +14,7 @@ public class VSource extends PCClass {
 
 	public VSource() {
 		super();
-		className = "Vsource";
+		className = "VSource";
 		classType = DSSClassDefs.SOURCE + DSSClassDefs.NON_PCPD_ELEM;  // don't want this in PC element list
 
 		activeElement = -1;
@@ -29,9 +29,9 @@ public class VSource extends PCClass {
 
 	@Override
 	protected void defineProperties() {
-
 		numProperties = VSource.NumPropsThisClass;
 		countProperties();  // get inherited property count
+
 		allocatePropertyArrays();
 
 		// define property names
@@ -134,20 +134,18 @@ public class VSource extends PCClass {
 
 	@Override
 	public int edit() {
-
 		Parser parser = Parser.getInstance();
 
 		// continue parsing with contents of parser
 		activeVSourceObj = (VSourceObj) elementList.getActive();
 		DSS.activeCircuit.setActiveCktElement(activeVSourceObj);
 
-		int result = 0;
-
-		VSourceObj avs = activeVSourceObj;
+		VSourceObj elem = activeVSourceObj;
 
 		int paramPointer = -1;
 		String paramName = parser.getNextParam();
 		String param = parser.makeString();
+
 		while (param.length() > 0) {
 			if (paramName.length() == 0) {
 				paramPointer += 1;
@@ -156,87 +154,88 @@ public class VSource extends PCClass {
 			}
 
 			if (paramPointer >= 0 && paramPointer < numProperties)
-				avs.setPropertyValue(paramPointer, param);
+				elem.setPropertyValue(paramPointer, param);
 
 			switch (paramPointer) {
 			case -1:
-				DSS.doSimpleMsg("Unknown parameter \"" + paramName + "\" for object \"VSource."+avs.getName()+"\"", 320);
+				DSS.doSimpleMsg("Unknown parameter \"" + paramName + "\" for object \"VSource." +
+						elem.getName() + "\"", 320);
 				break;
 			case 0:
 				vSourceSetBus1(param);  // special handling of bus 1
 				break;
 			case 1:
-				avs.setKVBase(parser.makeDouble());  // baseKV
+				elem.setKVBase(parser.makeDouble());  // baseKV
 				break;
 			case 2:
-				avs.setPerUnit(parser.makeDouble());  // pu
+				elem.setPerUnit(parser.makeDouble());  // pu
 				break;
 			case 3:
-				avs.setAngle(parser.makeDouble());  // ang
+				elem.setAngle(parser.makeDouble());  // ang
 				break;
 			case 4:
-				avs.setSrcFrequency(parser.makeDouble());  // freq
+				elem.setSrcFrequency(parser.makeDouble());  // freq
 				break;
 			case 5:
-				avs.setNumPhases(parser.makeInteger());  // num phases
-				avs.setNumConds(avs.getNumPhases());  // force reallocation of terminal info
+				elem.setNumPhases(parser.makeInteger());  // num phases
+				elem.setNumConds(elem.getNumPhases());  // force reallocation of terminal info
 				break;
 			case 6:
-				avs.setMVAsc3(parser.makeDouble());  // MVAsc3
+				elem.setMVAsc3(parser.makeDouble());  // MVAsc3
 				break;
 			case 7:
-				avs.setMVAsc1(parser.makeDouble());  // MVAsc1
+				elem.setMVAsc1(parser.makeDouble());  // MVAsc1
 				break;
 			case 8:
-				avs.setX1R1(parser.makeDouble());  // X1/R1
+				elem.setX1R1(parser.makeDouble());  // X1/R1
 				break;
 			case 9:
-				avs.setX0R0(parser.makeDouble());  // X0/R0
+				elem.setX0R0(parser.makeDouble());  // X0/R0
 				break;
 			case 10:
-				avs.setIsc3(parser.makeDouble());
+				elem.setIsc3(parser.makeDouble());
 				break;
 			case 11:
-				avs.setIsc1(parser.makeDouble());
+				elem.setIsc1(parser.makeDouble());
 				break;
 			case 12:
-				avs.setR1(parser.makeDouble());
+				elem.setR1(parser.makeDouble());
 				break;
 			case 13:
-				avs.setX1(parser.makeDouble());
+				elem.setX1(parser.makeDouble());
 				break;
 			case 14:
-				avs.setR0(parser.makeDouble());
+				elem.setR0(parser.makeDouble());
 				break;
 			case 15:
-				avs.setX0(parser.makeDouble());
+				elem.setX0(parser.makeDouble());
 				break;
 			case 16:
 				switch (param.toUpperCase().charAt(0)) {
 				case 'P':
-					avs.setScanType(1);
+					elem.setScanType(SequenceType.POS);
 					break;
 				case 'Z':
-					avs.setScanType(0);
+					elem.setScanType(SequenceType.ZERO);
 					break;
 				case 'N':
-					avs.setScanType(-1);
+					elem.setScanType(SequenceType.NONE);
 					break;
 				default:
-					DSS.doSimpleMsg("Unknown scan type for \"" + getClassName() +"."+ avs.getName() + "\": "+param, 321);
+					DSS.doSimpleMsg("Unknown scan type for \"" + getClassName() +"."+ elem.getName() + "\": "+param, 321);
 					break;
 				}
 				break;
 			case 17:
 				switch (param.toUpperCase().charAt(0)) {
 				case 'P':
-					avs.setSequenceType(1);
+					elem.setSequenceType(SequenceType.POS);
 					break;
 				case 'Z':
-					avs.setSequenceType(0);
+					elem.setSequenceType(SequenceType.ZERO);
 					break;
 				case 'N':
-					avs.setSequenceType(-1);
+					elem.setSequenceType(SequenceType.NONE);
 					break;
 				default:
 					DSS.doSimpleMsg("Unknown sequence type for \"" + getClassName() +"."+ getClassName() + "\": "+param, 321);
@@ -244,7 +243,7 @@ public class VSource extends PCClass {
 				}
 				break;
 			case 18:
-				avs.setBus(1, param);
+				elem.setBus(1, param);
 				break;
 			default:
 				classEdit(activeVSourceObj, paramPointer - VSource.NumPropsThisClass);
@@ -254,28 +253,28 @@ public class VSource extends PCClass {
 			// set the Z spec type switch depending on which was specified
 			switch (paramPointer) {
 			case 6:
-				avs.setZSpecType(1);
+				elem.setZspecType(ZSpecType.MVASC);
 				break;
 			case 7:
-				avs.setZSpecType(1);
+				elem.setZspecType(ZSpecType.MVASC);
 				break;
 			case 10:
-				avs.setZSpecType(2);
+				elem.setZspecType(ZSpecType.ISC);
 				break;
 			case 11:
-				avs.setZSpecType(2);
+				elem.setZspecType(ZSpecType.ISC);
 				break;
 			case 12:
-				avs.setZSpecType(3);
+				elem.setZspecType(ZSpecType.Z1Z0);
 				break;
 			case 13:
-				avs.setZSpecType(3);
+				elem.setZspecType(ZSpecType.Z1Z0);
 				break;
 			case 14:
-				avs.setZSpecType(3);
+				elem.setZspecType(ZSpecType.Z1Z0);
 				break;
 			case 15:
-				avs.setZSpecType(3);
+				elem.setZspecType(ZSpecType.Z1Z0);
 				break;
 			}
 
@@ -283,58 +282,57 @@ public class VSource extends PCClass {
 			param = parser.makeString();
 		}
 
-		avs.recalcElementData();
-		avs.setYPrimInvalid(true);
+		elem.recalcElementData();
+		elem.setYPrimInvalid(true);
 
-		return result;
+		return 0;
 	}
 
 	@Override
 	protected int makeLike(String otherSource) {
-
-		int result = 0;
+		int success = 0;
 
 		/* See if we can find this line name in the present collection */
-		VSourceObj otherVSource = (VSourceObj) find(otherSource);
-		if (otherVSource != null) {
-			VSourceObj avs = activeVSourceObj;
+		VSourceObj other = (VSourceObj) find(otherSource);
+		if (other != null) {
+			VSourceObj elem = activeVSourceObj;
 
-			if (avs.getNumPhases() != otherVSource.getNumPhases()) {
-				avs.setNumPhases(otherVSource.getNumPhases());
-				avs.setNumConds(avs.getNumPhases());  // forces reallocation of terminal stuff
+			if (elem.getNumPhases() != other.getNumPhases()) {
+				elem.setNumPhases(other.getNumPhases());
+				elem.setNumConds(elem.getNumPhases());  // forces reallocation of terminal stuff
 
-				avs.setYOrder(avs.getNumConds() * avs.getNumTerms());
-				avs.setYPrimInvalid(true);
+				elem.setYOrder(elem.getNumConds() * elem.getNumTerms());
+				elem.setYPrimInvalid(true);
 
-				avs.setZ( new CMatrix(avs.getNumPhases()) );
-				avs.setZInv( new CMatrix(avs.getNumPhases()) );
+				elem.setZ(new CMatrix(elem.getNumPhases()));
+				elem.setZinv(new CMatrix(elem.getNumPhases()));
 			}
 
-			avs.getZ().copyFrom(otherVSource.getZ());
-			// avs.getZinv().copyFrom(OtherLine.getZinv());
-			avs.setVMag(otherVSource.getVMag());
-			avs.setKVBase(otherVSource.getKVBase());
-			avs.setPerUnit(otherVSource.getPerUnit());
-			avs.setAngle(otherVSource.getAngle());
-			avs.setSrcFrequency(otherVSource.getSrcFrequency());
-			avs.setMVAsc3(otherVSource.getMVAsc3());
-			avs.setMVAsc1(otherVSource.getMVAsc1());
-			avs.setX1R1(otherVSource.getX1R1());
-			avs.setX0R0(otherVSource.getX0R0());
-			avs.setScanType(otherVSource.getScanType());
-			avs.setSequenceType(otherVSource.getSequenceType());
+			elem.getZ().copyFrom(other.getZ());
+			// elem.getZinv().copyFrom(other.getZinv());
+			elem.setVmag(other.getVmag());
+			elem.setKVBase(other.getKVBase());
+			elem.setPerUnit(other.getPerUnit());
+			elem.setAngle(other.getAngle());
+			elem.setSrcFrequency(other.getSrcFrequency());
+			elem.setMVAsc3(other.getMVAsc3());
+			elem.setMVAsc1(other.getMVAsc1());
+			elem.setX1R1(other.getX1R1());
+			elem.setX0R0(other.getX0R0());
+			elem.setScanType(other.getScanType());
+			elem.setSequenceType(other.getSequenceType());
 
-			classMakeLike(otherVSource);
+			classMakeLike(other);
 
-			for (int i = 0; i < avs.getParentClass().getNumProperties(); i++)
-				avs.setPropertyValue(i, otherVSource.getPropertyValue(i));
+			for (int i = 0; i < elem.getParentClass().getNumProperties(); i++)
+				elem.setPropertyValue(i, other.getPropertyValue(i));
 
-			result = 1;
+			success = 1;
 		} else {
 			DSS.doSimpleMsg("Error in VSource makeLike: \"" + otherSource + "\" not found.", 322);
 		}
 
-		return result;
+		return success;
 	}
 
 	@Override

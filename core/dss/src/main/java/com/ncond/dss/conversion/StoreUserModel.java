@@ -58,6 +58,6 @@ public interface StoreUserModel {
 
 	void setVariable(int i, double value);
 
-	void getVarName(int varNum, int varName, int maxlen);
+	void getVarName(int varNum, String[] varName);
 
 }

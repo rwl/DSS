@@ -2694,7 +2694,7 @@ public class ExecHelper {
 			iBus = ckt.getBusList().find(sBus);
 			pBus = ckt.getBus(iBus);
 			kvln = pBus.getKVBase();
-			if (pLoad.getConnection() == 1 || pLoad.getNumPhases() == 3) {
+			if (pLoad.getConnection() == Connection.DELTA || pLoad.getNumPhases() == 3) {
 				pLoad.setKVLoadBase(kvln * DSS.SQRT3);
 			} else {
 				pLoad.setKVLoadBase(kvln);

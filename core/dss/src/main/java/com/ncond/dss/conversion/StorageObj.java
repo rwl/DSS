@@ -1,9 +1,10 @@
 package com.ncond.dss.conversion;
 
-import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
+import java.io.IOException;
 import java.io.PrintStream;
+import java.io.PrintWriter;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -15,9 +16,10 @@ import com.ncond.dss.common.DSS;
 import com.ncond.dss.common.DSSClass;
 import com.ncond.dss.common.SolutionObj;
 import com.ncond.dss.common.Util;
+import com.ncond.dss.common.types.Connection;
 import com.ncond.dss.common.types.Randomization;
-import com.ncond.dss.common.types.SolutionMode;
 import com.ncond.dss.general.LoadShapeObj;
+import com.ncond.dss.general.SpectrumObj;
 import com.ncond.dss.parser.Parser;
 import com.ncond.dss.shared.CMatrix;
 import com.ncond.dss.shared.ComplexUtil;
@@ -56,7 +58,7 @@ public class StorageObj extends PCElement {
         private Complex YeqDischarge;  // equiv at rated power of storage element only
 
 	private boolean debugTrace;
-	private int state;
+	private StorageState state;
 	private boolean stateChanged;
 	private boolean firstSampleAfterReset;
 	private int storageSolutionCount;
@@ -115,7 +117,7 @@ public class StorageObj extends PCElement {
 	private double XThev;
 
 	/** 0 = line-neutral; 1 = Delta */
-	protected int connection;
+	protected Connection connection;
 	/** Daily (24 HR) storage element shape */
 	protected String dailyShape;
 	/** Daily storage element shape for this load */
@@ -142,7 +144,7 @@ public class StorageObj extends PCElement {
 	private double pctKVArOut;
 	private double pctKWIn;
 	private double pctReserve;
-	private int dispatchMode;
+	private DispatchMode dispatchMode;
 
 	protected double[] registers = new double[Storage.NumStorageRegisters];
 	protected double[] derivatives = new double[Storage.NumStorageRegisters];
@@ -164,7 +166,7 @@ public class StorageObj extends PCElement {
 		dailyShapeObj  = null;  // if dailyShapeObj = null then the load always stays nominal * global multipliers
 		dutyShape      = "";
 		dutyShapeObj   = null;  // if dutyShapeObj = null then the load always stays nominal * global multipliers
-		connection     = 0;     // Wye (star)
+		connection     = Connection.WYE;
 		voltageModel   = 1;  /* Typical fixed kW negative load */
 		storageClass   = 1;
 
@@ -188,7 +190,7 @@ public class StorageObj extends PCElement {
 		kWRating  = 25.0;
 		kVARating = kWRating *1.0;
 
-		state        = Storage.IDLING;  // idling and fully charged
+		state        = StorageState.IDLING;  // idling and fully charged
 		stateChanged = true;  // force building of YPrim
 		kWhRating    = 50;
 		kWhStored    = kWhRating;
@@ -232,12 +234,12 @@ public class StorageObj extends PCElement {
 
 	private String decodeState() {
 		switch (state) {
-		case Storage.CHARGING:
-			return "CHARGING";
-		case Storage.DISCHARGING:
-			return "DISCHARGING";
+		case CHARGING:
+			return "Charging";
+		case DISCHARGING:
+			return "Discharging";
 		default:
-			return "IDLING";
+			return "Idling";
 		}
 	}
 
@@ -292,18 +294,18 @@ public class StorageObj extends PCElement {
 		super.initPropertyValues(Storage.NumPropsThisClass - 1);
 	}
 
-	private String returnDispMode(int imode) {
-		switch (imode) {
-		case Storage.EXTERNAL_MODE:
+	private String returnDispMode(DispatchMode mode) {
+		switch (mode) {
+		case EXTERNAL:
 			return "External";
-		case Storage.FOLLOW:
+		case FOLLOW:
 			return "Follow";
-		case Storage.LOAD_MODE:
-			return "Loadshape";
-		case Storage.PRICE_MODE:
+		case LOAD:
+			return "LoadShape";
+		case PRICE:
 			return "Price";
 		default:
-			return "default";
+			return "Default";
 		}
 	}
 
@@ -430,14 +432,14 @@ public class StorageObj extends PCElement {
 	}
 
 	private void setKWAndKVArOut() {
-		int oldState = state;
+		StorageState oldState = state;
 
 		switch (state) {
-		case Storage.CHARGING:
+		case CHARGING:
 			if (kWhStored < kWhRating) {
 				switch (dispatchMode) {
-				case Storage.FOLLOW:
-					kWOut   = kWRating * shapeFactor.getReal();
+				case FOLLOW:
+					kWOut = kWRating * shapeFactor.getReal();
 					kVArOut = kVArBase * shapeFactor.getImaginary();  // ???
 				default:
 					kWOut = -kWRating * pctKWIn / 100.0;
@@ -448,15 +450,15 @@ public class StorageObj extends PCElement {
 					}
 				}
 			} else {
-				setStorageState(Storage.IDLING);   // all charged up
+				setStorageState(StorageState.IDLING);   // all charged up
 			}
 			break;
 
-		case Storage.DISCHARGING:
+		case DISCHARGING:
 			if (kWhStored > kWhReserve) {
 				switch (dispatchMode) {
-				case Storage.FOLLOW:
-					kWOut   = kWRating * shapeFactor.getReal();
+				case FOLLOW:
+					kWOut = kWRating * shapeFactor.getReal();
 					kVArOut = kVArBase * shapeFactor.getImaginary();
 				default:
 					kWOut = kWRating * pctKWout / 100.0;
@@ -467,14 +469,14 @@ public class StorageObj extends PCElement {
 					}
 				}
 			} else {
-				setStorageState(Storage.IDLING);   // not enough storage to discharge
+				setStorageState(StorageState.IDLING);   // not enough storage to discharge
 			}
 			break;
 		}
 
 		/* If idling output is only losses */
-		if (state == Storage.IDLING) {
-			kWOut = 0.0;   // -kWIdlingLosses;     Just use YeqIdling
+		if (state == StorageState.IDLING) {
+			kWOut = 0.0;   // -kWIdlingLosses;
 		        kVArOut = 0.0;
 		}
 
@@ -492,18 +494,16 @@ public class StorageObj extends PCElement {
 
 			// check dispatch to see what state the storage element should be in
 			switch (dispatchMode) {
-			case Storage.EXTERNAL_MODE:
+			case EXTERNAL:
 				// Do nothing
 				break;
-			case Storage.LOAD_MODE:
+			case LOAD:
 				checkStateTriggerLevel(ckt.getGeneratorDispatchReference());
 				break;
-			case Storage.PRICE_MODE:
+			case PRICE:
 				checkStateTriggerLevel(ckt.getPriceSignal());
 				break;
-
 			default:  // dispatch off element's load shapes, if any
-
 				switch (sol.getMode()) {
 				case SNAPSHOT:
 					/* Just solve for the present kW, kvar */  // don't check for state change
@@ -524,14 +524,8 @@ public class StorageObj extends PCElement {
 					break;*/
 				// assume daily curve, if any, for the following
 				case MONTECARLO2:
-					calcDailyMult(sol.getDblHour());
-					break;
 				case MONTECARLO3:
-					calcDailyMult(sol.getDblHour());
-					break;
 				case LOADDURATION1:
-					calcDailyMult(sol.getDblHour());
-					break;
 				case LOADDURATION2:
 					calcDailyMult(sol.getDblHour());
 					break;
@@ -554,13 +548,16 @@ public class StorageObj extends PCElement {
 			 * When charging, the idling losses are subtracting from the amount entering the storage element. */
 			PNominalPerPhase = 1000.0 * kWOut / nPhases;
 
-			if (state == Storage.IDLING) {
-				if (dispatchMode == Storage.EXTERNAL_MODE) {  // check for requested kVAr
+			if (state == StorageState.IDLING) {
+				if (dispatchMode == DispatchMode.EXTERNAL) {  // check for requested kVAr
 					QNominalPerPhase = kVArRequested / nPhases * 1000.0;
 				} else {
 					QNominalPerPhase = 0.0;
 				}
-				Yeq = ComplexUtil.divide(new Complex(PNominalPerPhase, -QNominalPerPhase), Math.pow(VBase, 2));  // VBase must be L-N for 3-phase
+				Yeq = ComplexUtil.divide(new Complex(
+					PNominalPerPhase,
+					-QNominalPerPhase
+				), Math.pow(VBase, 2));  // VBase must be L-N for 3-phase
 				Yeq95  = Yeq;
 				Yeq105 = Yeq;
 			} else {
@@ -573,7 +570,11 @@ public class StorageObj extends PCElement {
 					break;
 				default:
 					/* Yeq no longer used for anything other than this calculation of Yeq95, Yeq105 */
-					Yeq = ComplexUtil.divide(new Complex(PNominalPerPhase, -QNominalPerPhase), Math.pow(VBase, 2));  // VBase must be L-N for 3-phase
+					Yeq = ComplexUtil.divide(new Complex(
+						PNominalPerPhase,
+						-QNominalPerPhase
+					), Math.pow(VBase, 2));  // VBase must be L-N for 3-phase
+
 					if (VMinPU != 0.0) {
 						Yeq95 = ComplexUtil.divide(Yeq, Math.pow(VMinPU, 2));   // at 95% voltage
 					} else {
@@ -600,7 +601,6 @@ public class StorageObj extends PCElement {
 
 	@Override
 	public void recalcElementData() {
-
 		VBase95  = VMinPU * VBase;
 		VBase105 = VMaxPU * VBase;
 
@@ -611,11 +611,17 @@ public class StorageObj extends PCElement {
 		XThev = pctX * 0.01 * Math.pow(getPresentKV(), 2) / kVARating * 1000.0;
 
 		// efficiencies
-		chargeEff    = pctChargeEff    * 0.01;
+		chargeEff = pctChargeEff * 0.01;
 		dischargeEff = pctDischargeEff * 0.01;
 
-		YeqIdling = new Complex(pctIdleKW, pctIdleKVAr).multiply( (kWRating * 10.0 / Math.pow(VBase, 2) / nPhases) );  // 10.0 = 1000/100 = kW->W/pct
-		YeqDischarge = new Complex((kWRating * 1000.0 / Math.pow(VBase, 2) / nPhases), 0.0);
+		YeqIdling = new Complex(
+			pctIdleKW,
+			pctIdleKVAr
+		).multiply(kWRating * 10.0 / Math.pow(VBase, 2) / nPhases);  // 10.0 = 1000/100 = kW->W/pct
+		YeqDischarge = new Complex(
+			kWRating * 1000.0 / Math.pow(VBase, 2) / nPhases,
+			0.0
+		);
 
 		setNominalStorageOuput();
 
@@ -631,7 +637,7 @@ public class StorageObj extends PCElement {
 				DSS.doSimpleMsg("Warning: Duty load shape: \""+ dutyShape +"\" not found.", 565);
 
 		if (getSpectrum().length() > 0) {
-			setSpectrumObj( (com.ncond.dss.general.SpectrumObj) DSS.spectrumClass.find(getSpectrum()) );
+			setSpectrumObj((SpectrumObj) DSS.spectrumClass.find(getSpectrum()));
 			if (getSpectrumObj() == null)
 				DSS.doSimpleMsg("Error: Spectrum \""+getSpectrum()+"\" not found.", 566);
 		} else {
@@ -641,11 +647,10 @@ public class StorageObj extends PCElement {
 		// initialize to zero - defaults to PQ storage element
 		// solution object will reset after circuit modifications
 
-		setInjCurrent( Util.resizeArray(getInjCurrent(), YOrder) );
+		setInjCurrent(Util.resizeArray(getInjCurrent(), YOrder));
 
 		/* Update any user-written models */
-		if (userModel.exists())
-			userModel.updateModel();
+		if (userModel.exists()) userModel.updateModel();
 	}
 
 	private void calcYPrimMatrix(CMatrix YMatrix) {
@@ -658,16 +663,16 @@ public class StorageObj extends PCElement {
 		YPrimFreq = sol.getFrequency();
 		freqMultiplier = YPrimFreq / baseFrequency;
 
-		if (/*sol.isIsDynamicModel() ||*/ sol.isHarmonicModel()) {
+		if (sol.isHarmonicModel()) {  /*|| sol.isIsDynamicModel()*/
 			/* Yeq is computed from %R and %X -- inverse of Rthev + j Xthev */
 			switch (state) {
-			case Storage.CHARGING:
+			case CHARGING:
 				Y = YeqDischarge.add(YeqIdling);
 				break;
-			case Storage.IDLING:
+			case IDLING:
 				Y = YeqIdling;
 				break;
-			case Storage.DISCHARGING:
+			case DISCHARGING:
 				Y = YeqDischarge.negate().add(YeqIdling);
 				break;
 			default:
@@ -675,18 +680,19 @@ public class StorageObj extends PCElement {
 				break;
 			}
 
-			if (connection == 1)
+			if (connection == Connection.DELTA)
 				Y = ComplexUtil.divide(Y, 3.0);  // convert to delta impedance
+
 			Y = new Complex(Y.getReal(), Y.getImaginary() / freqMultiplier);
 			Yij = Y.negate();
 			for (i = 0; i < nPhases; i++) {
 				switch (connection) {
-				case 0:
+				case WYE:
 					YMatrix.set(i, i, Y);
-					YMatrix.add(nConds - 1, nConds - 1, Y);
-					YMatrix.setSym(i, nConds - 1, Yij);
+					YMatrix.add(nConds-1, nConds-1, Y);
+					YMatrix.setSym(i, nConds-1, Yij);
 					break;
-				case 1:  /* Delta connection */
+				case DELTA:
 					YMatrix.set(i, i, Y);
 					YMatrix.add(i, i, Y);  // put it in again
 					for (j = 0; j < i; j++)
@@ -700,13 +706,13 @@ public class StorageObj extends PCElement {
 			/* Yeq is always expected as the equivalent line-neutral admittance */
 
 			switch (state) {
-			case Storage.CHARGING:
+			case CHARGING:
 				Y = YeqDischarge.add(YeqIdling);
 				break;
-			case Storage.IDLING:
+			case IDLING:
 				Y = YeqIdling;
 				break;
-			case Storage.DISCHARGING:
+			case DISCHARGING:
 				Y = YeqDischarge.negate().add(YeqIdling);
 			default:
 				Y = Yeq.negate().add(YeqIdling);  // negate for generation; Yeq is L-N quantity
@@ -717,24 +723,21 @@ public class StorageObj extends PCElement {
 			Y = new Complex(Y.getReal(), Y.getImaginary() / freqMultiplier);
 
 			switch (connection) {
-			case 0:
-				// wye
+			case WYE:
 				Yij = Y.negate();
 				for (i = 0; i < nPhases; i++) {
 					YMatrix.set(i, i, Y);
-					YMatrix.add(nConds - 1, nConds - 1, Y);
-					YMatrix.setSym(i, nConds - 1, Yij);
+					YMatrix.add(nConds-1, nConds-1, Y);
+					YMatrix.setSym(i, nConds-1, Yij);
 				}
 				break;
 
-			case 1:
-				// delta or L-L
+			case DELTA:
 				Y = ComplexUtil.divide(Y, 3.0);  // convert to delta impedance
 				Yij = Y.negate();
 				for (i = 0; i < nPhases; i++) {
 					j = i + 1;
-					if (j >= nConds)
-						j = 0;  // wrap around for closed connections
+					if (j >= nConds) j = 0;  // wrap around for closed connections
 					YMatrix.add(i, i, Y);
 					YMatrix.add(j, j, Y);
 					YMatrix.addSym(i, j, Yij);
@@ -770,56 +773,57 @@ public class StorageObj extends PCElement {
 	 * This is where we set the state of the storage element.
 	 */
 	private void checkStateTriggerLevel(double level) {
+		SolutionObj sol = DSS.activeCircuit.getSolution();
+
 		stateChanged = false;
+		StorageState oldState = state;
 
-		int oldState = state;
-
-		if (dispatchMode == Storage.FOLLOW) {
-
+		if (dispatchMode == DispatchMode.FOLLOW) {
 			// set charge and discharge modes based on sign of load shape
 			if (level > 0.0 && kWhStored > kWhReserve) {
-				setStorageState(Storage.DISCHARGING);
+				setStorageState(StorageState.DISCHARGING);
 			} else if (level < 0.0 && kWhStored < kWhRating) {
-				setStorageState(Storage.CHARGING);
+				setStorageState(StorageState.CHARGING);
 			} else {
-				setStorageState(Storage.IDLING);
+				setStorageState(StorageState.IDLING);
 			}
 		} else {
 			// all other dispatch modes, just compare to trigger value
-
 			if (chargeTrigger == 0.0 && dischargeTrigger == 0.0)
 				return;
 
 			// first see If we want to turn off charging or discharging state
 			switch (getState()) {
-			case Storage.CHARGING:
-				if (chargeTrigger != 0.0)
+			case CHARGING:
+				if (chargeTrigger != 0.0) {
 					if (chargeTrigger < level || kWhStored >= kWhRating)
-						setStorageState(Storage.IDLING);
+						setStorageState(StorageState.IDLING);
+				}
 				break;
-			case Storage.DISCHARGING:
-				if (dischargeTrigger != 0.0)
+			case DISCHARGING:
+				if (dischargeTrigger != 0.0) {
 					if (dischargeTrigger > level || kWhStored <= kWhReserve)
-						setStorageState(Storage.IDLING);
+						setStorageState(StorageState.IDLING);
+				}
 				break;
 			}
 
 			// now check to see if we want to turn on the opposite state
 			switch (getState()) {
-			case Storage.IDLING:
+			case IDLING:
 				if (dischargeTrigger != 0.0 && dischargeTrigger < level && kWhStored > kWhReserve) {
-					setStorageState(Storage.DISCHARGING);
+					setStorageState(StorageState.DISCHARGING);
 				} else if (chargeTrigger != 0.0 && chargeTrigger > level && kWhStored < kWhRating) {
-					setStorageState(Storage.CHARGING);
+					setStorageState(StorageState.CHARGING);
 				}
 
 				// check to see if it is time to turn the charge cycle on If it is not already on
-				if (!(getState() == Storage.CHARGING))
+				if (!(getState() == StorageState.CHARGING)) {
 					if (chargeTime > 0.0) {
-						SolutionObj sol = DSS.activeCircuit.getSolution();
 						if (Math.abs(normalizeToTOD(sol.getIntHour(), sol.getDynaVars().t) - chargeTime) < sol.getDynaVars().h / 3600.0)
-							setStorageState(Storage.CHARGING);
+							setStorageState(StorageState.CHARGING);
 					}
+				}
 				break;
 			}
 		}
@@ -864,15 +868,14 @@ public class StorageObj extends PCElement {
 	 */
 	private void putCurrInTerminalArray(Complex[] termArray, Complex curr, int i) {
 		switch (connection) {
-		case 0:  // wye
+		case WYE:
 			termArray[i] = termArray[i].add(curr);
-			termArray[nConds - 1] = termArray[nConds - 1].add(curr.negate());  // neutral
+			termArray[nConds-1] = termArray[nConds-1].add(curr.negate());  // neutral
 			break;
-		case 1:  // delta
+		case DELTA:
 			termArray[i] = termArray[i].add(curr);
 			int j = i + 1;
-			if (j >= nConds)
-				j = 0;
+			if (j >= nConds) j = 0;
 			termArray[j] = termArray[j].add(curr.negate());
 			break;
 		}
@@ -885,13 +888,13 @@ public class StorageObj extends PCElement {
 		try {
 			if (!DSS.inShowResults) {
 				FileWriter fw = new FileWriter(traceFile, true);
-				BufferedWriter bw = new BufferedWriter(fw);
+				PrintWriter pw = new PrintWriter(fw);
 
-				bw.write(String.format("%-.g, %d, %-.g, ",
+				pw.printf("%-.g, %d, %-.g, ",
 						ckt.getSolution().getDblHour(),
 						ckt.getSolution().getIteration(),
-						ckt.getLoadMultiplier()) +
-						Util.getSolutionModeID() + ", " +
+						ckt.getLoadMultiplier());
+				pw.print(Util.getSolutionModeID() + ", " +
 						Util.getLoadModel() + ", " +
 						voltageModel + ", " +
 						(QNominalPerPhase * 3.0 / 1.0e6) + ", " +
@@ -899,20 +902,20 @@ public class StorageObj extends PCElement {
 						s + ", ");
 
 				for (i = 0; i < nPhases; i++)
-					bw.write( getInjCurrent(i).abs() + ", ");
+					pw.print(getInjCurrent(i).abs() + ", ");
 				for (i = 0; i < nPhases; i++)
-					bw.write( getITerminal(i).abs() + ", ");
+					pw.print(getITerminal(i).abs() + ", ");
 				for (i = 0; i < nPhases; i++)
-					bw.write( getVTerminal(i).abs() + ", " );
+					pw.print(getVTerminal(i).abs() + ", ");
 				for (i = 0; i < numVariables(); i++)
-					bw.write( String.format("%-.g, ", getVariable(i)) );
-				//TraceBuffer.write(VThevMag + ", " + StoreVARs.Theta * 180.0 / Math.PI);
-				bw.newLine();
-				bw.close();
+					pw.printf("%-.g, ", getVariable(i));
+				//pw.print(VThevMag + ", " + storeVARs.theta * 180.0 / Math.PI);
+				pw.println();
+				pw.close();
 				fw.close();
 			}
-		} catch (Exception e) {
-
+		} catch (IOException e) {
+			DSS.doSimpleMsg("Error writing trace record: " + e.getMessage(), -1);
 		}
 	}
 
@@ -922,7 +925,7 @@ public class StorageObj extends PCElement {
 	private void doConstantPQStorageObj() {
 		int i;
 		Complex curr = null, V;
-		double VMag;
+		double Vmag;
 
 		// treat this just like the load model
 
@@ -930,40 +933,45 @@ public class StorageObj extends PCElement {
 		zeroITerminal();
 
 		switch (state) {
-		case Storage.IDLING:  // YPrim current is only current
+		case IDLING:  // YPrim current is only current
 			for (i = 0; i < nPhases; i++) {
 				curr = getInjCurrent(i);
 				putCurrInTerminalArray(ITerminal, curr.negate(), i);  // put YPrim contribution into Terminal array taking into account connection
 				setITerminalUpdated(true);
 				putCurrInTerminalArray(getInjCurrent(), curr.negate(), i);    // Compensation current is zero since terminal current is same as Yprim contribution
 			}
-		default:  // For Charging and Discharging
-
+		default:  // for charging and discharging
 			calcVTerminalPhase();  // get actual voltage across each phase of the load
 
 			for (i = 0; i < nPhases; i++) {
 				V = VTerminal[i];
-				VMag = V.abs();
+				Vmag = V.abs();
 
 				switch (connection) {
-				case 0:  /* Wye */
-					if (VMag <= VBase95) {
+				case WYE:
+					if (Vmag <= VBase95) {
 						curr = Yeq95.multiply(V);   // below 95% use an impedance model
-					} else if (VMag > VBase105) {
+					} else if (Vmag > VBase105) {
 						curr = Yeq105.multiply(V);  // above 105% use an impedance model
 					} else {
-						curr = new Complex(PNominalPerPhase, QNominalPerPhase).divide(V).conjugate();  // between 95% -105%, constant PQ
+						curr = new Complex(
+							PNominalPerPhase,
+							QNominalPerPhase
+						).divide(V).conjugate();  // between 95% -105%, constant PQ
 					}
 					break;
 
-				case 1:  /* Delta */
-					VMag = VMag / DSS.SQRT3;  // L-N magnitude
-					if (VMag <= VBase95) {
+				case DELTA:
+					Vmag = Vmag / DSS.SQRT3;  // L-N magnitude
+					if (Vmag <= VBase95) {
 						curr = ComplexUtil.divide(Yeq95, 3.0).multiply(V);   // below 95% use an impedance model
-					} else if (VMag > VBase105) {
+					} else if (Vmag > VBase105) {
 						curr = ComplexUtil.divide(Yeq105, 3.0).multiply(V);  // above 105% use an impedance model
 					} else {
-						curr = new Complex(PNominalPerPhase, QNominalPerPhase).divide(V).conjugate();  // between 95% -105%, constant PQ
+						curr = new Complex(
+							PNominalPerPhase,
+							QNominalPerPhase
+						).divide(V).conjugate();  // between 95% -105%, constant PQ
 					}
 					break;
 				}
@@ -986,7 +994,7 @@ public class StorageObj extends PCElement {
 		calcVTerminalPhase();  // get actual voltage across each phase of the load
 		zeroITerminal();
 
-		if (connection == 0) {
+		if (connection == Connection.WYE) {
 			Yeq2 = Yeq;
 		} else {
 			Yeq2 = ComplexUtil.divide(Yeq, 3.0);
@@ -1004,18 +1012,17 @@ public class StorageObj extends PCElement {
 	 * Compute total terminal current from user-written model.
 	 */
 	private void doUserModel() {
-
 		calcYPrimContribution(getInjCurrent());  // init injCurrent array
 
 		if (userModel.exists()) {  // check automatically selects the user model if true
 			userModel.calc(VTerminal, ITerminal);
 			setITerminalUpdated(true);
-			//SolutionObj sol = DSSGlobals.activeCircuit.getSolution();
 			// negate currents from user model for power flow storage element model
 			for (int i = 0; i < nConds; i++)
-				getInjCurrent()[i] = getInjCurrent(i).add( ITerminal[i].negate() );
+				getInjCurrent()[i] = getInjCurrent(i).add(ITerminal[i].negate());
 		} else {
-			DSS.doSimpleMsg("Storage." + getName() + " model designated to use user-written model, but user-written model is not defined.", 567);
+			DSS.doSimpleMsg("Storage." + getName() +
+				" model designated to use user-written model, but user-written model is not defined.", 567);
 		}
 	}
 
@@ -1053,12 +1060,12 @@ public class StorageObj extends PCElement {
 		e = Util.rotatePhasorRad(e, storageHarmonic, thetaHarm);  // time shift by fundamental frequency phase shift
 		for (int i = 0; i < nPhases; i++) {
 			cBuffer[i] = e;
-			if (i < nPhases)
-				e = Util.rotatePhasorDeg(e, storageHarmonic, -120.0);  // assume 3-phase Storage element
+			if (i < nPhases - 1)
+				e = Util.rotatePhasorDeg(e, storageHarmonic, -120.0);  // assume 3-phase storage element
 		}
 
 		/* Handle wye connection */
-		if (connection == 0)
+		if (connection == Connection.WYE)
 			cBuffer[nConds - 1] = VTerminal[nConds - 1];  // assume no neutral injection voltage
 
 		/* Inj currents = Yprim (E) */
@@ -1071,16 +1078,15 @@ public class StorageObj extends PCElement {
 
 		/* Establish phase voltages and stick in VTerminal */
 		switch (connection) {
-		case 0:
+		case WYE:
 			for (i = 0; i < nPhases; i++)
 				VTerminal[i] = sol.vDiff(nodeRef[i], nodeRef[nConds - 1]);
 			break;
 
-		case 1:
+		case DELTA:
 			for (i = 0; i < nPhases; i++) {
 				j = i + 1;
-				if (j >= nConds)
-					j = 0;
+				if (j >= nConds) j = 0;
 				VTerminal[i] = sol.vDiff(nodeRef[i], nodeRef[j]);
 			}
 			break;
@@ -1088,14 +1094,6 @@ public class StorageObj extends PCElement {
 
 		storageSolutionCount = sol.getSolutionCount();
 	}
-
-//	/**
-//	 * Put terminal voltages in an array.
-//	 */
-//	private void calcVterminal() {
-//		computeVterminal();
-//		StorageSolutionCount = DSSGlobals.activeCircuit.getSolution().getSolutionCount();
-//	}
 
 	/**
 	 * Calculates storage element current and adds it properly into the injCurrent array
@@ -1157,8 +1155,7 @@ public class StorageObj extends PCElement {
 			super.getTerminalCurrents(Curr);
 		}
 
-		if (debugTrace)
-			writeTraceRecord("TotalCurrent");
+		if (debugTrace) writeTraceRecord("TotalCurrent");
 	}
 
 	@Override
@@ -1185,13 +1182,11 @@ public class StorageObj extends PCElement {
 	 */
 	@Override
 	public void getInjCurrents(Complex[] curr) {
-
 		calcInjCurrentArray();  // difference between currents in YPrim and total current
 
 		try {
 			// copy into buffer array
-			for (int i = 0; i < YOrder; i++)
-				curr[i] = getInjCurrent(i);
+			for (int i = 0; i < YOrder; i++) curr[i] = getInjCurrent(i);
 		} catch (Exception e) {
 			DSS.doErrorMsg("Storage object: \"" + getName() + "\" in getInjCurrents method.",
 					e.getMessage(), "Current buffer not big enough.", 568);
@@ -1233,9 +1228,8 @@ public class StorageObj extends PCElement {
 
 		// compute energy in storage element branch
 		if (isEnabled()) {
-
 			// only tabulate discharge hours
-			if (state == Storage.DISCHARGING) {
+			if (state == StorageState.DISCHARGING) {
 				S = new Complex(getPresentKW(), getPresentKVAr());
 				SMag = S.abs();
 				hourValue = 1.0;
@@ -1245,22 +1239,21 @@ public class StorageObj extends PCElement {
 				hourValue = 0.0;
 			}
 
-			if (state == Storage.DISCHARGING || ckt.isTrapezoidalIntegration()) {
+			if (state == StorageState.DISCHARGING || ckt.isTrapezoidalIntegration()) {
 				/* Make sure we always integrate for Trapezoidal case.
-				 * Don't need to for gen off and normal integration.
-				 */
+				 * Don't need to for gen off and normal integration. */
 				SolutionObj sol = ckt.getSolution();
 
 				if (ckt.isPositiveSequence()) {
 					S = S.multiply(3.0);
 					SMag = 3.0 * SMag;
 				}
-				integrate            (regKWh,   S.getReal(), sol.getIntervalHrs());   // accumulate the power
-				integrate            (regKVArh, S.getImaginary(), sol.getIntervalHrs());
-				setDragHandRegister  (regMaxKW, Math.abs(S.getReal()));
+				integrate            (regKWh,    S.getReal(), sol.getIntervalHrs());   // accumulate the power
+				integrate            (regKVArh,  S.getImaginary(), sol.getIntervalHrs());
+				setDragHandRegister  (regMaxKW,  Math.abs(S.getReal()));
 				setDragHandRegister  (regMaxKVA, SMag);
-				integrate            (regHours, hourValue, sol.getIntervalHrs());  // accumulate hours in operation
-				integrate            (regPrice, S.getReal() * ckt.getPriceSignal(), sol.getIntervalHrs());  // accumulate hours in operation
+				integrate            (regHours,  hourValue, sol.getIntervalHrs());  // accumulate hours in operation
+				integrate            (regPrice,  S.getReal() * ckt.getPriceSignal(), sol.getIntervalHrs());  // accumulate hours in operation
 				firstSampleAfterReset = false;
 			}
 		}
@@ -1269,29 +1262,28 @@ public class StorageObj extends PCElement {
 	/**
 	 * Update storage elements based on present kW and intervalHrs variable.
 	 */
-	// FIXME Private method in OpenDSS
-	public void updateStorage() {
+	protected void updateStorage() {
 		SolutionObj sol = DSS.activeCircuit.getSolution();
 
 		kWhBeforeUpdate = kWhStored;  // keep this for reporting change in storage as a variable
 
 		switch (state) {
-		case Storage.DISCHARGING:
+		case DISCHARGING:
                 	/* Deplete storage by amount of idling power to achieve present kW output */
 			kWhStored = kWhStored - (getPresentKW() + getKWIdlingLosses()) * sol.getIntervalHrs() / dischargeEff;
 			if (kWhStored < kWhReserve) {
 				kWhStored = kWhReserve;
-				setStorageState(Storage.IDLING);  // it's empty turn it off
+				setStorageState(StorageState.IDLING);  // it's empty turn it off
 				stateChanged = true;
 			}
 			break;
 
-		case Storage.CHARGING:
+		case CHARGING:
 			/* kWIdlingLosses is always positive while presentKW is negative for charging */
 			kWhStored = kWhStored - (getPresentKW() + getKWIdlingLosses()) * sol.getIntervalHrs() * chargeEff;
 			if (kWhStored > kWhRating) {
 				kWhStored = kWhRating;
-				setStorageState(Storage.IDLING);  // it's full turn it off
+				setStorageState(StorageState.IDLING);  // it's full turn it off
 				stateChanged = true;
 			}
 			break;
@@ -1308,11 +1300,11 @@ public class StorageObj extends PCElement {
 
 	public double getKWTotalLosses() {
 		switch (getState()) {
-		case Storage.CHARGING:
+		case CHARGING:
 			return Math.abs(getPower(0).getReal() * (100.0 - pctChargeEff) / 100000.0) + pctChargeEff * getKWIdlingLosses() / 100.0;  // kW
-		case Storage.IDLING:
+		case IDLING:
 			return getKWIdlingLosses();
-		case Storage.DISCHARGING:
+		case DISCHARGING:
 			return Math.abs(getPower(0).getReal() * (100.0 - pctDischargeEff) / 100000.0) + (2.0 - pctChargeEff / 100.0) * getKWIdlingLosses();  // kW
 		}
 		return 0;
@@ -1320,17 +1312,16 @@ public class StorageObj extends PCElement {
 
 	public double getKWIdlingLosses() {
 		int i;
-
 		computeVTerminal();
 
-		double result = 0.0;
+		double losses = 0.0;
 		// compute sum of sqr(V) at this device -- sum of VV*
 		for (i = 0; i < nPhases; i++)
-			result = result + getVTerminal(i).multiply( getVTerminal(i).conjugate() ).getReal();
+			losses = losses + getVTerminal(i).multiply( getVTerminal(i).conjugate() ).getReal();
 
-		result = result * YeqIdling.getReal() * 0.001;  // to kW
+		losses = losses * YeqIdling.getReal() * 0.001;  // to kW
 
-		return result;
+		return losses;
 	}
 
 	public double getPresentKV() {
@@ -1344,7 +1335,6 @@ public class StorageObj extends PCElement {
 	@Override
 	public void dumpProperties(PrintStream f, boolean complete) {
 		int i, idx;
-
 		super.dumpProperties(f, complete);
 
 		for (i = 0; i < getParentClass().getNumProperties(); i++) {
@@ -1379,19 +1369,19 @@ public class StorageObj extends PCElement {
 
 		/* Compute reference Thevinen voltage from phase 1 current */
 
-		if (state == Storage.DISCHARGING) {
+		if (state == StorageState.DISCHARGING) {
 			computeITerminal();  // get present value of current
 
 			switch (connection) {
-			case 0:  /* wye - neutral is explicit */
-				Va = sol.getNodeV(nodeRef[0]).subtract( sol.getNodeV(nodeRef[nConds - 1]) );
+			case WYE:
+				Va = sol.getNodeV(nodeRef[0]).subtract(sol.getNodeV(nodeRef[nConds - 1]));
 				break;
-			case 1:  /* delta -- assume neutral is at zero */
+			case DELTA:
 				Va = sol.getNodeV(nodeRef[0]);
 				break;
 			}
 
-			e = Va.subtract( ITerminal[0].multiply(new Complex(RThev, XThev)) );
+			e = Va.subtract(ITerminal[0].multiply(new Complex(RThev, XThev)));
 			VThevhH = e.abs();  // establish base mag and angle
 			thetaHarm = e.getArgument();
 		} else {
@@ -1413,28 +1403,17 @@ public class StorageObj extends PCElement {
 	 */
 	@Override
 	public void integrateStates() {
-
+		// do nothing
 	}
 
-	// FIXME Private method in OpenDSS
-	public int interpretState(String s) {
-
+	protected StorageState interpretState(String s) {
 		switch (s.toLowerCase().charAt(0)) {
 		case 'c':
-			return Storage.CHARGING;
+			return StorageState.CHARGING;
 		case 'd':
-			return Storage.DISCHARGING;
+			return StorageState.DISCHARGING;
 		default:
-			return Storage.IDLING;
-		}
-	}
-
-	private String stateToStr() {
-		switch (state) {
-		case Storage.CHARGING: return "Charging";
-		case Storage.IDLING: return "Idling";
-		case Storage.DISCHARGING: return "Discharging";
-		default: return "";
+			return StorageState.IDLING;
 		}
 	}
 
@@ -1452,18 +1431,18 @@ public class StorageObj extends PCElement {
 		case 0:
 			return kWhStored;
 		case 1:
-			return state;
+			return state.code();
 		case 2:
-			if (state != Storage.DISCHARGING) {
+			if (state != StorageState.DISCHARGING) {
 				return 0.0;
 			} else {
-				return getPower(0).getReal() * 0.001;  // kW_Out; // pctkWout;  TODO check zero based indexing
+				return getPower(0).getReal() * 0.001;  // kW_Out; // pctkWout;
 			}
 		case 3:
-			if (state == Storage.CHARGING) {
+			if (state == StorageState.CHARGING) {
 				return 0.0;
 			} else {
-				return getPower(0).getReal() * 0.001;  // kW_out; // pctkWin;  TODO check zero based indexing
+				return getPower(0).getReal() * 0.001;  // kW_out; // pctkWin;
 			}
 		case 4:
 			return getKWTotalLosses();  /* Present kW charge or discharge loss incl idle losses */
@@ -1474,7 +1453,7 @@ public class StorageObj extends PCElement {
 		default:
 			if (userModel.exists()) {
 				n = userModel.numVars();
-				k = (i - Storage.NumStorageVariables);  // TODO Check zero based indexing
+				k = (i - Storage.NumStorageVariables);
 				if (k <= n)
 					return userModel.getVariable(k);
 			}
@@ -1487,15 +1466,14 @@ public class StorageObj extends PCElement {
 	public void setVariable(int i, double value) {
 		int n, k;
 
-		if (i < 0)
-			return;  // no variables to set
+		if (i < 0) return;  // no variables to set
 
 		switch (i) {
 		case 0:
 			kWhStored = value;
 			break;
 		case 1:
-			setStorageState((int) value);
+			setStorageState(StorageState.values()[(int) value]);
 			break;
 		case 2:
 			setPctKWOut(value);
@@ -1504,18 +1482,14 @@ public class StorageObj extends PCElement {
 			pctKWIn = value;
 			break;
 		case 4:
-			/* Do nothing; read only */
-			break;
 		case 5:
-			/* Do nothing; read only */
-			break;
 		case 6:
 			/* Do nothing; read only */
 			break;
 		default:
 			if (userModel.exists()) {
 				n = userModel.numVars();
-				k = (i - Storage.NumStorageVariables);  // TODO Check zero based indexing
+				k = (i - Storage.NumStorageVariables);
 				if (k <= n) {
 					userModel.setVariable(k, value);
 					return;
@@ -1536,22 +1510,18 @@ public class StorageObj extends PCElement {
 
 	@Override
 	public int numVariables() {
-		int result = Storage.NumStorageVariables;
+		int num = Storage.NumStorageVariables;
 		if (userModel.exists())
-			result = result + userModel.numVars();
-		return result;
+			num = num + userModel.numVars();
+		return num;
 	}
 
 	@Override
 	public String variableName(int i) {
-		final int buffSize = 255;
-
 		int n, i2;
-//		char[] Buff = new char[BuffSize];
-		char pName;
+		String[] pName;
 
-		if (i < 0)
-			return null;
+		if (i < 0) return null;
 
 		switch (i) {
 		case 0:
@@ -1570,12 +1540,12 @@ public class StorageObj extends PCElement {
 			return "kWh Change";
 		default:
 			if (userModel.exists()) {
-				pName = 0;
+				pName = new String[1];
 				n = userModel.numVars();
-				i2 = i - Storage.NumStorageVariables;  // TODO Check zero based indexing
+				i2 = i - Storage.NumStorageVariables;
 				if (i2 <= n) {
-					userModel.getVarName(i2, pName, buffSize);
-					return String.valueOf(pName);
+					userModel.getVarName(i2, pName);
+					return pName[0];
 				}
 			}
 			break;
@@ -1594,7 +1564,7 @@ public class StorageObj extends PCElement {
 		s = "phases=1 conn=wye";
 
 		// make sure voltage is line-neutral
-		if (nPhases > 1 || connection != 0) {
+		if (nPhases > 1 || connection != Connection.WYE) {
 			V = kVStorageBase / DSS.SQRT3;
 		} else {
 			V = kVStorageBase;
@@ -1627,7 +1597,7 @@ public class StorageObj extends PCElement {
 	public void setPctKVArOut(double value) {
 		pctKVArOut = value;
 		// force recompute of target PF and requested kVAr
-		setPresentKVAr( kWRating * Math.sqrt(1.0 / Math.pow(PFNominal, 2) - 1.0) * pctKVArOut / 100.0 );
+		setPresentKVAr(kWRating * Math.sqrt(1.0 / Math.pow(PFNominal, 2) - 1.0) * pctKVArOut / 100.0);
 	}
 
 	public void setPctKWOut(double value) {
@@ -1663,8 +1633,10 @@ public class StorageObj extends PCElement {
 
 		kVArOut = value;
 		kVArRequested = value;
+
 		/* Requested kVA output */
 		kVA_Gen = Math.sqrt(Math.pow(kWOut, 2) + Math.pow(kVArOut, 2)) ;
+
 		if (kVA_Gen > kVARating)
 			kVA_Gen = kVARating;  // limit kVA to rated value
 		if (kVA_Gen != 0.0) {
@@ -1672,37 +1644,35 @@ public class StorageObj extends PCElement {
 		} else {
 			setPowerFactor(1.0);
 		}
+
 		if ((kWOut * kVArOut) < 0.0)
 			setPowerFactor(-PFNominal);
 	}
 
 	public void setPresentKW(double value) {
-		setPctKWOut( value / kWhRating * 100.0 );
+		setPctKWOut(value / kWhRating * 100.0);
 		kWOut = value;
 		//syncUpPowerQuantities();
 	}
 
-	public void setStorageState(int value) {
+	public void setStorageState(StorageState value) {
 		if (value != state) stateChanged = true;
 		state = value;
 	}
 
-	// FIXME Private method in OpenDSS
-	public void syncUpPowerQuantities() {
+	protected void syncUpPowerQuantities() {
 		if (kVANotSet)
 			kVARating = kWRating;
 		kVArOut = 0.0;
 		// keep kVAr nominal up to date with kW and PF
 		if (PFNominal != 0.0) {
 			kVArOut = kWOut * Math.sqrt(1.0 / Math.pow(PFNominal, 2) - 1.0);
-			if (PFNominal < 0.0)
-				kVArOut = -kVArOut;
+			if (PFNominal < 0.0) kVArOut = -kVArOut;
 		}
 	}
 
 	private void setDragHandRegister(int reg, double value) {
-		if (value > registers[reg])
-			registers[reg] = value;
+		if (value > registers[reg]) registers[reg] = value;
 	}
 
 	public double getPowerFactor() {

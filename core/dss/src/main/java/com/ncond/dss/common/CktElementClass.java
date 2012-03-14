@@ -5,6 +5,14 @@ import com.ncond.dss.parser.Parser;
 
 abstract public class CktElementClass extends DSSClass {
 
+	/*
+	 * To add a property,
+	 *   1) add a property constant to this list
+	 *   2) add a handler to the case statement in the edit function
+	 *   3) add a statement(s) to initPropertyValues function to initialize the string value
+	 *   4) add any special handlers to dumpProperties and getPropertyValue, if needed
+	 */
+
 	private int numCktElemClassProps;
 
 	public CktElementClass() {

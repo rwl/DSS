@@ -363,7 +363,7 @@ public class PVSystem extends PCClass {
 					elem.setPowerFactor(parser.makeDouble());
 					break;
 				case MODEL:
-					elem.setVoltageModel(parser.makeInteger());
+					elem.setVoltageModel(PVSystemModel.values()[parser.makeInteger() - 1]);
 					break;
 				case YEARLY:
 					elem.setYearlyShape(param);
