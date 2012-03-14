@@ -18,7 +18,7 @@ import com.ncond.dss.common.DSSClass;
 import com.ncond.dss.common.SolutionObj;
 import com.ncond.dss.common.Util;
 import com.ncond.dss.common.types.Connection;
-import com.ncond.dss.common.types.LoadModel;
+import com.ncond.dss.common.types.SolutionLoadModel;
 import com.ncond.dss.common.types.Randomization;
 import com.ncond.dss.general.LoadShapeObj;
 import com.ncond.dss.general.SpectrumObj;
@@ -654,7 +654,7 @@ public class GeneratorObj extends PCElement {
 			YPrim.clear();
 		}
 
-		if (DSS.activeCircuit.getSolution().getLoadModel() == LoadModel.POWERFLOW) {
+		if (DSS.activeCircuit.getSolution().getLoadModel() == SolutionLoadModel.POWERFLOW) {
 			// start with Yeq in system matrix
 			setNominalGeneration();
 			calcYPrimMatrix(YPrimShunt);
@@ -1949,11 +1949,8 @@ public class GeneratorObj extends PCElement {
 
 	@Override
 	public String variableName(int i) {
-		final int buffSize = 255;
-
 		int n, i2;
-		//char[] Buff = new char[BuffSize];
-		int pName;
+		String[] pName;
 		String name = "";
 
 		n = 0;
@@ -1980,21 +1977,21 @@ public class GeneratorObj extends PCElement {
 			break;
 		default:
 			if (userModel.exists()) {
-				pName = 0;
+				pName = new String[1];;
 				n = userModel.numVars();
 				i2 = i - (NumGenVariables - 1);
 				if (i2 < n) {
-					userModel.getVarName(i2, pName, buffSize);
-					return String.valueOf(pName);
+					userModel.getVarName(i2, pName);
+					return pName[0];
 				}
 			}
 
 			if (shaftModel.exists()) {
-				pName = 0;
+				pName = new String[1];;
 				i2 = i - (NumGenVariables - 1) - n;
 				if (i2 >= 0)
-					userModel.getVarName(i2, pName, buffSize);
-				name = String.valueOf(pName);
+					userModel.getVarName(i2, pName);
+				name = pName[0];
 			}
 			break;
 		}

@@ -641,7 +641,7 @@ public class SolutionAlgs {
 		SolutionObj sol = ckt.getSolution();
 
 		try {
-			sol.setLoadModel(LoadModel.ADMITTANCE);   // all direct solution
+			sol.setLoadModel(SolutionLoadModel.ADMITTANCE);   // all direct solution
 			ckt.setLoadMultiplier(1.0);  // always set loadMultiplier with prop in case matrix must be rebuilt
 			sol.setIntHour(0);
 			sol.setDblHour(0.0);  // use hour to denote case number
@@ -771,7 +771,7 @@ public class SolutionAlgs {
 		DSS.forms.showPctProgress(0);
 		DSS.forms.progressCaption("Computing open-circuit voltages");
 
-		sol.setLoadModel(LoadModel.ADMITTANCE);
+		sol.setLoadModel(SolutionLoadModel.ADMITTANCE);
 		disableAllFaults();
 		sol.solveDirect();  // this gets the open circuit voltages and bus lists corrected
 

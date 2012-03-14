@@ -23,7 +23,7 @@ import com.ncond.dss.common.types.AutoAddType;
 import com.ncond.dss.common.types.Connection;
 import com.ncond.dss.common.types.ControlMode;
 import com.ncond.dss.common.types.EarthModel;
-import com.ncond.dss.common.types.LoadModel;
+import com.ncond.dss.common.types.SolutionLoadModel;
 import com.ncond.dss.common.types.Randomization;
 import com.ncond.dss.common.types.SequentialTime;
 import com.ncond.dss.common.types.SolutionMode;
@@ -365,19 +365,19 @@ public class Util {
 		}
 	}
 
-	public static LoadModel interpretLoadModel(String s) {
-		LoadModel lm;
+	public static SolutionLoadModel interpretLoadModel(String s) {
+		SolutionLoadModel lm;
 		Circuit ckt = DSS.activeCircuit;
 
 		switch (s.toLowerCase().charAt(0)) {
 		case 'a':
-			lm = LoadModel.ADMITTANCE;
+			lm = SolutionLoadModel.ADMITTANCE;
 			break;
 		case 'p':
-			lm = LoadModel.POWERFLOW;
+			lm = SolutionLoadModel.POWERFLOW;
 			break;
 		default:
-			lm = LoadModel.ADMITTANCE;
+			lm = SolutionLoadModel.ADMITTANCE;
 			break;
 		}
 

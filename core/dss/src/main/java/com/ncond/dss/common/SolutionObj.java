@@ -18,7 +18,7 @@ import com.ncond.dss.common.exceptions.SolverProblem;
 import com.ncond.dss.common.types.Algorithm;
 import com.ncond.dss.common.types.BuildOption;
 import com.ncond.dss.common.types.ControlMode;
-import com.ncond.dss.common.types.LoadModel;
+import com.ncond.dss.common.types.SolutionLoadModel;
 import com.ncond.dss.common.types.Randomization;
 import com.ncond.dss.common.types.SolutionAlgs;
 import com.ncond.dss.common.types.SolutionMode;
@@ -46,7 +46,7 @@ public class SolutionObj extends DSSObject {
 	protected double convergenceTolerance;
 	protected boolean convergedFlag;
 	protected ControlMode defaultControlMode;
-	protected LoadModel defaultLoadModel;
+	protected SolutionLoadModel defaultLoadModel;
 	protected boolean doAllHarmonics;
 	protected boolean dynamicsAllowed;
 	protected DynamicsRec dynaVars = new DynamicsRec();
@@ -70,7 +70,7 @@ public class SolutionObj extends DSSObject {
 	protected boolean isDynamicModel;
 	protected boolean isHarmonicModel;
 	protected int iteration;
-	protected LoadModel loadModel;
+	protected SolutionLoadModel loadModel;
 	protected boolean lastSolutionWasDirect;
 	protected boolean loadsNeedUpdating;
 	protected int maxControlIterations;
@@ -139,7 +139,7 @@ public class SolutionObj extends DSSObject {
 		harmonicList[4] = 13.0;
 
 		solutionInitialized = false;
-		loadModel = LoadModel.POWERFLOW;
+		loadModel = SolutionLoadModel.POWERFLOW;
 		defaultLoadModel = loadModel;
 		lastSolutionWasDirect = false;
 
@@ -810,7 +810,7 @@ public class SolutionObj extends DSSObject {
 	 * @throws SolverError
 	 */
 	public int solveCircuit() throws SolverError {
-		if (loadModel == LoadModel.ADMITTANCE) {
+		if (loadModel == SolutionLoadModel.ADMITTANCE) {
 			try {
 				solveDirect();  // no sense horsing around when it's all admittance
 			} catch (SolverProblem e) {
@@ -1185,7 +1185,7 @@ public class SolutionObj extends DSSObject {
 		case HARMONICMODE:
 			controlMode = ControlMode.CONTROLSOFF;
 			isHarmonicModel = true;
-			loadModel = LoadModel.ADMITTANCE;
+			loadModel = SolutionLoadModel.ADMITTANCE;
 			preserveNodeVoltages = true;  // need to do this in case Y changes during this mode
 			break;
 		}

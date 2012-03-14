@@ -43,31 +43,30 @@ abstract public class PCClass extends CktElementClass {
 
 	@Override
 	protected int classEdit(DSSObject activePCObj, int paramPointer) {
-		int result = 0;
 		// continue parsing with contents of parser
 		if (paramPointer >= 0) {
-			PCElement pElem = (PCElement) activePCObj;
+			PCElement elem = (PCElement) activePCObj;
 
 			switch (paramPointer) {
 			case 0:
-				pElem.setSpectrum(Parser.getInstance().makeString());
+				elem.setSpectrum(Parser.getInstance().makeString());
 				break;
 			default:
 				super.classEdit(activePCObj, paramPointer - numPCClassProps);
 				break;
 			}
 		}
-		return result;
+		return 0;
 	}
 
 	@Override
 	protected void classMakeLike(DSSObject otherObj) {
-		PCElement otherPCObj = (PCElement) otherObj;
+		PCElement other = (PCElement) otherObj;
 
-		PCElement pElem = (PCElement) DSS.activeDSSObject;
+		PCElement elem = (PCElement) DSS.activeDSSObject;
 
-		pElem.setSpectrum(otherPCObj.getSpectrum());
-		pElem.setSpectrumObj(otherPCObj.getSpectrumObj());
+		elem.setSpectrum(other.getSpectrum());
+		elem.setSpectrumObj(other.getSpectrumObj());
 
 		super.classMakeLike(otherObj);
 	}

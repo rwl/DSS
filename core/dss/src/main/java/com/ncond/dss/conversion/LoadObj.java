@@ -13,11 +13,12 @@ import com.ncond.dss.common.DSS;
 import com.ncond.dss.common.DSSClass;
 import com.ncond.dss.common.SolutionObj;
 import com.ncond.dss.common.Util;
-import com.ncond.dss.common.types.LoadModel;
+import com.ncond.dss.common.types.Connection;
+import com.ncond.dss.common.types.SolutionLoadModel;
 import com.ncond.dss.common.types.Randomization;
-import com.ncond.dss.common.types.SolutionMode;
 import com.ncond.dss.general.GrowthShapeObj;
 import com.ncond.dss.general.LoadShapeObj;
+import com.ncond.dss.general.SpectrumObj;
 import com.ncond.dss.parser.Parser;
 import com.ncond.dss.shared.CMatrix;
 import com.ncond.dss.shared.ComplexUtil;
@@ -85,7 +86,7 @@ public class LoadObj extends PCElement {
 	protected boolean shapeIsActual;
 
 	/** 0 = line-neutral; 1 = Delta */
-	protected int connection;
+	protected Connection connection;
 	/** Daily (24 HR) load shape */
 	protected String dailyShape;
 	/** Daily load shape for this load */
@@ -108,7 +109,7 @@ public class LoadObj extends PCElement {
 	protected int loadClass;
 	protected int numCustomers;
 	/** 0 = kW, PF; 1 = kw, kvar; 2 = kva, PF */
-	protected int loadSpecType;
+	protected LoadSpecType loadSpecType;
 	protected double PFNominal;
 	protected double RNeut;
 	/** These are set to > 0 if a line in the critical path */
@@ -119,94 +120,84 @@ public class LoadObj extends PCElement {
 	protected String yearlyShape;
 	/** Shape for this load */
 	protected LoadShapeObj yearlyShapeObj;
-	protected String CVRshape;
+	protected String CVRShape;
 	protected LoadShapeObj CVRShapeObj;
 
-	/**
-	 * Variation with voltage.
-	 *
-	 *   1 = Constant kVA (P,Q always in same ratio)
-	 *   2 = Constant impedance
-	 *   3 = Constant P, Quadratic Q (Mostly motor)
-	 *   4 = Linear P, Quadratic Q  (Mixed motor/resistive Use this for CVR studies
-	 *   5 = Constant |I|
-	 *   6 = Constant P (Variable); Q is fixed value (not variable)
-	 *   7 = Constant P (Variable); Q is fixed Z (not variable)
-	 *   8 = ZIPV (3 real power coefficients, 3 reactive, Vcutoff)
-	 */
-	protected int loadModel;
+	protected LoadModel loadModel;
 
 	public LoadObj(DSSClass parClass, String sourceName) {
 		super(parClass);
+
 		setName(sourceName.toLowerCase());
 		objType = parClass.getClassType();
 
 		setNumPhases(3);
-		nConds        = 4;  // defaults to wye so it has a 4th conductor
-		YOrder        = 0;  // to trigger an initial allocation
+		nConds = 4;  // defaults to wye so it has a 4th conductor
+		YOrder = 0;  // to trigger an initial allocation
 		setNumTerms(1);  // forces allocations
-		kWBase        = 10.0;
-		kVArBase      = 5.0;
-		PFNominal     = 0.88;
-		kVABase       = kWBase / PFNominal;
-		loadSpecType  = 0;
-		RNeut         = -1.0;  // signify neutral is open
-		XNeut         = 0.0;
 
-		yearlyShape    = "";
+		kWBase = 10.0;
+		kVArBase = 5.0;
+		PFNominal = 0.88;
+		kVABase = kWBase / PFNominal;
+		loadSpecType = LoadSpecType.KW_PF;
+		RNeut = -1.0;  // signify neutral is open
+		XNeut = 0.0;
+
+		yearlyShape = "";
 		yearlyShapeObj = null;  // if yearlyShapeObj = null then the load alway stays nominal * global multipliers
-		dailyShape     = "";
-		dailyShapeObj  = null;  // if dailyShapeObj = null then the load alway stays nominal * global multipliers
-		dutyShape      = "";
-		dutyShapeObj   = null;  // if dutyShapeObj = null then the load alway stays nominal * global multipliers
-		growthShape    = "";
+		dailyShape = "";
+		dailyShapeObj = null;  // if dailyShapeObj = null then the load alway stays nominal * global multipliers
+		dutyShape = "";
+		dutyShapeObj = null;  // if dutyShapeObj = null then the load alway stays nominal * global multipliers
+		growthShape = "";
 		growthShapeObj = null;  // if growthShapeObj = null then the load alway stays nominal * global multipliers
-		CVRshape       = "";
-		CVRShapeObj    = null;
-		connection     = 0;  // wye (star)
-		loadModel      = 1;  // changed from 2 (easiest to solve)
-		loadClass      = 1;
-		numCustomers   = 1;
-		lastYear       = 0;
-		CVRwattFactor  = 1.0;
-		CVRvarFactor   = 2.0;
+		CVRShape = "";
+		CVRShapeObj = null;
+		connection = Connection.WYE;
+		loadModel = LoadModel.PQ;  // changed from 2 (easiest to solve)
+		loadClass = 1;
+		numCustomers = 1;
+		lastYear = 0;
+		CVRwattFactor = 1.0;
+		CVRvarFactor = 2.0;
 
 		lastGrowthFactor = 1.0;
 		kVAAllocationFactor = 0.5;
 		allocationFactor = kVAAllocationFactor;
 		hasBeenAllocated = false;
-		PFChanged        = false;
-		shapeIsActual    = false;
+		PFChanged = false;
+		shapeIsActual = false;
 
-		loadSolutionCount     = -1;  // for keeping track of the present solution in injcurrent calcs
+		loadSolutionCount = -1;  // for keeping track of the present solution in injcurrent calcs
 		openLoadSolutionCount = -1;
-		YPrimOpenCond         = null;
+		YPrimOpenCond = null;
 
 		connectedkVA = 0.0;  // loadSpecType=3
-		kWh        = 0.0;    // loadSpecType=4
-		CFactor    = 4.0;
-		kWhDays    = 30.0;
+		kWh = 0.0;    // loadSpecType=4
+		CFactor = 4.0;
+		kWhDays = 30.0;
 		VMinNormal = 0.0;    // indicates for program to use circuit quantities
-		VMinEmerg  = 0.0;
+		VMinEmerg = 0.0;
 		kVLoadBase = 12.47;
-		VBase      = 7200.0;
-		VMinPU     = 0.95;
-		VMaxPU     = 1.05;
-		VBase95    = VMinPU * VBase;
-		VBase105   = VMaxPU * VBase;
-		YOrder     = nTerms * nConds;
+		VBase = 7200.0;
+		VMinPU = 0.95;
+		VMaxPU = 1.05;
+		VBase95 = VMinPU * VBase;
+		VBase105 = VMaxPU * VBase;
+		YOrder = nTerms * nConds;
 		randomMult = 1.0 ;
-		fixed      = false;
+		fixed = false;
 		exemptFromLDCurve = false;
 
-		puMean     = 0.5;
-		puStdDev   = 0.1;
-		UE_Factor  = 0.0;
+		puMean = 0.5;
+		puStdDev = 0.1;
+		UE_Factor = 0.0;
 		EEN_Factor = 0.0;
-		spectrum   = "defaultload";  // override base class definition
-		harmMag    = null;
-		harmAng    = null;
-		ZIPV       = null;
+		spectrum = "defaultload";  // override base class definition
+		harmMag = null;
+		harmAng = null;
+		ZIPV = null;
 		setZIPVSize(0);
 
 		initPropertyValues(0);
@@ -214,17 +205,11 @@ public class LoadObj extends PCElement {
 		recalcElementData();
 	}
 
-	// FIXME Private method in OpenDSS
-	public void setZIPVSize(int n) {
+	protected void setZIPVSize(int n) {
 		nZIPV = n;
 		ZIPV = Util.resizeArray(ZIPV, nZIPV);
 	}
 
-	/**
-	 * 0 = reset to 1.0
-	 * 1 = Gaussian around mean and std dev
-	 * 2 = uniform
-	 */
 	public void randomize(Randomization opt) {
 		switch (opt) {
 		case NONE:
@@ -252,16 +237,16 @@ public class LoadObj extends PCElement {
 
 	private void calcDailyMult(double hr) {
 		if (dailyShapeObj != null) {
-			shapeFactor   = dailyShapeObj.getMult(hr);
+			shapeFactor = dailyShapeObj.getMult(hr);
 			shapeIsActual = dailyShapeObj.isUseActual();
 		} else {
-			shapeFactor = new Complex(1.0, 1.0);  // default to no daily variation
+			shapeFactor = CDOUBLEONE;  // default to no daily variation
 		}
 	}
 
 	private void calcDutyMult(double hr) {
 		if (dutyShapeObj != null) {
-			shapeFactor   = dutyShapeObj.getMult(hr);
+			shapeFactor = dutyShapeObj.getMult(hr);
 			shapeIsActual = dutyShapeObj.isUseActual();
 		} else {
 			calcDailyMult(hr);  // default to daily mult if no duty curve specified
@@ -271,10 +256,10 @@ public class LoadObj extends PCElement {
 	private void calcYearlyMult(double hr) {
 		/* Yearly curve is assumed to be hourly only */
 		if (yearlyShapeObj != null) {
-			shapeFactor   = yearlyShapeObj.getMult(hr);
+			shapeFactor = yearlyShapeObj.getMult(hr);
 			shapeIsActual = yearlyShapeObj.isUseActual();
 		} else {
-			shapeFactor = new Complex(1.0, 1.0);  // defaults to no variation
+			shapeFactor = CDOUBLEONE;  // defaults to no variation
 		}
 	}
 
@@ -283,9 +268,9 @@ public class LoadObj extends PCElement {
 
 		/* CVR curve is assumed to be used in a yearly simulation */
 		if (CVRShapeObj != null) {
-			CVRFactor     = CVRShapeObj.getMult(hr);  /* Complex */
+			CVRFactor = CVRShapeObj.getMult(hr);  /* Complex */
 			CVRwattFactor = CVRFactor.getReal();
-			CVRvarFactor  = CVRFactor.getImaginary();
+			CVRvarFactor = CVRFactor.getImaginary();
 		} else {
 			/* CVRWattFactor, etc. remain unchanged */
 		}
@@ -307,7 +292,7 @@ public class LoadObj extends PCElement {
 	public void setKW_KVAr(double PkW, double QkVAr) {
 		kWBase = PkW;
 		kVArBase = QkVAr;
-		loadSpecType = 1;
+		loadSpecType = LoadSpecType.KW_KVAR;
 	}
 
 	public void setNominalLoad() {
@@ -324,12 +309,6 @@ public class LoadObj extends PCElement {
 		} else {
 			switch (sol.getMode()) {
 			case SNAPSHOT:
-				if (exemptFromLDCurve) {
-					factor = growthFactor(sol.getYear());
-				} else {
-					factor = ckt.getLoadMultiplier() * growthFactor(sol.getYear());
-				}
-				break;
 			case HARMONICMODE:
 				if (exemptFromLDCurve) {
 					factor = growthFactor(sol.getYear());
@@ -346,7 +325,7 @@ public class LoadObj extends PCElement {
 			case YEARLYMODE:
 				factor = ckt.getLoadMultiplier() * growthFactor(sol.getYear());
 				calcYearlyMult(sol.getDblHour());
-				if (loadModel == 4)
+				if (loadModel == LoadModel.CVR)
 					calcCVRMult(sol.getDblHour());
 				break;
 			case DUTYCYCLE:
@@ -356,25 +335,6 @@ public class LoadObj extends PCElement {
 				calcDutyMult(sol.getDblHour());
 				break;
 			case GENERALTIME:
-				factor = growthFactor(sol.getYear());
-				if (!exemptFromLDCurve)
-					factor = factor * ckt.getLoadMultiplier();
-				// this mode allows use of one class of load shape
-				switch (ckt.getActiveLoadShapeClass()) {
-				case DAILY:
-					calcDailyMult(sol.getDblHour());
-					break;
-				case YEARLY:
-					calcYearlyMult(sol.getDblHour());
-					break;
-				case DUTY:
-					calcDutyMult(sol.getDblHour());
-					break;
-				default:
-					shapeFactor = Complex.ONE;  // default to 1 + j1 if not known
-					break;
-				}
-				break;
 			case DYNAMICMODE:
 				factor = growthFactor(sol.getYear());
 				if (!exemptFromLDCurve)
@@ -391,7 +351,7 @@ public class LoadObj extends PCElement {
 					calcDutyMult(sol.getDblHour());
 					break;
 				default:
-					shapeFactor = new Complex(1, 1);  // default to 1 + j1 if not known
+					shapeFactor = Complex.ONE;  // TODO: default to 1 + j1 if not known
 					break;
 				}
 				break;
@@ -402,23 +362,8 @@ public class LoadObj extends PCElement {
 					factor = factor * ckt.getLoadMultiplier();
 				break;
 			case MONTECARLO2:
-				factor = growthFactor(sol.getYear());
-				calcDailyMult(sol.getDblHour());
-				if (!exemptFromLDCurve)
-					factor = factor * ckt.getLoadMultiplier();
-				break;
 			case MONTECARLO3:
-				factor = growthFactor(sol.getYear());
-				calcDailyMult(sol.getDblHour());
-				if (!exemptFromLDCurve)
-					factor = factor * ckt.getLoadMultiplier();
-				break;
 			case LOADDURATION1:
-				factor = growthFactor(sol.getYear());
-				calcDailyMult(sol.getDblHour());
-				if (!exemptFromLDCurve)
-					factor = factor * ckt.getLoadMultiplier();
-				break;
 			case LOADDURATION2:
 				factor = growthFactor(sol.getYear());
 				calcDailyMult(sol.getDblHour());
@@ -439,22 +384,22 @@ public class LoadObj extends PCElement {
 		}
 
 		if (shapeIsActual) {
-			WNominal   = 1000.0 * shapeFactor.getReal() / nPhases;
+			WNominal = 1000.0 * shapeFactor.getReal() / nPhases;
 			varNominal = 1000.0 * shapeFactor.getImaginary() / nPhases;
 		} else {
-			WNominal   = 1000.0 * kWBase   * factor * shapeFactor.getReal() / nPhases ;
+			WNominal = 1000.0 * kWBase * factor * shapeFactor.getReal() / nPhases ;
 			varNominal = 1000.0 * kVArBase * factor * shapeFactor.getImaginary() / nPhases;
 		}
 
 		Yeq = ComplexUtil.divide(new Complex(WNominal, -varNominal), Math.pow(VBase, 2) );
 		if (VMinPU != 0.0) {
-			Yeq95 = ComplexUtil.divide(Yeq, Math.pow(VMinPU, 2) );  // at 95% voltage
+			Yeq95 = ComplexUtil.divide(Yeq, Math.pow(VMinPU, 2));  // at 95% voltage
 		} else {
 			Yeq95 = Complex.ZERO;
 		}
 
 		if (VMaxPU != 0.0) {
-			Yeq105 = ComplexUtil.divide(Yeq, Math.pow(VMaxPU, 2) );  // at 105% voltage
+			Yeq105 = ComplexUtil.divide(Yeq, Math.pow(VMaxPU, 2));  // at 105% voltage
 		} else {
 			Yeq105 = Yeq;
 		}
@@ -462,19 +407,19 @@ public class LoadObj extends PCElement {
 
 	@Override
 	public void recalcElementData() {
-		VBase95  = VMinPU * VBase;
+		VBase95 = VMinPU * VBase;
 		VBase105 = VMaxPU * VBase;
 
 		/* Set kW and kVAr from root values of kVA and PF */
 
 		switch (loadSpecType) {
-		case 0:  /* kW, PF */
+		case KW_PF:
 			kVArBase = kWBase * Math.sqrt(1.0 / Math.pow(PFNominal, 2) - 1.0);
 			if (PFNominal < 0.0)
 				kVArBase = -kVArBase;
 			kVABase = Math.sqrt(Math.pow(kWBase, 2) + Math.pow(kVArBase, 2));
 			break;
-		case 1:  /* kW, kvar -- need to set PFNominal */
+		case KW_KVAR:  /* need to set PFNominal */
 			kVABase = Math.sqrt(Math.pow(kWBase, 2) + Math.pow(kVArBase, 2));
 			if (kVABase > 0.0) {
 				PFNominal = kWBase / kVABase;
@@ -485,21 +430,14 @@ public class LoadObj extends PCElement {
 				// leave it as it is
 			}
 			break;
-		case 2:  /* kVA, PF */
+		case KVA_PF:
 			kWBase   = kVABase * Math.abs(PFNominal);
 			kVArBase = kWBase * Math.sqrt(1.0 / Math.pow(PFNominal, 2) - 1.0);
 			if (PFNominal < 0.0)
 				kVArBase = -kVArBase;
 			break;
-		case 3:
-			if (PFChanged) {  // recompute kVAr base
-				kVArBase = kWBase * Math.sqrt(1.0 / Math.pow(PFNominal, 2) - 1.0);
-				if (PFNominal < 0.0)
-					kVArBase = -kVArBase;
-				kVABase = Math.sqrt(Math.pow(kWBase, 2) + Math.pow(kVArBase, 2));
-			}
-			break;
-		case 4:
+		case XFKVA_ALLOCATIONFACTOR_PF:
+		case KWH_KWHDAYS24_CFACTOR_PF:
 			if (PFChanged) {  // recompute kVAr base
 				kVArBase = kWBase * Math.sqrt(1.0 / Math.pow(PFNominal, 2) - 1.0);
 				if (PFNominal < 0.0)
@@ -512,32 +450,34 @@ public class LoadObj extends PCElement {
 		setNominalLoad();
 
 		/* Now check for errors. If any of these came out nil and the string was not nil, give warning. */
-		if (yearlyShape.equalsIgnoreCase("none"))
-			yearlyShape = "";
-		if (dailyShape.equalsIgnoreCase("none"))
-			dailyShape = "";
-		if (dutyShape.equalsIgnoreCase("none"))
-			dutyShape = "";
+		if (yearlyShape.equalsIgnoreCase("none")) yearlyShape = "";
+		if (dailyShape.equalsIgnoreCase("none")) dailyShape = "";
+		if (dutyShape.equalsIgnoreCase("none")) dutyShape = "";
 
-		if (yearlyShapeObj == null)
+		if (yearlyShapeObj == null) {
 			if (yearlyShape.length() > 0)
 				DSS.doSimpleMsg("Warning: Yearly load shape: \""+ yearlyShape +"\" not found.", 583);
-		if (dailyShapeObj == null)
+		}
+		if (dailyShapeObj == null) {
 			if (dailyShape.length() > 0)
 				DSS.doSimpleMsg("Warning: Daily load shape: \""+ dailyShape +"\" not found.", 584);
-		if (dutyShapeObj == null)
+		}
+		if (dutyShapeObj == null) {
 			if (dutyShape.length() > 0)
 				DSS.doSimpleMsg("Warning: Duty load shape: \""+ dutyShape +"\" not found.", 585);
-		if (growthShapeObj == null)
+		}
+		if (growthShapeObj == null) {
 			if (growthShape.length() > 0)
 				DSS.doSimpleMsg("Warning: Yearly growth shape: \""+ growthShape +"\" not found.", 586);
-		if (CVRShapeObj == null)
-			if (CVRshape.length() > 0)
-				DSS.doSimpleMsg("Warning: CVR shape shape: \""+ CVRshape +"\" not found.", 586);
+		}
+		if (CVRShapeObj == null) {
+			if (CVRShape.length() > 0)
+				DSS.doSimpleMsg("Warning: CVR shape shape: \""+ CVRShape +"\" not found.", 586);
+		}
 
-		setSpectrumObj( (com.ncond.dss.general.SpectrumObj) DSS.spectrumClass.find(getSpectrum()) );
+		setSpectrumObj((SpectrumObj) DSS.spectrumClass.find(getSpectrum()));
 		if (getSpectrumObj() == null)
-			DSS.doSimpleMsg("Error: Spectrum \""+getSpectrum()+"\" not found.", 587);
+			DSS.doSimpleMsg("Error: Spectrum \"" + getSpectrum() + "\" not found.", 587);
 
 		if (RNeut < 0.0) {  // flag for open neutral
 			Yneut = new Complex(0.0, 0.0);
@@ -550,7 +490,7 @@ public class LoadObj extends PCElement {
 		varBase = 1000.0 * kVArBase / nPhases;
 		YQFixed = -varBase / Math.pow(VBase, 2);
 
-		setInjCurrent( Util.resizeArray(getInjCurrent(), YOrder) );
+		setInjCurrent(Util.resizeArray(getInjCurrent(), YOrder));
 
 		setPFChanged(false);
 	}
@@ -567,25 +507,26 @@ public class LoadObj extends PCElement {
 		Yij = Y.negate();
 
 		switch (connection) {
-		case 0:  // wye
+		case WYE:
 			for (i = 0; i < nPhases; i++) {
 				YMatrix.set(i, i, Y);
-				YMatrix.add(nConds - 1, nConds - 1, Y);
-				YMatrix.setSym(i, nConds - 1, Yij);
+				YMatrix.add(nConds-1, nConds - 1, Y);
+				YMatrix.setSym(i, nConds-1, Yij);
 			}
-			YMatrix.add(nConds - 1, nConds - 1, Yneut);  // neutral
+			YMatrix.add(nConds-1, nConds-1, Yneut);  // neutral
 
 			/* If neutral is floating, make sure there is some small
 			 * connection to ground  by increasing the last diagonal slightly.
 			 */
-			if (RNeut < 0.0)
-				YMatrix.set(nConds - 1, nConds - 1, YMatrix.get(nConds - 1, nConds - 1).multiply(1.000001));
+			if (RNeut < 0.0) {
+				YMatrix.set(nConds-1, nConds - 1,
+					YMatrix.get(nConds-1, nConds-1).multiply(1.000001));
+			}
 			break;
-		case 1:  // delta or L-L
+		case DELTA:
 			for (i = 0; i < nPhases; i++) {
 				j = i + 1;
-				if (j >= nConds)
-					j = 0;  // wrap around for closed connections
+				if (j >= nConds) j = 0;  // wrap around for closed connections
 				YMatrix.add(i, i, Y);
 				YMatrix.add(j, j, Y);
 				YMatrix.addSym(i, j, Yij);  // get both off-diagonal elements
@@ -600,27 +541,23 @@ public class LoadObj extends PCElement {
 	 */
 	@Override
 	public void calcYPrim() {
-
 		// build only YPrim shunt for a load then copy to YPrim
 		// build a dummy Yprim series so that calcV does not fail
 		if (isYprimInvalid()) {
 			YPrimSeries = new CMatrix(YOrder);
-			YPrimShunt  = new CMatrix(YOrder);
-			YPrim       = new CMatrix(YOrder);
+			YPrimShunt = new CMatrix(YOrder);
+			YPrim = new CMatrix(YOrder);
 		} else {
 			YPrimShunt.clear();
 			YPrimSeries.clear();
 			YPrim.clear();
 		}
 
-		if (DSS.activeCircuit.getSolution().getLoadModel() == LoadModel.POWERFLOW) {
-
+		if (DSS.activeCircuit.getSolution().getLoadModel() == SolutionLoadModel.POWERFLOW) {
 			setNominalLoad();  // same as admittance model
 			calcYPrimMatrix(YPrimShunt);
-
 		} else {
 			// admittance model wanted
-
 			setNominalLoad();
 			calcYPrimMatrix(YPrimShunt);
 		}
@@ -640,38 +577,36 @@ public class LoadObj extends PCElement {
 	 */
 	private void putCurrInTerminalArray(Complex[] termArray, Complex curr, int i) {
 		switch (connection) {
-		case 0:  // wye
+		case WYE:
 			termArray[i] = termArray[i].add(curr.negate());
-			termArray[nConds - 1] = termArray[nConds - 1].add(curr);  // neutral
+			termArray[nConds-1] = termArray[nConds-1].add(curr);  // neutral
 			break;
-		case 1:  // delta
+		case DELTA:
 			termArray[i] = termArray[i].add(curr.negate());
 			int j = i + 1;
-			if (j >= nConds)
-				j = 0;  // rotate the phases
+			if (j >= nConds) j = 0;  // rotate the phases
 			termArray[j] = termArray[j].add(curr);
 			break;
 		}
 	}
 
 	public void updateVoltageBases() {
-
-		LoadObj al = Load.activeLoadObj;
+		LoadObj elem = Load.activeLoadObj;
 
 		switch (connection) {
-		case 1:
-			al.setVBase(kVLoadBase * 1000.0);
+		case DELTA:
+			elem.setVBase(kVLoadBase * 1000.0);
 			break;
 		default:  /* wye*/
 			switch (nPhases) {
 			case 2:
-				al.setVBase(kVLoadBase * DSS.InvSQRT3x1000);
+				elem.setVBase(kVLoadBase * DSS.InvSQRT3x1000);
 				break;
 			case 3:
-				al.setVBase(kVLoadBase * DSS.InvSQRT3x1000);
+				elem.setVBase(kVLoadBase * DSS.InvSQRT3x1000);
 				break;
 			default:
-				al.setVBase(kVLoadBase * 1000.0);  /* 1-phase or unknown */
+				elem.setVBase(kVLoadBase * 1000.0);  /* 1-phase or unknown */
 				break;
 			}
 			break;
@@ -682,22 +617,25 @@ public class LoadObj extends PCElement {
 		int i;
 		Complex curr;
 		Complex V;
-		double VMag;
+		double Vmag;
 
 		calcYPrimContribution(getInjCurrent());  // init injCurrent array
 		calcVTerminalPhase();  // get actual voltage across each phase of the load
 		zeroITerminal();
 
 		for (i = 0; i < nPhases; i++) {
-			V    = VTerminal[i];
-			VMag = V.abs();
+			V = VTerminal[i];
+			Vmag = V.abs();
 
-			if (VMag <= VBase95) {
+			if (Vmag <= VBase95) {
 				curr = Yeq95.multiply(V);  // below 95% use an impedance model
-			} else if (VMag > VBase105) {
+			} else if (Vmag > VBase105) {
 				curr = Yeq105.multiply(V);  // above 105% use an impedance model
 			} else {
-				curr = new Complex(WNominal, varNominal).divide(V).conjugate();  // above 95%, constant PQ
+				curr = new Complex(
+					WNominal,
+					varNominal
+				).divide(V).conjugate();  // above 95%, constant PQ
 			}
 
 			putCurrInTerminalArray(getITerminal(), curr.negate(), i);  // put into terminal array taking into account connection
@@ -716,7 +654,7 @@ public class LoadObj extends PCElement {
 
 		for (int i = 0; i < nPhases; i++) {
 			curr = Yeq.multiply(VTerminal[i]);
-			putCurrInTerminalArray(getITerminal(),  curr.negate(), i);  // put into terminal array taking into account connection
+			putCurrInTerminalArray(getITerminal(), curr.negate(), i);  // put into terminal array taking into account connection
 			setITerminalUpdated(true);
 			putCurrInTerminalArray(getInjCurrent(), curr, i);  // put into terminal array taking into account connection
 		}
@@ -728,22 +666,29 @@ public class LoadObj extends PCElement {
 	private void doMotorTypeLoad() {
 		Complex curr;
 		Complex V;
-		double VMag;
+		double Vmag;
 
 		calcYPrimContribution(getInjCurrent());  // init injCurrent array
 		calcVTerminalPhase(); // get actual voltage across each phase of the load
 		zeroITerminal();
 
 		for (int i = 0; i < nPhases; i++) {
-			V    = VTerminal[i];
-			VMag = V.abs();
-			if (VMag <= VBase95) {
+			V = VTerminal[i];
+			Vmag = V.abs();
+			if (Vmag <= VBase95) {
 				curr = Yeq95.multiply(V);  // below 95% use an impedance model
-			} else if (VMag > VBase105) {
+			} else if (Vmag > VBase105) {
 				curr = Yeq105.multiply(V);  // above 105% use an impedance model
 			} else {
-				curr = new Complex(WNominal, 0.0).divide(V).conjugate();  // above 95%, constant P
-				curr = curr.add(new Complex(0.0, Yeq.getImaginary()).multiply(V));  // add in Q component of current
+				curr = new Complex(
+					WNominal,
+					0.0
+				).divide(V).conjugate();  // above 95%, constant P
+
+				curr = curr.add(new Complex(
+					0.0,
+					Yeq.getImaginary()
+				).multiply(V));  // add in Q component of current
 			}
 			putCurrInTerminalArray(getITerminal(), curr.negate(), i);  // put into terminal array taking into account connection
 			setITerminalUpdated(true);
@@ -770,8 +715,11 @@ public class LoadObj extends PCElement {
 		zeroITerminal();
 
 		for (int i = 0; i < nPhases; i++) {
-			V    = VTerminal[i];
-			curr = new Complex(WNominal, varNominal).divide( ComplexUtil.divide(V, V.abs()).multiply(VBase) ).conjugate();
+			V = VTerminal[i];
+			curr = new Complex(
+				WNominal,
+				varNominal
+			).divide( ComplexUtil.divide(V, V.abs()).multiply(VBase) ).conjugate();
 
 			putCurrInTerminalArray(getITerminal(), curr.negate(), i);  // put into terminal array taking into account connection
 			setITerminalUpdated(true);
@@ -797,9 +745,21 @@ public class LoadObj extends PCElement {
 			} else if (VMag > VBase105) {
 				curr = Yeq105.multiply(V);
 			} else {
-				currZ = new Complex(Yeq.getReal() * ZIPV[0], Yeq.getImaginary() * ZIPV[3]).multiply( VTerminal[i] );
-				currI = new Complex(WNominal * ZIPV[1], varNominal * ZIPV[4]).divide( ComplexUtil.divide(V, V.abs()).multiply(VBase) ).conjugate();
-				currP = new Complex(WNominal * ZIPV[2], varNominal * ZIPV[5]).divide(V).conjugate();
+				currZ = new Complex(
+					Yeq.getReal() * ZIPV[0],
+					Yeq.getImaginary() * ZIPV[3]
+				).multiply(VTerminal[i]);
+
+				currI = new Complex(
+					WNominal * ZIPV[1],
+					varNominal * ZIPV[4]
+				).divide(ComplexUtil.divide(V, V.abs()).multiply(VBase)).conjugate();
+
+				currP = new Complex(
+					WNominal * ZIPV[2],
+					varNominal * ZIPV[5]
+				).divide(V).conjugate();
+
 				curr  = currZ.add(currI.add(currP));
 			}
 
@@ -826,8 +786,8 @@ public class LoadObj extends PCElement {
 		Complex CVar;  // var current
 		double wattFactor;
 		double varFactor;
-		double VMag;
-		double VRatio;
+		double Vmag;
+		double Vratio;
 
 		calcYPrimContribution(getInjCurrent());  // init injCurrent array
 		calcVTerminalPhase();  // get actual voltage across each phase of the load
@@ -836,14 +796,14 @@ public class LoadObj extends PCElement {
 		try {
 			for (int i = 0; i < nPhases; i++) {
 				V = VTerminal[i];
-				VMag = V.abs();
-				VRatio = VMag / VBase;  // VBase is l-n for wye and l-l for delta
+				Vmag = V.abs();
+				Vratio = Vmag / VBase;  // VBase is l-n for wye and l-l for delta
 				// linear factor adjustment does not converge for some reason while power adjust does easily
 				// WattFactor = (1.0 + FCVRwattFactor*(Vmag/VBase - 1.0));
 				if (CVRwattFactor != 1.0) {
-					wattFactor = Math.pow(VRatio, CVRwattFactor);
+					wattFactor = Math.pow(Vratio, CVRwattFactor);
 				} else {
-					wattFactor = VRatio;  // old value (in error): 1.0;
+					wattFactor = Vratio;  // old value (in error): 1.0;
 				}
 				if (wattFactor > 0.0) {
 					curr = new Complex(WNominal * wattFactor, 0.0).divide(V).conjugate();
@@ -855,16 +815,23 @@ public class LoadObj extends PCElement {
 				if (CVRvarFactor == 2.0) {  /* Check for easy, quick ones first */
 					CVar = new Complex(0.0, Yeq.getImaginary()).multiply(V);  // 2 is same as constant impedance
 				} else if (CVRvarFactor == 3.0) {
-					varFactor = Math.pow(VRatio, 3);
+					varFactor = Math.pow(Vratio, 3);
 					/*writeDLLDebugFile(String.format("%s, V=%.6g +j %.6g", getName(), V.getReal(), V.getImaginary()));*/
-					CVar = new Complex(0.0, varNominal * varFactor).divide(V).conjugate();
+					CVar = new Complex(
+						0.0,
+						varNominal * varFactor
+					).divide(V).conjugate();
 				} else {
 					/* Other VAr factor code here if not squared or cubed */
-					varFactor = Math.pow(VRatio, CVRvarFactor);
-					CVar = new Complex(0.0, varNominal * varFactor).divide(V).conjugate();
+					varFactor = Math.pow(Vratio, CVRvarFactor);
+					CVar = new Complex(
+						0.0,
+						varNominal * varFactor
+					).divide(V).conjugate();
 				}
 				curr = curr.add(CVar);  // add in Q component of current
-				/*writeDLLDebugFile(String.format("%s, %d, %-.5g, %-.5g, %-.5g, %-.5g, %-.5g, %-.5g, %-.5g, %-.5g ", getName(), i, Vmag, VRatio, WNominal, WattFactor, varNominal, VarFactor, Curr.abs(), V.multiply(Curr.conjugate()).getReal()));*/
+				/*writeDLLDebugFile(String.format("%s, %d, %-.5g, %-.5g, %-.5g, %-.5g, %-.5g, %-.5g, %-.5g, %-.5g ",
+				 *getName(), i, Vmag, VRatio, WNominal, WattFactor, varNominal, VarFactor, Curr.abs(), V.multiply(Curr.conjugate()).getReal()));*/
 				putCurrInTerminalArray(getITerminal(), curr.negate(), i);  // put into terminal array taking into account connection
 				setITerminalUpdated(true);
 				putCurrInTerminalArray(getInjCurrent(), curr, i);  // put into terminal array taking into account connection
@@ -879,21 +846,30 @@ public class LoadObj extends PCElement {
 	 */
 	private void doFixedQ() {
 		Complex curr, V;
-		double VMag;
+		double Vmag;
 
 		calcYPrimContribution(getInjCurrent());  // init injCurrent array
 		calcVTerminalPhase();  // get actual voltage across each phase of the load
 		zeroITerminal();
 
 		for (int i = 0; i < nPhases; i++) {
-			V    = VTerminal[i];
-			VMag = V.abs();
-			if (VMag <= VBase95) {
-				curr = new Complex(Yeq95.getReal(), YQFixed).multiply(V);  // below 95% use an impedance model
-			} else if (VMag > VBase105) {
-				curr = new Complex(Yeq105.getReal(), YQFixed).multiply(V);  // above 105% use an impedance model
+			V = VTerminal[i];
+			Vmag = V.abs();
+			if (Vmag <= VBase95) {
+				curr = new Complex(
+					Yeq95.getReal(),
+					YQFixed
+				).multiply(V);  // below 95% use an impedance model
+			} else if (Vmag > VBase105) {
+				curr = new Complex(
+					Yeq105.getReal(),
+					YQFixed
+				).multiply(V);  // above 105% use an impedance model
 			} else {
-				curr = new Complex(WNominal, varBase).divide(V).conjugate();
+				curr = new Complex(
+					WNominal,
+					varBase
+				).divide(V).conjugate();
 			}
 			putCurrInTerminalArray(getITerminal(), curr.negate(), i);  // put into terminal array taking into account connection
 			setITerminalUpdated(true);
@@ -916,12 +892,24 @@ public class LoadObj extends PCElement {
 			V = VTerminal[i];
 			VMag = V.abs();
 			if (VMag <= VBase95) {
-				curr = new Complex(Yeq95.getReal(), YQFixed).multiply(V);  // below 95% use an impedance model
+				curr = new Complex(
+					Yeq95.getReal(),
+					YQFixed
+				).multiply(V);  // below 95% use an impedance model
 			} else if (VMag >  VBase105) {
-				curr = new Complex(Yeq105.getReal(), YQFixed).multiply(V);
+				curr = new Complex(
+					Yeq105.getReal(),
+					YQFixed
+				).multiply(V);
 			} else {
-				curr = new Complex(WNominal, 0.0).divide(V).conjugate();  // P component of current
-				curr = curr.add(new Complex(0.0, YQFixed).multiply(V));   // add in Q component of current
+				curr = new Complex(
+					WNominal,
+					0.0
+				).divide(V).conjugate();  // P component of current
+				curr = curr.add(new Complex(
+					0.0,
+					YQFixed
+				).multiply(V));  // add in Q component of current
 			}
 
 			putCurrInTerminalArray(getITerminal(), curr.negate(), i);  // put into terminal array taking into account connection
@@ -938,11 +926,11 @@ public class LoadObj extends PCElement {
 		Complex curr, mult;
 		double loadHarmonic;
 
+		SolutionObj sol = DSS.activeCircuit.getSolution();
+
 		/* Don't calc VTerminal here because it could be undefined */
 		zeroInjCurrent();
 		zeroITerminal();
-
-		SolutionObj sol = DSS.activeCircuit.getSolution();
 
 		loadHarmonic = sol.getFrequency() / loadFundamental;  // loadFundamental = frequency of solution when harmonic mode entered
 		mult = getSpectrumObj().getMult(loadHarmonic);
@@ -956,10 +944,12 @@ public class LoadObj extends PCElement {
 	}
 
 	private boolean allTerminalsClosed() {
-		for (int i = 0; i < nTerms; i++)
-			for (int j = 0; j < nConds; j++)
+		for (int i = 0; i < nTerms; i++) {
+			for (int j = 0; j < nConds; j++) {
 				if (!terminals[i].getConductor(j).isClosed())
 					return false;
+			}
+		}
 		return true;
 	}
 
@@ -969,15 +959,14 @@ public class LoadObj extends PCElement {
 
 		/* Establish phase voltages and stick in VTemp */
 		switch (connection) {
-		case 0:
+		case WYE:
 			for (int i = 0; i < nPhases; i++)
-				VTerminal[i] = sol.vDiff(nodeRef[i], nodeRef[nConds]);
+				VTerminal[i] = sol.vDiff(nodeRef[i], nodeRef[nConds - 1]);
 			break;
-		case 1:
+		case DELTA:
 			for (int i = 0; i < nPhases; i++) {
 				j = i + 1;
-				if (j >= nConds)
-					j = 0;
+				if (j >= nConds) j = 0;
 				VTerminal[i] = sol.vDiff(nodeRef[i], nodeRef[j]);
 			}
 			break;
@@ -996,34 +985,34 @@ public class LoadObj extends PCElement {
 		setITerminalUpdated(false);
 
 		if (sol.isDynamicModel()) {
-			//doDynamicMode();  // TODO Implement dynamic mode
+			//doDynamicMode();  // TODO: Implement dynamic mode
 		} else if (sol.isHarmonicModel() && (sol.getFrequency() != ckt.getFundamental())) {
 			doHarmonicMode();
 		} else {
 			// compute total load currents and add into injCurrent array
 			switch (loadModel) {
-			case 1:
+			case PQ:
 				doConstantPQLoad();  // normal load-flow type load
 				break;
-			case 2:
+			case Z:
 				doConstantZLoad();
 				break;
-			case 3:
+			case MOTOR:
 				doMotorTypeLoad();  // constant P, quadratic Q;
 				break;
-			case 4:
-				doCVRModel();       // mixed motor/resistive load with CVR factors
+			case CVR:
+				doCVRModel();  // mixed motor/resistive load with CVR factors
 				break;
-			case 5:
+			case I:
 				doConstantILoad();
 				break;
-			case 6:
-				doFixedQ();         // fixed Q
+			case FIXEDQ:
+				doFixedQ();  // fixed Q
 				break;
-			case 7:
-				doFixedQZ();        // fixed, constant Z Q
+			case FIXEDQZ:
+				doFixedQZ();  // fixed, constant Z Q
 				break;
-			case 8:
+			case ZIPV:
 				doZIPVModel();
 				break;
 			default:
@@ -1041,7 +1030,6 @@ public class LoadObj extends PCElement {
 
 		// if a terminal is open, then standard load models don't apply, so check it out first
 		if (allTerminalsClosed()) {
-
 			// now get injection currents
 			calcLoadModelContribution();
 
@@ -1051,7 +1039,6 @@ public class LoadObj extends PCElement {
 
 			// some terminals not closed use admittance model for injection
 			if (openLoadSolutionCount != ckt.getSolution().getSolutionCount()) {
-
 				// rebuild the YPrimOpenCond if a new solution because values may have changed
 
 				// only reallocate when necessary
@@ -1060,33 +1047,33 @@ public class LoadObj extends PCElement {
 				} else {
 					YPrimOpenCond.clear();
 				}
+
 				if (YPrimOpenCond.order() != YOrder) {
 					YPrimOpenCond = null;
 					YPrimOpenCond = new CMatrix(YOrder);
 				}
+
 				calcYPrimMatrix(YPrimOpenCond);
 
 				/* Now account for the open conductors */
 				/* For any conductor that is open, zero out row and column */
-
 				int k = 0;
 				for (int i = 0; i < nTerms; i++) {
 					for (int j = 0; j < nConds; j++) {
 						if (!terminals[i].getConductor(j).isClosed()) {
 							YPrimOpenCond.zeroRow(j + k);
 							YPrimOpenCond.zeroCol(j + k);
-							YPrimOpenCond.set(j + k, j + k, new Complex(1.0e-12, 0.0));  // in case node gets isolated
+							YPrimOpenCond.set(j + k, j + k,
+								new Complex(1.0e-12, 0.0));  // in case node gets isolated
 						}
 					}
 					k = k + nConds;
 				}
-
 				openLoadSolutionCount = ckt.getSolution().getSolutionCount();
-
 			}
-
 			computeVTerminal();
 			YPrimOpenCond.vMult(complexBuffer, VTerminal);
+
 			for (int i = 0; i < YOrder; i++)
 				complexBuffer[i] = complexBuffer[i].negate();
 		}
@@ -1096,13 +1083,13 @@ public class LoadObj extends PCElement {
 	 * Always return total terminal currents in the curr array
 	 */
 	@Override
-	protected void getTerminalCurrents(Complex[] Curr) {
+	protected void getTerminalCurrents(Complex[] curr) {
 		SolutionObj sol = DSS.activeCircuit.getSolution();
 
 		if (ITerminalSolutionCount != sol.getSolutionCount())  // recalc the contribution
 			calcLoadModelContribution();  // adds totals in ITerminal as a side effect
 
-		super.getTerminalCurrents(Curr);
+		super.getTerminalCurrents(curr);
 	}
 
 	/**
@@ -1112,15 +1099,15 @@ public class LoadObj extends PCElement {
 	public int injCurrents() {
 		SolutionObj sol = DSS.activeCircuit.getSolution();
 
-		int result = 0;
+		int curr = 0;
 		if (isEnabled()) {
 			if (sol.loadsNeedUpdating())
 				setNominalLoad();  // set the nominal kW, etc. for the type of solution being done
 			calcInjCurrentArray();
-			result = super.injCurrents();  // add into global currents array
+			curr = super.injCurrents();  // add into global currents array
 		}
 
-		return result;
+		return curr;
 	}
 
 	/**
@@ -1133,11 +1120,13 @@ public class LoadObj extends PCElement {
 			if (isEnabled()) {
 				calcInjCurrentArray();
 				// copy into buffer array
-				for (int i = 0; i < YOrder; i++)
+				for (int i = 0; i < YOrder; i++) {
 					curr[i] = getInjCurrent(i);
+				}
 			} else {
-				for (int i = 0; i < curr.length; i++)
+				for (int i = 0; i < curr.length; i++) {
 					curr[i] = Complex.ZERO;
+				}
 			}
 		} catch (Exception e) {
 			DSS.doErrorMsg("Load object: \"" + getName() + "\" in getInjCurrents function.",
@@ -1151,13 +1140,12 @@ public class LoadObj extends PCElement {
 	 * If voltage is below emergency minimum, it is counted as unserved.
 	 */
 	public boolean getUnserved() {
-		double Vpu, VMag;
+		double Vpu, Vmag;
 		double normMinCriteria, emergMinCriteria;
 
 		Circuit ckt = DSS.activeCircuit;
 
-		if (UE_Factor > 0.0)
-			return true;
+		if (UE_Factor > 0.0) return true;
 
 		// else check voltages
 		if (loadSolutionCount != ckt.getSolution().getSolutionCount())
@@ -1166,9 +1154,8 @@ public class LoadObj extends PCElement {
 		// get the lowest of the phase voltages
 		Vpu = VBase;
 		for (int i = 0; i < nPhases; i++) {
-			VMag = VTerminal[i].abs();
-			if (VMag < Vpu)
-				Vpu = VMag;
+			Vmag = VTerminal[i].abs();
+			if (Vmag < Vpu) Vpu = Vmag;
 		}
 		Vpu = Vpu / VBase;
 
@@ -1186,8 +1173,7 @@ public class LoadObj extends PCElement {
 
 		if (Vpu < emergMinCriteria) {
 			//UE_Factor = 1.0;
-			// 9-19-00 RCD  let UE_Factor start small and grow linearly at same slope
-			// as EEN_Factor
+			// let UE_Factor start small and grow linearly at same slope as EEN_Factor
 			UE_Factor = (emergMinCriteria - Vpu) / (normMinCriteria - emergMinCriteria);
 			return true;
 		}
@@ -1202,13 +1188,12 @@ public class LoadObj extends PCElement {
 	 * to the difference between the normal and emergency voltage limits.
 	 */
 	public boolean getExceedsNormal() {
-		double Vpu, VMag;
+		double Vpu, Vmag;
 		double normMinCriteria, emergMinCriteria;
 
 		Circuit ckt = DSS.activeCircuit;
 
-		if (EEN_Factor > 0.0)
-			return true;
+		if (EEN_Factor > 0.0) return true;
 
 		// check line overload
 
@@ -1218,9 +1203,8 @@ public class LoadObj extends PCElement {
 		// get the lowest of the phase voltages
 		Vpu = VBase;
 		for (int i = 0; i < nPhases; i++) {
-			VMag = VTerminal[i].abs();
-			if (VMag < Vpu)
-				Vpu = VMag;
+			Vmag = VTerminal[i].abs();
+			if (Vmag < Vpu) Vpu = Vmag;
 		}
 		Vpu = Vpu / VBase;
 
@@ -1238,8 +1222,8 @@ public class LoadObj extends PCElement {
 
 		if (Vpu < normMinCriteria) {
 			EEN_Factor = (normMinCriteria - Vpu) / (normMinCriteria - emergMinCriteria);
-			// 9-19-00 RCD  Let EEN factor grow linearly at same slope
-			// IF EEN_Factor > 1.0 THEN EEN_Factor = 1.0;
+			// let EEN factor grow linearly at same slope
+			// if EEN_Factor > 1.0 then EEN_Factor = 1.0;
 			return true;
 		}
 
@@ -1290,7 +1274,7 @@ public class LoadObj extends PCElement {
 	public void setKVAAllocationFactor(double value) {
 		setKVAAllocationFactor(value);
 		allocationFactor = value;
-		loadSpecType = 3;
+		loadSpecType = LoadSpecType.XFKVA_ALLOCATIONFACTOR_PF;
 		computeAllocatedLoad();
 		hasBeenAllocated = true;
 	}
@@ -1303,10 +1287,10 @@ public class LoadObj extends PCElement {
 	public void setAllocationFactor(double value) {
 		allocationFactor = value;
 		switch (loadSpecType) {
-		case 3:
+		case XFKVA_ALLOCATIONFACTOR_PF:
 			setKVAAllocationFactor(value);
 			break;
-		case 4:
+		case KWH_KWHDAYS24_CFACTOR_PF:
 			setCFactor(value);
 			break;
 		}
@@ -1317,28 +1301,28 @@ public class LoadObj extends PCElement {
 	public void setCFactor(double value) {
 		CFactor = value;
 		allocationFactor = value;
-		loadSpecType = 4;
+		loadSpecType = LoadSpecType.KWH_KWHDAYS24_CFACTOR_PF;
 		computeAllocatedLoad();
 		hasBeenAllocated = true;
 	}
 
 	public void setConnectedKVA(double value) {
 		connectedkVA = value;
-		loadSpecType = 3;
+		loadSpecType = LoadSpecType.XFKVA_ALLOCATIONFACTOR_PF;
 		allocationFactor = kVAAllocationFactor;
 		computeAllocatedLoad();
 	}
 
 	public void setKWh(double value) {
 		kWh = value;
-		loadSpecType = 4;
+		loadSpecType = LoadSpecType.KWH_KWHDAYS24_CFACTOR_PF;
 		allocationFactor = CFactor;
 		computeAllocatedLoad();
 	}
 
 	public void setKWhDays(double value) {
 		kWhDays = value;
-		loadSpecType = 4;
+		loadSpecType = LoadSpecType.KWH_KWHDAYS24_CFACTOR_PF;
 		computeAllocatedLoad();
 	}
 
@@ -1347,20 +1331,18 @@ public class LoadObj extends PCElement {
 	 */
 	private void computeAllocatedLoad() {
 		switch (loadSpecType) {
-		case 3:
+		case XFKVA_ALLOCATIONFACTOR_PF:
 			if (connectedkVA > 0.0) {
 				kWBase = connectedkVA * kVAAllocationFactor * Math.abs(PFNominal);
 				kVArBase = kWBase * Math.sqrt(1.0 / Math.pow(PFNominal, 2) - 1.0);
-				if (PFNominal < 0.0)
-					kVArBase = -kVArBase;
+				if (PFNominal < 0.0) kVArBase = -kVArBase;
 			}
 			break;
-		case 4:
+		case KWH_KWHDAYS24_CFACTOR_PF:
 			avgKW = kWh / (kWhDays * 24);
 			kWBase = avgKW * CFactor;
 			kVArBase = kWBase * Math.sqrt(1.0 / Math.pow(PFNominal, 2) - 1.0);
-			if (PFNominal < 0.0)
-				kVArBase = -kVArBase;
+			if (PFNominal < 0.0) kVArBase = -kVArBase;
 			break;
 		}
 	}
@@ -1380,6 +1362,7 @@ public class LoadObj extends PCElement {
 		loadFundamental = DSS.activeCircuit.getSolution().getFrequency();
 
 		getCurrents(currents);
+
 		/* Store the currents at fundamental frequency.
 		 * The spectrum is applied to these.
 		 */
@@ -1387,14 +1370,11 @@ public class LoadObj extends PCElement {
 			harmMag[i] = currents[i].abs();
 			harmAng[i] = ComplexUtil.degArg(currents[i]);
 		}
-
-		currents = null;
 	}
 
 	@Override
 	public void initPropertyValues(int arrayOffset) {
-
-		setPropertyValue(0, "3");        // "phases";
+		setPropertyValue(0, "3");  // "phases";
 		setPropertyValue(1, getBus(0));  // "bus1";
 		setPropertyValue(2, "12.47");
 		setPropertyValue(3, "10");
@@ -1441,7 +1421,7 @@ public class LoadObj extends PCElement {
 		String s = "phases=1 conn=wye";
 
 		// make sure voltage is line-neutral
-		if (nPhases > 1 || connection != 0) {
+		if (nPhases > 1 || connection != Connection.WYE) {
 			V = kVLoadBase / DSS.SQRT3;
 		} else {
 			V = kVLoadBase;
@@ -1452,8 +1432,9 @@ public class LoadObj extends PCElement {
 		// divide the load by no. phases
 		if (nPhases > 1) {
 			s = s + String.format(" kW=%-.5g  kvar=%-.5g", kWBase / nPhases, kVArBase / nPhases);
-			if (connectedkVA > 0.0)
+			if (connectedkVA > 0.0) {
 				s = s + String.format(" xfkVA=%-.5g  ", connectedkVA / nPhases);
+			}
 		}
 
 		Parser.getInstance().setCmdString(s);

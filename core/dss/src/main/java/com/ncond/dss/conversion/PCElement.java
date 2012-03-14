@@ -7,7 +7,6 @@ import lombok.Setter;
 
 import org.apache.commons.math.complex.Complex;
 
-import com.ncond.dss.common.Circuit;
 import com.ncond.dss.common.CktElement;
 import com.ncond.dss.common.DSS;
 import com.ncond.dss.common.DSSClass;
@@ -34,9 +33,9 @@ public abstract class PCElement extends CktElement {
 		super(ParClass);
 		spectrum = "default";
 		spectrumObj = null;  // have to allocate later because not guaranteed there will be one now
-		sensorObj   = null;
-		meterObj    = null;
-		injCurrent  = null;
+		sensorObj = null;
+		meterObj = null;
+		injCurrent = null;
 		ITerminalUpdated = false;
 
 		objType = DSSClassDefs.PC_ELEMENT;
@@ -49,19 +48,14 @@ public abstract class PCElement extends CktElement {
 	public int injCurrents() {
 		SolutionObj sol = DSS.activeCircuit.getSolution();
 
-		for (int i = 0; i < YOrder; i++)
-			sol.setCurrent(nodeRef[i], sol.getCurrent(nodeRef[i]).add( injCurrent[i] ));
+		for (int i = 0; i < YOrder; i++) {
+			sol.setCurrent(
+				nodeRef[i],
+				sol.getCurrent(nodeRef[i]).add(injCurrent[i])
+			);
+		}
 
 		return 0;
-	}
-
-	/**
-	 * Get present values of terminal.
-	 */
-	@Override
-	public void getInjCurrents(Complex[] curr) {
-		DSS.doErrorMsg("PCElement.InjCurrents", ("Improper call to getInjCurrents for element: " + getName() + "."),
-			"Called PCElement class virtual function instead of actual.", 640);
 	}
 
 	/**
@@ -70,16 +64,20 @@ public abstract class PCElement extends CktElement {
 	 * Such as for harmonic model.
 	 */
 	protected void getTerminalCurrents(Complex[] curr) {
+		int i;
+
 		if (isITerminalUpdated()) {  // just copy ITerminal unless ITerminal=curr
-			if (curr != getITerminal())
-				for (int i = 0; i < YOrder; i++)
+			if (curr != getITerminal()) {
+				for (i = 0; i < YOrder; i++)
 					curr[i] = getITerminal(i);
+			}
 		} else {
 			YPrim.vMult(curr, getVTerminal());
-			for (int i = 0; i < YOrder; i++)
+			for (i = 0; i < YOrder; i++)
 				curr[i] = curr[i].add( getInjCurrent(i).negate() );
 			setITerminalUpdated(true);
 		}
+
 		ITerminalSolutionCount = DSS.activeCircuit.getSolution().getSolutionCount();
 	}
 
@@ -90,23 +88,19 @@ public abstract class PCElement extends CktElement {
 	 */
 	@Override
 	public void getCurrents(Complex[] curr) {
+		SolutionObj sol = DSS.activeCircuit.getSolution();
+
 		try {
-			SolutionObj sol = DSS.activeCircuit.getSolution();
-
 			if (isEnabled()) {
-
-				if ( sol.lastSolutionWasDirect() && (! (sol.isDynamicModel() || sol.isHarmonicModel()) ) ) {
+				if (sol.lastSolutionWasDirect() &&
+					(! (sol.isDynamicModel() || sol.isHarmonicModel()) )) {
 
 					// take a short cut and get currents from YPrim only
 					// for case where model is entirely in Y matrix
-
 					calcYPrimContribution(curr);
-
 				} else {
-
 					getTerminalCurrents(curr);
 				}
-
 			} else {  // not enabled
 				for (int i = 0; i < YOrder; i++)
 					curr[i] = Complex.ZERO;
@@ -149,7 +143,7 @@ public abstract class PCElement extends CktElement {
 	}
 
 	public void getAllVariables(double[] states) {
-		/* Do nothing */
+		// by default do nothing
 	}
 
 	public int numVariables() {
@@ -157,8 +151,7 @@ public abstract class PCElement extends CktElement {
 	}
 
 	public String variableName(int i) {
-		/* Do nothing */
-		return "";
+		return "";  // do nothing
 	}
 
 	/**
@@ -166,24 +159,26 @@ public abstract class PCElement extends CktElement {
 	 * Compare up to length of S.
 	 */
 	public int lookupVariable(String s) {
-		int result = -1;   // returns -1 for error not found
+		int idx = -1;  // returns -1 for error not found
 		int testLength = s.length();
 		for (int i = 0; i < numVariables(); i++) {
 			if (variableName(i).substring(0, testLength).equalsIgnoreCase(s)) {
-				result = i;
+				idx = i;
 				break;
 			}
 		}
-		return result;
+		return idx;
 	}
 
 	public void dumpProperties(PrintStream f, boolean complete) {
 		super.dumpProperties(f, complete);
 
 		if (complete) {
-			f.println("! VARIABLES");
-			for (int i = 0; i < numVariables(); i++)
-				f.println("! " + i + ": " + variableName(i) + " = " + String.format("%-.5g", getVariable(i)));
+			f.println("! Variables");
+			for (int i = 0; i < numVariables(); i++) {
+				f.println("! " + i + ": " + variableName(i) + " = " +
+						String.format("%-.5g", getVariable(i)));
+			}
 		}
 	}
 
@@ -198,11 +193,11 @@ public abstract class PCElement extends CktElement {
 
 	@Override
 	public void computeITerminal() {
-		Circuit ckt = DSS.activeCircuit;
+		SolutionObj sol = DSS.activeCircuit.getSolution();
 
-		if (ITerminalSolutionCount != ckt.getSolution().getSolutionCount()) {
+		if (ITerminalSolutionCount != sol.getSolutionCount()) {
 			getCurrents(ITerminal);
-			ITerminalSolutionCount = ckt.getSolution().getSolutionCount();
+			ITerminalSolutionCount = sol.getSolutionCount();
 		}
 	}
 

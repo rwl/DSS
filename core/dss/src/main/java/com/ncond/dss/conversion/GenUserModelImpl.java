@@ -6,6 +6,7 @@ import com.ncond.dss.common.DSSCallBacks;
 import com.ncond.dss.shared.DynamicsRec;
 import com.ncond.dss.shared.GeneratorVars;
 
+@SuppressWarnings("unused")
 public class GenUserModelImpl implements GenUserModel {
 
 	private int handle;  // handle to DLL containing user model
@@ -131,7 +132,7 @@ public class GenUserModelImpl implements GenUserModel {
 
 	}
 
-	public void getVarName(int varNum, int varName, int maxlen) {
+	public void getVarName(int varNum, String[] varName) {
 
 	}
 

@@ -2,6 +2,7 @@ package com.ncond.dss.conversion;
 
 import com.ncond.dss.common.DSS;
 import com.ncond.dss.common.DSSClassDefs;
+import com.ncond.dss.common.types.Connection;
 import com.ncond.dss.common.types.Randomization;
 import com.ncond.dss.general.GrowthShapeObj;
 import com.ncond.dss.general.LoadShapeObj;
@@ -34,9 +35,9 @@ public class Load extends PCClass {
 	 */
 	@Override
 	protected void defineProperties() {
-
 		numProperties = NumPropsThisClass;
 		countProperties();  // get inherited property count
+
 		allocatePropertyArrays();
 
 		// define property names
@@ -184,7 +185,6 @@ public class Load extends PCClass {
 				" Last 1 is cut-off voltage in p.u. of base kV; load is 0 below this cut-off" + DSS.CRLF +
 				" No defaults; all coefficients must be specified if using model=8.";
 
-
 		activeProperty = NumPropsThisClass - 1;
 		super.defineProperties();  // add defs of inherited properties to bottom of list
 
@@ -193,28 +193,27 @@ public class Load extends PCClass {
 
 	@Override
 	public int newObject(String objName) {
-
 		DSS.activeCircuit.setActiveCktElement(new LoadObj(this, objName));
 		return addObjectToList(DSS.activeDSSObject);
 	}
 
 	private void setNcondsForConnection() {
-		LoadObj al = activeLoadObj;
+		LoadObj elem = activeLoadObj;
 
-		switch (al.getConnection()) {
-		case 0:
-			al.setNumConds(al.getNumPhases() + 1);
+		switch (elem.getConnection()) {
+		case WYE:
+			elem.setNumConds(elem.getNumPhases() + 1);
 			break;
-		case 1:
-			switch (al.getNumPhases()) {
+		case DELTA:
+			switch (elem.getNumPhases()) {
 			case 1:
-				al.setNumConds(al.getNumPhases() + 1);  // L-L
+				elem.setNumConds(elem.getNumPhases() + 1);  // L-L
 				break;
 			case 2:
-				al.setNumConds(al.getNumPhases() + 1);  // open-delta
+				elem.setNumConds(elem.getNumPhases() + 1);  // open-delta
 				break;
 			default:
-				al.setNumConds(al.getNumPhases());
+				elem.setNumConds(elem.getNumPhases());
 				break;
 			}
 			break;
@@ -232,21 +231,21 @@ public class Load extends PCClass {
 		String testS = s.toLowerCase();
 		switch (testS.charAt(0)) {
 		case 'y':
-			al.setConnection(0);  /* Wye */
+			al.setConnection(Connection.WYE);
 			break;
 		case 'w':
-			al.setConnection(0);  /* Wye */
+			al.setConnection(Connection.WYE);
 			break;
 		case 'd':
-			al.setConnection(1);  /* Delta or Line-Line */
+			al.setConnection(Connection.DELTA);
 			break;
 		case 'l':
 			switch (testS.charAt(1)) {
 			case 'n':
-				al.setConnection(0);
+				al.setConnection(Connection.WYE);
 				break;
 			case 'l':
-				al.setConnection(1);
+				al.setConnection(Connection.DELTA);
 				break;
 			}
 			break;
@@ -255,7 +254,7 @@ public class Load extends PCClass {
 		setNcondsForConnection();
 
 		switch (al.getConnection()) {
-		case 1:
+		case DELTA:
 			al.setVBase(al.getKVLoadBase() * 1000.0);
 		default:
 			switch (al.getNumPhases()) {
@@ -286,13 +285,12 @@ public class Load extends PCClass {
 		activeLoadObj = (LoadObj) elementList.getActive();
 		DSS.activeCircuit.setActiveCktElement(activeLoadObj);
 
-		int result = 0;
-
-		LoadObj al = activeLoadObj;
+		LoadObj elem = activeLoadObj;
 
 		int paramPointer = -1;
 		String paramName = parser.getNextParam();
 		String param = parser.makeString();
+
 		while (param.length() > 0) {
 			if (paramName.length() == 0) {
 				paramPointer += 1;
@@ -301,123 +299,124 @@ public class Load extends PCClass {
 			}
 
 			if (paramPointer >= 0 && paramPointer < numProperties)
-				al.setPropertyValue(paramPointer, param);
+				elem.setPropertyValue(paramPointer, param);
 
 			switch (paramPointer) {
 			case -1:
-				DSS.doSimpleMsg("Unknown parameter \"" + paramName + "\" for object \"" + getClassName() +"."+ al.getName() + "\"", 580);
+				DSS.doSimpleMsg("Unknown parameter \"" + paramName + "\" for object \"" +
+						getClassName() +"."+ elem.getName() + "\"", 580);
 				break;
 			case 0:
-				al.setNumPhases(parser.makeInteger()); // num phases
+				elem.setNumPhases(parser.makeInteger()); // num phases
 				break;
 			case 1:
-				al.setBus(1, param);  // TODO: Check zero based indexing
+				elem.setBus(0, param);
 				break;
 			case 2:
-				al.setKVLoadBase(parser.makeDouble());
+				elem.setKVLoadBase(parser.makeDouble());
 				break;
 			case 3:
-				al.setKWBase(parser.makeDouble());
+				elem.setKWBase(parser.makeDouble());
 				break;
 			case 4:
-				al.setPFNominal(parser.makeDouble());
+				elem.setPFNominal(parser.makeDouble());
 				break;
 			case 5:
-				al.setLoadModel(parser.makeInteger());
+				elem.setLoadModel(LoadModel.values()[parser.makeInteger() - 1]);
 				break;
 			case 6:
-				al.setYearlyShape(param);
+				elem.setYearlyShape(param);
 				break;
 			case 7:
-				al.setDailyShape(param);
+				elem.setDailyShape(param);
 				break;
 			case 8:
-				al.setDutyShape(param);
+				elem.setDutyShape(param);
 				break;
 			case 9:
-				al.setGrowthShape(param);
+				elem.setGrowthShape(param);
 				break;
 			case 10:
 				interpretConnection(param);
 				break;
 			case 11:
-				al.setKVArBase(parser.makeDouble());
+				elem.setKVArBase(parser.makeDouble());
 				break;
 			case 12:
-				al.setRNeut(parser.makeDouble());
+				elem.setRNeut(parser.makeDouble());
 				break;
 			case 13:
-				al.setXNeut(parser.makeDouble());
+				elem.setXNeut(parser.makeDouble());
 				break;
 			case 14:
 				switch (param.toLowerCase().charAt(0)) {
 				case 'f':
-					al.setFixed(true);
-					al.setExemptFromLDCurve(false);
+					elem.setFixed(true);
+					elem.setExemptFromLDCurve(false);
 					break;
 				case 'e':
-					al.setFixed(false);
-					al.setExemptFromLDCurve(true);
+					elem.setFixed(false);
+					elem.setExemptFromLDCurve(true);
 					break;
 				default:
-					al.setFixed(false);
-					al.setExemptFromLDCurve(false);
+					elem.setFixed(false);
+					elem.setExemptFromLDCurve(false);
 					break;
 				}
 			case 15:
-				al.setLoadClass(parser.makeInteger());
+				elem.setLoadClass(parser.makeInteger());
 				break;
 			case 16:
-				al.setVMinPU(parser.makeDouble());
+				elem.setVMinPU(parser.makeDouble());
 				break;
 			case 17:
-				al.setVMaxPU(parser.makeDouble());
+				elem.setVMaxPU(parser.makeDouble());
 				break;
 			case 18:
-				al.setVMinNormal(parser.makeDouble());
+				elem.setVMinNormal(parser.makeDouble());
 				break;
 			case 19:
-				al.setVMinEmerg(parser.makeDouble());
+				elem.setVMinEmerg(parser.makeDouble());
 				break;
 			case 20:
-				al.setConnectedKVA(parser.makeDouble());
+				elem.setConnectedKVA(parser.makeDouble());
 				break;
 			case 21:
-				al.setKVAAllocationFactor(parser.makeDouble());
+				elem.setKVAAllocationFactor(parser.makeDouble());
 				break;
 			case 22:
-				al.setKVABase(parser.makeDouble());
+				elem.setKVABase(parser.makeDouble());
 				break;
 			case 23:
-				al.setPuMean(parser.makeDouble() / 100.0);
+				elem.setPuMean(parser.makeDouble() / 100.0);
 				break;
 			case 24:
-				al.setPuStdDev(parser.makeDouble() / 100.0);
+				elem.setPuStdDev(parser.makeDouble() / 100.0);
 				break;
 			case 25:
-				al.setCVRwattFactor(parser.makeDouble());
+				elem.setCVRwattFactor(parser.makeDouble());
 				break;
 			case 26:
-				al.setCVRvarFactor(parser.makeDouble());
+				elem.setCVRvarFactor(parser.makeDouble());
 				break;
 			case 27:
-				al.setKWh(parser.makeDouble());
+				elem.setKWh(parser.makeDouble());
 				break;
 			case 28:
-				al.setKWhDays(parser.makeDouble());
+				elem.setKWhDays(parser.makeDouble());
 				break;
 			case 29:
-				al.setCFactor(parser.makeDouble());
+				elem.setCFactor(parser.makeDouble());
 				break;
 			case 30:
-				al.setCVRshape(param);
+				elem.setCVRShape(param);
 				break;
 			case 31:
-				al.setNumCustomers(parser.makeInteger());
+				elem.setNumCustomers(parser.makeInteger());
 				break;
 			case 32:
-				al.setZIPVSize(7);
-				parser.parseAsVector(7, al.getZIPV());
+				elem.setZIPVSize(7);
+				parser.parseAsVector(7, elem.getZIPV());
 				break;
 			default:
 				// Inherited edits
@@ -430,53 +429,53 @@ public class Load extends PCClass {
 			switch (paramPointer) {
 			case 0:
 				setNcondsForConnection();  // force reallocation of terminal info
-				al.updateVoltageBases();
+				elem.updateVoltageBases();
 				break;
 			case 2:
-				al.updateVoltageBases();
+				elem.updateVoltageBases();
 				break;
 			case 3:
-				al.setLoadSpecType(0);
+				elem.setLoadSpecType(LoadSpecType.KW_PF);
 				break;
 			case 4:
-				al.setPFChanged(true);
+				elem.setPFChanged(true);
 				break;
 			case 6:
 				/* Set shape objects; returns nil if not valid */
 				/* Sets the kW and kvar properties to match the peak kW demand from the LoadShape */
-				al.setYearlyShapeObj((LoadShapeObj) DSS.loadShapeClass.find(al.getYearlyShape()));
-				if (al.getYearlyShapeObj() != null)
-					if (al.getYearlyShapeObj().isUseActual())
-						al.setKW_KVAr(al.getYearlyShapeObj().getMaxP(), al.getYearlyShapeObj().getMaxQ());
+				elem.setYearlyShapeObj((LoadShapeObj) DSS.loadShapeClass.find(elem.getYearlyShape()));
+				if (elem.getYearlyShapeObj() != null)
+					if (elem.getYearlyShapeObj().isUseActual())
+						elem.setKW_KVAr(elem.getYearlyShapeObj().getMaxP(), elem.getYearlyShapeObj().getMaxQ());
 				break;
 			case 7:
-				al.setDailyShapeObj((LoadShapeObj) DSS.loadShapeClass.find(al.getDailyShape()));
-				if (al.getDailyShapeObj() != null)
-					if (al.getDailyShapeObj().isUseActual())
-						al.setKW_KVAr(al.getDailyShapeObj().getMaxP(), al.getDailyShapeObj().getMaxQ());
+				elem.setDailyShapeObj((LoadShapeObj) DSS.loadShapeClass.find(elem.getDailyShape()));
+				if (elem.getDailyShapeObj() != null)
+					if (elem.getDailyShapeObj().isUseActual())
+						elem.setKW_KVAr(elem.getDailyShapeObj().getMaxP(), elem.getDailyShapeObj().getMaxQ());
 				/* If yearly load shape is not yet defined, make it the same as daily */
-				if (al.getYearlyShapeObj() == null)
-					al.setYearlyShapeObj(al.getDailyShapeObj());
+				if (elem.getYearlyShapeObj() == null)
+					elem.setYearlyShapeObj(elem.getDailyShapeObj());
 				break;
 			case 8:
-				al.setDutyShapeObj((LoadShapeObj) DSS.loadShapeClass.find(al.getDutyShape()));
-				if (al.getDutyShapeObj() != null)
-					if (al.getDutyShapeObj().isUseActual())
-						al.setKW_KVAr(al.getDutyShapeObj().getMaxP(), al.getDutyShapeObj().getMaxQ());
+				elem.setDutyShapeObj((LoadShapeObj) DSS.loadShapeClass.find(elem.getDutyShape()));
+				if (elem.getDutyShapeObj() != null)
+					if (elem.getDutyShapeObj().isUseActual())
+						elem.setKW_KVAr(elem.getDutyShapeObj().getMaxP(), elem.getDutyShapeObj().getMaxQ());
 				break;
 			case 9:
-				al.setGrowthShapeObj((GrowthShapeObj) DSS.growthShapeClass.find(al.getGrowthShape()));
+				elem.setGrowthShapeObj((GrowthShapeObj) DSS.growthShapeClass.find(elem.getGrowthShape()));
 				break;
 			case 11:
-				al.setLoadSpecType(1);  // kW, kvar
+				elem.setLoadSpecType(LoadSpecType.KW_KVAR);
 				break;
 			/*** see set_xfkva, etc           21, 22: LoadSpectype = 3;  // XFKVA*AllocationFactor, PF  */
 			case 22:
-				al.setLoadSpecType(2);  // kVA, PF
+				elem.setLoadSpecType(LoadSpecType.KVA_PF);
 				break;
 			/*** see set_kwh, etc           28..30: LoadSpecType = 4;  // kWh, days, cfactor, PF */
 			case 30:
-				al.setCVRShapeObj((LoadShapeObj) DSS.loadShapeClass.find(al.getCVRshape()));
+				elem.setCVRShapeObj((LoadShapeObj) DSS.loadShapeClass.find(elem.getCVRShape()));
 				break;
 			}
 
@@ -484,97 +483,97 @@ public class Load extends PCClass {
 			param = parser.makeString();
 		}
 
-		al.recalcElementData();
-		al.setYPrimInvalid(true);
+		elem.recalcElementData();
+		elem.setYPrimInvalid(true);
 
-		return result;
+		return 0;
 	}
 
 	@Override
 	protected int makeLike(String otherLoadName) {
-		int result = 0;
+		int success = 0;
 
 		/* See if we can find this line name in the present collection */
-		LoadObj otherLoad = (LoadObj) find(otherLoadName);
-		if (otherLoad != null) {
-			LoadObj al = activeLoadObj;
+		LoadObj other = (LoadObj) find(otherLoadName);
 
-			if (al.getNumPhases() != otherLoad.getNumPhases()) {
-				al.setNumPhases(otherLoad.getNumPhases());
-				al.setNumConds(al.getNumPhases());  // forces reallocation of terminal stuff
-				al.setYOrder(al.getNumConds() * al.getNumTerms());
-				al.setYPrimInvalid(true);
+		if (other != null) {
+			LoadObj elem = activeLoadObj;
+
+			if (elem.getNumPhases() != other.getNumPhases()) {
+				elem.setNumPhases(other.getNumPhases());
+				elem.setNumConds(elem.getNumPhases());  // forces reallocation of terminal stuff
+				elem.setYOrder(elem.getNumConds() * elem.getNumTerms());
+				elem.setYPrimInvalid(true);
 			}
 
-			al.setKVLoadBase(otherLoad.getKVLoadBase());
-			al.setVBase(otherLoad.getVBase());
-			al.setVMinPU(otherLoad.getVMinPU());
-			al.setVMaxPU(otherLoad.getVMaxPU());
-			al.setVBase95(otherLoad.getVBase95());
-			al.setVBase105(otherLoad.getVBase105());
-			al.setKWBase(otherLoad.getKWBase());
-			al.setKVABase(otherLoad.getKVABase());
-			al.setKVArBase(otherLoad.getKVArBase());
-			al.setLoadSpecType(otherLoad.getLoadSpecType());
-			al.setWNominal(otherLoad.getWNominal());
-			al.setPFNominal(otherLoad.getPFNominal());
-			al.setVarNominal(otherLoad.getVarNominal());
-			al.setConnection(otherLoad.getConnection());
-			al.setRNeut(otherLoad.getRNeut());
-			al.setXNeut(otherLoad.getXNeut());
-			al.setYearlyShape(otherLoad.getYearlyShape());
-			al.setYearlyShapeObj(otherLoad.getYearlyShapeObj());
-			al.setCVRshape(otherLoad.getCVRshape());
-			al.setCVRShapeObj(otherLoad.getCVRShapeObj());
-			al.setDailyShape(otherLoad.getDailyShape());
-			al.setDailyShapeObj(otherLoad.getDailyShapeObj());
-			al.setDutyShape(otherLoad.getDutyShape());
-			al.setDutyShapeObj(otherLoad.getDutyShapeObj());
-			al.setGrowthShape(otherLoad.getGrowthShape());
-			al.setGrowthShapeObj(otherLoad.getGrowthShapeObj());
-			//al.setSpectrum(OtherLoad.getSpectrum();  in base class now
-			//al.setSpectrumObj(OtherLoad.getSpectrumObj());
-			al.setLoadClass(otherLoad.getLoadClass());
-			al.setNumCustomers(otherLoad.getNumCustomers());
-			al.setLoadModel(otherLoad.getLoadModel());
-			al.setFixed(otherLoad.isFixed());
-			al.setExemptFromLDCurve(otherLoad.isExemptFromLDCurve());
-			al.setKVAAllocationFactor(otherLoad.getKVAAllocationFactor());
-			al.setConnectedKVA(otherLoad.getConnectedkVA());
-			al.setCVRwattFactor(otherLoad.getCVRwattFactor());
-			al.setCVRvarFactor(otherLoad.getCVRvarFactor());
-			al.setShapeIsActual(otherLoad.shapeIsActual());
+			elem.setKVLoadBase(other.getKVLoadBase());
+			elem.setVBase(other.getVBase());
+			elem.setVMinPU(other.getVMinPU());
+			elem.setVMaxPU(other.getVMaxPU());
+			elem.setVBase95(other.getVBase95());
+			elem.setVBase105(other.getVBase105());
+			elem.setKWBase(other.getKWBase());
+			elem.setKVABase(other.getKVABase());
+			elem.setKVArBase(other.getKVArBase());
+			elem.setLoadSpecType(other.getLoadSpecType());
+			elem.setWNominal(other.getWNominal());
+			elem.setPFNominal(other.getPFNominal());
+			elem.setVarNominal(other.getVarNominal());
+			elem.setConnection(other.getConnection());
+			elem.setRNeut(other.getRNeut());
+			elem.setXNeut(other.getXNeut());
+			elem.setYearlyShape(other.getYearlyShape());
+			elem.setYearlyShapeObj(other.getYearlyShapeObj());
+			elem.setCVRShape(other.getCVRShape());
+			elem.setCVRShapeObj(other.getCVRShapeObj());
+			elem.setDailyShape(other.getDailyShape());
+			elem.setDailyShapeObj(other.getDailyShapeObj());
+			elem.setDutyShape(other.getDutyShape());
+			elem.setDutyShapeObj(other.getDutyShapeObj());
+			elem.setGrowthShape(other.getGrowthShape());
+			elem.setGrowthShapeObj(other.getGrowthShapeObj());
+			//elem.setSpectrum(other.getSpectrum();  in base class now
+			//elem.setSpectrumObj(other.getSpectrumObj());
+			elem.setLoadClass(other.getLoadClass());
+			elem.setNumCustomers(other.getNumCustomers());
+			elem.setLoadModel(other.getLoadModel());
+			elem.setFixed(other.isFixed());
+			elem.setExemptFromLDCurve(other.isExemptFromLDCurve());
+			elem.setKVAAllocationFactor(other.getKVAAllocationFactor());
+			elem.setConnectedKVA(other.getConnectedkVA());
+			elem.setCVRwattFactor(other.getCVRwattFactor());
+			elem.setCVRvarFactor(other.getCVRvarFactor());
+			elem.setShapeIsActual(other.shapeIsActual());
 
-			al.setZIPVSize(otherLoad.getNZIPV());
-			for (int i = 0; i < al.getNZIPV(); i++)
-				al.getZIPV()[i] = otherLoad.getZIPV()[i];
+			elem.setZIPVSize(other.getNZIPV());
+			for (int i = 0; i < elem.getNZIPV(); i++)
+				elem.getZIPV()[i] = other.getZIPV()[i];
 
-			classMakeLike(otherLoad);  // take care of inherited class properties
+			classMakeLike(other);  // take care of inherited class properties
 
+			for (int i = 0; i < elem.getParentClass().getNumProperties(); i++)
+				elem.setPropertyValue(i, other.getPropertyValue(i));
 
-			for (int i = 0; i < al.getParentClass().getNumProperties(); i++)
-				al.setPropertyValue(i, otherLoad.getPropertyValue(i));
-
-			result = 1;
+			success = 1;
 		} else {
 			DSS.doSimpleMsg("Error in Load makeLike: \"" + otherLoadName + "\" not found.", 581);
 		}
 
-		return result;
+		return success;
 	}
 
 	@Override
 	public int init(int handle) {
-		LoadObj pLoad;
+		LoadObj load;
 		if (handle == 0) {
 			for (int i = 0; i < elementList.size(); i++) {
-				pLoad = (LoadObj) elementList.get(i);
-				pLoad.randomize(Randomization.NONE);
+				load = (LoadObj) elementList.get(i);
+				load.randomize(Randomization.NONE);
 			}
 		} else {
 			setActiveElement(handle);
-			pLoad = (LoadObj) getActiveObj();
-			pLoad.randomize(Randomization.NONE);
+			load = (LoadObj) getActiveObj();
+			load.randomize(Randomization.NONE);
 		}
 
 		DSS.doSimpleMsg("Need to finish implementation Load.init", -1);

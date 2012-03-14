@@ -16,8 +16,8 @@ import com.ncond.dss.common.DSS;
 import com.ncond.dss.common.DSSClass;
 import com.ncond.dss.common.SolutionObj;
 import com.ncond.dss.common.Util;
+import com.ncond.dss.common.types.Connection;
 import com.ncond.dss.common.types.Randomization;
-import com.ncond.dss.common.types.SolutionMode;
 import com.ncond.dss.general.LoadShapeObj;
 import com.ncond.dss.general.TShapeObj;
 import com.ncond.dss.general.XYCurveObj;
@@ -109,7 +109,7 @@ public class PVSystemObj extends PCElement {
 	private double XThev;
 
 	// public members
-	private int connection;  /* 0 = line-neutral; 1 = delta */
+	private Connection connection;
 	private String dailyShape;           // daily (24 HR) PVSystem element irradiance shape
 	private LoadShapeObj dailyShapeObj;  // daily PVSystem element irradiance shape for this load
 	private String dutyShape;            // duty cycle irradiance shape for changes typically less than one hour
@@ -166,7 +166,7 @@ public class PVSystemObj extends PCElement {
 		inverterCurve     = "";
 		powerTempCurve    = "";
 
-		connection        = 0;  // wye (star, L-N)
+		connection        = Connection.WYE;
 		voltageModel      = 1;  // typical fixed kW negative load
 		FClass            = 1;
 
@@ -536,18 +536,18 @@ public class PVSystemObj extends PCElement {
 			/* Yeq is computed from %R and %X -- inverse of Rthev + j Xthev */
 			Y = Yeq;  // L-N value computed in initialization routines
 
-			if (connection == 1)
+			if (connection == Connection.DELTA)
 				Y = ComplexUtil.divide(Y, 3.0);  // convert to delta impedance
 			Y = new Complex(Y.getReal(), Y.getImaginary() / freqMultiplier);
 			Yij = Y.negate();
 			for (i = 0; i < nPhases; i++) {
 				switch (connection) {
-				case 0:
+				case WYE:
 					YMatrix.set(i, i, Y);
 					YMatrix.add(nConds - 1, nConds - 1, Y);
 					YMatrix.setSym(i, nConds - 1, Yij);
 					break;
-				case 1:  /* Delta connection */
+				case DELTA:
 					YMatrix.set(i, i, Y);
 					YMatrix.add(i, i, Y);  // put it in again
 					for (j = 0; j < i; j++)
@@ -566,7 +566,7 @@ public class PVSystemObj extends PCElement {
 			Y = new Complex(Y.getReal(), Y.getImaginary() / freqMultiplier);
 
 			switch (connection) {
-			case 0:  // wye
+			case WYE:
 				Yij = Y.negate();
 				for (i = 0; i < nPhases; i++) {
 					YMatrix.set(i, i, Y);
@@ -574,7 +574,7 @@ public class PVSystemObj extends PCElement {
 					YMatrix.setSym(i, nConds, Yij);
 				}
 				break;
-			case 1:  // delta or L-L
+			case DELTA:
 				Y   = ComplexUtil.divide(Y, 3.0);  // convert to delta impedance
 				Yij = Y.negate();
 				for (i = 0; i < nPhases; i++) {
@@ -685,11 +685,11 @@ public class PVSystemObj extends PCElement {
 	 */
 	private void putCurrInTerminalArray(Complex[] termArray, Complex curr, int i) {
 		switch (connection) {
-		case 0:  // wye
+		case WYE:
 			termArray[i] = termArray[i].add(curr);
 			termArray[nConds - 1] = termArray[nConds - 1].add(curr.negate());  // neutral
 			break;
-		case 1:  // delta
+		case DELTA:
 			termArray[i] = termArray[i].add(curr);
 			int j = i + 1;
 			if (j >= nConds)
@@ -751,7 +751,7 @@ public class PVSystemObj extends PCElement {
 			VMag = V.abs();
 
 			switch (connection) {
-			case 0:  /* Wye */
+			case WYE:
 				if (VMag <= VBase95) {
 					curr = Yeq95.multiply(V);   // below 95% use an impedance model
 				} else if (VMag > VBase105) {
@@ -761,7 +761,7 @@ public class PVSystemObj extends PCElement {
 				}
 				break;
 
-			case 1:  /* Delta */
+			case DELTA:
 				VMag = VMag / DSS.SQRT3;  // L-N magnitude
 				if (VMag <= VBase95) {
 					curr = ComplexUtil.divide(Yeq95, 3.0).multiply(V);   // below 95% use an impedance model
@@ -790,7 +790,7 @@ public class PVSystemObj extends PCElement {
 		calcYPrimContribution(getInjCurrent());  // init injCurrent array
 		calcVTerminalPhase();  // get actual voltage across each phase of the load
 		zeroITerminal();
-		if (connection == 0) {
+		if (connection == Connection.WYE) {
 			Yeq2 = Yeq;
 		} else {
 			Yeq2 = ComplexUtil.divide(Yeq, 3.0);
@@ -862,7 +862,7 @@ public class PVSystemObj extends PCElement {
 		}
 
 		/* Handle wye connection */
-		if (connection == 0)
+		if (connection == Connection.WYE)
 			cBuffer[nConds] = VTerminal[nConds];  // assume no neutral injection voltage
 
 		/* Inj currents = Yprim (E) */
@@ -876,12 +876,12 @@ public class PVSystemObj extends PCElement {
 
 		/* Establish phase voltages and stick in VTerminal */
 		switch (connection) {
-		case 0:
+		case WYE:
 			for (i = 0; i < nPhases; i++)
 				VTerminal[i] = sol.vDiff(nodeRef[i], nodeRef[nConds - 1]);
 			break;
 
-		case 1:
+		case DELTA:
 			for (i = 0; i < nPhases; i++) {
 				j = i + 1;
 				if (j >= nConds)
@@ -1128,10 +1128,10 @@ public class PVSystemObj extends PCElement {
 		computeITerminal();  // get present value of current
 
 		switch (connection) {
-		case 0:  /* wye - neutral is explicit */
+		case WYE:  /* wye - neutral is explicit */
 			Va = sol.getNodeV(nodeRef[0]).subtract(sol.getNodeV( nodeRef[nConds - 1] ));
 			break;
-		case 1:  /* delta -- assume neutral is at zero */
+		case DELTA:
 			Va = sol.getNodeV(nodeRef[0]);
 			break;
 		}
@@ -1285,7 +1285,7 @@ public class PVSystemObj extends PCElement {
 		s = "Phases=1 conn=wye";
 
 		// make sure voltage is line-neutral
-		if (nPhases > 1 || connection != 0) {
+		if (nPhases > 1 || connection != Connection.WYE) {
 			V = kVPVSystemBase / DSS.SQRT3;
 		} else {
 			V = kVPVSystemBase;

@@ -1,8 +1,8 @@
 package com.ncond.dss.conversion;
 
-import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.PrintWriter;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -10,6 +10,7 @@ import lombok.Setter;
 import com.ncond.dss.common.DSS;
 import com.ncond.dss.common.DSSClassDefs;
 import com.ncond.dss.common.Util;
+import com.ncond.dss.common.types.Connection;
 import com.ncond.dss.common.types.Randomization;
 import com.ncond.dss.general.LoadShapeObj;
 import com.ncond.dss.general.TShapeObj;
@@ -85,7 +86,8 @@ public class PVSystem extends PCClass {
 
 		numProperties = PVSystem.NumPropsThisClass;
 		countProperties();  // get inherited property count
-		allocatePropertyArrays();  /* see DSSClass */
+
+		allocatePropertyArrays();
 
 		// define property names
 		addProperty("phases", 0,
@@ -217,28 +219,27 @@ public class PVSystem extends PCClass {
 
 	@Override
 	public int newObject(String objName) {
-
 		DSS.activeCircuit.setActiveCktElement(new PVSystemObj(this, objName));
 		return addObjectToList(DSS.activeDSSObject);
 	}
 
 	private void setNCondsForConnection() {
-		PVSystemObj apv = activePVSystemObj;
+		PVSystemObj elem = activePVSystemObj;
 
-		switch (apv.getConnection()) {
-		case 0:
-			apv.setNumConds(apv.getNumPhases() + 1);
+		switch (elem.getConnection()) {
+		case WYE:
+			elem.setNumConds(elem.getNumPhases() + 1);
 			break;
-		case 1:
-			switch (apv.getNumPhases()) {
+		case DELTA:
+			switch (elem.getNumPhases()) {
 			case 1:
-				apv.setNumConds(apv.getNumPhases() + 1);  // L-L
+				elem.setNumConds(elem.getNumPhases() + 1);  // L-L
 				break;
 			case 2:
-				apv.setNumConds(apv.getNumPhases() + 1);  // open-delta
+				elem.setNumConds(elem.getNumPhases() + 1);  // open-delta
 				break;
 			default:
-				apv.setNumConds(apv.getNumPhases());
+				elem.setNumConds(elem.getNumPhases());
 				break;
 			}
 			break;
@@ -263,21 +264,21 @@ public class PVSystem extends PCClass {
 
 		switch (s.toLowerCase().charAt(0)) {
 		case 'y':
-			apv.setConnection(0);  /* Wye */
+			apv.setConnection(Connection.WYE);
 			break;
 		case 'w':
-			apv.setConnection(0);  /* Wye */
+			apv.setConnection(Connection.WYE);
 			break;
 		case 'd':
-			apv.setConnection(1);  /* Delta or Line-Line */
+			apv.setConnection(Connection.DELTA);
 			break;
 		case 'l':
 			switch (s.toLowerCase().charAt(1)) {
 			case 'n':
-				apv.setConnection(0);
+				apv.setConnection(Connection.WYE);
 				break;
 			case 'l':
-				apv.setConnection(1);
+				apv.setConnection(Connection.DELTA);
 				break;
 			}
 			break;
@@ -311,19 +312,19 @@ public class PVSystem extends PCClass {
 	 */
 	@Override
 	public int edit() {
+		int iCase;
 		Parser parser = Parser.getInstance();
 
 		// continue parsing with contents of parser
 		activePVSystemObj = (PVSystemObj) elementList.getActive();
 		DSS.activeCircuit.setActiveCktElement(activePVSystemObj);
 
-		int iCase, result = 0;
-
-		PVSystemObj apv = activePVSystemObj;
+		PVSystemObj elem = activePVSystemObj;
 
 		int paramPointer = -1;
 		String paramName = parser.getNextParam();  // parse next property off the command line
-		String param = parser.makeString();    // put the string value of the property value in local memory for faster access
+		String param = parser.makeString();  // put the string value of the property value in local memory for faster access
+
 		while (param.length() > 0) {
 			if (paramName.length() == 0) {
 				paramPointer += 1;  // if it is not a named property, assume the next property
@@ -332,107 +333,108 @@ public class PVSystem extends PCClass {
 			}
 
 			if (paramPointer >= 0 && paramPointer < numProperties) {
-				apv.setPropertyValue(propertyIdxMap[paramPointer], param);  // update the string value of the property
+				elem.setPropertyValue(propertyIdxMap[paramPointer], param);  // update the string value of the property
 			} else {
-				DSS.doSimpleMsg("Unknown parameter \""+paramName+"\" for PVSystem \""+apv.getName()+"\"", 560);
+				DSS.doSimpleMsg("Unknown parameter \""+paramName+"\" for PVSystem \""+elem.getName()+"\"", 560);
 			}
 
 			if (paramPointer >= 0) {
 				iCase = propertyIdxMap[paramPointer];
 				switch (iCase) {
 				case -1:
-					DSS.doSimpleMsg("Unknown parameter \"" + paramName + "\" for object \"" + getClassName() +"."+ apv.getName() + "\"", 561);
+					DSS.doSimpleMsg("Unknown parameter \"" + paramName + "\" for object \"" +
+							getClassName() +"."+ elem.getName() + "\"", 561);
 					break;
 				case 0:
-					apv.setNumPhases(parser.makeInteger());  // num phases
+					elem.setNumPhases(parser.makeInteger());  // num phases
 					break;
 				case 1:
-					apv.setBus(0, param);
+					elem.setBus(0, param);
 					break;
 				case KV:
-					apv.setPresentKV(parser.makeDouble());
+					elem.setPresentKV(parser.makeDouble());
 					break;
 				case IRRADIANCE:
-					apv.setIrradiance(parser.makeDouble());
+					elem.setIrradiance(parser.makeDouble());
 					break;
 				case PF:
-					apv.setPFSpecified(true);
-					apv.setKVArSpecified(false);
-					apv.setPowerFactor(parser.makeDouble());
+					elem.setPFSpecified(true);
+					elem.setKVArSpecified(false);
+					elem.setPowerFactor(parser.makeDouble());
 					break;
 				case MODEL:
-					apv.setVoltageModel(parser.makeInteger());
+					elem.setVoltageModel(parser.makeInteger());
 					break;
 				case YEARLY:
-					apv.setYearlyShape(param);
+					elem.setYearlyShape(param);
 					break;
 				case DAILY:
-					apv.setDailyShape(param);
+					elem.setDailyShape(param);
 					break;
 				case DUTY:
-					apv.setDutyShape(param);
+					elem.setDutyShape(param);
 					break;
 				case T_YEARLY:
-					apv.setYearlyTShape(param);
+					elem.setYearlyTShape(param);
 					break;
 				case T_DAILY:
-					apv.setDailyTShape(param);
+					elem.setDailyTShape(param);
 					break;
 				case T_DUTY:
-					apv.setDutyTShape(param);
+					elem.setDutyTShape(param);
 					break;
 				case CONNECTION:
 					interpretConnection(param);
 					break;
 				case KVAR:
-					apv.setKVArSpecified(true);
-					apv.setPFSpecified(false);
-					apv.setPresentKVAr(parser.makeDouble());
+					elem.setKVArSpecified(true);
+					elem.setPFSpecified(false);
+					elem.setPresentKVAr(parser.makeDouble());
 					break;
 				case PCTR:
-					apv.setPctR(parser.makeDouble());
+					elem.setPctR(parser.makeDouble());
 					break;
 				case PCTX:
-					apv.setPctX(parser.makeDouble());
+					elem.setPctX(parser.makeDouble());
 					break;
 				case CLASS:
-					apv.setFClass(parser.makeInteger());
+					elem.setFClass(parser.makeInteger());
 					break;
 				case INV_EFF_CURVE:
-					apv.setInverterCurve(param);
+					elem.setInverterCurve(param);
 					break;
 				case TEMP:
-					apv.setTemperature(parser.makeDouble());
+					elem.setTemperature(parser.makeDouble());
 					break;
 				case PMPP:
-					apv.setPmpp(parser.makeDouble());
+					elem.setPmpp(parser.makeDouble());
 					break;
 				case P_T_CURVE:
-					apv.setPowerTempCurve(param);
+					elem.setPowerTempCurve(param);
 					break;
 				case CUT_IN:
-					apv.setPctCutIn(parser.makeDouble());
+					elem.setPctCutIn(parser.makeDouble());
 					break;
 				case CUT_OUT:
-					apv.setPctCutOut(parser.makeDouble());
+					elem.setPctCutOut(parser.makeDouble());
 					break;
 				case VMIN_PU:
-					apv.setVMinPU(parser.makeDouble());
+					elem.setVMinPU(parser.makeDouble());
 					break;
 				case VMAX_PU:
-					apv.setVMaxPU(parser.makeDouble());
+					elem.setVMaxPU(parser.makeDouble());
 					break;
 				case KVA:
-					apv.setKVARating(parser.makeDouble());
+					elem.setKVARating(parser.makeDouble());
 					break;
 				case USER_MODEL:
-					apv.getUserModel().setName(parser.makeString());  // connect to user written models
+					elem.getUserModel().setName(parser.makeString());  // connect to user written models
 					break;
 				case USER_DATA:
-					apv.getUserModel().edit(parser.makeString());  // send edit string to user model
+					elem.getUserModel().edit(parser.makeString());  // send edit string to user model
 					break;
 				case DEBUG_TRACE:
-					apv.setDebugTrace(Util.interpretYesNo(param));
+					elem.setDebugTrace(Util.interpretYesNo(param));
 					break;
 				default:
 					// inherited parameters
@@ -446,53 +448,52 @@ public class PVSystem extends PCClass {
 					break;
 				/* set loadshape objects; returns nil if not valid */
 				case YEARLY:
-					apv.setYearlyShapeObj( (LoadShapeObj) DSS.loadShapeClass.find(apv.getYearlyShape()) );
+					elem.setYearlyShapeObj( (LoadShapeObj) DSS.loadShapeClass.find(elem.getYearlyShape()) );
 					break;
 				case DAILY:
-					apv.setDailyShapeObj( (LoadShapeObj) DSS.loadShapeClass.find(apv.getDailyShape()) );
+					elem.setDailyShapeObj( (LoadShapeObj) DSS.loadShapeClass.find(elem.getDailyShape()) );
 					break;
 				case DUTY:
-					apv.setDutyShapeObj( (LoadShapeObj) DSS.loadShapeClass.find(apv.getDutyShape()) );
+					elem.setDutyShapeObj( (LoadShapeObj) DSS.loadShapeClass.find(elem.getDutyShape()) );
 					break;
 
 				case T_YEARLY:
-					apv.setYearlyTShapeObj( (TShapeObj) DSS.TShapeClass.find(apv.getYearlyTShape()) );
+					elem.setYearlyTShapeObj( (TShapeObj) DSS.TShapeClass.find(elem.getYearlyTShape()) );
 					break;
 				case T_DAILY:
-					apv.setDailyTShapeObj( (TShapeObj) DSS.TShapeClass.find(apv.getDailyTShape()) );
+					elem.setDailyTShapeObj( (TShapeObj) DSS.TShapeClass.find(elem.getDailyTShape()) );
 					break;
 				case T_DUTY:
-					apv.setDutyTShapeObj( (TShapeObj) DSS.TShapeClass.find(apv.getDutyTShape()) );
+					elem.setDutyTShapeObj( (TShapeObj) DSS.TShapeClass.find(elem.getDutyTShape()) );
 					break;
 
 				case INV_EFF_CURVE:
-					apv.setInverterCurveObj( (XYCurveObj) DSS.XYCurveClass.find(apv.getInverterCurve()) );
+					elem.setInverterCurveObj( (XYCurveObj) DSS.XYCurveClass.find(elem.getInverterCurve()) );
 					break;
 				case P_T_CURVE:
-					apv.setPowerTempCurveObj( (XYCurveObj) DSS.XYCurveClass.find(apv.getPowerTempCurve()) );
+					elem.setPowerTempCurveObj( (XYCurveObj) DSS.XYCurveClass.find(elem.getPowerTempCurve()) );
 					break;
 
 				case DEBUG_TRACE:
-					if (apv.isDebugTrace()) {  // init trace file
+					if (elem.isDebugTrace()) {  // init trace file
 						try {
-							FileWriter fw = new FileWriter(DSS.dataDirectory + "STOR_"+apv.getName()+".csv", false);
-							BufferedWriter bw = new BufferedWriter(fw);
+							FileWriter fw = new FileWriter(DSS.dataDirectory + "STOR_"+elem.getName()+".csv", false);
+							PrintWriter pw = new PrintWriter(fw);
 
-							bw.write("t, Iteration, LoadMultiplier, Mode, LoadModel, PVSystemModel,  Qnominalperphase, Pnominalperphase, CurrentType");
-							for (int i = 0; i < apv.getNumPhases(); i++)
-								bw.write(", |Iinj"+String.valueOf(i)+"|");
-							for (int i = 0; i < apv.getNumPhases(); i++)
-								bw.write(", |Iterm"+String.valueOf(i)+"|");
-							for (int i = 0; i < apv.getNumPhases(); i++)
-								bw.write(", |Vterm"+String.valueOf(i)+"|");
-							bw.write(",Vthev, Theta");
-							bw.newLine();
+							pw.write("t, Iteration, LoadMultiplier, Mode, LoadModel, PVSystemModel,  Qnominalperphase, Pnominalperphase, CurrentType");
+							for (int i = 0; i < elem.getNumPhases(); i++)
+								pw.print(", |Iinj" + String.valueOf(i) + "|");
+							for (int i = 0; i < elem.getNumPhases(); i++)
+								pw.print(", |Iterm" + String.valueOf(i) + "|");
+							for (int i = 0; i < elem.getNumPhases(); i++)
+								pw.print(", |Vterm" + String.valueOf(i) + "|");
+							pw.write(", Vthev, Theta");
+							pw.println();
 
-							bw.close();
+							pw.close();
 							fw.close();
 						} catch (IOException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
+							DSS.doSimpleMsg("Error writing debug trace: " + e.getMessage(), -1);
 						}
 					}
 					break;
@@ -502,100 +503,102 @@ public class PVSystem extends PCClass {
 			param = parser.makeString();
 		}
 
-		apv.recalcElementData();
-		apv.setYPrimInvalid(true);
+		elem.recalcElementData();
+		elem.setYPrimInvalid(true);
 
-		return result;
+		return 0;
 	}
 
 	@Override
 	protected int makeLike(String otherPVSystemObjName) {
-		int result = 0;
-		/* See if we can find this line name in the present collection */
-		PVSystemObj otherPVsystemObj = (PVSystemObj) find(otherPVSystemObjName);
-		if (otherPVsystemObj != null) {
-			PVSystemObj apv = activePVSystemObj;
+		int success = 0;
 
-			if (apv.getNumPhases() != otherPVsystemObj.getNumPhases()) {
-				apv.setNumPhases(otherPVsystemObj.getNumPhases());
-				apv.setNumConds(apv.getNumPhases());  // forces reallocation of terminal stuff
-				apv.setYOrder(apv.getNumConds() * apv.getNumTerms());
-				apv.setYPrimInvalid(true);
+		/* See if we can find this line name in the present collection */
+		PVSystemObj other = (PVSystemObj) find(otherPVSystemObjName);
+
+		if (other != null) {
+			PVSystemObj elem = activePVSystemObj;
+
+			if (elem.getNumPhases() != other.getNumPhases()) {
+				elem.setNumPhases(other.getNumPhases());
+				elem.setNumConds(elem.getNumPhases());  // forces reallocation of terminal stuff
+				elem.setYOrder(elem.getNumConds() * elem.getNumTerms());
+				elem.setYPrimInvalid(true);
 			}
 
-			apv.setKVPVSystemBase(otherPVsystemObj.getKVPVSystemBase());
-			apv.setVBase(otherPVsystemObj.getVBase());
-			apv.setVMinPU(otherPVsystemObj.getVMinPU());
-			apv.setVMaxPU(otherPVsystemObj.getVMaxPU());
-			apv.setVBase95(otherPVsystemObj.getVBase95());
-			apv.setVBase105(otherPVsystemObj.getVBase105());
-			apv.setKWOut(otherPVsystemObj.getKWOut());
-			apv.setKVArOut(otherPVsystemObj.getKVArOut());
-			apv.setPNominalPerPhase(otherPVsystemObj.getPNominalPerPhase());
-			apv.setPowerFactor(otherPVsystemObj.getPowerFactor());
-			apv.setQNominalPerPhase(otherPVsystemObj.getQNominalPerPhase());
-			apv.setConnection(otherPVsystemObj.getConnection());
-			apv.setYearlyShape(otherPVsystemObj.getYearlyShape());
-			apv.setYearlyShapeObj(otherPVsystemObj.getYearlyShapeObj());
-			apv.setDailyShape(otherPVsystemObj.getDailyShape());
-			apv.setDailyShapeObj(otherPVsystemObj.getDailyShapeObj());
-			apv.setDutyShape(otherPVsystemObj.getDutyShape());
-			apv.setDutyShapeObj(otherPVsystemObj.getDutyShapeObj());
-			apv.setYearlyTShape(otherPVsystemObj.getYearlyTShape());
-			apv.setYearlyTShapeObj(otherPVsystemObj.getYearlyTShapeObj());
-			apv.setDailyTShape(otherPVsystemObj.getDailyTShape());
-			apv.setDailyTShapeObj(otherPVsystemObj.getDailyTShapeObj());
-			apv.setDutyTShape(otherPVsystemObj.getDutyTShape());
-			apv.setDutyTShapeObj(otherPVsystemObj.getDutyTShapeObj());
-			apv.setInverterCurve(otherPVsystemObj.getInverterCurve());
-			apv.setInverterCurveObj(otherPVsystemObj.getInverterCurveObj());
-			apv.setPowerTempCurve(otherPVsystemObj.getPowerTempCurve());
-			apv.setPowerTempCurveObj(otherPVsystemObj.getPowerTempCurveObj());
-			apv.setFClass(otherPVsystemObj.getFClass());
-			apv.setVoltageModel(otherPVsystemObj.getVoltageModel());
+			elem.setKVPVSystemBase(other.getKVPVSystemBase());
+			elem.setVBase(other.getVBase());
+			elem.setVMinPU(other.getVMinPU());
+			elem.setVMaxPU(other.getVMaxPU());
+			elem.setVBase95(other.getVBase95());
+			elem.setVBase105(other.getVBase105());
+			elem.setKWOut(other.getKWOut());
+			elem.setKVArOut(other.getKVArOut());
+			elem.setPNominalPerPhase(other.getPNominalPerPhase());
+			elem.setPowerFactor(other.getPowerFactor());
+			elem.setQNominalPerPhase(other.getQNominalPerPhase());
+			elem.setConnection(other.getConnection());
+			elem.setYearlyShape(other.getYearlyShape());
+			elem.setYearlyShapeObj(other.getYearlyShapeObj());
+			elem.setDailyShape(other.getDailyShape());
+			elem.setDailyShapeObj(other.getDailyShapeObj());
+			elem.setDutyShape(other.getDutyShape());
+			elem.setDutyShapeObj(other.getDutyShapeObj());
+			elem.setYearlyTShape(other.getYearlyTShape());
+			elem.setYearlyTShapeObj(other.getYearlyTShapeObj());
+			elem.setDailyTShape(other.getDailyTShape());
+			elem.setDailyTShapeObj(other.getDailyTShapeObj());
+			elem.setDutyTShape(other.getDutyTShape());
+			elem.setDutyTShapeObj(other.getDutyTShapeObj());
+			elem.setInverterCurve(other.getInverterCurve());
+			elem.setInverterCurveObj(other.getInverterCurveObj());
+			elem.setPowerTempCurve(other.getPowerTempCurve());
+			elem.setPowerTempCurveObj(other.getPowerTempCurveObj());
+			elem.setFClass(other.getFClass());
+			elem.setVoltageModel(other.getVoltageModel());
 
-			apv.setTemperature(otherPVsystemObj.getTemperature());
-			apv.setPmpp(otherPVsystemObj.getPmpp());
-			apv.setPctCutIn(otherPVsystemObj.getPctCutIn());
-			apv.setPctCutOut(otherPVsystemObj.getPctCutOut());
-			apv.setIrradiance(otherPVsystemObj.getIrradiance());
+			elem.setTemperature(other.getTemperature());
+			elem.setPmpp(other.getPmpp());
+			elem.setPctCutIn(other.getPctCutIn());
+			elem.setPctCutOut(other.getPctCutOut());
+			elem.setIrradiance(other.getIrradiance());
 
-			apv.setKVARating(otherPVsystemObj.getKVARating());
+			elem.setKVARating(other.getKVARating());
 
-			apv.setPctR(otherPVsystemObj.getPctR());
-			apv.setPctX(otherPVsystemObj.getPctX());
+			elem.setPctR(other.getPctR());
+			elem.setPctX(other.getPctX());
 
-			apv.setRandomMult(otherPVsystemObj.getRandomMult());
+			elem.setRandomMult(other.getRandomMult());
 
-			apv.getUserModel().setName(otherPVsystemObj.getUserModel().getName());  // connect to user written models
+			elem.getUserModel().setName(other.getUserModel().getName());  // connect to user written models
 
-			classMakeLike(otherPVsystemObj);
+			classMakeLike(other);
 
-			for (int i = 0; i < apv.getParentClass().getNumProperties(); i++)
-				apv.setPropertyValue(i, otherPVsystemObj.getPropertyValue(i));
+			for (int i = 0; i < elem.getParentClass().getNumProperties(); i++)
+				elem.setPropertyValue(i, other.getPropertyValue(i));
 
-			result = 1;
+			success = 1;
 		} else {
 			DSS.doSimpleMsg("Error in PVSystem makeLike: \"" + otherPVSystemObjName + "\" not found.", 562);
 		}
 
-		return result;
+		return success;
 	}
 
 	@Override
 	public int init(int handle) {
-		PVSystemObj p;
+		PVSystemObj elem;
 
 		if (handle == 0) {  // init all
-			p = (PVSystemObj) elementList.getFirst();
-			while (p != null) {
-				p.randomize(Randomization.NONE);
-				p = (PVSystemObj) elementList.getNext();
+			elem = (PVSystemObj) elementList.getFirst();
+			while (elem != null) {
+				elem.randomize(Randomization.NONE);
+				elem = (PVSystemObj) elementList.getNext();
 			}
 		} else {
 			setActiveElement(handle);
-			p = (PVSystemObj) getActiveObj();
-			p.randomize(Randomization.NONE);
+			elem = (PVSystemObj) getActiveObj();
+			elem.randomize(Randomization.NONE);
 		}
 
 		DSS.doSimpleMsg("Need to implement PVSystem.init", -1);
@@ -611,11 +614,10 @@ public class PVSystem extends PCClass {
 	}
 
 	public void sampleAll() {
-		PVSystemObj pElem;
+		PVSystemObj elem;
 		for (int i = 0; i < elementList.size(); i++) {
-			pElem = (PVSystemObj) elementList.get(i);
-			if (pElem.isEnabled())
-				pElem.takeSample();
+			elem = (PVSystemObj) elementList.get(i);
+			if (elem.isEnabled()) elem.takeSample();
 		}
 	}
 

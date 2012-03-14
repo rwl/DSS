@@ -13,7 +13,7 @@ public class ISource extends PCClass {
 
 	public ISource() {
 		super();
-		className = "Isource";
+		className = "ISource";
 		classType = DSSClassDefs.SOURCE + DSSClassDefs.NON_PCPD_ELEM;  // don"t want this in PC element list
 
 		activeElement = -1;
@@ -29,8 +29,8 @@ public class ISource extends PCClass {
 	@Override
 	protected void defineProperties() {
 		numProperties = ISource.NumPropsThisClass;
-
 		countProperties();  // get inherited property count
+
 		allocatePropertyArrays();
 
 		// define property names
@@ -56,11 +56,11 @@ public class ISource extends PCClass {
 				"Default is positive sequence.";
 
 
-		activeProperty = ISource.NumPropsThisClass - 1;
+		activeProperty = NumPropsThisClass - 1;
 		super.defineProperties();  // add defs of inherited properties to bottom of list
 
 		// override help string
-		propertyHelp[ISource.NumPropsThisClass] = "Harmonic spectrum assumed for this source.  Default is \"default\".";
+		propertyHelp[NumPropsThisClass] = "Harmonic spectrum assumed for this source.  Default is \"default\".";
 	}
 
 	@Override
@@ -77,13 +77,12 @@ public class ISource extends PCClass {
 		activeISourceObj = (ISourceObj) elementList.getActive();
 		DSS.activeCircuit.setActiveCktElement(activeISourceObj);
 
-		int result = 0;
-
-		ISourceObj ais  = activeISourceObj;
+		ISourceObj elem  = activeISourceObj;
 
 		int paramPointer = -1;
 		String paramName = parser.getNextParam();
 		String param = parser.makeString();
+
 		while (param.length() > 0) {
 			if (paramName.length() == 0) {
 				paramPointer += 1;
@@ -92,71 +91,74 @@ public class ISource extends PCClass {
 			}
 
 			if (paramPointer >= 0 && paramPointer < numProperties)
-				ais.setPropertyValue(paramPointer, param);
+				elem.setPropertyValue(paramPointer, param);
 
 			switch (paramPointer) {
 			case -1:
-				DSS.doSimpleMsg("Unknown parameter \"" + paramName + "\" for object \"" + getClassName() +"."+ ais.getName() + "\"", 330);
+				DSS.doSimpleMsg("Unknown parameter \"" + paramName + "\" for object \"" +
+						getClassName() +"."+ elem.getName() + "\"", 330);
 				break;
 			case 0:
-				ais.setBus(0, param);
+				elem.setBus(0, param);
 				break;
 			case 1:
-				ais.setAmps(parser.makeDouble());
+				elem.setAmps(parser.makeDouble());
 				break;
 			case 2:
-				ais.setAngle(parser.makeDouble());  // ang
+				elem.setAngle(parser.makeDouble());  // ang
 				break;
 			case 3:
-				ais.setSrcFrequency(parser.makeDouble()); // freq
+				elem.setSrcFrequency(parser.makeDouble()); // freq
 				break;
 			case 4:
-				ais.setNumPhases(parser.makeInteger()); // num phases
-				switch (ais.getNumPhases()) {
+				elem.setNumPhases(parser.makeInteger()); // num phases
+				switch (elem.getNumPhases()) {
 				case 1:
-					ais.setPhaseShift(0.0);
+					elem.setPhaseShift(0.0);
 					break;
 				case 2:
-					ais.setPhaseShift(120.0);
+					elem.setPhaseShift(120.0);
 					break;
 				case 3:
-					ais.setPhaseShift(120.0);
+					elem.setPhaseShift(120.0);
 					break;
 				default:  // higher order systems
-					ais.setPhaseShift(360.0 / ais.getNumPhases());
+					elem.setPhaseShift(360.0 / elem.getNumPhases());
 					break;
 				}
-				ais.setNumConds(ais.getNumPhases());  // force reallocation of terminal info
+				elem.setNumConds(elem.getNumPhases());  // force reallocation of terminal info
 				break;
 			case 5:
 				switch (param.toUpperCase().charAt(0)) {
 				case 'P':
-					ais.setScanType(1);
+					elem.setScanType(SequenceType.POS);
 					break;
 				case 'Z':
-					ais.setScanType(0);
+					elem.setScanType(SequenceType.ZERO);
 					break;
 				case 'N':
-					ais.setScanType(-1);
+					elem.setScanType(SequenceType.NONE);
 					break;
 				default:
-					DSS.doSimpleMsg("Unknown scan type for \"" + getClassName() +"."+ ais.getName() + "\": "+param, 331);
+					DSS.doSimpleMsg("Unknown scan type for \"" + getClassName() + "." +
+							elem.getName() + "\": "+param, 331);
 					break;
 				}
 				break;
 			case 6:
 				switch (param.toUpperCase().charAt(0)) {
 				case 'P':
-					ais.setSequenceType(1);
+					elem.setSequenceType(SequenceType.POS);
 					break;
 				case 'Z':
-					ais.setSequenceType(0);
+					elem.setSequenceType(SequenceType.ZERO);
 					break;
 				case 'N':
-					ais.setSequenceType(-1);
+					elem.setSequenceType(SequenceType.NONE);
 					break;
 				default:
-					DSS.doSimpleMsg("Unknown sequence type for \"" + getClassName() +"."+ ais.getName() + "\": "+param, 331);
+					DSS.doSimpleMsg("Unknown sequence type for \"" + getClassName() + "." +
+							elem.getName() + "\": "+param, 331);
 					break;
 				}
 				break;
@@ -169,47 +171,47 @@ public class ISource extends PCClass {
 			param     = parser.makeString();
 		}
 
-		ais.recalcElementData();
-		ais.setYPrimInvalid(true);
+		elem.recalcElementData();
+		elem.setYPrimInvalid(true);
 
-		return result;
+		return 0;
 	}
 
 	@Override
 	protected int makeLike(String otherSource) {
-		int result = 0;
+		int success = 0;
 
 		/* See if we can find this line name in the present collection */
-		ISourceObj otherISource = (ISourceObj) find(otherSource);
+		ISourceObj other = (ISourceObj) find(otherSource);
 
-		if (otherISource != null) {
-			ISourceObj ais  = activeISourceObj;
+		if (other != null) {
+			ISourceObj elem = activeISourceObj;
 
-			if (ais.getNumPhases() != otherISource.getNumPhases()) {
-				ais.setNumPhases(otherISource.getNumPhases());
-				ais.setNumConds(ais.getNumPhases());  // forces reallocation of terminal stuff
+			if (elem.getNumPhases() != other.getNumPhases()) {
+				elem.setNumPhases(other.getNumPhases());
+				elem.setNumConds(elem.getNumPhases());  // forces reallocation of terminal stuff
 
-				ais.setYOrder(ais.getNumConds() * ais.getNumTerms());
-				ais.setYPrimInvalid(true);
+				elem.setYOrder(elem.getNumConds() * elem.getNumTerms());
+				elem.setYPrimInvalid(true);
 			}
 
-			ais.setAmps(otherISource.getAmps());
-			ais.setAngle(otherISource.getAngle());
-			ais.setSrcFrequency(otherISource.getSrcFrequency());
-			ais.setScanType(otherISource.getScanType());
-			ais.setSequenceType(otherISource.getSequenceType());
+			elem.setAmps(other.getAmps());
+			elem.setAngle(other.getAngle());
+			elem.setSrcFrequency(other.getSrcFrequency());
+			elem.setScanType(other.getScanType());
+			elem.setSequenceType(other.getSequenceType());
 
-			classMakeLike(otherISource); // set spectrum, base frequency
+			classMakeLike(other); // set spectrum, base frequency
 
-			for (int i = 0; i < ais.getParentClass().getNumProperties(); i++)
-				ais.setPropertyValue(i, otherISource.getPropertyValue(i));
+			for (int i = 0; i < elem.getParentClass().getNumProperties(); i++)
+				elem.setPropertyValue(i, other.getPropertyValue(i));
 
-			result = 1;
+			success = 1;
 		} else {
-			DSS.doSimpleMsg("Error in ISource makeLike: \"" + otherSource + "\" not found.", 332);
+			DSS.doSimpleMsg("Error in ISource makeLike: \"" + otherSource + "\" not found", 332);
 		}
 
-		return result;
+		return success;
 	}
 
 	@Override

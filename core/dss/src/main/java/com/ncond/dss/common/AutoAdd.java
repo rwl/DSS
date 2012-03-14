@@ -16,7 +16,7 @@ import com.ncond.dss.common.exceptions.SolverProblem;
 import com.ncond.dss.common.types.Algorithm;
 import com.ncond.dss.common.types.AutoAddType;
 import com.ncond.dss.common.types.ControlMode;
-import com.ncond.dss.common.types.LoadModel;
+import com.ncond.dss.common.types.SolutionLoadModel;
 import com.ncond.dss.conversion.Generator;
 import com.ncond.dss.delivery.Capacitor;
 import com.ncond.dss.delivery.PDElement;
@@ -275,8 +275,8 @@ public class AutoAdd {
 		Circuit ckt = DSS.activeCircuit;
 		SolutionObj sol = ckt.getSolution();
 
-		if (sol.getLoadModel() == LoadModel.ADMITTANCE) {
-			sol.setLoadModel(LoadModel.POWERFLOW);
+		if (sol.getLoadModel() == SolutionLoadModel.ADMITTANCE) {
+			sol.setLoadModel(SolutionLoadModel.POWERFLOW);
 			sol.setSystemYChanged(true);  // force rebuild of system Y without loads
 		}
 
