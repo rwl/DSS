@@ -28,7 +28,6 @@ public class SwtControl extends ControlClass {
 
 	@Override
 	protected void defineProperties() {
-
 		numProperties = SwtControl.NumPropsThisClass;
 		countProperties();  // get inherited property count
 
@@ -56,7 +55,6 @@ public class SwtControl extends ControlClass {
 
 	@Override
 	public int newObject(String objName) {
-
 		DSS.activeCircuit.setActiveCktElement(new SwtControlObj(this, objName));
 		return addObjectToList(DSS.activeDSSObject);
 	}
@@ -69,13 +67,12 @@ public class SwtControl extends ControlClass {
 		activeSwtControlObj = (SwtControlObj) elementList.getActive();
 		DSS.activeCircuit.setActiveCktElement(activeSwtControlObj);
 
-		int result = 0;
-
-		SwtControlObj asc = activeSwtControlObj;
+		SwtControlObj elem = activeSwtControlObj;
 
 		int paramPointer = -1;
 		String paramName = parser.getNextParam();
 		String param = parser.makeString();
+
 		while (param.length() > 0) {
 			if (paramName.length() == 0) {
 				paramPointer += 1;
@@ -84,30 +81,31 @@ public class SwtControl extends ControlClass {
 			}
 
 			if (paramPointer >= 0 && paramPointer < numProperties)
-				asc.setPropertyValue(paramPointer, param);
+				elem.setPropertyValue(paramPointer, param);
 
 			switch (paramPointer) {
 			case -1:
-				DSS.doSimpleMsg("Unknown parameter \"" + paramName + "\" for object \"" + getClassName() +"."+ asc.getName() + "\"", 382);
+				DSS.doSimpleMsg("Unknown parameter \"" + paramName + "\" for object \"" +
+						getClassName() +"."+ elem.getName() + "\"", 382);
 				break;
 			case 0:
-				asc.setElementName(param.toLowerCase());
+				elem.setElementName(param.toLowerCase());
 				break;
 			case 1:
-				asc.setElementTerminalIdx(parser.makeInteger() - 1);
+				elem.setElementTerminalIdx(parser.makeInteger() - 1);
 				break;
 			case 2:
-				asc.interpretSwitchAction(param);
+				elem.interpretSwitchAction(param);
 				break;
 			case 3:
-				asc.setLocked( Util.interpretYesNo(param) );
+				elem.setLocked( Util.interpretYesNo(param) );
 				break;
 			case 4:
-				asc.setTimeDelay(parser.makeDouble());
+				elem.setTimeDelay(parser.makeDouble());
 				break;
 			default:
 				// inherited parameters
-				classEdit(activeSwtControlObj, paramPointer - SwtControl.NumPropsThisClass);
+				classEdit(activeSwtControlObj, paramPointer - NumPropsThisClass);
 				break;
 			}
 
@@ -115,38 +113,37 @@ public class SwtControl extends ControlClass {
 			param = parser.makeString();
 		}
 
-		asc.recalcElementData();
+		elem.recalcElementData();
 
-		return result;
+		return 0;
 	}
 
 	@Override
 	protected int makeLike(String swtControlName) {
-
-		int result = 0;
 		/* See if we can find this SwtControl name in the present collection */
-		SwtControlObj otherSwtControl = (SwtControlObj) find(swtControlName);
-		if (otherSwtControl != null) {
-			SwtControlObj asc = activeSwtControlObj;
+		SwtControlObj other = (SwtControlObj) find(swtControlName);
 
-			asc.setNumPhases(otherSwtControl.getNumPhases());
-			asc.setNumConds(otherSwtControl.getNumConds());  // force reallocation of terminal stuff
+		if (other != null) {
+			SwtControlObj elem = activeSwtControlObj;
 
-			asc.setElementName(otherSwtControl.getElementName());
-			asc.setElementTerminalIdx(otherSwtControl.getElementTerminalIdx());
-			asc.setControlledElement(otherSwtControl.getControlledElement());  // pointer to target circuit element
+			elem.setNumPhases(other.getNumPhases());
+			elem.setNumConds(other.getNumConds());  // force reallocation of terminal stuff
 
-			asc.setTimeDelay(otherSwtControl.getTimeDelay());
-			asc.setLocked(otherSwtControl.isLocked());
-			asc.setPresentState(otherSwtControl.getPresentState());
+			elem.setElementName(other.getElementName());
+			elem.setElementTerminalIdx(other.getElementTerminalIdx());
+			elem.setControlledElement(other.getControlledElement());  // pointer to target circuit element
 
-			for (int i = 0; i < asc.getParentClass().getNumProperties(); i++)
-				asc.setPropertyValue(i, otherSwtControl.getPropertyValue(i));
+			elem.setTimeDelay(other.getTimeDelay());
+			elem.setLocked(other.isLocked());
+			elem.setPresentState(other.getPresentState());
+
+			for (int i = 0; i < elem.getParentClass().getNumProperties(); i++)
+				elem.setPropertyValue(i, other.getPropertyValue(i));
 		} else {
 			DSS.doSimpleMsg("Error in SwtControl makeLike: \"" + swtControlName + "\" not found.", 383);
 		}
 
-		return result;
+		return 0;
 	}
 
 	@Override

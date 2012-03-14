@@ -12,13 +12,6 @@ public class Relay extends ControlClass {
 
 	public static final int NumPropsThisClass = 29;
 
-	public static final int CURRENT = 0;  /* Default */
-	public static final int VOLTAGE = 1;
-	public static final int REVPOWER = 3;
-	public static final int NEGCURRENT = 4;
-	public static final int NEGVOLTAGE = 5;
-	public static final int GENERIC = 6;  /* Use this for frequency, etc. Generic over/under relay */
-
 	public static RelayObj activeRelayObj;
 
 	private DSSClass TCC_CurveClass;
@@ -41,7 +34,6 @@ public class Relay extends ControlClass {
 
 	@Override
 	protected void defineProperties() {
-
 		numProperties = Relay.NumPropsThisClass;
 		countProperties();  // get inherited property count
 
@@ -124,19 +116,17 @@ public class Relay extends ControlClass {
 
 	@Override
 	public int newObject(String objName) {
-
 		DSS.activeCircuit.setActiveCktElement(new RelayObj(this, objName));
 		return addObjectToList(DSS.activeDSSObject);
 	}
 
 	public TCC_CurveObj getTccCurve(String curveName) {
+		TCC_CurveObj curve = (TCC_CurveObj) TCC_CurveClass.find(curveName);
 
-		TCC_CurveObj result = (TCC_CurveObj) TCC_CurveClass.find(curveName);
+		if (curve == null)
+			DSS.doSimpleMsg("TCC curve object: \"" + curveName + "\" not found.", 380);
 
-		if (result == null)
-			DSS.doSimpleMsg("TCC curve object: \""+curveName+"\" not found.", 380);
-
-		return result;
+		return curve;
 	}
 
 	@Override
@@ -147,13 +137,12 @@ public class Relay extends ControlClass {
 		activeRelayObj = (RelayObj) elementList.getActive();
 		DSS.activeCircuit.setActiveCktElement(activeRelayObj);
 
-		int result = 0;
-
-		RelayObj ar = activeRelayObj;
+		RelayObj elem = activeRelayObj;
 
 		int paramPointer = -1;
 		String paramName = parser.getNextParam();
 		String param = parser.makeString();
+
 		while (param.length() > 0) {
 			if (paramName.length() == 0) {
 				paramPointer += 1;
@@ -162,107 +151,108 @@ public class Relay extends ControlClass {
 			}
 
 			if (paramPointer >= 0 && paramPointer < numProperties) {
-				ar.setPropertyValue(propertyIdxMap[paramPointer], param);
+				elem.setPropertyValue(propertyIdxMap[paramPointer], param);
 			} else {
-				DSS.doSimpleMsg("Unknown parameter \""+paramName+"\" for relay \""+ar.getName()+"\"", 381);
+				DSS.doSimpleMsg("Unknown parameter \""+paramName+"\" for relay \""+elem.getName()+"\"", 381);
 			}
 
 			if (paramPointer >= 0) {
 				switch (propertyIdxMap[paramPointer]) {
 				/* internal relay property commands */
 				case -1:
-					DSS.doSimpleMsg("Unknown parameter \"" + paramName + "\" for object \"" + getClassName() +"."+ ar.getName() + "\"", 382);
+					DSS.doSimpleMsg("Unknown parameter \"" + paramName + "\" for object \"" +
+							getClassName() +"."+ elem.getName() + "\"", 382);
 					break;
 				case 0:
-					ar.setMonitoredElementName(param.toLowerCase());
+					elem.setMonitoredElementName(param.toLowerCase());
 					break;
 				case 1:
-					ar.setMonitoredElementTerminalIdx(parser.makeInteger() - 1);
+					elem.setMonitoredElementTerminalIdx(parser.makeInteger() - 1);
 					break;
 				case 2:
-					ar.setElementName(param.toLowerCase());
+					elem.setElementName(param.toLowerCase());
 					break;
 				case 3:
-					ar.setElementTerminalIdx(parser.makeInteger() - 1);
+					elem.setElementTerminalIdx(parser.makeInteger() - 1);
 					break;
 				case 4:
-					ar.interpretRelayType(param);
+					elem.interpretRelayType(param);
 					break;
 				case 5:
-					ar.setPhaseCurve(getTccCurve(param));
+					elem.setPhaseCurve(getTccCurve(param));
 					break;
 				case 6:
-					ar.setGroundCurve(getTccCurve(param));
+					elem.setGroundCurve(getTccCurve(param));
 					break;
 				case 7:
-					ar.setPhaseTrip(parser.makeDouble());
+					elem.setPhaseTrip(parser.makeDouble());
 					break;
 				case 8:
-					ar.setGroundTrip(parser.makeDouble());
+					elem.setGroundTrip(parser.makeDouble());
 					break;
 				case 9:
-					ar.setPhaseInst(parser.makeDouble());
+					elem.setPhaseInst(parser.makeDouble());
 					break;
 				case 10:
-					ar.setGroundInst(parser.makeDouble());
+					elem.setGroundInst(parser.makeDouble());
 					break;
 				case 11:
-					ar.setResetTime(parser.makeDouble());
+					elem.setResetTime(parser.makeDouble());
 					break;
 				case 12:
-					ar.setNumReclose(parser.makeInteger() - 1);  // one less than number of shots
+					elem.setNumReclose(parser.makeInteger() - 1);  // one less than number of shots
 					break;
 				case 13:
 					if (param.equalsIgnoreCase("none")) {
-						ar.setNumReclose(1);
+						elem.setNumReclose(1);
 					} else {
-						ar.setNumReclose(parser.parseAsVector(4, ar.getRecloseIntervals()));  // max of 4 allowed
+						elem.setNumReclose(parser.parseAsVector(4, elem.getRecloseIntervals()));  // max of 4 allowed
 					}
 					break;
 				case 14:
-					ar.setOVCurve(getTccCurve(param));
+					elem.setOVCurve(getTccCurve(param));
 					break;
 				case 15:
-					ar.setUVCurve(getTccCurve(param));
+					elem.setUVCurve(getTccCurve(param));
 					break;
 				case 16:
-					ar.setKVBase(parser.makeDouble());
+					elem.setKVBase(parser.makeDouble());
 					break;
 				case 17:
-					ar.setBreakerTime(parser.makeDouble());
+					elem.setBreakerTime(parser.makeDouble());
 					break;
 				case 18:
-					ar.interpretRelayAction(param);
+					elem.interpretRelayAction(param);
 					break;
 				case 19:
-					ar.setMonitorVariable(param.toLowerCase());  // for pc elements
+					elem.setMonitorVariable(param.toLowerCase());  // for PC elements
 					break;
 				case 20:
-					ar.setPctPickup46(parser.makeDouble());
+					elem.setPctPickup46(parser.makeDouble());
 					break;
 				case 21:
-					ar.setIsqt46(parser.makeDouble());
+					elem.setIsqt46(parser.makeDouble());
 					break;
 				case 22:
-					ar.setBaseAmps46(parser.makeDouble());
+					elem.setBaseAmps46(parser.makeDouble());
 					break;
 				case 23:
-					ar.setDelayTime(parser.makeDouble());
+					elem.setDelayTime(parser.makeDouble());
 					break;
 				case 24:
-					ar.setPctPickup47(parser.makeDouble());
+					elem.setPctPickup47(parser.makeDouble());
 					break;
 				case 25:
-					ar.setOverTrip(parser.makeDouble());
+					elem.setOverTrip(parser.makeDouble());
 					break;
 				case 26:
-					ar.setUnderTrip(parser.makeDouble());
+					elem.setUnderTrip(parser.makeDouble());
 					break;
 				case 27:
-					ar.setTDPhase(parser.makeDouble());
+					elem.setTDPhase(parser.makeDouble());
 					break;
 				case 28:
-					ar.setTDGround(parser.makeDouble());
+					elem.setTDGround(parser.makeDouble());
 					break;
 				default:
 					// inherited parameters
@@ -275,23 +265,23 @@ public class Relay extends ControlClass {
 				switch (propertyIdxMap[paramPointer]) {
 				/* Default the controlled element to the monitored element */
 				case 0:
-					ar.setElementName(ar.getMonitoredElementName());
+					elem.setElementName(elem.getMonitoredElementName());
 					break;
 				case 1:
-					ar.setElementTerminalIdx(ar.getMonitoredElementTerminalIdx());
+					elem.setElementTerminalIdx(elem.getMonitoredElementTerminalIdx());
 					break;
 				case 4:  /* Set default reclose intervals */
 					switch (param.toLowerCase().charAt(0)) {
 					case 'c':
-						ar.setPropertyValue(13, "(0.5, 2.0, 2.0)");
+						elem.setPropertyValue(13, "(0.5, 2.0, 2.0)");
 						break;
 					case 'v':
-						ar.setPropertyValue(13, "(5.0)");
+						elem.setPropertyValue(13, "(5.0)");
 						break;
 					}
-					DSS.auxParser.setCmdString(ar.getPropertyValue(13));
+					DSS.auxParser.setCmdString(elem.getPropertyValue(13));
 					paramName = DSS.auxParser.getNextParam();
-					ar.setNumReclose(DSS.auxParser.parseAsVector(4, ar.getRecloseIntervals()));
+					elem.setNumReclose(DSS.auxParser.parseAsVector(4, elem.getRecloseIntervals()));
 					break;
 				}
 			}
@@ -300,80 +290,79 @@ public class Relay extends ControlClass {
 			param = parser.makeString();
 		}
 
-		ar.recalcElementData();
+		elem.recalcElementData();
 
-		return result;
+		return 0;
 	}
 
 	@Override
 	protected int makeLike(String relayName) {
-		int result = 0;
 		/* See if we can find this relay name in the present collection */
-		RelayObj otherRelay = (RelayObj) find(relayName);
-		if (otherRelay != null) {
+		RelayObj other = (RelayObj) find(relayName);
 
-			RelayObj ar = activeRelayObj;
+		if (other != null) {
+			RelayObj elem = activeRelayObj;
 
-			ar.setNumPhases(otherRelay.getNumPhases());
-			ar.setNumConds(otherRelay.getNumConds());  // force reallocation of terminal stuff
+			elem.setNumPhases(other.getNumPhases());
+			elem.setNumConds(other.getNumConds());  // force reallocation of terminal stuff
 
-			ar.setElementName(otherRelay.getElementName());
-			ar.setElementTerminalIdx(otherRelay.getElementTerminalIdx());
-			ar.setControlledElement(otherRelay.getControlledElement());  // target circuit element
+			elem.setElementName(other.getElementName());
+			elem.setElementTerminalIdx(other.getElementTerminalIdx());
+			elem.setControlledElement(other.getControlledElement());  // target circuit element
 
-			ar.setMonitoredElement(otherRelay.getMonitoredElement());  // target circuit element
-			ar.setMonitoredElementName(otherRelay.getMonitoredElementName());  // target circuit element
-			ar.setMonitoredElementTerminalIdx(otherRelay.getMonitoredElementTerminalIdx());  // target circuit element
+			elem.setMonitoredElement(other.getMonitoredElement());  // target circuit element
+			elem.setMonitoredElementName(other.getMonitoredElementName());  // target circuit element
+			elem.setMonitoredElementTerminalIdx(other.getMonitoredElementTerminalIdx());  // target circuit element
 
-			ar.setPhaseCurve(otherRelay.getPhaseCurve());
-			ar.setGroundCurve(otherRelay.getGroundCurve());
-			ar.setOVCurve(otherRelay.getOVCurve());
-			ar.setUVCurve(otherRelay.getUVCurve());
-			ar.setPhaseTrip(otherRelay.getPhaseTrip());
-			ar.setGroundTrip(otherRelay.getGroundTrip());
-			ar.setTDPhase(otherRelay.getTDPhase());
-			ar.setTDGround(otherRelay.getTDGround());
-			ar.setPhaseInst(otherRelay.getPhaseInst());
-			ar.setGroundInst(otherRelay.getGroundInst());
-			ar.setResetTime(otherRelay.getResetTime());
-			ar.setNumReclose(otherRelay.getNumReclose());
-			ar.setDelayTime(otherRelay.getDelayTime());
-			ar.setBreakerTime(otherRelay.getBreakerTime());
+			elem.setPhaseCurve(other.getPhaseCurve());
+			elem.setGroundCurve(other.getGroundCurve());
+			elem.setOVCurve(other.getOVCurve());
+			elem.setUVCurve(other.getUVCurve());
+			elem.setPhaseTrip(other.getPhaseTrip());
+			elem.setGroundTrip(other.getGroundTrip());
+			elem.setTDPhase(other.getTDPhase());
+			elem.setTDGround(other.getTDGround());
+			elem.setPhaseInst(other.getPhaseInst());
+			elem.setGroundInst(other.getGroundInst());
+			elem.setResetTime(other.getResetTime());
+			elem.setNumReclose(other.getNumReclose());
+			elem.setDelayTime(other.getDelayTime());
+			elem.setBreakerTime(other.getBreakerTime());
 
-			ar.setRecloseIntervals( Util.resizeArray(ar.getRecloseIntervals(), 4) );  // always make a max of 4
-			for (int i = 0; i < ar.getNumReclose(); i++)
-				ar.getRecloseIntervals()[i] = otherRelay.getRecloseIntervals()[i];
+			elem.setRecloseIntervals( Util.resizeArray(elem.getRecloseIntervals(), 4) );  // always make a max of 4
+			for (int i = 0; i < elem.getNumReclose(); i++)
+				elem.getRecloseIntervals()[i] = other.getRecloseIntervals()[i];
 
-			ar.setKVBase(otherRelay.getKVBase());
-			ar.setLockedOut(otherRelay.isLockedOut());
+			elem.setKVBase(other.getKVBase());
+			elem.setLockedOut(other.isLockedOut());
 
-			ar.setControlType(otherRelay.getControlType());
-			ar.setPresentState(otherRelay.getPresentState());
-			ar.setCondOffset(otherRelay.getCondOffset());
+			elem.setControlType(other.getControlType());
+			elem.setPresentState(other.getPresentState());
+			elem.setCondOffset(other.getCondOffset());
 
 			/* 46 relay neg seq current */
-			ar.setPickupAmps46(otherRelay.getPickupAmps46());
-			ar.setPctPickup46(otherRelay.getPctPickup46());
-			ar.setBaseAmps46(otherRelay.getBaseAmps46());
-			ar.setIsqt46(otherRelay.getIsqt46());
+			elem.setPickupAmps46(other.getPickupAmps46());
+			elem.setPctPickup46(other.getPctPickup46());
+			elem.setBaseAmps46(other.getBaseAmps46());
+			elem.setIsqt46(other.getIsqt46());
 
 			/* 47 relay */
-			ar.setPickupVolts47(otherRelay.getPickupVolts47());
-			ar.setPctPickup47(otherRelay.getPctPickup47());
+			elem.setPickupVolts47(other.getPickupVolts47());
+			elem.setPctPickup47(other.getPctPickup47());
 
 			/* Generic relay */
-			ar.setMonitorVariable(otherRelay.getMonitorVariable());
-			ar.setOverTrip(otherRelay.getOverTrip());
-			ar.setUnderTrip(otherRelay.getUnderTrip());
+			elem.setMonitorVariable(other.getMonitorVariable());
+			elem.setOverTrip(other.getOverTrip());
+			elem.setUnderTrip(other.getUnderTrip());
 
-			for (int i = 0; i < ar.getParentClass().getNumProperties(); i++)
-				ar.setPropertyValue(i, otherRelay.getPropertyValue(i));
+			for (int i = 0; i < elem.getParentClass().getNumProperties(); i++)
+				elem.setPropertyValue(i, other.getPropertyValue(i));
 
 		} else {
 			DSS.doSimpleMsg("Error in Relay makeLike: \"" + relayName + "\" not found.", 383);
 		}
 
-		return result;
+		return 0;
 	}
 
 	@Override

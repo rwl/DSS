@@ -44,14 +44,6 @@ public class StorageController extends ControlClass {
 
 	public static final int NumPropsThisClass = 32;
 
-	/* Control modes */
-	public static final int FOLLOW      = 1;
-	public static final int LOADSHAPE   = 2;
-	public static final int SUPPORT     = 3;
-	public static final int TIME        = 4;
-	public static final int PEAKSHAVE   = 5;
-	public static final int SCHEDULE    = 6;
-
 	/* Other constants */
 	public static final int RELEASE_INHIBIT = 999;
 
@@ -73,72 +65,72 @@ public class StorageController extends ControlClass {
 
 	@Override
 	protected void defineProperties() {
-
 		numProperties = StorageController.NumPropsThisClass;
 		countProperties();   // get inherited property count
+
 		allocatePropertyArrays();
 
 		// define property names
-		propertyName[StorageController.ELEMENT]                 = "Element";
-		propertyName[StorageController.TERMINAL]                = "Terminal";
-		propertyName[StorageController.KW_TARGET]               = "kWTarget";
-		propertyName[StorageController.KW_BAND]                 = "%kWBand";
-		propertyName[StorageController.PF_TARGET]               = "PFTarget";
-		propertyName[StorageController.PF_BAND]                 = "PFBand";
-		propertyName[StorageController.ELEMENT_LIST]            = "ElementList";
-		propertyName[StorageController.WEIGHTS]                 = "Weights";
-		propertyName[StorageController.MODE_DISCHARGE]          = "ModeDischarge";
-		propertyName[StorageController.MODE_CHARGE]             = "ModeCharge";
-		propertyName[StorageController.TIME_DISCHARGE_TRIGGER]  = "TimeDischargeTrigger";
-		propertyName[StorageController.TIME_CHARGE_TRIGGER]     = "TimeChargeTrigger";
-		propertyName[StorageController.RATE_KW]                 = "%RatekW";
-		propertyName[StorageController.RATE_KVAR]               = "%Ratekvar";
-		propertyName[StorageController.RATE_CHARGE]             = "%RateCharge";
-		propertyName[StorageController.RESERVE]                 = "%Reserve";
-		propertyName[StorageController.KWH_TOTAL]               = "kWhTotal";
-		propertyName[StorageController.KW_TOTAL]                = "kWTotal";
-		propertyName[StorageController.KWH_ACTUAL]              = "kWhActual";
-		propertyName[StorageController.KW_ACTUAL]               = "kWActual";
-		propertyName[StorageController.KW_NEED]                 = "kWneed";
-		propertyName[StorageController.PARTICIPATION]           = "%Participation";
-		propertyName[StorageController.YEARLY]                  = "Yearly";
-		propertyName[StorageController.DAILY]                   = "Daily";
-		propertyName[StorageController.DUTY]                    = "Duty";
-		propertyName[StorageController.EVENTLOG]                = "EventLog";
-		propertyName[StorageController.VAR_DISPATCH]            = "VarDispatch";
-		propertyName[StorageController.INHIBIT_TIME]            = "InhibitTime";
-		propertyName[StorageController.T_UP_RAMP]               = "Tup";
-		propertyName[StorageController.T_FLAT]                  = "TFlat";
-		propertyName[StorageController.T_DN_RAMP]               = "Tdn";
-		propertyName[StorageController.KW_THRESHOLD]            = "kWThreshold";
+		propertyName[ELEMENT]                 = "Element";
+		propertyName[TERMINAL]                = "Terminal";
+		propertyName[KW_TARGET]               = "kWTarget";
+		propertyName[KW_BAND]                 = "%kWBand";
+		propertyName[PF_TARGET]               = "PFTarget";
+		propertyName[PF_BAND]                 = "PFBand";
+		propertyName[ELEMENT_LIST]            = "ElementList";
+		propertyName[WEIGHTS]                 = "Weights";
+		propertyName[MODE_DISCHARGE]          = "ModeDischarge";
+		propertyName[MODE_CHARGE]             = "ModeCharge";
+		propertyName[TIME_DISCHARGE_TRIGGER]  = "TimeDischargeTrigger";
+		propertyName[TIME_CHARGE_TRIGGER]     = "TimeChargeTrigger";
+		propertyName[RATE_KW]                 = "%RatekW";
+		propertyName[RATE_KVAR]               = "%Ratekvar";
+		propertyName[RATE_CHARGE]             = "%RateCharge";
+		propertyName[RESERVE]                 = "%Reserve";
+		propertyName[KWH_TOTAL]               = "kWhTotal";
+		propertyName[KW_TOTAL]                = "kWTotal";
+		propertyName[KWH_ACTUAL]              = "kWhActual";
+		propertyName[KW_ACTUAL]               = "kWActual";
+		propertyName[KW_NEED]                 = "kWneed";
+		propertyName[PARTICIPATION]           = "%Participation";
+		propertyName[YEARLY]                  = "Yearly";
+		propertyName[DAILY]                   = "Daily";
+		propertyName[DUTY]                    = "Duty";
+		propertyName[EVENTLOG]                = "EventLog";
+		propertyName[VAR_DISPATCH]            = "VarDispatch";
+		propertyName[INHIBIT_TIME]            = "InhibitTime";
+		propertyName[T_UP_RAMP]               = "Tup";
+		propertyName[T_FLAT]                  = "TFlat";
+		propertyName[T_DN_RAMP]               = "Tdn";
+		propertyName[KW_THRESHOLD]            = "kWThreshold";
 
 
-		propertyHelp[StorageController.ELEMENT] =
+		propertyHelp[ELEMENT] =
 				"Full object name of the circuit element, typically a line or transformer, "+
 				"which the control is monitoring. There is no default; must be specified.";
-		propertyHelp[StorageController.TERMINAL] =
+		propertyHelp[TERMINAL] =
 				"Number of the terminal of the circuit element to which the StorageController control is connected. "+
 				"1 or 2, typically.  Default is 1. Make sure you have the direction on the power matching the sign of kWLimit.";
-		propertyHelp[StorageController.KW_TARGET] =
+		propertyHelp[KW_TARGET] =
 				"kW target for Discharging. The storage element fleet is dispatched to try to hold the power in band "+
 				"at least until the storage is depleted.";
-		propertyHelp[StorageController.KW_BAND] =
+		propertyHelp[KW_BAND] =
 				"Bandwidth (% of Target kW) of the dead band around the kW target value. Default is 2% (+/-1%)." +
 				"No dispatch changes are attempted If the power in the monitored terminal stays within this band.";
-		propertyHelp[StorageController.PF_TARGET] =
+		propertyHelp[PF_TARGET] =
 				"Power Factor target for dispatching the reactive power. Default is 0.96. The reactive power of the storage element fleet is dispatched to try to hold the power factor in band. "+
 				"It is assumed that the storage element inverter can produce kvar up to its kVA limit regardless of storage level.";
-		propertyHelp[StorageController.PF_BAND] =
+		propertyHelp[PF_BAND] =
 				"Bandwidth of the Target power factor of the monitored element. of the dead band around the kvar target value. Default is 0.04 (+/- 0.02)." +
 				"No dispatch changes of the kvar are attempted If the power factor of the monitored terminal stays within this band.";
-		propertyHelp[StorageController.ELEMENT_LIST] =
+		propertyHelp[ELEMENT_LIST] =
 				"Array list of Storage elements to be controlled.  If not specified, all storage elements in the circuit not presently dispatched by another controller " +
 				"are assumed dispatched by this controller.";
-		propertyHelp[StorageController.WEIGHTS] =
+		propertyHelp[WEIGHTS] =
 				"Array of proportional weights corresponding to each storage element in the ElementList. " +
 				"The needed kW or kvar to get back to center band is dispatched to each storage element according to these weights. " +
 				"Default is to set all weights to 1.0.";
-		propertyHelp[StorageController.MODE_DISCHARGE] =
+		propertyHelp[MODE_DISCHARGE] =
 				"{PeakShave* | Follow | Support | Loadshape | Time | Schedule} Mode of operation for the DISCHARGE FUNCTION of this controller. " +
 				DSS.CRLF+DSS.CRLF+"In PeakShave mode (Default), the control attempts to discharge storage to keep power in the monitored element below the kWTarget. " +
 				DSS.CRLF+DSS.CRLF+"In Follow mode, the control is triggered by time and resets the kWTarget value to the present monitored element power. " +
@@ -149,61 +141,61 @@ public class StorageController extends ControlClass {
 				DSS.CRLF+DSS.CRLF+"In Time mode, the storage discharge is turned on at the specified %RatekW and %Ratekvar at the specified discharge trigger time in fractional hours." +
 				DSS.CRLF+DSS.CRLF+"In Schedule mode, the Tup, TFlat, and Tdn properties specify the up ramp duration, flat duration, and down ramp duration for the schedule. " +
 				"The schedule start time is set by TimeDischargeTrigger and the rate of discharge for the flat part is determined by RatekW.";
-		propertyHelp[StorageController.MODE_CHARGE] =
+		propertyHelp[MODE_CHARGE] =
 				"{Loadshape | Time*} Mode of operation for the CHARGE FUNCTION of this controller. " +
 				"In Loadshape mode, both charging and discharging precisely follows the per unit loadshape. " +
 				"Storage is charged when the loadshape value is negative. " +
 				"In Time mode, the storage charging FUNCTION is triggered at the specified %RateCharge at the specified sharge trigger time in fractional hours.";
-		propertyHelp[StorageController.TIME_DISCHARGE_TRIGGER] =
+		propertyHelp[TIME_DISCHARGE_TRIGGER] =
 				"Default time of day (hr) for initiating Discharging of the fleet. During Follow or Time mode discharging is triggered at a fixed time " +
 				"each day at this hour. If Follow mode, storage will be discharged to attempt to hold the load at or below the power level at the time of triggering. " +
 				"In Time mode, the discharge is based on the %RatekW property value. " +
 				"Set this to a negative value to ignore. Default is 12.0 for Follow mode; otherwise it is -1 (ignored). ";
-		propertyHelp[StorageController.TIME_CHARGE_TRIGGER] =
+		propertyHelp[TIME_CHARGE_TRIGGER] =
 				"Default time of day (hr) for initiating charging in Time control mode. Set this to a negative value to ignore. Default is 2.0.  (0200)." +
 				"When this value is >0 the storage fleet is set to charging at this time regardless of other control criteria to make sure storage is " +
 				"topped off for the next discharge cycle.";
-		propertyHelp[StorageController.RATE_KW] =
+		propertyHelp[RATE_KW] =
 				"Sets the kW discharge rate in % of rated capacity for each element of the fleet. Applies to TIME control mode or anytime discharging is triggered " +
 				"by time.";
-		propertyHelp[StorageController.RATE_KVAR] =
+		propertyHelp[RATE_KVAR] =
 				"Sets the kvar discharge rate in % of rated capacity for each element of the fleet. Applies to TIME control mode or anytime discharging is triggered " +
 				"by time." ;
-		propertyHelp[StorageController.RATE_CHARGE] =
+		propertyHelp[RATE_CHARGE] =
 				"Sets the kW charging rate in % of rated capacity for each element of the fleet. Applies to TIME control mode and anytime charging mode is " +
 				"entered due to a time trigger.";
-		propertyHelp[StorageController.RESERVE] =
+		propertyHelp[RESERVE] =
 				"Use this property to change the % reserve for each storage element under control of this controller. This might be used, for example, to " +
 				"allow deeper discharges of storage or in case of emergency operation to use the remainder of the storage element.";
-		propertyHelp[StorageController.KWH_TOTAL] =
+		propertyHelp[KWH_TOTAL] =
 				"(Read only). Total rated kWh energy storage capacity of storage elements controlled by this controller.";
-		propertyHelp[StorageController.KW_TOTAL] =
+		propertyHelp[KW_TOTAL] =
 				"(Read only). Total rated kW power capacity of storage elements controlled by this controller.";
-		propertyHelp[StorageController.KWH_ACTUAL] =
+		propertyHelp[KWH_ACTUAL] =
 				"(Read only). Actual kWh output of all controlled storage elements. ";
-		propertyHelp[StorageController.KW_ACTUAL] =
+		propertyHelp[KW_ACTUAL] =
 				"(Read only). Actual kW output of all controlled storage elements. ";
-		propertyHelp[StorageController.KW_NEED] =
+		propertyHelp[KW_NEED] =
 				"(Read only). KW needed to meet target.";
-		propertyHelp[StorageController.PARTICIPATION] =
+		propertyHelp[PARTICIPATION] =
 				"Participation factor, %. Default = 100.";
-		propertyHelp[StorageController.YEARLY] =
+		propertyHelp[YEARLY] =
 				"Dispatch loadshape object, If any, for Yearly solution Mode.";
-		propertyHelp[StorageController.DAILY] =
+		propertyHelp[DAILY] =
 				"Dispatch loadshape object, If any, for Daily solution mode.";
-		propertyHelp[StorageController.DUTY] =
+		propertyHelp[DUTY] =
 				"Dispatch loadshape object, If any, for Dutycycle solution mode.";
-		propertyHelp[StorageController.EVENTLOG] =
+		propertyHelp[EVENTLOG] =
 				"{Yes/True | No/False} Default is No. Log control actions to Eventlog.";
-		propertyHelp[StorageController.VAR_DISPATCH] =
+		propertyHelp[VAR_DISPATCH] =
 				"{Yes/True | No/False} Default is No. Flag to indicate whether or not to disatch vars as well as watts.";
-		propertyHelp[StorageController.INHIBIT_TIME] =
+		propertyHelp[INHIBIT_TIME] =
 				"Hours (integer) to inhibit Discharging after going into Charge mode. Default is 5";
 
-		propertyHelp[StorageController.T_UP_RAMP]  = "Duration, hrs, of upramp part for SCHEDULE mode. Default is 0.25.";
-		propertyHelp[StorageController.T_FLAT]    = "Duration, hrs, of flat part for SCHEDULE mode. Default is 2.0.";
-		propertyHelp[StorageController.T_DN_RAMP]  = "Duration, hrs, of downramp part for SCHEDULE mode. Default is 0.25.";
-		propertyHelp[StorageController.KW_THRESHOLD] = "Threshold, kW, for Follow mode. kW has to be above this value for the Storage element " +
+		propertyHelp[T_UP_RAMP]  = "Duration, hrs, of upramp part for SCHEDULE mode. Default is 0.25.";
+		propertyHelp[T_FLAT]    = "Duration, hrs, of flat part for SCHEDULE mode. Default is 2.0.";
+		propertyHelp[T_DN_RAMP]  = "Duration, hrs, of downramp part for SCHEDULE mode. Default is 0.25.";
+		propertyHelp[KW_THRESHOLD] = "Threshold, kW, for Follow mode. kW has to be above this value for the Storage element " +
 				"to be dispatched on. Defaults to 75% of the kWTarget value. Must reset this property after " +
 				"setting kWTarget if you want a different value.";
 
@@ -213,7 +205,6 @@ public class StorageController extends ControlClass {
 
 	@Override
 	public int newObject(String objName) {
-
 		DSS.activeCircuit.setActiveCktElement(new StorageControllerObj(this, objName));
 		return addObjectToList(DSS.activeDSSObject);
 	}
@@ -226,13 +217,12 @@ public class StorageController extends ControlClass {
 		activeStorageControllerObj = (StorageControllerObj) elementList.getActive();
 		DSS.activeCircuit.setActiveCktElement(activeStorageControllerObj);
 
-		int result = 0;
-
-		StorageControllerObj asc = activeStorageControllerObj;
+		StorageControllerObj elem = activeStorageControllerObj;
 
 		int paramPointer = -1;
 		String paramName = parser.getNextParam();
 		String param = parser.makeString();
+
 		while (param.length() > 0) {
 			if (paramName.length() == 0) {
 				paramPointer += 1;
@@ -241,63 +231,64 @@ public class StorageController extends ControlClass {
 			}
 
 			if (paramPointer >= 0 && paramPointer < numProperties)
-				asc.setPropertyValue(paramPointer, param);
+				elem.setPropertyValue(paramPointer, param);
 
 			switch (paramPointer) {
 			case -1:
-				DSS.doSimpleMsg("Unknown parameter \"" + paramName + "\" for object \"" + getClassName() +"."+ asc.getName() + "\"", 14407);
+				DSS.doSimpleMsg("Unknown parameter \"" + paramName + "\" for object \"" +
+						getClassName() +"."+ elem.getName() + "\"", 14407);
 				break;
 			case StorageController.ELEMENT:
-				asc.setElementName(param.toLowerCase());
+				elem.setElementName(param.toLowerCase());
 				break;
 			case StorageController.TERMINAL:
-				asc.setElementTerminalIdx(parser.makeInteger() - 1);
+				elem.setElementTerminalIdx(parser.makeInteger() - 1);
 				break;
 			case StorageController.KW_TARGET:
-				asc.setKWTarget(parser.makeDouble());
+				elem.setKWTarget(parser.makeDouble());
 				break;
 			case StorageController.KW_BAND:
-				asc.setPctkWBand(parser.makeDouble());
+				elem.setPctkWBand(parser.makeDouble());
 				break;
 			case StorageController.PF_TARGET:
-				asc.setPFTarget( Util.convertPFToPFRange2(parser.makeDouble()) );
+				elem.setPFTarget( Util.convertPFToPFRange2(parser.makeDouble()) );
 				break;
 			case StorageController.PF_BAND:
-				asc.setPFBand(parser.makeDouble());
+				elem.setPFBand(parser.makeDouble());
 				break;
 			case StorageController.ELEMENT_LIST:
-				Util.interpretStringListArray(param, asc.getStorageNameList());
+				Util.interpretStringListArray(param, elem.getStorageNameList());
 				break;
 			case StorageController.WEIGHTS:
-				asc.setFleetSize(asc.getStorageNameList().size());
-				if (asc.getFleetSize() > 0) {
-					asc.setWeights( Util.resizeArray(asc.getWeights(), asc.getFleetSize()) );
-					Util.interpretDblArray(param, asc.getFleetSize(), asc.getWeights());
+				elem.setFleetSize(elem.getStorageNameList().size());
+				if (elem.getFleetSize() > 0) {
+					elem.setWeights( Util.resizeArray(elem.getWeights(), elem.getFleetSize()) );
+					Util.interpretDblArray(param, elem.getFleetSize(), elem.getWeights());
 				}
 				break;
 			case StorageController.MODE_DISCHARGE:
-				asc.setDischargeMode(asc.interpretMode(MODE_DISCHARGE, param));
+				elem.setDischargeMode(elem.interpretMode(MODE_DISCHARGE, param));
 				break;
 			case StorageController.MODE_CHARGE:
-				asc.setChargeMode(asc.interpretMode(MODE_CHARGE, param));
+				elem.setChargeMode(elem.interpretMode(MODE_CHARGE, param));
 				break;
 			case StorageController.TIME_DISCHARGE_TRIGGER:
-				asc.setDischargeTriggerTime(parser.makeDouble());
+				elem.setDischargeTriggerTime(parser.makeDouble());
 				break;
 			case StorageController.TIME_CHARGE_TRIGGER:
-				asc.setChargeTriggerTime(parser.makeDouble());
+				elem.setChargeTriggerTime(parser.makeDouble());
 				break;
 			case StorageController.RATE_KW:
-				asc.setPctKWRate(parser.makeDouble());
+				elem.setPctKWRate(parser.makeDouble());
 				break;
 			case StorageController.RATE_KVAR:
-				asc.setPctKVArRate(parser.makeDouble());
+				elem.setPctKVArRate(parser.makeDouble());
 				break;
 			case StorageController.RATE_CHARGE:
-				asc.setPctChargeRate(parser.makeDouble());
+				elem.setPctChargeRate(parser.makeDouble());
 				break;
 			case StorageController.RESERVE:
-				asc.setPctFleetReserve(parser.makeDouble());
+				elem.setPctFleetReserve(parser.makeDouble());
 				break;
 			case StorageController.KWH_TOTAL:
 				// do nothing (read only)
@@ -317,34 +308,34 @@ public class StorageController extends ControlClass {
 			case StorageController.PARTICIPATION:
 				break;
 			case StorageController.YEARLY:
-				asc.setYearlyShape(param);
+				elem.setYearlyShape(param);
 				break;
 			case StorageController.DAILY:
-				asc.setDailyShape(param);
+				elem.setDailyShape(param);
 				break;
 			case StorageController.DUTY:
-				asc.setDutyShape(param);
+				elem.setDutyShape(param);
 				break;
 			case StorageController.EVENTLOG:
-				asc.setShowEventLog(Util.interpretYesNo(param));
+				elem.setShowEventLog(Util.interpretYesNo(param));
 				break;
 			case StorageController.VAR_DISPATCH:
-				asc.setDispatchVars(Util.interpretYesNo(param));
+				elem.setDispatchVars(Util.interpretYesNo(param));
 				break;
 			case StorageController.INHIBIT_TIME:
-				asc.setInhibitHrs( Math.max(1, parser.makeInteger()) );  // >= 1
+				elem.setInhibitHrs( Math.max(1, parser.makeInteger()) );  // >= 1
 				break;
 			case StorageController.T_UP_RAMP:
-				asc.setUpRampTime(parser.makeDouble());
+				elem.setUpRampTime(parser.makeDouble());
 				break;
 			case StorageController.T_FLAT:
-				asc.setFlatTime(parser.makeDouble());
+				elem.setFlatTime(parser.makeDouble());
 				break;
 			case StorageController.T_DN_RAMP:
-				asc.setDnRampTime(parser.makeDouble());
+				elem.setDnRampTime(parser.makeDouble());
 				break;
 			case StorageController.KW_THRESHOLD:
-				asc.setKWThreshold(parser.makeDouble());
+				elem.setKWThreshold(parser.makeDouble());
 				break;
 			default:
 				// inherited parameters
@@ -355,117 +346,116 @@ public class StorageController extends ControlClass {
 			// side effects of setting properties above
 			switch (paramPointer) {
 			case KW_TARGET:
-				asc.setHalfKWBand( asc.getPctkWBand() / 200.0 * asc.getKWTarget() );
+				elem.setHalfKWBand(elem.getPctkWBand() / 200.0 * elem.getKWTarget());
 				break;
 			case KW_BAND:
-				asc.setHalfKWBand( asc.getPctkWBand() / 200.0 * asc.getKWTarget() );
-				asc.setKWThreshold( asc.getKWTarget() * 0.75 );
+				elem.setHalfKWBand(elem.getPctkWBand() / 200.0 * elem.getKWTarget());
+				elem.setKWThreshold( elem.getKWTarget() * 0.75 );
 				break;
 			case PF_BAND:
-				asc.setHalfPFBand(asc.getPFBand() / 2.0);
+				elem.setHalfPFBand(elem.getPFBand() / 2.0);
 				break;
 			case MODE_DISCHARGE:
-				if (asc.getDischargeMode() == StorageController.FOLLOW)
-					asc.setDischargeTriggerTime(12.0);  // noon
+				if (elem.getDischargeMode() == StorageControlMode.FOLLOW)
+					elem.setDischargeTriggerTime(12.0);  // noon
 				break;
 			case ELEMENT_LIST:
 				// levelize the list
-				asc.getFleetPointerList().clear();  // clear this for resetting on first sample
-				asc.setFleetListChanged(true);
-				asc.setElementListSpecified(true);
-				asc.setFleetSize(asc.getStorageNameList().size());
+				elem.getFleetPointerList().clear();  // clear this for resetting on first sample
+				elem.setFleetListChanged(true);
+				elem.setElementListSpecified(true);
+				elem.setFleetSize(elem.getStorageNameList().size());
 				// realloc weights to be same size as possible number of storage elements
-				asc.setWeights( Util.resizeArray(asc.getWeights(), asc.getFleetSize()) );
-				for (int i = 0; i < asc.getFleetSize(); i++)
-					asc.getWeights()[i] = 1.0;
+				elem.setWeights(Util.resizeArray(elem.getWeights(), elem.getFleetSize()));
+				for (int i = 0; i < elem.getFleetSize(); i++)
+					elem.getWeights()[i] = 1.0;
 				break;
 			case YEARLY:
-				asc.setYearlyShapeObj( (LoadShapeObj) DSS.loadShapeClass.find(asc.getYearlyShape()) );
-				if (asc.getYearlyShapeObj() == null)
-					DSS.doSimpleMsg("Yearly loadshape \"" + asc.getYearlyShape() + "\" not found.", 14404);
+				elem.setYearlyShapeObj((LoadShapeObj) DSS.loadShapeClass.find(elem.getYearlyShape()));
+				if (elem.getYearlyShapeObj() == null)
+					DSS.doSimpleMsg("Yearly loadshape \"" + elem.getYearlyShape() + "\" not found.", 14404);
 				break;
 			case DAILY:
-				asc.setDailyShapeObj( (LoadShapeObj) DSS.loadShapeClass.find(asc.getDailyShape()) );
-				if (asc.getDailyShapeObj() == null)
-					DSS.doSimpleMsg("Daily loadshape \"" + asc.getDailyShape() + "\" not found.", 14405);
+				elem.setDailyShapeObj((LoadShapeObj) DSS.loadShapeClass.find(elem.getDailyShape()));
+				if (elem.getDailyShapeObj() == null)
+					DSS.doSimpleMsg("Daily loadshape \"" + elem.getDailyShape() + "\" not found.", 14405);
 				break;
 			case DUTY:
-				asc.setDutyShapeObj( (LoadShapeObj) DSS.loadShapeClass.find(asc.getDutyShape()) );
-				if (asc.getDutyShapeObj() == null)
-					DSS.doSimpleMsg("Dutycycle loadshape \"" + asc.getDutyShape() + "\" not found.", 14406);
+				elem.setDutyShapeObj((LoadShapeObj) DSS.loadShapeClass.find(elem.getDutyShape()));
+				if (elem.getDutyShapeObj() == null)
+					DSS.doSimpleMsg("Dutycycle loadshape \"" + elem.getDutyShape() + "\" not found.", 14406);
 				break;
 			}
 
 			paramName = parser.getNextParam();
 			param = parser.makeString();
 		}
+		elem.recalcElementData();
 
-		asc.recalcElementData();
-
-		return result;
+		return 0;
 	}
 
 	@Override
-	protected int makeLike(String storageControllerName) {
-		int result = 0;
+	protected int makeLike(String name) {
 		/* See if we can find this StorageController name in the present collection */
-		StorageControllerObj otherStorageController = (StorageControllerObj) find(storageControllerName);
-		if (otherStorageController != null) {
-			StorageControllerObj asc = activeStorageControllerObj;
+		StorageControllerObj other = (StorageControllerObj) find(name);
 
-			asc.setNumPhases(otherStorageController.getNumPhases());
-			asc.setNumConds(otherStorageController.getNumConds());  // force reallocation of terminal stuff
+		if (other != null) {
+			StorageControllerObj elem = activeStorageControllerObj;
 
-			asc.setElementName(otherStorageController.getElementName());
-			asc.setControlledElement(otherStorageController.getControlledElement());  // pointer to target circuit element
-			asc.setMonitoredElement(otherStorageController.getMonitoredElement());  // pointer to target circuit element
-			asc.setElementTerminalIdx(otherStorageController.getElementTerminalIdx());
+			elem.setNumPhases(other.getNumPhases());
+			elem.setNumConds(other.getNumConds());  // force reallocation of terminal stuff
 
-			asc.setKWTarget(otherStorageController.getKWTarget());
-			asc.setKWThreshold(otherStorageController.getKWThreshold());
-			asc.setPctkWBand(otherStorageController.getPctkWBand());
-			asc.setPFTarget(otherStorageController.getPFTarget());
-			asc.setPFBand(otherStorageController.getPFBand());
-			asc.setHalfPFBand(otherStorageController.getHalfPFBand());
+			elem.setElementName(other.getElementName());
+			elem.setControlledElement(other.getControlledElement());  // pointer to target circuit element
+			elem.setMonitoredElement(other.getMonitoredElement());  // pointer to target circuit element
+			elem.setElementTerminalIdx(other.getElementTerminalIdx());
 
-			asc.getStorageNameList().clear();
-			for (int i = 0; i < otherStorageController.getStorageNameList().size(); i++)
-				asc.getStorageNameList().add(otherStorageController.getStorageNameList().get(i - 1));
+			elem.setKWTarget(other.getKWTarget());
+			elem.setKWThreshold(other.getKWThreshold());
+			elem.setPctkWBand(other.getPctkWBand());
+			elem.setPFTarget(other.getPFTarget());
+			elem.setPFBand(other.getPFBand());
+			elem.setHalfPFBand(other.getHalfPFBand());
 
-			asc.setFleetSize(asc.getStorageNameList().size());
-			if (asc.getFleetSize() > 0) {
-				asc.setWeights( Util.resizeArray(asc.getWeights(), asc.getFleetSize()) );
-				for (int i = 0; i < asc.getFleetSize(); i++)
-					asc.getWeights()[i] = otherStorageController.getWeights()[i];
+			elem.getStorageNameList().clear();
+			for (int i = 0; i < other.getStorageNameList().size(); i++)
+				elem.getStorageNameList().add(other.getStorageNameList().get(i - 1));
+
+			elem.setFleetSize(elem.getStorageNameList().size());
+			if (elem.getFleetSize() > 0) {
+				elem.setWeights( Util.resizeArray(elem.getWeights(), elem.getFleetSize()) );
+				for (int i = 0; i < elem.getFleetSize(); i++)
+					elem.getWeights()[i] = other.getWeights()[i];
 			}
 
-			asc.setDischargeMode(otherStorageController.getDischargeMode());
-			asc.setChargeMode(otherStorageController.getChargeMode());
-			asc.setDischargeTriggerTime(otherStorageController.getDischargeTriggerTime());
-			asc.setChargeTriggerTime(otherStorageController.getChargeTriggerTime());
-			asc.setPctKWRate(otherStorageController.getPctKWRate());
-			asc.setPctKVArRate(otherStorageController.getPctKVArRate());
-			asc.setPctChargeRate(otherStorageController.getPctChargeRate());
-			asc.setPctFleetReserve(otherStorageController.getPctFleetReserve());
-			asc.setYearlyShape(otherStorageController.getYearlyShape());
-			asc.setDailyShape(otherStorageController.getDailyShape());
-			asc.setDutyShape(otherStorageController.getDutyShape());
-			asc.setDispatchVars(otherStorageController.isDispatchVars());
-			asc.setShowEventLog(otherStorageController.isShowEventLog());
-			asc.setInhibitHrs(otherStorageController.getInhibitHrs());
+			elem.setDischargeMode(other.getDischargeMode());
+			elem.setChargeMode(other.getChargeMode());
+			elem.setDischargeTriggerTime(other.getDischargeTriggerTime());
+			elem.setChargeTriggerTime(other.getChargeTriggerTime());
+			elem.setPctKWRate(other.getPctKWRate());
+			elem.setPctKVArRate(other.getPctKVArRate());
+			elem.setPctChargeRate(other.getPctChargeRate());
+			elem.setPctFleetReserve(other.getPctFleetReserve());
+			elem.setYearlyShape(other.getYearlyShape());
+			elem.setDailyShape(other.getDailyShape());
+			elem.setDutyShape(other.getDutyShape());
+			elem.setDispatchVars(other.isDispatchVars());
+			elem.setShowEventLog(other.isShowEventLog());
+			elem.setInhibitHrs(other.getInhibitHrs());
 
-			asc.setUpRampTime(otherStorageController.getUpRampTime());
-			asc.setFlatTime(otherStorageController.getFlatTime());
-			asc.setDnRampTime(otherStorageController.getDnRampTime());
+			elem.setUpRampTime(other.getUpRampTime());
+			elem.setFlatTime(other.getFlatTime());
+			elem.setDnRampTime(other.getDnRampTime());
 
 			// fill in private properties
-			for (int i = 0; i < asc.getParentClass().getNumProperties(); i++)
-				asc.setPropertyValue(i, otherStorageController.getPropertyValue(i));
+			for (int i = 0; i < elem.getParentClass().getNumProperties(); i++)
+				elem.setPropertyValue(i, other.getPropertyValue(i));
 		} else {
-			DSS.doSimpleMsg("Error in StorageController makeLike: \"" + storageControllerName + "\" not found.", 370);
+			DSS.doSimpleMsg("Error in StorageController makeLike: \"" + name + "\" not found.", 370);
 		}
 
-		return result;
+		return 0;
 	}
 
 	@Override

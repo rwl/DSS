@@ -28,23 +28,23 @@ public class SwtControlObj extends ControlElem {
 		nConds = 3;
 		setNumTerms(1);   // this forces allocation of terminals and conductors in base class
 
-		elementName   = "";
+		elementName = "";
 		setControlledElement(null);
 		elementTerminalIdx = 0;
-		presentState  = ControlAction.CLOSE;
-		locked        = false;
-		timeDelay     = 120.0;
+		presentState = ControlAction.CLOSE;
+		locked = false;
+		timeDelay = 120.0;
 
 		initPropertyValues(0);
 	}
 
 	@Override
 	public void recalcElementData() {
-
 		int devIndex = Util.getCktElementIndex(elementName);
+
 		if (devIndex >= 0) {
 			setControlledElement(DSS.activeCircuit.getCktElements().get(devIndex));
-			setNumPhases( getControlledElement().getNumPhases() );
+			setNumPhases(getControlledElement().getNumPhases());
 			setNumConds(nPhases);
 			getControlledElement().setActiveTerminalIdx(elementTerminalIdx);
 			if (!locked) {
@@ -61,8 +61,9 @@ public class SwtControlObj extends ControlElem {
 			setBus(0, getControlledElement().getBus(elementTerminalIdx));
 		} else {
 			setControlledElement(null);  // element not found
-			DSS.doErrorMsg("SwtControl: \"" + getName() + "\"", "CktElement Element \""+ elementName + "\" not found.",
-					" Element must be defined previously.", 387);
+			DSS.doErrorMsg("SwtControl: \"" + getName() + "\"",
+					"CktElement Element \"" + elementName + "\" not found.",
+					"Element must be defined previously.", 387);
 		}
 	}
 
@@ -72,7 +73,7 @@ public class SwtControlObj extends ControlElem {
 	@Override
 	public void makePosSequence() {
 		if (getControlledElement() != null) {
-			setNumPhases( getControlledElement().getNumPhases() );
+			setNumPhases(getControlledElement().getNumPhases());
 			setNumConds(nPhases);
 			setBus(0, getControlledElement().getBus(elementTerminalIdx));
 		}
@@ -86,14 +87,12 @@ public class SwtControlObj extends ControlElem {
 
 	@Override
 	public void getCurrents(Complex[] curr) {
-		for (int i = 0; i < nConds; i++)
-			curr[i] = Complex.ZERO;
+		for (int i = 0; i < nConds; i++) curr[i] = Complex.ZERO;
 	}
 
 	@Override
 	public void getInjCurrents(Complex[] curr) {
-		for (int i = 0; i < nConds; i++)
-			curr[i] = Complex.ZERO;
+		for (int i = 0; i < nConds; i++) curr[i] = Complex.ZERO;
 	}
 
 	/**
@@ -103,6 +102,7 @@ public class SwtControlObj extends ControlElem {
 	public void doPendingAction(int code, int proxyHdl) {
 		if (!locked) {
 			getControlledElement().setActiveTerminalIdx(elementTerminalIdx);
+
 			if (code == ControlAction.OPEN.code() && presentState == ControlAction.CLOSE) {
 				getControlledElement().setConductorClosed(-1, false);  // open all phases of active terminal
 				Util.appendToEventLog("SwtControl."+getName(), "Opened");
@@ -114,7 +114,6 @@ public class SwtControlObj extends ControlElem {
 		}
 	}
 
-	// FIXME Private method in OpenDSS
 	public void interpretSwitchAction(String action) {
 		if (!locked) {
 			switch (action.toLowerCase().charAt(0)) {
@@ -159,18 +158,14 @@ public class SwtControlObj extends ControlElem {
 
 		PrintWriter pw = new PrintWriter(out);
 
-		for (int i = 0; i < getParentClass().getNumProperties(); i++)
+		for (int i = 0; i < getParentClass().getNumProperties(); i++) {
 			pw.println("~ " + getParentClass().getPropertyName(i) +
 				"=" + getPropertyValue(getParentClass().getPropertyIdxMap(i)));
+		}
 
 		if (complete) pw.println();
 
 		pw.close();
-	}
-
-	@Override
-	public String getPropertyValue(int index) {
-		return super.getPropertyValue(index);
 	}
 
 	/**
@@ -179,7 +174,7 @@ public class SwtControlObj extends ControlElem {
 	@Override
 	public void reset() {
 		presentState = ControlAction.CLOSE;
-		locked       = false;
+		locked = false;
 		if (getControlledElement() != null) {
 			getControlledElement().setActiveTerminalIdx(elementTerminalIdx);  // set active terminal
 			getControlledElement().setConductorClosed(-1, true);  // close all phases of active terminal

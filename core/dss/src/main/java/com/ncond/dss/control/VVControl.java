@@ -23,10 +23,10 @@ public class VVControl extends ControlClass {
 
 	public static VVControlObj activeVVCControlObj;
 
+	@SuppressWarnings("unused")
 	private DSSClass XY_CurveClass;
 
 	public VVControl() {
-
 		className = "VVControl";
 		classType = classType + DSSClassDefs.VV_CONTROL;
 
@@ -42,9 +42,9 @@ public class VVControl extends ControlClass {
 
 	@Override
 	protected void defineProperties() {
-
 		numProperties = NumPropsThisClass;
 		countProperties();  // get inherited property count
+
 		allocatePropertyArrays();
 
 		// define property names
@@ -116,13 +116,12 @@ public class VVControl extends ControlClass {
 	}
 
 	private XYCurveObj getVVCCurve(final String curveName) {
+		XYCurveObj curve = (XYCurveObj) DSS.XYCurveClass.find(curveName);
 
-		XYCurveObj result = (XYCurveObj) DSS.XYCurveClass.find(curveName);
-
-		if (result == null)
+		if (curve == null)
 			DSS.doSimpleMsg("XY curve object: \"" + curveName + "\" not found.", 380);
 
-		return result;
+		return curve;
 	}
 
 	@Override
@@ -139,13 +138,12 @@ public class VVControl extends ControlClass {
 		activeVVCControlObj = (VVControlObj) elementList.getActive();
 		DSS.activeCircuit.setActiveCktElement(activeVVCControlObj);
 
-		int result = 0;
-
-		VVControlObj avc = activeVVCControlObj;
+		VVControlObj elem = activeVVCControlObj;
 
 		int paramPointer = -1;
 		String paramName = parser.getNextParam();
 		String param = parser.makeString();
+
 		while (param.length() > 0) {
 			if (paramName.length() == 0) {
 				paramPointer += 1;
@@ -154,74 +152,74 @@ public class VVControl extends ControlClass {
 			}
 
 			if (paramPointer >= 0 && paramPointer < numProperties)
-				avc.setPropertyValue(paramPointer, param);
+				elem.setPropertyValue(paramPointer, param);
 
 			switch (paramPointer) {
 			case -1:
-				DSS.doSimpleMsg("Unknown parameter \"" + paramName + "\" for Object \"" +
-						className + "." + avc.getName() + "\"", 364);
+				DSS.doSimpleMsg("Unknown parameter \"" + paramName + "\" for object \"" +
+						className + "." + elem.getName() + "\"", 364);
 				break;
 			case 0:
-				avc.setElementName(param.toLowerCase());
+				elem.setElementName(param.toLowerCase());
 				break;
 			case 1:
-				avc.setElementTerminalIdx(parser.makeInteger() - 1);
+				elem.setElementTerminalIdx(parser.makeInteger() - 1);
 				break;
 			case 2:
-				avc.setVvc_VMaxPU(parser.makeDouble());
+				elem.setVvc_VMaxPU(parser.makeDouble());
 				break;
 			case 3:
-				avc.setVvc_VMinPU(parser.makeDouble());
+				elem.setVvc_VMinPU(parser.makeDouble());
 				break;
 			case 4:
-				avc.setKVA_Rating(parser.makeDouble());
+				elem.setKVA_Rating(parser.makeDouble());
 				break;
 			case 5:
-				avc.setKW_Rating(parser.makeDouble());
+				elem.setKW_Rating(parser.makeDouble());
 				break;
 			case 6:
-				avc.setKVAr_FullOutput(parser.makeDouble());
+				elem.setKVAr_FullOutput(parser.makeDouble());
 				break;
 			case 7:
-				avc.setPf(parser.makeDouble());
+				elem.setPf(parser.makeDouble());
 				break;
 			case 8:
-				avc.setDelay(parser.makeDouble());
+				elem.setDelay(parser.makeDouble());
 				break;
 			case 9:
-				avc.setDelayOff(parser.makeDouble());
+				elem.setDelayOff(parser.makeDouble());
 				break;
 			case 10:
-				avc.setKW_RampRate(parser.makeDouble());
+				elem.setKW_RampRate(parser.makeDouble());
 				break;
 			case 11:
-				avc.setKVAr_RampRate(parser.makeDouble());
+				elem.setKVAr_RampRate(parser.makeDouble());
 				break;
 			case 12:
-				avc.setKW_Limit(parser.makeDouble());
+				elem.setKW_Limit(parser.makeDouble());
 				break;
 			case 13:
-				avc.setKVAr_Limit(parser.makeDouble());
+				elem.setKVAr_Limit(parser.makeDouble());
 				break;
 
 			case 14:
-				Util.interpretStringListArray(param, avc.getGeneratorNameList());
+				Util.interpretStringListArray(param, elem.getGeneratorNames());
 				break;
 			case 15:
-				avc.setListSize(avc.getGeneratorNameList().size());
-				if (avc.getListSize() > 0) {
-					Util.resizeArray(avc.getWeights(), avc.getListSize());
-					Util.interpretDblArray(param, avc.getListSize(), avc.getWeights());
+				elem.setListSize(elem.getGeneratorNames().size());
+				if (elem.getListSize() > 0) {
+					Util.resizeArray(elem.getWeights(), elem.getListSize());
+					Util.interpretDblArray(param, elem.getListSize(), elem.getWeights());
 				}
 				break;
 			case 16:
-				avc.setVvc_CurveSize(parser.makeInteger());
+				elem.setVvc_CurveSize(parser.makeInteger());
 				break;
 			case 17:
-				avc.setVvc_Curve(getVVCCurve(param));
+				elem.setVvc_Curve(getVVCCurve(param));
 				break;
 			case 18:
-				avc.setDeltaQFactor(parser.makeDouble());
+				elem.setDeltaQFactor(parser.makeDouble());
 				break;
 			default:
 				// inherited parameters
@@ -232,55 +230,54 @@ public class VVControl extends ControlClass {
 			switch (paramPointer) {
 			case 14:
 				// re-alloc based on
-				avc.getGenPointerList().clear();  // clear this for resetting on first sample
-				avc.setListSize(avc.getGeneratorNameList().size());
-				Util.resizeArray(avc.getWeights(), avc.getListSize());
-				for (int i = 0; i < avc.getListSize(); i++)
-					avc.getWeights()[i] = 1.0;
+				elem.getGenerators().clear();  // clear this for resetting on first sample
+				elem.setListSize(elem.getGeneratorNames().size());
+				Util.resizeArray(elem.getWeights(), elem.getListSize());
+				for (int i = 0; i < elem.getListSize(); i++)
+					elem.getWeights()[i] = 1.0;
 			case 17:
 				// re-set the number vvc_curve_size property to the number
 				// of points in the curve
-				if (avc.getVvc_Curve().getNumPoints() != avc.getVvc_CurveSize())
-					avc.setVvc_CurveSize(avc.getVvc_Curve().getNumPoints());
+				if (elem.getVvc_Curve().getNumPoints() != elem.getVvc_CurveSize())
+					elem.setVvc_CurveSize(elem.getVvc_Curve().getNumPoints());
 			}
-
 
 			paramName = parser.getNextParam();
 			param = parser.makeString();
 		}
 
-		avc.recalcElementData();
-		return result;
+		elem.recalcElementData();
+
+		return 0;
 	}
 
 	@Override
 	protected int makeLike(String VVCControlName) {
-		int result = 0;
-
 		/* See if we can find this VVCControl name in the present collection */
-		VVControlObj otherVVCControl = (VVControlObj) find(VVCControlName);
-		if (otherVVCControl != null) {
-			VVControlObj avc = activeVVCControlObj;
+		VVControlObj other = (VVControlObj) find(VVCControlName);
 
-			avc.setNumPhases(otherVVCControl.getNumPhases());
-			avc.setNumConds(otherVVCControl.getNumConds());  // force reallocation of terminal data
+		if (other != null) {
+			VVControlObj elem = activeVVCControlObj;
 
-			avc.setElementName(otherVVCControl.getElementName());
-			avc.setControlledElement(otherVVCControl.getControlElement());
+			elem.setNumPhases(other.getNumPhases());
+			elem.setNumConds(other.getNumConds());  // force reallocation of terminal data
+
+			elem.setElementName(other.getElementName());
+			elem.setControlledElement(other.getControlElement());
 			// target circuit element
-			avc.setMonitoredElement(otherVVCControl.getMonitoredElement());
+			elem.setMonitoredElement(other.getMonitoredElement());
 			// monitored circuit element
-			avc.setElementTerminalIdx(otherVVCControl.getElementTerminalIdx());
-			avc.setCondOffset(otherVVCControl.getCondOffset());
-			avc.setDeltaVTolerance(otherVVCControl.getDeltaVTolerance());
+			elem.setElementTerminalIdx(other.getElementTerminalIdx());
+			elem.setCondOffset(other.getCondOffset());
+			elem.setDeltaVTolerance(other.getDeltaVTolerance());
 
-			for (int i = 0; i < avc.getParentClass().getNumProperties(); i++)
-				avc.setPropertyValue(i, otherVVCControl.getPropertyValue(i));
+			for (int i = 0; i < elem.getParentClass().getNumProperties(); i++)
+				elem.setPropertyValue(i, other.getPropertyValue(i));
 		} else {
 			DSS.doSimpleMsg("Error in VVCControl makeLike: \"" + VVCControlName +
 				  "\" Not Found.", 370);
 		}
-		return result;
+		return 0;
 	}
 
 	@Override
