@@ -23,6 +23,7 @@ import com.ncond.dss.common.types.Randomization;
 import com.ncond.dss.common.types.SolutionAlgs;
 import com.ncond.dss.common.types.SolutionMode;
 import com.ncond.dss.control.ControlElem;
+import com.ncond.dss.conversion.GeneratorModel;
 import com.ncond.dss.conversion.GeneratorObj;
 import com.ncond.dss.conversion.PCElement;
 import com.ncond.dss.delivery.FaultObj;
@@ -423,7 +424,7 @@ public class SolutionObj extends DSSObject {
 		for (GeneratorObj gen : ckt.getGenerators()) {
 			if (gen.isEnabled()) {
 				// for PV generator models only ...
-				if (gen.getGenModel() == 3) {
+				if (gen.getGenModel() == GeneratorModel.CONSTANT_PV) {
 
 					gen.initDQDVCalc();
 

@@ -25,6 +25,7 @@ import com.ncond.dss.common.Solution;
 import com.ncond.dss.common.SolutionObj;
 import com.ncond.dss.common.Util;
 import com.ncond.dss.common.exceptions.SolverError;
+import com.ncond.dss.common.types.Connection;
 import com.ncond.dss.common.types.ReductionStrategy;
 import com.ncond.dss.common.types.SolutionAlgs;
 import com.ncond.dss.common.types.SolutionMode;
@@ -2707,7 +2708,7 @@ public class ExecHelper {
 			iBus = ckt.getBusList().find(sBus);
 			pBus = ckt.getBus(iBus);
 			kvln = pBus.getKVBase();
-			if (pGen.getConnection() == 1 || pGen.getNumPhases() > 1) {
+			if (pGen.getConnection() == Connection.DELTA || pGen.getNumPhases() > 1) {
 				pGen.setPresentKV(kvln * DSS.SQRT3);
 			} else {
 				pGen.setPresentKV(kvln);

@@ -21,17 +21,17 @@ public class Equivalent extends PCClass {
 
 		defineProperties();
 
-		String[] Commands = new String[numProperties];
-		System.arraycopy(propertyName, 0, Commands, 0, numProperties);
-		commandList = new CommandList(Commands);
+		String[] commands = new String[numProperties];
+		System.arraycopy(propertyName, 0, commands, 0, numProperties);
+		commandList = new CommandList(commands);
 		commandList.setAbbrevAllowed(true);
 	}
 
 	@Override
 	protected void defineProperties() {
-
 		numProperties = Equivalent.NumPropsThisClass;
 		countProperties();  // get inherited property count
+
 		allocatePropertyArrays();
 
 		// define property names
@@ -51,9 +51,9 @@ public class Equivalent extends PCClass {
 		propertyHelp[0] = "Number of terminals.  Default =1. Set this BEFORE defining matrices.";
 		propertyHelp[1] = "Array of Bus Names to which equivalent source is connected."+DSS.CRLF+"buses=(b1 b2 b3)";
 		propertyHelp[2] = "Base Source kV, usually L-L unless you are making a positive-sequence model"+
-					"in which case, it will be L-N.";
+				"in which case, it will be L-N.";
 		propertyHelp[3] = "Per unit of the base voltage that the source is actually operating at."+ DSS.CRLF +
-						"\"pu=1.05\"";
+				"\"pu=1.05\"";
 		propertyHelp[4] = "Phase angle in degrees of first phase: e.g.,Angle=10.3";
 		propertyHelp[5] = "Source frequency.  Defaults to  60 Hz.";
 		propertyHelp[6] = "Number of phases.  Defaults to 3.";
@@ -66,7 +66,7 @@ public class Equivalent extends PCClass {
 		super.defineProperties();  // add defs of inherited properties to bottom of list
 
 		// override help string
-		propertyHelp[Equivalent.NumPropsThisClass] = "Name of harmonic spectrum for this source.  Default is \"defaultvsource\", which is defined when the DSS starts.";
+		propertyHelp[Equivalent.NumPropsThisClass] = "Name of harmonic spectrum for this source. Default is \"defaultvsource\", which is defined when the DSS starts.";
 	}
 
 	@Override
@@ -83,13 +83,12 @@ public class Equivalent extends PCClass {
 		activeEquivalentObj = (EquivalentObj) elementList.getActive();
 		DSS.activeCircuit.setActiveCktElement(activeEquivalentObj);
 
-		int result = 0;
-
-		EquivalentObj ae = activeEquivalentObj;
+		EquivalentObj elem = activeEquivalentObj;
 
 		int paramPointer = -1;
 		String paramName = parser.getNextParam();
-		String param     = parser.makeString();
+		String param = parser.makeString();
+
 		while (param.length() > 0) {
 			if (paramName.length() == 0) {
 				paramPointer += 1;
@@ -98,121 +97,125 @@ public class Equivalent extends PCClass {
 			}
 
 			if (paramPointer >= 0 && paramPointer < numProperties)
-				ae.setPropertyValue(paramPointer, param);
+				elem.setPropertyValue(paramPointer, param);
 
 			switch (paramPointer) {
 			case -1:
-				DSS.doSimpleMsg("Unknown parameter \"" + paramName + "\" for object \"Equivalent."+ae.getName()+"\"", 800);
+				DSS.doSimpleMsg("Unknown parameter \"" + paramName + "\" for object \"Equivalent." +
+						elem.getName() + "\"", 800);
 				break;
 			case 0:
-				ae.setNumTerms(ae.doTerminalsDef(parser.makeInteger()));
+				elem.setNumTerms(elem.doTerminalsDef(parser.makeInteger()));
 				break;
 			case 1:
 				interpretAllBuses(param);
 				break;
 			case 2:
-				ae.setKVBase(parser.makeDouble());  // basekv
+				elem.setKVBase(parser.makeDouble());  // basekv
 				break;
 			case 3:
-				ae.setPerUnit(parser.makeDouble());  // pu
+				elem.setPerUnit(parser.makeDouble());  // pu
 				break;
 			case 4:
-				ae.setAngle(parser.makeDouble());  // ang
+				elem.setAngle(parser.makeDouble());  // ang
 				break;
 			case 5:
-				ae.setEquivFrequency(parser.makeDouble());  // freq
+				elem.setEquivFrequency(parser.makeDouble());  // freq
 				break;
 			case 6:
-				ae.setNumPhases(parser.makeInteger());  // num phases
-				ae.setNumConds(ae.getNumPhases());  // force reallocation of terminal info
+				elem.setNumPhases(parser.makeInteger());  // num phases
+				elem.setNumConds(elem.getNumPhases());  // force reallocation of terminal info
 				break;
 			case 7:
-				ae.parseDblMatrix(ae.getR1());
+				elem.parseDblMatrix(elem.getR1());
 				break;
 			case 8:
-				ae.parseDblMatrix(ae.getX1());
+				elem.parseDblMatrix(elem.getX1());
 				break;
 			case 9:
-				ae.parseDblMatrix(ae.getR0());
+				elem.parseDblMatrix(elem.getR0());
 				break;
 			case 10:
-				ae.parseDblMatrix(ae.getX0());
+				elem.parseDblMatrix(elem.getX0());
 				break;
 			default:
 				classEdit(activeEquivalentObj, paramPointer - Equivalent.NumPropsThisClass);
 				break;
 			}
 
-			if ((paramPointer == 0) || ((paramPointer >= 7) && (paramPointer <= 10))) {
-				ae.setNeedToDoRecalc(true);
+			switch (paramPointer) {
+			case 0:
+			case 7:
+			case 8:
+			case 9:
+			case 10:
+				elem.setNeedToDoRecalc(true);
 			}
 
 			paramName = parser.getNextParam();
-			param     = parser.makeString();
+			param = parser.makeString();
 		}
 
 		// recalcElementData();
-		ae.setYPrimInvalid(true);
+		elem.setYPrimInvalid(true);
 
-		return result;
+		return 0;
 	}
 
 	@Override
-	protected int makeLike(String OtherSource) {
-		int i, result = 0;
+	protected int makeLike(String name) {
+		int i, ret = 0;
 
 		/* See if we can find this line name in the present collection */
-		EquivalentObj otherEquivalent = (EquivalentObj) find(OtherSource);
-		if (otherEquivalent != null) {
-			EquivalentObj ae = activeEquivalentObj;
+		EquivalentObj other = (EquivalentObj) find(name);
 
-			if ((ae.getNumPhases() != otherEquivalent.getNumPhases()) ||
-					(ae.getNumTerms() != otherEquivalent.getNumTerms())) {
+		if (other != null) {
+			EquivalentObj elem = activeEquivalentObj;
 
-				ae.setNumTerms( ae.doTerminalsDef(otherEquivalent.getNumTerms()) );
-				ae.setNumPhases(otherEquivalent.getNumPhases());
-				ae.setNumConds(ae.getNumPhases());  // forces reallocation of terminal stuff
+			if ((elem.getNumPhases() != other.getNumPhases()) ||
+					(elem.getNumTerms() != other.getNumTerms())) {
 
-				ae.setYOrder(ae.getNumConds() * ae.getNumTerms());
-				ae.setYPrimInvalid(true);
+				elem.setNumTerms(elem.doTerminalsDef(other.getNumTerms()));
+				elem.setNumPhases(other.getNumPhases());
+				elem.setNumConds(elem.getNumPhases());  // forces reallocation of terminal stuff
 
-				for (i = 0; i < ae.getNumTerms(); i++)
-					ae.getR1()[i] = otherEquivalent.getR1()[i];
-				for (i = 0; i < ae.getNumTerms(); i++)
-					ae.getR0()[i] = otherEquivalent.getR0()[i];
+				elem.setYOrder(elem.getNumConds() * elem.getNumTerms());
+				elem.setYPrimInvalid(true);
 
-				for (i = 0; i < ae.getNumTerms(); i++)
-					ae.getX1()[i] = otherEquivalent.getX1()[i];
-				for (i = 0; i < ae.getNumTerms(); i++)
-					ae.getX0()[i] = otherEquivalent.getX0()[i];
+				for (i = 0; i < elem.getNumTerms(); i++)
+					elem.getR1()[i] = other.getR1()[i];
 
-				if (ae.getZ() != null)
-					ae.setZ(null);
-				if (ae.getZInv() != null)
-					ae.setZInv(null);
+				for (i = 0; i < elem.getNumTerms(); i++)
+					elem.getR0()[i] = other.getR0()[i];
 
-				ae.setZ(new CMatrix(ae.getNumPhases()));
-				ae.setZInv(new CMatrix(ae.getNumPhases()));
+				for (i = 0; i < elem.getNumTerms(); i++)
+					elem.getX1()[i] = other.getX1()[i];
+
+				for (i = 0; i < elem.getNumTerms(); i++)
+					elem.getX0()[i] = other.getX0()[i];
+
+				elem.setZ(new CMatrix(elem.getNumPhases()));
+				elem.setZinv(new CMatrix(elem.getNumPhases()));
 			}
 
-			ae.getZ().copyFrom(otherEquivalent.getZ());
-			// ae.getZinv().copyFrom(OtherLine.getZinv());
-			ae.setVMag(otherEquivalent.getVMag());
-			ae.setKVBase(otherEquivalent.getKVBase());
-			ae.setPerUnit(otherEquivalent.getPerUnit());
-			ae.setAngle(otherEquivalent.getAngle());
-			ae.setEquivFrequency(otherEquivalent.getEquivFrequency());
+			elem.getZ().copyFrom(other.getZ());
+			// elem.getZinv().copyFrom(other.getZinv());
+			elem.setVmag(other.getVmag());
+			elem.setKVBase(other.getKVBase());
+			elem.setPerUnit(other.getPerUnit());
+			elem.setAngle(other.getAngle());
+			elem.setEquivFrequency(other.getEquivFrequency());
 
-			classMakeLike(otherEquivalent);
+			classMakeLike(other);
 
-			for (i = 0; i < ae.getParentClass().getNumProperties(); i++)
-				ae.setPropertyValue(i, otherEquivalent.getPropertyValue(i));
-			result = 1;
+			for (i = 0; i < elem.getParentClass().getNumProperties(); i++)
+				elem.setPropertyValue(i, other.getPropertyValue(i));
+			ret = 1;
 		} else {
-			DSS.doSimpleMsg("Error in Equivalent makeLike: \"" + OtherSource + "\" not found.", 801);
+			DSS.doSimpleMsg("Error in Equivalent makeLike: \"" + name + "\" not found.", 801);
 		}
 
-		return result;
+		return ret;
 	}
 
 	@Override
@@ -226,16 +229,17 @@ public class Equivalent extends PCClass {
 	 */
 	public void interpretAllBuses(String s) {
 		String busName;
+		Parser parser = DSS.auxParser;
 
-		DSS.auxParser.setCmdString(s);  // load up parser
+		parser.setCmdString(s);  // load up parser
 
 		/* Loop for no more than the expected number of windings; ignore omitted values */
-		EquivalentObj ae = activeEquivalentObj;
-		for (int i = 0; i < ae.getNumTerms(); i++) {
-			DSS.auxParser.getNextParam();  // ignore any parameter name  not expecting any
-			busName = DSS.auxParser.makeString();
+		EquivalentObj elem = activeEquivalentObj;
+		for (int i = 0; i < elem.getNumTerms(); i++) {
+			parser.getNextParam();  // ignore any parameter name  not expecting any
+			busName = parser.makeString();
 			if (busName.length() > 0)
-				ae.setBus(i, busName);
+				elem.setBus(i, busName);
 		}
 	}
 

@@ -1,6 +1,7 @@
 package com.ncond.dss.conversion;
 
-import java.io.PrintStream;
+import java.io.OutputStream;
+import java.io.PrintWriter;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -11,6 +12,7 @@ import com.ncond.dss.common.DSS;
 import com.ncond.dss.common.DSSClass;
 import com.ncond.dss.common.SolutionObj;
 import com.ncond.dss.common.Util;
+import com.ncond.dss.general.SpectrumObj;
 import com.ncond.dss.parser.Parser;
 import com.ncond.dss.shared.CMatrix;
 import com.ncond.dss.shared.ComplexUtil;
@@ -20,7 +22,7 @@ public class EquivalentObj extends PCElement {
 
 	private double kVBase;
 
-	private double VMag;
+	private double Vmag;
 	private double perUnit;
 	private double angle;
 	private double equivFrequency;
@@ -31,19 +33,20 @@ public class EquivalentObj extends PCElement {
 
 	// base frequency series Z matrix
 	protected CMatrix Z;
-	protected CMatrix ZInv;
+	protected CMatrix Zinv;
 
 	public EquivalentObj(DSSClass parClass, String sourceName) {
 		super(parClass);
+
 		setName(sourceName.toLowerCase());
 		objType = parClass.getClassType(); //SOURCE + NON_PCPD_ELEM;  // don't want this in PC element list
 
 		setNumPhases(3);
 		nConds = 3;
 		setNumTerms(1);
+
 		Z    = null;
-		ZInv = null;
-		/*Basefrequency = 60.0;*/  // set in base class
+		Zinv = null;
 
 		R1 = null;
 		X1 = null;
@@ -70,65 +73,73 @@ public class EquivalentObj extends PCElement {
 		recalcElementData();
 	}
 
+	@Override
+	public void recalcElementData() {
+		Complex Zs, Zm;
+		int i, j, ii, jj;
+		int ioffset, joffset, indx;
+
+		// for a source, nPhases = nCond, for now
+		Z = new CMatrix(nPhases * nTerms);
+		Zinv = new CMatrix(nPhases * nTerms);
+
+		// build Z matrix for all phases
+		for (i = 0; i < nTerms; i++) {
+			for (j = 0; j < nTerms; j++) {
+				indx = idx(i, j);
+				Zs = ComplexUtil.divide(new Complex(
+					2.0 * R1[indx] + R0[indx],
+					2.0 * X1[indx] + X0[indx]
+				), 3.0);
+				Zm = ComplexUtil.divide(new Complex(
+					R0[indx] - R1[indx],
+					X0[indx] - X1[indx]
+				), 3.0);
+
+				ioffset = i * nPhases;
+				joffset = j * nPhases;
+
+				for (ii = 0; ii < nPhases; ii++) {
+					for (jj = 0; jj < ii; jj++) {
+						if (ii == jj) {
+							Z.set(ii + ioffset, jj + joffset, Zs);
+						} else {
+							Z.set(ii + ioffset, jj + joffset, Zm);
+							// set other off-diagonal in this submatrix
+							Z.set(jj + ioffset, ii + joffset, Zm);
+						}
+					}
+				}
+			}
+		}
+
+		// voltage source properties
+		switch (nPhases) {
+		case 1:
+			Vmag = kVBase * perUnit * 1000.0;
+			break;
+		default:
+			Vmag = kVBase * perUnit * 1000.0 / 2.0 / Math.sin((180.0 / nPhases) * Math.PI / 180.0);
+			break;
+		}
+
+		setSpectrumObj((SpectrumObj) DSS.spectrumClass.find(spectrum));
+		if (getSpectrumObj() == null)
+			DSS.doSimpleMsg("Spectrum object \"" + getSpectrum() +
+				"\" for device equivalent." + getName() + " not found.", 802);
+
+		setInjCurrent(Util.resizeArray(getInjCurrent(), YOrder));
+
+		needToDoRecalc = false;
+	}
+
 	private int idx(int a, int b) {
 		return b * nTerms + a;
 	}
 
 	@Override
-	public void recalcElementData() {
-		Complex Zs, Zm;
-//		int i, j, ii, jj;
-		int iOffset, jOffset, indx;
-
-		// for a source, nPhases = nCond, for now
-		Z    = new CMatrix(nPhases * nTerms);
-		ZInv = new CMatrix(nPhases * nTerms);
-
-		// build Z matrix for all phases
-		for (int i = 0; i < nTerms; i++)
-			for (int j = 0; j < nTerms; j++) {
-				indx = idx(i, j);
-				Zs = ComplexUtil.divide(new Complex(2.0 * R1[indx] + R0[indx], 2.0 * X1[indx] + X0[indx] ), 3.0);
-				Zm = ComplexUtil.divide(new Complex(R0[indx] - R1[indx], X0[indx] - X1[indx]), 3.0);
-
-				iOffset = i * nPhases;
-				jOffset = j * nPhases;
-
-				for (int ii = 0; ii < nPhases; ii++) {
-					for (int jj = 0; jj < ii; jj++) {
-						if (ii == jj) {
-							Z.set(ii + iOffset, jj + jOffset, Zs);
-						} else {
-							Z.set(ii + iOffset, jj + jOffset, Zm);
-							Z.set(jj + iOffset, ii + jOffset, Zm);  // set other off-diagonal in this submatrix
-						}
-					}
-				}
-
-			}
-
-		//  voltage source properties
-		switch (nPhases) {
-		case 1:
-			VMag = kVBase * perUnit * 1000.0;
-			break;
-		default:
-			VMag = kVBase * perUnit * 1000.0 / 2.0 / Math.sin((180.0 / nPhases)* Math.PI / 180.0);
-			break;
-		}
-
-		setSpectrumObj((com.ncond.dss.general.SpectrumObj) DSS.spectrumClass.find(getSpectrum()));
-		if (getSpectrumObj() == null)
-			DSS.doSimpleMsg("Spectrum object \"" + getSpectrum() + "\" for device equivalent."+getName()+" not found.", 802);
-
-		setInjCurrent( Util.resizeArray(getInjCurrent(), YOrder) );
-
-		needToDoRecalc = false;
-	}
-
-	@Override
 	public void calcYPrim() {
-		Complex value;
+		Complex c;
 		int i, j;
 		double freqMultiplier;
 
@@ -141,34 +152,33 @@ public class EquivalentObj extends PCElement {
 			YPrim.clear();
 		}
 
-		if (needToDoRecalc)
-			recalcElementData();
+		if (needToDoRecalc) recalcElementData();
 
 		YPrimFreq = DSS.activeCircuit.getSolution().getFrequency();
 		freqMultiplier = YPrimFreq / baseFrequency;
 
-		/* Put in Series RL matrix adjusted for frequency */
+		/* Put in series RL matrix adjusted for frequency */
 		for (i = 0; i < YOrder; i++) {
 			for (j = 0; j < YOrder; j++) {
-				value = Z.get(i, j);
+				c = Z.get(i, j);
 				/* Modify from base freq */
-				value = new Complex(value.getReal(), value.getImaginary() * freqMultiplier);
-				ZInv.set(i, j, value);
+				c = new Complex(c.getReal(), c.getImaginary() * freqMultiplier);
+				Zinv.set(i, j, c);
 			}
 		}
 
-		ZInv.invert();  /* Invert in place */
+		Zinv.invert();  /* Invert in place */
 
-		if (ZInv.getErrorCode() > 0) {
+		if (Zinv.getErrorCode() > 0) {
 			/* If error, put in large series conductance */
 			DSS.doErrorMsg("EquivalentObj.calcYPrim", "Matrix inversion error for equivalent \"" + getName() + "\"",
 					"Invalid impedance specified. Replaced with small resistance.", 803);
-			ZInv.clear();
+			Zinv.clear();
 			for (i = 0; i < nPhases; i++)
-				ZInv.set(i, i, new Complex(1.0 / DSS.EPSILON, 0.0));
+				Zinv.set(i, i, new Complex(1.0 / DSS.EPSILON, 0.0));
 		}
 
-		YPrimSeries.copyFrom(ZInv);
+		YPrimSeries.copyFrom(Zinv);
 
 		YPrim.copyFrom(YPrimSeries);
 
@@ -181,44 +191,42 @@ public class EquivalentObj extends PCElement {
 
 	private void getVterminalForSource() {
 		int i;
-		Complex VHarm;
+		Complex Vharm;
 		double equivHarm;
-		SolutionObj sol;
+		SolutionObj sol = DSS.activeCircuit.getSolution();
 
 		try {
 			/* This formulation will theoretically handle voltage sources of any number
 			 * of phases assuming they are equally displaced in time.
 			 */
-
 			switch (nPhases) {
 			case 1:
-				VMag = kVBase * perUnit * 1000.0;
+				Vmag = kVBase * perUnit * 1000.0;
 				break;
 			default:
-				VMag = kVBase * perUnit * 1000.0 / 2.0 / Math.sin((180.0 / nPhases) * Math.PI / 180.0);
+				Vmag = kVBase * perUnit * 1000.0 / 2.0 / Math.sin((180.0 / nPhases) * Math.PI / 180.0);
 				break;
 			}
-
-			sol = DSS.activeCircuit.getSolution();
 
 			if (sol.isHarmonicModel()) {
 				equivHarm = sol.getFrequency() / equivFrequency;
-				VHarm = getSpectrumObj().getMult(equivHarm).multiply(VMag);  // base voltage for this harmonic
-				VHarm = Util.rotatePhasorDeg(VHarm, equivHarm, angle);  // rotate for phase 1 shift
+				Vharm = getSpectrumObj().getMult(equivHarm).multiply(Vmag);  // base voltage for this harmonic
+				Vharm = Util.rotatePhasorDeg(Vharm, equivHarm, angle);  // rotate for phase 1 shift
 				for (i = 0; i < nPhases; i++) {
-					VTerminal[i] = VHarm;
-					if (i < nPhases)
-						VHarm = Util.rotatePhasorDeg(VHarm, equivHarm, -360.0 / nPhases);
+					VTerminal[i] = Vharm;
+					if (i < nPhases - 1) {
+						Vharm = Util.rotatePhasorDeg(Vharm, equivHarm, -360.0 / nPhases);
+					}
 				}
 			} else {
 				for (i = 0; i < nPhases; i++)
-					VTerminal[i] = ComplexUtil.polarDeg2Complex(VMag, (360.0 + angle - i * 360.0 / nPhases));
+					VTerminal[i] = ComplexUtil.polarDeg2Complex(Vmag, (360.0 + angle - i * 360.0 / nPhases));
 			}
 
 		} catch (Exception e) {
-			DSS.doSimpleMsg("Error computing voltages for Equivalent."+getName()+". Check specification. Aborting.", 804);
-			if (DSS.inRedirect)
-				DSS.redirectAbort = true;
+			DSS.doSimpleMsg("Error computing voltages for Equivalent." + getName() +
+					". Check specification. Aborting.", 804);
+			if (DSS.inRedirect) DSS.redirectAbort = true;
 		}
 	}
 
@@ -231,29 +239,28 @@ public class EquivalentObj extends PCElement {
 	@Override
 	public void getCurrents(Complex[] curr) {
 		int i;
-		SolutionObj sol;
+		SolutionObj sol = DSS.activeCircuit.getSolution();
 
 		try {
-			sol = DSS.activeCircuit.getSolution();
 			for (i = 0; i < YOrder; i++)
 				VTerminal[i] = sol.getNodeV(nodeRef[i]);
 
 			YPrim.vMult(curr, VTerminal);
 
 			getInjCurrents(complexBuffer);  // get present value of inj currents
+
 			// add together with Yprim currents
 			for (i = 0; i < YOrder; i++)
 				curr[i] = curr[i].subtract(complexBuffer[i]);
 
 		} catch (Exception e) {
-			DSS.doErrorMsg(("GetCurrents for element: " + getName() + "."), e.getMessage(),
+			DSS.doErrorMsg(("getCurrents for element: " + getName()), e.getMessage(),
 					"Inadequate storage allotted for circuit element.", 805);
 		}
 	}
 
 	@Override
 	public void getInjCurrents(Complex[] curr) {
-
 		getVterminalForSource();
 		YPrim.vMult(curr, VTerminal);  /* I = Y V */
 
@@ -261,34 +268,36 @@ public class EquivalentObj extends PCElement {
 	}
 
 	@Override
-	public void dumpProperties(PrintStream f, boolean complete) {
+	public void dumpProperties(OutputStream out, boolean complete) {
 		int i, j;
 		Complex c;
 
-		super.dumpProperties(f, complete);
+		super.dumpProperties(out, complete);
+
+		PrintWriter pw = new PrintWriter(out);
 
 		DSSClass pc = getParentClass();
 		for (i = 0; i < pc.getNumProperties(); i++)
-			f.println("~ " + pc.getPropertyName(i) + "=" + getPropertyValue(i));
+			pw.println("~ " + pc.getPropertyName(i) + "=" + getPropertyValue(i));
 
 		if (complete) {
-			f.println();
-			f.println("baseFrequency=" + baseFrequency);
-			f.println("vMag=" + VMag);
-			f.println("zMatrix=");
+			pw.println();
+			pw.println("baseFrequency=" + baseFrequency);
+			pw.println("vMag=" + Vmag);
+			pw.println("zMatrix=");
 			for (i = 0; i < nPhases; i++) {
 				for (j = 0; j < i; j++) {
 					c = Z.get(i, j);
-					f.print(c.getReal() + " + j" + c.getImaginary());
+					pw.print(c.getReal() + " + j" + c.getImaginary());
 				}
-				f.println();
+				pw.println();
 			}
 		}
+		pw.close();
 	}
 
 	@Override
 	public void initPropertyValues(int arrayOffset) {
-
 		setPropertyValue(0, "1");
 		setPropertyValue(1, getBus(0));
 		setPropertyValue(2, "115");
@@ -321,7 +330,7 @@ public class EquivalentObj extends PCElement {
 	public void makePosSequence() {
 		String s;
 
-		s = "Phases=1 ";
+		s = "phases=1 ";
 		s = s + String.format("basekV=%-.5g ", kVBase / DSS.SQRT3);
 		s = s + String.format("r1=%-.5g ", R1);
 		s = s + String.format("x1=%-.5g ", X1);
@@ -332,22 +341,18 @@ public class EquivalentObj extends PCElement {
 		super.makePosSequence();
 	}
 
-	// Private method in OpenDSS
-	public int doTerminalsDef(int n) {
-		int result = nTerms;
-
+	protected int doTerminalsDef(int n) {
 		if (n != nTerms)
 			if (n > 0)
 				reallocRX();
 
-		return result;
+		return nTerms;
 	}
 
 	/**
 	 * Parse input string as an array.
 	 */
-	// Private method in OpenDSS
-	public void parseDblMatrix(double[] mat) {
+	protected void parseDblMatrix(double[] mat) {
 		Parser.getInstance().parseAsSymMatrix(nTerms, mat);
 	}
 

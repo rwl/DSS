@@ -7,6 +7,7 @@ import java.util.UUID;
 
 import org.apache.commons.math.complex.Complex;
 
+import com.ncond.dss.common.types.Connection;
 import com.ncond.dss.common.types.YPrimType;
 import com.ncond.dss.control.RegControlObj;
 import com.ncond.dss.conversion.Generator;
@@ -3035,7 +3036,7 @@ public class ShowResults {
 				bus = ckt.getBus(gen.getTerminal(0).getBusRef() - 1);
 				busName = ckt.getBusList().get(gen.getTerminal(0).getBusRef() - 1);
 				if (bus.getKVBase() != 0.0) {
-					if ((gen.getNumPhases() == 1) && (gen.getConnection() == 0)) {
+					if ((gen.getNumPhases() == 1) && (gen.getConnection() == Connection.WYE)) {
 						if (Math.abs(gen.getGenVars().kVGeneratorBase - bus.getKVBase()) > 0.10 * bus.getKVBase()) {
 							pw.printf("!!! Voltage Base Mismatch, Generator.%s.kV=%.6g, Bus %s LN kvBase = %.6g",
 								gen.getName(), gen.getGenVars().kVGeneratorBase, gen.getBus(1), bus.getKVBase());

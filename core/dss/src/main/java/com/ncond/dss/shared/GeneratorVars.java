@@ -1,5 +1,7 @@
 package com.ncond.dss.shared;
 
+import com.ncond.dss.common.types.Connection;
+
 /**
  * Generator state record.
  */
@@ -53,7 +55,6 @@ public class GeneratorVars {
 	/** Total number of conductors (wye-connected will have 4) */
 	public int numConductors;
 
-	/** 0 = wye; 1 = delta */
-	public int conn;
+	public Connection conn;
 
 }
