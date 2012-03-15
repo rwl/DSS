@@ -315,7 +315,7 @@ public class EnergyMeterObj extends MeterElement {
 	}
 
 	private String makeVPhaseReportFileName() {
-		return DSS.energyMeterClass.getDI_Dir() + "/" + getName() + "_PhaseVoltageReport.csv";
+		return DSS.energyMeterClass.getDI_Dir() + DSS.SEPARATOR + getName() + "_PhaseVoltageReport.csv";
 	}
 
 	public void resetRegisters() {
@@ -1843,7 +1843,7 @@ public class EnergyMeterObj extends MeterElement {
 	}
 
 	private String makeDIFileName() {
-		return DSS.energyMeterClass.getDI_Dir() + "/" + getName() + ".csv";
+		return DSS.energyMeterClass.getDI_Dir() + DSS.SEPARATOR + getName() + ".csv";
 	}
 
 	public double getRegister(int idx) {

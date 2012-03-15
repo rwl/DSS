@@ -137,7 +137,7 @@ public class SystemMeter {
 			 * same directory as the demand interval data.
 			 */
 			if (DSS.energyMeterClass.isSaveDemandInterval()) {
-				folder = DSS.energyMeterClass.getDI_Dir() + "/";
+				folder = DSS.energyMeterClass.getDI_Dir() + DSS.SEPARATOR;
 			} else {
 				folder = DSS.dataDirectory;
 			}

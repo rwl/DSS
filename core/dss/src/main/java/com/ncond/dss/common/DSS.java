@@ -34,6 +34,7 @@ import com.ncond.dss.shared.HashList;
 
 public class DSS {
 
+	public static final String SEPARATOR = File.separator;
 	public static final String CRLF = System.getProperty("line.separator");
 	public static final double PI = Math.PI;
 	public static final double TWO_PI = 2.0 * PI;
@@ -104,8 +105,8 @@ public class DSS {
 	public static String defaultEditor = "vi";
 //	public static String DSSFileName;// = getDSSExeFile();  // name of current exe or DLL
 //	public static String DSSDirectory;// = new File(DSSFileName).getParent();  // where the current exe resides
-//	public static String startupDirectory = System.getProperty("user.dir") + "/";  // starting point
-	public static String dataDirectory = System.getProperty("user.dir") + "/";
+//	public static String startupDirectory = System.getProperty("user.dir") + SEPARATOR;  // starting point
+	public static String dataDirectory = System.getProperty("user.dir") + SEPARATOR;
 	public static String circuitName_;  // name of circuit with a "_" appended
 	public static String currentDirectory = dataDirectory;  // current working directory
 
@@ -268,7 +269,7 @@ public class DSS {
 		if (dataDirectory.length() > 0) {
 			currentDirectory = dataDirectory;   // change to specified directory
 			if (dataDirectory.charAt(dataDirectory.length()) != '/')
-				dataDirectory += "/";
+				dataDirectory += SEPARATOR;
 		}
 	}
 

@@ -5,9 +5,11 @@ import java.io.DataInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.regex.Matcher;
@@ -63,9 +65,7 @@ public class ExecHelper {
 	private static CommandList setBusXYCommands = new CommandList(new String[] {"Bus", "x", "y"}, true);
 	private static CommandList pstCalcCommands = new CommandList(new String[] {"Npts", "Voltages", "dt", "Frequency", "lamp"}, true);
 
-	private ExecHelper() {
-
-	}
+	private ExecHelper() {}
 
 	/**
 	 * Looks for object definition:
@@ -84,11 +84,13 @@ public class ExecHelper {
 
 		paramName = parser.getNextParam().toLowerCase();
 		param = parser.makeString();
-		if (paramName.length() > 0)  // if specified, must be object or an abbreviation.
+		if (paramName.length() > 0) {  // if specified, must be object or an abbreviation.
 			if (Util.compareTextShortest(paramName, "object") != 0) {
-				DSS.doSimpleMsg("object=class.name expected as first parameter in command."+ DSS.CRLF + parser.getCmdString(), 240);
+				DSS.doSimpleMsg("object=class.name expected as first parameter in command." +
+						DSS.CRLF + parser.getCmdString(), 240);
 				return;
 			}
+		}
 
 		Util.parseObjectClassandName(param, objClass, objName);
 	}
@@ -107,7 +109,7 @@ public class ExecHelper {
 		String[] objClass = new String[1];
 		String[] objName = new String[1];
 		int handle = -1;
-		int result = 0;  // TODO Check return value
+		int result = 0;
 
 		getObjClassAndName(objClass, objName);
 
@@ -124,8 +126,7 @@ public class ExecHelper {
 			handle = addObject(objClass[0], objName[0]);
 		}
 
-		if (handle == -1)
-			result = 1;
+		if (handle == -1) result = 1;
 
 		return result;
 	}
@@ -136,7 +137,7 @@ public class ExecHelper {
 	public static int doEditCmd() {
 		String[] objType = new String[0];
 		String[] objName = new String[0];
-		int result = 0;
+		int success = 0;
 
 		getObjClassAndName(objType, objName);
 
@@ -144,10 +145,10 @@ public class ExecHelper {
 			// do nothing
 		} else {
 			// everything else must be a circuit element
-			result = editObject(objType[0], objName[0]);
+			success = editObject(objType[0], objName[0]);
 		}
 
-		return result;
+		return success;
 	}
 
 	/**
@@ -158,40 +159,41 @@ public class ExecHelper {
 		String[] pattern = new String[1];
 		Pattern regEx1;
 		Matcher matcher;
-		DSSObject pObj;
+		DSSObject obj;
 		int params;
+		int success = 0;
 
 		Parser parser = Parser.getInstance();
 
-		int result = 0;
 		getObjClassAndName(objType, pattern);
 		if (objType[0].equalsIgnoreCase("circuit")) {
 			// do nothing
 		} else {
-			DSS.lastClassReferenced = DSS.classNames.find( objType[0] );
+			DSS.lastClassReferenced = DSS.classNames.find(objType[0]);
 
 			switch (DSS.lastClassReferenced) {
 			case -1:
-				DSS.doSimpleMsg("BatchEdit command: Object type \"" + objType[0] + "\" not found."+ DSS.CRLF + parser.getCmdString(), 267);
-				return result;
+				DSS.doSimpleMsg("BatchEdit command: Object type \"" + objType[0] +
+					"\" not found."+ DSS.CRLF + parser.getCmdString(), 267);
+				return success;
 			default:
 				params = parser.getPosition();
-				DSS.activeDSSClass = DSS.DSSClassList.get( DSS.lastClassReferenced );
-				regEx1 = Pattern.compile( pattern[0], Pattern.CASE_INSENSITIVE );
+				DSS.activeDSSClass = DSS.DSSClassList.get(DSS.lastClassReferenced);
+				regEx1 = Pattern.compile(pattern[0], Pattern.CASE_INSENSITIVE);
 				DSS.activeDSSClass.getFirst();
-				pObj = (DSSObject) DSS.activeDSSClass.getActiveObj();
-				while (pObj != null) {
-					matcher = regEx1.matcher( pObj.getName() );
+				obj = DSS.activeDSSClass.getActiveObj();
+				while (obj != null) {
+					matcher = regEx1.matcher(obj.getName());
 					if (matcher.find()) {
 						parser.setPosition(params);
 						DSS.activeDSSClass.edit();
 					}
 					DSS.activeDSSClass.getNext();
-					pObj = (DSSObject) DSS.activeDSSClass.getActiveObj();
+					obj = DSS.activeDSSClass.getActiveObj();
 				}
 			}
 		}
-		return result;
+		return success;
 	}
 
 	/**
@@ -205,81 +207,78 @@ public class ExecHelper {
 		FileReader fr;
 		BufferedReader br;
 		String inputLine, currDir = "", saveDir;
-		int result = 0;
+		int success = 0;
 
 		// get next parm and try to interpret as a file name
 		Parser.getInstance().getNextParam();
-		ExecCommands.getInstance().setRedirFile(
-				Util.expandFileName(Parser.getInstance().makeString()));
+		ExecCommands.redirFile = Util.expandFileName(Parser.getInstance().makeString());
 
-		if (!ExecCommands.getInstance().getRedirFile().equals("")) {
+		if (!ExecCommands.redirFile.equals("")) {
 			saveDir = DSS.currentDirectory;
 
 			try {
-				fr = new FileReader(ExecCommands.getInstance().getRedirFile());
-				if (isCompile)
-					DSS.lastFileCompiled = ExecCommands.getInstance().getRedirFile();
+				fr = new FileReader(ExecCommands.redirFile);
+				if (isCompile) DSS.lastFileCompiled = ExecCommands.redirFile;
 			} catch (FileNotFoundException e) {
 				// couldn't find file; try appending '.dss' to the file name
 				// if it doesn't already have an extension
-				if (ExecCommands.getInstance().getRedirFile().indexOf('.') == -1) {
-					ExecCommands.getInstance().setRedirFile(ExecCommands.getInstance().getRedirFile() + ".dss");
+				if (ExecCommands.redirFile.indexOf('.') == -1) {
+					ExecCommands.redirFile = ExecCommands.redirFile + ".dss";
 					try {
-						fr = new FileReader(ExecCommands.getInstance().getRedirFile());
+						fr = new FileReader(ExecCommands.redirFile);
 					} catch (FileNotFoundException ex) {
-						DSS.doSimpleMsg("Redirect file: \"" + ExecCommands.getInstance().getRedirFile() + "\" not found.", 242);
+						DSS.doSimpleMsg("Redirect file: \"" + ExecCommands.redirFile + "\" not found.", 242);
 						DSS.solutionAbort = true;
-						return result;
+						return success;
 					}
 				} else {
-					DSS.doSimpleMsg("Redirect file: \""+ExecCommands.getInstance().getRedirFile()+"\" not found.", 243);
+					DSS.doSimpleMsg("Redirect file: \"" + ExecCommands.redirFile + "\" not found.", 243);
 					DSS.solutionAbort = true;
-					return result;  // already had an extension
+					return success;  // already had an extension
 				}
 			}
 
-			// OK, we finally got one open, so we're going to continue
 			try {
 				// change directory to path specified by file in case that loads in more files
-				currDir = Util.extractFileDir(ExecCommands.getInstance().getRedirFile());
+				currDir = Util.extractFileDir(ExecCommands.redirFile);
 				DSS.currentDirectory = currDir;
-				if (isCompile)
-					DSS.setDataPath(currDir);
+				if (isCompile) DSS.setDataPath(currDir);
 
 				DSS.redirectAbort = false;
 				DSS.inRedirect = true;
 
 				br = new BufferedReader(fr);
 
-				while (((inputLine = br.readLine()) != null) || DSS.redirectAbort) {
+				while ((inputLine = br.readLine()) != null || DSS.redirectAbort) {
 					if (!DSS.solutionAbort) {
-						ExecCommands.getInstance().processCommand(inputLine);
+						ExecCommands.processCommand(inputLine);
 					} else {
 						DSS.redirectAbort = true;  // abort file if solution was aborted
 					}
 				}
 
 				if (DSS.activeCircuit != null)
-					DSS.activeCircuit.setCurrentDirectory(currDir + "\"");
+					DSS.activeCircuit.setCurrentDirectory(currDir + DSS.SEPARATOR);
 
 				br.close();
 				fr.close();
 			} catch (IOException e) {
-				DSS.doErrorMsg("DoRedirect"+DSS.CRLF+"Error processing input stream in Compile/Redirect.",
+				DSS.doErrorMsg("DoRedirect" + DSS.CRLF + "Error processing input stream in Compile/Redirect.",
 						e.getMessage(),
-						"Error in file: \"" + ExecCommands.getInstance().getRedirFile() + "\" or filename.", 244);
+						"Error in file: \"" + ExecCommands.redirFile + "\" or filename.", 244);
 			} finally {
 				DSS.inRedirect = false;
 				if (isCompile) {
 					DSS.setDataPath(currDir);  // change DSSDataDirectory
 					DSS.lastCommandWasCompile = true;
 				} else {
-					DSS.currentDirectory = saveDir;  // set back to where we were for redirect, but not compile
+					// set back to where we were for redirect, but not compile
+					DSS.currentDirectory = saveDir;
 				}
 			}
-		} // else ignore altogether if null filename
+		}  // else ignore altogether if null filename
 
-		return result;
+		return success;
 	}
 
 	/**
@@ -291,13 +290,13 @@ public class ExecHelper {
 		String[] objClass = new String[1];
 		String[] objName = new String[1];
 		String param;
-
-		int result = 1;
+		int success = 1;
+		Circuit ckt = DSS.activeCircuit;
 
 		getObjClassAndName(objClass, objName);  // parse object class and name
 
 		if (objClass[0].length() == 0 && objName[0].length() == 0)
-			return result;  // select active obj if any
+			return success;  // select active obj if any
 
 		if (objClass[0].equalsIgnoreCase("circuit")) {
 			setActiveCircuit(objName[0]);
@@ -307,37 +306,39 @@ public class ExecHelper {
 				DSSClassDefs.setObjectClass(objClass[0]);
 
 			DSS.activeDSSClass = DSS.DSSClassList.get(DSS.lastClassReferenced);
+
 			if (DSS.activeDSSClass != null) {
-				if (!DSS.activeDSSClass.setActive( objName[0] )) {
+				if (!DSS.activeDSSClass.setActive(objName[0])) {
 					// scroll through list of objects until a match
-					DSS.doSimpleMsg("Error: Object \"" + objName[0] + "\" not found."+ DSS.CRLF + Parser.getInstance().getCmdString(), 245);
-					result = 0;
+					DSS.doSimpleMsg("Object \"" + objName[0] + "\" not found." +
+							DSS.CRLF + Parser.getInstance().getCmdString(), 245);
+					success = 0;
 				} else {
 					switch (DSS.activeDSSObject.getObjType()) {
 					case DSSClassDefs.DSS_OBJECT:
 						// do nothing for general DSS object
 						break;
 					default:  // for circuit types set activeCircuit element too
-						DSS.activeCircuit.setActiveCktElement((CktElement) DSS.activeDSSClass.getActiveObj());
+						ckt.setActiveCktElement((CktElement) DSS.activeDSSClass.getActiveObj());
 						// now check for active terminal designation
 						Parser.getInstance().getNextParam().toLowerCase();
 						param = Parser.getInstance().makeString();
 						if (param.length() > 0) {
-							DSS.activeCircuit.getActiveCktElement().setActiveTerminalIdx(Parser.getInstance().makeInteger());
+							ckt.getActiveCktElement().setActiveTerminalIdx(Parser.getInstance().makeInteger() - 1);
 						} else {
-							DSS.activeCircuit.getActiveCktElement().setActiveTerminalIdx(0);
+							ckt.getActiveCktElement().setActiveTerminalIdx(0);
 						}
-						DSS.setActiveBus( DSS.activeCircuit.getActiveCktElement().getBus(DSS.activeCircuit.getActiveCktElement().getActiveTerminalIdx()) );
+						DSS.setActiveBus(ckt.getActiveCktElement().getBus(ckt.getActiveCktElement().getActiveTerminalIdx()));
 						break;
 					}
 				}
 			} else {
-				DSS.doSimpleMsg("Error: Active object type/class is not set.", 246);
-				result = 0;
+				DSS.doSimpleMsg("Active object type/class is not set.", 246);
+				success = 0;
 			}
 		}
 
-		return result;
+		return success;
 	}
 
 	/**
@@ -351,9 +352,97 @@ public class ExecHelper {
 		}
 	}
 
+	/**
+	 * Save current values in both monitors and meters.
+	 */
 	public static int doSaveCmd() {
-		// TODO: Implement this method
-		throw new UnsupportedOperationException();
+		int paramPointer;
+		String paramName, param;
+		String objClass;
+		String saveDir;
+		String saveFile;
+		DSSClass cls;
+
+		Parser parser = Parser.getInstance();
+		Circuit ckt = DSS.activeCircuit;
+
+		int result = 0;
+		objClass = "";
+		saveDir = "";
+		saveFile = "";
+
+		paramPointer = -1;
+		paramName = parser.getNextParam();
+		param = parser.makeString();
+
+		while (param.length() > 0) {
+			if (paramName.length() == 0) {
+				paramPointer += 1;
+			} else {
+				paramPointer = saveCommands.getCommand(paramName);
+			}
+
+			switch (paramPointer) {
+			case 0:
+				objClass = parser.makeString();
+				break;
+			case 1:
+				saveFile = parser.makeString();   // file name for saving a class
+				break;
+			case 2:
+				saveDir = parser.makeString();
+				break;
+			default:
+				break;
+			}
+
+			paramName = parser.getNextParam();
+			param = parser.makeString();
+		}
+
+		DSS.inShowResults = true;
+
+		if (objClass.length() == 0 || Util.compareTextShortest(objClass, "meters") == 0) {
+			// save monitors and meters
+			for (MonitorObj mon : ckt.getMonitors()) {
+				mon.save();
+			}
+			for (EnergyMeterObj mtr : ckt.getEnergyMeters()) {
+				mtr.saveRegisters();
+			}
+			return result;
+		}
+
+		if (Util.compareTextShortest(objClass, "circuit") == 0) {
+			if (!ckt.save(saveDir)) result = 1;
+			return result;
+		}
+		if (Util.compareTextShortest(objClass, "voltages") == 0) {
+			ckt.getSolution().saveVoltages();
+			return result;
+		}
+
+		/* Assume that we have a class name for a DSS Class */
+		cls = DSSClassDefs.getDSSClass(objClass);
+		if (cls != null) {
+			if (saveFile.length() == 0) saveFile = objClass;
+			if (saveDir.length() > 0) {
+				if (! new File(saveDir).exists()) {
+					try {
+						new File(saveDir).mkdir();
+					} catch (SecurityException e) {
+						DSS.doSimpleMsg("Error making directory: \""+saveDir+"\". " + e.getMessage(), 247);
+					}
+				}
+				saveFile = saveDir + DSS.SEPARATOR + saveFile;
+			}
+			Util.writeClassFile(cls, saveFile, false);  // just write the class with no checks
+		}
+
+		DSS.lastResultFile = saveFile;
+		DSS.globalResult = saveFile;
+
+		return result;
 	}
 
 	public static int doClearCmd() {
@@ -371,9 +460,7 @@ public class ExecHelper {
 	 */
 	public static int doSampleCmd() {
 		DSS.monitorClass.sampleAll();
-
 		DSS.energyMeterClass.sampleAll();  // gets generators too
-
 		return 0;
 	}
 
@@ -390,33 +477,34 @@ public class ExecHelper {
 	public static int setActiveCktElement() {
 		String[] objType = new String[1];
 		String[] objName = new String[1];
-		int result = 0;
+		int success = 0;
 
 		getObjClassAndName(objType, objName);
 
 		if (objType[0].equalsIgnoreCase("circuit")) {
 			// do nothing
 		} else {
-			if (!objType[0].equalsIgnoreCase( DSS.activeDSSClass.getClassName() )) {
-				DSS.lastClassReferenced =  DSS.classNames.find(objType[0]);
+			if (!objType[0].equalsIgnoreCase(DSS.activeDSSClass.getClassName())) {
+				DSS.lastClassReferenced = DSS.classNames.find(objType[0]);
 
 				switch (DSS.lastClassReferenced) {
-				case 0:
-					DSS.doSimpleMsg("Object type \"" + objType[0] + "\" not found."+ DSS.CRLF + Parser.getInstance().getCmdString(), 253);
-					result = 0;
-					return result;
+				case -1:
+					DSS.doSimpleMsg("Object type \"" + objType[0] + "\" not found." +
+						DSS.CRLF + Parser.getInstance().getCmdString(), 253);
+					return success;
 				default:
 					// intrinsic and user defined models
 					DSS.activeDSSClass = DSS.DSSClassList.get(DSS.lastClassReferenced);
-					if (DSS.activeDSSClass.setActive( objName[0] )) {
+					if (DSS.activeDSSClass.setActive(objName[0])) {
 						// scroll through list of objects until a match
 						switch (DSS.activeDSSObject.getObjType()) {
 						case DSSClassDefs.DSS_OBJECT:
-							DSS.doSimpleMsg("Error in setActiveCktElement: Object not a circuit element."+ DSS.CRLF + Parser.getInstance().getCmdString(), 254);
+							DSS.doSimpleMsg("Error in setActiveCktElement: Object not a circuit element." +
+									DSS.CRLF + Parser.getInstance().getCmdString(), 254);
 							break;
 						default:
 							DSS.activeCircuit.setActiveCktElement((CktElement) DSS.activeDSSClass.getActiveObj());
-							result = 1;
+							success = 1;
 						}
 					}
 					break;
@@ -424,19 +512,18 @@ public class ExecHelper {
 			}
 		}
 
-		return result;
+		return success;
 	}
 
 	public static int doEnableCmd() {
 		String[] objType = new String[1];
 		String[] objName = new String[1];
-		DSSClass classPtr;
-		CktElement cktElem;
+		DSSClass cls;
+		CktElement elem;
+		int i, success = 0;
 
 		//result = setActiveCktElement();
 		//if (result >= 0) DSSGlobals.activeCircuit.getActiveCktElement().setEnabled(true);
-
-		int result = 0;
 
 		getObjClassAndName(objType, objName);
 
@@ -445,21 +532,20 @@ public class ExecHelper {
 		} else {
 			if (objType[0].length() > 0) {
 				// only applies to CktElementClass objects
-				classPtr = DSSClassDefs.getDSSClass(objType[0]);
-				if (classPtr != null) {
-
-					if ((classPtr.getClassType() & DSSClassDefs.BASECLASSMASK) > 0) {
+				cls = DSSClassDefs.getDSSClass(objType[0]);
+				if (cls != null) {
+					if ((cls.getClassType() & DSSClassDefs.BASECLASSMASK) > 0) {
 						// everything else must be a circuit element
 						if (objName[0].equals("*")) {
 							// enable all elements of this class
-							for (int i = 0; i < classPtr.getElementCount(); i++) {
-								cktElem = (CktElement) classPtr.getElementList().get(i);
-								cktElem.setEnabled(true);
+							for (i = 0; i < cls.getElementCount(); i++) {
+								elem = (CktElement) cls.getElementList().get(i);
+								elem.setEnabled(true);
 							}
 						} else {
 							// just load up the parser and call the edit routine for the object in question
 							Parser.getInstance().setCmdString("enabled=true");  // will only work for CktElements
-							result = editObject(objType[0], objName[0]);
+							success = editObject(objType[0], objName[0]);
 						}
 					}
 
@@ -467,16 +553,15 @@ public class ExecHelper {
 			}
 		}
 
-		return result;
+		return success;
 	}
 
 	public static int doDisableCmd() {
 		String[] objType = new String[1];
 		String[] objName = new String[1];
-		DSSClass classPtr;
-		CktElement cktElem;
-
-		int result = 0;
+		DSSClass cls;
+		CktElement elem;
+		int i, success = 0;
 
 		getObjClassAndName(objType, objName);
 
@@ -485,37 +570,178 @@ public class ExecHelper {
 		} else {
 			if (objType[0].length() > 0) {
 				// only applies to CktElementClass objects
-				classPtr = DSSClassDefs.getDSSClass(objType[0]);
-				if (classPtr != null) {
-
-					if ((classPtr.getClassType() & DSSClassDefs.BASECLASSMASK) > 0) {
+				cls = DSSClassDefs.getDSSClass(objType[0]);
+				if (cls != null) {
+					if ((cls.getClassType() & DSSClassDefs.BASECLASSMASK) > 0) {
 						// everything else must be a circuit element
 						if (objName[0].equals("*")) {
 							// disable all elements of this class
-							for (int i = 0; i < classPtr.getElementCount(); i++) {
-								cktElem = (CktElement) classPtr.getElementList().get(i);
-								cktElem.setEnabled(false);
+							for (i = 0; i < cls.getElementCount(); i++) {
+								elem = (CktElement) cls.getElementList().get(i);
+								elem.setEnabled(false);
 							}
 						}
 					} else {
 						// just load up the parser and call the edit routine for the object in question
 						Parser.getInstance().setCmdString("enabled=false");  // will only work for CktElements
-						result = editObject(objType[0], objName[0]);
+						success = editObject(objType[0], objName[0]);
 					}
 
 				}
 			}
 		}
 
-		//Result = setActiveCktElement();
-		//if (Result > 0) getActiveCircuit().getActiveCktElement().setEnabled(false);
+		//result = setActiveCktElement();
+		//if (result > 0) getActiveCircuit().getActiveCktElement().setEnabled(false);
 
-		return result;
+		return success;
 	}
 
 	public static int doPropertyDump() {
-		// TODO Implement this method.
-		throw new UnsupportedOperationException();
+		FileOutputStream fos;
+		boolean singleObject, debugDump, isSolution;
+		int i, result = 0;
+		String fileName = "";
+		@SuppressWarnings("unused") String paramName;
+		String param, param2;
+		String[] objClass = new String[1];
+		String[] objName = new String[1];
+
+		Parser parser = Parser.getInstance();
+		Circuit ckt = DSS.activeCircuit;
+
+		singleObject = false;
+		isSolution = false;
+		debugDump = false;
+		objClass[0] = " ";  // make sure these have at least one character
+		objName[0] = " ";
+
+		// continue parsing command line - check for object name
+		paramName = parser.getNextParam();
+		param = parser.makeString();
+		if (param.length() > 0) {
+			if (param.equalsIgnoreCase("commands")) {
+				if (!DSS.noFormsAllowed) {
+					Util.dumpAllDSSCommands(fileName);
+					Util.fireOffEditor(fileName);
+					return result;
+				}
+			}
+
+			/* dump bus names hash list */
+			if (param.equalsIgnoreCase("buslist")) {
+				if (!DSS.noFormsAllowed) {
+					fileName = DSS.dataDirectory + "BusHashList.txt";
+					ckt.getBusList().dumpToFile(fileName);
+					Util.fireOffEditor(fileName);
+					return result;
+				}
+			}
+
+			/* dump device names hash list */
+			if (param.equalsIgnoreCase("devicelist")) {
+				if (!DSS.noFormsAllowed) {
+					fileName = DSS.dataDirectory + "DeviceHashList.txt";
+					ckt.getDeviceList().dumpToFile(fileName);
+					Util.fireOffEditor(fileName);
+					return result;
+				}
+			}
+
+			if (param.toLowerCase().startsWith("alloc")) {
+				fileName = DSS.dataDirectory + "AllocationFactors.txt";
+				Util.dumpAllocationFactors(fileName);
+				Util.fireOffEditor(fileName);
+				return result;
+			}
+
+			if (param.equalsIgnoreCase("debug")) {
+				debugDump = true;
+			} else {
+				if (param.equalsIgnoreCase("solution")) {
+					// assume active circuit solution if not qualified
+					DSS.activeDSSClass = DSS.solutionClass;
+					DSS.activeDSSObject = ckt.getSolution();
+					isSolution = true;
+				} else {
+					singleObject = true;
+					// check to see if we want a debug dump on this object
+					paramName = parser.getNextParam();
+					param2 = parser.makeString();
+					if (param2.equalsIgnoreCase("debug")) debugDump = true;
+					// set active element to be value in param
+					parser.setCmdString("\"" + param + "\"");  // put param back into parser
+					getObjClassAndName(objClass, objName);
+					//if (doSelectCmd == 0) return result;
+					if (DSSClassDefs.setObjectClass(objClass[0])) {
+						DSS.activeDSSClass = DSS.DSSClassList.get(DSS.lastClassReferenced);
+						if (DSS.activeDSSClass == null) return result;
+					} else {
+						return result;
+					}
+				}
+			}
+		}
+
+		try {
+			fos = new FileOutputStream(DSS.dataDirectory + DSS.circuitName_ + "PropertyDump.txt");
+		} catch (IOException e) {
+			DSS.doErrorMsg("Error opening " + DSS.dataDirectory + " PropertyDump.txt for writing in " +
+					DSS.currentDirectory,
+					e.getMessage(), "Disk protected or other file error", 255);
+			return result;
+		}
+
+		try {
+			if (singleObject) {
+				/* if objName == "*" then we dump all objects of this class */
+				switch (objName[0].charAt(0)) {
+				case '*':
+					for (i = 0; i < DSS.activeDSSClass.getElementCount(); i++) {
+						DSS.activeDSSClass.setActiveElement(i);
+						DSS.activeDSSObject.dumpProperties(fos, debugDump);
+					}
+					break;
+				default:
+					if (!DSS.activeDSSClass.setActive(objName[0])) {
+						DSS.doSimpleMsg("Object \"" + objName[0] + "\" not found.", 256);
+						return result;
+					} else {
+						DSS.activeDSSObject.dumpProperties(fos, debugDump);  // Dump only properties of active circuit element
+					}
+					break;
+				}
+			} else if (isSolution) {
+				DSS.activeDSSObject.dumpProperties(fos, debugDump);
+			} else {
+				// dump general circuit stuff
+				if (debugDump) ckt.debugDump(fos);
+				// dump circuit objects
+				try {
+					for (CktElement elem : ckt.getCktElements()) {
+						elem.dumpProperties(fos, debugDump);
+					}
+
+					for (DSSObject obj : DSS.DSSObjs) {
+						obj.dumpProperties(fos, debugDump);
+					}
+				} catch (Exception e) {
+					DSS.doErrorMsg("Problem writing file.",
+							e.getMessage(),
+							"File may be read only, in use, or disk full.", 257);
+				}
+			}
+
+			ckt.getSolution().dumpProperties(fos, debugDump);
+
+			fos.close();
+		} catch (IOException e) {
+			DSS.doSimpleMsg("Error writing property dump.", -1);
+		}
+
+		Util.fireOffEditor(DSS.dataDirectory + DSS.circuitName_ + "PropertyDump.txt");
+
+		return result;
 	}
 
 	/** For interpreting time specified as an array "hour, sec". */
@@ -967,24 +1193,24 @@ public class ExecHelper {
 	}
 
 	public static int editObject(String objType, String name) {
-		int result = 0;
+		int success = 0;
 		DSS.lastClassReferenced = DSS.classNames.find(objType);
 
 		switch (DSS.lastClassReferenced) {
 		case -1:
 			DSS.doSimpleMsg("Edit command: Object type \"" + objType + "\" not found."+ DSS.CRLF + Parser.getInstance().getCmdString(), 267);
-			result = 0;
-			return result;
+			success = 0;
+			return success;
 		default:
 			// intrinsic and user defined models
 			// edit the DSS object
 			DSS.activeDSSClass = DSS.DSSClassList.get(DSS.lastClassReferenced);
 			if (DSS.activeDSSClass.setActive(name))
-				result = DSS.activeDSSClass.edit();  // edit the active object
+				success = DSS.activeDSSClass.edit();  // edit the active object
 			break;
 		}
 
-		return result;
+		return success;
 	}
 
 	public static int doSetKVBase() {

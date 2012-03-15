@@ -1085,8 +1085,8 @@ public class Util {
 			// dump executive commands
 			pw.println("[execCommands]");
 			for (int i = 0; i < ExecCommands.NumExecCommands; i++)
-				pw.println((i+1) +" + \"" + ExecCommands.getInstance().getExecCommand(i) +
-					"\" \"" + ExecCommands.getInstance().getCommandHelp(i) + "\"");
+				pw.println((i+1) +" + \"" + ExecCommands.execCommand[i] +
+					"\" \"" + ExecCommands.commandHelp[i] + "\"");
 
 			// dump executive options
 			pw.println("[execOptions]");

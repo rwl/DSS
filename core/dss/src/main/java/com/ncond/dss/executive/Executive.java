@@ -23,8 +23,7 @@ public class Executive {
 	private Executive() {
 		super();
 
-		ExecCommands execCmd = ExecCommands.getInstance();
-		execCmd.setCommandList(new CommandList(execCmd.getExecCommand()));
+		ExecCommands.commandList = new CommandList(ExecCommands.execCommand);
 
 		ExecOptions execOpts = ExecOptions.getInstance();
 		execOpts.setOptionList(execOpts.getOptionList());
@@ -39,8 +38,8 @@ public class Executive {
 
 		Parser.getInstance();  // create global parser object
 
-		ExecCommands.getInstance().setLastCmdLine("");
-		ExecCommands.getInstance().setRedirFile("");
+		ExecCommands.lastCmdLine = "";
+		ExecCommands.redirFile = "";
 
 		setRecorderOn(false);
 		this.recorderFile = "";
@@ -64,7 +63,7 @@ public class Executive {
 	protected void finalize() throws Throwable {
 		DSS.clearAllCircuits();
 
-		ExecCommands.getInstance().setCommandList(null);
+		ExecCommands.commandList = null;
 		ExecOptions.getInstance().setOptionList(null);
 		DSS.circuits = null;
 
@@ -105,11 +104,11 @@ public class Executive {
 	}
 
 	public String getCommand() {
-		return ExecCommands.getInstance().getLastCmdLine();
+		return ExecCommands.lastCmdLine;
 	}
 
 	public void setCommand(String value) {
-		ExecCommands.getInstance().processCommand(value);
+		ExecCommands.processCommand(value);
 	}
 
 	public void clear() {
