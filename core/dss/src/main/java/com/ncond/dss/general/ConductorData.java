@@ -76,19 +76,19 @@ abstract public class ConductorData extends DSSClass {
 				cd.setR60(parser.makeDouble());
 				break;
 			case 2:
-				cd.setResistanceUnits( LineUnits.getUnitsCode(parser.makeString()) );
+				cd.setResistanceUnits( LineUnits.interpretUnitsCode(parser.makeString()) );
 				break;
 			case 3:
 				cd.setGmr60(parser.makeDouble());
 				break;
 			case 4:
-				cd.setGmrUnits( LineUnits.getUnitsCode(parser.makeString()) );
+				cd.setGmrUnits( LineUnits.interpretUnitsCode(parser.makeString()) );
 				break;
 			case 5:
 				cd.setRadius(parser.makeDouble());
 				break;
 			case 6:
-				cd.setRadiusUnits( LineUnits.getUnitsCode(parser.makeString()) );
+				cd.setRadiusUnits( LineUnits.interpretUnitsCode(parser.makeString()) );
 				break;
 			case 7:
 				cd.setNormAmps(parser.makeDouble());
@@ -118,7 +118,7 @@ abstract public class ConductorData extends DSSClass {
 					cd.setRadius(cd.getGmr60() / 0.7788);
 				break;
 			case 4:
-				if (cd.getRadiusUnits() == 0)
+				if (cd.getRadiusUnits() == LineUnits.NONE)
 					cd.setRadiusUnits(cd.getGmrUnits());
 				break;
 			case 5:
@@ -126,7 +126,7 @@ abstract public class ConductorData extends DSSClass {
 					cd.setGmr60(0.7788 * cd.getRadius());
 				break;
 			case 6:
-				if (cd.getGmrUnits() == 0)
+				if (cd.getGmrUnits() == LineUnits.NONE)
 					cd.setGmrUnits(cd.getRadiusUnits());
 				break;
 			case 7:

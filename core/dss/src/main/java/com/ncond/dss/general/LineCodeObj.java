@@ -44,7 +44,7 @@ public class LineCodeObj extends DSSObject {
 	protected double normAmps, emergAmps, faultRate, pctPerm, hrsToRepair;
 	protected double Rg, Xg, rho;
 
-	protected int units;  // see LineUnits
+	protected LineUnits units;  // see LineUnits
 
 	public LineCodeObj(DSSClass parClass, String lineCodeName) {
 		super(parClass);
@@ -64,7 +64,7 @@ public class LineCodeObj extends DSSObject {
 		Zinv = null;
 		Yc   = null;
 		baseFrequency = DSS.activeCircuit.getFundamental();
-		units = LineUnits.UNITS_NONE;  // default to none (no conversion)
+		units = LineUnits.NONE;  // default to none (no conversion)
 		normAmps  = 400.0;
 		emergAmps = 600.0;
 		pctPerm   = 20.0;

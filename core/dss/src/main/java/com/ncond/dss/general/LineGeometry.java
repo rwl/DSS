@@ -150,7 +150,7 @@ public class LineGeometry extends DSSClass {
 				alg.getY()[alg.getActiveCond()] = parser.makeDouble();
 				break;
 			case 6:
-				alg.getUnits()[alg.getActiveCond()] = LineUnits.getUnitsCode(param);
+				alg.getUnits()[alg.getActiveCond()] = LineUnits.interpretUnitsCode(param);
 				alg.setLastUnit( alg.getUnits()[alg.getActiveCond()] );
 				break;
 			case 7:

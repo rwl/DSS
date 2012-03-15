@@ -44,9 +44,9 @@ public class Line extends PDClass {
 
 	@Override
 	protected void defineProperties() {
-
 		numProperties = Line.NumPropsThisClass;
 		countProperties();  // get inherited property count
+
 		allocatePropertyArrays();
 
 		// define property names
@@ -72,71 +72,71 @@ public class Line extends PDClass {
 		propertyName[19] = "units";
 		propertyName[20] = "spacing";
 		propertyName[21] = "wires";
-		propertyName[22] = "EarthModel";
+		propertyName[22] = "earthModel";
 		propertyName[23] = "cncables";
 		propertyName[24] = "tscables";
 
 		// define property help values
 		propertyHelp[0] = "Name of bus to which first terminal is connected."+ DSS.CRLF+
-					"Example:"+DSS.CRLF+
-					"bus1=busname   (assumes all terminals connected in normal phase order)"+DSS.CRLF+
-					"bus1=busname.3.1.2.0 (specify terminal to node connections explicitly)";
+				"Example:"+DSS.CRLF+
+				"bus1=busname   (assumes all terminals connected in normal phase order)"+DSS.CRLF+
+				"bus1=busname.3.1.2.0 (specify terminal to node connections explicitly)";
 		propertyHelp[1] = "Name of bus to which 2nd terminal is connected.";
 		propertyHelp[2] = "Name of linecode object describing line impedances."+DSS.CRLF+
-					"If you use a line code, you do not need to specify the impedances here. "+
-					"The line code must have been PREVIOUSLY defined. " +
-					"The values specified last will prevail over those specified earlier (left-to-right " +
-					"sequence of properties).  You can subsequently change the number of phases if symmetrical component quantities are specified." +
-					"If no line code or impedance data are specified, the line object "+
-					"defaults to 336 MCM ACSR on 4 ft spacing.";
+				"If you use a line code, you do not need to specify the impedances here. "+
+				"The line code must have been PREVIOUSLY defined. " +
+				"The values specified last will prevail over those specified earlier (left-to-right " +
+				"sequence of properties).  You can subsequently change the number of phases if symmetrical component quantities are specified." +
+				"If no line code or impedance data are specified, the line object "+
+				"defaults to 336 MCM ACSR on 4 ft spacing.";
 		propertyHelp[3] = "Length of line. Default is 1.0. If units do not match the impedance data, specify \"units\" property. ";
 		propertyHelp[4] = "Number of phases, this line.";
 		propertyHelp[5] = "Positive-sequence Resistance, ohms per unit length. Setting any of R1, R0, X1, X0, C1, C0 forces " +
-						"the program to use the symmetrical component line definition. See also Rmatrix.";
+				"the program to use the symmetrical component line definition. See also Rmatrix.";
 		propertyHelp[6] = "Positive-sequence Reactance, ohms per unit length. Setting any of R1, R0, X1, X0, C1, C0 forces " +
-						"the program to use the symmetrical component line definition.  See also Xmatrix";
+				"the program to use the symmetrical component line definition.  See also Xmatrix";
 		propertyHelp[7] = "Zero-sequence Resistance, ohms per unit length.";
 		propertyHelp[8] = "Zero-sequence Reactance, ohms per unit length.";
 		propertyHelp[9] = "Positive-sequence capacitance, nf per unit length.  Setting any of R1, R0, X1, X0, C1, C0 forces " +
-						"the program to use the symmetrical component line definition. See also Cmatrix.";
+				"the program to use the symmetrical component line definition. See also Cmatrix.";
 		propertyHelp[10] = "Zero-sequence capacitance, nf per unit length.";
 		propertyHelp[11] = "Resistance matrix, lower triangle, ohms per unit length. Order of the matrix is the number of phases. "+
-						"May be used to specify the impedance of any line configuration. Using any of Rmatrix, Xmatrix, Cmatrix " +
-						"forces program to use the matrix values for line impedance definition. For balanced line models, you may "+
-						"use the standard symmetrical component data definition instead.";
+				"May be used to specify the impedance of any line configuration. Using any of Rmatrix, Xmatrix, Cmatrix " +
+				"forces program to use the matrix values for line impedance definition. For balanced line models, you may "+
+				"use the standard symmetrical component data definition instead.";
 		propertyHelp[12] = "Reactance matrix, lower triangle, ohms per unit length. Order of the matrix is the number of phases. "+
-						"May be used to specify the impedance of any line configuration. Using any of Rmatrix, Xmatrix, Cmatrix " +
-						"forces program to use the matrix values for line impedance definition.  For balanced line models, you may "+
-						"use the standard symmetrical component data definition instead.";
+				"May be used to specify the impedance of any line configuration. Using any of Rmatrix, Xmatrix, Cmatrix " +
+				"forces program to use the matrix values for line impedance definition.  For balanced line models, you may "+
+				"use the standard symmetrical component data definition instead.";
 		propertyHelp[13] = "Nodal Capacitance matrix, lower triangle, nf per unit length.Order of the matrix is the number of phases. "+
-						"May be used to specify the shunt capacitance of any line configuration. Using any of Rmatrix, Xmatrix, Cmatrix " +
-						"forces program to use the matrix values for line impedance definition.  For balanced line models, you may "+
-						"use the standard symmetrical component data definition instead.";
+				"May be used to specify the shunt capacitance of any line configuration. Using any of Rmatrix, Xmatrix, Cmatrix " +
+				"forces program to use the matrix values for line impedance definition.  For balanced line models, you may "+
+				"use the standard symmetrical component data definition instead.";
 		propertyHelp[14] = "{y/n | T/F}  Default= no/false.  Designates this line as a switch for graphics and algorithmic purposes. " +DSS.CRLF+
-							"SIDE EFFECT: Sets r1 = 1.0; x1 = 1.0; r0 = 1.0; x0 = 1.0; c1 = 1.1 ; c0 = 1.0;  length = 0.001; You must reset if you want something different.";
+				"SIDE EFFECT: Sets r1 = 1.0; x1 = 1.0; r0 = 1.0; x0 = 1.0; c1 = 1.1 ; c0 = 1.0;  length = 0.001; You must reset if you want something different.";
 		propertyHelp[15] = "Carson earth return resistance per unit length used to compute impedance values at base frequency. " +
-							"Default is 0.01805 = 60 Hz value in ohms per kft (matches default line impedances). " +
-							"This value is required for harmonic solutions if you wish to adjust the earth return impedances for frequency. " +
-							"If not, set both Rg and Xg = 0.";
+				"Default is 0.01805 = 60 Hz value in ohms per kft (matches default line impedances). " +
+				"This value is required for harmonic solutions if you wish to adjust the earth return impedances for frequency. " +
+				"If not, set both Rg and Xg = 0.";
 		propertyHelp[16] = "Carson earth return reactance per unit length used to compute impedance values at base frequency.  For making better frequency adjustments. " +
-							"Default is 0.155081 = 60 Hz value in ohms per kft (matches default line impedances). " +
-							"This value is required for harmonic solutions if you wish to adjust the earth return impedances for frequency. " +
-							"If not, set both Rg and Xg = 0.";
+				"Default is 0.155081 = 60 Hz value in ohms per kft (matches default line impedances). " +
+				"This value is required for harmonic solutions if you wish to adjust the earth return impedances for frequency. " +
+				"If not, set both Rg and Xg = 0.";
 		propertyHelp[17] = "Default=100 meter ohms.  Earth resitivity used to compute earth correction factor. Overrides Line geometry definition if specified.";
 		propertyHelp[18] = "Geometry code for LineGeometry Object. Supercedes any previous definition of line impedance. " +
-							"Line constants are computed for each frequency change or rho change. CAUTION: may alter number of phases. "+
-							"You cannot subsequently change the number of phases unless you change how the line impedance is defined.";
+				"Line constants are computed for each frequency change or rho change. CAUTION: may alter number of phases. "+
+				"You cannot subsequently change the number of phases unless you change how the line impedance is defined.";
 		propertyHelp[19] = "Length Units = {none | mi|kft|km|m|Ft|in|cm } Default is None - assumes length units match impedance units.";
 		propertyHelp[20] = "Reference to a LineSpacing for use in a line constants calculation." + DSS.CRLF +
-							"Must be used in conjunction with the Wires property." + DSS.CRLF +
-							"Specify this before the wires property.";
+				"Must be used in conjunction with the Wires property." + DSS.CRLF +
+				"Specify this before the wires property.";
 		propertyHelp[21] = "Array of WireData names for use in a line constants calculation." + DSS.CRLF +
 				"Must be used in conjunction with the Spacing property." + DSS.CRLF +
 				"Specify the Spacing first, and \"ncond\" wires." + DSS.CRLF +
 				"May also be used to specify bare neutrals with cables, using \"ncond-nphase\" wires.";
 		propertyHelp[22] = "One of {Carson | FullCarson | Deri}. Default is the global value established with the Set EarthModel command. " +
-							"See the Options Help on EarthModel option. This is used to override the global value for this line. This " +
-							"option applies only when the \"geometry\" property is used.";
+				"See the Options Help on EarthModel option. This is used to override the global value for this line. This " +
+				"option applies only when the \"geometry\" property is used.";
 		propertyHelp[23] = "Array of CNData names for use in a cable constants calculation." + DSS.CRLF +
 				"Must be used in conjunction with the Spacing property." + DSS.CRLF +
 				"Specify the Spacing first, using \"nphases\" cncables." + DSS.CRLF +
@@ -158,64 +158,58 @@ public class Line extends PDClass {
 
 	private void doRmatrix() {
 		int[] nOrder = new int[1];
-		Complex[] ZValues;
+		Complex[] Zvalues;
 
-		LineObj al = activeLineObj;
+		LineObj elem = activeLineObj;
 
-		double[] matBuffer = new double[al.getNumPhases() * al.getNumPhases()];
-		int orderFound = Parser.getInstance().parseAsSymMatrix(al.getNumPhases(), matBuffer);
+		double[] matBuffer = new double[elem.getNumPhases() * elem.getNumPhases()];
+		int orderFound = Parser.getInstance().parseAsSymMatrix(elem.getNumPhases(), matBuffer);
 
 		if (orderFound > 0) {  // parse was successful
-			/* R */
-			ZValues = al.getZ().asArray(nOrder);
-			if (nOrder[0] == al.getNumPhases())
-				for (int j = 0; j < al.getNumPhases() * al.getNumPhases(); j++)
-					ZValues[j] = new Complex(matBuffer[j], ZValues[j].getImaginary());
+			Zvalues = elem.getZ().asArray(nOrder);
+			if (nOrder[0] == elem.getNumPhases()) {
+				for (int j = 0; j < elem.getNumPhases() * elem.getNumPhases(); j++)
+					Zvalues[j] = new Complex(matBuffer[j], Zvalues[j].getImaginary());
+			}
 		}
-
-		matBuffer = null;
 	}
 
 	private void doXmatrix() {
 		int[] nOrder = new int[1];
-		Complex[] ZValues;
+		Complex[] Zvalues;
 
-		LineObj al = activeLineObj;
+		LineObj elem = activeLineObj;
 
-		double[] matBuffer = new double[al.getNumPhases() * al.getNumPhases()];
-		int orderFound = Parser.getInstance().parseAsSymMatrix(al.getNumPhases(), matBuffer);
+		double[] matBuffer = new double[elem.getNumPhases() * elem.getNumPhases()];
+		int orderFound = Parser.getInstance().parseAsSymMatrix(elem.getNumPhases(), matBuffer);
 
 		if (orderFound > 0) {  // parse was successful
-			/* X */
-			ZValues = al.getZ().asArray(nOrder);
-			if (nOrder[0] == al.getNumPhases())
-				for (int j = 0; j < al.getNumPhases() * al.getNumPhases(); j++)
-					ZValues[j] = new Complex(ZValues[j].getReal(), matBuffer[j]);
+			Zvalues = elem.getZ().asArray(nOrder);
+			if (nOrder[0] == elem.getNumPhases()) {
+				for (int j = 0; j < elem.getNumPhases() * elem.getNumPhases(); j++)
+					Zvalues[j] = new Complex(Zvalues[j].getReal(), matBuffer[j]);
+			}
 		}
-
-		matBuffer = null;
 	}
 
 	private void doCmatrix() {
 		int[] nOrder = new int[1];
-		Complex[] YValues;
+		Complex[] Yvalues;
 		double factor;
 
-		LineObj al = activeLineObj;
+		LineObj elem = activeLineObj;
 
-		double[] matBuffer = new double[al.getNumPhases() * al.getNumPhases()];
-		int orderFound = Parser.getInstance().parseAsSymMatrix(al.getNumPhases(), matBuffer);
+		double[] matBuffer = new double[elem.getNumPhases() * elem.getNumPhases()];
+		int orderFound = Parser.getInstance().parseAsSymMatrix(elem.getNumPhases(), matBuffer);
 
 		if (orderFound > 0) {  // parse was successful
-			/* X */
-			factor = DSS.TWO_PI * al.getBaseFrequency() * 1.0e-9;
-			YValues = al.getYc().asArray(nOrder);
-			if (nOrder[0] == al.getNumPhases())
-				for (int j = 0; j < al.getNumPhases() * al.getNumPhases(); j++)
-					YValues[j] = new Complex(YValues[j].getReal(), factor * matBuffer[j]);
+			factor = DSS.TWO_PI * elem.getBaseFrequency() * 1.0e-9;
+			Yvalues = elem.getYc().asArray(nOrder);
+			if (nOrder[0] == elem.getNumPhases()) {
+				for (int j = 0; j < elem.getNumPhases() * elem.getNumPhases(); j++)
+					Yvalues[j] = new Complex(Yvalues[j].getReal(), factor * matBuffer[j]);
+			}
 		}
-
-		matBuffer = null;
 	}
 
 	/**
@@ -241,18 +235,18 @@ public class Line extends PDClass {
 	public int edit() {
 		Parser parser = Parser.getInstance();
 
-		int newLengthUnits;
+		LineUnits newLengthUnits;
 
-		int result = 0;
 		// continue parsing with contents of parser
 		activeLineObj = (LineObj) elementList.getActive();
 		DSS.activeCircuit.setActiveCktElement(activeLineObj);  // use property to set this value
 
-		LineObj al = activeLineObj;
+		LineObj elem = activeLineObj;
 
 		int paramPointer = -1;
 		String paramName = parser.getNextParam();
 		String param = parser.makeString();
+
 		while (param.length() > 0) {
 			if (paramName.length() == 0) {
 				paramPointer += 1;
@@ -261,44 +255,45 @@ public class Line extends PDClass {
 			}
 
 			if (paramPointer >= 0 && paramPointer < getNumProperties())
-				al.setPropertyValue(paramPointer, param);
+				elem.setPropertyValue(paramPointer, param);
 
 			switch (paramPointer) {
 			case -1:
-				DSS.doSimpleMsg("Unknown parameter \"" + paramName + "\" for object \"Line." + al.getName() + "\"", 181);
+				DSS.doSimpleMsg("Unknown parameter \"" + paramName + "\" for object \"Line." +
+						elem.getName() + "\"", 181);
 				break;
 			case 0:
-				al.setBus(0, param);
+				elem.setBus(0, param);
 				break;
 			case 1:
-				al.setBus(1, param);
+				elem.setBus(1, param);
 				break;
 			case 2:
-				al.fetchLineCode(param);  // define line by conductor code
+				elem.fetchLineCode(param);  // define line by conductor code
 				break;
 			case 3:
-				al.setLen(parser.makeDouble());
+				elem.setLen(parser.makeDouble());
 				break;
 			case 4:
-				/* Nphases: See below */
+				/* nPhases (see below) */
 				break;
 			case 5:
-				al.setR1(parser.makeDouble());
+				elem.setR1(parser.makeDouble());
 				break;
 			case 6:
-				al.setX1(parser.makeDouble());
+				elem.setX1(parser.makeDouble());
 				break;
 			case 7:
-				al.setR0(parser.makeDouble());
+				elem.setR0(parser.makeDouble());
 				break;
 			case 8:
-				al.setX0(parser.makeDouble());
+				elem.setX0(parser.makeDouble());
 				break;
 			case 9:
-				al.setC1(parser.makeDouble() * 1.0e-9);  // convert from nano to farads
+				elem.setC1(parser.makeDouble() * 1.0e-9);  // convert from nano to farads
 				break;
 			case 10:
-				al.setC0(parser.makeDouble() * 1.0e-9);
+				elem.setC0(parser.makeDouble() * 1.0e-9);
 				break;
 			case 11:
 				doRmatrix();
@@ -310,44 +305,44 @@ public class Line extends PDClass {
 				doCmatrix();
 				break;
 			case 14:
-				al.setSwitch(Util.interpretYesNo(param));
+				elem.setSwitch(Util.interpretYesNo(param));
 				break;
 			case 15:
-				al.setRg(parser.makeDouble());
+				elem.setRg(parser.makeDouble());
 				break;
 			case 16:
-				al.setXg(parser.makeDouble());
+				elem.setXg(parser.makeDouble());
 				break;
 			case 17:
-				al.setRho(parser.makeDouble());
-				al.setRhoSpecified(true);
+				elem.setRho(parser.makeDouble());
+				elem.setRhoSpecified(true);
 				break;
 			case 18:
-				al.fetchGeometryCode(param);
+				elem.fetchGeometryCode(param);
 				break;
 			case 19:  // update units conversion factor that might have been changed previously
-				newLengthUnits = LineUnits.getUnitsCode(param);
-				if (al.isLineCodeSpecified()) {
-					al.setUnitsConvert(LineUnits.convertLineUnits(al.getLineCodeUnits(), newLengthUnits));
+				newLengthUnits = LineUnits.interpretUnitsCode(param);
+				if (elem.isLineCodeSpecified()) {
+					elem.setUnitsConvert(LineUnits.convertLineUnits(elem.getLineCodeUnits(), newLengthUnits));
 				} else {
-					al.setUnitsConvert(al.getUnitsConvert() * LineUnits.convertLineUnits(al.getLengthUnits(), newLengthUnits));
+					elem.setUnitsConvert(elem.getUnitsConvert() * LineUnits.convertLineUnits(elem.getLengthUnits(), newLengthUnits));
 				}
-				al.setLengthUnits(newLengthUnits);
+				elem.setLengthUnits(newLengthUnits);
 				break;
 			case 20:
-				al.fetchLineSpacing(param);
+				elem.fetchLineSpacing(param);
 				break;
 			case 21:
-				al.fetchWireList(param);
+				elem.fetchWireList(param);
 				break;
 			case 22:
-				al.setEarthModel(Util.interpretEarthModel(param));
+				elem.setEarthModel(Util.interpretEarthModel(param));
+				break;
+			case 23:
+				elem.fetchCNCableList(param);
 				break;
 			case 24:
-				al.fetchCNCableList(param);
-				break;
-			case 25:
-				al.fetchTSCableList(param);
+				elem.fetchTSCableList(param);
 				break;
 			default:
 				// inherited property edits
@@ -358,212 +353,155 @@ public class Line extends PDClass {
 			// side effects ...
 			switch (paramPointer) {
 			case 2:
-				al.setSpacingSpecified(false);
-				if (al.isGeometrySpecified() == true)
-					al.killGeometrySpecified();
-				al.setGeometrySpecified(false);
+				elem.setSpacingSpecified(false);
+				if (elem.isGeometrySpecified() == true)
+					elem.killGeometrySpecified();
+				elem.setGeometrySpecified(false);
 				break;
 			case 4:  /* Change the number of phases ... only valid if symComponentsModel=true */
-				if (al.getNumPhases() != parser.makeInteger())
-					if (!al.isGeometrySpecified() && al.isSymComponentsModel()) {  // ignore change of nPhases if geometry used
-						al.setNumPhases(parser.makeInteger());
-						al.setNumConds(al.getNumPhases());  // force reallocation of terminal info
-						al.setYOrder(al.getNumTerms() * al.getNumConds());
+				if (elem.getNumPhases() != parser.makeInteger())
+					if (!elem.isGeometrySpecified() && elem.isSymComponentsModel()) {  // ignore change of nPhases if geometry used
+						elem.setNumPhases(parser.makeInteger());
+						elem.setNumConds(elem.getNumPhases());  // force reallocation of terminal info
+						elem.setYOrder(elem.getNumTerms() * elem.getNumConds());
 						/*al.setYprimInvalid(true);*/  // now set below
-						al.recalcElementData();  // reallocate Z, etc.
+						elem.recalcElementData();  // reallocate Z, etc.
 					} else {
-						DSS.doSimpleMsg("Illegal change of number of phases for Line."+al.getName(), 181);
+						DSS.doSimpleMsg("Illegal change of number of phases for Line."+elem.getName(), 181);
 					}
 				break;
 			case 5:
-				al.setLineCodeSpecified(false);
-				al.killGeometrySpecified();
-				al.killSpacingSpecified();
-				al.resetLengthUnits();
-				al.setSymComponentsChanged(true);
-				al.setSymComponentsModel(true);
-				break;
 			case 6:
-				al.setLineCodeSpecified(false);
-				al.killGeometrySpecified();
-				al.killSpacingSpecified();
-				al.resetLengthUnits();
-				al.setSymComponentsChanged(true);
-				al.setSymComponentsModel(true);
-				break;
 			case 7:
-				al.setLineCodeSpecified(false);
-				al.killGeometrySpecified();
-				al.killSpacingSpecified();
-				al.resetLengthUnits();
-				al.setSymComponentsChanged(true);
-				al.setSymComponentsModel(true);
-				break;
 			case 8:
-				al.setLineCodeSpecified(false);
-				al.killGeometrySpecified();
-				al.killSpacingSpecified();
-				al.resetLengthUnits();
-				al.setSymComponentsChanged(true);
-				al.setSymComponentsModel(true);
-				break;
 			case 9:
-				al.setLineCodeSpecified(false);
-				al.killGeometrySpecified();
-				al.killSpacingSpecified();
-				al.resetLengthUnits();
-				al.setSymComponentsChanged(true);
-				al.setSymComponentsModel(true);
-				break;
 			case 10:
-				al.setLineCodeSpecified(false);
-				al.killGeometrySpecified();
-				al.killSpacingSpecified();
-				al.resetLengthUnits();
-				al.setSymComponentsChanged(true);
-				al.setSymComponentsModel(true);
+				elem.setLineCodeSpecified(false);
+				elem.killGeometrySpecified();
+				elem.killSpacingSpecified();
+				elem.resetLengthUnits();
+				elem.setSymComponentsChanged(true);
+				elem.setSymComponentsModel(true);
 				break;
 			case 11:
-				al.setLineCodeSpecified(false);
-				al.setSymComponentsModel(false);
-				al.resetLengthUnits();
-				al.killGeometrySpecified();
-				al.killSpacingSpecified();
-				break;
 			case 12:
-				al.setLineCodeSpecified(false);
-				al.setSymComponentsModel(false);
-				al.resetLengthUnits();
-				al.killGeometrySpecified();
-				al.killSpacingSpecified();
-				break;
 			case 13:
-				al.setLineCodeSpecified(false);
-				al.setSymComponentsModel(false);
-				al.resetLengthUnits();
-				al.killGeometrySpecified();
-				al.killSpacingSpecified();
+				elem.setLineCodeSpecified(false);
+				elem.setSymComponentsModel(false);
+				elem.resetLengthUnits();
+				elem.killGeometrySpecified();
+				elem.killSpacingSpecified();
 				break;
 			case 14:
-				if (al.isSwitch()) {
-					al.setSymComponentsChanged(true);
-					al.setYPrimInvalid(true);
-					al.setGeometrySpecified(false);
-					al.setSpacingSpecified(false);
-					al.setR1(1.0);
-					al.setX1(1.0);
-					al.setR0(1.0);
-					al.setX0(1.0);
-					al.setC1(1.1 * 1.0e-9);
-					al.setC0(1.0 * 1.0e-9);
-					al.setLen(0.001);
-					al.resetLengthUnits();
+				if (elem.isSwitch()) {
+					elem.setSymComponentsChanged(true);
+					elem.setYPrimInvalid(true);
+					elem.setGeometrySpecified(false);
+					elem.setSpacingSpecified(false);
+					elem.setR1(1.0);
+					elem.setX1(1.0);
+					elem.setR0(1.0);
+					elem.setX0(1.0);
+					elem.setC1(1.1 * 1.0e-9);
+					elem.setC0(1.0 * 1.0e-9);
+					elem.setLen(0.001);
+					elem.resetLengthUnits();
 				}
 				break;
 			case 16:
-				al.setKXg(al.getXg() / Math.log(658.5 * Math.sqrt(al.getRho() / al.getBaseFrequency())));
-				break;
 			case 17:
-				al.setKXg(al.getXg() / Math.log(658.5 * Math.sqrt(al.getRho() / al.getBaseFrequency())));
+				elem.setKXg(elem.getXg() / Math.log(658.5 * Math.sqrt(elem.getRho() / elem.getBaseFrequency())));
 				break;
 			case 18:
-				al.setGeometrySpecified(true);
-				al.setSymComponentsModel(false);
-				al.setSymComponentsChanged(false);
+				elem.setGeometrySpecified(true);
+				elem.setSymComponentsModel(false);
+				elem.setSymComponentsChanged(false);
 				break;
 			case 20:
-				if (al.getLineSpacingObj() != null && al.getWireData() != null) {
-					al.setSpacingSpecified(true);
-					al.setSymComponentsModel(false);
-					al.setSymComponentsChanged(false);
-					al.killGeometrySpecified();
-				}
-				al.setYPrimInvalid(true);
-				break;
 			case 21:
-				if (al.getLineSpacingObj() != null && al.getWireData() != null) {
-					al.setSpacingSpecified(true);
-					al.setSymComponentsModel(false);
-					al.setSymComponentsChanged(false);
-					al.killGeometrySpecified();
+			case 23:
+			case 24:
+				if (elem.getLineSpacingObj() != null && elem.getWireData() != null) {
+					elem.setSpacingSpecified(true);
+					elem.setSymComponentsModel(false);
+					elem.setSymComponentsChanged(false);
+					elem.killGeometrySpecified();
 				}
-				al.setYPrimInvalid(true);
+				elem.setYPrimInvalid(true);
 				break;
 			}
 
 			// YPrim invalidation on anything that changes impedance values
 			if (paramPointer >= 2 && paramPointer <= 13) {
-				al.setYPrimInvalid(true);
+				elem.setYPrimInvalid(true);
 			} else if (paramPointer == 17) {
-				if (al.isGeometrySpecified() && (al.getLineGeometryObj() != null))
-					al.getLineGeometryObj().setRhoEarth(al.getRho());
+				if (elem.isGeometrySpecified() && (elem.getLineGeometryObj() != null))
+					elem.getLineGeometryObj().setRhoEarth(elem.getRho());
 			}
 
 			switch (paramPointer) {
 			case 9:
-				al.setCapSpecified(true);
-				break;
 			case 10:
-				al.setCapSpecified(true);
-				break;
 			case 13:
-				al.setCapSpecified(true);
+				elem.setCapSpecified(true);
 				break;
 			}
 
 			paramName = parser.getNextParam();
-			param     = parser.makeString();
+			param = parser.makeString();
 		}
 
-		//if (al.isSymComponentsChanged()) al.recalcElementData();
-		return result;
+		//if (elem.isSymComponentsChanged()) elem.recalcElementData();
+		return 0;
 	}
 
 	@Override
 	protected int makeLike(String lineName) {
+		int success = 0;
 
-		int result = 0;
 		/* See if we can find this line name in the present collection */
-		LineObj otherLine = (LineObj) find(lineName);
-		if (otherLine != null) {
-			LineObj al = activeLineObj;
+		LineObj other = (LineObj) find(lineName);
 
-			if (al.getNumPhases() != otherLine.getNumPhases()) {
-				al.setNumPhases(otherLine.getNumPhases());
-				al.setNumConds(al.getNumPhases());  // force reallocation of terminals and conductors
+		if (other != null) {
+			LineObj elem = activeLineObj;
 
-				al.setYOrder(al.getNumConds() * al.getNumTerms());
-				al.setYPrimInvalid(true);
+			if (elem.getNumPhases() != other.getNumPhases()) {
+				elem.setNumPhases(other.getNumPhases());
+				elem.setNumConds(elem.getNumPhases());  // force reallocation of terminals and conductors
+
+				elem.setYOrder(elem.getNumConds() * elem.getNumTerms());
+				elem.setYPrimInvalid(true);
 
 				// for a line, nPhases = nCond, for now
-				al.setZ(new CMatrix(al.getNumPhases()));
-				al.setZInv(new CMatrix(al.getNumPhases()));
-				al.setYc(new CMatrix(al.getNumPhases()));
+				elem.setZ(new CMatrix(elem.getNumPhases()));
+				elem.setZinv(new CMatrix(elem.getNumPhases()));
+				elem.setYc(new CMatrix(elem.getNumPhases()));
 			}
 
-			al.getZ().copyFrom(otherLine.getZ());
+			elem.getZ().copyFrom(other.getZ());
 			// al.getZinv().copyFrom(OtherLine.getZinv());
-			al.getYc().copyFrom(otherLine.getYc());
-			al.setR1(otherLine.getR1());
-			al.setX1(otherLine.getX1());
-			al.setR0(otherLine.getR0());
-			al.setX0(otherLine.getX0());
-			al.setC1(otherLine.getC1());
-			al.setC0(otherLine.getC0());
-			al.setLen(otherLine.getLen());
-			al.setSymComponentsModel(otherLine.isSymComponentsModel());
-			al.setCapSpecified(otherLine.isCapSpecified());
+			elem.getYc().copyFrom(other.getYc());
+			elem.setR1(other.getR1());
+			elem.setX1(other.getX1());
+			elem.setR0(other.getR0());
+			elem.setX0(other.getX0());
+			elem.setC1(other.getC1());
+			elem.setC0(other.getC0());
+			elem.setLen(other.getLen());
+			elem.setSymComponentsModel(other.isSymComponentsModel());
+			elem.setCapSpecified(other.isCapSpecified());
 
-			classMakeLike(otherLine);  // take care of inherited class properties
+			classMakeLike(other);  // take care of inherited class properties
 
-			for (int i = 0; i < al.getParentClass().getNumProperties(); i++)
-				al.setPropertyValue(i, otherLine.getPropertyValue(i));
-			result = 1;
+			for (int i = 0; i < elem.getParentClass().getNumProperties(); i++)
+				elem.setPropertyValue(i, other.getPropertyValue(i));
+
+			success = 1;
 		} else {
 			DSS.doSimpleMsg("Error in Line makeLike: \"" + lineName + "\" not found.", 182);
 		}
 
-		return result;
+		return success;
 	}
 
 	@Override

@@ -16,7 +16,7 @@ public class LineSpacingObj extends DSSObject {
 	private int nPhases;
 	private double[] X;
 	private double[] Y;
-	private int units;
+	private LineUnits units;
 	private boolean dataChanged;
 
 	public LineSpacingObj(DSSClass parClass, String lineSpacingName) {
@@ -28,7 +28,7 @@ public class LineSpacingObj extends DSSObject {
 		dataChanged = true;
 		X           = null;
 		Y           = null;
-		units       = LineUnits.UNITS_FT;
+		units       = LineUnits.FT;
 
 		setNWires(3);  // allocates terminals
 		nPhases = 3;
@@ -96,7 +96,7 @@ public class LineSpacingObj extends DSSObject {
 		nConds = value;
 		X = new double[nConds];
 		Y = new double[nConds];
-		units = LineUnits.UNITS_FT;
+		units = LineUnits.FT;
 	}
 
 	public int getNWires() {

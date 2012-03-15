@@ -164,17 +164,17 @@ public class CNLineConstants extends CableConstants {
 			this.kStrand[i] = kstrand;
 	}
 
-	public void setDiaStrand(int i, int units, double diastrand) {
+	public void setDiaStrand(int i, LineUnits units, double diastrand) {
 		if (i >= 0 && i <= getNumConds())
 			diaStrand[i] = diastrand * LineUnits.toMeters(units);
 	}
 
-	public void setGmrStrand(int i, int units, double gmrstrand) {
+	public void setGmrStrand(int i, LineUnits units, double gmrstrand) {
 		if (i >= 0 && i <= getNumConds())
 			gmrStrand[i] = gmrstrand * LineUnits.toMeters(units);
 	}
 
-	public void setRStrand(int i, int units, double rstrand) {
+	public void setRStrand(int i, LineUnits units, double rstrand) {
 		if (i >= 0 && i <= getNumConds())
 			rStrand[i] = rstrand * LineUnits.toPerMeter(units);
 	}

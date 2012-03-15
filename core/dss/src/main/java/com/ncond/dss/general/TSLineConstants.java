@@ -22,11 +22,11 @@ public class TSLineConstants extends CableConstants {
 		tapeLap   = new double[numConds];
 	}
 
-	public double getDiaShield(int i, int units) {
+	public double getDiaShield(int i, LineUnits units) {
 		return diaShield[i] * LineUnits.fromMeters(units);
 	}
 
-	public double getTapeLayer(int i, int units) {
+	public double getTapeLayer(int i, LineUnits units) {
 		return tapeLayer[i] * LineUnits.fromMeters(units);
 	}
 
@@ -34,12 +34,12 @@ public class TSLineConstants extends CableConstants {
 		return tapeLap[i];
 	}
 
-	public void setDiaShield(int i, int units, double shield) {
+	public void setDiaShield(int i, LineUnits units, double shield) {
 		if (i >= 0 && i < numConds)
 			diaShield[i] = shield * LineUnits.toMeters(units);
 	}
 
-	public void setTapeLayer(int i, int units, double layer) {
+	public void setTapeLayer(int i, LineUnits units, double layer) {
 		if (i >= 0 && i < numConds)
 			tapeLayer[i] = layer * LineUnits.toMeters(units);
 	}

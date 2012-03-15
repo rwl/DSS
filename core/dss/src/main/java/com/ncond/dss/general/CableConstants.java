@@ -90,29 +90,29 @@ public class CableConstants extends LineConstants {
 		epsR[i] = epsr;
 	}
 
-	public double getInsLayer(int i, int units) {
+	public double getInsLayer(int i, LineUnits units) {
 		return insLayer[i] * LineUnits.fromMeters(units);
 	}
 
-	public void setInsLayer(int i, int units, double inslayer) {
+	public void setInsLayer(int i, LineUnits units, double inslayer) {
 		if (i >= 0 && i < getNumConds())
 			insLayer[i] = inslayer * LineUnits.toMeters(units);
 	}
 
-	public double getDiaIns(int i, int units) {
+	public double getDiaIns(int i, LineUnits units) {
 		return diaIns[i] * LineUnits.fromMeters(units);
 	}
 
-	public void setDiaIns(int i, int units, double diains) {
+	public void setDiaIns(int i, LineUnits units, double diains) {
 		if (i >= 0 && i < getNumConds())
 			diaIns[i] = diains * LineUnits.toMeters(units);
 	}
 
-	public double getDiaCable(int i, int units) {
+	public double getDiaCable(int i, LineUnits units) {
 		return diaCable[i] * LineUnits.fromMeters(units);
 	}
 
-	public void setDiaCable(int i, int units, double diacable) {
+	public void setDiaCable(int i, LineUnits units, double diacable) {
 		if (i >= 0 && i < getNumConds())
 			diaCable[i] = diacable * LineUnits.toMeters(units);
 	}

@@ -214,27 +214,27 @@ public class LineConstants {
 		return result;
 	}
 
-	public double getGMR(int i, int units) {
+	public double getGMR(int i, LineUnits units) {
 		return GMR[i] * LineUnits.fromMeters(units);
 	}
 
-	public double getRac(int i, int units) {
+	public double getRac(int i, LineUnits units) {
 		return Rac[i] * LineUnits.fromPerMeter(units);
 	}
 
-	public double getRadius(int i, int units) {
+	public double getRadius(int i, LineUnits units) {
 		return radius[i] * LineUnits.fromMeters(units);
 	}
 
-	public double getRdc(int i, int units) {
+	public double getRdc(int i, LineUnits units) {
 		return Rdc[i] * LineUnits.fromPerMeter(units);
 	}
 
-	public double getX(int i, int units) {
+	public double getX(int i, LineUnits units) {
 		return X[i] * LineUnits.fromMeters(units);
 	}
 
-	public double getY(int i, int units) {
+	public double getY(int i, LineUnits units) {
 		return Y[i] * LineUnits.fromMeters(units);
 	}
 
@@ -245,7 +245,7 @@ public class LineConstants {
 	 * Makes a new YCmatrix and correct for lengths and units as it copies.
 	 * Uses the reduced Zmatrix by default if it exists.
 	 */
-	public CMatrix getYcMatrix(double f, double length, int units) {
+	public CMatrix getYcMatrix(double f, double length, LineUnits units) {
 		int newSize;
 		double unitLengthConversion;
 		CMatrix Yc;
@@ -362,7 +362,7 @@ public class LineConstants {
 	 * Makes a new Zmatrix and correct for lengths and units as it copies.
 	 * Uses the reduced Zmatrix by default if it exists.
 	 */
-	public CMatrix getZMatrix(double f, double length, int units) {
+	public CMatrix getZMatrix(double f, double length, LineUnits units) {
 		int newSize, i;
 		double unitLengthConversion;
 		CMatrix Z;
@@ -446,7 +446,7 @@ public class LineConstants {
 			me = new Complex(0.0, w * MU0 / rhoEarth).sqrt();
 	}
 
-	public void setGMR(int i, int units, double value) {
+	public void setGMR(int i, LineUnits units, double value) {
 		if (i >= 0 && i < numConds) {
 			GMR[i] = value * LineUnits.toMeters(units);
 			if (radius[i] < 0.0)
@@ -458,12 +458,12 @@ public class LineConstants {
 		numPhases = value;
 	}
 
-	public void setRac(int i, int units, double value) {
+	public void setRac(int i, LineUnits units, double value) {
 		if (i >= 0 && i < numConds)
 			Rac[i] = value * LineUnits.toPerMeter(units);
 	}
 
-	public void setRadius(int i, int units, double value) {
+	public void setRadius(int i, LineUnits units, double value) {
 		if (i >= 0 && i <= numConds) {
 			radius[i] = value * LineUnits.toMeters(units);
 			if (GMR[i] < 0.0)
@@ -471,17 +471,17 @@ public class LineConstants {
 		}
 	}
 
-	public void setRdc(int i, int units, double value) {
+	public void setRdc(int i, LineUnits units, double value) {
 		if (i >= 0 && i < numConds)
 			Rdc[i] = value * LineUnits.toPerMeter(units);
 	}
 
-	public void setX(int i, int units, double value) {
+	public void setX(int i, LineUnits units, double value) {
 		if (i >= 0 && i < numConds)
 			X[i] = value * LineUnits.toMeters(units);
 	}
 
-	public void setY(int i, int units, double value) {
+	public void setY(int i, LineUnits units, double value) {
 		if (i >= 0 && i < numConds)
 			Y[i] = value * LineUnits.toMeters(units);
 	}

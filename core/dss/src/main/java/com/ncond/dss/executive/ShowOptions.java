@@ -164,7 +164,7 @@ public class ShowOptions {
 		int showOptionCode;
 		String busName;
 		double freq;
-		int units;
+		LineUnits units;
 		double rhoLine;
 		int result = 0;
 
@@ -437,14 +437,14 @@ public class ShowOptions {
 			break;
 		case 23:  // showLineConstants  show lineConstants 60 mi
 			freq = DSS.defaultBaseFreq;  // default
-			units = LineUnits.UNITS_KFT; // 'kft'; // default
+			units = LineUnits.KFT; // 'kft'; // default
 			rhoLine = 100.0;
 			parser.getNextParam();
 			if (parser.makeString().length() > 0)
 				freq = parser.makeDouble();
 			parser.getNextParam();
 			if (parser.makeString().length() > 0)
-				units = LineUnits.getUnitsCode(parser.makeString());
+				units = LineUnits.interpretUnitsCode(parser.makeString());
 			parser.getNextParam();
 			if (parser.makeString().length() > 0)
 				rhoLine = parser.makeDouble();

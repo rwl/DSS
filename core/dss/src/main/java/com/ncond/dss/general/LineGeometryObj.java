@@ -45,8 +45,8 @@ public class LineGeometryObj extends DSSObject {
 	private ConductorDataObj[] conductorData;
 	private double[] X;
 	private double[] Y;
-	private int[] units;
-	private int lastUnit;
+	private LineUnits[] units;
+	private LineUnits lastUnit;
 	private boolean dataChanged;
 	private boolean reduce;
 	private int activeCond;
@@ -77,7 +77,7 @@ public class LineGeometryObj extends DSSObject {
 		setNConds(3);  // allocates terminals
 		nPhases = 3;
 		setActiveCond(0);
-		lastUnit  = LineUnits.UNITS_FT;
+		lastUnit  = LineUnits.FT;
 		normAmps  = 0.0;
 		emergAmps = 0.0;
 
@@ -187,7 +187,7 @@ public class LineGeometryObj extends DSSObject {
 		return lineData.getRhoEarth();
 	}
 
-	public CMatrix getYcMatrix(double f, double length, int units) {
+	public CMatrix getYcMatrix(double f, double length, LineUnits units) {
 		CMatrix result = null;
 		if (dataChanged) {
 			try {
@@ -202,7 +202,7 @@ public class LineGeometryObj extends DSSObject {
 		return result;
 	}
 
-	public CMatrix getZMatrix(double f, double length, int units) {
+	public CMatrix getZMatrix(double f, double length, LineUnits units) {
 		CMatrix result = null;
 		if (dataChanged) {
 			try {
@@ -298,7 +298,7 @@ public class LineGeometryObj extends DSSObject {
 		if (value > 0)
 			if (value <= nConds) {
 				setActiveCond(value);
-				if (units[activeCond] == -1)
+				if (units[activeCond] == null)  // TODO check -1
 					units[activeCond] = lastUnit;  // makes this a sticky value so you don't have to repeat it
 			}
 	}
@@ -352,10 +352,10 @@ public class LineGeometryObj extends DSSObject {
 		conductorData = new ConductorDataObj[nConds];
 		X        = new double[nConds];
 		Y        = new double[nConds];
-		units    = new int[nConds];
+		units    = new LineUnits[nConds];
 		for (int i = 0; i < nConds; i++)
-			units[i] = -1;  // default to ft
-		lastUnit = LineUnits.UNITS_FT;
+			units[i] = null;  // TODO default to ft
+		lastUnit = LineUnits.FT;
 	}
 
 	public ConductorChoice getPhaseChoice() {
@@ -471,7 +471,7 @@ public class LineGeometryObj extends DSSObject {
 		}
 	}
 
-	public int getUnit(int i) {
+	public LineUnits getUnit(int i) {
 		return units[i];
 	}
 

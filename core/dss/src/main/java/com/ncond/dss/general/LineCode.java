@@ -127,7 +127,7 @@ public class LineCode extends DSSClass {
 	 * Decodes the units string and sets the units variable.
 	 */
 	private void setUnits(String s) {
-		activeLineCodeObj.setUnits(LineUnits.getUnitsCode(s));
+		activeLineCodeObj.setUnits(LineUnits.interpretUnitsCode(s));
 	}
 
 	/**

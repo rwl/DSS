@@ -2522,7 +2522,7 @@ public class ShowResults {
 		if (nLevel > nTabs) pw.printf("(* %d *)", nLevel);
 	}
 
-	public static void showLineConstants(String fileNm, double freq, int units, double rho) {
+	public static void showLineConstants(String fileNm, double freq, LineUnits units, double rho) {
 		FileWriter fw;
 		PrintWriter pw;
 		FileWriter fw2;

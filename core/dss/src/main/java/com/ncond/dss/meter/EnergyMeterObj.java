@@ -898,7 +898,7 @@ public class EnergyMeterObj extends MeterElement {
 					branchList.getPresentBranch().setToBusReference(testBusNum);  // add this as a "to" bus reference
 					if (Util.isLineElement(activeBranch)) {  // convert to consistent units (km)
 						ckt.getBus(testBusNum).setDistFromMeter( ckt.getBus( branchList.getPresentBranch().getFromBusReference() ).getDistFromMeter()
-								+ ((LineObj) activeBranch).getLen() * LineUnits.convertLineUnits( ((LineObj) activeBranch).getLengthUnits(), LineUnits.UNITS_KM) );
+								+ ((LineObj) activeBranch).getLen() * LineUnits.convertLineUnits( ((LineObj) activeBranch).getLengthUnits(), LineUnits.KM) );
 					} else {
 						ckt.getBus(testBusNum).setDistFromMeter( ckt.getBus(branchList.getPresentBranch().getFromBusReference()).getDistFromMeter() );
 					}

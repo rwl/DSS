@@ -121,7 +121,7 @@ public class LineSpacing extends DSSClass {
 				interpretArray(param, SpcParmChoice.H);
 				break;
 			case 4:
-				als.setUnits(LineUnits.getUnitsCode(param));
+				als.setUnits(LineUnits.interpretUnitsCode(param));
 				break;
 			default:
 				// inherited parameters

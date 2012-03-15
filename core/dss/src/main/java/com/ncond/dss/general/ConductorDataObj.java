@@ -28,9 +28,9 @@ public class ConductorDataObj extends DSSObject {
 	private double R60;
 	private double gmr60;
 	private double radius;
-	private int gmrUnits;
-	private int resistanceUnits;
-	private int radiusUnits;
+	private LineUnits gmrUnits;
+	private LineUnits resistanceUnits;
+	private LineUnits radiusUnits;
 
 	protected double normAmps;
 	protected double emergAmps;
@@ -45,9 +45,9 @@ public class ConductorDataObj extends DSSObject {
 		R60             = -1.0;
 		gmr60           = -1.0;
 		radius          = -1.0;
-		gmrUnits        = 0;
-		resistanceUnits = 0;
-		radiusUnits     = 0;
+		gmrUnits        = LineUnits.NONE;
+		resistanceUnits = LineUnits.NONE;
+		radiusUnits     = LineUnits.NONE;
 
 		normAmps  = -1.0;
 		emergAmps = -1.0;
