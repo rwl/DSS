@@ -15,13 +15,8 @@ import com.ncond.dss.meter.MeterElement;
 @Getter @Setter
 abstract public class PDElement extends CktElement {
 
-	protected double normAmps,
-		emergAmps,
-		faultRate,
-		pctPerm,
-		hrsToRepair;
-	private int fromTerminal,
-		toTerminal;  // set by meter zone for radial feeder
+	protected double normAmps, emergAmps, faultRate, pctPerm, hrsToRepair;
+	private int fromTerminal, toTerminal;  // set by meter zone for radial feeder
 	protected boolean isShunt;
 
 	private int numCustomers;
@@ -29,11 +24,10 @@ abstract public class PDElement extends CktElement {
 
 	private PDElement parentPDElement;
 
-	private MeterElement meterObj,   // upline energymeter
-		sensorObj;  // upline sensor for this element for allocation and estimation
+	private MeterElement meterObj;   // upline energymeter
+	private MeterElement sensorObj;  // upline sensor for this element for allocation and estimation
 
-	private double overloadUE,
-		overloadEEN;  // indicate amount of branch overload
+	private double overloadUE, overloadEEN;  // indicate amount of branch overload
 
 	public PDElement(DSSClass parClass) {
 		super(parClass);
@@ -51,18 +45,16 @@ abstract public class PDElement extends CktElement {
 	@Override
 	public void getCurrents(Complex[] curr) {
 		int i;
-		SolutionObj sol;
+		SolutionObj sol = DSS.activeCircuit.getSolution();
 
 		try {
 			if (isEnabled()) {
-				sol = DSS.activeCircuit.getSolution();
 				for (i = 0; i < YOrder; i++)
 					VTerminal[i] = sol.getNodeV(nodeRef[i]);
 
 				YPrim.vMult(curr, VTerminal);
 			} else {
-				for (i = 0; i < YOrder; i++)
-					curr[i] = Complex.ZERO;
+				for (i = 0; i < YOrder; i++) curr[i] = Complex.ZERO;
 			}
 		} catch (Exception e) {
 			DSS.doErrorMsg(("Trying to get currents for element: " + getName() + "."), e.getMessage(),
@@ -123,7 +115,6 @@ abstract public class PDElement extends CktElement {
 
 	@Override
 	public void initPropertyValues(int arrayOffset) {
-
 		setPropertyValue(arrayOffset + 1, "400");  // normAmps
 		setPropertyValue(arrayOffset + 2, "600");  // emerAamps
 		setPropertyValue(arrayOffset + 3, "0.1");  // faultRate

@@ -34,7 +34,7 @@ public class XfmrCodeObj extends DSSObject {
 	private double pctNoLoadLoss;
 	private double ppmFloatFactor;  // parts per million winding float factor
 	private double pctImag;
-	private Winding[] winding;
+	private Winding[] windings;
 
 	public XfmrCodeObj(DSSClass parClass, String xfmrCodeName) {
 		super(parClass);
@@ -46,26 +46,26 @@ public class XfmrCodeObj extends DSSObject {
 		numWindings   = 2;
 		maxWindings   = 2;
 		activeWinding = 0;
-		winding = new Winding[maxWindings];
+		windings = new Winding[maxWindings];
 		for (int i = 0; i < maxWindings; i++)
-			winding[i] = new Winding();
+			windings[i] = new Winding();
 		XHL = 0.07;
 		XHT = 0.35;
 		XLT = 0.30;
 		XSC = new double[(numWindings - 1) * numWindings / 2];
-		VABase           = winding[0].getKVA() * 1000.0;
+		VABase           = windings[0].getKVA() * 1000.0;
 		thermalTimeConst = 2.0;
 		nThermal         = 0.8;
 		mThermal         = 0.8;
 		LRise            = 65.0;
 		HSRise           = 15.0;  // hot spot rise
-		normMaxHKVA      = 1.1 * winding[0].getKVA();
-		emergMaxHKVA     = 1.5 * winding[0].getKVA();
-		pctLoadLoss      = 2.0 * winding[0].getRpu() * 100.0;  // assume two windings
+		normMaxHKVA      = 1.1 * windings[0].getKVA();
+		emergMaxHKVA     = 1.5 * windings[0].getKVA();
+		pctLoadLoss      = 2.0 * windings[0].getRpu() * 100.0;  // assume two windings
 		ppmFloatFactor   = 0.000001;
 		/* Compute antifloat added for each winding */
 		for (int i = 0; i < numWindings; i++)
-			winding[i].computeAntiFloatAdder(ppmFloatFactor, VABase / nPhases);
+			windings[i].computeAntiFloatAdder(ppmFloatFactor, VABase / nPhases);
 		pctNoLoadLoss = 0.0;
 		pctImag = 0.0;
 
@@ -78,14 +78,14 @@ public class XfmrCodeObj extends DSSObject {
 
 		if (n > 1) {
 			for (int i = 0; i < numWindings; i++)
-				winding[i] = null;  // free old winding objects
+				windings[i] = null;  // free old winding objects
 			oldWdgSize = (numWindings - 1) * numWindings / 2;
 			numWindings = n;
 			maxWindings = n;
 		        newWdgSize = (numWindings - 1) * numWindings / 2;
-			winding = Util.resizeArray(winding, maxWindings);  // reallocate collector array
+			windings = Util.resizeArray(windings, maxWindings);  // reallocate collector array
 			for (int i = 0; i < maxWindings; i++)
-				winding[i] = new Winding();
+				windings[i] = new Winding();
 			XSC = Util.resizeArray(XSC, newWdgSize);
 			for (int i = oldWdgSize; i < newWdgSize; i++)
 				XSC[i] = 0.30;   // default to something
@@ -118,19 +118,19 @@ public class XfmrCodeObj extends DSSObject {
 		for (i = 0; i < (numWindings - 1) * numWindings / 2; i++)
 			XSC[i] = obj.getXSC(i);
 		for (i = 0; i < numWindings; i++) {
-			winding[i].setConnection(obj.getWdgConnection(i));
-			winding[i].setKVLL(obj.getBasekVLL(i));
-			winding[i].setVBase(obj.getBaseVoltage(i));
-			winding[i].setKVA(obj.getWdgKVA(i));
-			winding[i].setPuTap(obj.getPresentTap(i));
-			winding[i].setRpu(obj.getWdgResistance(i));
-			winding[i].setRNeut(obj.getWdgRNeutral(i));
-			winding[i].setXNeut(obj.getWdgXNeutral(i));
-			winding[i].setY_PPM(obj.getWdgYPPM(i));
-			winding[i].setTapIncrement(obj.getTapIncrement(i));
-			winding[i].setMinTap(obj.getMinTap(i));
-			winding[i].setMaxTap(obj.getMaxTap(i));
-			winding[i].setNumTaps(obj.getNumTaps(i));
+			windings[i].setConnection(obj.getWdgConnection(i));
+			windings[i].setKVLL(obj.getBasekVLL(i));
+			windings[i].setVbase(obj.getBaseVoltage(i));
+			windings[i].setKVA(obj.getWdgKVA(i));
+			windings[i].setPuTap(obj.getPresentTap(i));
+			windings[i].setRpu(obj.getWdgResistance(i));
+			windings[i].setRNeut(obj.getWdgRNeutral(i));
+			windings[i].setXNeut(obj.getWdgXNeutral(i));
+			windings[i].setY_PPM(obj.getWdgYPPM(i));
+			windings[i].setTapIncrement(obj.getTapIncrement(i));
+			windings[i].setMinTap(obj.getMinTap(i));
+			windings[i].setMaxTap(obj.getMaxTap(i));
+			windings[i].setNumTaps(obj.getNumTaps(i));
 		}
 	}
 
@@ -145,7 +145,7 @@ public class XfmrCodeObj extends DSSObject {
 		pw.println("~ " + "phases=" + nPhases);
 
 		for (int i = 0; i < numWindings; i++) {
-			Winding wdg = winding[i];
+			Winding wdg = windings[i];
 			if (i == 0) {
 				pw.println("~ " + "Wdg=" + i);
 			} else {
@@ -229,7 +229,7 @@ public class XfmrCodeObj extends DSSObject {
 			result = String.valueOf(activeWinding);  // return active winding
 			break;
 		case 3:
-			switch (winding[activeWinding].getConnection()) {
+			switch (windings[activeWinding].getConnection()) {
 			case WYE:
 				result = "wye ";
 				break;
@@ -239,26 +239,26 @@ public class XfmrCodeObj extends DSSObject {
 			}
 			break;
 		case 4:
-			result = String.format("%.7g", winding[activeWinding].getKVLL());
+			result = String.format("%.7g", windings[activeWinding].getKVLL());
 			break;
 		case 5:
-			result = String.format("%.7g", winding[activeWinding].getKVA());
+			result = String.format("%.7g", windings[activeWinding].getKVA());
 			break;
 		case 6:
-			result = String.format("%.7g", winding[activeWinding].getPuTap());
+			result = String.format("%.7g", windings[activeWinding].getPuTap());
 			break;
 		case 7:
-			result = String.format("%.7g", winding[activeWinding].getRpu() * 100.0);   // %R
+			result = String.format("%.7g", windings[activeWinding].getRpu() * 100.0);   // %R
 			break;
 		case 8:
-			result = String.format("%.7g", winding[activeWinding].getRNeut());
+			result = String.format("%.7g", windings[activeWinding].getRNeut());
 			break;
 		case 9:
-			result = String.format("%.7g", winding[activeWinding].getXNeut());
+			result = String.format("%.7g", windings[activeWinding].getXNeut());
 			break;
 		case 10:
 			for (int i = 0; i < numWindings; i++)
-				switch (winding[i].getConnection()) {
+				switch (windings[i].getConnection()) {
 				case WYE:
 					result = result + "wye, ";
 					break;
@@ -269,15 +269,15 @@ public class XfmrCodeObj extends DSSObject {
 			break;
 		case 11:
 			for (int i = 0; i < numWindings; i++)
-				result = result + String.format("%.7g, ", winding[i].getKVLL());
+				result = result + String.format("%.7g, ", windings[i].getKVLL());
 			break;
 		case 12:
 			for (int i = 0; i < numWindings; i++)
-				result = result + String.format("%.7g, ", winding[i].getKVA());
+				result = result + String.format("%.7g, ", windings[i].getKVA());
 			break;
 		case 13:
 			for (int i = 0; i < numWindings; i++)
-				result = result + String.format("%.7g, ", winding[i].getPuTap());
+				result = result + String.format("%.7g, ", windings[i].getPuTap());
 			break;
 		case 17:
 			for (int i = 0; i < (numWindings - 1) * numWindings / 2; i++)
@@ -289,17 +289,17 @@ public class XfmrCodeObj extends DSSObject {
 			result = String.format("%.7g", pctNoLoadLoss);
 			break;
 		case 27:
-			result = String.format("%.7g", winding[activeWinding].getMaxTap());
+			result = String.format("%.7g", windings[activeWinding].getMaxTap());
 			break;
 		case 28:
-			result = String.format("%.7g", winding[activeWinding].getMinTap());
+			result = String.format("%.7g", windings[activeWinding].getMinTap());
 			break;
 		case 29:
-			result = String.format("%-d", winding[activeWinding].getNumTaps());
+			result = String.format("%-d", windings[activeWinding].getNumTaps());
 			break;
 		case 32:
 			for (int i = 0; i < numWindings; i++)
-				result = result + String.format("%.7g, ", winding[i].getRpu() * 100.0);
+				result = result + String.format("%.7g, ", windings[i].getRpu() * 100.0);
 			break;
 		default:
 			result = super.getPropertyValue(index);
@@ -372,6 +372,10 @@ public class XfmrCodeObj extends DSSObject {
 		setPropertyValue(32, "");
 
 		super.initPropertyValues(XfmrCode.NumPropsThisClass - 1);
+	}
+
+	public Winding getWinding(int idx) {
+		return windings[idx];
 	}
 
 }

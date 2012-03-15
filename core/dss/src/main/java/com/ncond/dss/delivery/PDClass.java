@@ -50,23 +50,23 @@ abstract public class PDClass extends CktElementClass {
 		Parser parser = Parser.getInstance();
 
 		if (paramPointer >= 0) {
-			PDElement PDElem = (PDElement) activePDObj;
+			PDElement elem = (PDElement) activePDObj;
 
 			switch (paramPointer) {
 			case 0:
-				PDElem.setNormAmps(parser.makeDouble());
+				elem.setNormAmps(parser.makeDouble());
 				break;
 			case 1:
-				PDElem.setEmergAmps(parser.makeDouble());
+				elem.setEmergAmps(parser.makeDouble());
 				break;
 			case 2:
-				PDElem.setFaultRate(parser.makeDouble());
+				elem.setFaultRate(parser.makeDouble());
 				break;
 			case 3:
-				PDElem.setPctPerm(parser.makeDouble());
+				elem.setPctPerm(parser.makeDouble());
 				break;
 			case 4:
-				PDElem.setHrsToRepair(parser.makeDouble());
+				elem.setHrsToRepair(parser.makeDouble());
 				break;
 			default:
 				super.classEdit(activePDObj, paramPointer - numPDClassProps);
@@ -78,14 +78,14 @@ abstract public class PDClass extends CktElementClass {
 
 	@Override
 	protected void classMakeLike(DSSObject otherObj) {
-		PDElement otherPDObj = (PDElement) otherObj;
-		PDElement PDElem = (PDElement) DSS.activeDSSObject;
+		PDElement other = (PDElement) otherObj;
+		PDElement elem = (PDElement) DSS.activeDSSObject;
 
-		PDElem.setNormAmps(otherPDObj.getNormAmps());
-		PDElem.setEmergAmps(otherPDObj.getEmergAmps());
-		PDElem.setFaultRate(otherPDObj.getFaultRate());
-		PDElem.setPctPerm(otherPDObj.getPctPerm());
-		PDElem.setHrsToRepair(otherPDObj.getHrsToRepair());
+		elem.setNormAmps(other.getNormAmps());
+		elem.setEmergAmps(other.getEmergAmps());
+		elem.setFaultRate(other.getFaultRate());
+		elem.setPctPerm(other.getPctPerm());
+		elem.setHrsToRepair(other.getHrsToRepair());
 
 		super.classMakeLike(otherObj);
 	}
