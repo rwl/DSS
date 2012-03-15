@@ -74,6 +74,15 @@ public class Util {
 
 	/* Copy the contents of an array to an array of a new size. */
 
+	public static boolean[] resizeArray(boolean[] oldArray, int newSize) {
+		boolean[] newArray = new boolean[newSize];
+		if (oldArray == null) return newArray;
+		int oldSize = oldArray.length;
+		int length = Math.min(oldSize, newSize);
+		if (length > 0) System.arraycopy(oldArray, 0, newArray, 0, length);
+		return newArray;
+	}
+
 	public static int[] resizeArray(int[] oldArray, int newSize) {
 		int[] newArray = new int[newSize];
 		if (oldArray == null) return newArray;
@@ -646,6 +655,14 @@ public class Util {
 			}
 		}
 		return result;
+	}
+
+	public static int interpretIntArray(String s, int maxValues, boolean[] resultArray) {
+		int[] a = new int[resultArray.length];
+		int r = interpretIntArray(s, maxValues, a);
+		for (int i = 0; i < a.length; i++)
+			resultArray[i] = (a[i] != 0);
+		return r;
 	}
 
 	/**
@@ -1973,6 +1990,14 @@ public class Util {
 		StringBuilder sb = new StringBuilder("(");
 		for (int i = 0; i < n; i++)
 			sb.append(String.format(" %-.d", ints[i]));
+		sb.append(")");
+		return sb.toString();
+	}
+
+	public static String getDSSArray(int n, boolean[] a) {
+		StringBuilder sb = new StringBuilder("(");
+		for (int i = 0; i < n; i++)
+			sb.append(String.format(" %-.d", a[i] ? 1 : 0));
 		sb.append(")");
 		return sb.toString();
 	}

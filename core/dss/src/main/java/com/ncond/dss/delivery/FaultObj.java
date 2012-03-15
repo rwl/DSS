@@ -68,24 +68,24 @@ public class FaultObj extends PDElement {
 		setNumTerms(2);   // force allocation of terminals and conductors
 
 		setBus(1, (getBus(0) + ".0"));  // default to grounded
-		setShunt(true);
+		isShunt = true;
 
-		GMatrix  = null;
-		G        = 10000.0;
+		GMatrix = null;
+		G = 10000.0;
 		specType = 1;  // G 2=Gmatrix
 
-		minAmps     = 5.0;
+		minAmps = 5.0;
 		isTemporary = false;
-		cleared     = false;
-		isOn        = true;
-		onTime      = 0.0;  // always enabled at the start of a solution
+		cleared = false;
+		isOn = true;
+		onTime = 0.0;  // always enabled at the start of a solution
 
 		randomMult = 1;
 
-		normAmps  = 0.0;
+		normAmps = 0.0;
 		emergAmps = 0.0;
 		faultRate = 0.0;
-		pctPerm   = 100.0;
+		pctPerm = 100.0;
 		hrsToRepair = 0.0;
 
 		initPropertyValues(0);
@@ -121,7 +121,7 @@ public class FaultObj extends PDElement {
 		}
 
 		// give the multiplier some skew to approximate more uniform/Gaussian current distributions
-		// randomMult = cube(randomMult);   removed 12/7/04
+		// randomMult = cube(randomMult);
 
 		setYPrimInvalid(true);  // force rebuilding of matrix
 	}
@@ -143,8 +143,7 @@ public class FaultObj extends PDElement {
 			YPrim.clear();
 		}
 
-
-		if (isShunt()) {
+		if (isShunt) {
 			YPrimTemp = YPrimShunt;
 		} else {
 			YPrimTemp = YPrimSeries;
@@ -163,7 +162,6 @@ public class FaultObj extends PDElement {
 		/* If the fault is not on, the set zero conductance */
 		switch (specType) {
 		case 1:
-
 			if (isOn) {
 				value = new Complex(G / randomMult, 0.0);
 			} else {
@@ -221,16 +219,15 @@ public class FaultObj extends PDElement {
 			for (i = 0; i < nPhases; i++) {
 				for (j = 0; j < i; j++)
 					pw.print(GMatrix[i * nPhases + j] + " ");
-				if (i != nPhases)
-					pw.print("|");
+				if (i != nPhases - 1) pw.print("|");
 			}
 			pw.println(")");
 		}
 		pw.println("~ " + pc.getPropertyName(6) + "=" + onTime);
 		if (isTemporary) {
-			pw.println("~ " + pc.getPropertyName(7) + "= Yes");
+			pw.println("~ " + pc.getPropertyName(7) + "= yes");
 		} else {
-			pw.println("~ " + pc.getPropertyName(7) + "= No");
+			pw.println("~ " + pc.getPropertyName(7) + "= no");
 		}
 		pw.println("~ " + pc.getPropertyName(8) + "=" + minAmps);
 
@@ -238,18 +235,17 @@ public class FaultObj extends PDElement {
 		for (i = Fault.NumPropsThisClass; i < pc.getNumProperties(); i++)
 			pw.println("~ " + pc.getPropertyName(i) + "=" + getPropertyValue(i));
 
-		if (complete)
-			pw.println("// SpecType=" + specType);
+		if (complete) pw.println("// specType=" + specType);
 
 		pw.close();
 	}
 
 	public void checkStatus(ControlMode controlMode) {
-
 		switch (controlMode) {
 		case CTRLSTATIC:  /* Leave it however it is defined by other processes */
 			break;
 		case EVENTDRIVEN:
+		case TIMEDRIVEN:
 			if (!isOn) {
 				/* Turn it on unless it has been previously cleared */
 				if (Util.presentTimeInSec() > onTime && !cleared) {
@@ -258,31 +254,14 @@ public class FaultObj extends PDElement {
 					Util.appendToEventLog("Fault." + getName(), "**APPLIED**");
 				}
 			} else {
-				if (isTemporary)
+				if (isTemporary) {
 					if (!faultStillGoing()) {
 						isOn = false;
 						cleared = true;
 						setYPrimInvalid(true);
 						Util.appendToEventLog("Fault." + getName(), "**CLEARED**");
 					}
-			}
-			break;
-		case TIMEDRIVEN:  // identical to event driven case.
-			if (!isOn) {
-				/* Turn it on unless it has been previously cleared */
-				if (Util.presentTimeInSec() > onTime && !cleared) {
-					isOn = true;
-					setYPrimInvalid(true);
-					Util.appendToEventLog("Fault." + getName(), "**APPLIED**");
 				}
-			} else {
-				if (isTemporary)
-					if (!faultStillGoing()) {
-						isOn = false;
-						cleared = true;
-						setYPrimInvalid(true);
-						Util.appendToEventLog("Fault." + getName(), "**CLEARED**");
-					}
 			}
 			break;
 		}
@@ -302,7 +281,6 @@ public class FaultObj extends PDElement {
 
 	@Override
 	public void initPropertyValues(int ArrayOffset) {
-
 		setPropertyValue(0, getBus(0));
 		setPropertyValue(1, getBus(1));
 		setPropertyValue(2, "1");
@@ -325,33 +303,34 @@ public class FaultObj extends PDElement {
 
 	@Override
 	public String getPropertyValue(int index) {
-		String result;
+		String val;
 
 		switch (index) {
 		case 5:
-			result = "(";
+			StringBuilder sb = new StringBuilder("(");
 			if (GMatrix != null) {
 				for (int i = 0; i < nPhases; i++) {
 					for (int j = 0; j < i; j++)
-						result = result + String.format("%-g", GMatrix[i * nPhases + j]) + " ";
+						sb.append(String.format("%-g ", GMatrix[i * nPhases + j]));
 					if (i < nPhases - 1)
-						result = result + "|";
+						sb.append("|");
 				}
 			}
-			result = result + ")";
+			sb.append(")");
+			val = sb.toString();
 			break;
 		default:
-			result = super.getPropertyValue(index);
+			val = super.getPropertyValue(index);
 			break;
 		}
 
-		return result;
+		return val;
 	}
 
 	@Override
 	public void makePosSequence() {
 		if (nPhases != 1) {
-			Parser.getInstance().setCmdString("Phases=1");
+			Parser.getInstance().setCmdString("phases=1");
 			edit();
 		}
 		super.makePosSequence();
