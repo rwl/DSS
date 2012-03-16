@@ -34,9 +34,9 @@ public class LineCodeObj extends DSSObject {
 
 	protected boolean symComponentsModel, reduceByKron;
 
-	protected CMatrix Z,  // base frequency series Z matrix
-		Zinv,
-		Yc;               // shunt capacitance matrix at base frequency
+	protected CMatrix Z;  // base frequency series Z matrix
+	protected CMatrix Zinv;
+	protected CMatrix Yc;  // shunt capacitance matrix at base frequency
 
 	protected double baseFrequency;
 
@@ -53,6 +53,7 @@ public class LineCodeObj extends DSSObject {
 		objType = parClass.getClassType();
 
 		setNPhases(3);  // directly set conds and phases
+
 		neutralConductor = nPhases - 1;  // initialize to last conductor
 		R1 = 0.0580;  // ohms per 1000ft
 		X1 = 0.1206;
@@ -60,18 +61,18 @@ public class LineCodeObj extends DSSObject {
 		X0 = 0.4047;
 		C1 = 3.4e-9;  // nf per 1000ft
 		C0 = 1.6e-9;
-		Z    = null;
+		Z = null;
 		Zinv = null;
-		Yc   = null;
+		Yc = null;
 		baseFrequency = DSS.activeCircuit.getFundamental();
 		units = LineUnits.NONE;  // default to none (no conversion)
-		normAmps  = 400.0;
+		normAmps = 400.0;
 		emergAmps = 600.0;
-		pctPerm   = 20.0;
+		pctPerm = 20.0;
 		faultRate = 0.1;
 
-		Rg  = 0.01805;  // ohms per 1000'
-		Xg  = 0.155081;
+		Rg = 0.01805;  // ohms per 1000'
+		Xg = 0.155081;
 		rho = 100.0;
 
 		symComponentsModel = true;
@@ -82,36 +83,37 @@ public class LineCodeObj extends DSSObject {
 	}
 
 	private String getRMatrix() {
-		String result = "[";
+		StringBuilder sb = new StringBuilder("[");
 		for (int i = 0; i < nPhases; i++) {
 			for (int j = 0; j < nPhases; j++)
-				result = result + String.format("%12.8f ", Z.get(i, j).getReal());
-			if (i < nPhases - 1)
-				result = result + "|";
+				sb.append(String.format("%12.8f ", Z.get(i, j).getReal()));
+			if (i < nPhases - 1) sb.append("|");
 		}
-		return result + "]";
+		sb.append("]");
+		return sb.toString();
 	}
 
 	private String getXMatrix() {
-		String result = "[";
+		StringBuilder sb = new StringBuilder("[");
 		for (int i = 0; i < nPhases; i++) {
 			for (int j = 0; j < nPhases; j++)
-				result = result + String.format("%12.8f ", Z.get(i, j).getImaginary());
-			if (i < nPhases - 1)
-				result = result + "|";
+				sb.append(String.format("%12.8f ", Z.get(i, j).getImaginary()));
+			if (i < nPhases - 1) sb.append("|");
 		}
-		return result + "]";
+		sb.append("]");
+		return sb.toString();
 	}
 
 	private String getCMatrix() {
-		String result = "[";
+		StringBuilder sb = new StringBuilder("[");
 		for (int i = 0; i < nPhases; i++) {
 			for (int j = 0; j < nPhases; j++)
-				result = result + String.format("%12.8f ", Yc.get(i, j).getImaginary() / DSS.TWO_PI / baseFrequency * 1.e9);
+				sb.append(String.format("%12.8f ", Yc.get(i, j).getImaginary() / DSS.TWO_PI / baseFrequency * 1.e9));
 			if (i < nPhases - 1)
-				result = result + "|";
+				sb.append("|");
 		}
-		return result + "]";
+		sb.append("]");
+		return sb.toString();
 	}
 
 	/**
@@ -119,13 +121,14 @@ public class LineCodeObj extends DSSObject {
 	 * Need to preserve values in Z matrices.
 	 */
 	public void setNPhases(int value) {
-		if (value > 0)
+		if (value > 0) {
 			if (nPhases != value) {  // if size is no different, we don't need to do anything
 				nPhases = value;
 				neutralConductor = nPhases;  // init to last conductor
 				// put some reasonable values in these matrices
 				calcMatricesFromZ1Z0();  // reallocs matrices
 			}
+		}
 	}
 
 	public int getNPhases() {
@@ -138,9 +141,9 @@ public class LineCodeObj extends DSSObject {
 		double Yc1, Yc0, oneThird;
 
 		// for a line, nPhases = nCond, for now
-		Z    = new CMatrix(nPhases);
+		Z = new CMatrix(nPhases);
 		Zinv = new CMatrix(nPhases);
-		Yc   = new CMatrix(nPhases);
+		Yc = new CMatrix(nPhases);
 
 		oneThird = 1.0 / 3.0;  // do this to get more precision in next few statements
 
@@ -168,6 +171,7 @@ public class LineCodeObj extends DSSObject {
 
 	@Override
 	public void dumpProperties(OutputStream out, boolean Complete) {
+		int i, j;
 		super.dumpProperties(out, Complete);
 
 		PrintWriter pw = new PrintWriter(out);
@@ -179,33 +183,33 @@ public class LineCodeObj extends DSSObject {
 		pw.println("~ " + parentClass.getPropertyName(4) + "=" + X0);
 		pw.println("~ " + parentClass.getPropertyName(5) + "=" + C1 * 1.0e9);
 		pw.println("~ " + parentClass.getPropertyName(6) + "=" + C0 * 1.0e9);
-		pw.println("~ " + parentClass.getPropertyName(7) + "=" + propertyValue[8]);
+		pw.println("~ " + parentClass.getPropertyName(7) + "=" + propertyValues[8]);
 		pw.print("~ " + parentClass.getPropertyName(8) + "=\"");
-		for (int i = 0; i < nPhases; i++) {
-			for (int j = 0; j < nPhases; j++)
+		for (i = 0; i < nPhases; i++) {
+			for (j = 0; j < nPhases; j++)
 				pw.print(Z.get(i, j).getReal() + " ");
 			pw.print("|");
 		}
 		pw.println("\"");
 
 		pw.print("~ " + parentClass.getPropertyName(9) + "=\"");
-		for (int i = 0; i < nPhases; i++) {
-			for (int j = 0; j < nPhases; j++)
+		for (i = 0; i < nPhases; i++) {
+			for (j = 0; j < nPhases; j++)
 				pw.print(Z.get(i, j).getImaginary() + " ");
 			pw.print("|");
 		}
 		pw.println("\"");
 
 		pw.print("~ " + parentClass.getPropertyName(10) + "=\"");
-		for (int i = 0; i < nPhases; i++) {
-			for (int j = 0; j < nPhases; j++)
+		for (i = 0; i < nPhases; i++) {
+			for (j = 0; j < nPhases; j++)
 				pw.print((Yc.get(i, j).getImaginary() / DSS.TWO_PI / baseFrequency * 1.e9) + " ");
 			pw.print("|");
 		}
 		pw.println("\"");
 
-		for (int i = 11; i < 21; i++)
-			pw.println("~ " + parentClass.getPropertyName(i) + "=" + propertyValue[i]);
+		for (i = 11; i < 21; i++)
+			pw.println("~ " + parentClass.getPropertyName(i) + "=" + propertyValues[i]);
 
 		pw.println(String.format("~ %s=%d", parentClass.getPropertyName(22), neutralConductor));
 
@@ -256,37 +260,34 @@ public class LineCodeObj extends DSSObject {
 
 	@Override
 	public void initPropertyValues(int ArrayOffset) {
-
-		setPropertyValue(0, "3");      // "nphases"
-		setPropertyValue(1, ".058");   // "r1"
+		setPropertyValue(0, "3");  // "nphases"
+		setPropertyValue(1, ".058");  // "r1"
 		setPropertyValue(2, ".1206");  // "x1"
-		setPropertyValue(3, "0.1784"); // "r0"
-		setPropertyValue(4, "0.4047"); // "x0"
+		setPropertyValue(3, "0.1784");  // "r0"
+		setPropertyValue(4, "0.4047");  // "x0"
 		setPropertyValue(5, "3.4");  // "c1"
 		setPropertyValue(6, "1.6");  // "c0"
-		setPropertyValue(7, "none"); // "units"
-		setPropertyValue(8, "");     // "rmatrix"
-		setPropertyValue(9, "");     // "xmatrix"
-		setPropertyValue(10, "");     // "cmatrix"
+		setPropertyValue(7, "none");  // "units"
+		setPropertyValue(8, "");  // "rmatrix"
+		setPropertyValue(9, "");  // "xmatrix"
+		setPropertyValue(10, "");  // "cmatrix"
 		setPropertyValue(11, String.format("%6.1f", DSS.defaultBaseFreq));  // "baseFreq"
 		setPropertyValue(12, "400");  // "normamps"
 		setPropertyValue(13, "600");  // "emergamps"
 		setPropertyValue(14, "0.1");  // "faultrate"
-		setPropertyValue(15, "20");   // "pctperm"
-		setPropertyValue(16, "3");    // "Hrs to repair"
-		setPropertyValue(17, "N");    // "Kron"
+		setPropertyValue(15, "20");  // "pctperm"
+		setPropertyValue(16, "3");  // "Hrs to repair"
+		setPropertyValue(17, "N");  // "Kron"
 		setPropertyValue(18, ".01805");  // "Rg"
-		setPropertyValue(19, ".155081"); // "Xg"
-		setPropertyValue(20, "100");     // "rho"
-		setPropertyValue(21, "3");       // "Neutral"
+		setPropertyValue(19, ".155081");  // "Xg"
+		setPropertyValue(20, "100");  // "rho"
+		setPropertyValue(21, "3");  // "Neutral"
 
 		super.initPropertyValues(LineCode.NumPropsThisClass);
 	}
 
-	// FIXME Private method in OpenDSS
-	public void doKronReduction() {
-		if (neutralConductor == -1)
-			return;
+	protected void doKronReduction() {
+		if (neutralConductor == -1) return;
 
 		CMatrix newZ = null;
 		CMatrix newYc = null;
@@ -298,18 +299,18 @@ public class LineCodeObj extends DSSObject {
 				Yc.invert();  // Vn = 0 not In
 				newYc = Yc.kron(neutralConductor);
 			} catch (Exception e) {
-				DSS.doSimpleMsg(String.format("Kron reduction failed: LineCode.%s. Attempting to eliminate neutral conductor %d.", getName(), neutralConductor), 103);
+				DSS.doSimpleMsg(String.format("Kron reduction failed: LineCode.%s. Attempting to eliminate neutral conductor %d.",
+						getName(), neutralConductor), 103);
 			}
 
-			// Reallocate into smaller space if Kron was successful
+			// reallocate into smaller space if Kron was successful
 
 			if (newZ != null && newYc != null) {
-
 				newYc.invert();  // back to Y
 
 				nPhases = newZ.order();
 
-				Z  = newZ;
+				Z = newZ;
 				Yc = newYc;
 
 				neutralConductor = -1;
@@ -322,11 +323,12 @@ public class LineCodeObj extends DSSObject {
 				setPropertyValue(10, getCMatrix());
 
 			} else {
-				DSS.doSimpleMsg(String.format("Kron reduction failed: LineCode.%s. Attempting to eliminate neutral conductor %d.", getName(), neutralConductor), 103);
+				DSS.doSimpleMsg(String.format("Kron reduction failed: LineCode.%s. Attempting to eliminate neutral conductor %d.",
+						getName(), neutralConductor), 103);
 			}
 
 		} else {
-			DSS.doSimpleMsg("Cannot perform Kron Reduction on a 1-phase LineCode: LineCode." + getName(), 103);
+			DSS.doSimpleMsg("Cannot perform Kron reduction on a 1-phase line code: LineCode." + getName(), 103);
 		}
 	}
 

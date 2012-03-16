@@ -12,11 +12,11 @@ import com.ncond.dss.shared.LineUnits;
 @Getter @Setter
 abstract public class ConductorData extends DSSClass {
 
-	public static final String LineUnitsHelp = "{mi|kft|km|m|Ft|in|cm|mm} Default=none.";
+	public static final String LineUnitsHelp = "{mi|kft|km|m|Ft|in|cm|mm} default=none.";
 
 	public static ConductorDataObj activeConductorDataObj;
 
-	private static ConductorChoice[] conductorChoiceArray = new ConductorChoice[100];
+//	private static ConductorChoice[] conductorChoiceArray = new ConductorChoice[100];
 
 	private int numConductorClassProps;
 
@@ -62,42 +62,43 @@ abstract public class ConductorData extends DSSClass {
 
 	@Override
 	protected int classEdit(DSSObject activeObj, int paramPointer) {
+		ConductorDataObj elem;
 		Parser parser = Parser.getInstance();
 
-		int result = 0;
 		// continue parsing with contents of parser
 		if (paramPointer >= 0) {
-			ConductorDataObj cd = (ConductorDataObj) activeObj;
+			elem = (ConductorDataObj) activeObj;
+
 			switch (paramPointer) {
 			case 0:
-				cd.setRdc(parser.makeDouble());
+				elem.setRdc(parser.makeDouble());
 				break;
 			case 1:
-				cd.setR60(parser.makeDouble());
+				elem.setR60(parser.makeDouble());
 				break;
 			case 2:
-				cd.setResistanceUnits( LineUnits.interpretUnitsCode(parser.makeString()) );
+				elem.setResistanceUnits( LineUnits.interpretUnitsCode(parser.makeString()) );
 				break;
 			case 3:
-				cd.setGmr60(parser.makeDouble());
+				elem.setGmr60(parser.makeDouble());
 				break;
 			case 4:
-				cd.setGmrUnits( LineUnits.interpretUnitsCode(parser.makeString()) );
+				elem.setGmrUnits( LineUnits.interpretUnitsCode(parser.makeString()) );
 				break;
 			case 5:
-				cd.setRadius(parser.makeDouble());
+				elem.setRadius(parser.makeDouble());
 				break;
 			case 6:
-				cd.setRadiusUnits( LineUnits.interpretUnitsCode(parser.makeString()) );
+				elem.setRadiusUnits( LineUnits.interpretUnitsCode(parser.makeString()) );
 				break;
 			case 7:
-				cd.setNormAmps(parser.makeDouble());
+				elem.setNormAmps(parser.makeDouble());
 				break;
 			case 8:
-				cd.setEmergAmps(parser.makeDouble());
+				elem.setEmergAmps(parser.makeDouble());
 				break;
 			case 9:
-				cd.setRadius(parser.makeDouble() / 2.0);
+				elem.setRadius(parser.makeDouble() / 2.0);
 				break;
 			default:
 				super.classEdit(activeObj, paramPointer - numConductorClassProps);
@@ -106,72 +107,72 @@ abstract public class ConductorData extends DSSClass {
 			/* Set defaults */
 			switch (paramPointer) {
 			case 0:
-				if (cd.getR60() < 0.0)
-					cd.setR60(1.02 * cd.getRdc());
+				if (elem.getR60() < 0.0)
+					elem.setR60(1.02 * elem.getRdc());
 				break;
 			case 1:
-				if (cd.getRdc() < 0.0)
-					cd.setRdc(cd.getR60() / 1.02);
+				if (elem.getRdc() < 0.0)
+					elem.setRdc(elem.getR60() / 1.02);
 				break;
 			case 3:
-				if (cd.getRadius() < 0.0)
-					cd.setRadius(cd.getGmr60() / 0.7788);
+				if (elem.getRadius() < 0.0)
+					elem.setRadius(elem.getGmr60() / 0.7788);
 				break;
 			case 4:
-				if (cd.getRadiusUnits() == LineUnits.NONE)
-					cd.setRadiusUnits(cd.getGmrUnits());
+				if (elem.getRadiusUnits() == LineUnits.NONE)
+					elem.setRadiusUnits(elem.getGmrUnits());
 				break;
 			case 5:
-				if (cd.getGmr60() < 0.0)
-					cd.setGmr60(0.7788 * cd.getRadius());
+				if (elem.getGmr60() < 0.0)
+					elem.setGmr60(0.7788 * elem.getRadius());
 				break;
 			case 6:
-				if (cd.getGmrUnits() == LineUnits.NONE)
-					cd.setGmrUnits(cd.getRadiusUnits());
+				if (elem.getGmrUnits() == LineUnits.NONE)
+					elem.setGmrUnits(elem.getRadiusUnits());
 				break;
 			case 7:
-				if (cd.getEmergAmps() < 0.0)
-					cd.setEmergAmps(1.5 * cd.getNormAmps());
+				if (elem.getEmergAmps() < 0.0)
+					elem.setEmergAmps(1.5 * elem.getNormAmps());
 				break;
 			case 8:
-				if (cd.getNormAmps() < 0.0)
-					cd.setNormAmps(cd.getEmergAmps() / 1.5);
+				if (elem.getNormAmps() < 0.0)
+					elem.setNormAmps(elem.getEmergAmps() / 1.5);
 				break;
 			case 9:
-				if (cd.getGmr60() < 0.0)
-					cd.setGmr60(0.7788 * cd.getRadius());
+				if (elem.getGmr60() < 0.0)
+					elem.setGmr60(0.7788 * elem.getRadius());
 				break;
 			}
+
 			/* Check for critical errors */
 			switch (paramPointer) {
 			case 3:
-				if (cd.getRadius() == 0.0)
-					DSS.doSimpleMsg("Error: Radius is specified as zero for ConductorData." + cd.getName(), 999);
+				if (elem.getRadius() == 0.0)
+					DSS.doSimpleMsg("Error: Radius is specified as zero for ConductorData." + elem.getName(), 999);
 				break;
 			case 5:
-				if (cd.getGmr60() == 0.0)
-					DSS.doSimpleMsg("Error: GMR is specified as zero for ConductorData." + cd.getName(), 999);
+				if (elem.getGmr60() == 0.0)
+					DSS.doSimpleMsg("Error: GMR is specified as zero for ConductorData." + elem.getName(), 999);
 				break;
 			}
 		}
 
-		return result;
+		return 0;
 	}
 
 	protected void classMakeLike(DSSObject otherObj) {
+		ConductorDataObj other = (ConductorDataObj) otherObj;
+		ConductorDataObj elem = (ConductorDataObj) DSS.activeDSSObject;
 
-		ConductorDataObj otherConductorData = (ConductorDataObj) otherObj;
-		ConductorDataObj cd = (ConductorDataObj) DSS.activeDSSObject;
-
-		cd.setRdc(otherConductorData.getRdc());
-		cd.setR60(otherConductorData.getR60());
-		cd.setResistanceUnits(otherConductorData.getResistanceUnits());
-		cd.setGmr60(otherConductorData.getGmr60());
-		cd.setGmrUnits(otherConductorData.getGmrUnits());
-		cd.setRadius(otherConductorData.getRadius());
-		cd.setRadiusUnits(otherConductorData.getRadiusUnits());
-		cd.setNormAmps(otherConductorData.getNormAmps());
-		cd.setEmergAmps(otherConductorData.getEmergAmps());
+		elem.setRdc(other.getRdc());
+		elem.setR60(other.getR60());
+		elem.setResistanceUnits(other.getResistanceUnits());
+		elem.setGmr60(other.getGmr60());
+		elem.setGmrUnits(other.getGmrUnits());
+		elem.setRadius(other.getRadius());
+		elem.setRadiusUnits(other.getRadiusUnits());
+		elem.setNormAmps(other.getNormAmps());
+		elem.setEmergAmps(other.getEmergAmps());
 		//super.classMakeLike(OtherObj);
 	}
 

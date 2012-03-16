@@ -165,7 +165,7 @@ public class ExportOptions {
 			parser.getNextParam();
 			parm2 = parser.makeString();
 			break;
-		case 31:  /* Get phases to plot */
+		case 31:  // get phases to plot
 			parser.getNextParam();
 			parm2 = parser.makeString();
 			phasesToPlot = ProfilePlot.THREEPH.phs();  // the default
@@ -236,16 +236,16 @@ public class ExportOptions {
 		}
 
 		switch (paramPointer) {
-		case 0: ExportResults.exportVoltages(fileName); break;
-		case 1: ExportResults.exportSeqVoltages(fileName); break;
-		case 2: ExportResults.exportCurrents(fileName); break;
-		case 3: ExportResults.exportSeqCurrents(fileName); break;
-		case 4: ExportResults.exportEstimation(fileName); break;  // estimation error
-		case 5: ExportResults.exportCapacity(fileName); break;
-		case 6: ExportResults.exportOverloads(fileName); break;
-		case 7: ExportResults.exportUnserved(fileName, UEOnlyOpt); break;
-		case 8: ExportResults.exportPowers(fileName, MVAOpt); break;
-		case 9: ExportResults.exportSeqPowers(fileName, MVAOpt); break;
+		case  0: ExportResults.exportVoltages(fileName); break;
+		case  1: ExportResults.exportSeqVoltages(fileName); break;
+		case  2: ExportResults.exportCurrents(fileName); break;
+		case  3: ExportResults.exportSeqCurrents(fileName); break;
+		case  4: ExportResults.exportEstimation(fileName); break;  // estimation error
+		case  5: ExportResults.exportCapacity(fileName); break;
+		case  6: ExportResults.exportOverloads(fileName); break;
+		case  7: ExportResults.exportUnserved(fileName, UEOnlyOpt); break;
+		case  8: ExportResults.exportPowers(fileName, MVAOpt); break;
+		case  9: ExportResults.exportSeqPowers(fileName, MVAOpt); break;
 		case 10: ExportResults.exportFaultStudy(fileName); break;
 		case 11: ExportResults.exportGenMeters(fileName); break;
 		case 12: ExportResults.exportLoads(fileName); break;
@@ -257,10 +257,12 @@ public class ExportOptions {
 					mon.translateToCSV(false);
 					fileName = DSS.globalResult;
 				} else {
-					DSS.doSimpleMsg("Monitor \""+parm2+"\" not found."+ DSS.CRLF + parser.getCmdString(), 250);
+					DSS.doSimpleMsg("Monitor \"" + parm2 + "\" not found." +
+							DSS.CRLF + parser.getCmdString(), 250);
 				}
 			} else {
-				DSS.doSimpleMsg("Monitor name not specified."+ DSS.CRLF + parser.getCmdString(), 251);
+				DSS.doSimpleMsg("Monitor name not specified." + DSS.CRLF +
+						parser.getCmdString(), 251);
 			}
 			break;
 		case 15: ExportResults.exportYprim(fileName); break;

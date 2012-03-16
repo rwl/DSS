@@ -41,15 +41,15 @@ public class ConductorDataObj extends DSSObject {
 		setName(conductorDataName.toLowerCase());
 		objType = parClass.getClassType();
 
-		Rdc             = -1.0;
-		R60             = -1.0;
-		gmr60           = -1.0;
-		radius          = -1.0;
-		gmrUnits        = LineUnits.NONE;
+		Rdc = -1.0;
+		R60 = -1.0;
+		gmr60 = -1.0;
+		radius = -1.0;
+		gmrUnits = LineUnits.NONE;
 		resistanceUnits = LineUnits.NONE;
-		radiusUnits     = LineUnits.NONE;
+		radiusUnits = LineUnits.NONE;
 
-		normAmps  = -1.0;
+		normAmps = -1.0;
 		emergAmps = -1.0;
 	}
 
@@ -109,6 +109,7 @@ public class ConductorDataObj extends DSSObject {
 		setPropertyValue(arrayOffset + 8, "-1");
 		setPropertyValue(arrayOffset + 9, "-1");
 		setPropertyValue(arrayOffset + 10, "-1");
+
 		super.initPropertyValues(arrayOffset + 10);
 	}
 

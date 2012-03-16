@@ -170,7 +170,7 @@ public class TCC_CurveObj extends DSSObject {
 		PrintWriter pw = new PrintWriter(out);
 
 		for (int i = 0; i < parentClass.getNumProperties(); i++)
-			pw.println("~ " + parentClass.getPropertyName(i) + "=" + propertyValue[i]);
+			pw.println("~ " + parentClass.getPropertyName(i) + "=" + propertyValues[i]);
 
 		pw.close();
 	}

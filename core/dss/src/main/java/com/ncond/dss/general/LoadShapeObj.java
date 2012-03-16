@@ -307,15 +307,15 @@ public class LoadShapeObj extends DSSObject {
 			switch (i) {
 			case 2:
 				pw.println("~ " + parentClass.getPropertyName(i) +
-					"=(" + propertyValue[i] + ")");
+					"=(" + propertyValues[i] + ")");
 				break;
 			case 3:
 				pw.println("~ " + parentClass.getPropertyName(i) +
-					"=(" + propertyValue[i] + ")");
+					"=(" + propertyValues[i] + ")");
 				break;
 			default:
 				pw.println("~ " + parentClass.getPropertyName(i) +
-					"=" + propertyValue[i]);
+					"=" + propertyValues[i]);
 				break;
 			}
 		}
@@ -470,9 +470,9 @@ public class LoadShapeObj extends DSSObject {
 		// reset array property values to keep them in proper order in save
 
 		if (arrayPropertyIndex >= 0)
-			propertyValue[arrayPropertyIndex] = propertyValue[arrayPropertyIndex];
+			propertyValues[arrayPropertyIndex] = propertyValues[arrayPropertyIndex];
 		if (QMultipliers != null)
-			propertyValue[10] = propertyValue[10];
+			propertyValues[10] = propertyValues[10];
 
 		numPoints = value;  // now assign the value
 	}

@@ -14,6 +14,7 @@ public class GrowthShapeObj extends DSSObject {
 
 	/** Number of points in curve */
 	private int npts;
+
 	/** Number of years presently allocated in look up table */
 	private int nYears;
 	private int baseYear;
@@ -41,13 +42,13 @@ public class GrowthShapeObj extends DSSObject {
 	 * Get multiplier for specified year.
 	 *
 	 * This function returns the multiplier to use for a load in the given year.
-	 * The first year specified in the curve is the base year.  The base value
+	 * The first year specified in the curve is the base year. The base value
 	 * is the beginning of the first year.
 	 */
 	public double getMult(int yr) {
 		int index;
 
-		double result = 1.0;  // default return value if no points in curve
+		double mult = 1.0;  // default return value if no points in curve
 
 		if (npts > 0) {  // handle exceptional cases
 			index = yr - baseYear;
@@ -57,21 +58,21 @@ public class GrowthShapeObj extends DSSObject {
 					yearMult = Util.resizeArray(yearMult, nYears);
 					reCalcYearMult();
 				}
-				result = yearMult[index];
+				mult = yearMult[index];
 			}
 		}
 
-		return result;
+		return mult;
 	}
 
-	/* FIXME Private procedure in OpenDSS */
-	public void reCalcYearMult() {
+	protected void reCalcYearMult() {
 		// fill up the yearMult array with total yearly multiplier from base year
 		double mult = multiplier[0];
 		double multInc = mult;
 		yearMult[0] = mult;
 		int dataPtr = 0;
 		int yr = baseYear;
+
 		for (int i = 1; i < nYears; i++) {
 			yr += 1;
 			if (dataPtr < npts - 1) {
@@ -94,9 +95,6 @@ public class GrowthShapeObj extends DSSObject {
 		for (int i = 0; i < parentClass.getNumProperties(); i++) {
 			switch (i) {
 			case 1:
-				pw.println("~ " + parentClass.getPropertyName(i) +
-					"=(" + getPropertyValue(i) + ")");
-				break;
 			case 2:
 				pw.println("~ " + parentClass.getPropertyName(i) +
 					"=(" + getPropertyValue(i) + ")");
@@ -113,55 +111,51 @@ public class GrowthShapeObj extends DSSObject {
 	@Override
 	public String getPropertyValue(int index) {
 		int i;
-		String result;
+		String val;
 
 		switch (index) {
 		case 1:
-			result = "(";
-			break;
 		case 2:
-			result = "(";
+			val = "(";
 			break;
 		default:
-			result = "";
+			val = "";
 			break;
 		}
 
 		switch (index) {
 		case 1:
 			for (i = 0; i < npts; i++)
-				result = result + String.format("%-d, ", year[i]);
+				val += String.format("%-d, ", year[i]);
 			break;
 		case 2:
 			for (i = 0; i < npts; i++)
-				result = result + String.format("%-g, ", multiplier[i]);
+				val += String.format("%-g, ", multiplier[i]);
 			break;
 		default:
-			result = super.getPropertyValue(index);
+			val = super.getPropertyValue(index);
 			break;
 		}
 
 		switch (index) {
 		case 1:
-			result = result + ")";
-			break;
 		case 2:
-			result = result + ")";
+			val = val + ")";
 			break;
 		}
 
-		return result;
+		return val;
 	}
 
 	@Override
 	public void initPropertyValues(int arrayOffset) {
 
-		propertyValue[0] = "0";  // number of points to expect
-		propertyValue[1] = "";   // vector of year values
-		propertyValue[2] = "";   // vector of multiplier values corresponding to years
-		propertyValue[3] = "";   // switch input to a csvfile                (year, mult)
-		propertyValue[4] = "";   // switch input to a binary file of singles (year, mult)
-		propertyValue[5] = "";   // switch input to a binary file of doubles (year, mult)
+		setPropertyValue(0, "0");  // number of points to expect
+		setPropertyValue(1, "");   // vector of year values
+		setPropertyValue(2, "");   // vector of multiplier values corresponding to years
+		setPropertyValue(3, "");   // switch input to a csvfile                (year, mult)
+		setPropertyValue(4, "");   // switch input to a binary file of singles (year, mult)
+		setPropertyValue(5, "");   // switch input to a binary file of doubles (year, mult)
 
 		super.initPropertyValues(GrowthShape.NumPropsThisClass - 1);
 	}

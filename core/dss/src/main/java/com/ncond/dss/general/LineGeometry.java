@@ -4,7 +4,6 @@ import com.ncond.dss.common.DSS;
 import com.ncond.dss.common.DSSClass;
 import com.ncond.dss.common.DSSClassDefs;
 import com.ncond.dss.common.Util;
-import com.ncond.dss.general.LineGeometryObj.LineGeometryProblem;
 import com.ncond.dss.parser.Parser;
 import com.ncond.dss.shared.CommandList;
 import com.ncond.dss.shared.LineUnits;
@@ -67,25 +66,24 @@ public class LineGeometry extends DSSClass {
 		propertyHelp[8] = "Emergency ampacity, amperes. Defaults to first conductor if not specified.";
 		propertyHelp[9] = "{Yes | No} Default = no. Reduce to Nphases (Kron Reduction). Reduce out neutrals.";
 		propertyHelp[10] = "Reference to a LineSpacing for use in a line constants calculation." + CRLF +
-							"Alternative to x, h, and units. MUST BE PREVIOUSLY DEFINED." + CRLF +
-							"Must match \"nconds\" as previously defined for this geometry." + CRLF +
-							"Must be used in conjunction with the Wires property.";
+			"Alternative to x, h, and units. MUST BE PREVIOUSLY DEFINED." + CRLF +
+			"Must match \"nconds\" as previously defined for this geometry." + CRLF +
+			"Must be used in conjunction with the Wires property.";
 		propertyHelp[11] = "Array of WireData names for use in a line constants calculation." + CRLF +
-							"Alternative to individual wire inputs. ALL MUST BE PREVIOUSLY DEFINED." + CRLF +
-							"Must match \"nconds\" as previously defined for this geometry," + CRLF +
-							"unless TSData or CNData were previously assigned to phases, and these wires are neutrals." + CRLF +
-							"Must be used in conjunction with the Spacing property.";
+			"Alternative to individual wire inputs. ALL MUST BE PREVIOUSLY DEFINED." + CRLF +
+			"Must match \"nconds\" as previously defined for this geometry," + CRLF +
+			"unless TSData or CNData were previously assigned to phases, and these wires are neutrals." + CRLF +
+			"Must be used in conjunction with the Spacing property.";
 		propertyHelp[12] = "Code from CNData. MUST BE PREVIOUSLY DEFINED. no default." + CRLF +
-				"Specifies use of Concentric Neutral cable parameter calculation.";
+			"Specifies use of Concentric Neutral cable parameter calculation.";
 		propertyHelp[13] = "Code from TSData. MUST BE PREVIOUSLY DEFINED. no default." + CRLF +
-				"Specifies use of Tape Shield cable parameter calculation.";
+			"Specifies use of Tape Shield cable parameter calculation.";
 		propertyHelp[14] = "Array of CNData names for cable parameter calculation." + CRLF +
-				"All must be previously defined, and match \"nphases\" for this geometry." + CRLF +
-				"You can later define \"nconds-nphases\" wires for bare neutral conductors.";
+			"All must be previously defined, and match \"nphases\" for this geometry." + CRLF +
+			"You can later define \"nconds-nphases\" wires for bare neutral conductors.";
 		propertyHelp[15] = "Array of TSData names for cable parameter calculation." + CRLF +
-				"All must be previously defined, and match \"nphases\" for this geometry." + CRLF +
-				"You can later define \"nconds-nphases\" wires for bare neutral conductors.";
-
+			"All must be previously defined, and match \"nphases\" for this geometry." + CRLF +
+			"You can later define \"nconds-nphases\" wires for bare neutral conductors.";
 
 		activeProperty = LineGeometry.NumPropsThisClass - 1;
 		super.defineProperties();  // add defs of inherited properties to bottom of list
@@ -102,14 +100,14 @@ public class LineGeometry extends DSSClass {
 
 	@Override
 	public int edit() {
+		int istart, istop;
 		Parser parser = Parser.getInstance();
 
-		LineGeometryObj alg = activeLineGeometryObj;
+		LineGeometryObj elem = activeLineGeometryObj;
 
-		int istart, istop, result = 0;
 		// continue parsing with contents of Parser
 		activeLineGeometryObj = (LineGeometryObj) elementList.getActive();
-		DSS.activeDSSObject = alg;
+		DSS.activeDSSObject = elem;
 
 		int paramPointer = -1;
 		String paramName = parser.getNextParam();
@@ -123,152 +121,102 @@ public class LineGeometry extends DSSClass {
 			}
 
 			if (paramPointer >= 0 && paramPointer < numProperties)
-				alg.setPropertyValue(paramPointer, param);
+				elem.setPropertyValue(paramPointer, param);
 
 			switch (paramPointer) {
 			case -1:
-				DSS.doSimpleMsg("Unknown parameter \"" + paramName + "\" for Object \"" + getClassName() + "." + alg.getName() + "\"", 10101);
+				DSS.doSimpleMsg("Unknown parameter \"" + paramName + "\" for object \"" +
+						getClassName() + "." + elem.getName() + "\"", 10101);
 				break;
 			case 0:
-				alg.setNConds(parser.makeInteger());  // use property value to force reallocations
+				elem.setNConds(parser.makeInteger());  // use property value to force reallocations
 				break;
 			case 1:
-				alg.setNPhases(parser.makeInteger());
+				elem.setNPhases(parser.makeInteger());
 				break;
 			case 2:
-				alg.setActiveCond(parser.makeInteger());
+				elem.setActiveCond(parser.makeInteger());
 				break;
 			case 3:
-				alg.getCondName()[alg.getActiveCond()] = param;
-				if (alg.getPhaseChoice() == ConductorChoice.UNKNOWN)
-					alg.changeLineConstantsType(ConductorChoice.OVERHEAD);
+				elem.setCondName(elem.getActiveCond(), param);
+				if (elem.getPhaseChoice() == ConductorChoice.UNKNOWN)
+					elem.changeLineConstantsType(ConductorChoice.OVERHEAD);
 				break;
 			case 4:
-				alg.getX()[alg.getActiveCond()] = parser.makeDouble();
+				elem.setXcoord(elem.getActiveCond(), parser.makeDouble());
 				break;
 			case 5:
-				alg.getY()[alg.getActiveCond()] = parser.makeDouble();
+				elem.setYcoord(elem.getActiveCond(), parser.makeDouble());
 				break;
 			case 6:
-				alg.getUnits()[alg.getActiveCond()] = LineUnits.interpretUnitsCode(param);
-				alg.setLastUnit( alg.getUnits()[alg.getActiveCond()] );
+				elem.setUnit(elem.getActiveCond(), LineUnits.interpretUnitsCode(param));
+				elem.setLastUnit(elem.getUnit(elem.getActiveCond()));
 				break;
 			case 7:
-				alg.setNormAmps(parser.makeDouble());
+				elem.setNormAmps(parser.makeDouble());
 				break;
 			case 8:
-				alg.setEmergAmps(parser.makeDouble());
+				elem.setEmergAmps(parser.makeDouble());
 				break;
 			case 9:
-				alg.setReduce(Util.interpretYesNo(param));
+				elem.setReduce(Util.interpretYesNo(param));
 				break;
 			case 10:
-				alg.setSpacingType(parser.makeString());
-				if (DSS.lineSpacingClass.setActive(alg.getSpacingType())) {
+				elem.setSpacingType(parser.makeString());
+				if (DSS.lineSpacingClass.setActive(elem.getSpacingType())) {
 					LineSpacing.activeLineSpacingObj = (LineSpacingObj) DSS.lineSpacingClass.getActiveObj();
-					if (alg.getNConds() == LineSpacing.activeLineSpacingObj.getNWires()) {
-						alg.setLastUnit(LineSpacing.activeLineSpacingObj.getUnits());
-						for (int i = 0; i < alg.getNConds(); i++) {
-							alg.getX()[i] = LineSpacing.activeLineSpacingObj.getXCoord(i);
-							alg.getY()[i] = LineSpacing.activeLineSpacingObj.getYCoord(i);
-							alg.getUnits()[i] = activeLineGeometryObj.getLastUnit();
+
+					if (elem.getNConds() == LineSpacing.activeLineSpacingObj.getNWires()) {
+						elem.setLastUnit(LineSpacing.activeLineSpacingObj.getUnits());
+						for (int i = 0; i < elem.getNConds(); i++) {
+							elem.setXcoord(i, LineSpacing.activeLineSpacingObj.getXCoord(i));
+							elem.setYcoord(i, LineSpacing.activeLineSpacingObj.getYCoord(i));
+							elem.setUnit(i, activeLineGeometryObj.getLastUnit());
 						}
 					} else {
-						DSS.doSimpleMsg("LineSpacing object " + alg.getSpacingType() + " has the wrong number of wires.", 10103);
+						DSS.doSimpleMsg("LineSpacing object " + elem.getSpacingType() +
+								" has the wrong number of wires.", 10103);
 					}
 				} else {
-					DSS.doSimpleMsg("LineSpacing object " + alg.getSpacingType() + " has not been defined.", 10103);
+					DSS.doSimpleMsg("LineSpacing object " + elem.getSpacingType() +
+							" has not been defined.", 10103);
 				}
 				break;
 			case 12:
-				alg.getCondName()[alg.getActiveCond()] = param;
-				alg.changeLineConstantsType(ConductorChoice.CONCENTRIC_NEUTRAL);
+				elem.setCondName(elem.getActiveCond(), param);
+				elem.changeLineConstantsType(ConductorChoice.CONCENTRIC_NEUTRAL);
 				break;
 			case 13:
-				alg.getCondName()[alg.getActiveCond()] = param;
-				alg.changeLineConstantsType(ConductorChoice.TAPE_SHIELD);
+				elem.setCondName(elem.getActiveCond(), param);
+				elem.changeLineConstantsType(ConductorChoice.TAPE_SHIELD);
 				break;
 			case 11:
-				istart = 0;
-				istop = alg.getNConds() - 1;
-
-				if (alg.getPhaseChoice() == ConductorChoice.UNKNOWN) {
-					alg.changeLineConstantsType(ConductorChoice.OVERHEAD);
-				} else {  // these are buried neutral wires
-					istart = alg.getNPhases();
-				}
-
-				DSS.auxParser.setCmdString(parser.makeString());
-				for (int i = istart; i <= istop; i++) {
-					DSS.auxParser.getNextParam();  // ignore any parameter name  not expecting any
-					alg.getCondName()[i] = DSS.auxParser.makeString();
-
-					DSS.wireDataClass.setCode(alg.getCondName()[i]);
-
-					if (ConductorData.activeConductorDataObj != null) {
-						alg.getConductorData()[i] = ConductorData.activeConductorDataObj;
-						if (i == 0) {
-							if (ConductorData.activeConductorDataObj.getNormAmps() > 0.0)
-								alg.setNormAmps(ConductorData.activeConductorDataObj.getNormAmps());
-							if (ConductorData.activeConductorDataObj.getEmergAmps() > 0.0)
-								alg.setEmergAmps(ConductorData.activeConductorDataObj.getEmergAmps());
-						}
-					} else {
-						DSS.doSimpleMsg("WireData object \"" + alg.getCondName()[i] + "\" not defined. Must be previously defined.", 10103);
-					}
-				}
-				break;
 			case 14:
-				istart = 0;
-				istop = alg.getNConds() - 1;
-
-				alg.changeLineConstantsType(ConductorChoice.CONCENTRIC_NEUTRAL);
-				istop = alg.getNPhases() - 1;
-
-				DSS.auxParser.setCmdString(parser.makeString());
-				for (int i = istart; i <= istop; i++) {
-					DSS.auxParser.getNextParam();  // ignore any parameter name not expecting any
-					alg.getCondName()[i] = DSS.auxParser.makeString();
-
-					DSS.CNDataClass.setCode(alg.getCondName()[i]);
-
-					if (ConductorData.activeConductorDataObj != null) {
-						alg.getConductorData()[i] = ConductorData.activeConductorDataObj;
-						if (i == 0) {
-							if (ConductorData.activeConductorDataObj.getNormAmps() > 0.0)
-								alg.setNormAmps(ConductorData.activeConductorDataObj.getNormAmps());
-							if (ConductorData.activeConductorDataObj.getEmergAmps() > 0.0)
-								alg.setEmergAmps(ConductorData.activeConductorDataObj.getEmergAmps());
-						}
-					} else {
-						DSS.doSimpleMsg("CNData object \"" + alg.getCondName()[i] + "\" not defined. Must be previously defined.", 10103);
-					}
-				}
-				break;
 			case 15:
 				istart = 0;
-				istop = alg.getNConds() - 1;
+				istop = elem.getNConds() - 1;
 
-				alg.changeLineConstantsType(ConductorChoice.TAPE_SHIELD);
-				istop = alg.getNPhases() - 1;
+				elem.changeLineConstantsType(ConductorChoice.TAPE_SHIELD);
+				istop = elem.getNPhases() - 1;
 
 				DSS.auxParser.setCmdString(parser.makeString());
-				for (int i = istart; i < istop + 1; i++) {
+				for (int i = istart; i < istop; i++) {
 					DSS.auxParser.getNextParam();  // ignore any parameter name  not expecting any
-					alg.getCondName()[i] = DSS.auxParser.makeString();
+					elem.setCondName(i, DSS.auxParser.makeString());
 
-					DSS.TSDataClass.setCode(alg.getCondName()[i]);
+					DSS.TSDataClass.setCode(elem.getCondName(i));
 
 					if (ConductorData.activeConductorDataObj != null) {
-						alg.getConductorData()[i] = ConductorData.activeConductorDataObj;
+						elem.getConductorData()[i] = ConductorData.activeConductorDataObj;
 						if (i == 0) {
 							if (ConductorData.activeConductorDataObj.getNormAmps() > 0.0)
-								alg.setNormAmps(ConductorData.activeConductorDataObj.getNormAmps());
+								elem.setNormAmps(ConductorData.activeConductorDataObj.getNormAmps());
 							if (ConductorData.activeConductorDataObj.getEmergAmps() > 0.0)
-								alg.setEmergAmps(ConductorData.activeConductorDataObj.getEmergAmps());
+								elem.setEmergAmps(ConductorData.activeConductorDataObj.getEmergAmps());
 						}
 					} else {
-						DSS.doSimpleMsg("TSData object \"" + alg.getCondName()[i] + "\" not defined. Must be previously defined.", 10103);
+						DSS.doSimpleMsg("TSData object \"" + elem.getCondName(i) +
+							"\" not defined. Must be previously defined.", 10103);
 					}
 				}
 				break;
@@ -281,56 +229,28 @@ public class LineGeometry extends DSSClass {
 			/* Set defaults */
 			switch (paramPointer) {
 			case 1:
-				if (alg.getNPhases() > alg.getNConds())
-					alg.setNPhases(alg.getNConds());
+				if (elem.getNPhases() > elem.getNConds())
+					elem.setNPhases(elem.getNConds());
 				break;
 			case 2:
-				if (alg.getActiveCond() < 0 || alg.getActiveCond() >= alg.getNConds())
-					DSS.doSimpleMsg("Illegal cond= specification in line geometry:" + DSS.CRLF + parser.getCmdString(), 10102);
+				if (elem.getActiveCond() < 0 || elem.getActiveCond() >= elem.getNConds())
+					DSS.doSimpleMsg("Illegal cond= specification in line geometry:" +
+							DSS.CRLF + parser.getCmdString(), 10102);
 				break;
 			case 3:
-				DSS.wireDataClass.setCode(param);
-
-				if (ConductorData.activeConductorDataObj != null) {
-					alg.getConductorData()[alg.getActiveCond()] = ConductorData.activeConductorDataObj;
-					/* Default the current ratings for this geometry to the rating of the first conductor */
-					if (alg.getActiveCond() == 0) {
-						if (ConductorData.activeConductorDataObj.getNormAmps() > 0.0)
-							alg.setNormAmps(ConductorData.activeConductorDataObj.getNormAmps());
-						if (ConductorData.activeConductorDataObj.getEmergAmps() > 0.0)
-							alg.setEmergAmps(ConductorData.activeConductorDataObj.getEmergAmps());
-					}
-				} else {
-					DSS.doSimpleMsg("WireData object \"" + param + "\" not defined. Must be previously defined.", 10103);
-				}
-				break;
 			case 12:
-				DSS.CNDataClass.setCode(param);
-
-				if (ConductorData.activeConductorDataObj != null) {
-					alg.getConductorData()[alg.getActiveCond()] = ConductorData.activeConductorDataObj;
-					/* Default the current ratings for this geometry to the rating of the first conductor */
-					if (alg.getActiveCond() == 0) {
-						if (ConductorData.activeConductorDataObj.getNormAmps() > 0.0)
-							alg.setNormAmps(ConductorData.activeConductorDataObj.getNormAmps());
-						if (ConductorData.activeConductorDataObj.getEmergAmps() > 0.0)
-							alg.setEmergAmps(ConductorData.activeConductorDataObj.getEmergAmps());
-					}
-				} else {
-					DSS.doSimpleMsg("CNData object \"" + param + "\" not defined. Must be previously defined.", 10103);
-				}
-				break;
 			case 13:
 				DSS.TSDataClass.setCode(param);
 
 				if (ConductorData.activeConductorDataObj != null) {
-					alg.getConductorData()[alg.getActiveCond()] = ConductorData.activeConductorDataObj;
+					elem.setConductorData(elem.getActiveCond(), ConductorData.activeConductorDataObj);
+
 					/* Default the current ratings for this geometry to the rating of the first conductor */
-					if (alg.getActiveCond() == 0) {
+					if (elem.getActiveCond() == 0) {
 						if (ConductorData.activeConductorDataObj.getNormAmps() > 0.0)
-							alg.setNormAmps(ConductorData.activeConductorDataObj.getNormAmps());
+							elem.setNormAmps(ConductorData.activeConductorDataObj.getNormAmps());
 						if (ConductorData.activeConductorDataObj.getEmergAmps() > 0.0)
-							alg.setEmergAmps(ConductorData.activeConductorDataObj.getEmergAmps());
+							elem.setEmergAmps(ConductorData.activeConductorDataObj.getEmergAmps());
 					}
 				} else {
 					DSS.doSimpleMsg("TSData object \"" + param + "\" not defined. Must be previously defined.", 10103);
@@ -340,89 +260,69 @@ public class LineGeometry extends DSSClass {
 
 			switch (paramPointer) {
 			case 0:
-				alg.setDataChanged(true);
-				break;
 			case 3:
-				alg.setDataChanged(true);
-				break;
 			case 4:
-				alg.setDataChanged(true);
-				break;
 			case 5:
-				alg.setDataChanged(true);
-				break;
 			case 6:
-				alg.setDataChanged(true);
-				break;
 			case 10:
-				alg.setDataChanged(true);
-				break;
 			case 11:
-				alg.setDataChanged(true);
-				break;
 			case 12:
-				alg.setDataChanged(true);
-				break;
 			case 13:
-				alg.setDataChanged(true);
-				break;
 			case 14:
-				alg.setDataChanged(true);
-				break;
 			case 15:
-				alg.setDataChanged(true);
+				elem.setDataChanged(true);
 				break;
 			}
 
 			paramName = parser.getNextParam();
 			param = parser.makeString();
 		}
-		return result;
+		return 0;
 	}
 
 	@Override
 	protected int makeLike(String lineName) {
+		int i, success = 0;
 
-		int i, result = 0;
 		/* See if we can find this line code in the present collection */
-		LineGeometryObj otherLineGeometry = (LineGeometryObj) find(lineName);
-		if (otherLineGeometry != null) {
+		LineGeometryObj other = (LineGeometryObj) find(lineName);
 
-			LineGeometryObj alg = activeLineGeometryObj;
+		if (other != null) {
+			LineGeometryObj elem = activeLineGeometryObj;
 
-			alg.setPhaseChoice(otherLineGeometry.getPhaseChoice());
-			alg.setNConds(otherLineGeometry.getNWires());  // allocates
-			alg.setNPhases(otherLineGeometry.getNPhases());
-			alg.setSpacingType(otherLineGeometry.getSpacingType());
-			for (i = 0; i < alg.getNConds(); i++)
-				alg.getCondName()[i] = otherLineGeometry.getCondName()[i];
-			for (i = 0; i < alg.getNConds(); i++)
-				alg.getConductorData()[i] = otherLineGeometry.getConductorData()[i];
-			for (i = 0; i < alg.getNConds(); i++)
-				alg.getX()[i] = otherLineGeometry.getX()[i];
-			for (i = 0; i < alg.getNConds(); i++)
-				alg.getY()[i] = otherLineGeometry.getY()[i];
-			for (i = 0; i < alg.getNConds(); i++)
-				alg.getUnits()[i] = otherLineGeometry.getUnits()[i];
-			alg.setDataChanged(true);
-			alg.setNormAmps(otherLineGeometry.getNormAmps());
-			alg.setEmergAmps(otherLineGeometry.getEmergAmps());
+			elem.setPhaseChoice(other.getPhaseChoice());
+			elem.setNConds(other.getNWires());  // allocates
+			elem.setNPhases(other.getNPhases());
+			elem.setSpacingType(other.getSpacingType());
+			for (i = 0; i < elem.getNConds(); i++)
+				elem.setCondName(i, other.getCondName(i));
+			for (i = 0; i < elem.getNConds(); i++)
+				elem.setConductorData(i, other.getConductorData(i));
+			for (i = 0; i < elem.getNConds(); i++)
+				elem.setXcoord(i, other.getXCoord(i));
+			for (i = 0; i < elem.getNConds(); i++)
+				elem.setYcoord(i, other.getYCoord(i));
+			for (i = 0; i < elem.getNConds(); i++)
+				elem.setUnit(i, other.getUnit(i));
+			elem.setDataChanged(true);
+			elem.setNormAmps(other.getNormAmps());
+			elem.setEmergAmps(other.getEmergAmps());
 
 			try {
-				alg.updateLineGeometryData(DSS.activeCircuit.getSolution().getFrequency());
+				elem.updateLineGeometryData(DSS.activeCircuit.getSolution().getFrequency());
 			} catch (LineGeometryProblem e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				DSS.doSimpleMsg("Error updating line geometry data.", -1);
 			}
 
-			for (i = 0; i < alg.getParentClass().getNumProperties(); i++)
-				alg.setPropertyValue(i, otherLineGeometry.getPropertyValue(i));
-			result = 1;
+			for (i = 0; i < elem.getParentClass().getNumProperties(); i++)
+				elem.setPropertyValue(i, other.getPropertyValue(i));
+			success = 1;
 		} else {
-			DSS.doSimpleMsg("Error in LineGeometry makeLike: \"" + lineName + "\" not found.", 102);
+			DSS.doSimpleMsg("Error in LineGeometry makeLike: \"" +
+					lineName + "\" not found.", 102);
 		}
 
-		return result;
+		return success;
 	}
 
 	@Override
@@ -437,13 +337,13 @@ public class LineGeometry extends DSSClass {
 	}
 
 	public void setCode(String value) {
-		LineGeometryObj pLineGeo;
+		LineGeometryObj elem;
 		activeLineGeometryObj = null;
 
 		for (int i = 0; i < elementList.size(); i++) {
-			pLineGeo = (LineGeometryObj) elementList.get(i);
-			if (pLineGeo.getName().equalsIgnoreCase(value)) {
-				activeLineGeometryObj = pLineGeo;
+			elem = (LineGeometryObj) elementList.get(i);
+			if (elem.getName().equalsIgnoreCase(value)) {
+				activeLineGeometryObj = elem;
 				return;
 			}
 		}

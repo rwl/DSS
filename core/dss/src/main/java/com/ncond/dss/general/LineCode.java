@@ -18,12 +18,11 @@ public class LineCode extends DSSClass {
 
 	public static LineCodeObj activeLineCodeObj;
 
-	private boolean symComponentsChanged;
-
 	private boolean matrixChanged;
 
 	public LineCode() {
 		super();
+
 		className = "LineCode";
 		classType= DSSClassDefs.DSS_OBJECT;
 		activeElement = -1;
@@ -40,6 +39,7 @@ public class LineCode extends DSSClass {
 	protected void defineProperties() {
 		numProperties = LineCode.NumPropsThisClass;
 		countProperties();  // get inherited property count
+
 		allocatePropertyArrays();
 
 		propertyName[0] = "nphases";
@@ -134,8 +134,6 @@ public class LineCode extends DSSClass {
 	 * Set symmetrical component impedances and a flag to indicate they were changed.
 	 */
 	private void setZ1Z0(int i, double value) {
-		symComponentsChanged = true;
-
 		activeLineCodeObj.setSymComponentsModel(true);
 
 		switch (i) {
@@ -167,7 +165,7 @@ public class LineCode extends DSSClass {
 		int orderFound, j;
 		int[] nOrder = new int[1];
 		double[] matBuffer;
-		Complex[] ZValues;
+		Complex[] Zvalues;
 		double factor;
 
 		int np2 = activeLineCodeObj.getNPhases() * activeLineCodeObj.getNPhases();
@@ -179,28 +177,26 @@ public class LineCode extends DSSClass {
 		if (orderFound > 0) {  // parse was successful
 			switch (i) {
 			case 1:  // r
-				ZValues = activeLineCodeObj.getZ().asArray(nOrder);
+				Zvalues = activeLineCodeObj.getZ().asArray(nOrder);
 				if (nOrder[0] == activeLineCodeObj.getNPhases())
 					for (j = 0; j < np2; j++)
-						ZValues[j] = new Complex(matBuffer[j], ZValues[j].getImaginary());
+						Zvalues[j] = new Complex(matBuffer[j], Zvalues[j].getImaginary());
 				break;
 			case 2:  // x
-				ZValues = activeLineCodeObj.getZ().asArray(nOrder);
+				Zvalues = activeLineCodeObj.getZ().asArray(nOrder);
 				if (nOrder[0] == activeLineCodeObj.getNPhases())
 					for (j = 0; j < np2; j++)
-						ZValues[j] = new Complex(ZValues[j].getReal(), matBuffer[j]);
+						Zvalues[j] = new Complex(Zvalues[j].getReal(), matBuffer[j]);
 				break;
 			case 3:  // Yc matrix
 				factor = DSS.TWO_PI * activeLineCodeObj.getBaseFrequency() * 1.0e-9;
-				ZValues = activeLineCodeObj.getYc().asArray(nOrder);
+				Zvalues = activeLineCodeObj.getYc().asArray(nOrder);
 				if (nOrder[0] == activeLineCodeObj.getNPhases())
 					for (j = 0; j < np2; j++)
-						ZValues[j] = new Complex(ZValues[j].getReal(), factor * matBuffer[j]);
+						Zvalues[j] = new Complex(Zvalues[j].getReal(), factor * matBuffer[j]);
 				break;
 			}
 		}
-
-		matBuffer = null;
 	}
 
 	/**
@@ -208,14 +204,12 @@ public class LineCode extends DSSClass {
 	 */
 	@Override
 	public int edit() {
-		int result = 0;
-
 		Parser parser = Parser.getInstance();
 
 		// continue parsing with contents of parser
 		activeLineCodeObj = (LineCodeObj) elementList.getActive();
 		DSS.activeDSSObject = activeLineCodeObj;
-		symComponentsChanged = false;
+
 		matrixChanged = false;
 		activeLineCodeObj.setReduceByKron(false);  // allow all matrices to be computed it raw form
 
@@ -235,7 +229,8 @@ public class LineCode extends DSSClass {
 
 			switch (paramPointer) {
 			case -1:
-				DSS.doSimpleMsg("Unknown parameter \"" + paramName + "\" for Object \"" + getClassName() +"."+ getClassName() + "\"", 101);
+				DSS.doSimpleMsg("Unknown parameter \"" + paramName + "\" for Object \"" +
+						getClassName() +"."+ getClassName() + "\"", 101);
 				break;
 			case 0:
 				activeLineCodeObj.setNPhases(parser.makeInteger());  // use property value to force reallocations
@@ -335,54 +330,54 @@ public class LineCode extends DSSClass {
 			activeLineCodeObj.getZinv().invert();
 		}
 
-		return result;
+		return 0;
 	}
 
 	@Override
 	protected int makeLike(String lineName) {
-		int result = 0;
+		int success = 0;
 
 		/* See if we can find this line code in the present collection */
-		LineCodeObj otherLineCode = (LineCodeObj) find(lineName);
+		LineCodeObj other = (LineCodeObj) find(lineName);
 
-		if (otherLineCode != null) {
+		if (other != null) {
+			if (activeLineCodeObj.getNPhases() != other.getNPhases()) {
+				activeLineCodeObj.setNPhases(other.getNPhases());
 
-			if (activeLineCodeObj.getNPhases() != otherLineCode.getNPhases()) {
-				activeLineCodeObj.setNPhases(otherLineCode.getNPhases());
-
-				activeLineCodeObj.setZ(new CMatrix( activeLineCodeObj.getNPhases() ));
-				activeLineCodeObj.setZinv(new CMatrix( activeLineCodeObj.getNPhases() ));
-				activeLineCodeObj.setYc(new CMatrix( activeLineCodeObj.getNPhases() ));
+				activeLineCodeObj.setZ(new CMatrix(activeLineCodeObj.getNPhases()));
+				activeLineCodeObj.setZinv(new CMatrix(activeLineCodeObj.getNPhases()));
+				activeLineCodeObj.setYc(new CMatrix(activeLineCodeObj.getNPhases()));
 			}
 
-			activeLineCodeObj.getZ().copyFrom(otherLineCode.getZ());
-			activeLineCodeObj.getZinv().copyFrom(otherLineCode.getZinv());
-			activeLineCodeObj.getYc().copyFrom(otherLineCode.getYc());
-			activeLineCodeObj.setBaseFrequency(otherLineCode.getBaseFrequency());
-			activeLineCodeObj.setR1(otherLineCode.getR1());
-			activeLineCodeObj.setX1(otherLineCode.getX1());
-			activeLineCodeObj.setR0(otherLineCode.getR0());
-			activeLineCodeObj.setX0(otherLineCode.getX0());
-			activeLineCodeObj.setC1(otherLineCode.getC1());
-			activeLineCodeObj.setC0(otherLineCode.getC0());
-			activeLineCodeObj.setRg(otherLineCode.getRg());
-			activeLineCodeObj.setXg(otherLineCode.getXg());
-			activeLineCodeObj.setRho(otherLineCode.getRho());
-			activeLineCodeObj.setNeutralConductor(otherLineCode.getNeutralConductor());
-			activeLineCodeObj.setNormAmps(otherLineCode.getNormAmps());
-			activeLineCodeObj.setEmergAmps(otherLineCode.getEmergAmps());
-			activeLineCodeObj.setFaultRate(otherLineCode.getFaultRate());
-			activeLineCodeObj.setPctPerm(otherLineCode.getPctPerm());
-			activeLineCodeObj.setHrsToRepair(otherLineCode.getHrsToRepair());
+			activeLineCodeObj.getZ().copyFrom(other.getZ());
+			activeLineCodeObj.getZinv().copyFrom(other.getZinv());
+			activeLineCodeObj.getYc().copyFrom(other.getYc());
+			activeLineCodeObj.setBaseFrequency(other.getBaseFrequency());
+			activeLineCodeObj.setR1(other.getR1());
+			activeLineCodeObj.setX1(other.getX1());
+			activeLineCodeObj.setR0(other.getR0());
+			activeLineCodeObj.setX0(other.getX0());
+			activeLineCodeObj.setC1(other.getC1());
+			activeLineCodeObj.setC0(other.getC0());
+			activeLineCodeObj.setRg(other.getRg());
+			activeLineCodeObj.setXg(other.getXg());
+			activeLineCodeObj.setRho(other.getRho());
+			activeLineCodeObj.setNeutralConductor(other.getNeutralConductor());
+			activeLineCodeObj.setNormAmps(other.getNormAmps());
+			activeLineCodeObj.setEmergAmps(other.getEmergAmps());
+			activeLineCodeObj.setFaultRate(other.getFaultRate());
+			activeLineCodeObj.setPctPerm(other.getPctPerm());
+			activeLineCodeObj.setHrsToRepair(other.getHrsToRepair());
 
 			for (int i = 0; i < activeLineCodeObj.getParentClass().getNumProperties(); i++)
-				activeLineCodeObj.setPropertyValue(i, otherLineCode.getPropertyValue(i));
-			result = 1;
+				activeLineCodeObj.setPropertyValue(i, other.getPropertyValue(i));
+
+			success = 1;
 		} else {
-			DSS.doSimpleMsg("Error in line makeLike: \"" + lineName + "\" not found.", 102);
+			DSS.doSimpleMsg("Error in line makeLike: \"" + lineName + "\" not found", 102);
 		}
 
-		return result;
+		return success;
 	}
 
 	@Override
@@ -403,19 +398,19 @@ public class LineCode extends DSSClass {
 	 * Sets the active line code.
 	 */
 	public void setCode(String value) {
-		LineCodeObj pCode;
+		LineCodeObj code;
 
 		activeLineCodeObj = null;
 
 		for (int i = 0; i < elementList.size(); i++) {
-			pCode = (LineCodeObj) elementList.get(i);
-			if (pCode.getName().equalsIgnoreCase(value)) {
-				activeLineCodeObj = pCode;
+			code = (LineCodeObj) elementList.get(i);
+			if (code.getName().equalsIgnoreCase(value)) {
+				activeLineCodeObj = code;
 				return;
 			}
 		}
 
-		DSS.doSimpleMsg("LineCode: \"" + value + "\" not found.", 103);
+		DSS.doSimpleMsg("LineCode: \"" + value + "\" not found", 103);
 	}
 
 }

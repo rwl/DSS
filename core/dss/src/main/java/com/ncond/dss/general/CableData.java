@@ -39,24 +39,24 @@ public class CableData extends ConductorData {
 
 	@Override
 	protected int classEdit(DSSObject activeObj, int paramPointer) {
+		CableDataObj elem;
 		Parser parser = Parser.getInstance();
 
-		int result = 0;
 		// continue parsing with contents of parser
 		if (paramPointer >= 0) {
-			CableDataObj cd = (CableDataObj) activeObj;
+			elem = (CableDataObj) activeObj;
 			switch (paramPointer) {
 			case 0:
-				cd.setEpsR(parser.makeDouble());
+				elem.setEpsR(parser.makeDouble());
 				break;
 			case 1:
-				cd.setInsLayer(parser.makeDouble());
+				elem.setInsLayer(parser.makeDouble());
 				break;
 			case 2:
-				cd.setDiaIns(parser.makeDouble());
+				elem.setDiaIns(parser.makeDouble());
 				break;
 			case 3:
-				cd.setDiaCable(parser.makeDouble());
+				elem.setDiaCable(parser.makeDouble());
 				break;
 			default:
 				super.classEdit(activeObj, paramPointer - numCableClassProps);
@@ -65,43 +65,36 @@ public class CableData extends ConductorData {
 			/* Check for critical errors */
 			switch (paramPointer) {
 			case 0:
-				if (cd.getEpsR() < 1.0)
-					DSS.doSimpleMsg("Error: Insulation permittivity must be greater than one for CableData " + cd.getName(), 999);
+				if (elem.getEpsR() < 1.0)
+					DSS.doSimpleMsg("Insulation permittivity must be greater than one for CableData " + elem.getName(), 999);
 				break;
 			case 1:
-				if (cd.getInsLayer() <= 0.0)
-					DSS.doSimpleMsg("Error: Insulation layer thickness must be positive for CableData " + cd.getName(), 999);
+				if (elem.getInsLayer() <= 0.0)
+					DSS.doSimpleMsg("Insulation layer thickness must be positive for CableData " + elem.getName(), 999);
 				break;
 			case 2:
-				if (cd.getDiaIns() <= 0.0)
-					DSS.doSimpleMsg("Error: Diameter over insulation layer must be positive for CableData " + cd.getName(), 999);
+				if (elem.getDiaIns() <= 0.0)
+					DSS.doSimpleMsg("Diameter over insulation layer must be positive for CableData " + elem.getName(), 999);
 				break;
 			case 3:
-				if (cd.getDiaCable() <= 0.0)
-					DSS.doSimpleMsg("Error: Diameter over cable must be positive for CableData " + cd.getName(), 999);
+				if (elem.getDiaCable() <= 0.0)
+					DSS.doSimpleMsg("Diameter over cable must be positive for CableData " + elem.getName(), 999);
 				break;
 			}
 		}
 
-		return result;
-	}
-
-	@Override
-	public int newObject(String objName) {
-		// TODO Auto-generated method stub
 		return 0;
 	}
 
 	@Override
 	protected void classMakeLike(DSSObject otherObj) {
+		CableDataObj other = (CableDataObj) otherObj;
+		CableDataObj elem = (CableDataObj) DSS.activeDSSObject;
 
-		CableDataObj otherCableData = (CableDataObj) otherObj;
-		CableDataObj cd = (CableDataObj) DSS.activeDSSObject;
-
-		cd.setEpsR(otherCableData.getEpsR());
-		cd.setInsLayer(otherCableData.getInsLayer());
-		cd.setDiaIns(otherCableData.getDiaIns());
-		cd.setDiaCable(otherCableData.getDiaCable());
+		elem.setEpsR(other.getEpsR());
+		elem.setInsLayer(other.getInsLayer());
+		elem.setDiaIns(other.getDiaIns());
+		elem.setDiaCable(other.getDiaCable());
 
 		super.classMakeLike(otherObj);
 	}
@@ -112,6 +105,12 @@ public class CableData extends ConductorData {
 
 	public int getNumCableClassProps() {
 		return numCableClassProps;
+	}
+
+	@Override
+	public int newObject(String objName) {
+		DSS.doSimpleMsg("Need to implement CableData.newObject().", -1);
+		return 0;
 	}
 
 	@Override

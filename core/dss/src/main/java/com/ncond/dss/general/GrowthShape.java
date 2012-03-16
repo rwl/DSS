@@ -1,10 +1,8 @@
 package com.ncond.dss.general;
 
 import java.io.BufferedReader;
-import java.io.DataInputStream;
-import java.io.FileInputStream;
+import java.io.FileReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 
 import com.ncond.dss.common.DSS;
 import com.ncond.dss.common.DSSClass;
@@ -86,19 +84,19 @@ public class GrowthShape extends DSSClass {
 
 		propertyHelp[0] = "Number of points to expect in subsequent vector.";
 		propertyHelp[1] = "Array of year values, or a text file spec, corresponding to the multipliers. "+
-				"Enter only those years where the growth changes. "+
-				"May be any integer sequence -- just so it is consistent. See help on Mult.";
+			"Enter only those years where the growth changes. "+
+			"May be any integer sequence -- just so it is consistent. See help on Mult.";
 		propertyHelp[2] = "Array of growth multiplier values, or a text file spec, corresponding to the year values. "+
-				"Enter the multiplier by which you would multiply the previous year's load to get the present year's."+
-				CRLF+CRLF+"Examples:"+CRLF+CRLF+
-				"  Year = [1, 2, 5]   Mult=[1.05, 1.025, 1.02]."+CRLF+
-				"  Year= (File=years.txt) Mult= (file=mults.txt)."+ CRLF+CRLF+
-				"Text files contain one value per line.";
+			"Enter the multiplier by which you would multiply the previous year's load to get the present year's."+
+			CRLF+CRLF+"Examples:"+CRLF+CRLF+
+			"  Year = [1, 2, 5]   Mult=[1.05, 1.025, 1.02]."+CRLF+
+			"  Year= (File=years.txt) Mult= (file=mults.txt)."+ CRLF+CRLF+
+			"Text files contain one value per line.";
 		propertyHelp[3] = "Switch input of growth curve data to a csv file containing (year, mult) points, one per line.";
 		propertyHelp[4] = "Switch input of growth curve data to a binary file of singles "+
-				"containing (year, mult) points, packed one after another.";
+			"containing (year, mult) points, packed one after another.";
 		propertyHelp[5] = "Switch input of growth curve data to a binary file of doubles "+
-				"containing (year, mult) points, packed one after another.";
+			"containing (year, mult) points, packed one after another.";
 
 		activeProperty = GrowthShape.NumPropsThisClass - 1;
 		super.defineProperties();  // add defs of inherited properties to bottom of list
@@ -114,17 +112,17 @@ public class GrowthShape extends DSSClass {
 	@Override
 	public int edit() {
 		double[] YrBuffer;
-		int result = 0;
 
 		// continue parsing with contents of parser
 		activeGrowthShapeObj = (GrowthShapeObj) elementList.getActive();
 		DSS.activeDSSObject = activeGrowthShapeObj;
 
-		GrowthShapeObj pShape = activeGrowthShapeObj;
+		GrowthShapeObj elem = activeGrowthShapeObj;
 
 		int paramPointer = -1;
 		String paramName = Parser.getInstance().getNextParam();
 		String param = Parser.getInstance().makeString();
+
 		while (param.length() > 0) {
 			if (paramName.length() == 0) {
 				paramPointer += 1;
@@ -133,28 +131,29 @@ public class GrowthShape extends DSSClass {
 			}
 
 			if (paramPointer >= 0 && paramPointer < numProperties)
-				pShape.setPropertyValue(paramPointer, param);
+				elem.setPropertyValue(paramPointer, param);
 
 			switch (paramPointer) {
 			case -1:
 				DSS.doSimpleMsg("Unknown parameter \"" + paramName + "\" for Object \"" + getClassName() +"."+ getClassName() + "\"", 600);
 				break;
 			case 0:
-				pShape.setNpts(Parser.getInstance().makeInteger());
+				elem.setNpts(Parser.getInstance().makeInteger());
 				break;
 			case 1:
-				pShape.setYear( Util.resizeArray(pShape.getYear(), pShape.getNpts()) );
-				YrBuffer = new double[pShape.getNpts()];
-				Util.interpretDblArray(param, pShape.getNpts(), YrBuffer);  // Parser.parseAsVector(pShape.getNpts(), Yrbuffer);
+				elem.setYear( Util.resizeArray(elem.getYear(), elem.getNpts()) );
+				YrBuffer = new double[elem.getNpts()];
+				Util.interpretDblArray(param, elem.getNpts(), YrBuffer);
 
-				for (int i = 0; i < pShape.getNpts(); i++)
-					pShape.getYear()[i] = (int) Math.round(YrBuffer[i]);
-				pShape.setBaseYear(pShape.getYear()[0]);
+				for (int i = 0; i < elem.getNpts(); i++)
+					elem.getYear()[i] = (int) Math.round(YrBuffer[i]);
+
+				elem.setBaseYear(elem.getYear()[0]);
 				YrBuffer = null;
 				break;
 			case 2:
-				pShape.setMultiplier( Util.resizeArray(pShape.getMultiplier(), pShape.getNpts()) );
-				Util.interpretDblArray(param, pShape.getNpts(), pShape.getMultiplier());   //Parser.parseAsVector(pShape.getNpts(), pShape.getMultiplier());
+				elem.setMultiplier(Util.resizeArray(elem.getMultiplier(), elem.getNpts()));
+				Util.interpretDblArray(param, elem.getNpts(), elem.getMultiplier());
 				break;
 			case 3:
 				doCSVFile(param);
@@ -175,32 +174,33 @@ public class GrowthShape extends DSSClass {
 			param = Parser.getInstance().makeString();
 		}
 
-		pShape.reCalcYearMult();
+		elem.reCalcYearMult();
 
-		return result;
+		return 0;
 	}
 
 	@Override
 	protected int makeLike(String shapeName) {
-		GrowthShapeObj pShape, otherGrowthShape;
+		GrowthShapeObj elem, other;
 
 		/* See if we can find this line code in the present collection */
-		otherGrowthShape = (GrowthShapeObj) find(shapeName);
+		other = (GrowthShapeObj) find(shapeName);
 
-		if (otherGrowthShape != null) {
-			pShape = activeGrowthShapeObj;
-			pShape.setNpts(otherGrowthShape.getNpts());
-			pShape.setMultiplier( Util.resizeArray(pShape.getMultiplier(), pShape.getNpts()) );
-			for (int i = 0; i < pShape.getNpts(); i++)
-				pShape.getMultiplier()[i] = otherGrowthShape.getMultiplier()[i];
-			pShape.setYear( Util.resizeArray(pShape.getYear(), pShape.getNpts()) );
-			for (int i = 0; i < pShape.getNpts(); i++)
-				pShape.getYear()[i] = otherGrowthShape.getYear()[i];
-			for (int i = 0; i < pShape.getParentClass().getNumProperties(); i++)
-				pShape.setPropertyValue(i, otherGrowthShape.getPropertyValue(i));
+		if (other != null) {
+			elem = activeGrowthShapeObj;
+			elem.setNpts(other.getNpts());
+			elem.setMultiplier(Util.resizeArray(elem.getMultiplier(), elem.getNpts()));
+			for (int i = 0; i < elem.getNpts(); i++)
+				elem.getMultiplier()[i] = other.getMultiplier()[i];
+			elem.setYear( Util.resizeArray(elem.getYear(), elem.getNpts()) );
+			for (int i = 0; i < elem.getNpts(); i++)
+				elem.getYear()[i] = other.getYear()[i];
+			for (int i = 0; i < elem.getParentClass().getNumProperties(); i++)
+				elem.setPropertyValue(i, other.getPropertyValue(i));
 		} else {
 			DSS.doSimpleMsg("Error in GrowthShape makeLike: \"" + shapeName + "\" not found.", 601);
 		}
+
 		return 0;
 	}
 
@@ -221,13 +221,13 @@ public class GrowthShape extends DSSClass {
 	 * Sets the active GrowthShape.
 	 */
 	public void setCode(String value) {
-		GrowthShapeObj pShape;
+		GrowthShapeObj elem;
 		activeGrowthShapeObj = null;
 
 		for (int i = 0; i < elementList.size(); i++) {
-			pShape = (GrowthShapeObj) elementList.get(i);
-			if (pShape.getName().equalsIgnoreCase(value)) {
-				activeGrowthShapeObj = pShape;
+			elem = (GrowthShapeObj) elementList.get(i);
+			if (elem.getName().equalsIgnoreCase(value)) {
+				activeGrowthShapeObj = elem;
 				return;
 			}
 		}
@@ -236,48 +236,75 @@ public class GrowthShape extends DSSClass {
 	}
 
 	private void doCSVFile(String fileName) {
-		FileInputStream fis;
-		DataInputStream dis;
+		FileReader fr;
 		BufferedReader br;
 		String s;
 		Parser parser;
 
-		try {
-			fis = new FileInputStream(fileName);
-			dis = new DataInputStream(fis);
-			br = new BufferedReader(new InputStreamReader(dis));
+		GrowthShapeObj elem = activeGrowthShapeObj;
 
-			GrowthShapeObj pShape = activeGrowthShapeObj;
+		try {
+			fr = new FileReader(fileName);
+			br = new BufferedReader(fr);
 
 			int i = 0;
-			while (((s = br.readLine()) != null) && i < pShape.getNpts()) {
+			while (((s = br.readLine()) != null) && i < elem.getNpts()) {
 				// use aux parser to allow flexible formats
 				parser = DSS.auxParser;
 				parser.setCmdString(s);
 				parser.getNextParam();
-				pShape.getYear()[i] = parser.makeInteger();
+				elem.getYear()[i] = parser.makeInteger();
 				parser.getNextParam();
-				pShape.getMultiplier()[i] = parser.makeDouble();
+				elem.getMultiplier()[i] = parser.makeDouble();
 				i += 1;
 			}
 
-			fis.close();
-			dis.close();
 			br.close();
+			fr.close();
 		} catch (IOException e) {
-			DSS.doSimpleMsg("Error processing CSV file: \"" + fileName + ". " + e.getMessage(), 604);
+			DSS.doSimpleMsg("Error processing CSV file \"" + fileName + ": " + e.getMessage(), 604);
 			return;
 		}
 	}
 
 	private void doSngFile(String fileName) {
-		// FIXME Implement this method
-		throw new UnsupportedOperationException();
+		doDblFile(fileName);
 	}
 
 	private void doDblFile(String fileName) {
-		// FIXME Implement this method
-		throw new UnsupportedOperationException();
+		FileReader fr;
+		BufferedReader br;
+		double y, m;
+		int i;
+		String s;
+		String[] parts;
+
+		GrowthShapeObj elem = activeGrowthShapeObj;
+
+		try {
+			fr = new FileReader(fileName);
+			br = new BufferedReader(fr);
+
+			i = 0;
+			while (((s = br.readLine()) != null) && i < elem.getNpts()) {
+				parts = s.split("\\s+");
+				if (parts.length == 2) {
+					DSS.doSimpleMsg("Invalid growth shape file (line " + (i+1) + "): " + s, -1);
+					break;
+				}
+				y = Double.parseDouble(parts[0]);
+				m = Double.parseDouble(parts[1]);
+				elem.getYear()[i] = (int) Math.round(y);
+				elem.getMultiplier()[i] = m;
+				i += 1;
+			}
+
+			br.close();
+			fr.close();
+		} catch (IOException e) {
+			DSS.doSimpleMsg("Error processing growth shape file \"" + fileName + ": " + e.getMessage(), 604);
+			return;
+		}
 	}
 
 }

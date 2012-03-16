@@ -68,16 +68,16 @@ public class TSLineConstants extends CableConstants {
 
 		setFrequency(f);
 
-		if (ZReduced != null) {
-			reducedSize = ZReduced.order();
+		if (Zreduced != null) {
+			reducedSize = Zreduced.order();
 		} else {
 			reducedSize = 0;
 		}
 
-		ZReduced = null;
+		Zreduced = null;
 		YcReduced = null;
 
-		ZMatrix.clear();
+		Zmatrix.clear();
 		YcMatrix.clear();
 
 		// add concentric neutrals to the end of conductor list; they are always reduced
@@ -150,7 +150,7 @@ public class TSLineConstants extends CableConstants {
 			ZMat = null;
 			ZMat = ZTemp;
 		}
-		ZMatrix.copyFrom(ZMat);
+		Zmatrix.copyFrom(ZMat);
 		ZMat = null;
 
 		// for shielded cables, build the capacitance matrix directly

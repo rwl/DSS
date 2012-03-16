@@ -77,8 +77,16 @@ public class LineSpacingObj extends DSSObject {
 		return i < nConds ? X[i] : 0.0;
 	}
 
+	public void setXCoord(int idx, double val) {
+		X[idx] = val;
+	}
+
 	public double getYCoord(int i) {
 		return i < nConds ? Y[i] : 0.0;
+	}
+
+	public void setYCoord(int idx, double val) {
+		Y[idx] = val;
 	}
 
 	@Override

@@ -115,41 +115,41 @@ public class ExecOptions {
 
 		help[0]  = "Sets the active DSS class type.  Same as Class=...";
 		help[1]  = "Sets the active DSS element by name. You can use "+
-				"the complete object spec (class.name) or just the "+
-				"name.  if full name is specifed, class becomes the active "+
-				"class, also.";
+			"the complete object spec (class.name) or just the "+
+			"name.  if full name is specifed, class becomes the active "+
+			"class, also.";
 		help[2]  = "Sets the hour used for the start time of the solution.";
 		help[3]  = "Sets the seconds from the hour for the start time of the solution.";
 		help[4]  = "Sets the Year (integer number) to be used for the solution. "+
-				"for certain solution types, this determines the growth multiplier.";
+			"for certain solution types, this determines the growth multiplier.";
 		help[5]  = "Sets the frequency for the solution of the active circuit.";
 		help[6]  = "Sets the time step size for the active circuit.  Default units are s. " +
-						"May also be specified in minutes or hours by appending \"m\" or \"h\" to the value. For example:" + CRLF + CRLF +
-						"   stepsize=.25h " + CRLF + "  stepsize=15m" + CRLF + "  stepsize=900s";
+			"May also be specified in minutes or hours by appending \"m\" or \"h\" to the value. For example:" + CRLF + CRLF +
+			"   stepsize=.25h " + CRLF + "  stepsize=15m" + CRLF + "  stepsize=900s";
 		help[7]  = "Set the solution Mode: One of"+
-				CRLF+"  Snapshot,"+
-				CRLF+"  Daily,"+
-				CRLF+"  DIrect,"+
-				CRLF+"  DUtycycle,"+
-				CRLF+"  DYnamic,"+
-				CRLF+"  Harmonic,"+
-				CRLF+"  M1 (Monte Carlo 1),"+
-				CRLF+"  M2 (Monte Carlo 2),"+
-				CRLF+"  M3 (Monte Carlo 3),"+
-				CRLF+"  Faultstudy,"+
-				CRLF+"  Yearly (follow Yearly curve),"+
-				CRLF+"  MF (monte carlo fault study)"+
-				CRLF+"  Peakday,"+
-				CRLF+"  LD1 (load-duration 1)"+
-				CRLF+"  LD2 (load-duration 2)"+
-				CRLF+"  AutoAdd (see AddType)" +CRLF +CRLF+
-				"Side effect: setting the Mode propergy resets all monitors and energy meters. It also " +
-				"resets the time step, etc. to defaults for each mode.  After the initial reset, the user " +
-				"must explicitly reset the monitors and/or meters until another Set Mode= command.";
+			CRLF+"  Snapshot,"+
+			CRLF+"  Daily,"+
+			CRLF+"  DIrect,"+
+			CRLF+"  DUtycycle,"+
+			CRLF+"  DYnamic,"+
+			CRLF+"  Harmonic,"+
+			CRLF+"  M1 (Monte Carlo 1),"+
+			CRLF+"  M2 (Monte Carlo 2),"+
+			CRLF+"  M3 (Monte Carlo 3),"+
+			CRLF+"  Faultstudy,"+
+			CRLF+"  Yearly (follow Yearly curve),"+
+			CRLF+"  MF (monte carlo fault study)"+
+			CRLF+"  Peakday,"+
+			CRLF+"  LD1 (load-duration 1)"+
+			CRLF+"  LD2 (load-duration 2)"+
+			CRLF+"  AutoAdd (see AddType)" +CRLF +CRLF+
+			"Side effect: setting the Mode propergy resets all monitors and energy meters. It also " +
+			"resets the time step, etc. to defaults for each mode.  After the initial reset, the user " +
+			"must explicitly reset the monitors and/or meters until another Set Mode= command.";
 		help[8]  = "One of [Uniform | Gaussian | Lognormal | None ] for Monte Carlo Variables.";
 		help[9] = "Number of solutions to perform for Monte Carlo or dutycycle solutions.";
 		help[10] = "Specify the solution start time as an array:"+CRLF+
-				"time=(hour, secs)";
+			"time=(hour, secs)";
 		help[11] = "Synonym for Type=. (See above)";
 		help[12] = "Synonym for Element=. (See above)";
 		help[13] = "Set the active circuit by name.";
@@ -158,12 +158,12 @@ public class ExecOptions {
 		help[16] = "Sets the maximum allowable iterations for power flow solutions. Default is 15.";
 		help[17] = "Alternate name for time step size.";
 		help[18] = "{Powerflow | Admittance} depending on the type of solution you wish to perform. "+
-				"If admittance, a non-iterative, direct solution is done with all loads and generators modeled by their "+
-				"equivalent admittance.";
+			"If admittance, a non-iterative, direct solution is done with all loads and generators modeled by their "+
+			"equivalent admittance.";
 		help[19] = "Global load multiplier for this circuit.  Does not affect loads "+
-				"designated to be \"fixed\".  All other base kW values are multiplied by this number. "+
-				"Defaults to 1.0 when the circuit is created. As with other values, it always stays "+
-				"at the last value to which it was set until changed again.";
+			"designated to be \"fixed\".  All other base kW values are multiplied by this number. "+
+			"Defaults to 1.0 when the circuit is created. As with other values, it always stays "+
+			"at the last value to which it was set until changed again.";
 		help[20] = "Minimum permissible per unit voltage for normal conditions. Default is 0.95.";
 		help[21] = "Maximum permissible per unit voltage for normal conditions. Default is 1.05.";
 		help[22] = "Minimum permissible per unit voltage for emergency (contingency) conditions. Default is 0.90.";
@@ -177,129 +177,129 @@ public class ExecOptions {
 		help[30] = "Size of capacitor, kVAR, to automatically add to system.  Default is 600.0.";
 		help[31] = "{Generator | Capacitor} Default is Generator. Type of device for AutoAdd Mode.";
 		help[32] = "{YES/TRUE | NO/FALSE}   Default is No. Flag to indicate if it is OK to have devices of same name in the same class. " +
-				"If No, then a New command is treated as an Edit command. "+
-				"If Yes, then a New command will always result in a device being added.";
+			"If No, then a New command is treated as an Edit command. "+
+			"If Yes, then a New command will always result in a device being added.";
 		help[33] = "{YES/TRUE | NO/FALSE}  Default is No. if No, then meter zones are recomputed each time there is a change in the circuit. "+
-				"If Yes, then meter zones are not recomputed unless they have not yet been computed. "+
-				"Meter zones are normally recomputed on Solve command following a circuit change.";
+			"If Yes, then meter zones are not recomputed unless they have not yet been computed. "+
+			"Meter zones are normally recomputed on Solve command following a circuit change.";
 		help[34] = "Weighting factor for UE/EEN in AutoAdd functions.  Defaults to 1.0." + CRLF + CRLF +
-				"Autoadd mode minimizes"  + CRLF + CRLF +
-				"(Lossweight * Losses + UEweight * UE). " + CRLF + CRLF +
-				"If you wish to ignore UE, set to 0. " +
-				"This applies only when there are EnergyMeter objects. " +
-				"Otherwise, AutoAdd mode minimizes total system losses.";
+			"Autoadd mode minimizes"  + CRLF + CRLF +
+			"(Lossweight * Losses + UEweight * UE). " + CRLF + CRLF +
+			"If you wish to ignore UE, set to 0. " +
+			"This applies only when there are EnergyMeter objects. " +
+			"Otherwise, AutoAdd mode minimizes total system losses.";
 		help[35] = "Weighting factor for Losses in AutoAdd functions.  Defaults to 1.0." + CRLF+CRLF+
-				"Autoadd mode minimizes"  + CRLF+CRLF+
-				"(Lossweight * Losses + UEweight * UE). " + CRLF + CRLF +
-				"If you wish to ignore Losses, set to 0. "+
-				"This applies only when there are EnergyMeter objects. " +
-				"Otherwise, AutoAdd mode minimizes total system losses.";
+			"Autoadd mode minimizes"  + CRLF+CRLF+
+			"(Lossweight * Losses + UEweight * UE). " + CRLF + CRLF +
+			"If you wish to ignore Losses, set to 0. "+
+			"This applies only when there are EnergyMeter objects. " +
+			"Otherwise, AutoAdd mode minimizes total system losses.";
 		help[36] = "Which EnergyMeter register(s) to use for UE in AutoAdd Mode. " +
-				"May be one or more registers.  if more than one, register values are summed together. " +
-				"Array of integer values > 0.  Defaults to 11 (for Load EEN). " + CRLF+CRLF+
-				"for a list of EnergyMeter register numbers, do the \"Show Meters\" command after defining a circuit.";
+			"May be one or more registers.  if more than one, register values are summed together. " +
+			"Array of integer values > 0.  Defaults to 11 (for Load EEN). " + CRLF+CRLF+
+			"for a list of EnergyMeter register numbers, do the \"Show Meters\" command after defining a circuit.";
 		help[37] = "Which EnergyMeter register(s) to use for Losses in AutoAdd Mode. " +
-				"May be one or more registers.  if more than one, register values are summed together. " +
-				"Array of integer values > 0.  Defaults to 13 (for Zone kWh Losses). " +  CRLF+CRLF+
-				"for a list of EnergyMeter register numbers, do the \"Show Meters\" command after defining a circuit.";
+			"May be one or more registers.  if more than one, register values are summed together. " +
+			"Array of integer values > 0.  Defaults to 13 (for Zone kWh Losses). " +  CRLF+CRLF+
+			"for a list of EnergyMeter register numbers, do the \"Show Meters\" command after defining a circuit.";
 		help[38] = "Define legal bus voltage bases for this circuit.  Enter an array "+
-				"of the legal voltage bases, in phase-to-phase voltages, for example:" +CRLF+CRLF+
-				"set voltagebases=\".208, .480, 12.47, 24.9, 34.5, 115.0, 230.0\" "+CRLF+CRLF+
-				"When the CalcVoltageBases command is issued, a snapshot solution is performed "+
-				"with no load injections and the bus base voltage is set to the nearest legal voltage base. "+
-				"The defaults are as shown in the example above.";
+			"of the legal voltage bases, in phase-to-phase voltages, for example:" +CRLF+CRLF+
+			"set voltagebases=\".208, .480, 12.47, 24.9, 34.5, 115.0, 230.0\" "+CRLF+CRLF+
+			"When the CalcVoltageBases command is issued, a snapshot solution is performed "+
+			"with no load injections and the bus base voltage is set to the nearest legal voltage base. "+
+			"The defaults are as shown in the example above.";
 		help[39] = "{Normal | Newton}  Solution algorithm type.  Normal is a fixed point iteration " +
-				"that is a little quicker than the Newton iteration.  Normal is adequate for most radial "+
-				"distribution circuits.  Newton is more robust for circuits that are difficult to solve.";
+			"that is a little quicker than the Newton iteration.  Normal is adequate for most radial "+
+			"distribution circuits.  Newton is more robust for circuits that are difficult to solve.";
 		help[40] = "{YES/TRUE | NO/FALSE}  Default is \"No\". Specifies whether to use trapezoidal integration for accumulating energy meter registers. " +
-				"Applies to EnergyMeter and Generator objects.  Default method simply multiplies the " +
-				"present value of the registers times the width of the interval. " +
-				"Trapezoidal is more accurate when there are sharp changes in a load shape or unequal intervals. " +
-				"Trapezoidal is automatically used for " +
-				"some load-duration curve simulations where the interval size varies considerably. " +
-				"Keep in mind that for Trapezoidal, you have to solve one more point than the number of intervals. " +
-				"That is, to do a Daily simulation on a 24-hr load shape, you would set Number=25 to force a solution " +
-				"at the first point again to establish the last (24th) interval.";
+			"Applies to EnergyMeter and Generator objects.  Default method simply multiplies the " +
+			"present value of the registers times the width of the interval. " +
+			"Trapezoidal is more accurate when there are sharp changes in a load shape or unequal intervals. " +
+			"Trapezoidal is automatically used for " +
+			"some load-duration curve simulations where the interval size varies considerably. " +
+			"Keep in mind that for Trapezoidal, you have to solve one more point than the number of intervals. " +
+			"That is, to do a Daily simulation on a 24-hr load shape, you would set Number=25 to force a solution " +
+			"at the first point again to establish the last (24th) interval.";
 		help[41] = "Array of bus names to include in AutoAdd searches. Or, you can specify a text file holding the names, one to a line, " +
-				"by using the syntax (file=filename) instead of the actual array elements. "  +
-				"Default is null, which results in the program " +
-				"using either the buses in the EnergyMeter object zones or, if no EnergyMeters, all the buses, which can " +
-				"make for lengthy solution times. " +CRLF+CRLF+
-				"Examples:"+CRLF+CRLF+
-				"Set autobuslist=(bus1, bus2, bus3, ... )" +CRLF+
-				"Set autobuslist=(file=buslist.txt)";
+			"by using the syntax (file=filename) instead of the actual array elements. "  +
+			"Default is null, which results in the program " +
+			"using either the buses in the EnergyMeter object zones or, if no EnergyMeters, all the buses, which can " +
+			"make for lengthy solution times. " +CRLF+CRLF+
+			"Examples:"+CRLF+CRLF+
+			"Set autobuslist=(bus1, bus2, bus3, ... )" +CRLF+
+			"Set autobuslist=(file=buslist.txt)";
 		help[42] = "{OFF | STATIC |EVENT | TIME}  Default is \"STATIC\".  Control mode for the solution. " +
-				"Set to OFF to prevent controls from changing." + CRLF +
-				"STATIC = Time does not advance.  Control actions are executed in order of shortest time to act " +
-				"until all actions are cleared from the control queue.  Use this mode for power flow solutions which may require several " +
-				"regulator tap changes per solution." + CRLF+CRLF+
-				"EVENT = solution is event driven.  Only the control actions nearest in time " +
-				"are executed and the time is advanced automatically to the time of the event. " + CRLF +CRLF+
-				"TIME = solution is time driven.  Control actions are executed when the time for the pending " +
-				"action is reached or surpassed." + CRLF + CRLF +
-				"Controls may reset and may choose not to act when it comes their time. " +CRLF+
-				"Use TIME mode when modeling a control externally to the DSS and a solution mode such as " +
-				"DAILY or DUTYCYCLE that advances time, or set the time (hour and sec) explicitly from the external program. ";
+			"Set to OFF to prevent controls from changing." + CRLF +
+			"STATIC = Time does not advance.  Control actions are executed in order of shortest time to act " +
+			"until all actions are cleared from the control queue.  Use this mode for power flow solutions which may require several " +
+			"regulator tap changes per solution." + CRLF+CRLF+
+			"EVENT = solution is event driven.  Only the control actions nearest in time " +
+			"are executed and the time is advanced automatically to the time of the event. " + CRLF +CRLF+
+			"TIME = solution is time driven.  Control actions are executed when the time for the pending " +
+			"action is reached or surpassed." + CRLF + CRLF +
+			"Controls may reset and may choose not to act when it comes their time. " +CRLF+
+			"Use TIME mode when modeling a control externally to the DSS and a solution mode such as " +
+			"DAILY or DUTYCYCLE that advances time, or set the time (hour and sec) explicitly from the external program. ";
 		help[43] = "{YES/TRUE | NO/FALSE}  Set to YES to trace the actions taken in the control queue.  "  +
-				"Creates a file named TRACE_CONTROLQUEUE.CSV in the default directory. " +
-				"The names of all circuit elements taking an action are logged.";
+			"Creates a file named TRACE_CONTROLQUEUE.CSV in the default directory. " +
+			"The names of all circuit elements taking an action are logged.";
 		help[44] = "Global multiplier for the kW output of every generator in the circuit. Default is 1.0. " +
-				"Applies to all but Autoadd solution modes. " +
-				"Ignored for generators designated as Status=Fixed.";
+			"Applies to all but Autoadd solution modes. " +
+			"Ignored for generators designated as Status=Fixed.";
 		help[45] = "Default daily load shape name. Default value is \"default\", which is a 24-hour curve defined when the DSS is started.";
 		help[46] = "Default yearly load shape name. Default value is \"default\", which is a 24-hour curve defined when the DSS is started.";
 		help[47] = "Sets the connected kVA allocation factors for all loads in the active circuit to the value given.";
 		help[48] = "{Multiphase | Positive}  Default = Multiphase.  Designates whether circuit model is to interpreted as a normal multi-phase "+
-				"model or a positive-sequence only model";
+			"model or a positive-sequence only model";
 		help[49] = "Sets the present price signal ($/MWh) for the circuit.  Default value is 25.";
 		help[50] = "Sets the PRICESHAPE object to use to obtain for price signal. Default is none (null string). If none, " +
-				"price signal either remains constant or is set by an external process using Set Price= option. " +
-				"Curve is defined as a PRICESHAPE in actual values (not normalized) and should be defined to correspond to " +
-				"the type of analysis being performed (daily, yearly, load-duration, etc.).";
+			"price signal either remains constant or is set by an external process using Set Price= option. " +
+			"Curve is defined as a PRICESHAPE in actual values (not normalized) and should be defined to correspond to " +
+			"the type of analysis being performed (daily, yearly, load-duration, etc.).";
 		help[51] = "Set the active terminal of the active circuit element. May also be done with Select command.";
 		help[52] = "Default = 60. Set the fundamental frequency for harmonic solution and the default base frequency for all impedance quantities. " +
-				"Side effect: also changes the value of the solution frequency. Saved as default for next circuit.";
+			"Side effect: also changes the value of the solution frequency. Saved as default for next circuit.";
 		help[53] = "{ALL | (list of harmonics) }  Default = ALL. Array of harmonics for which to perform a solution in Harmonics mode. " +
-				"If ALL, then solution is performed for all harmonics defined in spectra currently being used. " +
-				"Otherwise, specify a more limited list such as: " +CRLF+CRLF+
-				"   Set Harmonics=(1 5 7 11 13)";
+			"If ALL, then solution is performed for all harmonics defined in spectra currently being used. " +
+			"Otherwise, specify a more limited list such as: " +CRLF+CRLF+
+			"   Set Harmonics=(1 5 7 11 13)";
 		help[54] = "Max control iterations per solution.  Default is 10.";
 		help[55] = "Set Active Bus by name.  Can also be done with Select and SetkVBase commands and the \"Set Terminal=\"  option. " +
-				"The bus connected to the active terminal becomes the active bus. See Zsc and Zsc012 commands.";
+			"The bus connected to the active terminal becomes the active bus. See Zsc and Zsc012 commands.";
 		help[56] = "Set the data path for files written or read by the DSS.  Defaults to the startup path. May be Null.  Executes a CHDIR to this path if non-null. Does not require a circuit defined.";
 		help[57] = "Array of bus names to keep when performing circuit reductions. You can specify a text file holding the names, one to a line, " +
-				"by using the syntax (file=filename) instead of the actual array elements. "  +
-				"Command is cumulative (reset keeplist first). " +
-				"Reduction algorithm may keep other buses automatically. " +CRLF+CRLF+
-				"Examples:"+CRLF+CRLF+
-				"Reset Keeplist (sets all buses to FALSE (no keep))" +CRLF+
-				"Set KeepList=(bus1, bus2, bus3, ... )" +CRLF+
-				"Set KeepList=(file=buslist.txt)";
+			"by using the syntax (file=filename) instead of the actual array elements. "  +
+			"Command is cumulative (reset keeplist first). " +
+			"Reduction algorithm may keep other buses automatically. " +CRLF+CRLF+
+			"Examples:"+CRLF+CRLF+
+			"Reset Keeplist (sets all buses to FALSE (no keep))" +CRLF+
+			"Set KeepList=(bus1, bus2, bus3, ... )" +CRLF+
+			"Set KeepList=(file=buslist.txt)";
 		help[58] = "{ Default or [null] | Stubs [Zmag=nnn] | MergeParallel | BreakLoops | Switches | TapEnds [maxangle=nnn] | Ends}  Strategy for reducing feeders. " +
-				"Default is to eliminate all dangling end buses and buses without load, caps, or taps. " +  CRLF +
-				"\"Stubs [Zmag=0.02]\" merges short branches with impedance less than Zmag (default = 0.02 ohms) " + CRLF +
-				"\"MergeParallel\" merges lines that have been found to be in parallel " +CRLF+
-				"\"Breakloops\" disables one of the lines at the head of a loop. " +CRLF+
-				"\"Tapends [maxangle=15]\" eliminates all buses except those at the feeder ends, at tap points and where the feeder turns by greater than maxangle degrees. " + CRLF+
-				"\"Ends\" eliminates dangling ends only."+CRLF+
-				"\"Switches\" merges switches with downline lines and eliminates dangling switches."+CRLF+
-				"Marking buses with \"Keeplist\" will prevent their elimination.";
+			"Default is to eliminate all dangling end buses and buses without load, caps, or taps. " +  CRLF +
+			"\"Stubs [Zmag=0.02]\" merges short branches with impedance less than Zmag (default = 0.02 ohms) " + CRLF +
+			"\"MergeParallel\" merges lines that have been found to be in parallel " +CRLF+
+			"\"Breakloops\" disables one of the lines at the head of a loop. " +CRLF+
+			"\"Tapends [maxangle=15]\" eliminates all buses except those at the feeder ends, at tap points and where the feeder turns by greater than maxangle degrees. " + CRLF+
+			"\"Ends\" eliminates dangling ends only."+CRLF+
+			"\"Switches\" merges switches with downline lines and eliminates dangling switches."+CRLF+
+			"Marking buses with \"Keeplist\" will prevent their elimination.";
 		help[59] = "{YES/TRUE | NO/FALSE} Default = no. Set for keeping demand interval data for daily, yearly, etc, simulations. "+
-				"Side Effect:  Resets all meters!!!";
+			"Side Effect:  Resets all meters!!!";
 		help[60] = "Sets the Normal rating of all lines to a specified percent of the emergency rating.  Note: This action takes place immediately. "+
-				"Only the in-memory value is changed for the duration of the run.";
+			"Only the in-memory value is changed for the duration of the run.";
 		help[61] = "{YES/TRUE | NO/FALSE} Default = FALSE.  Set to Yes/True if you wish a separate demand interval (DI) file written " +
-				"for each meter.  Otherwise, only the totalizing meters are written.";
+			"for each meter.  Otherwise, only the totalizing meters are written.";
 		help[62] = "Name of case for yearly simulations with demand interval data. "+
-				"Becomes the name of the subdirectory under which all the year data are stored. "+
-				"Default = circuit name "+CRLF+CRLF+
-				"Side Effect: Sets the prefix for output files";
+			"Becomes the name of the subdirectory under which all the year data are stored. "+
+			"Default = circuit name "+CRLF+CRLF+
+			"Side Effect: Sets the prefix for output files";
 		help[63] = "Number code for node marker on circuit plots. Number from 0 to 47. Default is 16 (open circle). 24 is solid circle. Try other values for other symbols. See also Nodewidth";
 		help[64] = "Width of node marker. Default=1. See MarkerCode";
 		help[65] = "{YES/TRUE | NO/FALSE} Default = FALSE.  Significant solution events are added to the Event Log, primarily for debugging.";
 		help[66] = "{YES/TRUE | NO/FALSE} Default = FALSE. Opens DSSRecorder.DSS in DSS install folder and enables recording of all commands that come through " +
-				"the text command interface. Closed by either setting to NO/FALSE or exiting the program. " +
-				"When closed by this command, the file name can be found in the Result. Does not require a circuit defined.";
+			"the text command interface. Closed by either setting to NO/FALSE or exiting the program. " +
+			"When closed by this command, the file name can be found in the Result. Does not require a circuit defined.";
 		help[67] = "{YES/TRUE | NO/FALSE} Default = FALSE. For yearly solution mode, sets overload reporting on/off. DemandInterval must be set to true for this to have effect.";
 		help[68] = "{YES/TRUE | NO/FALSE} Default = FALSE. For yearly solution mode, sets voltage exception reporting on/off. DemandInterval must be set to true for this to have effect.";
 		help[69] = "Sets the CFactors for for all loads in the active circuit to the value given.";
@@ -310,17 +310,17 @@ public class ExecOptions {
 		help[74] = "Numeric marker code for lines with switches or are isolated from the circuit. Default is 4. See markswitches option.";
 		help[75] = "Default is 1.0. Relative size (a multiplier applied to default size) of daisy circles on daisy plot.";
 		help[76] = "{YES/TRUE | NO/FALSE}  Default is NO. Mark transformer locations with a symbol. See TransMarkerCode. " +
-				"The coordinate of one of the buses for winding 1 or 2 must be defined for the symbol to show";
+			"The coordinate of one of the buses for winding 1 or 2 must be defined for the symbol to show";
 		help[77] = "Numeric marker code for transformers. Default is 35. See markstransformers option.";
 		help[78] = "Size of transformer marker. Default is 1.";
 		help[79] = "={Daily | Yearly | Duty | None*} Default loadshape class to use for mode=time and mode=dynamic simulations. Loads and generators, etc., will follow " +
-				"this shape as time is advanced. Default value is None. That is, Load will not vary with time.";
+			"this shape as time is advanced. Default value is None. That is, Load will not vary with time.";
 		help[80] = "One of {Carson | FullCarson | Deri*}.  Default is Deri, which is" +
-				"a  fit to the Full Carson that works well into high frequencies. " +
-				"\"Carson\" is the simplified Carson method that is typically used for 50/60 Hz power flow programs. " +
-				"Applies only to Line objects that use LineGeometry objects to compute impedances.";
+			"a  fit to the Full Carson that works well into high frequencies. " +
+			"\"Carson\" is the simplified Carson method that is typically used for 50/60 Hz power flow programs. " +
+			"Applies only to Line objects that use LineGeometry objects to compute impedances.";
 		help[81] = "{YES/TRUE | NO/FALSE} Default = FALSE. When set to TRUE/YES, clears the query log file and thereafter appends " +
-				"the time-stamped Result string contents to the log file after a query command, ?. ";
+			"the time-stamped Result string contents to the log file after a query command, ?. ";
 
 		return help;
 	}
@@ -349,7 +349,7 @@ public class ExecOptions {
 
 			switch (paramPointer) {
 			case -1:
-				DSS.doSimpleMsg("Unknown parameter \"" + paramName + "\" for Set command ", 130);
+				DSS.doSimpleMsg("Unknown parameter \"" + paramName + "\" for set command ", 130);
 				break;
 			case 14:
 				DSS.defaultEditor = param;  // 'editor='
@@ -404,7 +404,7 @@ public class ExecOptions {
 
 			switch (paramPointer) {
 			case -1:
-				DSS.doSimpleMsg("Unknown parameter \"" + paramName + "\" for Set command ", 130);
+				DSS.doSimpleMsg("Unknown parameter \"" + paramName + "\" for set command ", 130);
 				break;
 			case 0:
 				DSSClassDefs.setObjectClass(param);
@@ -575,7 +575,7 @@ public class ExecOptions {
 				ckt.setPriceCurve(param);
 				ckt.setPriceCurveObj((PriceShapeObj) DSS.loadShapeClass.find(param));
 				if (ckt.getPriceCurveObj() == null)
-					DSS.doSimpleMsg("PriceShape: \"" +param+ "\" not found.", 132);
+					DSS.doSimpleMsg("PriceShape: \"" + param + "\" not found.", 132);
 				break;
 			case 51:
 				if (ckt.getActiveCktElement() != null) {
@@ -595,7 +595,7 @@ public class ExecOptions {
 				ckt.getSolution().setMaxControlIterations(parser.makeInteger());
 				break;
 			case 55:
-				ret = DSS.setActiveBus(param);  // see DSSGlobals
+				ret = DSS.setActiveBus(param);  // see DSS globals
 				break;
 			case 56:
 				DSS.setDataPath(param);  // set a legal data path

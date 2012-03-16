@@ -70,70 +70,70 @@ public class ShowOptions {
 		help[ 0] = "Shows auto added capacitors or generators. See AutoAdd solution mode.";
 		help[ 1] = "Report showing all buses and nodes currently defined.";
 		help[ 2] = "Report showing currents from most recent solution. syntax: " + CRLF +  CRLF +
-				"Show Currents  [[residual=]yes|no*] [Seq* | Elements]" + CRLF + CRLF +
-				"If \"residual\" flag is yes, the sum of currents in all conductors is reported. " +
-				"Default is to report Sequence currents; otherwise currents in all conductors are reported.";
+			"Show Currents  [[residual=]yes|no*] [Seq* | Elements]" + CRLF + CRLF +
+			"If \"residual\" flag is yes, the sum of currents in all conductors is reported. " +
+			"Default is to report Sequence currents; otherwise currents in all conductors are reported.";
 		help[ 3] = "Report on the convergence of each node voltage.";
 		help[ 4] = "Shows names of all elements in circuit or all elements of a specified class. Syntax: " +CRLF + CRLF +
-				"Show Elements [Classname] " +CRLF + CRLF +
-				"Useful for creating scripts that act on selected classes of elements. ";
+			"Show Elements [Classname] " +CRLF + CRLF +
+			"Useful for creating scripts that act on selected classes of elements. ";
 		help[ 5] = "After fault study solution, shows fault currents.";
 		help[ 6] = "Report showing buses and elements that are isolated from the main source.";
 		help[ 7] = "Report showing generator elements currently defined and the values of the energy meters " +CRLF +
-				"associated with each generator.";
+			"associated with each generator.";
 		help[ 8] = "Shows the present values of the registers in the EnergyMeter elements.";
 		help[ 9] = "Shows the contents of a selected monitor. Syntax: " + CRLF + CRLF +
-				" Show Monitor monitorname";
+			" Show Monitor monitorname";
 		help[10] = "Shows control panel. (not necessary for standalone version)";
 		help[11] = "Report on powers flowing in circuit from most recent solution. "+CRLF+
-				"Powers may be reported in kVA or MVA and in sequence quantities or in every " +
-				"conductor of each element. Syntax:" +CRLF+CRLF+
-				"Show Powers [MVA|kVA*] [Seq* | Elements]"+CRLF+CRLF+
-				"Sequence powers in kVA is the default. Examples:"+CRLF+CRLF+
-				"Show powers"+CRLF+
-				"Show power kva element" +CRLF+
-				"Show power mva elem";
+			"Powers may be reported in kVA or MVA and in sequence quantities or in every " +
+			"conductor of each element. Syntax:" +CRLF+CRLF+
+			"Show Powers [MVA|kVA*] [Seq* | Elements]"+CRLF+CRLF+
+			"Sequence powers in kVA is the default. Examples:"+CRLF+CRLF+
+			"Show powers"+CRLF+
+			"Show power kva element" +CRLF+
+			"Show power mva elem";
 		help[12] = "Reports voltages from most recent solution. Voltages are reported with respect to "+CRLF+
-				"system reference (Node 0) by default (LN option), but may also be reported Line-Line (LL option)."+CRLF+
-				"The voltages are normally reported by bus/node, but may also be reported by circuit element. Syntax:"+CRLF+CRLF+
-				"Show Voltages [LL |LN*]  [Seq* | Nodes | Elements]" +CRLF +CRLF +
-				"Show Voltages" +CRLF+
-				"Show Voltage LN Nodes"+CRLF+
-				"Show Voltages LL Nodes" +CRLF+
-				"Show Voltage LN Elem";
+			"system reference (Node 0) by default (LN option), but may also be reported Line-Line (LL option)."+CRLF+
+			"The voltages are normally reported by bus/node, but may also be reported by circuit element. Syntax:"+CRLF+CRLF+
+			"Show Voltages [LL |LN*]  [Seq* | Nodes | Elements]" +CRLF +CRLF +
+			"Show Voltages" +CRLF+
+			"Show Voltage LN Nodes"+CRLF+
+			"Show Voltages LL Nodes" +CRLF+
+			"Show Voltage LN Elem";
 		help[13] = "Shows the zone for a selected EnergyMeter element. Shows zone either in " +
-				"a text file or in a graphical tree view." +CRLF + CRLF +
-				"Show Zone  energymetername [Treeview]";
+			"a text file or in a graphical tree view." +CRLF + CRLF +
+			"Show Zone  energymetername [Treeview]";
 		help[14] = "Shows the regulator/LTC taps from the most recent solution.";
 		help[15] = "Shows overloaded power delivery elements.";
 		help[16] = "Shows loads that are \"unserved\". That is, loads for which the voltage is too low, "+
-				"or a branch on the source side is overloaded. If UEonly is specified, shows only those loads " +
-				"in which the emergency rating has been exceeded. Syntax:" +CRLF + CRLF+
-				"Show Unserved [UEonly] (unserved loads)";
+			"or a branch on the source side is overloaded. If UEonly is specified, shows only those loads " +
+			"in which the emergency rating has been exceeded. Syntax:" +CRLF + CRLF+
+			"Show Unserved [UEonly] (unserved loads)";
 		help[17] = "Shows the present event log. (Regulator tap changes, capacitor switching, etc.)";
 		help[18] = "Shows internal state variables of devices (Power conversion elements) that report them.";
 		help[19] = "Shows ratings of power delivery elements.";
 		help[20] = "Shows closed loops detected by EnergyMeter elements that are possibly unwanted. Otherwise, loops are OK.";
 		help[21] = "Reports losses in each element and in the entire circuit.";
 		help[22] = "Creates a report showing power and current flows as well as voltages around a selected bus. Syntax:" +CRLF+CRLF+
-				"Show busflow busname [MVA|kVA*] [Seq* | Elements]" +CRLF+CRLF+
-				"Show busflow busxxx kVA elem" +CRLF+
-				"Show busflow busxxx MVA seq" +CRLF+CRLF+
-				"NOTE: The Show menu will prompt you for these values.";
+			"Show busflow busname [MVA|kVA*] [Seq* | Elements]" +CRLF+CRLF+
+			"Show busflow busxxx kVA elem" +CRLF+
+			"Show busflow busxxx MVA seq" +CRLF+CRLF+
+			"NOTE: The Show menu will prompt you for these values.";
 		help[23] = "Creates two report files for the line constants (impedances) of every LINEGEOMETRY element currently defined. "+
-				"One file shows the main report with the matrices. The other file contains corresponding LINECODE " +
-				"definitions that you may use in subsequent simulations.  Syntax:" + CRLF + CRLF +
-				"Show LIneConstants [frequency] [none|mi|km|kft|m|me|ft|in|cm] [rho]" + CRLF + CRLF +
-				"Specify the frequency, length units and earth resistivity (meter-ohms). Examples:" + CRLF + CRLF +
-				"Show Lineconstants 60 kft 100" + CRLF +
-				"Show Linecon 50 km 1000";
+			"One file shows the main report with the matrices. The other file contains corresponding LINECODE " +
+			"definitions that you may use in subsequent simulations.  Syntax:" + CRLF + CRLF +
+			"Show LIneConstants [frequency] [none|mi|km|kft|m|me|ft|in|cm] [rho]" + CRLF + CRLF +
+			"Specify the frequency, length units and earth resistivity (meter-ohms). Examples:" + CRLF + CRLF +
+			"Show Lineconstants 60 kft 100" + CRLF +
+			"Show Linecon 50 km 1000";
 		help[24] = "Show the primitive admittance (y) matrix for the active element.";
 		help[25] = "Show the system Y matrix. Could be a large file!";
 		help[26] = "Shows the present contents of the control queue.";
 		help[27] = "Shows the topology as seen by the SwtControl elements.";
 		help[28] = "Shows the current mismatches at each node in amperes and percent of max currents at node.";
 		help[29] = "Creates a report of Load and Generator elements for which the base voltage does not match the Bus base voltage. " +
-				"Scripts for correcting the voltage base are suggested.";
+			"Scripts for correcting the voltage base are suggested.";
 		help[30] = "Show voltages ACROSS each 2-terminal element, phase-by-phase. ";
 		help[31] = "Show Query Log file. ";
 
@@ -271,10 +271,12 @@ public class ShowOptions {
 				if (mon != null) {
 					mon.translateToCSV(true);
 				} else {
-					DSS.doSimpleMsg("Monitor \""+param+"\" not found."+ DSS.CRLF + parser.getCmdString(), 248);
+					DSS.doSimpleMsg("Monitor \"" + param + "\" not found." +
+							DSS.CRLF + parser.getCmdString(), 248);
 				}
 			} else {
-				DSS.doSimpleMsg("Monitor name not specified." + DSS.CRLF + parser.getCmdString(), 249);
+				DSS.doSimpleMsg("Monitor name not specified." + DSS.CRLF +
+						parser.getCmdString(), 249);
 			}
 			break;
 		case 10:
@@ -317,6 +319,7 @@ public class ShowOptions {
 		case 12:
 			LLOpt = false;  // line-line voltage option
 			showOptionCode = 0;
+
 			/* Check for LL or LN option */
 			parser.getNextParam();
 			param = parser.makeString();
@@ -405,21 +408,25 @@ public class ShowOptions {
 			}
 			parser.getNextParam();
 			param = parser.makeString().toLowerCase();
+
 			if (param.length() > 0)
 				if (param.charAt(0) == 'e')
 					showOptionCode = 1;
+
 			if (showOptionCode == 1) {
 				fileName = fileName + "_elem";
 			} else {
 				fileName = fileName + "_seq";
 			}
+
 			if (MVAOpt == 1) {
 				fileName = fileName + "_MVA";
 			} else {
 				fileName = fileName + "_kVA";
 			}
 
-			ShowResults.showBusPowers(DSS.dataDirectory + DSS.circuitName_ + fileName + ".txt", busName, MVAOpt, showOptionCode);
+			ShowResults.showBusPowers(DSS.dataDirectory + DSS.circuitName_ + fileName + ".txt",
+					busName, MVAOpt, showOptionCode);
 			break;
 		case 23:  // showLineConstants  show lineConstants 60 mi
 			freq = DSS.defaultBaseFreq;  // default
@@ -434,12 +441,14 @@ public class ShowOptions {
 			parser.getNextParam();
 			if (parser.makeString().length() > 0)
 				rhoLine = parser.makeDouble();
-			ShowResults.showLineConstants(DSS.dataDirectory + DSS.circuitName_ + "LineConstants.txt", freq, units, rhoLine);
+			ShowResults.showLineConstants(DSS.dataDirectory + DSS.circuitName_ +
+						"LineConstants.txt", freq, units, rhoLine);
 			break;
 		case 24:
 			if (ckt != null) {  // Yprim
 				CktElement cktElem = ckt.getActiveCktElement();
-				ShowResults.showYPrim(DSS.dataDirectory + cktElem.getParentClass().getClassName() + '_' + cktElem.getName() + "_Yprim.txt");
+				ShowResults.showYPrim(DSS.dataDirectory + cktElem.getParentClass().getClassName() +
+						'_' + cktElem.getName() + "_Yprim.txt");
 			}
 			break;
 		case 25:  // Y

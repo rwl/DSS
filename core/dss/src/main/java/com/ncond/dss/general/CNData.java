@@ -28,6 +28,7 @@ public class CNData extends CableData {
 	protected void defineProperties() {
 		numProperties = CNData.NumPropsThisClass;
 		countProperties();   // get inherited property count
+
 		allocatePropertyArrays();
 
 		propertyName[0] = "k";
@@ -41,6 +42,7 @@ public class CNData extends CableData {
 		propertyHelp[3] = "AC resistance of a concentric neutral strand; same units as core conductor resistance; no default.";
 
 		activeProperty = CNData.NumPropsThisClass - 1;
+
 		super.defineProperties();  // add defs of inherited properties to bottom of list
 	}
 
@@ -57,12 +59,11 @@ public class CNData extends CableData {
 	public int edit() {
 		Parser parser = Parser.getInstance();
 
-		int result = 0;
 		// continue parsing with contents of parser
 		ConductorData.activeConductorDataObj = (ConductorDataObj) elementList.getActive();
 		DSS.activeDSSObject = ConductorData.activeConductorDataObj;
 
-		CNDataObj acd = (CNDataObj) ConductorData.activeConductorDataObj;
+		CNDataObj elem = (CNDataObj) ConductorData.activeConductorDataObj;
 
 		int paramPointer = -1;
 		String paramName = parser.getNextParam();
@@ -76,23 +77,24 @@ public class CNData extends CableData {
 			}
 
 			if (paramPointer >= 0 && paramPointer < numProperties)
-				acd.setPropertyValue(paramPointer, param);
+				elem.setPropertyValue(paramPointer, param);
 
 			switch (paramPointer) {
 			case -1:
-				DSS.doSimpleMsg("Unknown parameter \"" + paramName + "\" for object \"" + getClassName() +"."+ getClassName() + "\"", 101);
+				DSS.doSimpleMsg("Unknown parameter \"" + paramName + "\" for object \"" +
+						getClassName() +"."+ getClassName() + "\"", 101);
 				break;
 			case 0:
-				acd.setKStrand(parser.makeInteger());
+				elem.setKStrand(parser.makeInteger());
 				break;
 			case 1:
-				acd.setDiaStrand(parser.makeDouble());
+				elem.setDiaStrand(parser.makeDouble());
 				break;
 			case 2:
-				acd.setGmrStrand(parser.makeDouble());
+				elem.setGmrStrand(parser.makeDouble());
 				break;
 			case 3:
-				acd.setRStrand(parser.makeDouble());
+				elem.setRStrand(parser.makeDouble());
 				break;
 			default:
 				// inherited parameters
@@ -103,51 +105,54 @@ public class CNData extends CableData {
 			/* Set defaults */
 			switch (paramPointer) {
 			case 1:
-				if (acd.getGmrStrand() <= 0.0)
-					acd.setGmrStrand(0.7788 * 0.5 * acd.getDiaStrand());
+				if (elem.getGmrStrand() <= 0.0)
+					elem.setGmrStrand(0.7788 * 0.5 * elem.getDiaStrand());
 				break;
 			}
 
 			/* Check for critical errors */
 			switch (paramPointer) {
 			case 0:
-				if (acd.getKStrand() < 2)
-					DSS.doSimpleMsg("Error: Must have at least 2 concentric neutral strands for CNData " + acd.getName(), 999);
+				if (elem.getKStrand() < 2)
+					DSS.doSimpleMsg("Must have at least 2 concentric neutral strands for CNData " + elem.getName(), 999);
 				break;
 			case 1:
-				if (acd.getDiaStrand() <= 0.0)
-					DSS.doSimpleMsg("Error: Neutral strand diameter must be positive for CNData " + acd.getName(), 999);
+				if (elem.getDiaStrand() <= 0.0)
+					DSS.doSimpleMsg("Neutral strand diameter must be positive for CNData " + elem.getName(), 999);
 				break;
 			case 2:
-				if (acd.getGmrStrand() <= 0.0)
-					DSS.doSimpleMsg("Error: Neutral strand GMR must be positive for CNData " + acd.getName(), 999);
+				if (elem.getGmrStrand() <= 0.0)
+					DSS.doSimpleMsg("Neutral strand GMR must be positive for CNData " + elem.getName(), 999);
 				break;
 			}
+
 			paramName = parser.getNextParam();
 			param = parser.makeString();
 		}
-		return result;
+
+		return 0;
 	}
 
 	@Override
-	protected int makeLike(String CNName) {
-		CNDataObj acd = (CNDataObj) ConductorData.activeConductorDataObj;
+	protected int makeLike(String name) {
+		CNDataObj elem = (CNDataObj) ConductorData.activeConductorDataObj;
 
-		int result = 0;
-		CNDataObj otherData = (CNDataObj) find(CNName);
-		if (otherData != null) {
-			acd.setKStrand(otherData.getKStrand());
-			acd.setDiaStrand(otherData.getDiaStrand());
-			acd.setGmrStrand(otherData.getGmrStrand());
-			acd.setRStrand(otherData.getRStrand());
-			classMakeLike(otherData);
-			for (int i = 0; i < acd.getParentClass().getNumProperties(); i++)
-				acd.setPropertyValue(i, otherData.getPropertyValue(i));
-			result = 1;
+		int success = 0;
+		CNDataObj other = (CNDataObj) find(name);
+
+		if (other != null) {
+			elem.setKStrand(other.getKStrand());
+			elem.setDiaStrand(other.getDiaStrand());
+			elem.setGmrStrand(other.getGmrStrand());
+			elem.setRStrand(other.getRStrand());
+			classMakeLike(other);
+			for (int i = 0; i < elem.getParentClass().getNumProperties(); i++)
+				elem.setPropertyValue(i, other.getPropertyValue(i));
+			success = 1;
 		} else {
-			DSS.doSimpleMsg("Error in concentric neutral makeLike: \"" + CNName + "\" not found.", 102);
+			DSS.doSimpleMsg("Error in concentric neutral makeLike: \"" + name + "\" not found.", 102);
 		}
-		return result;
+		return success;
 	}
 
 	@Override
@@ -168,6 +173,7 @@ public class CNData extends CableData {
 	 */
 	public void setCode(String value) {
 		ConductorData.activeConductorDataObj = null;
+
 		CNDataObj pCNDataObj = (CNDataObj) elementList.getFirst();
 		while (pCNDataObj != null) {
 			if (pCNDataObj.getName().equalsIgnoreCase(value)) {
@@ -176,6 +182,7 @@ public class CNData extends CableData {
 			}
 			pCNDataObj = (CNDataObj) elementList.getNext();
 		}
+
 		DSS.doSimpleMsg("CNData: \"" + value + "\" not found.", 103);
 	}
 

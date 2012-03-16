@@ -21,10 +21,10 @@ public class CNDataObj extends CableDataObj {
 		setName(CNDataName.toLowerCase());
 		objType = parClass.getClassType();
 
-		kStrand   = 2;
+		kStrand = 2;
 		diaStrand = -1.0;
 		gmrStrand = -1.0;
-		rStrand   = -1.0;
+		rStrand = -1.0;
 
 		initPropertyValues(0);
 	}
@@ -62,6 +62,7 @@ public class CNDataObj extends CableDataObj {
 		setPropertyValue(1, "-1");
 		setPropertyValue(2, "-1");
 		setPropertyValue(3, "-1");
+
 		super.initPropertyValues(arrayOffset + CNData.NumPropsThisClass);
 	}
 

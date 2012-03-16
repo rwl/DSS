@@ -23,9 +23,9 @@ public class CableDataObj extends ConductorDataObj {
 		setName(cableDataName.toLowerCase());
 		objType = parClass.getClassType();
 
-		epsR     =  2.3;
+		epsR =  2.3;
 		insLayer = -1.0;
-		diaIns   = -1.0;
+		diaIns = -1.0;
 		diaCable = -1.0;
 	}
 
@@ -61,6 +61,7 @@ public class CableDataObj extends ConductorDataObj {
 		setPropertyValue(arrayOffset + 2, "-1");
 		setPropertyValue(arrayOffset + 3, "-1");
 		setPropertyValue(arrayOffset + 4, "-1");
+
 		super.initPropertyValues(arrayOffset + 4);
 	}
 

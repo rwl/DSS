@@ -112,11 +112,9 @@ public class Executive {
 
 	public void clear() {
 		if (DSS.numCircuits > 0) {
-			/* First get rid of all existing stuff */
 			DSS.clearAllCircuits();
 			DSSClassDefs.disposeDSSClasses();
 
-			/* Start over */
 			DSSClassDefs.createDSSClasses();
 			createDefaultDSSItems();
 			DSS.forms.setRebuildHelpForm(true);  // because class strings have changed

@@ -1,12 +1,9 @@
 package com.ncond.dss.general;
 
-import lombok.EqualsAndHashCode;
-
 import com.ncond.dss.shared.CMatrix;
 import com.ncond.dss.shared.LineUnits;
 import com.ncond.dss.shared.MathUtil;
 
-@EqualsAndHashCode(callSuper=true)
 public class CableConstants extends LineConstants {
 
 	protected double[] epsR;
@@ -30,11 +27,11 @@ public class CableConstants extends LineConstants {
 		CMatrix ZTemp;
 		int i, j;
 
-		ZTemp = ZMatrix;
+		ZTemp = Zmatrix;
 		if (frequency >= 0.0 && norder > 0 && norder < getNumConds()) {
 			while (ZTemp.order() > norder) {
-				ZReduced = ZTemp.kron(ZTemp.order());  // eliminate last row
-				ZTemp = ZReduced;
+				Zreduced = ZTemp.kron(ZTemp.order());  // eliminate last row
+				ZTemp = Zreduced;
 			}
 			// now copy part of YcMatrix to YcReduced
 			YcReduced = new CMatrix(norder);
@@ -45,41 +42,35 @@ public class CableConstants extends LineConstants {
 	}
 
 	@Override
-	public boolean conductorsInSameSpace(StringBuffer errorMessage) {
+	public boolean conductorsInSameSpace(String[] errorMessage) {
 		int i, j;
-		double Dij;
+		double dij;
 		double Ri, Rj;
 
-		boolean result = false;
+		boolean same = false;
 
 		for (i = 0; i < getNumConds(); i++)
 			if (Y[i] >= 0.0) {
-				result = true;
-				errorMessage.append(String.format("Cable %d height must be < 0. ", i));
-				return result;
+				same = true;
+				errorMessage[0] += String.format("Cable %d height must be < 0. ", i);
+				return same;
 			}
 
 		for (i = 0; i < getNumConds(); i++) {
-			if (i <= getNPhases()) {
-				Ri = radius[i];
-			} else {
-				Ri = 0.5 * diaCable[i];
-			}
+			Ri = (i < getNPhases()) ? radius[i] : 0.5 * diaCable[i];
+
 			for (j = i + 1; j < getNumConds(); j++) {
-				if (j < getNPhases()) {
-					Rj = radius[j];
-				} else {
-					Rj = 0.5 * diaCable[j];
-				}
-				Dij = Math.sqrt( MathUtil.sqr(X[i] - X[j]) + MathUtil.sqr(Y[i] - Y[j]) );
-				if (Dij < (Ri + Rj)) {
-					result = true;
-					errorMessage.append(String.format("Cable conductors %d and %d occupy the same space.", i, j));
-					return result;
+				Rj = (j < getNPhases()) ? radius[j] : 0.5 * diaCable[j];
+
+				dij = Math.sqrt(MathUtil.sqr(X[i] - X[j]) + MathUtil.sqr(Y[i] - Y[j]));
+				if (dij < (Ri + Rj)) {
+					same = true;
+					errorMessage[0] += String.format("Cable conductors %d and %d occupy the same space.", i, j);
+					return same;
 				}
 			}
 		}
-		return result;
+		return same;
 	}
 
 	public double getEpsR(int i) {

@@ -28,20 +28,10 @@ import com.ncond.dss.shared.LineUnits;
 @Getter @Setter
 public class LineGeometryObj extends DSSObject {
 
-	public class LineGeometryProblem extends Exception {
-
-		public LineGeometryProblem(String string) {
-			// TODO Auto-generated constructor stub
-		}
-
-		private static final long serialVersionUID = -181990921259563478L;
-
-	}
-
 	private ConductorChoice phaseChoice;
 	private int nConds;
 	private int nPhases;
-	private String[] condName;
+	private String[] condNames;
 	private ConductorDataObj[] conductorData;
 	private double[] X;
 	private double[] Y;
@@ -66,7 +56,7 @@ public class LineGeometryObj extends DSSObject {
 		dataChanged = true;
 
 		phaseChoice = ConductorChoice.UNKNOWN;
-		condName = null;
+		condNames = null;
 		conductorData = null;
 		X = null;
 		Y = null;
@@ -77,6 +67,7 @@ public class LineGeometryObj extends DSSObject {
 		setNConds(3);  // allocates terminals
 		nPhases = 3;
 		setActiveCond(0);
+
 		lastUnit  = LineUnits.FT;
 		normAmps  = 0.0;
 		emergAmps = 0.0;
@@ -112,55 +103,44 @@ public class LineGeometryObj extends DSSObject {
 
 	@Override
 	public String getPropertyValue(int index) {
-		String result;
+		String val;
 
 		switch (index) {
 		case 2:
-			result = String.format("%d", activeCond);
+			val = String.format("%d", activeCond);
 			break;
 		case 3:
-			result = condName[activeCond];
-			break;
 		case 12:
-			result = condName[activeCond];
-			break;
 		case 13:
-			result = condName[activeCond];
+			val = condNames[activeCond];
 			break;
 		case 4:
-			result = String.format("%-g", X[activeCond]);
+			val = String.format("%-g", X[activeCond]);
 			break;
 		case 5:
-			result = String.format("%-g", Y[activeCond]);
+			val = String.format("%-g", Y[activeCond]);
 			break;
 		case 6:
-			result = LineUnits.lineUnitsStr(units[activeCond]);
+			val = LineUnits.lineUnitsStr(units[activeCond]);
 			break;
 		case 11:
-			result = "[";
-			for (int i = 0; i < nConds; i++)
-				result = result + condName[i] + " ";
-			result = result + "]";
-			break;
 		case 14:
-			result = "[";
-			for (int i = 0; i < nConds; i++)
-				result = result + condName[i] + " ";
-			result = result + "]";
-			break;
 		case 15:
-			result = "[";
-			for (int i = 0; i < nConds; i++)
-				result = result + condName[i] + " ";
-			result = result + "]";
+			StringBuilder sb = new StringBuilder("[");
+			for (int i = 0; i < nConds; i++) {
+				sb.append(condNames[i]);
+				sb.append(" ");
+			}
+			sb.append("]");
+			val = sb.toString();
 			break;
 		default:
 			// inherited parameters
-			result = super.getPropertyValue(index);
+			val = super.getPropertyValue(index);
 			break;
 		}
 
-		return result;
+		return val;
 	}
 
 	public double getXCoord(int i) {
@@ -171,12 +151,28 @@ public class LineGeometryObj extends DSSObject {
 		return i < nConds ? Y[i] : 0.0;
 	}
 
+	public void setXcoord(int idx, double val) {
+		X[idx] = val;
+	}
+
+	public void setYcoord(int idx, double val) {
+		Y[idx] = val;
+	}
+
 	public String getConductorName(int i) {
-		return i < nConds ? condName[i] : "";
+		return i < nConds ? condNames[i] : "";
+	}
+
+	public void setConductorData(int idx, ConductorDataObj name) {
+		conductorData[idx] = name;
 	}
 
 	public ConductorDataObj getConductorData(int i) {
 		return i < nConds ? conductorData[i] : null;
+	}
+
+	public ConductorDataObj[] getConductorData() {
+		return conductorData;
 	}
 
 	public int getNConds() {
@@ -188,38 +184,41 @@ public class LineGeometryObj extends DSSObject {
 	}
 
 	public CMatrix getYcMatrix(double f, double length, LineUnits units) {
-		CMatrix result = null;
+		CMatrix Yc = null;
+
 		if (dataChanged) {
 			try {
 				updateLineGeometryData(f);
 			} catch (LineGeometryProblem e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				DSS.doSimpleMsg("Error updating line geometry data.", -1);
 			}
 		}
+
 		if (!DSS.solutionAbort)
-			result = lineData.getYcMatrix(f, length, units);
-		return result;
+			Yc = lineData.getYcMatrix(f, length, units);
+
+		return Yc;
 	}
 
 	public CMatrix getZMatrix(double f, double length, LineUnits units) {
-		CMatrix result = null;
+		CMatrix Z = null;
+
 		if (dataChanged) {
 			try {
 				updateLineGeometryData(f);
 			} catch (LineGeometryProblem e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				DSS.doSimpleMsg("Error updating line geometry data.", -1);
 			}
 		}
+
 		if (!DSS.solutionAbort)
-			result = lineData.getZMatrix(f, length, units);
-		return result;
+			Z = lineData.getZMatrix(f, length, units);
+
+		return Z;
 	}
 
 	@Override
 	public void initPropertyValues(int arrayOffset) {
-
 		setPropertyValue(0, "3");
 		setPropertyValue(1, "3");
 		setPropertyValue(2, "1");
@@ -235,43 +234,34 @@ public class LineGeometryObj extends DSSObject {
 
 	/**
 	 * Overrides standard saveWrite.
+	 *
 	 * LineGeometry structure not conducive to standard means of saving.
 	 */
 	@Override
 	public void saveWrite(PrintWriter f) {
+		int i, iProp;
+
 		/* Write only properties that were explicitly set in the
-		 * final order they were actually set.
-		 */
-		int iProp = getNextPropertySet(-1);  // works on activeDSSObject
-		if (iProp >= 0)
-			f.println();
+		 * final order they were actually set. */
+
+		iProp = getNextPropertySet(-1);  // works on activeDSSObject
+
+		if (iProp >= 0) f.println();
 
 		while (iProp >= 0) {
 			switch (parentClass.getRevPropertyIdxMap(iProp)) {
-			case 2:  // if cond=, spacing, or wires were ever used write out arrays ...
-				for (int i = 0; i < nConds; i++)
-					f.println(String.format("~ Cond=%d wire=%s X=%.7g h=%.7g units=%s",
-							i, condName[i], X[i], Y[i], LineUnits.lineUnitsStr(units[i])));
-				break;
+			case 2:
 			case 10:
-				for (int i = 0; i < nConds; i++)
-					f.println(String.format("~ Cond=%d wire=%s X=%.7g h=%.7g units=%s",
-							i, condName[i], X[i], Y[i], LineUnits.lineUnitsStr(units[i])));
-				break;
-			case 11:
-				for (int i = 0; i < nConds; i++)
-					f.println(String.format("~ Cond=%d wire=%s X=%.7g h=%.7g units=%s",
-							i, condName[i], X[i], Y[i], LineUnits.lineUnitsStr(units[i])));
+			case 11:  // if cond=, spacing, or wires were ever used write out arrays ...
+				for (i = 0; i < nConds; i++) {
+					f.printf("~ cond=%d wire=%s X=%.7g h=%.7g units=%s",
+						i, condNames[i], X[i], Y[i], LineUnits.lineUnitsStr(units[i]));
+					f.println();
+				}
 				break;
 			case 3:
-				// do nothing
-				break;
 			case 4:
-				// do nothing
-				break;
 			case 5:
-				// do nothing
-				break;
 			case 6:
 				// do nothing
 				break;
@@ -282,12 +272,13 @@ public class LineGeometryObj extends DSSObject {
 				f.println(String.format("~ emergamps=%.4g", emergAmps));
 				break;
 			case 9:
-				if (reduce)
-					f.println("~ Reduce=Yes");
+				if (reduce) f.println("~ reduce=Yes");
 				break;
 			default:
-				f.println(String.format("~ %s=%s",
-						parentClass.getPropertyName(parentClass.getRevPropertyIdxMap(iProp)), Util.checkForBlanks(propertyValue[iProp])));
+				f.printf("~ %s=%s",
+					parentClass.getPropertyName(parentClass.getRevPropertyIdxMap(iProp)),
+					Util.checkForBlanks(propertyValues[iProp]));
+				f.println();
 				break;
 			}
 			iProp = getNextPropertySet(iProp);
@@ -295,28 +286,28 @@ public class LineGeometryObj extends DSSObject {
 	}
 
 	public void setActiveCond(int value) {
-		if (value > 0)
-			if (value <= nConds) {
-				setActiveCond(value);
-				if (units[activeCond] == null)  // TODO check -1
-					units[activeCond] = lastUnit;  // makes this a sticky value so you don't have to repeat it
+		if (value >= 0 && value < nConds) {
+			activeCond = value;
+			if (units[activeCond] == null) {
+				// makes this a sticky value so you don't have to repeat it
+				units[activeCond] = lastUnit;
 			}
+		}
 	}
 
-	// FIXME Private method in OpenDSS
-	public void changeLineConstantsType(ConductorChoice newPhaseChoice) {
+	protected void changeLineConstantsType(ConductorChoice newPhaseChoice) {
 		LineConstants newLineData = null;
-		boolean needNew = false;
+		boolean needNew;
 
-		if (newPhaseChoice != phaseChoice)
-			needNew = true;
+		needNew = newPhaseChoice != phaseChoice;
+
 		if (lineData == null) {
 			needNew = true;
 		} else if (nConds != lineData.getNumConds()) {
 			needNew = true;
 		}
 
-		if (needNew)
+		if (needNew) {
 			switch (newPhaseChoice) {
 			case OVERHEAD:
 				newLineData = new OHLineConstants(getNConds());
@@ -328,6 +319,7 @@ public class LineGeometryObj extends DSSObject {
 				newLineData = new TSLineConstants(getNConds());
 				break;
 			}
+		}
 
 		if (newLineData != null) {
 			if (lineData != null) {
@@ -343,23 +335,18 @@ public class LineGeometryObj extends DSSObject {
 
 	public void setNConds(int value) {
 		nConds = value;
-		if (lineData != null)
-			lineData = null;
+		lineData = null;
 		changeLineConstantsType(phaseChoice);
-		condName = new String[nConds];
+		condNames = new String[nConds];
 
 		/* Allocations */
 		conductorData = new ConductorDataObj[nConds];
-		X        = new double[nConds];
-		Y        = new double[nConds];
-		units    = new LineUnits[nConds];
+		X = new double[nConds];
+		Y = new double[nConds];
+		units = new LineUnits[nConds];
 		for (int i = 0; i < nConds; i++)
-			units[i] = null;  // TODO default to ft
+			units[i] = LineUnits.FT;  // default to ft
 		lastUnit = LineUnits.FT;
-	}
-
-	public ConductorChoice getPhaseChoice() {
-		return phaseChoice;
 	}
 
 	public void setNPhases(int value) {
@@ -375,10 +362,11 @@ public class LineGeometryObj extends DSSObject {
 	 * Call this before using the line data.
 	 * @throws LineGeometryProblem
 	 */
-	// FIXME Private method in OpenDSS
-	public void updateLineGeometryData(double f) throws LineGeometryProblem {
+	protected void updateLineGeometryData(double f) throws LineGeometryProblem {
 		CNDataObj cnd;
 		TSDataObj tsd;
+		CNLineConstants cnlc;
+		TSLineConstants tslc;
 
 		for (int i = 0; i < nConds; i++) {
 			lineData.setX(i, units[i], X[i]);
@@ -386,9 +374,10 @@ public class LineGeometryObj extends DSSObject {
 			lineData.setRadius(i, conductorData[i].getRadiusUnits(), conductorData[i].getRadius());
 			lineData.setGMR(i, conductorData[i].getGmrUnits(), conductorData[i].getGmr60());
 			lineData.setRdc(i, conductorData[i].getResistanceUnits(), conductorData[i].getRdc());
-			lineData.setRac(i, conductorData[i].getResistanceUnits(), conductorData[i].getR60());  // Rac
+			lineData.setRac(i, conductorData[i].getResistanceUnits(), conductorData[i].getR60());
+
 			if (conductorData[i] instanceof CNDataObj) {
-				CNLineConstants cnlc = (CNLineConstants) lineData;
+				cnlc = (CNLineConstants) lineData;
 				cnd = (CNDataObj) conductorData[i];
 				cnlc.setEpsR(i, cnd.getEpsR());
 				cnlc.setInsLayer(i, cnd.getRadiusUnits(), cnd.getInsLayer());
@@ -399,7 +388,7 @@ public class LineGeometryObj extends DSSObject {
 				cnlc.setGmrStrand(i, cnd.getGmrUnits(), cnd.getGmrStrand());
 				cnlc.setRStrand(i, cnd.getResistanceUnits(), cnd.getRStrand());
 			} else if (conductorData[i] instanceof TSDataObj) {
-				TSLineConstants tslc = (TSLineConstants) lineData;
+				tslc = (TSLineConstants) lineData;
 				tsd = (TSDataObj) conductorData[i];
 				tslc.setEpsR(i, tsd.getEpsR());
 				tslc.setInsLayer(i, tsd.getRadiusUnits(), tsd.getInsLayer());
@@ -415,14 +404,13 @@ public class LineGeometryObj extends DSSObject {
 		dataChanged = false;
 
 		/* Before we calc, check for bad conductor definitions */
-		StringBuffer lineGeomErrMsg = new StringBuffer();
+		String[] lineGeomErrMsg = new String[] {""};
 		if (lineData.conductorsInSameSpace(lineGeomErrMsg)) {
 			DSS.solutionAbort = true;
-			throw new LineGeometryProblem("Error in LineGeometry." + getName() + ": " + lineGeomErrMsg.toString());
+			throw new LineGeometryProblem("Error in LineGeometry." + getName() + ": " + lineGeomErrMsg[0]);
 		} else {
 			lineData.calc(f);
-			if (reduce)
-				lineData.reduce();  // reduce out neutrals
+			if (reduce) lineData.reduce();  // reduce out neutrals
 		}
 	}
 
@@ -437,20 +425,21 @@ public class LineGeometryObj extends DSSObject {
 		nConds = spc.getNWires();  // allocates
 		setNPhases(spc.getNPhases());
 		spacingType = spc.getName();
-		if (nConds > nPhases)
-			reduce = true;
+		if (nConds > nPhases) reduce = true;
 
 		newPhaseChoice = ConductorChoice.OVERHEAD;
 		for (i = 0; i < getNConds(); i++) {
-			if (wires[i] instanceof CNDataObj)
+			if (wires[i] instanceof CNDataObj) {
 				newPhaseChoice = ConductorChoice.CONCENTRIC_NEUTRAL;
-			if (wires[i] instanceof TSDataObj)
+			}
+			if (wires[i] instanceof TSDataObj) {
 				newPhaseChoice = ConductorChoice.TAPE_SHIELD;
+			}
 		}
 		changeLineConstantsType(newPhaseChoice);
 
 		for (i = 0; i < nConds; i++)
-			condName[i] = wires[i].getName();
+			condNames[i] = wires[i].getName();
 		for (i = 0; i < nConds; i++)
 			conductorData[i] = wires[i];
 		for (i = 0; i < nConds; i++)
@@ -460,14 +449,13 @@ public class LineGeometryObj extends DSSObject {
 		for (i = 0; i < nConds; i++)
 			units[i] = spc.getUnits();
 		dataChanged = true;
-		normAmps    = wires[0].getNormAmps();
-		emergAmps   = wires[0].getEmergAmps();
+		normAmps = wires[0].getNormAmps();
+		emergAmps = wires[0].getEmergAmps();
 
 		try {
 			updateLineGeometryData(DSS.activeCircuit.getSolution().getFrequency());
 		} catch (LineGeometryProblem e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			DSS.doSimpleMsg("Error updating line geometry data.", -1);
 		}
 	}
 
@@ -475,12 +463,20 @@ public class LineGeometryObj extends DSSObject {
 		return units[i];
 	}
 
+	public void setUnit(int idx, LineUnits val) {
+		units[idx] = val;
+	}
+
 	public int getNWires() {
 		return nConds;
 	}
 
-	public ConductorDataObj[] getConductorData() {
-		return conductorData;
+	public String getCondName(int idx) {
+		return condNames[idx];
+	}
+
+	public void setCondName(int idx, String val) {
+		condNames[idx] = val;
 	}
 
 }

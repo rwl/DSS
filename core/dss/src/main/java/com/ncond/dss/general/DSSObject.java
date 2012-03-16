@@ -21,7 +21,7 @@ abstract public class DSSObject extends NamedObject {
 
 	protected int propSeqCount;
 
-	protected String[] propertyValue;
+	protected String[] propertyValues;
 
 	protected int[] prpSequence;
 
@@ -40,8 +40,9 @@ abstract public class DSSObject extends NamedObject {
 
 	public void clearPropSeqArray() {
 		propSeqCount = 0;
-		for (int i = 0; i < parentClass.getNumProperties(); i++)
+		for (int i = 0; i < parentClass.getNumProperties(); i++) {
 			prpSequence[i] = 0;
+		}
 	}
 
 	public DSSObject(DSSClass parClass) {
@@ -50,7 +51,7 @@ abstract public class DSSObject extends NamedObject {
 		objType = 0;
 		propSeqCount = 0;
 		parentClass = parClass;
-		propertyValue = new String[parentClass.getNumProperties()];
+		propertyValues = new String[parentClass.getNumProperties()];
 
 		// init'd to zero when allocated
 		prpSequence = new int[parentClass.getNumProperties()];
@@ -78,25 +79,27 @@ abstract public class DSSObject extends NamedObject {
 	 */
 	public String getPropertyValue(int index) {
 		// default behavior for all DSS objects
-		return propertyValue[index];
+		return propertyValues[index];
 	}
 
 	public void initPropertyValues(int arrayOffset) {
-		propertyValue[arrayOffset] = "";
+		propertyValues[arrayOffset] = "";
 
 		// clear propertySequence array after initialization
 		clearPropSeqArray();
 	}
 
 	public void saveWrite(PrintWriter f) {
+		DSSClass pc;
+
 		/* Write only properties that were explicitly set in the
-		 * final order they were actually set.
-		 */
+		 * final order they were actually set. */
 		int iProp = getNextPropertySet(0); // works on activeDSSObject
+
 		while (iProp >= 0) {
-			DSSClass pc = parentClass;
-			f.print(" " + pc.getPropertyName( pc.getRevPropertyIdxMap(iProp) ));
-			f.print("=" + Util.checkForBlanks( propertyValue[iProp] ));
+			pc = parentClass;
+			f.print(" " + pc.getPropertyName(pc.getRevPropertyIdxMap(iProp)));
+			f.print("=" + Util.checkForBlanks( propertyValues[iProp] ));
 			iProp = getNextPropertySet(iProp);
 		}
 	}
@@ -109,8 +112,7 @@ abstract public class DSSObject extends NamedObject {
 		int smallest = 9999999;  // some big number
 		int result = -1;
 
-		if (idx >= 0)
-			idx = prpSequence[idx];
+		if (idx >= 0) idx = prpSequence[idx];
 
 		for (int i = 0; i < parentClass.getNumProperties(); i++)
 			if (prpSequence[i] > idx + 1)  // one-based
@@ -131,7 +133,7 @@ abstract public class DSSObject extends NamedObject {
 	}
 
 	public void setPropertyValue(int index, String value) {
-		propertyValue[index] = value;
+		propertyValues[index] = value;
 
 		// keep track of the order in which this property was
 		// accessed for save command
@@ -144,7 +146,7 @@ abstract public class DSSObject extends NamedObject {
 	}
 
 	public String[] getPropertyValue() {
-		return propertyValue;
+		return propertyValues;
 	}
 
 }

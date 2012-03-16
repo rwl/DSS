@@ -451,8 +451,7 @@ public class ExecCommands {
 			paramPointer = -1;
 			paramName = parser.getNextParam();
 			param = parser.makeString();
-			if (param.length() == 0)
-				return;  // skip blank line
+			if (param.length() == 0) return;  // skip blank line
 
 			// check for command verb or property value
 			// commands do not have equal signs so paramName must be zero
@@ -535,7 +534,7 @@ public class ExecCommands {
 					DSS.cmdResult = 0;
 					DSS.setDataPath(param);  // change DSS data directory
 				} else {
-					DSS.doSimpleMsg("Directory \""+param+"\" not found.", 282);
+					DSS.doSimpleMsg("Directory \"" + param + "\" not found.", 282);
 				}
 				break;
 			case 74:
@@ -626,20 +625,20 @@ public class ExecCommands {
 			case 23:
 				DSS.cmdResult = ExecHelper.doNextCmd();
 				break;
-//			case 24:
-//				DSSForms.showControlPanel()
-//				break;
+			//case 24:
+			//	DSS.forms.showControlPanel();
+			//	break;
 			case 25:
 				DSS.cmdResult = ExecHelper.doSampleCmd();
 				break;
-//			case 26:
-//				clearAllCircuits();
-//				disposeDSSClasses();
-//				createDSSClasses();
-//				break;
-//			case 27:
-//				doAboutBox();
-//				break;
+			//case 26:
+			//	clearAllCircuits();
+			//	disposeDSSClasses();
+			//createDSSClasses();
+			//break;
+			//case 27:
+			//	doAboutBox();
+			//	break;
 			case 28:
 				DSS.cmdResult = ExecHelper.doSetVoltageBases();
 				break;
@@ -839,12 +838,12 @@ public class ExecCommands {
 				break;
 			}
 		} catch (Exception e) {
-//			DSS.doErrorMsg("ProcessCommand"+DSSGlobals.CRLF+"Exception raised while processing DSS command:"+ DSSGlobals.CRLF + Parser.getCmdString(),
-//					e.getMessage(),
-//					"Error in command string or circuit data.", 303);
+			DSS.doErrorMsg("Exception raised while processing DSS command:" +
+					DSS.CRLF + parser.getCmdString(),
+					e.getMessage(),
+					"Error in command string or circuit data.", 303);
 			e.printStackTrace();
 		}
 	}
-
 
 }
