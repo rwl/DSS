@@ -432,8 +432,8 @@ public class ExecCommands {
 		int paramPointer;
 		String paramName;
 		String param;
-		StringBuffer objName = new StringBuffer();
-		StringBuffer propName = new StringBuffer();
+		String[] objName = new String[1];
+		String[] propName = new String[1];
 		Parser parser = Parser.getInstance();
 
 		try {
@@ -540,7 +540,7 @@ public class ExecCommands {
 				ExecHelper.doADOScmd();
 				break;
 			case 87:
-				ExecHelper.doCvrtLoadshapesCmd();
+				ExecHelper.doConvertLoadShapesCmd();
 				break;
 			default:
 				if (DSS.activeCircuit == null)
@@ -559,12 +559,12 @@ public class ExecCommands {
 					DSS.cmdResult = 1;
 				} else {
 					ExecHelper.parseObjName(paramName, objName, propName);
-					if (objName.length() > 0)
-						DSS.setObject(objName.toString());  // set active element
+					if (objName[0].length() > 0)
+						DSS.setObject(objName[0].toString());  // set active element
 					if (DSS.activeDSSObject != null) {
 						// rebuild command line and pass to editor
 						// use quotes to ensure first parameter is interpreted ok after rebuild
-						parser.setCmdString(propName.toString() + "=\"" + param + "\" " + parser.getRemainder());
+						parser.setCmdString(propName[0].toString() + "=\"" + param + "\" " + parser.getRemainder());
 						DSS.activeDSSClass.edit();
 					}
 				}

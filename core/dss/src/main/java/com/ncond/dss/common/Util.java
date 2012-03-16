@@ -22,6 +22,7 @@ import com.ncond.dss.common.types.Algorithm;
 import com.ncond.dss.common.types.AutoAddType;
 import com.ncond.dss.common.types.Connection;
 import com.ncond.dss.common.types.ControlMode;
+import com.ncond.dss.common.types.Distribution;
 import com.ncond.dss.common.types.EarthModel;
 import com.ncond.dss.common.types.SolutionLoadModel;
 import com.ncond.dss.common.types.Randomization;
@@ -1905,7 +1906,7 @@ public class Util {
 	}
 
 	public static void makeDistributedGenerators(double kW, double pf,
-			String how, int skip, String fname) {
+			Distribution how, int skip, String fname) {
 		FileWriter fw;
 		PrintWriter pw;
 
@@ -1922,16 +1923,16 @@ public class Util {
 			pw.println(String.format("! distribute kW=%-.6g pf=%-.6g how=%s skip=%d file=%s", kW, pf, how, skip, fname));
 			pw.println();
 			//pw.println("set allowduplicates=yes");
-			if (how.length() == 0)
-				how = "P";
-			switch (how.toUpperCase().charAt(0)) {
-			case 'U':
+			if (how == null) how = Distribution.PROPORTIONAL;
+
+			switch (how) {
+			case UNIFORM:
 				writeUniformGenerators(pw, kW, pf);
 				break;
-			case 'R':
+			case RANDOM:
 				writeRandomGenerators(pw, kW, pf);
 				break;
-			case 'S':
+			case SKIP:
 				writeEveryOtherGenerators(pw, kW, pf, skip);
 				break;
 			default:
