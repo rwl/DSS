@@ -1092,8 +1092,8 @@ public class Util {
 			// dump executive options
 			pw.println("[execOptions]");
 			for (int i = 0; i < ExecOptions.NumExecOptions; i++)
-				pw.println((i+1) + ", \"" + ExecOptions.getInstance().getExecOption(i) +
-					"\", \"" + ExecOptions.getInstance().getOptionHelp(i) + "\"");
+				pw.println((i+1) + ", \"" + ExecOptions.execOption[i] +
+					"\", \"" + ExecOptions.optionHelp[i] + "\"");
 
 			// dump all present DSSClasses
 			for (DSSClass cls : DSS.DSSClassList) {

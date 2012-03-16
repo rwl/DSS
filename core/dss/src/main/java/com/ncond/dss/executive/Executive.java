@@ -25,8 +25,7 @@ public class Executive {
 
 		ExecCommands.commandList = new CommandList(ExecCommands.execCommand);
 
-		ExecOptions execOpts = ExecOptions.getInstance();
-		execOpts.setOptionList(execOpts.getOptionList());
+		ExecOptions.optionList = new CommandList(ExecOptions.execOption);
 
 		/* Instantiate all DSS class definitions, intrinsic and user-defined */
 		DSSClassDefs.createDSSClasses();
@@ -64,7 +63,7 @@ public class Executive {
 		DSS.clearAllCircuits();
 
 		ExecCommands.commandList = null;
-		ExecOptions.getInstance().setOptionList(null);
+		ExecOptions.optionList = null;
 		DSS.circuits = null;
 
 		Parser.getInstance();

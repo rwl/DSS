@@ -1,5 +1,6 @@
 package com.ncond.dss.executive;
 
+import com.ncond.dss.common.Circuit;
 import com.ncond.dss.common.DSS;
 import com.ncond.dss.common.ExportResults;
 import com.ncond.dss.common.Util;
@@ -13,132 +14,121 @@ public class ExportOptions {
 
 	private static final int NumExportOptions = 34;
 
-	private String[] exportOption;
-	private String[] exportHelp;
+	public static final String[] exportOption = defineOptions();
+	public static final String[] exportHelp = defineHelp();
 
-	private static CommandList exportCommands;
+	public static CommandList exportCommands = new CommandList(exportOption, true);
 
-	// private constructor prevents instantiation from other classes
-	private ExportOptions() {
-		defineOptions();
+	private ExportOptions() {}
 
-		exportCommands = new CommandList(exportOption);
-		exportCommands.setAbbrevAllowed(true);
+	private static String[] defineOptions() {
+
+		String[] options = new String[NumExportOptions];
+
+		options[ 0] = "Voltages";
+		options[ 1] = "SeqVoltages";
+		options[ 2] = "Currents";
+		options[ 3] = "SeqCurrents";
+		options[ 4] = "Estimation";
+		options[ 5] = "Capacity";
+		options[ 6] = "Overloads";
+		options[ 7] = "Unserved";
+		options[ 8] = "Powers";
+		options[ 9] = "SeqPowers";
+		options[10] = "Faultstudy";
+		options[11] = "Generators";
+		options[12] = "Loads";
+		options[13] = "Meters";
+		options[14] = "Monitors";
+		options[15] = "Yprims";
+		options[16] = "Y";
+		options[17] = "seqz";
+		options[18] = "P_byphase";
+		options[19] = "CDPSMCombined";
+		options[20] = "CDPSMFunc";
+		options[21] = "CDPSMAsset";
+		options[22] = "Buscoords";
+		options[23] = "Losses";
+		options[24] = "Guids";
+		options[25] = "Counts";
+		options[26] = "Summary";
+		options[27] = "CDPSMElec";
+		options[28] = "CDPSMGeo";
+		options[29] = "CDPSMTopo";
+		options[30] = "CDPSMStateVar";
+		options[31] = "Profile";
+		options[32] = "EventLog";
+		options[33] = "AllocationFactors";
+
+		return options;
 	}
 
-	/**
-	 * ExportOptionsHolder is loaded on the first execution of
-	 * ExportOptions.getInstance() or the first access to
-	 * ExportOptionsHolder.INSTANCE, not before.
-	 */
-	private static class ExportOptionsHolder {
-		public static final ExportOptions INSTANCE = new ExportOptions();
-	}
+	private static String[] defineHelp() {
 
-	public static ExportOptions getInstance() {
-		return ExportOptionsHolder.INSTANCE;
-	}
+		String[] help = new String[NumExportOptions];
 
-	private void defineOptions() {
-
-		exportOption = new String[NumExportOptions];
-
-		exportOption[ 0] = "Voltages";
-		exportOption[ 1] = "SeqVoltages";
-		exportOption[ 2] = "Currents";
-		exportOption[ 3] = "SeqCurrents";
-		exportOption[ 4] = "Estimation";
-		exportOption[ 5] = "Capacity";
-		exportOption[ 6] = "Overloads";
-		exportOption[ 7] = "Unserved";
-		exportOption[ 8] = "Powers";
-		exportOption[ 9] = "SeqPowers";
-		exportOption[10] = "Faultstudy";
-		exportOption[11] = "Generators";
-		exportOption[12] = "Loads";
-		exportOption[13] = "Meters";
-		exportOption[14] = "Monitors";
-		exportOption[15] = "Yprims";
-		exportOption[16] = "Y";
-		exportOption[17] = "seqz";
-		exportOption[18] = "P_byphase";
-		exportOption[19] = "CDPSMCombined";
-		exportOption[20] = "CDPSMFunc";
-		exportOption[21] = "CDPSMAsset";
-		exportOption[22] = "Buscoords";
-		exportOption[23] = "Losses";
-		exportOption[24] = "Guids";
-		exportOption[25] = "Counts";
-		exportOption[26] = "Summary";
-		exportOption[27] = "CDPSMElec";
-		exportOption[28] = "CDPSMGeo";
-		exportOption[29] = "CDPSMTopo";
-		exportOption[30] = "CDPSMStateVar";
-		exportOption[31] = "Profile";
-		exportOption[32] = "EventLog";
-		exportOption[33] = "AllocationFactors";
-
-		exportHelp[ 0] = "(Default file = EXP_VOLTAGES.CSV) Voltages to ground by bus/node.";
-		exportHelp[ 1] = "(Default file = EXP_SEQVOLTAGES.CSV) Sequence voltages.";
-		exportHelp[ 2] = "(Default file = EXP_CURRENTS.CSV) Currents in each conductor of each element.";
-		exportHelp[ 3] = "(Default file = EXP_SEQCURRENTS.CSV) Sequence currents in each terminal of 3-phase elements.";
-		exportHelp[ 4] = "(Default file = EXP_ESTIMATION.CSV) Results of last estimation.";
-		exportHelp[ 5] = "(Default file = EXP_CAPACITY.CSV) Capacity report.";
-		exportHelp[ 6] = "(Default file = EXP_OVERLOADS.CSV) Overloaded elements report.";
-		exportHelp[ 7] = "(Default file = EXP_UNSERVED.CSV) Report on elements that are served in violation of ratings.";
-		exportHelp[ 8] = "(Default file = EXP_POWERS.CSV) Powers into each terminal of each element.";
-		exportHelp[ 9] = "(Default file = EXP_SEQPOWERS.CSV) Sequence powers into each terminal of 3-phase elements.";
-		exportHelp[10] = "(Default file = EXP_FAULTS.CSV) results of a fault study.";
-		exportHelp[11] = "(Default file = EXP_GENMETERS.CSV) Present values of generator meters. Adding the switch \"/multiple\" or \"/m\" will " +
-							" cause a separate file to be written for each generator.";
-		exportHelp[12] = "(Default file = EXP_LOADS.CSV) Report on loads from most recent solution.";
-		exportHelp[13] = "(Default file = EXP_METERS.CSV) Energy meter exports. Adding the switch \"/multiple\" or \"/m\" will " +
-							" cause a separate file to be written for each meter.";
-		exportHelp[14] = "(file name is assigned by Monitor export) Monitor values.";
-		exportHelp[15] = "(Default file = EXP_YPRIMS.CSV) All primitive Y matrices.";
-		exportHelp[16] = "(Default file = EXP_Y.CSV) System Y matrix.";
-		exportHelp[17] = "(Default file = EXP_SEQZ.CSV) Equivalent sequence Z1, Z0 to each bus.";
-		exportHelp[18] = "(Default file = EXP_P_BYPHASE.CSV) Power by phase.";
-		exportHelp[19] = "(Default file = CDPSM.XML) (IEC 61968-13, CDPSM Unbalanced load flow profile)";
-		exportHelp[20] = "(Default file = CDPSM_Connect.XML) (IEC 61968-13, CDPSM Unbalanced connectivity profile)";
-		exportHelp[21] = "(Default file = CDPSM_Balanced.XML) (IEC 61968-13, CDPSM Balanced profile)";
-		exportHelp[22] = "[Default file = EXP_BUSCOORDS.CSV] Bus coordinates in csv form.";
-		exportHelp[23] = "[Default file = EXP_LOSSES.CSV] Losses for each element.";
-		exportHelp[24] = "[Default file = EXP_GUIDS.CSV] Guids for each element.";
-		exportHelp[25] = "[Default file = EXP_Counts.CSV] (instance counts for each class)";
-		exportHelp[26] = "[Default file = EXP_Summary.CSV] Solution summary.";
-		exportHelp[27] = "(Default file = CDPSM_ElectricalProperties.XML) (IEC 61968-13, CDPSM Electrical Properties profile)";
-		exportHelp[28] = "(Default file = CDPSM_Geographical.XML) (IEC 61968-13, CDPSM Geographical profile)";
-		exportHelp[29] = "(Default file = CDPSM_Topology.XML) (IEC 61968-13, CDPSM Topology profile)";
-		exportHelp[30] = "(Default file = CDPSM_StateVariables.XML) (IEC 61968-13, CDPSM State Variables profile)";
-		exportHelp[31] = "[Default file = EXP_Profile.CSV] Coordinates, color of each line section in Profile plot. Same options as Plot Profile Phases property." + DSS.CRLF + DSS.CRLF +
+		help[ 0] = "(Default file = EXP_VOLTAGES.CSV) Voltages to ground by bus/node.";
+		help[ 1] = "(Default file = EXP_SEQVOLTAGES.CSV) Sequence voltages.";
+		help[ 2] = "(Default file = EXP_CURRENTS.CSV) Currents in each conductor of each element.";
+		help[ 3] = "(Default file = EXP_SEQCURRENTS.CSV) Sequence currents in each terminal of 3-phase elements.";
+		help[ 4] = "(Default file = EXP_ESTIMATION.CSV) Results of last estimation.";
+		help[ 5] = "(Default file = EXP_CAPACITY.CSV) Capacity report.";
+		help[ 6] = "(Default file = EXP_OVERLOADS.CSV) Overloaded elements report.";
+		help[ 7] = "(Default file = EXP_UNSERVED.CSV) Report on elements that are served in violation of ratings.";
+		help[ 8] = "(Default file = EXP_POWERS.CSV) Powers into each terminal of each element.";
+		help[ 9] = "(Default file = EXP_SEQPOWERS.CSV) Sequence powers into each terminal of 3-phase elements.";
+		help[10] = "(Default file = EXP_FAULTS.CSV) results of a fault study.";
+		help[11] = "(Default file = EXP_GENMETERS.CSV) Present values of generator meters. Adding the switch \"/multiple\" or \"/m\" will " +
+			" cause a separate file to be written for each generator.";
+		help[12] = "(Default file = EXP_LOADS.CSV) Report on loads from most recent solution.";
+		help[13] = "(Default file = EXP_METERS.CSV) Energy meter exports. Adding the switch \"/multiple\" or \"/m\" will " +
+			" cause a separate file to be written for each meter.";
+		help[14] = "(file name is assigned by Monitor export) Monitor values.";
+		help[15] = "(Default file = EXP_YPRIMS.CSV) All primitive Y matrices.";
+		help[16] = "(Default file = EXP_Y.CSV) System Y matrix.";
+		help[17] = "(Default file = EXP_SEQZ.CSV) Equivalent sequence Z1, Z0 to each bus.";
+		help[18] = "(Default file = EXP_P_BYPHASE.CSV) Power by phase.";
+		help[19] = "(Default file = CDPSM.XML) (IEC 61968-13, CDPSM Unbalanced load flow profile)";
+		help[20] = "(Default file = CDPSM_Connect.XML) (IEC 61968-13, CDPSM Unbalanced connectivity profile)";
+		help[21] = "(Default file = CDPSM_Balanced.XML) (IEC 61968-13, CDPSM Balanced profile)";
+		help[22] = "[Default file = EXP_BUSCOORDS.CSV] Bus coordinates in csv form.";
+		help[23] = "[Default file = EXP_LOSSES.CSV] Losses for each element.";
+		help[24] = "[Default file = EXP_GUIDS.CSV] Guids for each element.";
+		help[25] = "[Default file = EXP_Counts.CSV] (instance counts for each class)";
+		help[26] = "[Default file = EXP_Summary.CSV] Solution summary.";
+		help[27] = "(Default file = CDPSM_ElectricalProperties.XML) (IEC 61968-13, CDPSM Electrical Properties profile)";
+		help[28] = "(Default file = CDPSM_Geographical.XML) (IEC 61968-13, CDPSM Geographical profile)";
+		help[29] = "(Default file = CDPSM_Topology.XML) (IEC 61968-13, CDPSM Topology profile)";
+		help[30] = "(Default file = CDPSM_StateVariables.XML) (IEC 61968-13, CDPSM State Variables profile)";
+		help[31] = "[Default file = EXP_Profile.CSV] Coordinates, color of each line section in Profile plot. Same options as Plot Profile Phases property." + DSS.CRLF + DSS.CRLF +
 			"Example:  Export Profile Phases=All [optional file name]";
-		exportHelp[32] = "(Default file = EXP_EVTLOG.CSV) All entries in the present event log.";
-		exportHelp[33] = "Exports load allocation factors. File name is assigned.";
+		help[32] = "(Default file = EXP_EVTLOG.CSV) All entries in the present event log.";
+		help[33] = "Exports load allocation factors. File name is assigned.";
+
+		return help;
 	}
 
-	public int doExportCmd() {
-		String parm2 = "", fileName;
-		MonitorObj pMon;
-		int phasesToPlot;
+	public static int doExportCmd() {
+		String parm1, parm2 = "", fileName;
+		MonitorObj mon;
+		int phasesToPlot, paramPointer;
 
 		Parser parser = Parser.getInstance();
-
-		int result = 0;
+		Circuit ckt = DSS.activeCircuit;
 
 		Parser.getInstance().getNextParam();
-		String parm1 = Parser.getInstance().makeString().toLowerCase();
-		int paramPointer = exportCommands.getCommand(parm1);
+		parm1 = Parser.getInstance().makeString().toLowerCase();
+		paramPointer = exportCommands.getCommand(parm1);
 
 		/* Check commands requiring a solution and abort if no solution or circuit */
 		if ((paramPointer >= 0 && paramPointer < 24) || (paramPointer >= 27 && paramPointer < 32)) {
-			if (DSS.activeCircuit == null) {
+			if (ckt == null) {
 				DSS.doSimpleMsg("No circuit created.", 24711);
-				return result;
+				return 0;
 			}
-			if ((DSS.activeCircuit.getSolution() == null) || (DSS.activeCircuit.getSolution().getNodeV() == null)) {
+			if ((ckt.getSolution() == null) || (ckt.getSolution().getNodeV() == null)) {
 				DSS.doSimpleMsg("The circuit must be solved before you can do this.", 24712);
-				return result;
+				return 0;
 			}
 		}
 
@@ -262,9 +252,9 @@ public class ExportOptions {
 		case 13: ExportResults.exportMeters(fileName); break;
 		case 14:
 			if (parm2.length() > 0) {
-				pMon = (MonitorObj) DSS.monitorClass.find(parm2);
-				if (pMon != null) {
-					pMon.translateToCSV(false);
+				mon = (MonitorObj) DSS.monitorClass.find(parm2);
+				if (mon != null) {
+					mon.translateToCSV(false);
 					fileName = DSS.globalResult;
 				} else {
 					DSS.doSimpleMsg("Monitor \""+parm2+"\" not found."+ DSS.CRLF + parser.getCmdString(), 250);
@@ -297,10 +287,9 @@ public class ExportOptions {
 
 		DSS.inShowResults = false;
 
-		if (DSS.autoShowExport)
-			Util.fireOffEditor(fileName);
+		if (DSS.autoShowExport) Util.fireOffEditor(fileName);
 
-		return result;
+		return 0;
 	}
 
 }

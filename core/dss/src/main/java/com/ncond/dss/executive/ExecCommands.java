@@ -22,6 +22,8 @@ public class ExecCommands {
 	public static String lastCmdLine;
 	public static String redirFile;
 
+	public ExecCommands() {}
+
 	private static String[] defineCommands() {
 		String[] commands = new String[NumExecCommands];
 
@@ -482,7 +484,7 @@ public class ExecCommands {
 				break;
 			case 14:
 				if (DSS.activeCircuit == null) {
-					ExecOptions.getInstance().doSetCmd_NoCircuit();  // can only call this if no circuit active
+					ExecOptions.doSetCmd_NoCircuit();  // can only call this if no circuit active
 					return;  // we exit with either a good outcome or bad
 				}
 				break;
@@ -592,10 +594,10 @@ public class ExecCommands {
 				DSS.cmdResult = ExecHelper.doSaveCmd(); // save
 				break;
 			case 7:
-				DSS.cmdResult = ShowOptions.getInstance().doShowCmd(); // show
+				DSS.cmdResult = ShowOptions.doShowCmd(); // show
 				break;
 			case 8:
-				DSS.cmdResult = ExecOptions.getInstance().doSetCmd(1); // solve
+				DSS.cmdResult = ExecOptions.doSetCmd(1); // solve
 				break;
 			case 9:
 				DSS.cmdResult = ExecHelper.doEnableCmd();
@@ -604,13 +606,13 @@ public class ExecCommands {
 				DSS.cmdResult = ExecHelper.doDisableCmd();
 				break;
 			case 11:
-				DSS.cmdResult = PlotOptions.getInstance().doPlotCmd();
+				DSS.cmdResult = PlotOptions.doPlotCmd();
 				break;
 			case 12:
 				DSS.cmdResult = ExecHelper.doResetCmd();
 				break;
 			case 14:
-				DSS.cmdResult = ExecOptions.getInstance().doSetCmd(0);  // set with no solve
+				DSS.cmdResult = ExecOptions.doSetCmd(0);  // set with no solve
 				break;
 			case 15:
 				DSS.cmdResult = ExecHelper.doPropertyDump();
@@ -649,13 +651,13 @@ public class ExecCommands {
 				DSS.activeCircuit.invalidateAllPCElements();
 				break;
 			case 31:
-				DSS.cmdResult = ExecOptions.getInstance().doGetCmd();
+				DSS.cmdResult = ExecOptions.doGetCmd();
 				break;
 			case 32:
 				DSS.activeCircuit.getSolution().setSolutionInitialized(false);
 				break;
 			case 33:
-				DSS.cmdResult = ExportOptions.getInstance().doExportCmd();
+				DSS.cmdResult = ExportOptions.doExportCmd();
 				break;
 			case 34:
 				DSS.cmdResult = ExecHelper.doFileEditCmd();

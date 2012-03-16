@@ -1,5 +1,6 @@
 package com.ncond.dss.executive;
 
+import com.ncond.dss.common.Circuit;
 import com.ncond.dss.common.DSS;
 import com.ncond.dss.common.Util;
 import com.ncond.dss.parser.Parser;
@@ -14,134 +15,116 @@ public class PlotOptions {
 
 	private static final int NumPlotOptions = 17;
 
-	private String[] plotOption;
-	private String[] plotHelp;
+	public static final String[] plotOption = defineOptions();
+	public static final String[] plotHelp = defineHelp();
 
-	private CommandList plotCommands;
+	private static CommandList plotCommands = new CommandList(plotOption, true);
 
-	// Private constructor prevents instantiation from other classes
-	private PlotOptions() {
-		defineOptions();
+	private PlotOptions() {}
 
-		plotCommands = new CommandList(plotOption);
-		plotCommands.setAbbrevAllowed(true);
+	private static String[] defineOptions() {
+
+		String[] options = new String[NumPlotOptions];
+
+		options[ 0] = "type";
+		options[ 1] = "quantity";
+		options[ 2] = "max";
+		options[ 3] = "dots";
+		options[ 4] = "labels";
+		options[ 5] = "object";
+		options[ 6] = "showloops";
+		options[ 7] = "r3";
+		options[ 8] = "r2";
+		options[ 9] = "c1";
+		options[10] = "c2";
+		options[11] = "c3";
+		options[12] = "channels";
+		options[13] = "bases";
+		options[14] = "subs";
+		options[15] = "thickness";
+		options[16] = "buslist";
+		options[17] = "min";
+		options[18] = "3phLinestyle";
+		options[19] = "1phLinestyle";
+		options[20] = "phases";
+
+		return options;
 	}
 
-	/**
-	 * PlotOptionsHolder is loaded on the first execution of
-	 * PlotOptions.getInstance() or the first access to
-	 * PlotOptionsHolder.INSTANCE, not before.
-	 */
-	private static class PlotOptionsHolder {
-		public static final PlotOptions INSTANCE = new PlotOptions();
-	}
+	private static String[] defineHelp() {
 
-	public static PlotOptions getInstance() {
-		return PlotOptionsHolder.INSTANCE;
-	}
+		String[] help = new String[NumPlotOptions];
 
-	private void defineOptions() {
+		help[ 0] = "One of {Circuit | Monitor | Daisy | Zones | AutoAdd | "+ CRLF +
+			"General (bus data) | Loadshape Tshape | Priceshape | Profile} " + CRLF +
+			"A \"Daisy\" plot is a special circuit plot that places a marker at each Generator location " +
+			"or at buses in the BusList property, if defined. " +
+			"A Zones plot shows the meter zones (see help on Object). " +
+			"Autoadd shows the autoadded generators. General plot shows quantities associated with buses " +
+			"using gradient colors between C1 and C2. Values are read from a file (see Object). " +
+			"Loadshape plots the specified loadshape. Examples:"+CRLF+CRLF+
+			"Plot type=circuit quantity=power" +CRLF+
+			"Plot Circuit Losses" +CRLF+
+			"Plot Circuit quantity=3 object=mybranchdata.csv" +CRLF+
+			"Plot daisy power max=5000 dots=N Buslist=[file=MyBusList.txt]" +CRLF+
+			"Plot General quantity=1 object=mybusdata.csv" +CRLF+
+			"Plot Loadshape object=myloadshape" +CRLF+
+			"Plot Tshape object=mytemperatureshape" +CRLF+
+			"Plot Priceshape object=mypriceshape" +CRLF+
+			"Plot Profile" +CRLF+
+			"Plot Profile Phases=Primary";
+		help[ 1] = "One of {Voltage | Current | Power | Losses | Capacity | (Value Index for General, AutoAdd, or Circuit[w/ file]) }";
+		help[ 2] = "Enter 0 or the value corresponding to max scale or line thickness in the circuit plots. "+
+			"Power and Losses in kW.";
+		help[ 3] = "Yes or No*. Places a marker on the circuit plot at the bus location. See Set Markercode under options.";
+		help[ 4] = "Yes or No*. If yes, bus labels (abbreviated) are printed on the circuit plot.";
+		help[ 5] = "Object to be plotted. One of [Meter Name (zones plot) | Monitor Name | LoadShape Name | File Name for General bus data | File Name Circuit branch data]";
+		help[ 6] = "{Yes | No*} Shows loops on Circuit plot. Requires an EnergyMeter to be defined.";
+		help[ 7] = "pu value for tri-color plot max range [default=.85 of max scale]. Corresponds to color C3.";
+		help[ 8] = "pu value for tri-color plot mid range [default=.50 of max scale]. Corresponds to color C2.";
+		help[ 9] = "RGB color number for color C1. This is the default color for circuit plots. Default is blue. See options in the Plot menu.";
+		help[10] = "RGB color number for color C2. Used for gradients and tricolor plots such as circuit voltage.";
+		help[11] = "RGB color number for color C3. Used for gradients and tricolor plots such a circuit voltage.";
+		help[12] = "Array of channel numbers for monitor plot. Example" +CRLF+CRLF+
+			"Plot Type=Monitor Object=MyMonitor Channels=[1, 3, 5]"+CRLF+CRLF+
+			"Do \"Show Monitor MyMonitor\" to see channel definitions.";
+		help[13] = "Array of base values for each channel for monitor plot. Useful for creating per unit plots. Default is 1.0 for each channel.  Set Base= property after defining channels."+CRLF+CRLF+
+			"Plot Type=Monitor Object=MyMonitor Channels=[1, 3, 5] Bases=[2400 2400 2400]"+CRLF+CRLF+
+			"Do \"Show Monitor MyMonitor\" to see channel range and definitions.";;
+		help[14] = "{Yes | No*} Displays a marker at each transformer declared to be a substation. " +
+			"At least one bus coordinate must be defined for the transformer. "+
+			"See MarkTransformer and TransMarkerCode options.";
+		help[15] = "Max thickness allowed for lines in circuit plots (default=7).";
+		help[16] = "{Array of Bus Names | File=filename } This is for the Daisy plot. "+CRLF+CRLF+
+			"Plot daisy power max=5000 dots=N Buslist=[file=MyBusList.txt]" +CRLF+CRLF+
+			"A \"daisy\" marker is plotted for " +
+			"each bus in the list. Bus name may be repeated, which results in multiple markers distributed around the bus location. " +
+			"This gives the appearance of a daisy if there are several symbols at a bus. Not needed for plotting active generators.";
+		help[17] = "Enter 0 (the default value) or the value corresponding to min value corresponding to color C1 in General bus data plots.";
+		help[18] = "Line style for drawing 3-phase lines. A number in the range of [1..7].Default is 1 (solid). Use 3 for dotted; 2 for dashed.";
+		help[19] = "Line style for drawing 1-phase lines. A number in the range of [1..7].Default is 1 (solid). Use 3 for dotted; 2 for dashed.";
+		help[20] = "{default* | ALL | PRIMARY | LL3ph | LLALL | LLPRIMARY | (phase number)} For Profile plot. Specify which phases you want plotted." + CRLF+CRLF+
+			"default = plot only nodes 1-3 at 3-phase buses (default)" +CRLF+
+			"ALL = plot all nodes" +CRLF+
+			"PRIMARY = plot all nodes -- primary only (voltage > 1kV)" +CRLF+
+			"LL3ph = 3-ph buses only -- L-L voltages)" +CRLF+
+			"LLALL = plot all nodes -- L-L voltages)" +CRLF+
+			"LLPRIMARY = plot all nodes -- L-L voltages primary only)" +CRLF+
+			"(phase number) = plot all nodes on selected phase"+CRLF+CRLF+
+			"Note: Only nodes downline from an energy meter are plotted.";
 
-		plotOption = new String[NumPlotOptions];
-
-		plotOption[ 0] = "type";
-		plotOption[ 1] = "quantity";
-		plotOption[ 2] = "max";
-		plotOption[ 3] = "dots";
-		plotOption[ 4] = "labels";
-		plotOption[ 5] = "object";
-		plotOption[ 6] = "showloops";
-		plotOption[ 7] = "r3";
-		plotOption[ 8] = "r2";
-		plotOption[ 9] = "c1";
-		plotOption[10] = "c2";
-		plotOption[11] = "c3";
-		plotOption[12] = "channels";
-		plotOption[13] = "bases";
-		plotOption[14] = "subs";
-		plotOption[15] = "thickness";
-		plotOption[16] = "buslist";
-		plotOption[17] = "min";
-		plotOption[18] = "3phLinestyle";
-		plotOption[19] = "1phLinestyle";
-		plotOption[20] = "phases";
-
-
-		plotHelp = new String[NumPlotOptions];
-
-		plotHelp[ 0] = "One of {Circuit | Monitor | Daisy | Zones | AutoAdd | "+ CRLF +
-				"General (bus data) | Loadshape Tshape | Priceshape | Profile} " + CRLF +
-				"A \"Daisy\" plot is a special circuit plot that places a marker at each Generator location " +
-				"or at buses in the BusList property, if defined. " +
-				"A Zones plot shows the meter zones (see help on Object). " +
-				"Autoadd shows the autoadded generators. General plot shows quantities associated with buses " +
-				"using gradient colors between C1 and C2. Values are read from a file (see Object). " +
-				"Loadshape plots the specified loadshape. Examples:"+CRLF+CRLF+
-				"Plot type=circuit quantity=power" +CRLF+
-				"Plot Circuit Losses" +CRLF+
-				"Plot Circuit quantity=3 object=mybranchdata.csv" +CRLF+
-				"Plot daisy power max=5000 dots=N Buslist=[file=MyBusList.txt]" +CRLF+
-				"Plot General quantity=1 object=mybusdata.csv" +CRLF+
-				"Plot Loadshape object=myloadshape" +CRLF+
-				"Plot Tshape object=mytemperatureshape" +CRLF+
-				"Plot Priceshape object=mypriceshape" +CRLF+
-				"Plot Profile" +CRLF+
-				"Plot Profile Phases=Primary";
-		plotHelp[ 1] = "One of {Voltage | Current | Power | Losses | Capacity | (Value Index for General, AutoAdd, or Circuit[w/ file]) }";
-		plotHelp[ 2] = "Enter 0 or the value corresponding to max scale or line thickness in the circuit plots. "+
-				"Power and Losses in kW.";
-		plotHelp[ 3] = "Yes or No*. Places a marker on the circuit plot at the bus location. See Set Markercode under options.";
-		plotHelp[ 4] = "Yes or No*. If yes, bus labels (abbreviated) are printed on the circuit plot.";
-		plotHelp[ 5] = "Object to be plotted. One of [Meter Name (zones plot) | Monitor Name | LoadShape Name | File Name for General bus data | File Name Circuit branch data]";
-		plotHelp[ 6] = "{Yes | No*} Shows loops on Circuit plot. Requires an EnergyMeter to be defined.";
-		plotHelp[ 7] = "pu value for tri-color plot max range [default=.85 of max scale]. Corresponds to color C3.";
-		plotHelp[ 8] = "pu value for tri-color plot mid range [default=.50 of max scale]. Corresponds to color C2.";
-		plotHelp[ 9] = "RGB color number for color C1. This is the default color for circuit plots. Default is blue. See options in the Plot menu.";
-		plotHelp[10] = "RGB color number for color C2. Used for gradients and tricolor plots such as circuit voltage.";
-		plotHelp[11] = "RGB color number for color C3. Used for gradients and tricolor plots such a circuit voltage.";
-		plotHelp[12] = "Array of channel numbers for monitor plot. Example" +CRLF+CRLF+
-				"Plot Type=Monitor Object=MyMonitor Channels=[1, 3, 5]"+CRLF+CRLF+
-				"Do \"Show Monitor MyMonitor\" to see channel definitions.";
-		plotHelp[13] = "Array of base values for each channel for monitor plot. Useful for creating per unit plots. Default is 1.0 for each channel.  Set Base= property after defining channels."+CRLF+CRLF+
-				"Plot Type=Monitor Object=MyMonitor Channels=[1, 3, 5] Bases=[2400 2400 2400]"+CRLF+CRLF+
-				"Do \"Show Monitor MyMonitor\" to see channel range and definitions.";;
-		plotHelp[14] = "{Yes | No*} Displays a marker at each transformer declared to be a substation. " +
-				"At least one bus coordinate must be defined for the transformer. "+
-				"See MarkTransformer and TransMarkerCode options.";
-		plotHelp[15] = "Max thickness allowed for lines in circuit plots (default=7).";
-		plotHelp[16] = "{Array of Bus Names | File=filename } This is for the Daisy plot. "+CRLF+CRLF+
-				"Plot daisy power max=5000 dots=N Buslist=[file=MyBusList.txt]" +CRLF+CRLF+
-				"A \"daisy\" marker is plotted for " +
-				"each bus in the list. Bus name may be repeated, which results in multiple markers distributed around the bus location. " +
-				"This gives the appearance of a daisy if there are several symbols at a bus. Not needed for plotting active generators.";
-		plotHelp[17] = "Enter 0 (the default value) or the value corresponding to min value corresponding to color C1 in General bus data plots.";
-		plotHelp[18] = "Line style for drawing 3-phase lines. A number in the range of [1..7].Default is 1 (solid). Use 3 for dotted; 2 for dashed.";
-		plotHelp[19] = "Line style for drawing 1-phase lines. A number in the range of [1..7].Default is 1 (solid). Use 3 for dotted; 2 for dashed.";
-		plotHelp[20] = "{default* | ALL | PRIMARY | LL3ph | LLALL | LLPRIMARY | (phase number)} For Profile plot. Specify which phases you want plotted." + CRLF+CRLF+
-				"default = plot only nodes 1-3 at 3-phase buses (default)" +CRLF+
-				"ALL = plot all nodes" +CRLF+
-				"PRIMARY = plot all nodes -- primary only (voltage > 1kV)" +CRLF+
-				"LL3ph = 3-ph buses only -- L-L voltages)" +CRLF+
-				"LLALL = plot all nodes -- L-L voltages)" +CRLF+
-				"LLPRIMARY = plot all nodes -- L-L voltages primary only)" +CRLF+
-				"(phase number) = plot all nodes on selected phase"+CRLF+CRLF+
-				"Note: Only nodes downline from an energy meter are plotted.";
+		return help;
 	}
 
 	/** Produce a plot with the DSSGraphX object. */
-	public int doPlotCmd() {
-
+	public static int doPlotCmd() {
 		Parser parser = Parser.getInstance();
+		Circuit ckt = DSS.activeCircuit;
 
 		double[] dblBuffer = new double[50];
 		int numChannels;
 
-		int result = 0;
-
-		if (DSS.noFormsAllowed) {
-			result =1;
-			return result;
-		}
+		if (DSS.noFormsAllowed) return 1;
 
 		if (DSSPlot.getDSSPlotObj() == null)
 			DSSPlot.setDSSPlotObj(new DSSPlot());
@@ -154,7 +137,7 @@ public class PlotOptions {
 		String param = parser.makeString().toUpperCase();
 
 		while (param.length() > 0) {
-			/* Interpret Parameter */
+			/* Interpret parameter */
 			if (paramName.length() == 0) {
 				paramPointer += 1;
 			} else {
@@ -173,13 +156,13 @@ public class PlotOptions {
 				case 'P':
 				case 'Z':
 					if (Util.compareTextShortest("pri", param) != 0) {  // allow price shape
-						if (DSS.activeCircuit == null) {
+						if (ckt == null) {
 							DSS.doSimpleMsg("No circuit created.", 24731);
-							return result;
+							return 0;
 						}
-						if ((DSS.activeCircuit.getSolution() == null) || (DSS.activeCircuit.getSolution().getNodeV() == null)) {
+						if ((ckt.getSolution() == null) || (ckt.getSolution().getNodeV() == null)) {
 							DSS.doSimpleMsg("The circuit must be solved before you can do this.", 24732);
-							return result;
+							return 0;
 						}
 					}
 				}
@@ -342,12 +325,12 @@ public class PlotOptions {
 			param = parser.makeString().toUpperCase();
 		}
 
-		if (DSS.activeCircuit.isSolved())
+		if (ckt.isSolved())
 			DSSPlot.getDSSPlotObj().setQuantity(PlotQuantity.NONE);
 
 		DSSPlot.getDSSPlotObj().execute();  // makes a new plot based on these options
 
-		return result;
+		return 0;
 	}
 
 }
