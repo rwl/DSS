@@ -8,6 +8,7 @@ import com.ncond.dss.common.CktElement;
 import com.ncond.dss.delivery.LineObj;
 import com.ncond.dss.delivery.TransformerObj;
 
+@SuppressWarnings("unused")
 public class DSSPlot {
 
 	public static final int vizCURRENT = 1;
@@ -20,24 +21,6 @@ public class DSSPlot {
 	private static int addMarkerCode, addMarkerSize;
 	private static int singlePhLineStyle;
 	private static int threePhLineStyle;
-
-	public enum PlotType {
-		AUTO_ADD_LOG_PLOT,
-		CIRCUIT_PLOT,
-		GENERAL_DATA_PLOT,
-		GENERAL_CIRCUIT_PLOT,
-		MONITOR_PLOT,
-		DAISY_PLOT,
-		METER_ZONES,
-		LOAD_SHAPE,
-		TSHAPE,
-		PRICE_SHAPE,
-		PROFILE
-	}
-
-	public enum PlotQuantity {
-		VOLTAGE, CURRENT, POWER, LOSSES, CAPACITY, NONE
-	}
 
 	private int activeColorIdx;
 	private int[] colorArray = new int[17];

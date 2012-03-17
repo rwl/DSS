@@ -8,7 +8,7 @@ import com.ncond.dss.common.DSS;
 @Getter @Setter
 public class Parser {
 
-	private static final char CommentChar = '!';
+	private static final char COMMENT_CHAR = '!';
 
 	private String cmdString;
 	private int position;
@@ -28,14 +28,14 @@ public class Parser {
 	private Parser() {
 		super();
 
-		delimChars          = ",=";
-		whiteSpaceChars     = " " + "\t";  // blank + tab
-		beginQuoteChars     = "(\"'[{";
-		endQuoteChars       = ")\"']}";
-		position            = 0;
+		delimChars = ",=";
+		whiteSpaceChars = " " + "\t";  // blank + tab
+		beginQuoteChars = "(\"'[{";
+		endQuoteChars = ")\"']}";
+		position = 0;
 		matrixRowTerminator = '|';
-		autoIncrement       = false;
-		RPNCalculator       = new RPNCalc();
+		autoIncrement = false;
+		RPNCalculator = new RPNCalc();
 	}
 
 	private static class ParserHolder {
@@ -56,72 +56,72 @@ public class Parser {
 
 	private int processRPNCommand(String tokenBuffer, RPNCalc rpn) throws ParserProblem {
 		double number = 0;
-		int result = 0;  // error code on conversion error
+		int errorCode = 0;  // error code on conversion error
 
 		/* First try to make a valid number. If that fails, check for RPN command */
 		try {
-			number = Double.valueOf(tokenBuffer);
-			result = 1;
+			number = Double.parseDouble(tokenBuffer);
+			errorCode = 1;
 		} catch (NumberFormatException e) {
-			result = 0;
+			errorCode = 0;
 		}
 
-		if (result == 0) {
+		if (errorCode == 0) {
 			rpn.setX(number);  // enters number in X register
 		} else {  /* Check for RPN command. */
-			result = 0; // reset error return
-			String S = tokenBuffer.toLowerCase();
+			errorCode = 0; // reset error return
+			String s = tokenBuffer.toLowerCase();
 
-			if (S.equalsIgnoreCase("+")) {
+			if (s.equalsIgnoreCase("+")) {
 				rpn.add();
-			} else if (S.equalsIgnoreCase("-")) {
+			} else if (s.equalsIgnoreCase("-")) {
 				rpn.subtract();
-			} else if (S.equalsIgnoreCase("*")) {
+			} else if (s.equalsIgnoreCase("*")) {
 				rpn.multiply();
-			} else if (S.equalsIgnoreCase("/")) {
+			} else if (s.equalsIgnoreCase("/")) {
 				rpn.divide();
-			} else if (S.equalsIgnoreCase("sqrt")) {
+			} else if (s.equalsIgnoreCase("sqrt")) {
 				rpn.sqrt();
-			} else if (S.equalsIgnoreCase("sqr")) {
+			} else if (s.equalsIgnoreCase("sqr")) {
 				rpn.square();
-			} else if (S.equalsIgnoreCase("^")) {
+			} else if (s.equalsIgnoreCase("^")) {
 				rpn.yToTheXPower();
-			} else if (S.equalsIgnoreCase("sin")) {
+			} else if (s.equalsIgnoreCase("sin")) {
 				rpn.sinDeg();
-			} else if (S.equalsIgnoreCase("cos")) {
+			} else if (s.equalsIgnoreCase("cos")) {
 				rpn.cosDeg();
-			} else if (S.equalsIgnoreCase("tan")) {
+			} else if (s.equalsIgnoreCase("tan")) {
 				rpn.tanDeg();
-			} else if (S.equalsIgnoreCase("asin")) {
+			} else if (s.equalsIgnoreCase("asin")) {
 				rpn.aSinDeg();
-			} else if (S.equalsIgnoreCase("acos")) {
+			} else if (s.equalsIgnoreCase("acos")) {
 				rpn.aCosDeg();
-			} else if (S.equalsIgnoreCase("atan")) {
+			} else if (s.equalsIgnoreCase("atan")) {
 				rpn.aTanDeg();
-			} else if (S.equalsIgnoreCase("atan2")) {
+			} else if (s.equalsIgnoreCase("atan2")) {
 				rpn.aTan2Deg();
-			} else if (S.equalsIgnoreCase("swap")) {
+			} else if (s.equalsIgnoreCase("swap")) {
 				rpn.swapXY();
-			} else if (S.equalsIgnoreCase("rollup")) {
+			} else if (s.equalsIgnoreCase("rollup")) {
 				rpn.rollUp();
-			} else if (S.equalsIgnoreCase("rolldn")) {
+			} else if (s.equalsIgnoreCase("rolldn")) {
 				rpn.rollDn();
-			} else if (S.equalsIgnoreCase("ln")) {
+			} else if (s.equalsIgnoreCase("ln")) {
 				rpn.natLog();
-			} else if (S.equalsIgnoreCase("pi")) {
+			} else if (s.equalsIgnoreCase("pi")) {
 				rpn.enterPi();
-			} else if (S.equalsIgnoreCase("log10")) {
+			} else if (s.equalsIgnoreCase("log10")) {
 				rpn.tenLog();
-			} else if (S.equalsIgnoreCase("exp")) {
+			} else if (s.equalsIgnoreCase("exp")) {
 				rpn.eToTheX();
-			} else if (S.equalsIgnoreCase("inv")) {
+			} else if (s.equalsIgnoreCase("inv")) {
 				rpn.inv();
 			} else {
-				result = 1;  // error
-				throw new ParserProblem("Invalid inline math entry: \""+tokenBuffer+"\"");
+				errorCode = 1;  // error
+				throw new ParserProblem("Invalid inline math entry: \"" + tokenBuffer + "\"");
 			}
 		}
-		return result;
+		return errorCode;
 	}
 
 	public void setCmdString(final String value) {
@@ -129,7 +129,7 @@ public class Parser {
 
 		cmdString = value + " ";  // add some white space at end to get last param
 
-		mPosition = new int[] {0};
+		mPosition = new int[1];
 		skipWhiteSpace(cmdString, mPosition);  // position at first non whitespace character
 		position = mPosition[0];  // passed by reference
 	}
@@ -138,11 +138,11 @@ public class Parser {
 	 * Resets delimiters to default.
 	 */
 	public void resetDelims() {
-		delimChars          = ",=";
-		whiteSpaceChars     = " " + "\t";  // blank + tab
+		delimChars = ",=";
+		whiteSpaceChars = " " + "\t";  // blank + tab
 		matrixRowTerminator = '|';
-		beginQuoteChars     = "(\"'[{";
-		endQuoteChars       = ")\"']}";
+		beginQuoteChars = "(\"'[{";
+		endQuoteChars = ")\"']}";
 	}
 
 	private boolean isWhiteSpace(char ch) {
@@ -155,32 +155,32 @@ public class Parser {
 	private boolean isDelimiter(final String lineBuffer, int[] linePos) {
 		int i;
 		char ch;
-		boolean result = false;
+		boolean isdelim = false;
 
 		if (isCommentChar(lineBuffer, linePos)) {
-			result = true;
-			lastDelimiter = CommentChar;
-			return result;
+			isdelim = true;
+			lastDelimiter = COMMENT_CHAR;
+			return isdelim;
 		}
 
 		ch = lineBuffer.charAt(linePos[0]);
 
 		for (i = 0; i < delimChars.length(); i++) {
 			if (ch == delimChars.charAt(i)) {
-				result = true;
+				isdelim = true;
 				lastDelimiter = ch;
-				return result;
+				return isdelim;
 			}
 		}
 
 		for (i = 0; i < whiteSpaceChars.length(); i++) {
 			if (ch == whiteSpaceChars.charAt(i)) {
-				result = true;
+				isdelim = true;
 				lastDelimiter = ' ';  // to indicate stopped on white space
-				return result;
+				return isdelim;
 			}
 		}
-		return result;
+		return isdelim;
 	}
 
 	private boolean isDelimChar(char ch) {
@@ -191,8 +191,10 @@ public class Parser {
 	}
 
 	private void skipWhiteSpace(final String lineBuffer, int[] linePos) {
-		while ((linePos[0] < lineBuffer.length() - 1) && isWhiteSpace(lineBuffer.charAt(linePos[0])))
+		while ((linePos[0] < lineBuffer.length() - 1) &&
+				isWhiteSpace(lineBuffer.charAt(linePos[0]))) {
 			linePos[0]++;
+		}
 	}
 
 
@@ -233,16 +235,20 @@ public class Parser {
 
 		_cmdBufLength = _lineBuffer.length();
 		if (_linePos < _cmdBufLength) {
-
 			/* Handle quotes and parentheses around tokens */
 			isQuotedString = false;
+
 			if (_isBeginQuote(_lineBuffer.charAt(_linePos))) {
 				_parseToEndQuote();
 			} else {  /* Copy to next delimiter or whitespace */
 				_tokenStart = _linePos;
 				mLinePos = new int[] {_linePos};
-				while ((mLinePos[0] < _cmdBufLength) && (!isDelimiter(_lineBuffer, mLinePos)))
+
+				while ((mLinePos[0] < _cmdBufLength) &&
+						!isDelimiter(_lineBuffer, mLinePos)) {
 					mLinePos[0]++;
+				}
+
 				_linePos = mLinePos[0];
 
 				_result = _lineBuffer.substring(_tokenStart, _linePos);
@@ -251,20 +257,21 @@ public class Parser {
 			/* Check for stop on comment */
 
 			// if stop on comment, ignore rest of line.
-			if (lastDelimiter == CommentChar) {
+			if (lastDelimiter == COMMENT_CHAR) {
 				_linePos = _lineBuffer.length() + 1;
 			} else {
-
 				/* Get rid of trailing white space */
 				if (lastDelimiter == ' ') {
 					mLinePos = new int[] {_linePos};
 					skipWhiteSpace(_lineBuffer, mLinePos);
 					_linePos = mLinePos[0];
 				}
+
 				if (isDelimChar(_lineBuffer.charAt(_linePos))) {
 					lastDelimiter = _lineBuffer.charAt(_linePos);
 					_linePos += 1;  // move past terminating delimiter
 				}
+
 				mLinePos = new int[] {_linePos};
 				skipWhiteSpace(_lineBuffer, mLinePos);
 				_linePos = mLinePos[0];
@@ -280,10 +287,11 @@ public class Parser {
 		int[] mPosition;
 
 		if (position < cmdString.length()) {
-			mPosition = new int[] {position};  // pass by reference
+			mPosition = new int[] {position};
 			lastDelimiter = ' ';
 			// get entire token and put in token buffer
 			token = getToken(cmdString, mPosition);
+
 			if (lastDelimiter == '=') {
 				parameterBuffer = token;
 				token = getToken(cmdString, mPosition);
@@ -291,6 +299,7 @@ public class Parser {
 				// init to null string
 				parameterBuffer = "";
 			}
+
 			position = mPosition[0];
 		} else {
 			parameterBuffer = "";
@@ -305,20 +314,20 @@ public class Parser {
 	 */
 	public String parseAsBusName(int[] numNodes, int[] nodeArray) {
 		int dotpos;
-		String nodeBuffer, delimSave, tokenSave, result;
+		String nodeBuffer, delimSave, tokenSave, name;
 		int[] nodeBufferPos;
 
-		if (autoIncrement)
-			getNextParam();
+		if (autoIncrement) getNextParam();
 
 		numNodes[0] = 0;
+
 		dotpos = token.indexOf('.');
 		if (dotpos == -1) {
 			return token;
 		} else {
-			result = token.substring(0, dotpos).trim();  // bus name
+			name = token.substring(0, dotpos).trim();  // bus name
 			tokenSave = token;
-			/* Now get nodes */
+			// now get nodes
 			nodeBuffer = token.substring(dotpos, token.length() - dotpos) + " ";
 
 			nodeBufferPos = new int[] {0};
@@ -329,8 +338,7 @@ public class Parser {
 				while (token.length() > 0) {
 					numNodes[0]++;
 					nodeArray[numNodes[0]] = makeInteger();
-					if (convertError)
-						nodeArray[numNodes[0]] = -1;  // indicate an error
+					if (convertError) nodeArray[numNodes[0]] = -1;  // indicate an error
 					token = getToken(nodeBuffer, nodeBufferPos);
 				}
 			} catch (Exception e) {
@@ -340,7 +348,7 @@ public class Parser {
 			delimChars = delimSave;  // restore to original delimiters
 			token = tokenSave;
 		}
-		return result;
+		return name;
 	}
 
 	public int parseAsVector(int expectedSize, double[] vectorBuffer) {
@@ -348,20 +356,20 @@ public class Parser {
 		String parseBuffer = null, delimSave = null;
 		int[] parseBufferPos = new int[1];
 
-		if (autoIncrement)
-			getNextParam();
+		if (autoIncrement) getNextParam();
 
 		numElements = 0;
-		int result = 0;  // return 0 if none found or error occurred
+		int success = 0;  // return 0 if none found or error occurred
 		try {
-			for (i = 0; i < expectedSize; i++)
+			for (i = 0; i < expectedSize; i++) {
 				vectorBuffer[i] = 0.0;
+			}
 
 			/* now get vector values */
 			parseBuffer = token + " ";
 
 			parseBufferPos[0] = 0;
-			delimSave  = delimChars;
+			delimSave = delimChars;
 			delimChars = delimChars + matrixRowTerminator;
 
 			skipWhiteSpace(parseBuffer, parseBufferPos);
@@ -370,30 +378,28 @@ public class Parser {
 				numElements += 1;
 				if (numElements <= expectedSize)
 					vectorBuffer[numElements] = makeDouble();
-				if (lastDelimiter == matrixRowTerminator)
-					break;
+				if (lastDelimiter == matrixRowTerminator) break;
 				token = getToken(parseBuffer, parseBufferPos);
 			}
 
-			result = numElements;
+			success = numElements;
 		} catch (Exception e) {
-			DSS.forms.messageDlg("Vector buffer in parseAsVector probably too small: " + e.getMessage(), true);
+			DSS.forms.messageDlg("Vector buffer in parseAsVector probably too small: " +
+					e.getMessage(), true);
 		}
 
 		delimChars  = delimSave;  // restore to original delimiters
-		token = parseBuffer.substring(parseBufferPos[0], parseBuffer.length());  // prepare for next trip
+		token = parseBuffer.substring(parseBufferPos[0],
+				parseBuffer.length());  // prepare for next trip
 
-		return result;
+		return success;
 	}
 
 	public int parseAsMatrix(int expectedOrder, double[] matrixBuffer) {
 		int i, j, k, elementsFound;
 		double[] rowBuf;
 
-		if (autoIncrement)
-			getNextParam();
-
-		rowBuf = null;
+		if (autoIncrement) getNextParam();
 
 		try {
 			rowBuf = new double[expectedOrder];
@@ -415,24 +421,14 @@ public class Parser {
 			DSS.forms.messageDlg("Matrix buffer in parseAsMatrix probably too small: " + e.getMessage(), true);
 		}
 
-		if (rowBuf != null)
-			rowBuf = null;
-
 		return expectedOrder;
-	}
-
-	private int _elementIndex(int ii, int jj, int expectedOrder) {
-		return jj * expectedOrder + ii;
 	}
 
 	public int parseAsSymMatrix(int expectedOrder, double[] matrixBuffer) {
 		int i, j, elementsFound;
 		double[] rowBuf;
 
-		if (autoIncrement)
-			getNextParam();
-
-		rowBuf = null;
+		if (autoIncrement) getNextParam();
 
 		try {
 			rowBuf = new double[expectedOrder];
@@ -446,48 +442,46 @@ public class Parser {
 				/* Returns matrix in Column Order (Fortran order) */
 				for (j = 0; j < elementsFound; j++) {
 					matrixBuffer[_elementIndex(i, j, expectedOrder)] = rowBuf[j];
-					if (i != j)
-						matrixBuffer[_elementIndex(j, i, expectedOrder)] = rowBuf[j];
+					if (i != j) matrixBuffer[_elementIndex(j, i, expectedOrder)] = rowBuf[j];
 				}
 
 			}
 
 		} catch (Exception e) {
-			DSS.forms.messageDlg("Matrix buffer in parseAsSymMatrix() probably too small: " + e.getMessage(), true);
+			DSS.forms.messageDlg("Matrix buffer in parseAsSymMatrix() probably too small: " +
+					e.getMessage(), true);
 		}
-
-		if (rowBuf != null)
-			rowBuf = null;
 
 		return expectedOrder;
 	}
 
-	public String makeString() {
-		if (autoIncrement)
-			getNextParam();
+	private int _elementIndex(int ii, int jj, int expectedOrder) {
+		return jj * expectedOrder + ii;
+	}
 
+	public String makeString() {
+		if (autoIncrement) getNextParam();
 		return token;
 	}
 
 	public int makeInteger() {
 		// hex integers must be preceeded by "$"
-		int result = 0;
-		double temp = 0;
+		int integer = 0;
+		double tmp = 0;
 		int[] code = new int[1];
 
 		convertError = false;
-		if (autoIncrement)
-			getNextParam();
+		if (autoIncrement) getNextParam();
 
 		if (token.length() == 0) {
-			result = 0;
+			integer = 0;
 		} else {
 			if (isQuotedString) {
-				temp = interpretRPNString(code);
-				result = (int) Math.round(temp);
+				tmp = interpretRPNString(code);
+				integer = (int) Math.round(tmp);
 			} else {
 				try {
-					result = Integer.valueOf(token);  // try direct conversion to integer
+					integer = Integer.valueOf(token);  // try direct conversion to integer
 					code[0] = 0;
 				} catch (NumberFormatException e) {
 					code[0] = 1;  // index of the offending character
@@ -497,7 +491,7 @@ public class Parser {
 			if (code[0] != 0) {  // on error for integer conversion
 				// try again with an double result in case value specified in decimal or some other technique
 				try {
-					temp = Double.valueOf(token);
+					tmp = Double.parseDouble(token);
 					code[0] = 1;
 				} catch (NumberFormatException e) {
 					code[0] = 0;
@@ -505,34 +499,33 @@ public class Parser {
 				if (code[0] != 0) {
 					// not needed with throw ...  Result = 0;
 					convertError = true;
-//					throw new ParserProblem("Integer number conversion error for string: \""+TokenBuffer+"\"");
-					DSS.doErrorMsg("", "Integer number conversion error for string: \""+token+"\"", "", 0);
+					//throw new ParserProblem("Integer number conversion error for string: \"" + tokenBuffer + "\"");
+					DSS.doSimpleMsg("Integer number conversion error for string: \"" + token + "\"", 0);
 				} else {
-					result = (int) Math.round(temp);
+					integer = (int) Math.round(tmp);
 				}
 			}
 		}
 
-		return result;
+		return integer;
 	}
 
 	public double makeDouble() {
 		int[] code = new int[1];
-		double result = 0;
+		double dbl = 0;
 
-		if (autoIncrement)
-			getNextParam();
+		if (autoIncrement) getNextParam();
 
 		convertError = false;
 
 		if (token.length() == 0) {
-			result = 0.0;
+			dbl = 0.0;
 		} else {
 			if (isQuotedString) {
-				result = interpretRPNString(code);
+				dbl = interpretRPNString(code);
 			} else {
 				try {
-					result = Double.valueOf(token);
+					dbl = Double.parseDouble(token);
 					code[0] = 0;
 				} catch (NumberFormatException e) {
 					code[0] = 1;  // index of the offending character
@@ -542,12 +535,12 @@ public class Parser {
 			if (code[0] != 0) {
 				// not needed with throw ... result = 0.0;
 				convertError = true;
-//				throw new ParserProblem("Floating point number conversion error for string: \""+TokenBuffer+"\"");
-				DSS.doErrorMsg("", "Floating point number conversion error for string: \""+token+"\"", "", 0);
+				//throw new ParserProblem("Floating point number conversion error for string: \"" + tokenBuffer + "\"");
+				DSS.doSimpleMsg("Floating point number conversion error for string: \"" + token + "\"", 0);
 			}
 		}
 
-		return result;
+		return dbl;
 	}
 
 	public String getRemainder() {
@@ -558,16 +551,17 @@ public class Parser {
 	 * Checks for commentChar and '//'.
 	 */
 	private boolean isCommentChar(final String lineBuffer, int[] linePos) {
-		switch (lineBuffer.charAt( linePos[0] )) {
-		case CommentChar:
+		char c = lineBuffer.charAt(linePos[0]);
+		if (c == COMMENT_CHAR) {
 			return true;
-		case '/':
-			if ((lineBuffer.length() - 1 > linePos[0]) && (lineBuffer.charAt(linePos[0] + 1) == '/')) {
+		} else if (c == DSS.SEPARATOR.charAt(0)) {
+			if ((lineBuffer.length() - 1 > linePos[0]) &&
+					(lineBuffer.charAt(linePos[0] + 1) == '/')) {
 				return true;
 			} else {
 				return false;
 			}
-		default:
+		} else {
 			return false;
 		}
 	}
@@ -578,30 +572,27 @@ public class Parser {
 
 		code[0] = 0;
 		parseBuffer = token + " ";
-		parseBufferPos = new int[] {0};
+		parseBufferPos = new int[1];
 
 		skipWhiteSpace(parseBuffer, parseBufferPos);
 		token = getToken(parseBuffer, parseBufferPos);
 
 		while (token.length() > 0) {
-
 			try {
 				code[0] = processRPNCommand(token, RPNCalculator);
 			} catch (ParserProblem e) {
 				DSS.doErrorMsg("", e.getMessage(), "", 0);
-				if (code[0] > 0)
-					break;  // stop on any floating point error
+				if (code[0] > 0) break;  // stop on any floating point error
 			}
-
 			token = getToken(parseBuffer, parseBufferPos);
 		}
 
-		double result = RPNCalculator.getX();
+		double dbl = RPNCalculator.getX();
 
 		// prepare for next trip
 		token = parseBuffer.substring(parseBufferPos[0], parseBuffer.length());
 
-		return result;
+		return dbl;
 	}
 
 	public String getToken() {

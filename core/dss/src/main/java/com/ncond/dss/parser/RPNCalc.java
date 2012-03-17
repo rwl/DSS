@@ -11,8 +11,7 @@ public class RPNCalc {
 	private double[] stack = new double[MaxStackSize];
 
 	public RPNCalc() {
-		for (int i = 0; i < MaxStackSize; i++)
-			stack[i] = 0.0;
+		for (int i = 0; i < MaxStackSize; i++) stack[i] = 0.0;
 	}
 
 	public void aCosDeg() {
@@ -64,13 +63,15 @@ public class RPNCalc {
 	}
 
 	public void rollDn() {
-		for (int i = 1; i < MaxStackSize; i++)
+		for (int i = 1; i < MaxStackSize; i++) {
 			stack[i - 1] = stack[i];
+		}
 	}
 
 	public void rollUp() {
-		for (int i = 1; i < MaxStackSize; i++)
+		for (int i = 1; i < MaxStackSize; i++) {
 			stack[i] = stack[i - 1];
+		}
 
 	}
 
