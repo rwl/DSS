@@ -1,10 +1,8 @@
 package com.ncond.dss.general;
 
 import java.io.BufferedReader;
-import java.io.DataInputStream;
-import java.io.FileInputStream;
+import java.io.FileReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 
 import com.ncond.dss.common.DSS;
 import com.ncond.dss.common.DSSClass;
@@ -13,7 +11,6 @@ import com.ncond.dss.common.Util;
 import com.ncond.dss.parser.Parser;
 import com.ncond.dss.shared.CommandList;
 
-/* Superstructure for all LoadShape objects */
 public class LoadShape extends DSSClass {
 
 	public static final int NumPropsThisClass = 18;
@@ -41,6 +38,7 @@ public class LoadShape extends DSSClass {
 
 		numProperties = LoadShape.NumPropsThisClass;
 		countProperties();   // get inherited property count
+
 		allocatePropertyArrays();
 
 		// define property names
@@ -131,12 +129,11 @@ public class LoadShape extends DSSClass {
 	public int edit() {
 		Parser parser = Parser.getInstance();
 
-		int result = 0;
 		// continue parsing with contents of parser
 		activeLoadShapeObj = (LoadShapeObj) elementList.getActive();
 		DSS.activeDSSObject = activeLoadShapeObj;
 
-		LoadShapeObj als = activeLoadShapeObj;
+		LoadShapeObj elem = activeLoadShapeObj;
 
 		int paramPointer = -1;
 		String paramName = parser.getNextParam();
@@ -150,33 +147,34 @@ public class LoadShape extends DSSClass {
 			}
 
 			if (paramPointer >= 0 && paramPointer < numProperties)
-				als.setPropertyValue(paramPointer, param);
+				elem.setPropertyValue(paramPointer, param);
 
 			switch (paramPointer) {
 			case -1:
-				DSS.doSimpleMsg("Unknown parameter \"" + paramName + "\" for object \"" + getClassName() +"."+ als.getName() + "\"", 610);
+				DSS.doSimpleMsg("Unknown parameter \"" + paramName + "\" for object \"" +
+						getClassName() +"."+ elem.getName() + "\"", 610);
 				break;
 			case 0:
-				als.setNumPoints(parser.makeInteger());
+				elem.setNumPoints(parser.makeInteger());
 				break;
 			case 1:
-				als.setInterval(parser.makeDouble());
+				elem.setInterval(parser.makeDouble());
 				break;
 			case 2:
-				als.setPMultipliers( Util.resizeArray(als.getPMultipliers(), als.getNumPoints()) );
-				// allow possible resetting (to a lower value) of num points when specifying multipliers not Hours
-				als.setNumPoints( Util.interpretDblArray(param, als.getNumPoints(), als.getPMultipliers()) );   // parser.parseAsVector(Npts, Multipliers);
+				elem.setPMultipliers(Util.resizeArray(elem.getPMultipliers(), elem.getNumPoints()));
+				// allow possible resetting (to a lower value) of num points when specifying multipliers not hours
+				elem.setNumPoints(Util.interpretDblArray(param, elem.getNumPoints(), elem.getPMultipliers()));
 				break;
 			case 3:
-				als.setHours( Util.resizeArray(als.getHours(), als.getNumPoints()) );
-				Util.interpretDblArray(param, als.getNumPoints(), als.getHours());   // parser.parseAsVector(Npts, Hours);
-				als.setInterval(0.0);
+				elem.setHours(Util.resizeArray(elem.getHours(), elem.getNumPoints()));
+				Util.interpretDblArray(param, elem.getNumPoints(), elem.getHours());
+				elem.setInterval(0.0);
 				break;
 			case 4:
-				als.setMean(parser.makeDouble());
+				elem.setMean(parser.makeDouble());
 				break;
 			case 5:
-				als.setStdDev(parser.makeDouble());
+				elem.setStdDev(parser.makeDouble());
 				break;
 			case 6:
 				doCSVFile(param);
@@ -190,40 +188,40 @@ public class LoadShape extends DSSClass {
 			case 9:
 				switch (param.toLowerCase().charAt(0)) {
 				case 'n':
-					als.normalize();
+					elem.normalize();
 					break;
 				case 'd':
-					als.saveToDblFile();
+					elem.saveToDblFile();
 					break;
 				case 's':
-					als.saveToSngFile();
+					elem.saveToSngFile();
 					break;
 				}
 				break;
 			case 10:
-				als.setQMultipliers( Util.resizeArray(als.getQMultipliers(), als.getNumPoints()) );
-				Util.interpretDblArray(param, als.getNumPoints(), als.getQMultipliers());  // parser.parseAsVector(Npts, Multipliers);
+				elem.setQMultipliers(Util.resizeArray(elem.getQMultipliers(), elem.getNumPoints()));
+				Util.interpretDblArray(param, elem.getNumPoints(), elem.getQMultipliers());
 				break;
 			case 11:
-				als.setUseActual(Util.interpretYesNo(param));
+				elem.setUseActual(Util.interpretYesNo(param));
 				break;
 			case 12:
-				als.setMaxP(parser.makeDouble());
+				elem.setMaxP(parser.makeDouble());
 				break;
 			case 13:
-				als.setMaxQ(parser.makeDouble());
+				elem.setMaxQ(parser.makeDouble());
 				break;
 			case 14:
-				als.setInterval(parser.makeDouble() / 3600.0);  // convert seconds to hr
+				elem.setInterval(parser.makeDouble() / 3600.0);  // convert seconds to hr
 				break;
 			case 15:
-				als.setInterval(parser.makeDouble() / 60.0);    // convert minutes to hr
+				elem.setInterval(parser.makeDouble() / 60.0);    // convert minutes to hr
 				break;
 			case 16:
-				als.setBaseP(parser.makeDouble());
+				elem.setBaseP(parser.makeDouble());
 				break;
 			case 17:
-				als.setBaseQ(parser.makeDouble());
+				elem.setBaseQ(parser.makeDouble());
 				break;
 			default:
 				// inherited parameters
@@ -233,29 +231,13 @@ public class LoadShape extends DSSClass {
 
 			switch (paramPointer) {
 			case 2:
-				als.setStdDevCalculated(false);   // now calculated on demand
-				als.setArrayPropertyIndex(paramPointer);
-				als.setNumPoints(als.getNumPoints());  // keep properties in order for save command
-				break;
 			case 6:
-				als.setStdDevCalculated(false);
-				als.setArrayPropertyIndex(paramPointer);
-				als.setNumPoints(als.getNumPoints());
-				break;
 			case 7:
-				als.setStdDevCalculated(false);
-				als.setArrayPropertyIndex(paramPointer);
-				als.setNumPoints(als.getNumPoints());
-				break;
 			case 8:
-				als.setStdDevCalculated(false);
-				als.setArrayPropertyIndex(paramPointer);
-				als.setNumPoints(als.getNumPoints());
-				break;
 			case 10:
-				als.setStdDevCalculated(false);
-				als.setArrayPropertyIndex(paramPointer);
-				als.setNumPoints(als.getNumPoints());
+				elem.setStdDevCalculated(false);   // now calculated on demand
+				elem.setArrayPropertyIndex(paramPointer);
+				elem.setNumPoints(elem.getNumPoints());  // keep properties in order for save command
 				break;
 			}
 
@@ -263,10 +245,9 @@ public class LoadShape extends DSSClass {
 			param = parser.makeString();
 		}
 
-		if (als.getPMultipliers() != null)
-			als.setMaxPandQ();
+		if (elem.getPMultipliers() != null) elem.setMaxPandQ();
 
-		return result;
+		return 0;
 	}
 
 	/**
@@ -283,46 +264,50 @@ public class LoadShape extends DSSClass {
 
 	@Override
 	protected int makeLike(String shapeName) {
-		int result = 0;
-		/* See if we can find this line code in the present collection */
-		LoadShapeObj otherLoadShape = (LoadShapeObj) find(shapeName);
-		if (otherLoadShape != null) {
-			LoadShapeObj als = activeLoadShapeObj;
+		int success = 0;
 
-			als.setNumPoints(otherLoadShape.getNumPoints());
-			als.setInterval(otherLoadShape.getInterval());
-			als.setPMultipliers( Util.resizeArray(als.getPMultipliers(), als.getNumPoints()) );
-			for (int i = 0; i < als.getNumPoints(); i++)
-				als.getPMultipliers()[i] = otherLoadShape.getPMultipliers()[i];
-			if (otherLoadShape.getQMultipliers() != null)
-				als.setQMultipliers( Util.resizeArray(als.getQMultipliers(), als.getNumPoints()) );
-			als.setQMultipliers( Util.resizeArray(als.getQMultipliers(), als.getNumPoints()) );
-			for (int i = 0; i < als.getNumPoints(); i++)
-				als.getQMultipliers()[i] = otherLoadShape.getQMultipliers()[i];
-			if (als.getInterval() > 0.0) {
-				als.setHours(new double[0]);
+		/* See if we can find this line code in the present collection */
+		LoadShapeObj other = (LoadShapeObj) find(shapeName);
+
+		if (other != null) {
+			LoadShapeObj elem = activeLoadShapeObj;
+
+			elem.setNumPoints(other.getNumPoints());
+			elem.setInterval(other.getInterval());
+			elem.setPMultipliers(Util.resizeArray(elem.getPMultipliers(), elem.getNumPoints()));
+			for (int i = 0; i < elem.getNumPoints(); i++)
+				elem.setPMultiplier(i, other.getPMultiplier(i));
+
+			if (other.getQMultipliers() != null)
+				elem.setQMultipliers(Util.resizeArray(elem.getQMultipliers(), elem.getNumPoints()));
+			elem.setQMultipliers( Util.resizeArray(elem.getQMultipliers(), elem.getNumPoints()) );
+			for (int i = 0; i < elem.getNumPoints(); i++)
+				elem.setQMultiplier(i, other.getQMultiplier(i));
+
+			if (elem.getInterval() > 0.0) {
+				elem.setHours(new double[0]);
 			} else {
-				als.setHours( Util.resizeArray(als.getHours(), als.getNumPoints()) );
-				for (int i = 0; i < als.getNumPoints(); i++)
-					als.getHours()[i] = otherLoadShape.getHours()[i];
+				elem.setHours( Util.resizeArray(elem.getHours(), elem.getNumPoints()) );
+				for (int i = 0; i < elem.getNumPoints(); i++)
+					elem.setHour(i, other.getHour(i));
 			}
-			als.setMaxPandQ();
-			als.setUseActual(otherLoadShape.isUseActual());
-			als.setBaseP(otherLoadShape.getBaseP());
-			als.setBaseQ(otherLoadShape.getBaseQ());
+			elem.setMaxPandQ();
+			elem.setUseActual(other.isUseActual());
+			elem.setBaseP(other.getBaseP());
+			elem.setBaseQ(other.getBaseQ());
 
 			/*als.setMaxP(OtherLoadShape.getMaxP());
 			als.setMaxQ(OtherLoadShape.getMaxQ());
 			als.setMean(OtherLoadShape.getMean());
 			als.setStdDev(OtherLoadShape.getStdDev());*/
 
-			for (int i = 0; i < als.getParentClass().getNumProperties(); i++)
-				als.setPropertyValue(i, otherLoadShape.getPropertyValue(i));
+			for (int i = 0; i < elem.getParentClass().getNumProperties(); i++)
+				elem.setPropertyValue(i, other.getPropertyValue(i));
 		} else {
 			DSS.doSimpleMsg("Error in LoadShape makeLike: \"" + shapeName + "\" not found.", 611);
 		}
 
-		return result;
+		return success;
 	}
 
 	@Override
@@ -344,59 +329,55 @@ public class LoadShape extends DSSClass {
 	public void setCode(String value) {
 		activeLoadShapeObj = null;
 
-		LoadShapeObj pShape;
+		LoadShapeObj shape;
 		for (int i = 0; i < elementList.size(); i++) {
-			pShape = (LoadShapeObj) elementList.get(i);
-			if (pShape.getName().equalsIgnoreCase(value)) {
-				activeLoadShapeObj = pShape;
+			shape = (LoadShapeObj) elementList.get(i);
+			if (shape.getName().equalsIgnoreCase(value)) {
+				activeLoadShapeObj = shape;
 				return;
 			}
 		}
 
-		DSS.doSimpleMsg("LoadShape: \"" + value + "\" not found.", 612);
+		DSS.doSimpleMsg("LoadShape: \"" + value + "\" not found", 612);
 	}
 
 	private void doCSVFile(String fileName) {
-		FileInputStream fis;
-		DataInputStream dis;
+		FileReader fr;
 		BufferedReader br;
-
 		String s;
 		Parser parser;
 
 		try {
-			fis = new FileInputStream(fileName);
-			dis = new DataInputStream(fis);
-			br = new BufferedReader(new InputStreamReader(dis));
+			fr = new FileReader(fileName);
+			br = new BufferedReader(fr);
 
-			LoadShapeObj als = activeLoadShapeObj;
+			LoadShapeObj elem = activeLoadShapeObj;
 
-			als.setPMultipliers( Util.resizeArray(als.getPMultipliers(), als.getNumPoints()) );
+			elem.setPMultipliers(Util.resizeArray(elem.getPMultipliers(), elem.getNumPoints()));
 
-			if (als.getInterval() == 0.0)
-				als.setHours( Util.resizeArray(als.getHours(), als.getNumPoints()) );
+			if (elem.getInterval() == 0.0)
+				elem.setHours(Util.resizeArray(elem.getHours(), elem.getNumPoints()));
+
 			int i = 0;
-			while (((s = br.readLine()) != null) && i < als.getNumPoints()) {
+			while (((s = br.readLine()) != null) && i < elem.getNumPoints()) {
 				/* aux parser allows commas or white space */
 				parser = DSS.auxParser;
 				parser.setCmdString(s);
-				if (als.getInterval() == 0.0) {
+				if (elem.getInterval() == 0.0) {
 					parser.getNextParam();
-					als.getHours()[i] = parser.makeDouble();
+					elem.getHours()[i] = parser.makeDouble();
 				}
 				parser.getNextParam();
-				als.getPMultipliers()[i] = parser.makeDouble();
+				elem.getPMultipliers()[i] = parser.makeDouble();
 				i += 1;
 			}
-			fis.close();
-			dis.close();
 			br.close();
-			if (i != als.getNumPoints())
-				als.setNumPoints(i);
+			fr.close();
+			if (i != elem.getNumPoints())
+				elem.setNumPoints(i);
 
-			fis.close();
-			dis.close();
 			br.close();
+			fr.close();
 		} catch (IOException e) {
 			DSS.doSimpleMsg("Error processing CSV file: \"" + fileName + ". " + e.getMessage(), 604);
 			return;
@@ -404,13 +385,44 @@ public class LoadShape extends DSSClass {
 	}
 
 	private void doSngFile(String fileName) {
-		// FIXME Implement this method
-		throw new UnsupportedOperationException();
+		doDblFile(fileName);
 	}
 
 	private void doDblFile(String fileName) {
-		// FIXME Implement this method
-		throw new UnsupportedOperationException();
+		FileReader fr;
+		BufferedReader br;
+		int i;
+		String s;
+
+		LoadShapeObj elem = activeLoadShapeObj;
+
+		try {
+			fr = new FileReader(fileName);
+			br = new BufferedReader(fr);
+
+			elem.setPMultipliers(Util.resizeArray(elem.getPMultipliers(), elem.getNumPoints()));
+
+			if (elem.getInterval() == 0.0)
+				elem.setHours(Util.resizeArray(elem.getHours(), elem.getNumPoints()));
+
+			i = 0;
+			s = "";
+			while (s != null && i < elem.getNumPoints()) {
+				if (elem.getInterval() == 0.0) {
+					s = br.readLine();
+					elem.setHour(i, Double.parseDouble(s));
+				}
+				s = br.readLine();
+				elem.setPMultiplier(i, Double.parseDouble(s));
+				i += 1;
+			}
+
+			br.close();
+			fr.close();
+		} catch (IOException e) {
+			DSS.doSimpleMsg("Error processing growth shape file \"" + fileName + ": " + e.getMessage(), 604);
+			return;
+		}
 	}
 
 	public void TOPExport(String objName) {

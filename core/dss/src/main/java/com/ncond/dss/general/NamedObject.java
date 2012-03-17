@@ -42,7 +42,7 @@ public class NamedObject {
 	}
 
 	public String getDisplayName() {
-		if (this.displayName == "") {
+		if (displayName == "") {
 			return DSSClassName + "_" + localName;
 		} else {
 			return displayName;
@@ -60,7 +60,6 @@ public class NamedObject {
 	}
 
 	public void setUUID(UUID value) {
-		//if (pGuid == null) {}
 		uuid = value;
 	}
 
@@ -73,9 +72,7 @@ public class NamedObject {
 	}
 
 	public String UUIDToCIMString(UUID uUID) {
-		String s;
-		s = uUID.toString();
-		return s.substring(1, s.length() - 2);
+		return uUID.toString();
 	}
 
 }

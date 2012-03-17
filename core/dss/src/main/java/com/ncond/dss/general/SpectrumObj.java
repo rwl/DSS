@@ -34,11 +34,11 @@ public class SpectrumObj extends DSSObject {
 		setName(spectrumName.toLowerCase());
 		objType = parClass.getClassType();
 
-		numHarm    = 0;
-		harmArray  = null;
+		numHarm = 0;
+		harmArray = null;
 		puMagArray = null;
 		angleArray = null;
-		multArray  = null;
+		multArray = null;
 
 		initPropertyValues(0);
 	}
@@ -108,11 +108,7 @@ public class SpectrumObj extends DSSObject {
 
 		switch (index) {
 		case 1:
-			result = "(";
-			break;
 		case 2:
-			result = "(";
-			break;
 		case 3:
 			result = "(";
 			break;
@@ -144,11 +140,7 @@ public class SpectrumObj extends DSSObject {
 
 		switch (index) {
 		case 1:
-			result = ")";
-			break;
 		case 2:
-			result = ")";
-			break;
 		case 3:
 			result = ")";
 			break;
@@ -159,7 +151,6 @@ public class SpectrumObj extends DSSObject {
 
 	@Override
 	public void initPropertyValues(int arrayOffset) {
-
 		setPropertyValue(0, "0");
 		setPropertyValue(1, "");
 		setPropertyValue(2, "");
@@ -172,8 +163,7 @@ public class SpectrumObj extends DSSObject {
 	/**
 	 * Rotate all phase angles so that the fundamental is at zero.
 	 */
-	// FIXME Private method in OpenDSS
-	public void setMultArray() {
+	protected void setMultArray() {
 		int i;
 		double fundAngle;
 
@@ -190,9 +180,8 @@ public class SpectrumObj extends DSSObject {
 			for (i = 0; i < numHarm; i++)
 				multArray[i] = ComplexUtil.polarDeg2Complex(puMagArray[i], (angleArray[i] - harmArray[i] * fundAngle));
 		} catch (Exception e) {
-			DSS.doSimpleMsg("Exception while computing spectrum."+getName()+". Check definition. Aborting", 655);
-			if (DSS.inRedirect)
-				DSS.redirectAbort = true;
+			DSS.doSimpleMsg("Exception while computing spectrum." + getName() + ". Check definition. Aborting", 655);
+			if (DSS.inRedirect) DSS.redirectAbort = true;
 		}
 	}
 

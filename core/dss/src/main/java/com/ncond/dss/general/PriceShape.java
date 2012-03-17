@@ -1,10 +1,8 @@
 package com.ncond.dss.general;
 
 import java.io.BufferedReader;
-import java.io.DataInputStream;
-import java.io.FileInputStream;
+import java.io.FileReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 
 import com.ncond.dss.common.DSS;
 import com.ncond.dss.common.DSSClass;
@@ -40,6 +38,7 @@ public class PriceShape extends DSSClass {
 
 		numProperties = PriceShape.NumPropsThisClass;
 		countProperties();  // get inherited property count
+
 		allocatePropertyArrays();
 
 		// define property names
@@ -52,7 +51,7 @@ public class PriceShape extends DSSClass {
 		propertyName[6]  = "csvfile";   // switch input to a csvfile
 		propertyName[7]  = "sngfile";   // switch input to a binary file of singles
 		propertyName[8]  = "dblfile";   // switch input to a binary file of singles
-		propertyName[9] = "sinterval";  // interval in seconds
+		propertyName[9]  = "sinterval"; // interval in seconds
 		propertyName[10] = "minterval"; // interval in minutes
 		propertyName[11] = "action";
 
@@ -113,17 +112,16 @@ public class PriceShape extends DSSClass {
 	public int edit() {
 		Parser parser = Parser.getInstance();
 
-		int result = 0;
 		// continue parsing with contents of parser
 		activePriceShapeObj = (PriceShapeObj) elementList.getActive();
 		DSS.activeDSSObject = activePriceShapeObj;
 
-		PriceShapeObj aps = activePriceShapeObj;
+		PriceShapeObj elem = activePriceShapeObj;
 
 		int paramPointer = -1;
 		String paramName = parser.getNextParam();
-
 		String param = parser.makeString();
+
 		while (param.length() > 0) {
 			if (paramName.length() == 0) {
 				paramPointer += 1;
@@ -132,32 +130,33 @@ public class PriceShape extends DSSClass {
 			}
 
 			if (paramPointer >= 0 && paramPointer < numProperties)
-				aps.setPropertyValue(paramPointer, param);
+				elem.setPropertyValue(paramPointer, param);
 
 			switch (paramPointer) {
 			case -1:
-				DSS.doSimpleMsg("Unknown parameter \"" + paramName + "\" for object \"" + getClassName() +"."+ aps.getName() + "\"", 610);
+				DSS.doSimpleMsg("Unknown parameter \"" + paramName + "\" for object \"" +
+						getClassName() +"."+ elem.getName() + "\"", 610);
 				break;
 			case 0:
-				aps.setNumPoints(parser.makeInteger());
+				elem.setNumPoints(parser.makeInteger());
 				break;
 			case 1:
-				aps.setInterval(parser.makeDouble());
+				elem.setInterval(parser.makeDouble());
 				break;
 			case 2:
-				aps.setPriceValues( Util.resizeArray(aps.getPriceValues(), aps.getNumPoints()) );
+				elem.setPriceValues(Util.resizeArray(elem.getPriceValues(), elem.getNumPoints()));
 				// allow possible resetting (to a lower value) of num points when specifying prices not hours
-				aps.setNumPoints( Util.interpretDblArray(param, aps.getNumPoints(), aps.getPriceValues()) );   //parser.parseAsVector(Npts, Prices);
+				elem.setNumPoints(Util.interpretDblArray(param, elem.getNumPoints(), elem.getPriceValues()));
 				break;
 			case 3:
-				aps.setHours( Util.resizeArray(aps.getHours(), aps.getNumPoints()) );
-				Util.interpretDblArray(param, aps.getNumPoints(), aps.getHours());   //parser.parseAsVector(Npts, Hours);
+				elem.setHours(Util.resizeArray(elem.getHours(), elem.getNumPoints()));
+				Util.interpretDblArray(param, elem.getNumPoints(), elem.getHours());
 				break;
 			case 4:
-				aps.setMean(parser.makeDouble());
+				elem.setMean(parser.makeDouble());
 				break;
 			case 5:
-				aps.setStdDev(parser.makeDouble());
+				elem.setStdDev(parser.makeDouble());
 				break;
 			case 6:
 				doCSVFile(param);
@@ -169,18 +168,18 @@ public class PriceShape extends DSSClass {
 				doDblFile(param);
 				break;
 			case 9:
-				aps.setInterval(parser.makeDouble() / 3600.0);  // convert seconds to hr
+				elem.setInterval(parser.makeDouble() / 3600.0);  // convert seconds to hr
 				break;
 			case 10:
-				aps.setInterval(parser.makeDouble() / 60.0);    // convert minutes to hr
+				elem.setInterval(parser.makeDouble() / 60.0);    // convert minutes to hr
 				break;
 			case 11:
 				switch (param.toLowerCase().charAt(0)) {
 				case 'd':
-					aps.saveToDblFile();
+					elem.saveToDblFile();
 					break;
 				case 's':
-					aps.saveToSngFile();
+					elem.saveToSngFile();
 					break;
 				}
 				break;
@@ -192,31 +191,19 @@ public class PriceShape extends DSSClass {
 
 			switch (paramPointer) {
 			case 2:
-				aps.setStdDevCalculated(false);  // now calculated on demand
-				aps.setArrayPropertyIndex(paramPointer);
-				aps.setNumPoints(aps.getNumPoints());  // keep properties in order for save command  FIXME
-				break;
 			case 6:
-				aps.setStdDevCalculated(false);  // now calculated on demand
-				aps.setArrayPropertyIndex(paramPointer);
-				aps.setNumPoints(aps.getNumPoints());  // keep properties in order for save command
-				break;
 			case 7:
-				aps.setStdDevCalculated(false);  // now calculated on demand
-				aps.setArrayPropertyIndex(paramPointer);
-				aps.setNumPoints(aps.getNumPoints());  // keep properties in order for save command
-				break;
 			case 8:
-				aps.setStdDevCalculated(false);  // now calculated on demand
-				aps.setArrayPropertyIndex(paramPointer);
-				aps.setNumPoints(aps.getNumPoints());  // keep properties in order for save command
+				elem.setStdDevCalculated(false);  // now calculated on demand
+				elem.setArrayPropertyIndex(paramPointer);
+				elem.setNumPoints(elem.getNumPoints());  // keep properties in order for save command
 				break;
 			}
 
 			paramName = parser.getNextParam();
-			param     = parser.makeString();
+			param = parser.makeString();
 		}
-		return result;
+		return 0;
 	}
 
 	@Override
@@ -230,36 +217,37 @@ public class PriceShape extends DSSClass {
 
 	@Override
 	protected int makeLike(String shapeName) {
-		PriceShapeObj otherPriceShape;
-		PriceShapeObj aps;
-		int i, result = 0;
+		PriceShapeObj other, elem;
+		int i, success = 0;
 
 		/* See if we can find this line code in the present collection */
-		otherPriceShape = (PriceShapeObj) find(shapeName);
-		if (otherPriceShape != null) {
-			aps = activePriceShapeObj;
+		other = (PriceShapeObj) find(shapeName);
+		if (other != null) {
+			elem = activePriceShapeObj;
 
-			aps.setNumPoints(otherPriceShape.getNumPoints());
-			aps.setInterval(otherPriceShape.getInterval());
-			aps.setPriceValues( Util.resizeArray(aps.getPriceValues(), aps.getNumPoints()) );
+			elem.setNumPoints(other.getNumPoints());
+			elem.setInterval(other.getInterval());
+			elem.setPriceValues(Util.resizeArray(elem.getPriceValues(), elem.getNumPoints()));
 
-			for (i = 0; i < aps.getNumPoints(); i++)
-				aps.getPriceValues()[i] = otherPriceShape.getPriceValues()[i];
-			if (aps.getInterval() > 0.0) {
-				aps.setHours(new double[0]);
+			for (i = 0; i < elem.getNumPoints(); i++)
+				elem.getPriceValues()[i] = other.getPriceValues()[i];
+			if (elem.getInterval() > 0.0) {
+				elem.setHours(new double[0]);
 			} else {
-				aps.setHours( Util.resizeArray(aps.getHours(), aps.getNumPoints()) );
+				elem.setHours(Util.resizeArray(elem.getHours(), elem.getNumPoints()));
 			}
-			for (i = 0; i < aps.getNumPoints(); i++)
-				aps.getHours()[i] = otherPriceShape.getHours()[i];
+			for (i = 0; i < elem.getNumPoints(); i++)
+				elem.getHours()[i] = other.getHours()[i];
 
-			for (i = 0; i < aps.getParentClass().getNumProperties(); i++)
-				aps.setPropertyValue(i, otherPriceShape.getPropertyValue(i));
+			for (i = 0; i < elem.getParentClass().getNumProperties(); i++)
+				elem.setPropertyValue(i, other.getPropertyValue(i));
+
+			success = 1;
 		} else {
 			DSS.doSimpleMsg("Error in PriceShape makeLike: \"" + shapeName + "\" not found.", 611);
 		}
 
-		return result;
+		return success;
 	}
 
 	@Override
@@ -274,60 +262,57 @@ public class PriceShape extends DSSClass {
 
 	public void setCode(String value) {
 		activePriceShapeObj = null;
-		PriceShapeObj pPriceShapeObj = (PriceShapeObj) elementList.getFirst();
-		while (pPriceShapeObj != null) {
-			if (pPriceShapeObj.getName().equalsIgnoreCase(value)) {
-				activePriceShapeObj = pPriceShapeObj;
+
+		PriceShapeObj elem = (PriceShapeObj) elementList.getFirst();
+
+		while (elem != null) {
+			if (elem.getName().equalsIgnoreCase(value)) {
+				activePriceShapeObj = elem;
 				return;
 			}
 
-			pPriceShapeObj = (PriceShapeObj) elementList.getNext();
+			elem = (PriceShapeObj) elementList.getNext();
 		}
 
 		DSS.doSimpleMsg("PriceShape: \"" + value + "\" not found.", 612);
 	}
 
 	private void doCSVFile(String fileName) {
-		FileInputStream fis;
-		DataInputStream dis;
+		FileReader fr;
 		BufferedReader br;
-
 		String s;
 		Parser parser;
 
 		try {
-			fis = new FileInputStream(fileName);
-			dis = new DataInputStream(fis);
-			br = new BufferedReader(new InputStreamReader(dis));
+			fr = new FileReader(fileName);
+			br = new BufferedReader(fr);
 
-			PriceShapeObj aps = activePriceShapeObj;
+			PriceShapeObj elem = activePriceShapeObj;
 
-			aps.setPriceValues( Util.resizeArray(aps.getPriceValues(), aps.getNumPoints()) );
+			elem.setPriceValues(Util.resizeArray(elem.getPriceValues(), elem.getNumPoints()));
 
-			if (aps.getInterval() == 0.0)
-				aps.setHours( Util.resizeArray(aps.getHours(), aps.getNumPoints()) );
+			if (elem.getInterval() == 0.0)
+				elem.setHours(Util.resizeArray(elem.getHours(), elem.getNumPoints()));
+
 			int i = 0;
-			while (((s = br.readLine()) != null) && i < aps.getNumPoints()) {
+			while (((s = br.readLine()) != null) && i < elem.getNumPoints()) {
 				/* Aux parser allows commas or white space */
 				parser = DSS.auxParser;
 				parser.setCmdString(s);
-				if (aps.getInterval() == 0.0) {
+				if (elem.getInterval() == 0.0) {
 					parser.getNextParam();
-					aps.getHours()[i] = parser.makeDouble();
+					elem.getHours()[i] = parser.makeDouble();
 				}
 				parser.getNextParam();
-				aps.getPriceValues()[i] = parser.makeDouble();
+				elem.getPriceValues()[i] = parser.makeDouble();
 				i += 1;
 			}
-			fis.close();
-			dis.close();
-			br.close();
-			if (i != aps.getNumPoints() - 1)
-				aps.setNumPoints(i);
 
-			fis.close();
-			dis.close();
+			if (i != elem.getNumPoints() - 1)
+				elem.setNumPoints(i);
+
 			br.close();
+			fr.close();
 		} catch (IOException e) {
 			DSS.doSimpleMsg("Error processing CSV file: \"" + fileName + ". " + e.getMessage(), 604);
 			return;
@@ -335,11 +320,43 @@ public class PriceShape extends DSSClass {
 	}
 
 	private void doSngFile(String fileName) {
-		throw new UnsupportedOperationException();
+		doDblFile(fileName);
 	}
 
 	private void doDblFile(String fileName) {
-		throw new UnsupportedOperationException();
+		FileReader fr;
+		BufferedReader br;
+		int i;
+		String s;
+
+		PriceShapeObj elem = activePriceShapeObj;
+
+		try {
+			fr = new FileReader(fileName);
+			br = new BufferedReader(fr);
+
+			elem.setPriceValues(Util.resizeArray(elem.getPriceValues(), elem.getNumPoints()));
+			if (elem.getInterval() == 0.0)
+				elem.setHours(Util.resizeArray(elem.getHours(), elem.getNumPoints()));
+
+			i = 0;
+			s = "";
+			while (s != null && i < elem.getNumPoints()) {
+				if (elem.getInterval() == 0.0) {
+					s = br.readLine();
+					elem.getHours()[i] = Double.parseDouble(s);
+				}
+				s = br.readLine();
+				elem.getPriceValues()[i] = Double.parseDouble(s);
+				i += 1;
+			}
+
+			br.close();
+			fr.close();
+		} catch (IOException e) {
+			DSS.doSimpleMsg("Error processing growth shape file \"" + fileName + ": " + e.getMessage(), 604);
+			return;
+		}
 	}
 
 }
