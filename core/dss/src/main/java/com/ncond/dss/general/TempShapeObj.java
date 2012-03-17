@@ -1,11 +1,13 @@
 package com.ncond.dss.general;
 
+import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 
 import lombok.Getter;
 import lombok.Setter;
 
+import com.ncond.dss.common.DSS;
 import com.ncond.dss.common.DSSClass;
 import com.ncond.dss.shared.MathUtil;
 
@@ -42,10 +44,9 @@ import com.ncond.dss.shared.MathUtil;
  *
  */
 @Getter @Setter
-public class TShapeObj extends DSSObject {
+public class TempShapeObj extends DSSObject {
 
-	private int lastValueAccessed,
-			numPoints;  // number of points in curve
+	private int lastValueAccessed, numPoints;
 	private int arrayPropertyIndex;
 
 	private boolean stdDevCalculated;
@@ -54,19 +55,20 @@ public class TShapeObj extends DSSObject {
 
 	protected double interval;   // =0.0 then random interval (hr)
 	protected double[] hours;    // time values (hr) if interval > 0.0 else nil
-	protected double[] TValues;  // temperatures
+	protected double[] tempValues;  // temperatures
 
-	public TShapeObj(DSSClass parClass, String TShapeName) {
+	public TempShapeObj(DSSClass parClass, String TShapeName) {
 		super(parClass);
+
 		setName(TShapeName.toLowerCase());
 		objType = parClass.getClassType();
 
 		lastValueAccessed = 0;
 
 		numPoints = 0;
-		interval  = 1.0;  // hr
-		hours     = null;
-		TValues   = null;
+		interval = 1.0;  // hr
+		hours = null;
+		tempValues = null;
 		stdDevCalculated = false;  // calculate on demand
 
 		arrayPropertyIndex = -1;
@@ -88,19 +90,19 @@ public class TShapeObj extends DSSObject {
 	public double getTemperature(double hr) {
 		int index, i;
 
-		double result = 0.0;  // default return value if no points in curve
+		double t = 0.0;  // default return value if no points in curve
 
 		if (numPoints > 0)  // handle exceptional cases
 			if (numPoints == 1) {
-				result = TValues[0];
+				t = tempValues[0];
 			} else {
 				if (interval > 0.0) {
-					index = (int) Math.round(hr / interval);
-					if (index > numPoints)
+					index = (int) Math.round(hr / interval) - 1;
+					if (index >= numPoints)
 						index = index % numPoints;  // wrap around using remainder
-					if (index == 0)
+					if (index == -1)
 						index = numPoints;
-					result = TValues[index];
+					t = tempValues[index];
 				} else {
 					// for random interval
 
@@ -110,41 +112,43 @@ public class TShapeObj extends DSSObject {
 
 					/* Normalize hr to max hour in curve to get wraparound */
 					if (hr > hours[numPoints]) {
-						hr = hr - (int) (hr / hours[numPoints - 1]) * hours[numPoints - 1];
+						hr -= (int) (hr / hours[numPoints - 1]) * hours[numPoints - 1];
 					}
 
 					if (hours[lastValueAccessed] > hr)
-						lastValueAccessed = 1;  // start over from beginning
-					for (i = lastValueAccessed; i < numPoints; i++) {
+						lastValueAccessed = 0;  // start over from beginning
+
+					for (i = lastValueAccessed + 1; i < numPoints; i++) {
 						if (Math.abs(hours[i] - hr) < 0.00001) {  // if close to an actual point, just use it
-							result = TValues[i];
+							t = tempValues[i];
 							lastValueAccessed = i;
-							return result;
+							return t;
 						} else if (hours[i] > hr) {  // interpolate for temperature
 							lastValueAccessed = i - 1;
-							result = TValues[lastValueAccessed] +
+							t = tempValues[lastValueAccessed] +
 									(hr - hours[lastValueAccessed]) / (hours[i] - hours[lastValueAccessed]) *
-									(TValues[i] - TValues[lastValueAccessed]);
-							return result;
+									(tempValues[i] - tempValues[lastValueAccessed]);
+							return t;
 						}
 					}
 
 					// if we fall through the loop, just use last value
-					lastValueAccessed = numPoints - 1;
-					result            = TValues[numPoints - 1];
+					lastValueAccessed = numPoints - 2;
+					t = tempValues[numPoints - 1];
 				}
 			}
 
-		return result;
+		return t;
 	}
 
 	private void calcMeanAndStdDev() {
-		if (numPoints > 0)
+		if (numPoints > 0) {
 			if (interval > 0.0) {
-				MathUtil.meanandStdDev(TValues, numPoints, mean, stdDev);
+				MathUtil.meanandStdDev(tempValues, numPoints, mean, stdDev);
 			} else {
-				MathUtil.curveMeanAndStdDev(TValues, hours, numPoints, mean, stdDev);
+				MathUtil.curveMeanAndStdDev(tempValues, hours, numPoints, mean, stdDev);
 			}
+		}
 
 		setPropertyValue(4, String.format("%.8g", mean[0]));
 		setPropertyValue(5, String.format("%.8g", stdDev[0]));
@@ -153,14 +157,12 @@ public class TShapeObj extends DSSObject {
 	}
 
 	public double getMean() {
-		if (!stdDevCalculated)
-			calcMeanAndStdDev();
+		if (!stdDevCalculated) calcMeanAndStdDev();
 		return mean[0];
 	}
 
 	public double getStdDev() {
-		if (!stdDevCalculated)
-			calcMeanAndStdDev();
+		if (!stdDevCalculated) calcMeanAndStdDev();
 		return stdDev[0];
 	}
 
@@ -170,7 +172,7 @@ public class TShapeObj extends DSSObject {
 	public double getTemperature(int i) {
 		if (i < numPoints && i >= 0) {
 			lastValueAccessed = i;
-			return TValues[i];
+			return tempValues[i];
 		} else {
 			return 0.0;
 		}
@@ -202,9 +204,6 @@ public class TShapeObj extends DSSObject {
 		for (int i = 0; i < getParentClass().getNumProperties(); i++) {
 			switch (i) {
 			case 2:
-				pw.println("~ " + getParentClass().getPropertyName(i) +
-					"=(" + getPropertyValue(i) + ")");
-				break;
 			case 3:
 				pw.println("~ " + getParentClass().getPropertyName(i) +
 					"=(" + getPropertyValue(i) + ")");
@@ -220,64 +219,59 @@ public class TShapeObj extends DSSObject {
 
 	@Override
 	public String getPropertyValue(int index) {
-		String result;
+		String val;
 		switch (index) {
 		case 2:
-			result = "[";
-			break;
 		case 3:
-			result = "[";
+			val = "[";
 			break;
 		default:
-			result = "";
+			val = "";
 			break;
 		}
 
 		switch (index) {
 		case 1:
-			result = String.format("%.8g", interval);
+			val = String.format("%.8g", interval);
 			break;
 		case 2:
 			for (int i = 0; i < numPoints; i++)
-				result = result + String.format("%-g, " , TValues[i]);
+				val = val + String.format("%-g, " , tempValues[i]);
 			break;
 		case 3:
 			if (hours != null)
 				for (int i = 0; i < numPoints; i++)
-					result = result + String.format("%-g, ", hours[i]);
+					val = val + String.format("%-g, ", hours[i]);
 			break;
 		case 4:
-			result = String.format("%.8g", mean[0]);
+			val = String.format("%.8g", mean[0]);
 			break;
 		case 5:
-			result = String.format("%.8g", stdDev[0]);
+			val = String.format("%.8g", stdDev[0]);
 			break;
 		case 9:
-			result = String.format("%.8g", interval * 3600.0);
+			val = String.format("%.8g", interval * 3600.0);
 			break;
 		case 10:
-			result = String.format("%.8g", interval * 60.0);
+			val = String.format("%.8g", interval * 60.0);
 			break;
 		default:
-			result = super.getPropertyValue(index);
+			val = super.getPropertyValue(index);
 			break;
 		}
 
 		switch (index) {
 		case 2:
-			result = result + "]";
-			break;
 		case 3:
-			result = result + "]";
+			val = val + "]";
 			break;
 		}
 
-		return result;
+		return val;
 	}
 
 	@Override
 	public void initPropertyValues(int arrayOffset) {
-
 		setPropertyValue(0, "0");  // number of points to expect
 		setPropertyValue(1, "1");  // default = 1.0 hr;
 		setPropertyValue(2, "");   // vector of multiplier values
@@ -291,17 +285,35 @@ public class TShapeObj extends DSSObject {
 		setPropertyValue(10, "60");   // minutes
 		setPropertyValue(11, "");  // action option
 
-		super.initPropertyValues(TShape.NumPropsThisClass);
+		super.initPropertyValues(TempShape.NumPropsThisClass);
 	}
 
-	// FIXME Private method in OpenDSS
 	public void saveToDblFile() {
-		throw new UnsupportedOperationException();
+		int i;
+		String fileName;
+		PrintWriter pw;
+
+		if (tempValues != null) {
+			try {
+				fileName = String.format("%s.dbl", getName());
+				pw = new PrintWriter(fileName);
+
+				for (i = 0; i < numPoints; i++)
+					pw.println(tempValues[i]);
+
+				DSS.globalResult = "temp=[dblfile=" + fileName + ']';
+
+				pw.close();
+			} catch (IOException e) {
+				DSS.doSimpleMsg("Error writing temperature shape values.", -1);
+			}
+		} else {
+			DSS.doSimpleMsg("TShape." + getName() + " temperatures not defined.", 622);
+		}
 	}
 
-	// FIXME Private method in OpenDSS
 	public void saveToSngFile() {
-		throw new UnsupportedOperationException();
+		saveToDblFile();
 	}
 
 	public void setMean(double value) {

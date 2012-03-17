@@ -446,6 +446,8 @@ public class LoadShapeObj extends DSSObject {
 				for (i = 0; i < numPoints; i++)
 					pw.println(QMultipliers[i]);
 
+				pw.close();
+
 				DSS.appendGlobalResult(" Qmult=[dblfile=" + fileName + ']');
 			} catch (IOException e) {
 				DSS.doSimpleMsg("Error writing load shape multipliers.", -1);

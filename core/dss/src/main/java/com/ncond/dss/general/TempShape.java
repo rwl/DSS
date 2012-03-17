@@ -1,10 +1,8 @@
 package com.ncond.dss.general;
 
 import java.io.BufferedReader;
-import java.io.DataInputStream;
-import java.io.FileInputStream;
+import java.io.FileReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 
 import com.ncond.dss.common.DSS;
 import com.ncond.dss.common.DSSClass;
@@ -13,13 +11,13 @@ import com.ncond.dss.common.Util;
 import com.ncond.dss.parser.Parser;
 import com.ncond.dss.shared.CommandList;
 
-public class TShape extends DSSClass {
+public class TempShape extends DSSClass {
 
 	public static final int NumPropsThisClass = 12;
 
-	public static TShapeObj activeTShapeObj;
+	public static TempShapeObj activeTempShapeObj;
 
-	public TShape() {
+	public TempShape() {
 		super();
 		className = "TShape";
 		classType = DSSClassDefs.DSS_OBJECT;
@@ -38,8 +36,9 @@ public class TShape extends DSSClass {
 	protected void defineProperties() {
 		final String CRLF = DSS.CRLF;
 
-		numProperties = TShape.NumPropsThisClass;
+		numProperties = TempShape.NumPropsThisClass;
 		countProperties();  // get inherited property count
+
 		allocatePropertyArrays();
 
 		// define property names
@@ -96,13 +95,13 @@ public class TShape extends DSSClass {
 				"Setting action=DblSave or SngSave will cause the present \"Temp\" values to be written to " +
 				"either a packed file of double or single. The filename is the TShape name. ";  // Action
 
-		activeProperty = TShape.NumPropsThisClass - 1;
+		activeProperty = TempShape.NumPropsThisClass - 1;
 		super.defineProperties();  // add defs of inherited properties to bottom of list
 	}
 
 	@Override
 	public int newObject(String objName) {
-		DSS.activeDSSObject = new TShapeObj(this, objName);
+		DSS.activeDSSObject = new TempShapeObj(this, objName);
 		return addObjectToList(DSS.activeDSSObject);
 	}
 
@@ -113,17 +112,16 @@ public class TShape extends DSSClass {
 	public int edit() {
 		Parser parser = Parser.getInstance();
 
-		int result = 0;
 		// continue parsing with contents of parser
-		activeTShapeObj = (TShapeObj) elementList.getActive();
-		DSS.activeDSSObject = activeTShapeObj;
+		activeTempShapeObj = (TempShapeObj) elementList.getActive();
+		DSS.activeDSSObject = activeTempShapeObj;
 
-		TShapeObj ats = activeTShapeObj;
+		TempShapeObj elem = activeTempShapeObj;
 
 		int paramPointer = -1;
 		String paramName = parser.getNextParam();
-
 		String param = parser.makeString();
+
 		while (param.length() > 0) {
 			if (paramName.length() == 0) {
 				paramPointer += 1;
@@ -132,32 +130,33 @@ public class TShape extends DSSClass {
 			}
 
 			if (paramPointer >= 0 && paramPointer < numProperties)
-				ats.setPropertyValue(paramPointer, param);
+				elem.setPropertyValue(paramPointer, param);
 
 			switch (paramPointer) {
 			case -1:
-				DSS.doSimpleMsg("Unknown parameter \"" + paramName + "\" for object \"" + getClassName() +"."+ ats.getName() + "\"", 610);
+				DSS.doSimpleMsg("Unknown parameter \"" + paramName + "\" for object \"" +
+						getClassName() + "." + elem.getName() + "\"", 610);
 				break;
 			case 0:
-				ats.setNumPoints(parser.makeInteger());
+				elem.setNumPoints(parser.makeInteger());
 				break;
 			case 1:
-				ats.setInterval(parser.makeDouble());
+				elem.setInterval(parser.makeDouble());
 				break;
 			case 2:
-				ats.setTValues( Util.resizeArray(ats.getTValues(), ats.getNumPoints()) );
+				elem.setTempValues(Util.resizeArray(elem.getTempValues(), elem.getNumPoints()));
 				// allow possible resetting (to a lower value) of num points when specifying temperatures not hours
-				ats.setNumPoints( Util.interpretDblArray(param, ats.getNumPoints(), ats.getTValues()) );   //parser.parseAsVector(Npts, Temps);
+				elem.setNumPoints(Util.interpretDblArray(param, elem.getNumPoints(), elem.getTempValues()));
 				break;
 			case 3:
-				ats.setHours( Util.resizeArray(ats.getHours(), ats.getNumPoints()) );
-				Util.interpretDblArray(param, ats.getNumPoints(), ats.getHours());   //parser.parseAsVector(Npts, Hours);
+				elem.setHours(Util.resizeArray(elem.getHours(), elem.getNumPoints()));
+				Util.interpretDblArray(param, elem.getNumPoints(), elem.getHours());
 				break;
 			case 4:
-				ats.setMean(parser.makeDouble());
+				elem.setMean(parser.makeDouble());
 				break;
 			case 5:
-				ats.setStdDev(parser.makeDouble());
+				elem.setStdDev(parser.makeDouble());
 				break;
 			case 6:
 				doCSVFile(param);
@@ -169,54 +168,38 @@ public class TShape extends DSSClass {
 				doDblFile(param);
 				break;
 			case 9:
-				ats.setInterval(parser.makeDouble() / 3600.0);  // convert seconds to hr
+				elem.setInterval(parser.makeDouble() / 3600.0);  // convert seconds to hr
 				break;
 			case 10:
-				ats.setInterval(parser.makeDouble() / 60.0);  // convert minutes to hr
+				elem.setInterval(parser.makeDouble() / 60.0);  // convert minutes to hr
 				break;
 			case 11:
 				switch (param.toLowerCase().charAt(0)) {
-				case 'd':
-					ats.saveToDblFile();
-					break;
-				case 's':
-					ats.saveToSngFile();
-					break;
+				case 'd': elem.saveToDblFile(); break;
+				case 's': elem.saveToSngFile(); break;
 				}
 				break;
 			default:
 				// inherited parameters
-				classEdit(activeTShapeObj, paramPointer - TShape.NumPropsThisClass);
+				classEdit(activeTempShapeObj, paramPointer - TempShape.NumPropsThisClass);
 				break;
 			}
 
 			switch (paramPointer) {
 			case 2:
-				ats.setStdDevCalculated(false);  // now calculated on demand
-				ats.setArrayPropertyIndex(paramPointer);
-				ats.setNumPoints(ats.getNumPoints());  //keep properties in order for save command  FIXME
-				break;
 			case 6:
-				ats.setStdDevCalculated(false);  // now calculated on demand
-				ats.setArrayPropertyIndex(paramPointer);
-				ats.setNumPoints(ats.getNumPoints());  // keep properties in order for save command
-				break;
 			case 7:
-				ats.setStdDevCalculated(false);  // now calculated on demand
-				ats.setArrayPropertyIndex(paramPointer);
-				ats.setNumPoints(ats.getNumPoints());  // keep properties in order for save command
-				break;
 			case 8:
-				ats.setStdDevCalculated(false);  // now calculated on demand
-				ats.setArrayPropertyIndex(paramPointer);
-				ats.setNumPoints(ats.getNumPoints());  // keep properties in order for save command
+				elem.setStdDevCalculated(false);  // now calculated on demand
+				elem.setArrayPropertyIndex(paramPointer);
+				elem.setNumPoints(elem.getNumPoints());  // keep properties in order for save command
 				break;
 			}
 
 			paramName = parser.getNextParam();
-			param     = parser.makeString();
+			param = parser.makeString();
 		}
-		return result;
+		return 0;
 	}
 
 	@Override
@@ -230,34 +213,40 @@ public class TShape extends DSSClass {
 
 	@Override
 	protected int makeLike(String shapeName) {
-		TShapeObj otherTShape;
-		int i, result = 0;
+		TempShapeObj other, elem;
+		int i, success = 0;
 
 		/* See if we can find this line code in the present collection */
-		otherTShape = (TShapeObj) find(shapeName);
-		if (otherTShape != null) {
-			TShapeObj aps = activeTShapeObj;
+		other = (TempShapeObj) find(shapeName);
 
-			aps.setNumPoints(otherTShape.getNumPoints());
-			aps.setInterval(otherTShape.getInterval());
-			aps.setTValues( Util.resizeArray(aps.getTValues(), aps.getNumPoints()) );
-			for (i = 0; i < aps.getNumPoints(); i++)
-				aps.getTValues()[i] = otherTShape.getTValues()[i];
-			if (aps.getInterval() > 0.0) {
-				aps.setHours(new double[0]);
+		if (other != null) {
+			elem = activeTempShapeObj;
+
+			elem.setNumPoints(other.getNumPoints());
+			elem.setInterval(other.getInterval());
+			elem.setTempValues(Util.resizeArray(elem.getTempValues(), elem.getNumPoints()));
+
+			for (i = 0; i < elem.getNumPoints(); i++)
+				elem.getTempValues()[i] = other.getTempValues()[i];
+
+			if (elem.getInterval() > 0.0) {
+				elem.setHours(new double[0]);
 			} else {
-				aps.setHours( Util.resizeArray(aps.getHours(), aps.getNumPoints()) );
+				elem.setHours( Util.resizeArray(elem.getHours(), elem.getNumPoints()) );
 			}
-			for (i = 0; i < aps.getNumPoints(); i++)
-				aps.getHours()[i] = otherTShape.getHours()[i];
 
-			for (i = 0; i < aps.getParentClass().getNumProperties(); i++)
-				aps.setPropertyValue(i, otherTShape.getPropertyValue(i));
+			for (i = 0; i < elem.getNumPoints(); i++)
+				elem.getHours()[i] = other.getHours()[i];
+
+			for (i = 0; i < elem.getParentClass().getNumProperties(); i++)
+				elem.setPropertyValue(i, other.getPropertyValue(i));
+
+			success = 1;
 		} else {
 			DSS.doSimpleMsg("Error in TShape makeLike: \"" + shapeName + "\" not found.", 611);
 		}
 
-		return result;
+		return success;
 	}
 
 	@Override
@@ -267,67 +256,63 @@ public class TShape extends DSSClass {
 	}
 
 	public String getCode() {
-		return ((TShapeObj) elementList.getActive()).getName();
+		return ((TempShapeObj) elementList.getActive()).getName();
 	}
 
 	public void setCode(String value) {
-		activeTShapeObj = null;
-		TShapeObj pTShapeObj = (TShapeObj) elementList.getFirst();
-		while (pTShapeObj != null) {
-			if (pTShapeObj.getName().equalsIgnoreCase(value)) {
-				activeTShapeObj = pTShapeObj;
+		activeTempShapeObj = null;
+		TempShapeObj elem = (TempShapeObj) elementList.getFirst();
+		while (elem != null) {
+			if (elem.getName().equalsIgnoreCase(value)) {
+				activeTempShapeObj = elem;
 				return;
 			}
 
-			pTShapeObj = (TShapeObj) elementList.getNext();
+			elem = (TempShapeObj) elementList.getNext();
 		}
 
-		DSS.doSimpleMsg("TShape: \"" + value + "\" not found.", 612);
+		DSS.doSimpleMsg("TShape: \"" + value + "\" not found", 612);
 	}
 
 	private void doCSVFile(String fileName) {
-		FileInputStream fis;
-		DataInputStream dis;
+		FileReader fr;
 		BufferedReader br;
 
 		String s;
 		Parser parser;
 
 		try {
-			fis = new FileInputStream(fileName);
-			dis = new DataInputStream(fis);
-			br = new BufferedReader(new InputStreamReader(dis));
+			fr = new FileReader(fileName);
+			br = new BufferedReader(fr);
 
-			TShapeObj ats = activeTShapeObj;
+			TempShapeObj elem = activeTempShapeObj;
 
-			ats.setTValues( Util.resizeArray(ats.getTValues(), ats.getNumPoints()) );
+			elem.setTempValues(Util.resizeArray(elem.getTempValues(), elem.getNumPoints()));
 
-			if (ats.getInterval() == 0.0)
-				ats.setHours( Util.resizeArray(ats.getHours(), ats.getNumPoints()) );
+			if (elem.getInterval() == 0.0)
+				elem.setHours(Util.resizeArray(elem.getHours(), elem.getNumPoints()));
+
 			int i = 0;
-			while (((s = br.readLine()) != null) && i < ats.getNumPoints()) {
+			while (((s = br.readLine()) != null) && i < elem.getNumPoints()) {
 				/* Aux parser allows commas or white space */
 				parser = DSS.auxParser;
 				parser.setCmdString(s);
-				if (ats.getInterval() == 0.0) {
+				if (elem.getInterval() == 0.0) {
 					parser.getNextParam();
-					ats.getHours()[i] = parser.makeDouble();
+					elem.getHours()[i] = parser.makeDouble();
 				}
 				parser.getNextParam();
-				ats.getTValues()[i] = parser.makeDouble();
+				elem.getTempValues()[i] = parser.makeDouble();
 				i += 1;
 			}
-			fis.close();
-			dis.close();
-			br.close();
-			if (i != ats.getNumPoints() - 1)
-				ats.setNumPoints(i);
 
-			fis.close();
-			dis.close();
+			if (i != elem.getNumPoints() - 1)
+				elem.setNumPoints(i);
+
 			br.close();
+			fr.close();
 		} catch (IOException e) {
-			DSS.doSimpleMsg("Error processing CSV file: \"" + fileName + ". " + e.getMessage(), 604);
+			DSS.doSimpleMsg("Error processing CSV file \"" + fileName + "\": " + e.getMessage(), 604);
 			return;
 		}
 	}
@@ -337,7 +322,39 @@ public class TShape extends DSSClass {
 	}
 
 	private void doDblFile(String fileName) {
-		throw new UnsupportedOperationException();
+		FileReader fr;
+		BufferedReader br;
+		int i;
+		String s;
+
+		TempShapeObj elem = activeTempShapeObj;
+
+		try {
+			fr = new FileReader(fileName);
+			br = new BufferedReader(fr);
+
+			elem.setTempValues(Util.resizeArray(elem.getTempValues(), elem.getNumPoints()));
+			if (elem.getInterval() == 0.0)
+				elem.setHours(Util.resizeArray(elem.getHours(), elem.getNumPoints()));
+
+			i = 0;
+			s = "";
+			while (s != null && i < elem.getNumPoints()) {
+				if (elem.getInterval() == 0.0) {
+					s = br.readLine();
+					elem.getHours()[i] = Double.parseDouble(s);
+				}
+				s = br.readLine();
+				elem.getTempValues()[i] = Double.parseDouble(s);
+				i += 1;
+			}
+
+			br.close();
+			fr.close();
+		} catch (IOException e) {
+			DSS.doSimpleMsg("Error processing price shape file \"" + fileName + "\": " + e.getMessage(), 604);
+			return;
+		}
 	}
 
 	/**

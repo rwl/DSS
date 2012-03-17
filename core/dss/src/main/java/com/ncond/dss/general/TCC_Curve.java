@@ -34,6 +34,7 @@ public class TCC_Curve extends DSSClass {
 
 		numProperties = TCC_Curve.NumPropsThisClass;
 		countProperties();  // get inherited property count
+
 		allocatePropertyArrays();
 
 		// define property names
@@ -45,10 +46,10 @@ public class TCC_Curve extends DSSClass {
 		propertyHelp[0] = "Number of points to expect in time-current arrays.";  // number of points to expect
 		propertyHelp[1] = "Array of current (or voltage) values corresponding to time values (see help on T_Array).";  // vector of multiplier values
 		propertyHelp[2] = "Array of time values in sec. Typical array syntax: " +CRLF+
-					"t_array = (1, 2, 3, 4, ...)" +CRLF+CRLF+
-					"Can also substitute a file designation: " +CRLF+
-					"t_array =  (file=filename)"+CRLF+CRLF+
-					"The specified file has one value per line.";
+				"t_array = (1, 2, 3, 4, ...)" +CRLF+CRLF+
+				"Can also substitute a file designation: " +CRLF+
+				"t_array =  (file=filename)"+CRLF+CRLF+
+				"The specified file has one value per line.";
 
 		activeProperty = TCC_Curve.NumPropsThisClass - 1;
 		super.defineProperties();  // add defs of inherited properties to bottom of list
@@ -62,27 +63,23 @@ public class TCC_Curve extends DSSClass {
 
 	private void calcLogPoints(double[] X, double[] logX, int n) {
 		for (int i = 0; i < n; i++)
-			if (X[i] > 0.0) {
-				logX[i] = Math.log(X[i]);
-			} else {
-				logX[i] = Math.log(0.001);
-			}
+			logX[i] = X[i] > 0.0 ? Math.log(X[i]) : Math.log(0.001);
 	}
 
 	@Override
 	public int edit() {
-		int result = 0;
 		// continue parsing with contents of parser
 		activeTCC_CurveObj = (TCC_CurveObj) elementList.getActive();
 		DSS.activeDSSObject = activeTCC_CurveObj;
 
 		Parser parser = Parser.getInstance();
 
-		TCC_CurveObj atc = activeTCC_CurveObj;
+		TCC_CurveObj elem = activeTCC_CurveObj;
 
 		int paramPointer = -1;
 		String paramName = parser.getNextParam();
 		String param = parser.makeString();
+
 		while (param.length() > 0) {
 			if (paramName.length() == 0) {
 				paramPointer += 1;
@@ -91,20 +88,21 @@ public class TCC_Curve extends DSSClass {
 			}
 
 			if (paramPointer >= 0 && paramPointer < numProperties)
-				atc.setPropertyValue(paramPointer, param);
+				elem.setPropertyValue(paramPointer, param);
 
 			switch (paramPointer) {
 			case -1:
-				DSS.doSimpleMsg("Unknown parameter \"" + paramName + "\" for object \"" + getClassName() +"."+ atc.getName() + "\"", 420);
+				DSS.doSimpleMsg("Unknown parameter \"" + paramName + "\" for object \"" +
+						getClassName() + "." + elem.getName() + "\"", 420);
 				break;
 			case 0:
-				atc.setNpts(parser.makeInteger());
+				elem.setNpts(parser.makeInteger());
 				break;
 			case 1:
-				Util.interpretDblArray(param, atc.getNpts(), atc.getCValues());   // Parser.ParseAsVector(Npts, Multipliers);
+				Util.interpretDblArray(param, elem.getNpts(), elem.getCValues());
 				break;
 			case 2:
-				Util.interpretDblArray(param, atc.getNpts(), atc.getTValues());   // Parser.ParseAsVector(Npts, Hours);
+				Util.interpretDblArray(param, elem.getNpts(), elem.getTValues());
 				break;
 			default:
 				// inherited parameters
@@ -114,16 +112,14 @@ public class TCC_Curve extends DSSClass {
 
 			switch (paramPointer) {
 			case 0:  // reallocate arrays to correspond to npts
-				atc.setCValues( Util.resizeArray(atc.getCValues(), atc.getNpts()) );
-				atc.setLogC( Util.resizeArray(atc.getLogC(), atc.getNpts()) );
-				atc.setTValues( Util.resizeArray(atc.getTValues(), atc.getNpts()) );
-				atc.setLogT( Util.resizeArray(atc.getLogT(), atc.getNpts()) );
+				elem.setCValues(Util.resizeArray(elem.getCValues(), elem.getNpts()));
+				elem.setLogC(Util.resizeArray(elem.getLogC(), elem.getNpts()));
+				elem.setTValues(Util.resizeArray(elem.getTValues(), elem.getNpts()));
+				elem.setLogT(Util.resizeArray(elem.getLogT(), elem.getNpts()));
 				break;
 			case 1:
-				calcLogPoints(atc.getCValues(), atc.getLogC(), atc.getNpts());
-				break;
 			case 2:
-				calcLogPoints(atc.getTValues(), atc.getLogT(), atc.getNpts());
+				calcLogPoints(elem.getTValues(), elem.getLogT(), elem.getNpts());
 				break;
 			}
 
@@ -131,37 +127,42 @@ public class TCC_Curve extends DSSClass {
 			param = parser.makeString();
 		}
 
-		return result;
+		return 0;
 	}
 
 	@Override
 	protected int makeLike(String name) {
-		int i, result = 0;
-		/* See if we can find this line code in the present collection */
-		TCC_CurveObj otherTCC_Curve = (TCC_CurveObj) find(name);
-		if (otherTCC_Curve != null) {
-			TCC_CurveObj atc = activeTCC_CurveObj;
-			atc.setNpts(otherTCC_Curve.getNpts());
-			atc.setCValues( Util.resizeArray(atc.getCValues(), atc.getNpts()) );
-			atc.setLogC( Util.resizeArray(atc.getLogC(), atc.getNpts()) );
-			atc.setTValues( Util.resizeArray(atc.getTValues(), atc.getNpts()) );
-			atc.setLogT( Util.resizeArray(atc.getLogT(), atc.getNpts()) );
-			for (i = 0; i < atc.getNpts(); i++)
-				atc.getCValues()[i] = otherTCC_Curve.getCValues()[i];
-			for (i = 0; i < atc.getNpts(); i++)
-				atc.getTValues()[i] = otherTCC_Curve.getTValues()[i];
-			for (i = 0; i < atc.getNpts(); i++)
-				atc.getLogC()[i] = otherTCC_Curve.getLogC()[i];
-			for (i = 0; i < atc.getNpts(); i++)
-				atc.getLogT()[i] = otherTCC_Curve.getLogT()[i];
+		int i, success = 0;
 
-			for (i = 0; i < atc.getParentClass().getNumProperties(); i++)
-				atc.setPropertyValue(i, otherTCC_Curve.getPropertyValue(i));
+		/* See if we can find this line code in the present collection */
+		TCC_CurveObj other = (TCC_CurveObj) find(name);
+
+		if (other != null) {
+			TCC_CurveObj elem = activeTCC_CurveObj;
+			elem.setNpts(other.getNpts());
+			elem.setCValues( Util.resizeArray(elem.getCValues(), elem.getNpts()) );
+			elem.setLogC( Util.resizeArray(elem.getLogC(), elem.getNpts()) );
+			elem.setTValues( Util.resizeArray(elem.getTValues(), elem.getNpts()) );
+			elem.setLogT( Util.resizeArray(elem.getLogT(), elem.getNpts()) );
+			for (i = 0; i < elem.getNpts(); i++)
+				elem.getCValues()[i] = other.getCValues()[i];
+			for (i = 0; i < elem.getNpts(); i++)
+				elem.getTValues()[i] = other.getTValues()[i];
+			for (i = 0; i < elem.getNpts(); i++)
+				elem.getLogC()[i] = other.getLogC()[i];
+			for (i = 0; i < elem.getNpts(); i++)
+				elem.getLogT()[i] = other.getLogT()[i];
+
+			for (i = 0; i < elem.getParentClass().getNumProperties(); i++)
+				elem.setPropertyValue(i, other.getPropertyValue(i));
+
+			success = 1;
 		} else {
-			DSS.doSimpleMsg("Error in TCC_Curve.makeLike(): \"" + name + "\" not found.", 421);
+			DSS.doSimpleMsg("Error in TCC_Curve.makeLike(): \"" +
+					name + "\" not found", 421);
 		}
 
-		return result;
+		return success;
 	}
 
 	@Override
@@ -175,8 +176,10 @@ public class TCC_Curve extends DSSClass {
 	}
 
 	public void setCode(String value) {
-		activeTCC_CurveObj = null;
 		TCC_CurveObj curve;
+
+		activeTCC_CurveObj = null;
+
 		for (int i = 0; i < elementList.size(); i++) {
 			curve = (TCC_CurveObj) elementList.get(i);
 			if (curve.getName().equalsIgnoreCase(value)) {

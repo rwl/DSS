@@ -28,6 +28,7 @@ public class WireData extends ConductorData {
 	protected void defineProperties() {
 		numProperties = WireData.NumPropsThisClass;
 		countProperties();   // get inherited property count
+
 		allocatePropertyArrays();
 
 		activeProperty = WireData.NumPropsThisClass - 1;
@@ -36,25 +37,24 @@ public class WireData extends ConductorData {
 
 	@Override
 	public int newObject(String objName) {
-
 		DSS.activeDSSObject = new WireDataObj(this, objName);
 		return addObjectToList(DSS.activeDSSObject);
 	}
 
 	@Override
 	public int edit() {
-		int result = 0;
 		// continue parsing with contents of parser
 		activeConductorDataObj = (ConductorDataObj) elementList.getActive();
 		DSS.activeDSSObject = activeConductorDataObj;
 
 		Parser parser = Parser.getInstance();
 
-		ConductorDataObj acd = activeConductorDataObj;
+		ConductorDataObj elem = activeConductorDataObj;
 
 		int paramPointer = -1;
 		String paramName = parser.getNextParam();
 		String param = parser.makeString();
+
 		while (param.length() > 0) {
 			if (paramName.length() == 0) {
 				paramPointer += 1;
@@ -63,11 +63,12 @@ public class WireData extends ConductorData {
 			}
 
 			if (paramPointer >= 0 && paramPointer < numProperties)
-				acd.setPropertyValue(paramPointer, param);
+				elem.setPropertyValue(paramPointer, param);
 
 			switch (paramPointer) {
 			case -1:
-				DSS.doSimpleMsg("Unknown parameter \"" + paramName + "\" for object \"" + getClassName() +'.'+ acd.getName() + "\"", 101);
+				DSS.doSimpleMsg("Unknown parameter \"" + paramName + "\" for object \"" +
+						getClassName() +'.'+ elem.getName() + "\"", 101);
 				break;
 			default:
 				// inherited parameters
@@ -79,27 +80,30 @@ public class WireData extends ConductorData {
 			param = parser.makeString();
 		}
 
-		return result;
+		return 0;
 	}
 
 	@Override
 	protected int makeLike(String name) {
-		int result = 0;
+		int success = 0;
+
 		/* See if we can find this line code in the present collection */
 		WireDataObj otherWireData = (WireDataObj) find(name);
-		if (otherWireData != null) {
 
-			ConductorDataObj awo = activeConductorDataObj;
+		if (otherWireData != null) {
+			ConductorDataObj elem = activeConductorDataObj;
 
 			classMakeLike(otherWireData);
 
-			for (int i = 0; i < awo.getParentClass().getNumProperties(); i++)
-				awo.setPropertyValue(i, otherWireData.getPropertyValue(i));
-			result = 1;
+			for (int i = 0; i < elem.getParentClass().getNumProperties(); i++)
+				elem.setPropertyValue(i, otherWireData.getPropertyValue(i));
+
+			success = 1;
 		} else {
-			DSS.doSimpleMsg("Error in WireData.makeLike: \"" + name + "\" not found.", 102);
+			DSS.doSimpleMsg("Error in WireData.makeLike: \"" +
+					name + "\" not found.", 102);
 		}
-		return result;
+		return success;
 	}
 
 	@Override
@@ -114,9 +118,10 @@ public class WireData extends ConductorData {
 	}
 
 	public void setCode(String value) {
+		WireDataObj wireData;
 
 		activeConductorDataObj = null;
-		WireDataObj wireData;
+
 		for (int i = 0; i < elementList.size(); i++) {
 			wireData = (WireDataObj) elementList.get(i);
 			if (wireData.getName().equalsIgnoreCase(value)) {

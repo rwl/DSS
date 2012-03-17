@@ -28,6 +28,7 @@ public class TSData extends CableData {
 	protected void defineProperties() {
 		numProperties = TSData.NumPropsThisClass;
 		countProperties();  // get inherited property count
+
 		allocatePropertyArrays();
 
 		propertyName[0] = "DiaShield";
@@ -55,16 +56,16 @@ public class TSData extends CableData {
 	public int edit() {
 		Parser parser = Parser.getInstance();
 
-		int result = 0;
 		// continue parsing with contents of parser
 		ConductorData.activeConductorDataObj = (ConductorDataObj) elementList.getActive();
 		DSS.activeDSSObject = ConductorData.activeConductorDataObj;
 
-		TSDataObj tsd = (TSDataObj) ConductorData.activeConductorDataObj;
+		TSDataObj elem = (TSDataObj) ConductorData.activeConductorDataObj;
 
 		int paramPointer = -1;
 		String paramName = parser.getNextParam();
 		String param = parser.makeString();
+
 		while (param.length() > 0) {
 			if (paramName.length() == 0) {
 				paramPointer += 1;
@@ -73,20 +74,21 @@ public class TSData extends CableData {
 			}
 
 			if (paramPointer >= 0 && paramPointer < numProperties)
-				tsd.setPropertyValue(paramPointer, param);
+				elem.setPropertyValue(paramPointer, param);
 
 			switch (paramPointer) {
 			case -1:
-				DSS.doSimpleMsg("Unknown parameter \"" + paramName + "\" for object \"" + getClassName() +"."+ tsd.getName() + "\"", 101);
+				DSS.doSimpleMsg("Unknown parameter \"" + paramName + "\" for object \"" +
+						getClassName() +"."+ elem.getName() + "\"", 101);
 				break;
 			case 0:
-				tsd.setDiaShield(parser.makeDouble());
+				elem.setDiaShield(parser.makeDouble());
 				break;
 			case 1:
-				tsd.setTapeLayer(parser.makeDouble());
+				elem.setTapeLayer(parser.makeDouble());
 				break;
 			case 2:
-				tsd.setTapeLap(parser.makeDouble());
+				elem.setTapeLap(parser.makeDouble());
 				break;
 			default:
 				// Inherited parameters
@@ -97,16 +99,16 @@ public class TSData extends CableData {
 			/* Check for critical errors */
 			switch (paramPointer) {
 			case 0:
-				if (tsd.getDiaShield() <= 0.0)
-					DSS.doSimpleMsg("Error: Diameter over shield must be positive for TapeShieldData " + tsd.getName(), 999);
+				if (elem.getDiaShield() <= 0.0)
+					DSS.doSimpleMsg("Diameter over shield must be positive for TapeShieldData " + elem.getName(), 999);
 				break;
 			case 1:
-				if (tsd.getTapeLayer() <= 0.0)
-					DSS.doSimpleMsg("Error: Tape shield thickness must be positive for TapeShieldData " + tsd.getName(), 999);
+				if (elem.getTapeLayer() <= 0.0)
+					DSS.doSimpleMsg("Tape shield thickness must be positive for TapeShieldData " + elem.getName(), 999);
 				break;
 			case 2:
-				if ((tsd.getTapeLap() < 0.0) || (tsd.getTapeLap() > 100.0))
-					DSS.doSimpleMsg("Error: Tap lap must range from 0 to 100 for TapeShieldData " + tsd.getName(), 999);
+				if ((elem.getTapeLap() < 0.0) || (elem.getTapeLap() > 100.0))
+					DSS.doSimpleMsg("Tap lap must range from 0 to 100 for TapeShieldData " + elem.getName(), 999);
 				break;
 			}
 
@@ -114,27 +116,27 @@ public class TSData extends CableData {
 			param = parser.makeString();
 		}
 
-		return result;
+		return 0;
 	}
 
 	@Override
 	protected int makeLike(String TSName) {
-		int result = 0;
-		TSDataObj otherData = (TSDataObj) find(TSName);
-		if (otherData != null) {
-			TSDataObj tsd = (TSDataObj) ConductorData.activeConductorDataObj;
+		int success = 0;
+		TSDataObj other = (TSDataObj) find(TSName);
+		if (other != null) {
+			TSDataObj elem = (TSDataObj) ConductorData.activeConductorDataObj;
 
-			tsd.setDiaShield(otherData.getDiaShield());
-			tsd.setTapeLayer(otherData.getTapeLayer());
-			tsd.setTapeLap(otherData.getTapeLap());
-			classMakeLike(otherData);
-			for (int i = 0; i < tsd.getParentClass().getNumProperties(); i++)
-				tsd.setPropertyValue(i, otherData.getPropertyValue(i));
-			result = 1;
+			elem.setDiaShield(other.getDiaShield());
+			elem.setTapeLayer(other.getTapeLayer());
+			elem.setTapeLap(other.getTapeLap());
+			classMakeLike(other);
+			for (int i = 0; i < elem.getParentClass().getNumProperties(); i++)
+				elem.setPropertyValue(i, other.getPropertyValue(i));
+			success = 1;
 		} else {
 			DSS.doSimpleMsg("Error in TapeShield makeLike: \"" + TSName + "\" not found.", 102);
 		}
-		return result;
+		return success;
 	}
 
 	@Override
@@ -149,15 +151,15 @@ public class TSData extends CableData {
 
 	public void setCode(String value) {
 		ConductorData.activeConductorDataObj = null;
-		TSDataObj pTSDataObj = (TSDataObj) elementList.getFirst();
-		while (pTSDataObj != null) {
-			if (pTSDataObj.getName().equalsIgnoreCase(value)) {
-				ConductorData.activeConductorDataObj = pTSDataObj;
+		TSDataObj elem = (TSDataObj) elementList.getFirst();
+		while (elem != null) {
+			if (elem.getName().equalsIgnoreCase(value)) {
+				ConductorData.activeConductorDataObj = elem;
 				return;
 			}
-			pTSDataObj = (TSDataObj) elementList.getNext();
+			elem = (TSDataObj) elementList.getNext();
 		}
-		DSS.doSimpleMsg("TSData: \"" + value + "\" not found.", 103);
+		DSS.doSimpleMsg("TSData: \"" + value + "\" not found", 103);
 	}
 
 }

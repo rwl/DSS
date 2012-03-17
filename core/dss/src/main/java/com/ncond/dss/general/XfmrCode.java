@@ -37,6 +37,7 @@ public class XfmrCode extends DSSClass {
 
 		numProperties = XfmrCode.NumPropsThisClass;
 		countProperties();  // get inherited property count
+
 		allocatePropertyArrays();
 
 		propertyName[0] = "phases";
@@ -151,41 +152,33 @@ public class XfmrCode extends DSSClass {
 		return addObjectToList(DSS.activeDSSObject);
 	}
 
-	private void setActiveWinding(int w) {
-		XfmrCodeObj axc = activeXfmrCodeObj;
-
-		if (w >= 0 && w < axc.getNumWindings()) {
-			axc.setActiveWinding(w);
-		} else {
-			DSS.doSimpleMsg("Wdg parameter invalid for \"" + activeXfmrCodeObj.getName() + "\"", 112);
-		}
-	}
-
 	private void interpretWindings(String s, WdgParmChoice which) {
 		String str;
 
 		DSS.auxParser.setCmdString(s);
-		XfmrCodeObj axc = activeXfmrCodeObj;
-		for (int i = 0; i < axc.getNumWindings(); i++) {
-			axc.setActiveWinding(i);
+		XfmrCodeObj elem = activeXfmrCodeObj;
+
+		for (int i = 0; i < elem.getNumWindings(); i++) {
+			elem.setActiveWindingIdx(i);
 			DSS.auxParser.getNextParam();  // ignore any parameter name not expecting any
 			str = DSS.auxParser.makeString();
+
 			if (str.length() > 0) {
 				switch (which) {
 				case CONN:
-					axc.getWinding(axc.getActiveWinding()).setConnection(Util.interpretConnection(str));
+					elem.getWinding(elem.getActiveWindingIdx()).setConnection(Util.interpretConnection(str));
 					break;
 				case KV:
-					axc.getWinding(axc.getActiveWinding()).setKVLL(DSS.auxParser.makeDouble());
+					elem.getWinding(elem.getActiveWindingIdx()).setKVLL(DSS.auxParser.makeDouble());
 					break;
 				case KVA:
-					axc.getWinding(axc.getActiveWinding()).setKVA(DSS.auxParser.makeDouble());
+					elem.getWinding(elem.getActiveWindingIdx()).setKVA(DSS.auxParser.makeDouble());
 					break;
 				case R:
-					axc.getWinding(axc.getActiveWinding()).setRpu(0.01 * DSS.auxParser.makeDouble());
+					elem.getWinding(elem.getActiveWindingIdx()).setRpu(0.01 * DSS.auxParser.makeDouble());
 					break;
 				case TAP:
-					axc.getWinding(axc.getActiveWinding()).setPuTap(DSS.auxParser.makeDouble());
+					elem.getWinding(elem.getActiveWindingIdx()).setPuTap(DSS.auxParser.makeDouble());
 					break;
 				}
 			}
@@ -199,11 +192,12 @@ public class XfmrCode extends DSSClass {
 		boolean updateXsc = false;
 
 		Parser parser = Parser.getInstance();
-		XfmrCodeObj axc = activeXfmrCodeObj;
+		XfmrCodeObj elem = activeXfmrCodeObj;
 
 		int paramPointer = -1;
 		String paramName = parser.getNextParam();
 		String param = parser.makeString();
+
 		while (param.length() > 0) {
 			if (paramName.length() == 0) {
 				paramPointer += 1;
@@ -212,41 +206,42 @@ public class XfmrCode extends DSSClass {
 			}
 
 			if (paramPointer >= 0 && paramPointer < numProperties)
-				axc.setPropertyValue(paramPointer, param);
+				elem.setPropertyValue(paramPointer, param);
 
 			switch (paramPointer) {
 			case -1:
-				DSS.doSimpleMsg("Unknown parameter \"" + paramName + "\" for object \"XfmrCode." + axc.getName() + "\"", 110);
+				DSS.doSimpleMsg("Unknown parameter \"" + paramName + "\" for object \"XfmrCode." +
+						elem.getName() + "\"", 110);
 				break;
 			case 0:
-				axc.setNPhases(parser.makeInteger());
+				elem.setNPhases(parser.makeInteger());
 				break;
 			case 1:
-				axc.setNumWindings(parser.makeInteger());  // reallocate stuff if bigger
+				elem.setNumWindings(parser.makeInteger());  // reallocate stuff if bigger
 				break;
 			case 2:
-				axc.setActiveWinding(parser.makeInteger());
+				elem.setActiveWindingIdx(parser.makeInteger() - 1);
 				break;
 			case 3:
-				axc.getWinding(axc.getActiveWinding()).setConnection(Util.interpretConnection(param));
+				elem.getWinding(elem.getActiveWindingIdx()).setConnection(Util.interpretConnection(param));
 				break;
 			case 4:
-				axc.getWinding(axc.getActiveWinding()).setKVLL(parser.makeDouble());
+				elem.getWinding(elem.getActiveWindingIdx()).setKVLL(parser.makeDouble());
 				break;
 			case 5:
-				axc.getWinding(axc.getActiveWinding()).setKVA(parser.makeDouble());
+				elem.getWinding(elem.getActiveWindingIdx()).setKVA(parser.makeDouble());
 				break;
 			case 6:
-				axc.getWinding(axc.getActiveWinding()).setPuTap(parser.makeDouble());
+				elem.getWinding(elem.getActiveWindingIdx()).setPuTap(parser.makeDouble());
 				break;
 			case 7:
-				axc.getWinding(axc.getActiveWinding()).setRpu(parser.makeDouble() * 0.01);  // %R
+				elem.getWinding(elem.getActiveWindingIdx()).setRpu(parser.makeDouble() * 0.01);  // %R
 				break;
 			case 8:
-				axc.getWinding(axc.getActiveWinding()).setRNeut(parser.makeDouble());
+				elem.getWinding(elem.getActiveWindingIdx()).setRNeut(parser.makeDouble());
 				break;
 			case 9:
-				axc.getWinding(axc.getActiveWinding()).setXNeut(parser.makeDouble());
+				elem.getWinding(elem.getActiveWindingIdx()).setXNeut(parser.makeDouble());
 				break;
 			case 10:
 				interpretWindings(param, WdgParmChoice.CONN);
@@ -261,58 +256,58 @@ public class XfmrCode extends DSSClass {
 				interpretWindings(param, WdgParmChoice.TAP);
 				break;
 			case 14:
-				axc.setXHL(parser.makeDouble() * 0.01);
+				elem.setXHL(parser.makeDouble() * 0.01);
 				break;
 			case 15:
-				axc.setXHT(parser.makeDouble() * 0.01);
+				elem.setXHT(parser.makeDouble() * 0.01);
 				break;
 			case 16:
-				axc.setXLT(parser.makeDouble() * 0.01);
+				elem.setXLT(parser.makeDouble() * 0.01);
 				break;
 			case 17:
-				parser.parseAsVector(((axc.getNumWindings() - 1) * axc.getNumWindings() / 2), axc.getXSC());
+				parser.parseAsVector(((elem.getNumWindings() - 1) * elem.getNumWindings() / 2), elem.getXSC());
 				break;
 			case 18:
-				axc.setThermalTimeConst(parser.makeDouble());
+				elem.setThermalTimeConst(parser.makeDouble());
 				break;
 			case 19:
-				axc.setNThermal(parser.makeDouble());
+				elem.setNThermal(parser.makeDouble());
 				break;
 			case 20:
-				axc.setMThermal(parser.makeDouble());
+				elem.setMThermal(parser.makeDouble());
 				break;
 			case 21:
-				axc.setLRise(parser.makeDouble());
+				elem.setLRise(parser.makeDouble());
 				break;
 			case 22:
-				axc.setHSRise(parser.makeDouble());
+				elem.setHSRise(parser.makeDouble());
 				break;
 			case 23:
-				axc.setPctLoadLoss(parser.makeDouble());
+				elem.setPctLoadLoss(parser.makeDouble());
 				break;
 			case 24:
-				axc.setPctNoLoadLoss(parser.makeDouble());
+				elem.setPctNoLoadLoss(parser.makeDouble());
 				break;
 			case 25:
-				axc.setNormMaxHKVA(parser.makeDouble());
+				elem.setNormMaxHKVA(parser.makeDouble());
 				break;
 			case 26:
-				axc.setEmergMaxHKVA(parser.makeDouble());
+				elem.setEmergMaxHKVA(parser.makeDouble());
 				break;
 			case 27:
-				axc.getWinding(axc.getActiveWinding()).setMaxTap(parser.makeDouble());
+				elem.getWinding(elem.getActiveWindingIdx()).setMaxTap(parser.makeDouble());
 				break;
 			case 28:
-				axc.getWinding(axc.getActiveWinding()).setMinTap(parser.makeDouble());
+				elem.getWinding(elem.getActiveWindingIdx()).setMinTap(parser.makeDouble());
 				break;
 			case 29:
-				axc.getWinding(axc.getActiveWinding()).setNumTaps(parser.makeInteger());
+				elem.getWinding(elem.getActiveWindingIdx()).setNumTaps(parser.makeInteger());
 				break;
 			case 30:
-				axc.setPctImag(parser.makeDouble());
+				elem.setPctImag(parser.makeDouble());
 				break;
 			case 31:
-				axc.setPpmFloatFactor(parser.makeDouble() * 1.0e-6);
+				elem.setPpmFloatFactor(parser.makeDouble() * 1.0e-6);
 				break;
 			case 32:
 				interpretWindings(param, WdgParmChoice.R);
@@ -326,61 +321,57 @@ public class XfmrCode extends DSSClass {
 			switch (paramPointer) {
 			// default all winding kVAs to first winding so latter do not have to be specified
 			case 5:
-				if (axc.getActiveWinding() == 1) {  // TODO Check zero based indexing
-					for (int i = 1; i < axc.getNumWindings(); i++)
-						axc.getWinding(i).setKVA(axc.getWinding(0).getKVA());  // TODO Check zero based indexing
-					axc.setNormMaxHKVA(1.1 * axc.getWinding(0).getKVA());    // defaults for new winding rating
-					axc.setEmergMaxHKVA(1.5 * axc.getWinding(0).getKVA());
+				if (elem.getActiveWindingIdx() == 0) {
+					for (int i = 1; i < elem.getNumWindings(); i++)
+						elem.getWinding(i).setKVA(elem.getWinding(0).getKVA());
+					elem.setNormMaxHKVA(1.1 * elem.getWinding(0).getKVA());    // defaults for new winding rating
+					elem.setEmergMaxHKVA(1.5 * elem.getWinding(0).getKVA());
 				} else {
-					if (axc.getNumWindings() == 2)
-						axc.getWinding(0).setKVA(axc.getWinding(1).getKVA());  // for 2-winding, force both kVAs to be same
+					if (elem.getNumWindings() == 2)
+						elem.getWinding(0).setKVA(elem.getWinding(1).getKVA());  // for 2-winding, force both kVAs to be same
 				}
-				// update LoadLosskW if winding %r changed; using only windings 1 and 2
+				// update loadLosskW if winding %r changed; using only windings 1 and 2
 				break;
 			case 7:
-				axc.setPctLoadLoss(axc.getWinding(0).getRpu() + axc.getWinding(1).getRpu() * 100.0);
+				elem.setPctLoadLoss(elem.getWinding(0).getRpu() + elem.getWinding(1).getRpu() * 100.0);
 				break;
 			case 12:
-				axc.setNormMaxHKVA(1.1 * axc.getWinding(0).getKVA());  // defaults for new winding rating
-				axc.setEmergMaxHKVA(1.5 * axc.getWinding(0).getKVA());
+				elem.setNormMaxHKVA(1.1 * elem.getWinding(0).getKVA());  // defaults for new winding rating
+				elem.setEmergMaxHKVA(1.5 * elem.getWinding(0).getKVA());
 				break;
 			case 14:
-				updateXsc = true;
-				break;
 			case 15:
-				updateXsc = true;
-				break;
 			case 16:
 				updateXsc = true;
 				break;
 			case 17:
-				for (int i = 0; i < ((axc.getNumWindings() - 1) * axc.getNumWindings() / 2); i++)
-					axc.getXSC()[i] = axc.getXSC()[i] * 0.01;  // Convert to per unit
+				for (int i = 0; i < ((elem.getNumWindings() - 1) * elem.getNumWindings() / 2); i++)
+					elem.getXSC()[i] = elem.getXSC()[i] * 0.01;  // convert to per unit
 				break;
 			case 23:  // assume load loss is split evenly between windings 1 and 2
-				axc.getWinding(0).setRpu(axc.getPctLoadLoss() / 2.0 / 100.0);
-				axc.getWinding(1).setRpu(axc.getWinding(0).getRpu());
+				elem.getWinding(0).setRpu(elem.getPctLoadLoss() / 2.0 / 100.0);
+				elem.getWinding(1).setRpu(elem.getWinding(0).getRpu());
 				break;
 			case 32:
-				axc.setPctLoadLoss( (axc.getWinding(0).getRpu() + axc.getWinding(1).getRpu()) * 100.0 ); // Keep this up to date
+				elem.setPctLoadLoss( (elem.getWinding(0).getRpu() + elem.getWinding(1).getRpu()) * 100.0 );  // keep this up to date
 			}
 			/* advance to next property on input line */
 			paramName = parser.getNextParam();
-			param     = parser.makeString();
+			param = parser.makeString();
 		}
 
 		if (updateXsc) {
-			if (axc.getNumWindings() <= 3) {
-				for (int i = 0; i < (axc.getNumWindings() * (axc.getNumWindings() - 1) / 2); i++) {
+			if (elem.getNumWindings() <= 3) {
+				for (int i = 0; i < (elem.getNumWindings() * (elem.getNumWindings() - 1) / 2); i++) {
 					switch (i) {
 					case 0:
-						axc.getXSC()[0] = axc.getXHL();
+						elem.getXSC()[0] = elem.getXHL();
 						break;
 					case 1:
-						axc.getXSC()[1] = axc.getXHT();
+						elem.getXSC()[1] = elem.getXHT();
 						break;
 					case 2:
-						axc.getXSC()[2] = axc.getXLT();
+						elem.getXSC()[2] = elem.getXLT();
 						break;
 					}
 				}
@@ -392,17 +383,18 @@ public class XfmrCode extends DSSClass {
 
 	@Override
 	protected int makeLike(String name) {
-		int i;
-		int result = 0;
+		int i, success = 0;
+
 		/* See if we can find this ode in the present collection */
 		XfmrCodeObj other = (XfmrCodeObj) find(name);
-		if (other != null) {
-			XfmrCodeObj axc = activeXfmrCodeObj;
 
-			axc.setNPhases(other.getNPhases());
-			axc.setNumWindings(other.getNumWindings());
-			for (i = 0; i < axc.getNumWindings(); i++) {
-				Winding wdg = axc.getWinding(i);
+		if (other != null) {
+			XfmrCodeObj elem = activeXfmrCodeObj;
+
+			elem.setNPhases(other.getNPhases());
+			elem.setNumWindings(other.getNumWindings());
+			for (i = 0; i < elem.getNumWindings(); i++) {
+				Winding wdg = elem.getWinding(i);
 
 				wdg.setConnection(other.getWinding(i).getConnection());
 				wdg.setKVLL(other.getWinding(i).getKVLL());
@@ -417,29 +409,29 @@ public class XfmrCode extends DSSClass {
 				wdg.setMaxTap(other.getWinding(i).getMaxTap());
 				wdg.setNumTaps(other.getWinding(i).getNumTaps());
 			}
-			axc.setXHL(other.getXHL());
-			axc.setXHT(other.getXHT());
-			axc.setXLT(other.getXLT());
-			for (i = 0; i < (axc.getNumWindings() * (axc.getNumWindings() - 1) / 2); i++)
-				axc.getXSC()[i] = other.getXSC()[i];
-			axc.setThermalTimeConst(other.getThermalTimeConst());
-			axc.setNThermal(other.getNThermal());
-			axc.setMThermal(other.getMThermal());
-			axc.setLRise(other.getLRise());
-			axc.setHSRise(other.getHSRise());
-			axc.setPctLoadLoss(other.getPctLoadLoss());
-			axc.setPctNoLoadLoss(other.getPctNoLoadLoss());
-			axc.setNormMaxHKVA(other.getNormMaxHKVA());
-			axc.setEmergMaxHKVA(other.getEmergMaxHKVA());
+			elem.setXHL(other.getXHL());
+			elem.setXHT(other.getXHT());
+			elem.setXLT(other.getXLT());
+			for (i = 0; i < (elem.getNumWindings() * (elem.getNumWindings() - 1) / 2); i++)
+				elem.getXSC()[i] = other.getXSC()[i];
+			elem.setThermalTimeConst(other.getThermalTimeConst());
+			elem.setNThermal(other.getNThermal());
+			elem.setMThermal(other.getMThermal());
+			elem.setLRise(other.getLRise());
+			elem.setHSRise(other.getHSRise());
+			elem.setPctLoadLoss(other.getPctLoadLoss());
+			elem.setPctNoLoadLoss(other.getPctNoLoadLoss());
+			elem.setNormMaxHKVA(other.getNormMaxHKVA());
+			elem.setEmergMaxHKVA(other.getEmergMaxHKVA());
 
-			for (i = 0; i < axc.getParentClass().getNumProperties(); i++){
-				axc.setPropertyValue(i, other.getPropertyValue(i));
-				result = 1;
+			for (i = 0; i < elem.getParentClass().getNumProperties(); i++){
+				elem.setPropertyValue(i, other.getPropertyValue(i));
 			}
+			success = 1;
 		} else {
 			DSS.doSimpleMsg("Error in XfmrCode.makeLike: \"" + name + "\" not found.", 102);
 		}
-		return result;
+		return success;
 	}
 
 	@Override
@@ -449,18 +441,19 @@ public class XfmrCode extends DSSClass {
 	}
 
 	public String getCode() {
-		XfmrCodeObj pXfmrCode = (XfmrCodeObj) elementList.getActive();
-		return pXfmrCode.getName();
+		XfmrCodeObj elem = (XfmrCodeObj) elementList.getActive();
+		return elem.getName();
 	}
 
 	public void setCode(String value) {
-		XfmrCodeObj xfmrCode;
+		XfmrCodeObj elem;
 
 		activeXfmrCodeObj = null;
+
 		for (int i = 0; i < elementList.size(); i++) {
-			xfmrCode = (XfmrCodeObj) elementList.get(i);
-			if (xfmrCode.getName().equalsIgnoreCase(value)) {
-				activeXfmrCodeObj = xfmrCode;
+			elem = (XfmrCodeObj) elementList.get(i);
+			if (elem.getName().equalsIgnoreCase(value)) {
+				activeXfmrCodeObj = elem;
 				return;
 			}
 		}

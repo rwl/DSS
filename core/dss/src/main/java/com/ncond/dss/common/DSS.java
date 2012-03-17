@@ -23,7 +23,7 @@ import com.ncond.dss.general.PriceShape;
 import com.ncond.dss.general.Spectrum;
 import com.ncond.dss.general.TCC_Curve;
 import com.ncond.dss.general.TSData;
-import com.ncond.dss.general.TShape;
+import com.ncond.dss.general.TempShape;
 import com.ncond.dss.general.WireData;
 import com.ncond.dss.general.XYCurve;
 import com.ncond.dss.meter.EnergyMeter;
@@ -115,7 +115,7 @@ public class DSS {
 
 	// commonly used classes
 	public static LoadShape loadShapeClass;
-	public static TShape TShapeClass;
+	public static TempShape TShapeClass;
 	public static PriceShape priceShapeClass;
 	public static XYCurve XYCurveClass;
 	public static GrowthShape growthShapeClass;

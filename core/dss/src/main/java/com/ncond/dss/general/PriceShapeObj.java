@@ -1,11 +1,13 @@
 package com.ncond.dss.general;
 
+import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 
 import lombok.Getter;
 import lombok.Setter;
 
+import com.ncond.dss.common.DSS;
 import com.ncond.dss.common.DSSClass;
 import com.ncond.dss.shared.MathUtil;
 
@@ -295,14 +297,32 @@ public class PriceShapeObj extends DSSObject {
 		super.initPropertyValues(PriceShape.NumPropsThisClass);
 	}
 
-	// FIXME Private method in OpenDSS
 	public void saveToDblFile() {
-		throw new UnsupportedOperationException();
+		saveToDblFile();
 	}
 
-	// FIXME Private method in OpenDSS
 	public void saveToSngFile() {
-		throw new UnsupportedOperationException();
+		int i;
+		String fileName;
+		PrintWriter pw;
+
+		if (priceValues != null) {
+			try {
+				fileName = String.format("%s.dbl", getName());
+				pw = new PrintWriter(fileName);
+
+				for (i = 0; i < numPoints; i++)
+					pw.println(priceValues[i]);
+
+				DSS.globalResult = "price=[dblfile=" + fileName + ']';
+
+				pw.close();
+			} catch (IOException e) {
+				DSS.doSimpleMsg("Error writing price shape values.", -1);
+			}
+		} else {
+			DSS.doSimpleMsg("PriceShape." + getName() + " price values not defined.", 622);
+		}
 	}
 
 	public void setMean(double value) {

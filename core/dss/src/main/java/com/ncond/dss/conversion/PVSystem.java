@@ -13,7 +13,7 @@ import com.ncond.dss.common.Util;
 import com.ncond.dss.common.types.Connection;
 import com.ncond.dss.common.types.Randomization;
 import com.ncond.dss.general.LoadShapeObj;
-import com.ncond.dss.general.TShapeObj;
+import com.ncond.dss.general.TempShapeObj;
 import com.ncond.dss.general.XYCurveObj;
 import com.ncond.dss.parser.Parser;
 import com.ncond.dss.shared.CommandList;
@@ -458,13 +458,13 @@ public class PVSystem extends PCClass {
 					break;
 
 				case T_YEARLY:
-					elem.setYearlyTShapeObj( (TShapeObj) DSS.TShapeClass.find(elem.getYearlyTShape()) );
+					elem.setYearlyTShapeObj( (TempShapeObj) DSS.TShapeClass.find(elem.getYearlyTShape()) );
 					break;
 				case T_DAILY:
-					elem.setDailyTShapeObj( (TShapeObj) DSS.TShapeClass.find(elem.getDailyTShape()) );
+					elem.setDailyTShapeObj( (TempShapeObj) DSS.TShapeClass.find(elem.getDailyTShape()) );
 					break;
 				case T_DUTY:
-					elem.setDutyTShapeObj( (TShapeObj) DSS.TShapeClass.find(elem.getDutyTShape()) );
+					elem.setDutyTShapeObj( (TempShapeObj) DSS.TShapeClass.find(elem.getDutyTShape()) );
 					break;
 
 				case INV_EFF_CURVE:

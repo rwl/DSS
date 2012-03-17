@@ -20,7 +20,7 @@ import com.ncond.dss.common.types.Connection;
 import com.ncond.dss.common.types.Randomization;
 import com.ncond.dss.general.LoadShapeObj;
 import com.ncond.dss.general.SpectrumObj;
-import com.ncond.dss.general.TShapeObj;
+import com.ncond.dss.general.TempShapeObj;
 import com.ncond.dss.general.XYCurveObj;
 import com.ncond.dss.parser.Parser;
 import com.ncond.dss.shared.CMatrix;
@@ -119,11 +119,11 @@ public class PVSystemObj extends PCElement {
 	private LoadShapeObj yearlyShapeObj;  // yearly irradiance shape for this PVSystem element
 
 	private String dailyTShape;
-	private TShapeObj dailyTShapeObj;
+	private TempShapeObj dailyTShapeObj;
 	private String dutyTShape;
-	private TShapeObj dutyTShapeObj;
+	private TempShapeObj dutyTShapeObj;
 	private String yearlyTShape;
-	private TShapeObj yearlyTShapeObj;
+	private TempShapeObj yearlyTShapeObj;
 
 	private String inverterCurve;
 	private XYCurveObj inverterCurveObj;

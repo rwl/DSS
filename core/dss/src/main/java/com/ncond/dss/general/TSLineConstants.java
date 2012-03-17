@@ -54,25 +54,21 @@ public class TSLineConstants extends CableConstants {
 	 */
 	@Override
 	public void calc(double f) {
-		Complex Zi, ZSpacing;
+		Complex Zi, Zspacing;
 		Boolean powerFreq;
-		Complex LFactor;
+		Complex Lfactor;
 		int i, j;
-		double Dij, YFactor;
+		double dij, Yfactor;
 		int reducedSize;
-		int n, idxi, idxj;
-		CMatrix ZMat, ZTemp;
-		double resTS, radTS;
+		int idxi, idxj;
+		CMatrix Zmat, Ztemp;
+		double resTS;//, radTS;
 		double gmrTS;
 		double denom, radIn, radOut;
 
 		setFrequency(f);
 
-		if (Zreduced != null) {
-			reducedSize = Zreduced.order();
-		} else {
-			reducedSize = 0;
-		}
+		reducedSize = (Zreduced != null) ? Zreduced.order() : 0;
 
 		Zreduced = null;
 		YcReduced = null;
@@ -81,44 +77,39 @@ public class TSLineConstants extends CableConstants {
 		YcMatrix.clear();
 
 		// add concentric neutrals to the end of conductor list; they are always reduced
-		n = numConds + numPhases;
-		ZMat = new CMatrix(n);
+		Zmat = new CMatrix(numConds + numPhases);
 
 		/* For less than 1 kHz use GMR to better match published data */
-		LFactor = new Complex(0.0, w * MU0 / TWO_PI);
-		if (f < 1000.0 && f > 40.0) {
-			powerFreq = true;
-		} else {
-			powerFreq = false;
-		}
+		Lfactor = new Complex(0.0, w * MU0 / TWO_PI);
+		powerFreq = (f < 1000.0 && f > 40.0);
 
 		// self impedances - TS cores and bare neutrals
 		for (i = 0; i < numConds; i++) {
 			Zi = getZint(i);
 			if (powerFreq) {  // for less than 1 kHz, use published GMR
 				Zi = new Complex(Zi.getReal(), 0.0);
-				ZSpacing = LFactor.multiply( Math.log(1.0 / GMR[i]) );  // use GMR
+				Zspacing = Lfactor.multiply(Math.log(1.0 / GMR[i]));  // use GMR
 			} else {
-				ZSpacing = LFactor.multiply( Math.log(1.0 / radius[i]) );
+				Zspacing = Lfactor.multiply(Math.log(1.0 / radius[i]));
 			}
-			ZMat.set(i, i, Zi.add( ZSpacing.add(getZe(i, i)) ));
+			Zmat.set(i, i, Zi.add(Zspacing.add(getZe(i, i))));
 		}
 
 		// TS self impedances
 		for (i = 0; i < numPhases; i++) {
 			resTS = 0.3183 * RHO_TS / (diaShield[i] * tapeLayer[i] * Math.sqrt(50.0 / (100.0 - tapeLap[i])));
 			gmrTS = 0.5 * (diaShield[i] - tapeLayer[i]);  // per Kersting, to center of TS
-			ZSpacing = LFactor.multiply( Math.log(1.0 / gmrTS) );
+			Zspacing = Lfactor.multiply(Math.log(1.0 / gmrTS));
 			Zi = new Complex(resTS, 0.0);
 			idxi = i + numConds;
-			ZMat.set(idxi, idxi, Zi.add( ZSpacing.add(getZe(i, i)) ));
+			Zmat.set(idxi, idxi, Zi.add(Zspacing.add(getZe(i, i))));
 		}
 
 		// mutual impedances - between TS cores and bare neutrals
 		for (i = 0; i < numConds; i++) {
 			for (j = 0; j < i; j++) {
-				Dij = Math.sqrt( MathUtil.sqr(X[i] - X[j]) + MathUtil.sqr(Y[i] - Y[j]) );
-				ZMat.setSym(i, j, LFactor.multiply( Math.log(1.0 / Dij) ).add(getZe(i, j)));
+				dij = Math.sqrt(MathUtil.sqr(X[i] - X[j]) + MathUtil.sqr(Y[i] - Y[j]));
+				Zmat.setSym(i, j, Lfactor.multiply( Math.log(1.0 / dij) ).add(getZe(i, j)));
 			}
 		}
 
@@ -128,39 +119,39 @@ public class TSLineConstants extends CableConstants {
 			for (j = 0; j < i; j++) {
 				// TS to other TS
 				idxj = j + numConds;
-				Dij = Math.sqrt( MathUtil.sqr(X[i] - X[j]) + MathUtil.sqr(Y[i] - Y[j]) );
-				ZMat.setSym(idxi, idxj, LFactor.multiply( Math.log(1.0 / Dij) ).add(getZe(i, j)));
+				dij = Math.sqrt(MathUtil.sqr(X[i] - X[j]) + MathUtil.sqr(Y[i] - Y[j]));
+				Zmat.setSym(idxi, idxj, Lfactor.multiply( Math.log(1.0 / dij) ).add(getZe(i, j)));
 			}
 			for (j = 0; j < numConds; j++) {
 				// CN to cores and bare neutrals
 				idxj = j;
 				gmrTS = 0.5 * (diaShield[i] - tapeLayer[i]);  // per Kersting, to center of TS
 				if (i == j) {  // TS to its own phase core
-					Dij = gmrTS;
+					dij = gmrTS;
 				} else {  // TS to another phase or bare neutral
-					Dij = Math.sqrt( MathUtil.sqr(X[i] - X[j]) + MathUtil.sqr(Y[i] - Y[j]) );
+					dij = Math.sqrt(MathUtil.sqr(X[i] - X[j]) + MathUtil.sqr(Y[i] - Y[j]));
 				}
-				ZMat.setSym(idxi, idxj, LFactor.multiply( Math.log(1.0 / Dij) ).add(getZe(i, j)));
+				Zmat.setSym(idxi, idxj, Lfactor.multiply( Math.log(1.0 / dij) ).add(getZe(i, j)));
 			}
 		}
 
 		// reduce out the tape shields
-		while (ZMat.order() > numConds) {
-			ZTemp = ZMat.kron(ZMat.order());
-			ZMat = null;
-			ZMat = ZTemp;
+		while (Zmat.order() > numConds) {
+			Ztemp = Zmat.kron(Zmat.order());
+			Zmat = null;
+			Zmat = Ztemp;
 		}
-		Zmatrix.copyFrom(ZMat);
-		ZMat = null;
+		Zmatrix.copyFrom(Zmat);
+		Zmat = null;
 
 		// for shielded cables, build the capacitance matrix directly
 		// assumes the insulation may lie between semicon layers
 		for (i = 0; i < numPhases; i++) {
-			YFactor = TWO_PI * E0 * epsR[i] * w;  // includes frequency so C==>Y
+			Yfactor = TWO_PI * E0 * epsR[i] * w;  // includes frequency so C==>Y
 			radOut = 0.5 * diaIns[i];
-			radIn  = radOut - insLayer[i];
-			denom  = Math.log(radOut / radIn);
-			YcMatrix.set(i, i, new Complex(0.0, YFactor / denom));
+			radIn = radOut - insLayer[i];
+			denom = Math.log(radOut / radIn);
+			YcMatrix.set(i, i, new Complex(0.0, Yfactor / denom));
 		}
 
 		if (reducedSize > 0)

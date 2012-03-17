@@ -18,12 +18,11 @@ import com.ncond.dss.common.DSSClass;
 @Getter @Setter
 public class TCC_CurveObj extends DSSObject {
 
-	private int lastValueAccessed,
-		npts;  // Number of points in curve
+	private int lastValueAccessed, npts;
 
-	private double[] logT, logC,  // logarithms of t_values and c_values
-		tValues,  // time values (hr) if interval > 0.0  else null
-		cValues;
+	private double[] logT, logC;  // logarithms of tValues and cValues
+	private double[] tValues;  // time values (hr) if interval > 0.0 else null
+	private double[] cValues;
 
 	public TCC_CurveObj(DSSClass parClass, String name) {
 		super(parClass);
@@ -35,8 +34,8 @@ public class TCC_CurveObj extends DSSObject {
 		npts = 0;
 		cValues = null;
 		tValues = null;
-		logC    = null;
-		logT    = null;
+		logC = null;
+		logT = null;
 
 		initPropertyValues(0);
 	}
@@ -48,48 +47,45 @@ public class TCC_CurveObj extends DSSObject {
 	 */
 	public double getTCCTime(double cValue) {
 		int i;
-		double logTest;
+		double logTest, time;
 
-		double result = -1.0;  // default return value
+		time = -1.0;  // default return value
 
 		/* If current is less than first point, just leave. */
-		if (cValue < cValues[0])
-			return result;
+		if (cValue < cValues[0]) return time;
 
-		if (npts > 0)  // Handle exceptional cases
+		if (npts > 0) {  // handle exceptional cases
 			if (npts == 1) {
-				result = tValues[0];
+				time = tValues[0];
 			} else {
 				/* Start with previous value accessed under the assumption that most
 				 * of the time, this function will be called sequentially}
 				 */
 				if (cValues[lastValueAccessed] > cValue)
 					lastValueAccessed = 0;  // start over from beginning
+
 				for (i = lastValueAccessed + 1; i < npts; i++) {
 					if (cValues[i] == cValue) {
-						result = tValues[i];
+						time = tValues[i];
 						lastValueAccessed = i;
-						return result;
+						return time;
 					} else if (cValues[i] > cValue) {  // log-log interpolation
 						lastValueAccessed = i - 1;
-						if (cValue > 0.0) {
-							logTest = Math.log(cValue);
-						} else {
-							logTest = Math.log(0.001);
-						}
-						result = Math.exp( logT[lastValueAccessed] +
-								(logTest - logC[lastValueAccessed]) / (logC[i] - logC[lastValueAccessed]) *
-								(logT[i] - logT[lastValueAccessed]) );
-						return result;
+						logTest = cValue > 0.0 ? Math.log(cValue) : Math.log(0.001);
+						time = Math.exp(logT[lastValueAccessed] +
+							(logTest - logC[lastValueAccessed]) / (logC[i] - logC[lastValueAccessed]) *
+							(logT[i] - logT[lastValueAccessed]));
+						return time;
 					}
 				}
 
 				// if we fall through the loop, just use last value
 				lastValueAccessed = npts - 2;
-				result = tValues[npts];
+				time = tValues[npts];
 			}
+		}
 
-		return result;
+		return time;
 	}
 
 	/**
@@ -97,23 +93,22 @@ public class TCC_CurveObj extends DSSObject {
 	 */
 	public double getOVTime(double vValue) {
 		int i;
-		double result = -1.0;  // no op return
+		double time = -1.0;  // no op return
 
 		if (vValue > cValues[0]) {
 			if (npts == 1) {
-				result = tValues[0];
+				time = tValues[0];
 			} else {
 				i = 0;
 				while (cValues[i] < vValue) {
 					i += 1;
-					if (i >= npts)
-						break;
+					if (i >= npts) break;
 				}
-				result = tValues[i - 1];
+				time = tValues[i - 1];
 			}
 		}
 
-		return result;
+		return time;
 	}
 
 	/**
@@ -121,22 +116,22 @@ public class TCC_CurveObj extends DSSObject {
 	 */
 	public double getUVTime(double vValue) {
 		int i;
-		double result = -1.0;  // no op return
+		double time = -1.0;  // no op return
 
 		if (vValue < cValues[npts])  {
 			if (npts == 1) {
-				result = tValues[0];
+				time = tValues[0];
 			} else {
 				i = npts - 1;
 				while (cValues[i] > vValue) {
 					i -= 1;
-					if (i < 0)
-						break;
+					if (i < 0) break;
 				}
-				result = tValues[i + 1];
+				time = tValues[i + 1];
 			}
 		}
-		return result;
+
+		return time;
 	}
 
 	/**
@@ -182,8 +177,6 @@ public class TCC_CurveObj extends DSSObject {
 
 		switch (index) {
 		case 1:
-			result = "(";
-			break;
 		case 2:
 			result = "(";
 			break;
@@ -195,11 +188,11 @@ public class TCC_CurveObj extends DSSObject {
 		switch (index) {
 		case 1:
 			for (i = 0; i < npts; i++)
-				result = result + String.format("%-g, ", cValues[i]);
+				result += String.format("%-g, ", cValues[i]);
 			break;
 		case 2:
 			for (i = 0; i < npts; i++)
-				result = result + String.format("%-g, ", tValues[i]);
+				result += String.format("%-g, ", tValues[i]);
 			break;
 		default:
 			result = super.getPropertyValue(index);
@@ -208,8 +201,6 @@ public class TCC_CurveObj extends DSSObject {
 
 		switch (index) {
 		case 1:
-			result = result + ")";
-			break;
 		case 2:
 			result = result + ")";
 			break;

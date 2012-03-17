@@ -354,7 +354,7 @@ public class PriceShape extends DSSClass {
 			br.close();
 			fr.close();
 		} catch (IOException e) {
-			DSS.doSimpleMsg("Error processing growth shape file \"" + fileName + ": " + e.getMessage(), 604);
+			DSS.doSimpleMsg("Error processing price shape file \"" + fileName + ": " + e.getMessage(), 604);
 			return;
 		}
 	}

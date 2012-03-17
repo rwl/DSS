@@ -33,7 +33,7 @@ import com.ncond.dss.general.PriceShape;
 import com.ncond.dss.general.Spectrum;
 import com.ncond.dss.general.TCC_Curve;
 import com.ncond.dss.general.TSData;
-import com.ncond.dss.general.TShape;
+import com.ncond.dss.general.TempShape;
 import com.ncond.dss.general.WireData;
 import com.ncond.dss.general.XYCurve;
 import com.ncond.dss.general.XfmrCode;
@@ -122,7 +122,7 @@ public class DSSClassDefs {
 		DSS.loadShapeClass = new LoadShape();
 		DSSClass.DSSClasses.setNew( DSS.loadShapeClass );
 
-		DSS.TShapeClass = new TShape();
+		DSS.TShapeClass = new TempShape();
 		DSSClass.DSSClasses.setNew( DSS.TShapeClass );
 		DSS.priceShapeClass = new PriceShape();
 		DSSClass.DSSClasses.setNew( DSS.priceShapeClass );
