@@ -69,7 +69,7 @@ public class CktTree {
 			firstNode = presentBranch;
 	}
 
-	public void addNewChild(DSSObject value, int busRef, int terminalNo) {
+	public void addNewChild(DSSObject value, int busRef, int terminalIdx) {
 		CktTreeNode tempNode;
 
 		if (presentBranch == null) {
@@ -78,7 +78,7 @@ public class CktTree {
 			tempNode = new CktTreeNode(presentBranch, value);
 
 			tempNode.setFromBusReference(busRef);
-			tempNode.setFromTerminal(terminalNo);
+			tempNode.setFromTerminalIdx(terminalIdx);
 
 			presentBranch.addChild(tempNode);
 		}

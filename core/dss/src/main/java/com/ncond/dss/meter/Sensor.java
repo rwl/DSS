@@ -119,7 +119,7 @@ public class Sensor extends MeterClass {
 				as.setElementName(param.toLowerCase());
 				break;
 			case 1:
-				as.setMeteredTerminal(parser.makeInteger());
+				as.setMeteredTerminalIdx(parser.makeInteger() - 1);
 				break;
 			case 2:
 				as.setKVBase(parser.makeDouble());
@@ -282,7 +282,7 @@ public class Sensor extends MeterClass {
 
 			as.setElementName(otherSensor.getElementName());
 			as.setMeteredElement(otherSensor.getMeteredElement());  // target circuit element
-			as.setMeteredTerminal(otherSensor.getMeteredTerminal());
+			as.setMeteredTerminalIdx(otherSensor.getMeteredTerminalIdx());
 
 			for (i = 0; i < as.getParentClass().getNumProperties(); i++)
 				as.setPropertyValue(i, otherSensor.getPropertyValue(i));

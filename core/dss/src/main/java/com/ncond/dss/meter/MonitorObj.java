@@ -147,7 +147,7 @@ public class MonitorObj extends MeterElement {
 		monitorStream = new CharArrayWriter();  // create memory stream
 
 		isFileOpen      = false;
-		meteredTerminal = 0;
+		meteredTerminalIdx = 0;
 		includeResidual = false;
 		VIPolar         = true;
 		PPolar          = true;
@@ -189,7 +189,7 @@ public class MonitorObj extends MeterElement {
 				break;
 			}
 
-			if (meteredTerminal >= meteredElement.getNumTerms()) {
+			if (meteredTerminalIdx >= meteredElement.getNumTerms()) {
 				DSS.doErrorMsg("Monitor: \"" + getName() + "\"",
 						"Terminal no. \"" +"\" does not exist.",
 						"Respecify terminal no.", 665);
@@ -199,7 +199,7 @@ public class MonitorObj extends MeterElement {
 
 				// sets name of i-th terminal's connected bus in monitor's bus list
 				// this value will be used to set the NodeRef array (see takeSample)
-				setBus(0, meteredElement.getBus(meteredTerminal));
+				setBus(0, meteredElement.getBus(meteredTerminalIdx));
 				// make a name for the buffer file
 				bufferFile = /*ActiveCircuit.CurrentDirectory + */DSS.circuitName_ + "Mon_" + getName() + ".mon";
 				// removed 10/19/99 ConvertBlanks(BufferFile); // turn blanks into '_'
@@ -233,7 +233,7 @@ public class MonitorObj extends MeterElement {
 	@Override
 	public void makePosSequence() {
 		if (meteredElement != null) {
-			setBus(0, meteredElement.getBus(meteredTerminal));
+			setBus(0, meteredElement.getBus(meteredTerminalIdx));
 			setNumPhases( meteredElement.getNumPhases() );
 			setNumConds( meteredElement.getNumConds() );
 			switch (mode & Monitor.MODEMASK) {
@@ -538,7 +538,7 @@ public class MonitorObj extends MeterElement {
 		hour = sol.getIntHour();
 		sec =  sol.getDynaVars().t;
 
-		offset = meteredTerminal * meteredElement.getNumConds();
+		offset = meteredTerminalIdx * meteredElement.getNumConds();
 
 		// save time unless harmonics mode and then save frequency and harmonic
 		if (sol.isHarmonicModel()) {
@@ -591,7 +591,7 @@ public class MonitorObj extends MeterElement {
 
 		case 2:  // monitor transformer tap position
 
-			addDblToBuffer( ((TransformerObj) meteredElement).getPresentTap(meteredTerminal) );
+			addDblToBuffer( ((TransformerObj) meteredElement).getPresentTap(meteredTerminalIdx) );
 			return;  // done with this mode now
 
 		case 3:  // pick up device state variables

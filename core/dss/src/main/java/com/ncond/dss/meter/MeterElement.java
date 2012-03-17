@@ -16,7 +16,7 @@ abstract public class MeterElement extends CktElement {
 
 	protected String elementName;
 	protected CktElement meteredElement;
-	protected int meteredTerminal;
+	protected int meteredTerminalIdx;
 	protected boolean meteredElementChanged;
 
 	protected double[] sensorCurrent;
@@ -32,7 +32,7 @@ abstract public class MeterElement extends CktElement {
 
 		elementName         = "";
 		meteredElement      = null;
-		meteredTerminal     = 0;
+		meteredTerminalIdx     = 0;
 		sensorCurrent       = null;
 		sensorVoltage       = null;
 		phsAllocationFactor = null;
@@ -58,7 +58,7 @@ abstract public class MeterElement extends CktElement {
 		meteredElement.getCurrents(calculatedCurrent);
 
 		// the phase allocation factor is the amount that the load must change to match the measured peak
-		iOffset = meteredTerminal * meteredElement.getNumConds();
+		iOffset = meteredTerminalIdx * meteredElement.getNumConds();
 		avgAllocFactor = 0.0;
 		for (i = 0; i < nPhases; i++) {
 			mag = calculatedCurrent[i + iOffset].abs();

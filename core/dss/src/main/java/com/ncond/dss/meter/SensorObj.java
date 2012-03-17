@@ -70,7 +70,7 @@ public class SensorObj extends MeterElement {
 		if (devIndex >= 0) {  // sensored element must already exist
 			meteredElement = DSS.activeCircuit.getCktElements().get(devIndex);
 
-			if (meteredTerminal >= meteredElement.getNumTerms()) {
+			if (meteredTerminalIdx >= meteredElement.getNumTerms()) {
 				DSS.doErrorMsg("Sensor: \"" + getName() + "\"",
 						"Terminal no. \"" +"\" does not exist.",
 						"Respecify terminal no.", 665);
@@ -80,7 +80,7 @@ public class SensorObj extends MeterElement {
 
 				// sets name of i-th terminal's connected bus in Sensor's bus list
 				// this value will be used to set the nodeRef array (see takeSample)
-				setBus(0, meteredElement.getBus(meteredTerminal));
+				setBus(0, meteredElement.getBus(meteredTerminalIdx));
 
 				clearSensor();
 
@@ -103,7 +103,7 @@ public class SensorObj extends MeterElement {
 	@Override
 	public void makePosSequence() {
 		if (meteredElement != null) {
-			setBus(0, meteredElement.getBus(meteredTerminal));
+			setBus(0, meteredElement.getBus(meteredTerminalIdx));
 			setNumPhases( meteredElement.getNumPhases() );
 			setNumConds( meteredElement.getNumConds() );
 			clearSensor();

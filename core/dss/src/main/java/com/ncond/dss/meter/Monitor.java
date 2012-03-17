@@ -117,7 +117,7 @@ public class Monitor extends MeterClass {
 				am.setElementName(param.toLowerCase());
 				break;
 			case 1:
-				am.setMeteredTerminal(parser.makeInteger());
+				am.setMeteredTerminalIdx(parser.makeInteger() - 1);
 				break;
 			case 2:
 				am.setMode(parser.makeInteger());
@@ -206,7 +206,7 @@ public class Monitor extends MeterClass {
 			am.setBufferSize(otherMonitor.getBufferSize());
 			am.setElementName(otherMonitor.getElementName());
 			am.setMeteredElement(otherMonitor.getMeteredElement());  // target circuit element
-			am.setMeteredTerminal(otherMonitor.getMeteredTerminal());
+			am.setMeteredTerminalIdx(otherMonitor.getMeteredTerminalIdx());
 			am.setMode(otherMonitor.getMode());
 			am.setIncludeResidual(otherMonitor.isIncludeResidual());
 

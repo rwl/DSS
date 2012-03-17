@@ -21,7 +21,7 @@ public class CktTreeNode {
 	protected DSSObject cktObject;  // pointer to the circuit object referenced
 	protected int fromBusReference;  // one based bus reference
 	protected int voltBaseIndex;
-	protected int fromTerminal;
+	protected int fromTerminalIdx;
 	protected boolean isLoopedHere, isParallel, isDangling;
 	protected Object loopLineObj;
 
