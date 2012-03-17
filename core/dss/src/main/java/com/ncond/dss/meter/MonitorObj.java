@@ -85,9 +85,11 @@ public class MonitorObj extends MeterElement {
 
 	private int bufferSize;
 	private int hour;
+
 	/** Last time entered in the buffer */
 	private double sec;
 	private float[] monBuffer;
+
 	/** Point to present (last) element in buffer must be incremented to add */
 	private int bufPtr;
 
@@ -98,13 +100,11 @@ public class MonitorObj extends MeterElement {
 	private double[] stateBuffer;
 
 	private boolean includeResidual;
-	private boolean VIPolar;
-	private boolean PPolar;
+	private boolean VIpolar;
+	private boolean Ppolar;
 
 	private int fileSignature;
 	private int fileVersion;
-
-	//private double BaseFrequency;
 
 	/** Name of file for catching buffer overflow */
 	private String bufferFile;
@@ -127,53 +127,48 @@ public class MonitorObj extends MeterElement {
 		/** Current buffer has to be big enough to hold all terminals */
 		currentBuffer = null;
 		voltageBuffer = null;
-		stateBuffer   = null;
+		stateBuffer = null;
 
 		baseFrequency = 60.0;
-		hour          = 0;
-		sec           = 0.0;
+		hour = 0;
+		sec = 0.0;
 
 		mode = 0;  // standard mode: V & I, complex values
 
 		bufferSize = 1024;  // makes a 4K buffer
-		monBuffer  = new float[bufferSize];
-		bufPtr     = 0;
+		monBuffer = new float[bufferSize];
+		bufPtr = 0;
 
 		// default to first circuit element (source)
-		elementName    = ((CktElement) DSS.activeCircuit.getCktElements().get(0)).getName();
+		elementName = ((CktElement) DSS.activeCircuit.getCktElements().get(0)).getName();
 		meteredElement = null;
-		bufferFile     = "";
+		bufferFile = "";
 
 		monitorStream = new CharArrayWriter();  // create memory stream
 
-		isFileOpen      = false;
+		isFileOpen = false;
 		meteredTerminalIdx = 0;
 		includeResidual = false;
-		VIPolar         = true;
-		PPolar          = true;
-		fileSignature   = 43756;
-		fileVersion     = 1;
-		sampleCount     = 0;
+		VIpolar = true;
+		Ppolar = true;
+		fileSignature = 43756;
+		fileVersion = 1;
+		sampleCount = 0;
 
 		objType = parClass.getClassType();  // MON_ELEMENT;
 
 		initPropertyValues(0);
 	}
 
-	/**
-	 * Convert spaces to underscores.
-	 */
-	private void convertBlanks(String s) {
-		s.replace(' ', '_');
-	}
-
 	@Override
 	public void recalcElementData() {
-
 		validMonitor = false;
-		int devIndex = Util.getCktElementIndex(elementName);
-		if (devIndex >= 0) {  // monitored element must already exist
-			meteredElement = (CktElement) DSS.activeCircuit.getCktElements().get(devIndex);
+
+		int idx = Util.getCktElementIndex(elementName);
+
+		if (idx >= 0) {  // monitored element must already exist
+			meteredElement = (CktElement) DSS.activeCircuit.getCktElements().get(idx);
+
 			switch (mode & Monitor.MODEMASK) {
 			case 2:  // must be transformer
 				if ((meteredElement.getObjType() & DSSClassDefs.CLASSMASK) != DSSClassDefs.XFMR_ELEMENT) {
@@ -183,7 +178,7 @@ public class MonitorObj extends MeterElement {
 				break;
 			case 3:  // must be PC element
 				if ((meteredElement.getObjType() & DSSClassDefs.BASECLASSMASK) != DSSClassDefs.PC_ELEMENT) {
-					DSS.doSimpleMsg(meteredElement.getName() + " must be a power conversion element (Load or Generator)!", 664);
+					DSS.doSimpleMsg(meteredElement.getName() + " must be a power conversion element!", 664);
 					return;
 				}
 				break;
@@ -191,18 +186,18 @@ public class MonitorObj extends MeterElement {
 
 			if (meteredTerminalIdx >= meteredElement.getNumTerms()) {
 				DSS.doErrorMsg("Monitor: \"" + getName() + "\"",
-						"Terminal no. \"" +"\" does not exist.",
-						"Respecify terminal no.", 665);
+					"Terminal no. \"" + (meteredTerminalIdx+1) + "\" does not exist.",
+					"Respecify terminal no.", 665);
 			} else {
-				setNumPhases( meteredElement.getNumPhases() );
-				setNumConds( meteredElement.getNumConds() );
+				setNumPhases(meteredElement.getNumPhases());
+				setNumConds(meteredElement.getNumConds());
 
 				// sets name of i-th terminal's connected bus in monitor's bus list
 				// this value will be used to set the NodeRef array (see takeSample)
 				setBus(0, meteredElement.getBus(meteredTerminalIdx));
+
 				// make a name for the buffer file
-				bufferFile = /*ActiveCircuit.CurrentDirectory + */DSS.circuitName_ + "Mon_" + getName() + ".mon";
-				// removed 10/19/99 ConvertBlanks(BufferFile); // turn blanks into '_'
+				bufferFile = DSS.circuitName_ + "Mon_" + getName() + ".mon";
 
 				/* Allocate buffers */
 				switch (mode & Monitor.MODEMASK) {
@@ -222,8 +217,9 @@ public class MonitorObj extends MeterElement {
 			}
 		} else {
 			meteredElement = null;  // element not found
-			DSS.doErrorMsg("Monitor: \"" + getName() + "\"", "Circuit element \""+ elementName + "\" not found.",
-					" Element must be defined previously.", 666);
+			DSS.doErrorMsg("Monitor: \"" + getName() + "\"",
+				"Circuit element \"" + elementName + "\" not found.",
+				" Element must be defined previously.", 666);
 		}
 	}
 
@@ -234,8 +230,8 @@ public class MonitorObj extends MeterElement {
 	public void makePosSequence() {
 		if (meteredElement != null) {
 			setBus(0, meteredElement.getBus(meteredTerminalIdx));
-			setNumPhases( meteredElement.getNumPhases() );
-			setNumConds( meteredElement.getNumConds() );
+			setNumPhases(meteredElement.getNumPhases());
+			setNumConds(meteredElement.getNumConds());
 			switch (mode & Monitor.MODEMASK) {
 			case 3:
 				numStateVars = ((PCElement) meteredElement).numVariables();
@@ -254,7 +250,7 @@ public class MonitorObj extends MeterElement {
 
 	@Override
 	public void calcYPrim() {
-		/* A Monitor is a zero current source; Yprim is always zero. */
+		/* A monitor is a zero current source; Yprim is always zero. */
 	}
 
 	public void clearMonitorStream() {
@@ -265,20 +261,20 @@ public class MonitorObj extends MeterElement {
 		boolean isPower;
 		String nameOfState;
 		int numVI;
-//		int RecordSize;
-//		int strPtr;
+		//int RecordSize;
+		//int strPtr;
 
 
 		try {
-//			if (!IsFileOpen) openMonitorFile();  // always opens for appending
-//			buffer.seek(0);  // back to BOF
-//			buffer.truncate();  // get rid of anything remaining
+			//if (!isFileOpen) openMonitorFile();  // always opens for appending
+			//buffer.seek(0);  // back to BOF
+			//buffer.truncate();  // get rid of anything remaining
 
 			monitorStream.reset();
 			sampleCount = 0;
 			isPosSeq = false;
 			strBuffer.delete(0, strBuffer.length());  /* clear buffer */
-//			strPtr = 0;  // init string
+			//strPtr = 0;  // init string
 			if (DSS.activeCircuit.getSolution().isHarmonicModel()) {
 				strBuffer.append("Freq, Harmonic, ");
 			} else {
@@ -287,11 +283,11 @@ public class MonitorObj extends MeterElement {
 
 			switch (mode & Monitor.MODEMASK) {
 			case 2:
-//				recordSize = 1;  // transformer taps
+				//recordSize = 1;  // transformer taps
 				strBuffer.append("Tap (pu)");
 				break;
 			case 3:
-//				recordSize = numStateVars;   // state variables
+				//recordSize = numStateVars;   // state variables
 				for (i = 0; i < numStateVars; i++) {
 					nameOfState = String.valueOf( ((PCElement) meteredElement).getVariable(i) );
 					strBuffer.append(nameOfState);
@@ -318,11 +314,11 @@ public class MonitorObj extends MeterElement {
 
 				switch (mode & (Monitor.MAGNITUDEMASK + Monitor.POSSEQONLYMASK)) {
 				case 32:  // save magnitudes only
-//					recordSize = 0;
-//					for (i = 0; i < numVI; i++) recordSize += 1;
+					//recordSize = 0;
+					//for (i = 0; i < numVI; i++) recordSize += 1;
 					if (!isPower) {
-//						for (i = 0; i < numVI; i++) recordSize += 1;
-//						if (includeResidual) recordSize += 2;
+						//for (i = 0; i < numVI; i++) recordSize += 1;
+						//if (includeResidual) recordSize += 2;
 						for (i = 0; i < numVI; i++) {
 							strBuffer.append(String.format("|V|%d (volts)", i));
 							strBuffer.append(", ");
@@ -347,16 +343,16 @@ public class MonitorObj extends MeterElement {
 					}
 					break;
 				case 64:  // save pos seq or total of all phases or total power (Complex)
-//						recordSize = 2;
+					//recordSize = 2;
 					if (!isPower) {
-//							recordSize = recordSize + 2;
-						if (VIPolar) {
+						//recordSize = recordSize + 2;
+						if (VIpolar) {
 							strBuffer.append("V1, V1ang, I1, I1ang");
 						} else {
 							strBuffer.append("V1.re, V1.im, I1.re, I1.im");
 						}
 					} else {
-						if (PPolar) {
+						if (Ppolar) {
 							strBuffer.append("S1 (kVA), Ang ");
 						} else {
 							strBuffer.append("P1 (kW), Q1 (kvar)");
@@ -364,12 +360,12 @@ public class MonitorObj extends MeterElement {
 					}
 					break;
 				case 96:  // save pos seq or aver magnitude of all phases of total kVA (magnitude)
-//						recordSize = 1;
+					//recordSize = 1;
 					if (!isPower) {
-//							RecordSize = RecordSize + 1;
+						//recordSize = recordSize + 1;
 						strBuffer.append("V, I ");
 					} else {
-						if (PPolar) {
+						if (Ppolar) {
 							strBuffer.append("S1 (kVA)");
 						} else {
 							strBuffer.append("P1 (kW)");
@@ -378,7 +374,7 @@ public class MonitorObj extends MeterElement {
 					break;
 
 				default:  // save V and I in mag and angle or complex kW, kVAr
-//						RecordSize = NumVI * 2;
+					//recordSize = numVI * 2;
 					if (!isPower) {
 						if (isPosSeq) {
 							iMin = 0;
@@ -387,10 +383,10 @@ public class MonitorObj extends MeterElement {
 							iMin = 1;
 							iMax = numVI;
 						}
-//							recordSize = recordSize + numVI * 2;
-//							if (includeResidual) recordSize += 4;
+						//recordSize = recordSize + numVI * 2;
+						//if (includeResidual) recordSize += 4;
 						for (i = iMin; i < iMax; i++) {
-							if (VIPolar) {
+							if (VIpolar) {
 								strBuffer.append("V"+String.valueOf(i)+", VAngle"+String.valueOf(i));
 							} else {
 								strBuffer.append("V"+String.valueOf(i)+".re, V"+String.valueOf(i)+".im");
@@ -398,7 +394,7 @@ public class MonitorObj extends MeterElement {
 							strBuffer.append(", ");
 						}
 						if (includeResidual) {
-							if (VIPolar) {
+							if (VIpolar) {
 								strBuffer.append("VN, VNAngle");
 							} else {
 								strBuffer.append("VN.re, VN.im");
@@ -406,7 +402,7 @@ public class MonitorObj extends MeterElement {
 							strBuffer.append(", ");
 						}
 						for (i = iMin; i < iMax; i++) {
-							if (VIPolar) {
+							if (VIpolar) {
 								strBuffer.append("I"+String.valueOf(i)+", IAngle"+String.valueOf(i));
 							} else {
 								strBuffer.append("I"+String.valueOf(i)+".re, I"+String.valueOf(i)+".im");
@@ -415,7 +411,7 @@ public class MonitorObj extends MeterElement {
 								strBuffer.append(", ");
 						}
 						if (includeResidual) {
-							if (VIPolar) {
+							if (VIpolar) {
 								strBuffer.append(", IN, INAngle");
 							} else {
 								strBuffer.append(", IN.re, IN.im");
@@ -430,7 +426,7 @@ public class MonitorObj extends MeterElement {
 							iMax = numVI;
 						}
 						for (i = iMin; i < iMax; i++) {
-							if (PPolar) {
+							if (Ppolar) {
 								strBuffer.append("S"+String.valueOf(i)+" (kVA), Ang"+String.valueOf(i));
 							} else {
 								strBuffer.append("P"+String.valueOf(i)+" (kW), Q"+String.valueOf(i)+" (kvar)");
@@ -450,13 +446,14 @@ public class MonitorObj extends MeterElement {
 			// write id so we know it is a DSS monitor file and which version in case we
 			// change it down the road
 
-//			MonitorStream.write(FileSignature, Sizeof(FileSignature) );
-//			MonitorStream.write(FileVersion,   Sizeof(FileVersion) );
-//			MonitorStream.write(RecordSize,    Sizeof(RecordSize) );
-//			MonitorStream.write(Mode,          Sizeof(Mode)       );
+			//MonitorStream.write(FileSignature, Sizeof(FileSignature) );
+			//MonitorStream.write(FileVersion,   Sizeof(FileVersion) );
+			//MonitorStream.write(RecordSize,    Sizeof(RecordSize) );
+			//MonitorStream.write(Mode,          Sizeof(Mode)       );
 			monitorStream.write(strBuffer.toString().toCharArray());
 
-			/* So the file now looks like:
+			/*
+			 * So the file now looks like:
 			 *   FileSignature (4 bytes)    32-bit Integers
 			 *   FileVersion   (4)
 			 *   RecordSize    (4)
@@ -478,7 +475,7 @@ public class MonitorObj extends MeterElement {
 
 	public void openMonitorStream() {
 		if (!isFileOpen) {
-//			MonitorStream.seek(-1);  // positioned at end of stream
+			//monitorStream.seek(-1);  // positioned at end of stream
 			isFileOpen = true;
 		}
 	}
@@ -486,12 +483,13 @@ public class MonitorObj extends MeterElement {
 	public void closeMonitorStream() {
 		try {
 			if (isFileOpen) {  // only close open files
-//				MonitorStream.seek(0);  // just move stream position to the beginning
+				//monitorStream.seek(0);  // just move stream position to the beginning
 				isFileOpen = false;
 			}
 		} catch (Exception e) {
 			DSS.doErrorMsg("Cannot open monitor stream.",
-					e.getMessage(), "Monitor: \"" + getName() + "\"", 671);
+				e.getMessage(),
+				"Monitor: \"" + getName() + "\"", 671);
 		}
 	}
 
@@ -499,11 +497,10 @@ public class MonitorObj extends MeterElement {
 	 * Saves present buffer to monitor file.
 	 */
 	public void save() {
-		if (!isFileOpen)
-			openMonitorStream();  // position to end of stream
+		if (!isFileOpen) openMonitorStream();  // position to end of stream
 
 		/* Write present monitor buffer to monitor stream */
-//		MonitorStream.write(MonBuffer);
+		//monitorStream.write(monBuffer);
 
 		bufPtr = 0; // reset buffer for next
 	}
@@ -530,20 +527,19 @@ public class MonitorObj extends MeterElement {
 
 		SolutionObj sol = DSS.activeCircuit.getSolution();
 
-		if ( !(validMonitor && isEnabled()) )
-			return;
+		if (!(validMonitor && isEnabled())) return;
 
 		sampleCount += 1;
 
 		hour = sol.getIntHour();
-		sec =  sol.getDynaVars().t;
+		sec = sol.getDynaVars().t;
 
 		offset = meteredTerminalIdx * meteredElement.getNumConds();
 
 		// save time unless harmonics mode and then save frequency and harmonic
 		if (sol.isHarmonicModel()) {
 			addDblsToBuffer(sol.getFrequency(), 1);  // put freq in hour slot as a double
-			addDblsToBuffer(sol.getHarmonic(), 1);   // put harmonic in time slot in buffer
+			addDblsToBuffer(sol.getHarmonic(), 1);  // put harmonic in time slot in buffer
 		} else {
 			dHour = hour;  // convert to double
 			addDblsToBuffer(dHour, 1);  // put hours in buffer as a double
@@ -552,29 +548,10 @@ public class MonitorObj extends MeterElement {
 
 		switch (mode & Monitor.MODEMASK) {
 		case 0:  // voltage, current, powers
-
-			// meteredElement.getCurrents(currentBuffer);
+			//meteredElement.getCurrents(currentBuffer);
 			// to save some time, call computeITerminal
 			meteredElement.computeITerminal();  // only does calc if needed
-			for (i = 0; i < meteredElement.getYOrder(); i++)
-				currentBuffer[i] = meteredElement.getITerminal(i);
 
-			try {
-				for (i = 0; i < nConds; i++) {
-					// nodeRef is set by the main circuit object
-					// it is the index of the terminal into the system node list
-					voltageBuffer[i] = sol.getNodeV( nodeRef[i] );
-				}
-			} catch (Exception e) {
-				DSS.doSimpleMsg(e.getMessage() + DSS.CRLF + "NodeRef is invalid. Try solving a snapshot or direct before solving in a mode that takes a monitor sample.", 672);
-			}
-			break;
-
-		case 1:
-
-			// meteredElement.getCurrents(currentBuffer);
-			// to save some time, call computeITerminal
-			meteredElement.computeITerminal();  // only does calc if needed
 			for (i = 0; i < meteredElement.getYOrder(); i++)
 				currentBuffer[i] = meteredElement.getITerminal(i);
 
@@ -585,48 +562,66 @@ public class MonitorObj extends MeterElement {
 					voltageBuffer[i] = sol.getNodeV(nodeRef[i]);
 				}
 			} catch (Exception e) {
-				DSS.doSimpleMsg(e.getMessage() + DSS.CRLF + "NodeRef is invalid. Try solving a snapshot or direct before solving in a mode that takes a monitor sample.", 672);
+				DSS.doSimpleMsg(e.getMessage() + DSS.CRLF + "NodeRef is invalid. " +
+					"Try solving a snapshot or direct before solving in a mode that takes a monitor sample.", 672);
+			}
+			break;
+
+		case 1:
+			//meteredElement.getCurrents(currentBuffer);
+			// to save some time, call computeITerminal
+			meteredElement.computeITerminal();  // only does calc if needed
+
+			for (i = 0; i < meteredElement.getYOrder(); i++)
+				currentBuffer[i] = meteredElement.getITerminal(i);
+
+			try {
+				for (i = 0; i < nConds; i++) {
+					// nodeRef is set by the main circuit object
+					// it is the index of the terminal into the system node list
+					voltageBuffer[i] = sol.getNodeV(nodeRef[i]);
+				}
+			} catch (Exception e) {
+				DSS.doSimpleMsg(e.getMessage() + DSS.CRLF + "NodeRef is invalid. " +
+					"Try solving a snapshot or direct before solving in a mode that takes a monitor sample.", 672);
 			}
 			break;
 
 		case 2:  // monitor transformer tap position
-
-			addDblToBuffer( ((TransformerObj) meteredElement).getPresentTap(meteredTerminalIdx) );
+			addDblToBuffer(((TransformerObj) meteredElement).getPresentTap(meteredTerminalIdx));
 			return;  // done with this mode now
 
 		case 3:  // pick up device state variables
 			((PCElement) meteredElement).getAllVariables(stateBuffer);
 			addDblsToBuffer(stateBuffer, numStateVars);
 			return;  // done with this mode now
-
 		default:
 			return;  // ignore invalid mask
 		}
 
-
 		if (((mode & Monitor.SEQUENCEMASK) > 0) && nPhases == 3) {
-
 			// convert to symmetrical components
 			MathUtil.phase2SymComp(voltageBuffer, V012);
 			MathUtil.phase2SymComp(currentBuffer[offset + 1], I012);
+
 			numVI = 3;
 			isSequence = true;
+
 			// replace voltage and current buffer with sequence quantities
-			for (i = 0; i < 3; i++)
-				voltageBuffer[i] = V012[i];
-			for (i = 0; i < 3; i++)
-				currentBuffer[offset + i] = I012[i];
+			for (i = 0; i < 3; i++) voltageBuffer[i] = V012[i];
+			for (i = 0; i < 3; i++) currentBuffer[offset + i] = I012[i];
 		} else {
 			numVI = nConds;
 			isSequence = false;
 		}
 
-		isPower = false;  // init so compiler won't complain
+		isPower = false;
+
 		switch (mode & Monitor.MODEMASK) {
 		case 0:  // convert to mag, angle and compute residual if required
 			isPower = false;
 			if (includeResidual) {
-				if (VIPolar) {
+				if (VIpolar) {
 					residualVolt = Util.residualPolar(voltageBuffer[0], nPhases);
 					residualCurr = Util.residualPolar(currentBuffer[offset + 1], nPhases);  // TODO Check zero based indexing
 				} else {
@@ -634,7 +629,7 @@ public class MonitorObj extends MeterElement {
 					residualCurr = Util.residual(currentBuffer[offset + 1], nPhases);  // TODO Check zero based indexing
 				}
 			}
-			if (VIPolar) {
+			if (VIpolar) {
 				Util.convertComplexArrayToPolar(voltageBuffer, numVI);
 				Util.convertComplexArrayToPolar(currentBuffer, numVI * meteredElement.getNumTerms());  // get all of current buffer
 			}
@@ -644,7 +639,7 @@ public class MonitorObj extends MeterElement {
 			MathUtil.calcKPowers(voltageBuffer, voltageBuffer, currentBuffer[offset + 1], numVI);
 			if (isSequence || DSS.activeCircuit.isPositiveSequence())
 				Util.mulArray(voltageBuffer, 3.0, numVI);  // convert to total power
-			if (PPolar)
+			if (Ppolar)
 				Util.convertComplexArrayToPolar(voltageBuffer, numVI);
 			isPower = true;
 			break;
@@ -659,7 +654,7 @@ public class MonitorObj extends MeterElement {
 				addDblToBuffer(residualVolt.getReal());
 			if (!isPower) {
 				for (i = 0; i < numVI; i++)
-					addDblToBuffer(currentBuffer[offset + i].getReal() /*CurrentBuffer[Offset + i].abs()*/);
+					addDblToBuffer(currentBuffer[offset + i].getReal());
 				if (includeResidual)
 					addDblToBuffer(residualCurr.getReal());
 			}
@@ -674,18 +669,18 @@ public class MonitorObj extends MeterElement {
 				if (!isPower) {
 					sum = Complex.ZERO;
 					for (i = 0; i < nPhases; i++)
-						sum = sum.add( voltageBuffer[i] );
+						sum = sum.add(voltageBuffer[i]);
 					addDblsToBuffer(sum.getReal(), 2);
 				} else {
 					// average the phase magnitudes and sum angles
 					sum = Complex.ZERO;
 					for (i = 0; i < nPhases; i++)
-						sum = sum.add( voltageBuffer[i] );
+						sum = sum.add(voltageBuffer[i]);
 					sum = new Complex(sum.getReal() / nPhases, sum.getImaginary());
 					addDblsToBuffer(sum.getReal(), 2);
 					sum = Complex.ZERO;
 					for (i = 0; i < nPhases; i++)
-						sum = sum.add( currentBuffer[i] );
+						sum = sum.add(currentBuffer[i]);
 					sum = new Complex(sum.getReal() / nPhases, sum.getImaginary());
 					addDblsToBuffer(sum.getReal(), 2);
 				}
@@ -700,14 +695,14 @@ public class MonitorObj extends MeterElement {
 			} else {
 				dSum = 0.0;
 				for (i = 0; i < nPhases; i++)
-					dSum = dSum + voltageBuffer[i].getReal();  //VoltageBuffer[i].abs();
+					dSum = dSum + voltageBuffer[i].getReal();
 				if (!isPower)
 					dSum = dSum / nPhases;
 				addDblToBuffer(dSum);
 				if (!isPower) {
 					dSum = 0.0;
 					for (i = 0; i < nPhases; i++)
-						dSum = dSum + currentBuffer[offset + i].getReal(); // CurrentBuffer[Offset+i].abs();
+						dSum = dSum + currentBuffer[offset + i].getReal();
 					dSum = dSum / nPhases;
 					addDblToBuffer(dSum);
 				}
@@ -750,14 +745,14 @@ public class MonitorObj extends MeterElement {
 		File f;
 		FileWriter fw;
 		BufferedWriter bw;
-		int fSignature;
-		int fVersion;
-		float hr;
 		int i;
-		int mode;
-		int nRead = 0;
-		int pStr;
-		int recordBytes;
+//		int fSignature;
+//		int fVersion;
+//		float hr;
+//		int mode;
+//		int nRead = 0;
+//		int pStr;
+//		int recordBytes;
 		int recordSize = 0;
 		float s = 0;
 		float[] sngBuffer = new float[100];
@@ -784,10 +779,10 @@ public class MonitorObj extends MeterElement {
 //		MonitorStream.read(Mode);
 //		MonitorStream.read(StrBuffer);
 
-		pStr = strBuffer.length();
+//		pStr = strBuffer.length();
 //		FBuffer.write(pStr);
 //		FBuffer.newLine();
-		recordBytes = recordSize;
+//		recordBytes = recordSize;
 
 		try {
 
@@ -817,14 +812,12 @@ public class MonitorObj extends MeterElement {
 
 	@Override
 	public void getCurrents(Complex[] curr) {
-		for (int i = 0; i < nConds; i++)
-			curr[i] = Complex.ZERO;
+		for (int i = 0; i < nConds; i++) curr[i] = Complex.ZERO;
 	}
 
 	@Override
 	public void getInjCurrents(Complex[] curr) {
-		for (int i = 0; i < nConds; i++)
-			curr[i] = Complex.ZERO;
+		for (int i = 0; i < nConds; i++) curr[i] = Complex.ZERO;
 	}
 
 	@Override
@@ -862,24 +855,23 @@ public class MonitorObj extends MeterElement {
 
 	@Override
 	public void initPropertyValues(int arrayOffset) {
-
 		setPropertyValue(0, "");  // "element";
 		setPropertyValue(1, "1"); // "terminal";
 		setPropertyValue(2, "0"); // "mode";
 		setPropertyValue(3, "");  // "action";  // buffer=clear|save
-		setPropertyValue(4, "NO");
-		setPropertyValue(5, "YES");
-		setPropertyValue(6, "YES");
+		setPropertyValue(4, "bo");
+		setPropertyValue(5, "yes");
+		setPropertyValue(6, "yes");
 
 		super.initPropertyValues(Monitor.NumPropsThisClass - 1);
 	}
 
-	public void TOPExport(String objName) {
-		throw new UnsupportedOperationException();
-	}
-
 	public String getFileName() {
 		return DSS.dataDirectory + DSS.circuitName_ + "Mon_" + getName() + ".csv";
+	}
+
+	public void TOPExport(String objName) {
+		throw new UnsupportedOperationException();
 	}
 
 	@Override

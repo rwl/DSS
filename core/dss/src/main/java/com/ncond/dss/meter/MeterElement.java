@@ -6,7 +6,6 @@ import lombok.Setter;
 import org.apache.commons.math.complex.Complex;
 
 import com.ncond.dss.common.CktElement;
-import com.ncond.dss.common.DSS;
 import com.ncond.dss.common.DSSClass;
 import com.ncond.dss.common.DSSClassDefs;
 import com.ncond.dss.common.Util;
@@ -30,15 +29,20 @@ abstract public class MeterElement extends CktElement {
 		super(parClass);
 		objType = DSSClassDefs.METER_ELEMENT;
 
-		elementName         = "";
-		meteredElement      = null;
-		meteredTerminalIdx     = 0;
-		sensorCurrent       = null;
-		sensorVoltage       = null;
+		elementName = "";
+		meteredElement = null;
+		meteredTerminalIdx = 0;
+		sensorCurrent = null;
+		sensorVoltage = null;
 		phsAllocationFactor = null;
-		calculatedCurrent   = null;
-		calculatedVoltage   = null;
+		calculatedCurrent = null;
+		calculatedVoltage = null;
 	}
+
+	/**
+	 * Sample control quantities and set action times in control queue.
+	 */
+	abstract public void takeSample();
 
 	public void allocateSensorArrays() {
 		if (meteredElement != null)
@@ -51,17 +55,17 @@ abstract public class MeterElement extends CktElement {
 	}
 
 	public void calcAllocationFactors() {
-		int iOffset;
+		int ioffset;
 		int i;
 		double mag;
 
 		meteredElement.getCurrents(calculatedCurrent);
 
 		// the phase allocation factor is the amount that the load must change to match the measured peak
-		iOffset = meteredTerminalIdx * meteredElement.getNumConds();
+		ioffset = meteredTerminalIdx * meteredElement.getNumConds();
 		avgAllocFactor = 0.0;
 		for (i = 0; i < nPhases; i++) {
-			mag = calculatedCurrent[i + iOffset].abs();
+			mag = calculatedCurrent[i + ioffset].abs();
 			if (mag > 0.0) {
 				phsAllocationFactor[i] = sensorCurrent[i] / mag;
 			} else {
@@ -70,13 +74,6 @@ abstract public class MeterElement extends CktElement {
 			avgAllocFactor = avgAllocFactor + phsAllocationFactor[i];
 		}
 		avgAllocFactor = avgAllocFactor / nPhases;  // factor for 2- and 3-phase loads
-	}
-
-	/**
-	 * Sample control quantities and set action times in control queue.
-	 */
-	public void takeSample() {
-		DSS.doSimpleMsg("Programming error: Reached base MeterElement class for takeSample."+DSS.CRLF+"Device: "+getName(), 723);
 	}
 
 	public double getSensorCurrent(int idx) {

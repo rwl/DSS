@@ -20,7 +20,7 @@ public class Monitor extends MeterClass {
 	public Monitor() {
 		super();
 
-		className   = "Monitor";
+		className = "Monitor";
 		classType = classType + DSSClassDefs.MON_ELEMENT;
 
 		defineProperties();
@@ -33,9 +33,9 @@ public class Monitor extends MeterClass {
 
 	@Override
 	protected void defineProperties() {
-
 		numProperties = Monitor.NumPropsThisClass;
 		countProperties();  // get inherited property count
+
 		allocatePropertyArrays();
 
 		// define property names
@@ -49,28 +49,28 @@ public class Monitor extends MeterClass {
 
 		propertyHelp[0] = "Name (Full Object name) of element to which the monitor is connected.";
 		propertyHelp[1] = "Number of the terminal of the circuit element to which the monitor is connected. "+
-				"1 or 2, typically. For monitoring states, attach monitor to terminal 1.";
+			"1 or 2, typically. For monitoring states, attach monitor to terminal 1.";
 		propertyHelp[2] = "Bitmask integer designating the values the monitor is to capture: "+DSS.CRLF+
-				"0 = Voltages and currents" + DSS.CRLF+
-				"1 = Powers"+DSS.CRLF+
-				"2 = Tap Position (Transformers only)"+DSS.CRLF+
-				"3 = State Variables (PCElements only)" +DSS.CRLF +DSS.CRLF+
-				"Normally, these would be actual phasor quantities from solution." + DSS.CRLF+
-				"Combine with adders below to achieve other results for terminal quantities:" + DSS.CRLF+
-				"+16 = Sequence quantities" + DSS.CRLF+
-				"+32 = Magnitude only" + DSS.CRLF+
-				"+64 = Positive sequence only or avg of all phases" + DSS.CRLF+ DSS.CRLF +
-				"Mix adder to obtain desired results. For example:" + DSS.CRLF+
-				"Mode=112 will save positive sequence voltage and current magnitudes only" + DSS.CRLF+
-				"Mode=48 will save all sequence voltages and currents, but magnitude only.";
+			"0 = Voltages and currents" + DSS.CRLF+
+			"1 = Powers"+DSS.CRLF+
+			"2 = Tap Position (Transformers only)"+DSS.CRLF+
+			"3 = State Variables (PCElements only)" +DSS.CRLF +DSS.CRLF+
+			"Normally, these would be actual phasor quantities from solution." + DSS.CRLF+
+			"Combine with adders below to achieve other results for terminal quantities:" + DSS.CRLF+
+			"+16 = Sequence quantities" + DSS.CRLF+
+			"+32 = Magnitude only" + DSS.CRLF+
+			"+64 = Positive sequence only or avg of all phases" + DSS.CRLF+ DSS.CRLF +
+			"Mix adder to obtain desired results. For example:" + DSS.CRLF+
+			"Mode=112 will save positive sequence voltage and current magnitudes only" + DSS.CRLF+
+			"Mode=48 will save all sequence voltages and currents, but magnitude only.";
 		propertyHelp[3] = "{Clear | Save | Take}" + DSS.CRLF +
-				"(C)lears or (S)aves current buffer." + DSS.CRLF +
-				"(T)ake action takes a sample."+ DSS.CRLF + DSS.CRLF +
-				"Note that monitors are automatically reset (cleared) when the Set Mode= command is issued. "+
-				"Otherwise, the user must explicitly reset all monitors (reset monitors command) or individual " +
-				"monitors with the Clear action.";
+			"(C)lears or (S)aves current buffer." + DSS.CRLF +
+			"(T)ake action takes a sample."+ DSS.CRLF + DSS.CRLF +
+			"Note that monitors are automatically reset (cleared) when the Set Mode= command is issued. "+
+			"Otherwise, the user must explicitly reset all monitors (reset monitors command) or individual " +
+			"monitors with the Clear action.";
 		propertyHelp[4] = "{Yes/True | No/False} Default = No.  Include Residual cbannel (sum of all phases) for voltage and current. " +
-				"Does not apply to sequence quantity modes or power modes.";
+			"Does not apply to sequence quantity modes or power modes.";
 		propertyHelp[5] = "{Yes/True | No/False} Default = YES. Report voltage and current in polar form (Mag/Angle). (default)  Otherwise, it will be real and imaginary.";
 		propertyHelp[6] = "{Yes/True | No/False} Default = YES. Report power in Apparent power, S, in polar form (Mag/Angle).(default)  Otherwise, is P and Q";
 
@@ -92,13 +92,12 @@ public class Monitor extends MeterClass {
 		activeMonitorObj = (MonitorObj) elementList.getActive();
 		DSS.activeCircuit.setActiveCktElement(activeMonitorObj);
 
-		int result = 0;
-
-		MonitorObj am = activeMonitorObj;
+		MonitorObj elem = activeMonitorObj;
 
 		int paramPointer = -1;
 		String paramName = parser.getNextParam();
 		String param = parser.makeString();
+
 		while (param.length() > 0) {
 			if (paramName.length() == 0) {
 				paramPointer += 1;
@@ -107,45 +106,46 @@ public class Monitor extends MeterClass {
 			}
 
 			if (paramPointer >= 0 && paramPointer < numProperties)
-				am.setPropertyValue(paramPointer, param);
+				elem.setPropertyValue(paramPointer, param);
 
 			switch (paramPointer) {
 			case -1:
-				DSS.doSimpleMsg("Unknown parameter \"" + paramName + "\" for object \"" + getClassName() +"."+ am.getName() + "\"", 661);
+				DSS.doSimpleMsg("Unknown parameter \"" + paramName + "\" for object \"" +
+						getClassName() +"."+ elem.getName() + "\"", 661);
 				break;
 			case 0:
-				am.setElementName(param.toLowerCase());
+				elem.setElementName(param.toLowerCase());
 				break;
 			case 1:
-				am.setMeteredTerminalIdx(parser.makeInteger() - 1);
+				elem.setMeteredTerminalIdx(parser.makeInteger() - 1);
 				break;
 			case 2:
-				am.setMode(parser.makeInteger());
+				elem.setMode(parser.makeInteger());
 				break;
 			case 3:
 				switch (param.toLowerCase().charAt(0)) {
 				case 's':
-					am.save();
+					elem.save();
 					break;
 				case 'c':
-					am.resetIt();
+					elem.resetIt();
 					break;
 				case 'r':
-					am.resetIt();
+					elem.resetIt();
 					break;
 				case 't':
-					am.takeSample();
+					elem.takeSample();
 					break;
 				}
 				break;
 			case 4:
-				am.setIncludeResidual( Util.interpretYesNo(param) );
+				elem.setIncludeResidual(Util.interpretYesNo(param));
 				break;
 			case 5:
-				am.setVIPolar( Util.interpretYesNo(param) );
+				elem.setVIpolar(Util.interpretYesNo(param));
 				break;
 			case 6:
-				am.setPPolar( Util.interpretYesNo(param) );
+				elem.setPpolar(Util.interpretYesNo(param));
 				break;
 			default:
 				// Inherited parameters
@@ -157,9 +157,9 @@ public class Monitor extends MeterClass {
 			param = parser.makeString();
 		}
 
-		am.recalcElementData();
+		elem.recalcElementData();
 
-		return result;
+		return 0;
 	}
 
 	/**
@@ -167,9 +167,8 @@ public class Monitor extends MeterClass {
 	 */
 	@Override
 	public void resetAll() {
-		for (MonitorObj pMon : DSS.activeCircuit.getMonitors())
-			if (pMon.isEnabled())
-				pMon.resetIt();
+		for (MonitorObj mon : DSS.activeCircuit.getMonitors())
+			if (mon.isEnabled()) mon.resetIt();
 	}
 
 	/**
@@ -177,9 +176,8 @@ public class Monitor extends MeterClass {
 	 */
 	@Override
 	public void sampleAll() {
-		for (MonitorObj pMon : DSS.activeCircuit.getMonitors())
-			if (pMon.isEnabled())
-				pMon.takeSample();
+		for (MonitorObj mon : DSS.activeCircuit.getMonitors())
+			if (mon.isEnabled()) mon.takeSample();
 	}
 
 	/**
@@ -187,45 +185,46 @@ public class Monitor extends MeterClass {
 	 */
 	@Override
 	public void saveAll() {
-		for (MonitorObj pMon : DSS.activeCircuit.getMonitors())
-			if (pMon.isEnabled())
-				pMon.save();
+		for (MonitorObj mon : DSS.activeCircuit.getMonitors())
+			if (mon.isEnabled()) mon.save();
 	}
 
 	@Override
 	protected int makeLike(String MonitorName) {
-		int i, result = 0;
+		int i, success = 0;
+
 		/* See if we can find this monitor name in the present collection */
-		MonitorObj otherMonitor = (MonitorObj) find(MonitorName);
-		if (otherMonitor != null) {
-			MonitorObj am = activeMonitorObj;
+		MonitorObj other = (MonitorObj) find(MonitorName);
 
-			am.setNumPhases(otherMonitor.getNumPhases());
-			am.setNumConds(otherMonitor.getNumConds());  // force reallocation of terminal stuff
+		if (other != null) {
+			MonitorObj elem = activeMonitorObj;
 
-			am.setBufferSize(otherMonitor.getBufferSize());
-			am.setElementName(otherMonitor.getElementName());
-			am.setMeteredElement(otherMonitor.getMeteredElement());  // target circuit element
-			am.setMeteredTerminalIdx(otherMonitor.getMeteredTerminalIdx());
-			am.setMode(otherMonitor.getMode());
-			am.setIncludeResidual(otherMonitor.isIncludeResidual());
+			elem.setNumPhases(other.getNumPhases());
+			elem.setNumConds(other.getNumConds());  // force reallocation of terminal stuff
 
-			for (i = 0; i < am.getParentClass().getNumProperties(); i++)
-				am.setPropertyValue(i, otherMonitor.getPropertyValue(i));
+			elem.setBufferSize(other.getBufferSize());
+			elem.setElementName(other.getElementName());
+			elem.setMeteredElement(other.getMeteredElement());  // target circuit element
+			elem.setMeteredTerminalIdx(other.getMeteredTerminalIdx());
+			elem.setMode(other.getMode());
+			elem.setIncludeResidual(other.isIncludeResidual());
 
-			am.setBaseFrequency(otherMonitor.getBaseFrequency());
+			for (i = 0; i < elem.getParentClass().getNumProperties(); i++)
+				elem.setPropertyValue(i, other.getPropertyValue(i));
 
+			elem.setBaseFrequency(other.getBaseFrequency());
+
+			success = 1;
 		} else {
 			DSS.doSimpleMsg("Error in Monitor makeLike: \"" + MonitorName + "\" not found.", 662);
 		}
 
-		return result;
+		return success;
 	}
 
 	@Override
 	public int init(int handle) {
 		MonitorObj mon;
-		int result = 0;
 
 		if (handle >= 0) {
 			mon = (MonitorObj) elementList.get(handle);
@@ -238,7 +237,7 @@ public class Monitor extends MeterClass {
 			}
 		}
 
-		return result;
+		return 0;
 	}
 
 	public void TOPExport(String objName) {

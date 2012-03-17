@@ -1,7 +1,6 @@
 package com.ncond.dss.meter;
 
 import com.ncond.dss.common.CktElementClass;
-import com.ncond.dss.common.DSS;
 import com.ncond.dss.common.DSSClassDefs;
 import com.ncond.dss.general.DSSObject;
 
@@ -31,7 +30,6 @@ abstract public class MeterClass extends CktElementClass {
 	protected int classEdit(DSSObject activeMeterObj, int paramPointer) {
 		if (paramPointer >= 0)
 			super.classEdit(activeMeterObj, paramPointer - numMeterClassProps);
-
 		return 0;
 	}
 
@@ -39,23 +37,17 @@ abstract public class MeterClass extends CktElementClass {
 //		new MeterElementImpl((DSSClass) otherObj);
 	}
 
-	public void resetAll() {
-		DSS.doSimpleMsg("Programming Error: Base MeterClass.resetAll reached for class: "+getClassName(), 760);
-	}
+	abstract public void resetAll();
 
 	/**
 	 * Force all monitors to take a sample.
 	 */
-	public void sampleAll() {
-		DSS.doSimpleMsg("Programming Error: Base MeterClass.sampleAll reached for class: "+getClassName(), 761);
-	}
+	abstract public void sampleAll();
 
 	/**
 	 * Force all monitors to save their buffers to disk.
 	 */
-	public void saveAll() {
-		DSS.doSimpleMsg("Programming Error: Base MeterClass.saveAll reached for Class: "+getClassName(), 762);
-	}
+	abstract public void saveAll();
 
 	public int getNumMeterClassProps() {
 		return numMeterClassProps;

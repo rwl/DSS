@@ -1,7 +1,6 @@
 package com.ncond.dss.meter;
 
 import com.ncond.dss.common.Circuit;
-import com.ncond.dss.common.CktElement;
 import com.ncond.dss.common.DSS;
 import com.ncond.dss.common.DSSClassDefs;
 import com.ncond.dss.common.Util;
@@ -32,9 +31,9 @@ public class Sensor extends MeterClass {
 
 	@Override
 	protected void defineProperties() {
-
 		numProperties = NumPropsThisClass;
 		countProperties();  // get inherited property count
+
 		allocatePropertyArrays();
 
 		// define property names
@@ -93,14 +92,14 @@ public class Sensor extends MeterClass {
 		activeSensorObj = (SensorObj) elementList.getActive();
 		DSS.activeCircuit.setActiveCktElement(activeSensorObj);
 
-		int result = 0;
 		boolean doRecalcElementData = false;
 
-		SensorObj as = activeSensorObj;
+		SensorObj elem = activeSensorObj;
 
 		int paramPointer = -1;
 		String paramName = parser.getNextParam();
 		String param = parser.makeString();
+
 		while (param.length() > 0) {
 			if (paramName.length() == 0) {
 				paramPointer += 1;
@@ -109,50 +108,51 @@ public class Sensor extends MeterClass {
 			}
 
 			if (paramPointer >= 0 && paramPointer < numProperties)
-				as.setPropertyValue(paramPointer, param);
+				elem.setPropertyValue(paramPointer, param);
 
 			switch (paramPointer) {
 			case -1:
-				DSS.doSimpleMsg("Unknown parameter \"" + paramName + "\" for object \"" + getClassName() +"."+ as.getName() + "\"", 661);
+				DSS.doSimpleMsg("Unknown parameter \"" + paramName + "\" for object \"" +
+						getClassName() + "." + elem.getName() + "\"", 661);
 				break;
 			case 0:
-				as.setElementName(param.toLowerCase());
+				elem.setElementName(param.toLowerCase());
 				break;
 			case 1:
-				as.setMeteredTerminalIdx(parser.makeInteger() - 1);
+				elem.setMeteredTerminalIdx(parser.makeInteger() - 1);
 				break;
 			case 2:
-				as.setKVBase(parser.makeDouble());
+				elem.setKVBase(parser.makeDouble());
 				break;
 			case 3:
-				as.setClearSpecified(Util.interpretYesNo(param));
+				elem.setClearSpecified(Util.interpretYesNo(param));
 				break;
 			case 4:
-				parser.parseAsVector(as.getNumPhases(), as.getSensorVoltage());  // inits to zero
+				parser.parseAsVector(elem.getNumPhases(), elem.getSensorVoltage());  // inits to zero
 				break;
 			case 5:
-				parser.parseAsVector(as.getNumPhases(), as.getSensorCurrent());  // inits to zero
+				parser.parseAsVector(elem.getNumPhases(), elem.getSensorCurrent());  // inits to zero
 				break;
 			case 6:
-				parser.parseAsVector(as.getNumPhases(), as.getSensorKW());
+				parser.parseAsVector(elem.getNumPhases(), elem.getSensorKW());
 				break;
 			case 7:
-				parser.parseAsVector(as.getNumPhases(), as.getSensorKVAr());
+				parser.parseAsVector(elem.getNumPhases(), elem.getSensorKVAr());
 				break;
 			case 8:
-				as.setConn(Util.interpretConnection(param));
+				elem.setConn(Util.interpretConnection(param));
 				break;
 			case 9:
-				as.setDeltaDirection( as.limitToPlusMinusOne(parser.makeInteger()) );
+				elem.setDeltaDirection( elem.limitToPlusMinusOne(parser.makeInteger()) );
 				break;
 			case 10:
-				as.setPctError(parser.makeDouble());
+				elem.setPctError(parser.makeDouble());
 				break;
 			case 11:
-				as.setWeight(parser.makeDouble());
+				elem.setWeight(parser.makeDouble());
 				break;
 			case 12:
-				as.setAction(param);  // put sq error in global result
+				elem.setAction(param);  // put sq error in global result
 				break;
 			default:
 				// inherited parameters
@@ -162,12 +162,9 @@ public class Sensor extends MeterClass {
 
 			switch (paramPointer) {
 			case 0:
-				doRecalcElementData = true;
-				as.setMeteredElementChanged(true);
-				break;
 			case 1:
 				doRecalcElementData = true;
-				as.setMeteredElementChanged(true);
+				elem.setMeteredElementChanged(true);
 				break;
 			case 2:
 				doRecalcElementData = true;
@@ -175,23 +172,21 @@ public class Sensor extends MeterClass {
 
 			/* Do not recalc element data for setting of sensor quantities */
 			case 3:
-				if (as.isClearSpecified()) as.clearSensor();
+				if (elem.isClearSpecified()) elem.clearSensor();
 				break;
 			case 4:
-				as.setVSpecified(true);
+				elem.setVSpecified(true);
 				break;
 			case 5:
-				as.setISpecified(true);
+				elem.setISpecified(true);
 				break;
 			case 6:
-				as.setPSpecified(true);
+				elem.setPSpecified(true);
 				break;
 			case 7:
-				as.setQSpecified(true);
+				elem.setQSpecified(true);
 				break;
 			case 8:
-				doRecalcElementData = true;
-				break;
 			case 9:
 				doRecalcElementData = true;
 				break;
@@ -201,10 +196,9 @@ public class Sensor extends MeterClass {
 			param = parser.makeString();
 		}
 
-		if (doRecalcElementData)
-			as.recalcElementData();
+		if (doRecalcElementData) elem.recalcElementData();
 
-		return result;
+		return 0;
 	}
 
 	/**
@@ -230,38 +224,31 @@ public class Sensor extends MeterClass {
 	 */
 	@Override
 	public void saveAll() {
-//		for (SensorObj pSensor : DSSGlobals.activeCircuit.getSensors())
-//			pSensor.save();
+		/*for (SensorObj sensor : DSS.activeCircuit.getSensors())
+			sensor.save();*/
 	}
 
 	/**
 	 * Set the hasSensorObj flag for all ckt element.
 	 */
 	public void setHasSensorFlag() {
-		int i;
-		SensorObj thisSensor;
-		CktElement cktElem;
 
 		Circuit ckt = DSS.activeCircuit;
 
 		/* Initialize all to false */
-		for (i = 0; i < ckt.getPDElements().size(); i++) {
-			cktElem = ckt.getPDElements().get(i);
-			cktElem.setHasSensorObj(false);
-		}
-		for (i = 0; i < ckt.getPCElements().size(); i++) {
-			cktElem = ckt.getPCElements().get(i);
-			cktElem.setHasSensorObj(false);
-		}
+		for (PDElement elem : ckt.getPDElements())
+			elem.setHasSensorObj(false);
 
-		for (i = 0; i < ckt.getSensors().size(); i++) {
-			thisSensor = ckt.getSensors().get(i);
-			if (thisSensor.getMeteredElement() != null) {
-				thisSensor.getMeteredElement().setHasSensorObj(true);
-				if (thisSensor.getMeteredElement() instanceof PCElement) {
-					((PCElement) thisSensor.getMeteredElement()).setSensorObj(thisSensor);
+		for (PCElement elem : ckt.getPCElements())
+			elem.setHasSensorObj(false);
+
+		for (SensorObj sensor : ckt.getSensors()) {
+			if (sensor.getMeteredElement() != null) {
+				sensor.getMeteredElement().setHasSensorObj(true);
+				if (sensor.getMeteredElement() instanceof PCElement) {
+					((PCElement) sensor.getMeteredElement()).setSensorObj(sensor);
 				} else {
-					((PDElement) thisSensor.getMeteredElement()).setSensorObj(thisSensor);
+					((PDElement) sensor.getMeteredElement()).setSensorObj(sensor);
 				}
 			}
 		}
@@ -269,36 +256,37 @@ public class Sensor extends MeterClass {
 
 	@Override
 	protected int makeLike(String sensorName) {
-		SensorObj otherSensor;
-		int i, result = 0;
+		SensorObj other;
+		int i, success = 0;
 
 		/* See if we can find this sensor name in the present collection */
-		otherSensor = (SensorObj) find(sensorName);
-		if (otherSensor != null) {
-			SensorObj as = activeSensorObj;
+		other = (SensorObj) find(sensorName);
+		if (other != null) {
+			SensorObj elem = activeSensorObj;
 
-			as.setNumPhases(otherSensor.getNumPhases());
-			as.setNumConds(otherSensor.getNumConds());  // force reallocation of terminal stuff
+			elem.setNumPhases(other.getNumPhases());
+			elem.setNumConds(other.getNumConds());  // force reallocation of terminal stuff
 
-			as.setElementName(otherSensor.getElementName());
-			as.setMeteredElement(otherSensor.getMeteredElement());  // target circuit element
-			as.setMeteredTerminalIdx(otherSensor.getMeteredTerminalIdx());
+			elem.setElementName(other.getElementName());
+			elem.setMeteredElement(other.getMeteredElement());  // target circuit element
+			elem.setMeteredTerminalIdx(other.getMeteredTerminalIdx());
 
-			for (i = 0; i < as.getParentClass().getNumProperties(); i++)
-				as.setPropertyValue(i, otherSensor.getPropertyValue(i));
+			for (i = 0; i < elem.getParentClass().getNumProperties(); i++)
+				elem.setPropertyValue(i, other.getPropertyValue(i));
 
-			as.setBaseFrequency(otherSensor.getBaseFrequency());
+			elem.setBaseFrequency(other.getBaseFrequency());
+
+			success = 1;
 		} else {
 			DSS.doSimpleMsg("Error in Sensor makeLike: \"" + sensorName + "\" not found.", 662);
 		}
 
-		return result;
+		return success;
 	}
 
 	@Override
 	public int init(int handle) {
 		SensorObj sensor;
-		int Result = 0;
 
 		if (handle >= 0) {
 			sensor = (SensorObj) elementList.get(handle);
@@ -310,7 +298,7 @@ public class Sensor extends MeterClass {
 			}
 		}
 
-		return Result;
+		return 0;
 	}
 
 }
