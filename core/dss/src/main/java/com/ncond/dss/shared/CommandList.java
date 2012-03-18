@@ -25,14 +25,15 @@ public class CommandList {
 	}
 
 	public int getCommand(String cmd) {
-		int result = commandList.find(cmd);
+		int idx = commandList.find(cmd);
+
 		/* If no match found on whole command, check for abbrev */
 		/* This routine will generally be faster if one enters the whole command */
-		if (result == -1)
+		if (idx == -1)
 			if (abbrevAllowed)
-				result = commandList.findAbbrev(cmd);
+				idx = commandList.findAbbrev(cmd);
 
-		return result;
+		return idx;
 	}
 
 	public String get(int i) {

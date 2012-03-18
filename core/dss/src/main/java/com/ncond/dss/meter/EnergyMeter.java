@@ -435,7 +435,9 @@ public class EnergyMeter extends MeterClass {
 			if (meter.isEnabled())
 				meter.makeMeterZoneLists();
 
-		CktTree.freeAndNilBusAdjacencyLists(busAdjPD, busAdjPC);
+		CktTree.freeBusAdjacencyLists(busAdjPD, busAdjPC);
+		busAdjPD = null;
+		busAdjPC = null;
 	}
 
 	/**

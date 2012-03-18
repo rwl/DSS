@@ -142,7 +142,7 @@ public class PriceShapeObj extends DSSObject {
 	private void calcMeanandStdDev() {
 		if (numPoints > 0) {
 			if (interval > 0.0) {
-				MathUtil.meanandStdDev(priceValues, numPoints, mean, stdDev);
+				MathUtil.meanAndStdDev(priceValues, numPoints, mean, stdDev);
 			} else {
 				MathUtil.curveMeanAndStdDev(priceValues, hours, numPoints, mean, stdDev);
 			}

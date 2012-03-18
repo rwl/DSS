@@ -9,8 +9,8 @@ import com.ncond.dss.general.DSSObject;
 @Getter @Setter
 public class CktTreeNode {
 
-	private PointerList childBranches;  // TODO Replace with List and Iterator
-	private int numToBuses, toBusPtr;
+	private PointerList childBranches;
+	private int numToBuses, toBusIdx;
 	private int[] toBusList;
 
 	protected boolean childAdded;
@@ -25,23 +25,25 @@ public class CktTreeNode {
 	protected boolean isLoopedHere, isParallel, isDangling;
 	protected Object loopLineObj;
 
-
 	public CktTreeNode(CktTreeNode parent, DSSObject selfObj) {
 		super();
+
 		cktObject = selfObj;
 		parentBranch = parent;
+
 		if (parentBranch != null) {
 			lexicalLevel = parentBranch.getLexicalLevel() + 1;
 		} else {
 			lexicalLevel = 0;
 		}
-		childBranches   = new PointerList(2);
-		shuntObjects    = new PointerList(1);
+
+		childBranches = new PointerList(2);
+		shuntObjects = new PointerList(1);
 		fromBusReference = 0;
-		voltBaseIndex    = -1;  // index to voltage base list used by EnergyMeter and maybe others
+		voltBaseIndex = -1;  // index to voltage base list used by EnergyMeter and maybe others
 		numToBuses = 0;
 		toBusList = null;
-		toBusPtr = -1;
+		toBusIdx = -1;
 		childAdded = false;
 
 		isDangling = true;
@@ -92,12 +94,12 @@ public class CktTreeNode {
 		if (numToBuses == 1)  {
 			return toBusList[0];  // always return the first
 		} else {
-			toBusPtr += 1;
-			if (toBusPtr >= numToBuses) {
-				toBusPtr = -1;  // ready for next sequence of access
+			toBusIdx += 1;
+			if (toBusIdx >= numToBuses) {
+				toBusIdx = -1;  // ready for next sequence of access
 				return 0;
 			} else {
-				return toBusList[toBusPtr];
+				return toBusList[toBusIdx];
 			}
 		}
 	}
@@ -109,7 +111,7 @@ public class CktTreeNode {
 	}
 
 	public void resetToBusList() {
-		toBusPtr = -1;
+		toBusIdx = -1;
 	}
 
 	public DSSObject getFirstObject() {

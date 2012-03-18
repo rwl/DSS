@@ -12,7 +12,6 @@ public class ComplexUtil {
 	}
 
 	/**
-	 *
 	 * @param r the modulus of the complex number to create
 	 * @param theta the argument of the complex number to create IN DEGREES
 	 */
@@ -28,6 +27,7 @@ public class ComplexUtil {
 
 	/**
 	 * Return the quotient of this complex number and the given real number.
+	 *
 	 * @param rhs the real number
 	 * @return the complex number quotient
 	 */

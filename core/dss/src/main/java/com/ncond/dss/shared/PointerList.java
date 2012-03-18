@@ -13,21 +13,20 @@ public class PointerList {
 
 	private int incrementSize;
 
-	public PointerList() {
-		this(0);
-	}
-
 	public PointerList(int size) {
 		super();
 		maxAllocated = size;
 		// default size & increment
-		if (maxAllocated <= 0)
-			maxAllocated = 10;
+		if (maxAllocated <= 0) maxAllocated = 10;
 		list = new Object[maxAllocated];
 		numInList = 0;
 		activeItem = -1;
 		// increment is equal to original allocation
 		incrementSize = maxAllocated;
+	}
+
+	public PointerList() {
+		this(0);
 	}
 
 	public Object getFirst() {

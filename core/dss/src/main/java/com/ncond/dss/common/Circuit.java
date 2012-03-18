@@ -1047,8 +1047,11 @@ public class Circuit extends NamedObject {
 	public void freeTopology() {
 		if (branchList != null)
 			branchList = null;
-		if (busAdjPC != null)
-			CktTree.freeAndNilBusAdjacencyLists(busAdjPD, busAdjPC);
+		if (busAdjPC != null) {
+			CktTree.freeBusAdjacencyLists(busAdjPD, busAdjPC);
+			busAdjPD = null;
+			busAdjPC = null;
+		}
 	}
 
 	public List<PDElement>[] getBusAdjacentPDLists() {

@@ -31,9 +31,10 @@ public class ParserTest extends TestCase {
 		param = parser.getNextParam();
 
 		int[] nodes = new int[3];
-//		String name = parser.parseAsBusName(nodes.length, nodes);
+		int[] n = new int[1];
+		String name = parser.parseAsBusName(n, nodes);
 
-//		System.out.println("BusName: " + param + name + nodes.toString());
+		System.out.println("BusName: " + param + name + nodes.toString());
 	}
 
 	public void testParseAsVector() {

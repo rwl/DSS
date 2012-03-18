@@ -28,8 +28,7 @@ public class CMatrix {
 
 	public void setSym(int i, int j, Complex value) {
 		values[j * nOrder + i] = value;
-		if (i != j)
-			values[i * nOrder + j] = value;  // ensure symmetry
+		if (i != j) values[i * nOrder + j] = value;  // ensure symmetry
 	}
 
 	public void add(int i, int j, Complex value) {
@@ -38,8 +37,7 @@ public class CMatrix {
 
 	public void addSym(int i, int j, Complex value) {
 		values[j * nOrder + i] = values[j * nOrder + i].add(value);
-		if (i != j)
-			values[i * nOrder + j] = values[i * nOrder + j].add(value);  // ensure symmetry
+		if (i != j) values[i * nOrder + j] = values[i * nOrder + j].add(value);  // ensure symmetry
 	}
 
 	public Complex get(int i, int j) {
@@ -81,7 +79,7 @@ public class CMatrix {
 		for (int i = 0; i < nOrder; i++) {
 			sum = Complex.ZERO;
 			for (int j = 0; j < nOrder; j++)
-				sum = sum.add( values[j * nOrder + i].multiply( x[j] ) );
+				sum = sum.add(values[j * nOrder + i].multiply(x[j]));
 			b[i] = b[i].add(sum);
 		}
 	}
@@ -110,12 +108,12 @@ public class CMatrix {
 	 * Sum all elements in a given block of the matrix.
 	 */
 	public Complex sumBlock(int row1, int row2, int col1, int col2) {
-		int rowstart;
+		int rowStart;
 		Complex sum = Complex.ZERO;
 
 		for (int j = col1; j <= col2; j++) {
-			rowstart = j * nOrder;
-			for (int i = rowstart + row1; i <= rowstart + row2; i++) {
+			rowStart = j * nOrder;
+			for (int i = rowStart + row1; i <= rowStart + row2; i++) {
 				sum = sum.add(values[i]);
 			}
 		}
@@ -150,33 +148,35 @@ public class CMatrix {
 	 * Average of diagonal elements
 	 */
 	public Complex avgDiag() {
-		Complex result = Complex.ZERO;
+		Complex avg = Complex.ZERO;
 		for (int i = 0; i < nOrder; i++)
-			result = result.add(values[i * nOrder + i]);
+			avg = avg.add(values[i * nOrder + i]);
 
-		if (nOrder > 0)
-			result = ComplexUtil.divide(result, nOrder);
+		if (nOrder > 0) {
+			avg = ComplexUtil.divide(avg, nOrder);
+		}
 
-		return result;
+		return avg;
 	}
 
 	/**
 	 * Average the upper triangle off diagonals.
 	 */
 	public Complex avgOffDiag() {
-		Complex result = Complex.ZERO;
+		Complex avg = Complex.ZERO;
 		int nTimes = 0;
 		for (int i = 0; i < nOrder; i++) {
 			for (int j = i+1; j < nOrder; j++) {
 				nTimes += 1;
-				result = result.add(values[j * nOrder + i]);
+				avg = avg.add(values[j * nOrder + i]);
 			}
 		}
 
-		if (nTimes > 0)
-			result = ComplexUtil.divide(result, nTimes);
+		if (nTimes > 0) {
+			avg = ComplexUtil.divide(avg, nTimes);
+		}
 
-		return result;
+		return avg;
 	}
 
 	/**
@@ -211,8 +211,7 @@ public class CMatrix {
 		}
 
 		/* Zero LT */
-		for (j = 0; j < L; j++)
-			LT[j] = 0;
+		for (j = 0; j < L; j++) LT[j] = 0;
 
 		T1 = Complex.ZERO;
 		K = 0;
@@ -242,23 +241,22 @@ public class CMatrix {
 				if (i != K) {
 					for (j = 0; j < L; j++) {
 						if (j != K) {
-							A[ index(i, j) ] =
-								A[ index(i, j) ].subtract( A[index(i, K)].multiply( A[ index(K, j) ] ).divide( A[ index(K, K) ] ) );
+							A[index(i, j)] = A[index(i, j)].subtract(A[index(i, K)].multiply(A[index(K, j)]).divide(A[index(K, K)]));
 						}
 					}
 				}
 			}
 
 			// Invert and negate k, k element
-			A[ index(K, K) ] = Complex.ONE.divide( A[ index(K, K) ] ).negate();
+			A[index(K, K)] = Complex.ONE.divide(A[index(K, K)]).negate();
 
 			for (i = 0; i < L; i++) {
 				if (i != K) {
-					A[ index(i, K) ] = A[ index(i, K) ].multiply( A[ index(K, K) ] );
-					A[ index(K, i) ] = A[ index(K, i) ].multiply( A[ index(K, K) ] );
+					A[index(i, K)] = A[index(i, K)].multiply(A[index(K, K)]);
+					A[index(K, i)] = A[index(K, i)].multiply(A[index(K, K)]);
 				}
 			}
-		}  // M loop
+		}  // m loop
 
 		for (j = 0; j < L; j++)
 			for (K = 0; K < L; K++)
@@ -276,19 +274,19 @@ public class CMatrix {
 	 */
 	public CMatrix kron(int eliminationRow) {
 		int ii, jj;
-		CMatrix result = null;   // null result on failure
+		CMatrix mtx = null;   // null result on failure
 		if ((nOrder > 1) && (eliminationRow < nOrder) && (eliminationRow >= 0)) {
-			result = new CMatrix(nOrder - 1);
-			int N = eliminationRow;
-			Complex NNElement = get(N, N);
+			mtx = new CMatrix(nOrder - 1);
+			int irow = eliminationRow;
+			Complex x = get(irow, irow);
 
 			ii = 0;
 			for (int i = 0; i < nOrder; i++) {
-				if (i != N) {  // skip elimination row
+				if (i != irow) {  // skip elimination row
 					jj = 0;
 					for (int j = 0; j < nOrder; j++) {
-						if (j != N) {
-							result.set(ii, jj, get(i, j).subtract( get(i, N).multiply( get(N, j) ).divide(NNElement) ));
+						if (j != irow) {
+							mtx.set(ii, jj, get(i, j).subtract(get(i, irow).multiply(get(irow, j)).divide(x)));
 							jj += 1;
 						}
 					}
@@ -296,8 +294,7 @@ public class CMatrix {
 				}
 			}
 		}
-
-		return result;
+		return mtx;
 	}
 
 }

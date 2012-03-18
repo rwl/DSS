@@ -1,15 +1,11 @@
 package com.ncond.dss.shared;
 
-import java.io.File;
-
 public class PstCalc {
 
 	private static final int MAXBINS = 50000;
 
-	private static File debugFile;  // for debugging
-
 	private static double rms_reference;  // internal rms reference value (do not change)
-	private static double Fbase;  // not needed for AC signal input
+	private static double fBase;  // not needed for AC signal input
 	private static double tStep;  // internal timestep, may or may not equal deltaT
 	private static double pstTime;
 	private static double pstTimer;
@@ -58,7 +54,7 @@ public class PstCalc {
 	 * @return number of Pst elements computed
 	 */
 	public static int pstRMS(double[][] pstResult, double[] pVoltages, double freqBase, int nCyclesPerSample, int npts, int lamp) {
-		Fbase = freqBase;
+		fBase = freqBase;
 
 		// lamp_type  = 0;  // 0 for 120V filters, 1 for 230V filters
 		input_type = 6;  // 0 for AC, 1 for 1-cycle RMS, 6 for 6-cycle rms
@@ -69,7 +65,7 @@ public class PstCalc {
 		} else {
 			lamp_type = 0;
 		}
-		deltaT = nCyclesPerSample / Fbase;
+		deltaT = nCyclesPerSample / fBase;
 
 		return _pst(pstResult, pVoltages, npts);
 	}
@@ -294,8 +290,6 @@ public class PstCalc {
 		int synthesizedSamples;
 		double samplesPerDeltaT;  // this value is used when RMS data is used as input
 
-		debugFile = new File("DebugOut.csv");
-
 		rms_reference = 120.0;  // internal rms reference value (do not change)
 
 		init6Array(Vin, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0);
@@ -324,7 +318,7 @@ public class PstCalc {
 
 		zeroOutBins();
 
-		tStep = 1.0 / (16.0 * Fbase);  // time step for each cycle, fixed to 16 samples/cycle
+		tStep = 1.0 / (16.0 * fBase);  // time step for each cycle, fixed to 16 samples/cycle
 
 		pstTimeMax = npts * deltaT;  // - 6.0 ;  //use the entire data set sent to calculate the flicker
 		pstTime = Math.min(600.0, pstTimeMax);
@@ -339,13 +333,13 @@ public class PstCalc {
 
 		samplesPerDeltaT = deltaT / tStep;
 
-//		pw.printf("Tstep=%.8g, DeltaT=%.8g, Samples=%.8g, Pst_Time=%.8g, npts=%d ",
-//				tStep, deltaT, samplesPerDeltaT, pstTime, npts);
+		/*pw.printf("Tstep=%.8g, DeltaT=%.8g, Samples=%.8g, Pst_Time=%.8g, npts=%d ",
+				tStep, deltaT, samplesPerDeltaT, pstTime, npts);*/
 
 		max_flicker = 0.0;
-		firstSample = VArray[1];  // TODO Check zero based indexing
-		rms_input   = firstSample;
-		rms_sample  = firstSample;
+		firstSample = VArray[0];
+		rms_input = firstSample;
+		rms_sample = firstSample;
 
 		// inits filter to 1 PU for 30 s
 		while (time < 30.0) {
@@ -356,7 +350,7 @@ public class PstCalc {
 
 		pstStartTime = time + 5.0;  // give it 5 s to settle down after real data starts
 
-		Vindex = 1;  // TODO Check zero based indexing
+		Vindex = 0;
 		pstInterval = 0;
 		for (iPst = 0; iPst < npts; iPst++) {
 			rms_sample = VArray[Vindex];
@@ -375,15 +369,15 @@ public class PstCalc {
 						pstInterval++;
 						if (pstInterval <= numPstIntervals) pstResult[0][pstInterval] = calcPst();
 
-//						pw.printf("PST Interval=%d, Pst=%.8g, Max_flicker=%.8g", pstInterval, pstResult[pstInterval], Max_Flicker);
-//						pw.println("i, Vin, X1, X2, X3, X4, X5, X6, X7, X8, X9, X10, RMSVin");
-//						for (int i = 0; i < 6; i++) {
-//							pw.println("%d, %.8g, %.8g, %.8g, %.8g, %.8g, %.8g, %.8g, %.8g, %.8g, %.8g, %.8g, %.8g",
-//									i, Vin[i], X1[i], X2[i], X3[i], X4[i], X5[i], X6[i], X7[i], X8[i], X9[i], X10[i], rmsVin[i]);
-//						}
-//						for (int i = 0; i < 100; i++) {
-//							pw.println("%d, %.8g, %.8g", i, bins0[i], bins1[i]));
-//						}
+						/*pw.printf("PST Interval=%d, Pst=%.8g, Max_flicker=%.8g", pstInterval, pstResult[pstInterval], Max_Flicker);
+						pw.println("i, Vin, X1, X2, X3, X4, X5, X6, X7, X8, X9, X10, RMSVin");
+						for (int i = 0; i < 6; i++) {
+							pw.println("%d, %.8g, %.8g, %.8g, %.8g, %.8g, %.8g, %.8g, %.8g, %.8g, %.8g, %.8g, %.8g",
+									i, Vin[i], X1[i], X2[i], X3[i], X4[i], X5[i], X6[i], X7[i], X8[i], X9[i], X10[i], rmsVin[i]);
+						}
+						for (int i = 0; i < 100; i++) {
+							pw.println("%d, %.8g, %.8g", i, bins0[i], bins1[i]));
+						}*/
 
 						pstTimer = 0.0;
 						zeroOutBins();  // zero bins0 and bins1 out for next time
@@ -395,7 +389,7 @@ public class PstCalc {
 			Vindex++;
 		}
 
-//		pw.close();
+		/*pw.close();*/
 
 		bins0 = null;
 		bins1 = null;

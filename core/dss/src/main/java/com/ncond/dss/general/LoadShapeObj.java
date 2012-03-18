@@ -234,7 +234,7 @@ public class LoadShapeObj extends DSSObject {
 	public void calcMeanAndStdDev() {
 		if (numPoints > 0) {
 			if (interval > 0.0) {
-				MathUtil.meanandStdDev(PMultipliers, numPoints, mean, stdDev);
+				MathUtil.meanAndStdDev(PMultipliers, numPoints, mean, stdDev);
 			} else {
 				MathUtil.curveMeanAndStdDev(PMultipliers, hours, numPoints, mean, stdDev);
 			}

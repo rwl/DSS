@@ -81,20 +81,22 @@ public abstract class MathUtil {
 //	}
 
 	private static int L;
+
 	private static int index(int i, int j) {
 		return j * L + i;
 	}
+
 	/**
-	 * Matrix= reference to matrix of doulbes
-	 *   Norder = order of matrix  (assumed square)
-	 *   Error 	= 0 if no error;
-	 *          = 1 if not enough heap to alloc temp array
-	 *          = 2 if matrix can't be inverted
+	 * A = reference to matrix of doubles
+	 * norder = order of matrix  (assumed square)
+	 * error = 0 if no error;
+	 *       = 1 if not enough heap to alloc temp array
+	 *       = 2 if matrix can't be inverted
 	 *
 	 * This routine will invert a non-symmetric matrix.  Index is assumed to
-	 * follow the FORTRAN standard, not the Pascal standard.  That is the data
+	 * follow the Fortran standard, not the Pascal standard.  That is the data
 	 * are ordered by first subscript first, then second subscript.  This routine
-	 * computes its own indexing, leaving nothing to the whims of a cantankerous compiler.
+	 * computes its own indexing.
 	 *
 	 * It assumes that the matrix is dimensioned to exactly the number of elements
 	 * needed.  Apologies to Fortran users who are accustomed to over dimensioning
@@ -102,7 +104,6 @@ public abstract class MathUtil {
 	 *
 	 */
 	public static void ETKInvert(double[] A, int norder, int[] error) {
-
 		int j, k, LL, M, i;
 		int[] LT;
 		double RMY, T1;
@@ -118,8 +119,7 @@ public abstract class MathUtil {
 		}
 
 		/* Zero LT */
-		for (j = 0; j < L; j++)
-			LT[j] = 0;
+		for (j = 0; j < L; j++) LT[j] = 0;
 
 		T1 = 0.0;
 
@@ -146,11 +146,13 @@ public abstract class MathUtil {
 
 			T1 = 0.0;
 			LT[k] = 1;
-			for (i = 0; i < L; i++)
-				if (i != k)
-					for (j = 0; j < L; j++)
-						if (j != k)
-							A[index(i, j)] = A[index(i, j)] - A[index(i, k)] * A[index(k, j)] / A[index(k, k)];
+			for (i = 0; i < L; i++) {
+				if (i != k) {
+					for (j = 0; j < L; j++) {
+						if (j != k) A[index(i, j)] = A[index(i, j)] - A[index(i, k)] * A[index(k, j)] / A[index(k, k)];
+					}
+				}
+			}
 
 			A[index(k, k)] = -1.0 / A[index(k, k)];
 
@@ -185,10 +187,10 @@ public abstract class MathUtil {
 	 * Computes total complex power given terminal voltages and currents.
 	 */
 	public static Complex terminalPowerIn(Complex[] V, Complex[] I, int nPhases) {
-		Complex result = Complex.ZERO;
+		Complex total = Complex.ZERO;
 		for (int j = 0; j < nPhases; j++)
-			result = result.add(V[j].multiply( I[j].conjugate() ));
-		return result;
+			total = total.add(V[j].multiply(I[j].conjugate()));
+		return total;
 	}
 
 	/**
@@ -208,8 +210,8 @@ public abstract class MathUtil {
 	 */
 	public static double gauss(double mean, double stdDev) {
 		double A = 0.0;
-		for (int i = 0; i < 12; i++)
-			A = A + Math.random();
+
+		for (int i = 0; i < 12; i++) A += Math.random();
 
 		return (A - 6.0) * stdDev + mean;
 	}
@@ -224,14 +226,13 @@ public abstract class MathUtil {
 
 	public static double sum(double[] data, int count) {
 		double sum = 0;
-		for (int i = 0; i < count; i++)
-			sum += data[i];
+		for (int i = 0; i < count; i++) sum += data[i];
 		return sum;
 	}
 
-	public static void meanandStdDev(double[] pData, int nData, double[] mean, double[] stdDev) {
+	public static void meanAndStdDev(double[] pData, int nData, double[] mean, double[] stdDev) {
 		double[] data = new double[100];
-		double S;
+		double s;
 
 		data = pData;  // make a double pointer
 		if (nData == 1) {
@@ -240,10 +241,10 @@ public abstract class MathUtil {
 			return;
 		}
 		mean[0] = sum(data, (nData)) / nData;
-		S = 0;  // sum differences from the mean, for greater accuracy
+		s = 0;  // sum differences from the mean, for greater accuracy
 		for (int i = 0; i < nData; i++)
-			S = S + Math.pow(mean[0] - data[i], 2);
-		stdDev[0] = Math.sqrt(S / (nData - 1));
+			s = s + Math.pow(mean[0] - data[i], 2);
+		stdDev[0] = Math.sqrt(s / (nData - 1));
 	}
 
 	public static void curveMeanAndStdDev(double[] pY, double[] pX, int N, double[] mean, double[] stdDev) {
@@ -256,9 +257,10 @@ public abstract class MathUtil {
 			return;
 		}
 		s = 0;
-		for (i = 0; i < N - 1; i++)
+		for (i = 0; i < N - 1; i++) {
 			s += 0.5 * (pY[i] + pY[i + 1]) * (pX[i + 1] - pX[i]);
-		mean[0] = s / (pX[N] - pX[0]);  // TODO Check zero based indexing
+		}
+		mean[0] = s / (pX[N] - pX[0]);
 
 		s = 0;  // sum differences from the mean, for greater accuracy
 		for (i = 0; i < N - 1; i++) {
@@ -317,39 +319,37 @@ public abstract class MathUtil {
 	 */
 	public static double pctNemaUnbalance(Complex[] Vph) {
 		int i;
-		double VAvg;
+		double Vavg;
 		double maxDiff;
-		double[] VMag = new double[3];
+		double[] Vmag = new double[3];
 
-		for (i = 0; i < 3; i++)
-			VMag[i] = Vph[i].abs();
+		for (i = 0; i < 3; i++) Vmag[i] = Vph[i].abs();
 
-		VAvg = 0.0;
-		for (i = 0; i < 3; i++)
-			VAvg = VAvg + VMag[i];
-		VAvg = VAvg / 3.0;
+		Vavg = 0.0;
+		for (i = 0; i < 3; i++) Vavg += Vmag[i];
+		Vavg = Vavg / 3.0;
 
 		maxDiff = 0.0;
-		for (i = 0; i < 3; i++)
-			maxDiff = Math.max(maxDiff, Math.abs( VMag[i] - VAvg ));
+		for (i = 0; i < 3; i++) {
+			maxDiff = Math.max(maxDiff, Math.abs(Vmag[i] - Vavg));
+		}
 
-		if (VAvg != 0.0) {
-			return maxDiff / VAvg * 100.0;  // pct difference
+		if (Vavg != 0.0) {
+			return maxDiff / Vavg * 100.0;  // pct difference
 		} else {
 			return 0;
 		}
 	}
 
 	public static double getXR(Complex a) {
-		double result;
+		double xr;
 		if (a.getReal() != 0.0) {
-			result = a.getImaginary() / a.getReal();
-			if (Math.abs(result) > 9999.0)
-				result = 9999.0;
+			xr = a.getImaginary() / a.getReal();
+			if (Math.abs(xr) > 9999.0) xr = 9999.0;
 		} else{
-			result = 9999.0;;
+			xr = 9999.0;;
 		}
-		return result;
+		return xr;
 	}
 
 	public static double sqr(double a) {

@@ -144,7 +144,7 @@ public class TempShapeObj extends DSSObject {
 	private void calcMeanAndStdDev() {
 		if (numPoints > 0) {
 			if (interval > 0.0) {
-				MathUtil.meanandStdDev(tempValues, numPoints, mean, stdDev);
+				MathUtil.meanAndStdDev(tempValues, numPoints, mean, stdDev);
 			} else {
 				MathUtil.curveMeanAndStdDev(tempValues, hours, numPoints, mean, stdDev);
 			}
