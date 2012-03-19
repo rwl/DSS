@@ -305,4 +305,8 @@ public class HashList {
 		numElements = 0;
 	}
 
+	public String[] toArray() {
+		return stringArray;
+	}
+
 }
