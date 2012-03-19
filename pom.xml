@@ -1,114 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
-  <groupId>com.ncond.dss</groupId>
+  <parent>
+    <groupId>com.ncond.dss</groupId>
+    <artifactId>root</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+    <relativePath>..</relativePath>
+  </parent>
+  <groupId>com.ncond.dss.core</groupId>
   <artifactId>root</artifactId>
   <packaging>pom</packaging>
-  <version>0.0.1-SNAPSHOT</version>
-  <name>DSS</name>
-  <description>DSS (Distribution System Simulator) is an unbalanced multi-phase circuit simulator for next-generation smart grid research.</description>
-  <inceptionYear>2011</inceptionYear>
-
+  <name>DSS Core</name>
+  <description>Provides the core circuit model and solver interface.</description>
   <modules>
-    <!-- NB: Update the <dependencyManagement> section in this pom.xml if you add/remove/rename any module below! -->
-    <module>core</module>
-    <module>shell</module>
-    <module>eclipse</module>
-    <module>vaadin</module>
+    <module>dss</module>
+    <module>cs-solve</module>
+    <!-- <module>klu-solve</module> -->
+    <module>ind-mach-012a</module>
+    <module>cdpsm</module>
   </modules>
-
-  <developers>
-    <developer>
-      <name>Richard Lincoln</name>
-      <id>rwl</id>
-      <email>r.w.lincoln@gmail.com</email>
-      <timezone>+0</timezone>
-    </developer>
-  </developers>
-
-  <dependencyManagement>
-    <dependencies>
-      <!-- Third-party dependencies -->
-      <dependency>
-        <groupId>org.apache.commons</groupId>
-        <artifactId>commons-math</artifactId>
-        <version>2.1</version>
-      </dependency>
-      <dependency>
-        <groupId>junit</groupId>
-        <artifactId>junit</artifactId>
-        <version>3.8.2</version>
-        <scope>test</scope>
-      </dependency>
-      <dependency>
-        <groupId>org.projectlombok</groupId>
-        <artifactId>lombok</artifactId>
-        <version>0.10.8</version>
-      </dependency>
-      <dependency>
-        <groupId>jline</groupId>
-        <artifactId>jline</artifactId>
-        <version>0.9.94</version>
-      </dependency>
-      <!-- Aggregator dependencies -->
-      <dependency>
-        <groupId>com.ncond.dss.core</groupId>
-        <artifactId>root</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>com.ncond.dss.shell</groupId>
-        <artifactId>root</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>com.ncond.dss.eclipse</groupId>
-        <artifactId>root</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>com.ncond.dss.vaadin</groupId>
-        <artifactId>root</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <!-- Core dependencies -->
-      <dependency>
-        <groupId>com.ncond.dss.core</groupId>
-          <artifactId>dss</artifactId>
-          <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>com.ncond.dss.core</groupId>
-          <artifactId>klu-solve</artifactId>
-          <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>com.ncond.dss.core</groupId>
-          <artifactId>cs-solve</artifactId>
-          <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>com.ncond.dss.core</groupId>
-          <artifactId>ind-mach-012a</artifactId>
-          <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>com.ncond.dss.core</groupId>
-          <artifactId>cdpsm</artifactId>
-          <version>${project.version}</version>
-      </dependency>
-      <!-- SuiteSparse dependencies -->
-      <dependency>
-        <groupId>edu.ufl.cise</groupId>
-        <artifactId>CXSparseJ</artifactId>
-        <version>2.2.6-SNAPSHOT</version>
-      </dependency>
-      <dependency>
-        <groupId>edu.ufl.cise</groupId>
-        <artifactId>KLUJ</artifactId>
-        <version>1.1.1-SNAPSHOT</version>
-      </dependency>
-    </dependencies>
-  </dependencyManagement>
-
 </project>
