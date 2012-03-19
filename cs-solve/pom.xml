@@ -9,6 +9,13 @@
   <artifactId>cs-solve</artifactId>
   <name>CSparseJ Solve</name>
   <description>Provides an interface to CXSparseJ.</description>
+  <licenses>
+    <license>
+      <name>Gnu LGPL</name>
+      <url>http://www.gnu.org/licenses/lgpl-2.1.txt</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
   <dependencies>
     <dependency>
       <groupId>edu.ufl.cise</groupId>

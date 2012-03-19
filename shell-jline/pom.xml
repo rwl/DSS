@@ -7,7 +7,15 @@
     <relativePath>..</relativePath>
   </parent>
   <artifactId>shell-jline</artifactId>
-  <version>0.0.1-SNAPSHOT</version>
+  <name>DSS Shell</name>
+  <description>JLine based shell interface</description>
+  <licenses>
+    <license>
+      <name>BSD</name>
+      <url>http://www.opensource.org/licenses/BSD-3-Clause</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
   <dependencies>
     <dependency>
       <groupId>jline</groupId>

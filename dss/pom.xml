@@ -8,7 +8,14 @@
   </parent>
   <artifactId>dss</artifactId>
   <name>DSS Model</name>
-  <description>Provides the DSS circuit model.</description>
+  <description>Provides the DSS circuit model</description>
+  <licenses>
+    <license>
+      <name>BSD</name>
+      <url>http://www.opensource.org/licenses/BSD-3-Clause</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
   <build>
     <plugins>
       <!-- Lombok requires Java 6 -->

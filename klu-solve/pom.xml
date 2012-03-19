@@ -9,6 +9,13 @@
   <artifactId>klu-solve</artifactId>
   <name>KLU Solve</name>
   <description>Provides an interface to JKLU.</description>
+  <licenses>
+    <license>
+      <name>Gnu LGPL</name>
+      <url>http://www.gnu.org/licenses/lgpl-2.1.txt</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
   <dependencies>
     <dependency>
       <groupId>com.ncond.dss</groupId>

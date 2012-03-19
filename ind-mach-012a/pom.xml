@@ -8,7 +8,14 @@
   </parent>
   <artifactId>ind-mach-012a</artifactId>
   <name>Induction Machine 012a</name>
-  <description>Provides induction machine model 012a.</description>
+  <description>Provides induction machine model 012a</description>
+  <licenses>
+    <license>
+      <name>BSD</name>
+      <url>http://www.opensource.org/licenses/BSD-3-Clause</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
   <dependencies>
     <dependency>
       <groupId>com.ncond.dss</groupId>
