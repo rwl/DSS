@@ -1,26 +1,9 @@
 *~
 *.class
 
-/core/*/target/*
-/core/*/.settings/
-/core/*/.classpath
-/core/*/.project
-
-/eclipse/*/target/*
-/eclipse/*/.settings/
-/eclipse/*/.classpath
-/eclipse/*/.project
-
-/shell/*/target/*
-/shell/*/.settings/
-/shell/*/.classpath
-/shell/*/.project
-
-/vaadin/*/target/*
-/vaadin/*/.settings/
-/vaadin/*/.classpath
-/vaadin/*/.project
-/vaadin/*/src/main/webapp/VAADIN/widgetsets/*
+/*/target/*
+/*/.settings/
+/*/.classpath
+/*/.project
 
 javapyler.cfg
-
