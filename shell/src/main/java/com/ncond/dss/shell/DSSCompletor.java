@@ -1,19 +1,15 @@
-package com.ncond.dss.shell.jline;
+package com.ncond.dss.shell;
 
 import java.util.List;
 import java.util.Set;
-import java.util.SortedSet;
 import java.util.TreeSet;
 
 import com.ncond.dss.common.DSS;
 import com.ncond.dss.parser.Parser;
 
-import jline.Completor;
+public class DSSCompletor {
 
-public class DSSCompletor implements Completor {
-
-	@SuppressWarnings({"rawtypes", "unchecked"})
-	public int complete(String buf, int cursor, List clist) {
+	public int complete(String buf, int cursor, List<String> clist) {
 		String buffer = (buf == null) ? "" : buf;
 
 		// trim leading spaces

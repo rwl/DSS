@@ -14,8 +14,12 @@
     <!-- <module>klu-solve</module> -->
     <module>ind-mach-012a</module>
     <module>cdpsm</module>
+    <module>shell</module>
     <module>shell-jline</module>
   </modules>
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+  </properties>
   <dependencyManagement>
     <dependencies>
       <!-- Third-party dependencies -->
@@ -23,6 +27,11 @@
         <groupId>org.apache.commons</groupId>
         <artifactId>commons-math</artifactId>
         <version>2.1</version>
+      </dependency>
+      <dependency>
+    	<groupId>org.apache.commons</groupId>
+    	<artifactId>commons-lang3</artifactId>
+    	<version>3.1</version>
       </dependency>
       <dependency>
         <groupId>junit</groupId>
@@ -38,7 +47,7 @@
       <dependency>
         <groupId>jline</groupId>
         <artifactId>jline</artifactId>
-        <version>0.9.94</version>
+        <version>1.0</version>
       </dependency>
       <!-- DSS dependencies -->
       <dependency>
@@ -68,14 +77,19 @@
       </dependency>
       <dependency>
         <groupId>com.ncond.dss</groupId>
+          <artifactId>shell</artifactId>
+          <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.ncond.dss</groupId>
           <artifactId>shell-jline</artifactId>
           <version>${project.version}</version>
       </dependency>
       <!-- SuiteSparse dependencies -->
       <dependency>
-        <groupId>edu.ufl.cise</groupId>
+        <groupId>net.sourceforge.csparse</groupId>
         <artifactId>CXSparseJ</artifactId>
-        <version>2.2.6-SNAPSHOT</version>
+        <version>0.2.6-SNAPSHOT</version>
       </dependency>
       <dependency>
         <groupId>edu.ufl.cise</groupId>

@@ -11,19 +11,23 @@
   <description>JLine based shell interface</description>
   <licenses>
     <license>
-      <name>BSD</name>
-      <url>http://www.opensource.org/licenses/BSD-3-Clause</url>
+      <name>Apache License, Version 2.0</name>
+      <url>http://www.apache.org/licenses/LICENSE-2.0.html</url>
       <distribution>repo</distribution>
     </license>
   </licenses>
   <dependencies>
     <dependency>
-      <groupId>jline</groupId>
-      <artifactId>jline</artifactId>
+    	<groupId>com.ncond.dss</groupId>
+    	<artifactId>shell</artifactId>
     </dependency>
     <dependency>
-      <groupId>com.ncond.dss</groupId>
-      <artifactId>dss</artifactId>
+    	<groupId>jline</groupId>
+    	<artifactId>jline</artifactId>
+    </dependency>
+    <dependency>
+    	<groupId>org.apache.commons</groupId>
+    	<artifactId>commons-lang3</artifactId>
     </dependency>
   </dependencies>
 </project>

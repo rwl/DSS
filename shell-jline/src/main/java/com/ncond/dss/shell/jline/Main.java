@@ -3,7 +3,7 @@ package com.ncond.dss.shell.jline;
 public class Main {
 
 	public static void main(String[] args) {
-		Shell dssShell = new DSSShell();
+		JLineDSSShell dssShell = new JLineDSSShell();
 		dssShell.run();
 	}
 
