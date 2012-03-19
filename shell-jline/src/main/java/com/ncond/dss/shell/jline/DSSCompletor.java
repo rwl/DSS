@@ -5,8 +5,8 @@ import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
-import com.ncond.dss.common.impl.DSSGlobals;
-import com.ncond.dss.parser.impl.Parser;
+import com.ncond.dss.common.DSS;
+import com.ncond.dss.parser.Parser;
 
 import jline.Completor;
 
@@ -42,7 +42,7 @@ public class DSSCompletor implements Completor {
 	}
 
 	private Set<String> locateCandidates(String buffer) {
-		Parser parser = DSSGlobals.auxParser;
+		Parser parser = DSS.auxParser;
 
 		Set<String> candidates = new TreeSet<String>();
 

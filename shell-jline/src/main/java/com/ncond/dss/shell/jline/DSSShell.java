@@ -1,7 +1,6 @@
 package com.ncond.dss.shell.jline;
 
 import com.ncond.dss.executive.Executive;
-import com.ncond.dss.executive.impl.DSSExecutive;
 
 public class DSSShell extends AbstractShell {
 
@@ -11,7 +10,7 @@ public class DSSShell extends AbstractShell {
 	public void run() {
 		AbstractShell.setPromptString("dss>");
 
-		executive = DSSExecutive.getInstance();
+		executive = Executive.getInstance();
 		executive.createDefaultDSSItems();
 
 		super.run();

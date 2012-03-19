@@ -7,13 +7,14 @@ import java.io.PrintWriter;
 
 import org.apache.commons.math.complex.Complex;
 
-import com.ncond.dss.common.impl.DSSCallBacks;
-import com.ncond.dss.common.impl.Utilities;
-import com.ncond.dss.parser.impl.Parser;
+import com.ncond.dss.common.DSSCallBacks;
+import com.ncond.dss.common.Util;
+import com.ncond.dss.conversion.GenUserModelImpl;
+import com.ncond.dss.parser.Parser;
 import com.ncond.dss.shared.CommandList;
-import com.ncond.dss.shared.impl.ComplexUtil;
-import com.ncond.dss.shared.impl.DynamicsRec;
-import com.ncond.dss.shared.impl.GeneratorVars;
+import com.ncond.dss.shared.ComplexUtil;
+import com.ncond.dss.shared.DynamicsRec;
+import com.ncond.dss.shared.GeneratorVars;
 
 public class IndMach012Model extends GenUserModelImpl {
 
@@ -325,7 +326,7 @@ public class IndMach012Model extends GenUserModelImpl {
 		String param = modelParser.makeString();
 		while (param.length() > 0) {
 			if (paramName.length() == 0) {
-				if (Utilities.compareTextShortest(param, "help") == 0) {
+				if (Util.compareTextShortest(param, "help") == 0) {
 					paramPointer = 8;
 				} else {
 					paramPointer += 1;
