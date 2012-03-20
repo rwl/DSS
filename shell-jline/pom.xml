@@ -18,16 +18,31 @@
   </licenses>
 
 <repositories>
-<repository>
-  <id>rwl-github-mvn</id>
-  <name>Maven repository on GitHub</name>
-  <url>http://rwl.github.com/mvn/releases/</url>
-</repository>
-<repository>
-  <id>rwl-github-mvn-snapshots</id>
-  <name>Maven snapshot repository on GitHub</name>
-  <url>http://rwl.github.com/mvn/snapshots/</url>
-</repository>
+        <repository>
+            <id>spring-roo-repository</id>
+            <name>Spring Roo Repository</name>
+            <url>http://spring-roo-repository.springsource.org</url>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
+        <repository>
+            <id>spring-roo-repository-release</id>
+            <name>Spring Roo Repository</name>
+            <url>http://spring-roo-repository.springsource.org/release</url>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
+        <repository>
+            <id>spring-roo-repository-snapshot</id>
+            <name>Spring Roo Repository</name>
+            <url>http://spring-roo-repository.springsource.org/snapshot</url>
+            <snapshots>
+                <updatePolicy>never</updatePolicy>
+				<enabled>true</enabled>
+            </snapshots>
+        </repository>
 </repositories>
 
   <dependencies>
@@ -47,7 +62,7 @@
             <dependency>
                 <groupId>org.springframework.roo</groupId>
                 <artifactId>org.springframework.roo.shell.jline</artifactId>
-                <version>1.2.0.RELEASE</version>
+                <version>1.2.1.RELEASE</version>
             </dependency>
 
         <dependency>

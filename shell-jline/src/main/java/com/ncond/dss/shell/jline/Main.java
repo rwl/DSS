@@ -6,7 +6,8 @@ public class Main {
 //		JLineShell dssShell = new JLineShell();
 //		dssShell.run();
 
-		DSSShell sh = new DSSShell();
+		RooShell sh = new RooShell();
+		sh.shellPrompt = "dss>";
 		sh.run();
 	}
 
