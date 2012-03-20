@@ -4,15 +4,14 @@
     <groupId>com.ncond.dss</groupId>
     <artifactId>root</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <relativePath>..</relativePath>
   </parent>
-  <artifactId>shell-jline</artifactId>
-  <name>DSS JLine Shell Roo</name>
-  <description>JLine shell classes from Spring Roo</description>
+  <artifactId>shell-roo</artifactId>
+  <name>DSS Roo Shell</name>
+  <description>Spring Roo based shell for DSS</description>
   <licenses>
     <license>
-      <name>Apache License, Version 2.0</name>
-      <url>http://www.apache.org/licenses/LICENSE-2.0.html</url>
+      <name>BSD</name>
+      <url>http://www.opensource.org/licenses/BSD-3-Clause</url>
       <distribution>repo</distribution>
     </license>
   </licenses>
@@ -22,20 +21,16 @@
     	<artifactId>shell</artifactId>
     </dependency>
     <dependency>
+    	<groupId>com.ncond.dss</groupId>
+    	<artifactId>shell-jline</artifactId>
+    </dependency>
+    <dependency>
     	<groupId>net.sourceforge.jline</groupId>
     	<artifactId>jline</artifactId>
     </dependency>
     <dependency>
-    	<groupId>org.apache.commons</groupId>
-    	<artifactId>commons-lang3</artifactId>
-    </dependency>
-    <dependency>
         <groupId>org.springframework.roo</groupId>
         <artifactId>org.springframework.roo.shell.jline</artifactId>
-    </dependency>
-    <dependency>
-        <groupId>commons-io</groupId>
-        <artifactId>commons-io</artifactId>
     </dependency>
   </dependencies>
 </project>

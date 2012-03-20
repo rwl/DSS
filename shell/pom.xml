@@ -8,10 +8,10 @@
   <artifactId>shell</artifactId>
   <name>DSS Shell Core</name>
   <dependencies>
-  	<dependency>
-  		<groupId>com.ncond.dss</groupId>
-  		<artifactId>dss</artifactId>
-  	</dependency>
+    <dependency>
+      <groupId>com.ncond.dss</groupId>
+      <artifactId>dss</artifactId>
+    </dependency>
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>

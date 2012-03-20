@@ -1,14 +1,13 @@
-package com.ncond.dss.shell.jline;
+package com.ncond.dss.shell.roo;
 
 import java.net.URL;
 import java.util.Collection;
 
-import org.springframework.roo.shell.AbstractShell;
 import org.springframework.roo.shell.ExecutionStrategy;
 import org.springframework.roo.shell.Parser;
-import org.springframework.roo.shell.jline.JLineShell;
+import org.springframework.roo.shell.jline.DSSJLineShell;
 
-public class RooShell extends JLineShell {
+public class DSSShell extends DSSJLineShell {
 
 	@Override
 	protected Collection<URL> findResources(String arg0) {
@@ -22,11 +21,15 @@ public class RooShell extends JLineShell {
 
 	@Override
 	protected Parser getParser() {
-		return new BasicParser();
+		return new DSSParser();
 	}
 
 	public String version(String extra) {
-		return "";
+		return null;
+	}
+
+	public static void main(String[] args) {
+		new DSSShell().run();
 	}
 
 }

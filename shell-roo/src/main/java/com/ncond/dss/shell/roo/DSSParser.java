@@ -1,4 +1,4 @@
-package com.ncond.dss.shell.jline;
+package com.ncond.dss.shell.roo;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -11,13 +11,13 @@ import org.springframework.roo.shell.Parser;
 import com.ncond.dss.executive.Executive;
 import com.ncond.dss.shell.DSSCompletor;
 
-public class BasicParser implements Parser {
+public class DSSParser implements Parser {
 
 	DSSCompletor completor;
 
 	private Executive executive;
 
-	public BasicParser() {
+	public DSSParser() {
 		completor = new DSSCompletor();
 		executive = Executive.getInstance();
 		//executive.createDefaultDSSItems();

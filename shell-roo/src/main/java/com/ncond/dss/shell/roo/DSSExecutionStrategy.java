@@ -1,11 +1,9 @@
-package com.ncond.dss.shell.jline;
+package com.ncond.dss.shell.roo;
 
 import java.lang.reflect.InvocationTargetException;
 
 import org.springframework.roo.shell.ExecutionStrategy;
 import org.springframework.roo.shell.ParseResult;
-
-import com.ncond.dss.executive.Executive;
 
 public class DSSExecutionStrategy implements ExecutionStrategy {
 

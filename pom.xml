@@ -16,13 +16,23 @@
     <module>cdpsm</module>
     <module>shell</module>
     <module>shell-jline</module>
+    <module>shell-roo</module>
   </modules>
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
+  <repositories>
+    <repository>
+      <id>spring-roo-repository-release</id>
+      <name>Spring Roo Repository</name>
+      <url>http://spring-roo-repository.springsource.org/release</url>
+      <snapshots>
+        <enabled>true</enabled>
+      </snapshots>
+    </repository>
+  </repositories>
   <build>
     <plugins>
-      <!-- Lombok requires Java 6 -->
       <plugin>  
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
@@ -64,9 +74,14 @@
         <version>0.10.8</version>
       </dependency>
       <dependency>
-        <groupId>jline</groupId>
+        <groupId>net.sourceforge.jline</groupId>
         <artifactId>jline</artifactId>
-        <version>1.0</version>
+        <version>1.0.S2-B</version>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework.roo</groupId>
+        <artifactId>org.springframework.roo.shell.jline</artifactId>
+        <version>1.2.1.RELEASE</version>
       </dependency>
       <!-- DSS dependencies -->
       <dependency>
@@ -102,6 +117,11 @@
       <dependency>
         <groupId>com.ncond.dss</groupId>
           <artifactId>shell-jline</artifactId>
+          <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.ncond.dss</groupId>
+          <artifactId>shell-roo</artifactId>
           <version>${project.version}</version>
       </dependency>
       <!-- SuiteSparse dependencies -->
