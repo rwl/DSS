@@ -117,6 +117,7 @@ public class GrowthShape extends DSSClass {
 	@Override
 	public int edit() {
 		double[] YrBuffer;
+		Parser parser = Parser.getInstance();
 
 		// continue parsing with contents of parser
 		activeGrowthShapeObj = (GrowthShapeObj) elementList.getActive();
@@ -125,8 +126,8 @@ public class GrowthShape extends DSSClass {
 		GrowthShapeObj elem = activeGrowthShapeObj;
 
 		int paramPointer = -1;
-		String paramName = Parser.getInstance().getNextParam();
-		String param = Parser.getInstance().makeString();
+		String paramName = parser.getNextParam();
+		String param = parser.makeString();
 
 		while (param.length() > 0) {
 			if (paramName.length() == 0) {
@@ -143,7 +144,7 @@ public class GrowthShape extends DSSClass {
 				DSS.doSimpleMsg("Unknown parameter \"" + paramName + "\" for Object \"" + getClassName() +"."+ getClassName() + "\"", 600);
 				break;
 			case 0:
-				elem.setNpts(Parser.getInstance().makeInteger());
+				elem.setNpts(parser.makeInteger());
 				break;
 			case 1:
 				elem.setYear( Util.resizeArray(elem.getYear(), elem.getNpts()) );
@@ -175,8 +176,8 @@ public class GrowthShape extends DSSClass {
 				break;
 			}
 
-			paramName = Parser.getInstance().getNextParam();
-			param = Parser.getInstance().makeString();
+			paramName = parser.getNextParam();
+			param = parser.makeString();
 		}
 
 		elem.reCalcYearMult();

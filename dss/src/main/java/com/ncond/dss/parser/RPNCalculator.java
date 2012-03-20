@@ -6,7 +6,7 @@
 package com.ncond.dss.parser;
 
 
-public class RPNCalc {
+public class RPNCalculator {
 
 	private static final int MaxStackSize = 10;
 
@@ -15,7 +15,7 @@ public class RPNCalc {
 
 	private double[] stack = new double[MaxStackSize];
 
-	public RPNCalc() {
+	public RPNCalculator() {
 		for (int i = 0; i < MaxStackSize; i++) stack[i] = 0.0;
 	}
 
