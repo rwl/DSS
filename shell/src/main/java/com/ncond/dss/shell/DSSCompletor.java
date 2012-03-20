@@ -101,7 +101,8 @@ public class DSSCompletor {
 			candidates.add(COMMAND_KEY);
 			Collections.addAll(candidates, ExecCommands.execCommand);
 			// defaults to edit command
-			Collections.addAll(candidates, DSS.classNames.toArray());
+			/*for (String name : DSS.classNames.toArray())  too many
+				if (name != null) candidates.add(name);*/
 			break;
 		case 1:
 			key = keys.get(0);
@@ -112,7 +113,8 @@ public class DSSCompletor {
 				key = value;
 
 				if (COMMAND_KEY.startsWith(key)) {
-					candidates.add(COMMAND_KEY.substring(key.length(), COMMAND_KEY.length()));
+//					candidates.add(COMMAND_KEY.substring(key.length(), COMMAND_KEY.length()));
+					candidates.add(COMMAND_KEY);
 				}
 
 				Util.parseObjectClassandName(key, clsName, objName);  // if no dot, assumes its all object name
@@ -120,7 +122,8 @@ public class DSSCompletor {
 					clsName[0] = objName[0];
 					for (String validClassName : DSS.classNames.toArray()) {
 						if (validClassName != null && validClassName.startsWith(clsName[0])) {
-							candidates.add(validClassName.substring(clsName[0].length(), validClassName.length()));
+//							candidates.add(validClassName.substring(clsName[0].length(), validClassName.length()));
+							candidates.add(validClassName);
 						}
 					}
 				} else {  // complete object or property name
@@ -133,20 +136,28 @@ public class DSSCompletor {
 						objName[0] = propName[0];
 						for (String elemName : cls.getElementNameList().toArray()) {
 							if (elemName != null && elemName.startsWith(objName[0])) {
-								candidates.add(elemName.substring(objName[0].length(), elemName.length()));
+//								candidates.add(elemName.substring(objName[0].length(), elemName.length()));
+								candidates.add(elemName);
 							}
 
 						}
 					} else {  // complete object property name
 						for (String name : cls.getPropertyName()) {
 							if (name.startsWith(propName[0])) {
-								candidates.add(name.substring(propName[0].length(), name.length()));
+//								candidates.add(name.substring(propName[0].length(), name.length()));
+								candidates.add(name);
 							}
 						}
 					}
 				}
 
 				// command values
+				for (String cmd : ExecCommands.execCommand) {
+					if (cmd.startsWith(value)) {
+//						candidates.add(cmd.substring(value.length(), cmd.length()));
+						candidates.add(cmd);
+					}
+				}
 			} else {  // just complete value
 
 			}
@@ -215,16 +226,16 @@ public class DSSCompletor {
 
 		if (candidates.size() == 0) {
 			return cursor;
-		} else if (candidates.size() == 1) {
-			clist.add(candidates.iterator().next());
-
-			clist.set(0, ((String) clist.get(0)) + " ");
+//		} else if (candidates.size() == 1) {
+//			clist.add(candidates.iterator().next());
+//
+//			clist.set(0, ((String) clist.get(0)) + " ");
 		} else {
 			clist.addAll(candidates);
 		}
 
 
-		// the index of the completion is always from the beginning of the buffer
+//		// the index of the completion is always from the beginning of the buffer
 		return (clist.size() == 0) ? (-1) : 0;
 	}
 

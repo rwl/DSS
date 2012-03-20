@@ -73,12 +73,12 @@ public class JLineShell implements Runnable {
 			throw new IllegalStateException("Failed to start console reader", e);
 		}
 
-		reader.addCompletor(new JLineDSSCompletor());
+//		reader.addCompletor(new JLineDSSCompletor());
 
 		setPromptBase(null);
 
 		executive = Executive.getInstance();
-		executive.createDefaultDSSItems();
+//		executive.createDefaultDSSItems();
 
 	        System.out.println("Welcome to DSS. For assistance press "
 	                + completionKeys + " or type \"help\" then hit ENTER.");
@@ -86,7 +86,7 @@ public class JLineShell implements Runnable {
 		promptLoop();
 
 	        // make sure to reset the original shell's colors on shutdown
-                ansiOut.close();
+		if (ansiOut != null) ansiOut.close();
 	}
 
 	public void promptLoop() {

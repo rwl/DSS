@@ -7,7 +7,7 @@
     <relativePath>..</relativePath>
   </parent>
   <artifactId>shell-jline</artifactId>
-  <name>DSS Shell</name>
+  <name>DSS JLine Shell</name>
   <description>JLine based shell interface</description>
   <licenses>
     <license>
@@ -16,6 +16,20 @@
       <distribution>repo</distribution>
     </license>
   </licenses>
+
+<repositories>
+<repository>
+  <id>rwl-github-mvn</id>
+  <name>Maven repository on GitHub</name>
+  <url>http://rwl.github.com/mvn/releases/</url>
+</repository>
+<repository>
+  <id>rwl-github-mvn-snapshots</id>
+  <name>Maven snapshot repository on GitHub</name>
+  <url>http://rwl.github.com/mvn/snapshots/</url>
+</repository>
+</repositories>
+
   <dependencies>
     <dependency>
     	<groupId>com.ncond.dss</groupId>
@@ -29,5 +43,16 @@
     	<groupId>org.apache.commons</groupId>
     	<artifactId>commons-lang3</artifactId>
     </dependency>
+
+            <dependency>
+                <groupId>org.springframework.roo</groupId>
+                <artifactId>org.springframework.roo.shell.jline</artifactId>
+                <version>1.2.0.RELEASE</version>
+            </dependency>
+
+        <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+        </dependency>
   </dependencies>
 </project>
