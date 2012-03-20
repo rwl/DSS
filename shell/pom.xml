@@ -12,5 +12,10 @@
   		<groupId>com.ncond.dss</groupId>
   		<artifactId>dss</artifactId>
   	</dependency>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
 </project>

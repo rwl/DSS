@@ -101,7 +101,7 @@ public class DSSCompletor {
 			candidates.add(COMMAND_KEY);
 			Collections.addAll(candidates, ExecCommands.execCommand);
 			// defaults to edit command
-			/*for (String name : DSS.classNames.toArray())  too many
+			/*for (String name : DSS.classNames.toArray())  // too many
 				if (name != null) candidates.add(name);*/
 			break;
 		case 1:
