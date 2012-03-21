@@ -139,8 +139,8 @@ public class DSS {
 	public static PVSystem PVSystemClass;
 	public static VVControl VVControlClass;
 
-	public static List<String> eventStrings;
-	public static List<String> savedFileList;
+	public static List<String> eventStrings = new ArrayList<String>();
+	public static List<String> savedFileList = new ArrayList<String>();
 
 	public static List<DSSClass> DSSClassList;  // base class types
 	public static HashList classNames;
