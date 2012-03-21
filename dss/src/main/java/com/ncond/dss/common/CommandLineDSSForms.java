@@ -7,8 +7,11 @@ package com.ncond.dss.common;
 
 import java.util.List;
 import java.util.Scanner;
+import java.util.logging.Level;
 
+import lombok.extern.java.Log;
 
+@Log
 public class CommandLineDSSForms implements DSSForms {
 
 	private static Scanner sc = new Scanner(System.in);
@@ -79,32 +82,32 @@ public class CommandLineDSSForms implements DSSForms {
 	}
 
 	public int messageDlg(String msg, boolean err) {
-		int Result;
+		int result;
 		if (err) {
 			System.err.println(msg);
-			Result = 0;
+			result = 0;
 		} else {
 			while (true) {
 				String answer;
 
-				System.out.println(msg);
-				System.out.print("\nEnter \"Ignore\" or \"Abort\" [Ignore]: ");
+				log.log(Level.SEVERE, msg);
+				log.log(Level.SEVERE, "\nContinue (y/n)?: ");
 
 				answer = sc.next();
-				if (answer.equalsIgnoreCase("abort")) {
-					Result = -1;
+				if (answer.equalsIgnoreCase("n")) {
+					result = -1;
 					break;
-				} else if (answer.equalsIgnoreCase("ignore") || answer.length() == 0) {
-					Result = 0;
+				} else if (answer.equalsIgnoreCase("y") || answer.length() == 0) {
+					result = 0;
 					break;
 				}
 			}
 		}
-		return Result;
+		return result;
 	}
 
 	public void infoMessageDlg(String msg) {
-		System.out.println(msg);
+		log.info(msg);
 	}
 
 	public String getDSSExeFile() {
