@@ -560,7 +560,7 @@ public class EnergyMeter extends MeterClass {
 	private void processOptions(String opts) {
 		String s2 = " ";
 
-		DSS.auxParser.setCmdString(opts);  // load up aux parser
+		DSS.auxParser.setCmdBuffer(opts);  // load up aux parser
 
 		EnergyMeterObj elem = activeEnergyMeterObj;
 

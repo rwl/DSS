@@ -67,7 +67,7 @@ public class LineSpacing extends DSSClass {
 	private void interpretArray(String s, SpcParmChoice which) {
 		String ss;
 
-		DSS.auxParser.setCmdString(s);
+		DSS.auxParser.setCmdBuffer(s);
 		LineSpacingObj elem = activeLineSpacingObj;
 
 		for (int i = 0; i < elem.getNWires(); i++) {

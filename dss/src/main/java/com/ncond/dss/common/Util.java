@@ -527,7 +527,7 @@ public class Util {
 
 		Parser parser = DSS.auxParser;
 
-		parser.setCmdString(s);
+		parser.setCmdBuffer(s);
 		String parmName = parser.getNextParam();
 		String param = parser.makeString();
 		int result = maxValues;  // default return value
@@ -567,7 +567,7 @@ public class Util {
 				for (int i = 0; i < maxValues; i++) {
 					try {
 						if ((inputLine = br.readLine()) != null) {
-							parser.setCmdString(inputLine);
+							parser.setCmdBuffer(inputLine);
 							for (iskip = 0; iskip < csvColumn; iskip++) {
 								parmName = parser.getNextParam();
 								resultArray[i] = parser.makeDouble();
@@ -618,7 +618,7 @@ public class Util {
 
 		Parser parser = DSS.auxParser;
 
-		parser.setCmdString(s);
+		parser.setCmdBuffer(s);
 		parmName = parser.getNextParam();
 		param = parser.makeString();
 		int result = maxValues;  // default return value
@@ -729,7 +729,7 @@ public class Util {
 		size = 0;
 		resultArray = new String[maxSize];  // throw away any previous allocation
 
-		parser.setCmdString(s);
+		parser.setCmdBuffer(s);
 		parmName = parser.getNextParam();
 		param = parser.makeString();
 
@@ -788,7 +788,7 @@ public class Util {
 		// throw away any previous allocation
 		resultList.clear();
 
-		parser.setCmdString(s);
+		parser.setCmdBuffer(s);
 		paramName = parser.getNextParam();
 		param = parser.makeString();
 
@@ -801,7 +801,7 @@ public class Util {
 				br = new BufferedReader(fr);
 
 				while ((param = br.readLine()) != null) {
-					parser.setCmdString(param);
+					parser.setCmdBuffer(param);
 					paramName = parser.getNextParam();
 					nextParam = parser.makeString();
 					if (nextParam.length() > 0)  // ignore blank lines in file
@@ -947,7 +947,7 @@ public class Util {
 		Parser parser = DSS.auxParser;
 
 		// parse the line once to get the count of tokens on string
-		parser.setCmdString(s);
+		parser.setCmdBuffer(s);
 		count[0] = 0;
 		while (param.length() > 0) {
 			parser.getNextParam();
@@ -959,7 +959,7 @@ public class Util {
 		iarray = resizeArray(iarray, count[0]);
 
 		// parse again for real
-		parser.setCmdString(s);
+		parser.setCmdBuffer(s);
 		for (int i = 0; i < count[0]; i++) {
 			parser.getNextParam();
 			iarray[i] = parser.makeInteger();
@@ -1602,7 +1602,7 @@ public class Util {
 		try {
 			/* Scan once to set field lengths */
 			while ((line = br.readLine()) != null) {
-				parser.setCmdString(line);  // load the parser
+				parser.setCmdBuffer(line);  // load the parser
 				fieldNum = 0;
 				while (fieldLen > 0) {
 					parser.getNextParam();
@@ -1627,7 +1627,7 @@ public class Util {
 			br.reset();
 
 			while ((line = br.readLine()) != null) {
-				parser.setCmdString(line);  // load the parser
+				parser.setCmdBuffer(line);  // load the parser
 				fieldNum = 0;
 				while (fieldLen > 0) {
 					parser.getNextParam();
@@ -2070,7 +2070,7 @@ public class Util {
 		PDElement line = fromLine;
 		while (line != null) {
 			if ((line.getNumPhases() == nPhases) || (nPhases == 0)) {
-				Parser.getInstance().setCmdString(editStr);
+				Parser.getInstance().setCmdBuffer(editStr);
 				line.edit();  // uses parser
 			}
 			if (line.equals(toLine))
@@ -2412,7 +2412,7 @@ public class Util {
 						break;
 					}
 				}
-				parser.setCmdString(s);
+				parser.setCmdBuffer(s);
 				cktElem.edit();
 			}
 		}
@@ -2493,7 +2493,7 @@ public class Util {
 					if (cktElem.hasControl()) {
 						ctrlElem = cktElem.getControlElement();
 						if (ctrlElem != null) {
-							parser.setCmdString(String.format("transformer=%s",
+							parser.setCmdBuffer(String.format("transformer=%s",
 									cktElem.getName()));
 							ctrlElem.edit();
 						}
@@ -2509,7 +2509,7 @@ public class Util {
 		/* Run the control update scripts now that everything is renamed */
 		for (i = 0; i < controlUpDatePtrs.size() - 1; i++) {
 			CktElement cktElem = controlUpDatePtrs.get(i);
-			parser.setCmdString( controlUpDateStrings.get(i) );
+			parser.setCmdBuffer( controlUpDateStrings.get(i) );
 			cktElem.edit();
 		}
 

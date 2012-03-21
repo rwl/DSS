@@ -1481,7 +1481,7 @@ public class EnergyMeterObj extends MeterElement {
 							loadElem = (LoadObj) shuntElem;
 							if (loadElem.getHasBeenAllocated()) {
 								/* Manually set the allocation factor so it shows up */
-								Parser.getInstance().setCmdString("allocationfactor=" + String.format("%-.4g", loadElem.getAllocationFactor()));
+								Parser.getInstance().setCmdBuffer("allocationfactor=" + String.format("%-.4g", loadElem.getAllocationFactor()));
 								loadElem.edit();
 							}
 							ckt.setActiveCktElement(shuntElem);  // reset in case edit mangles it

@@ -58,7 +58,7 @@ public class Parser {
 		return AuxParserHolder.INSTANCE;
 	}
 
-	public void setCmdString(final String value) {
+	public void setCmdBuffer(final String value) {
 		cmdBuffer = value + " ";  // add some white space at end to get last param
 		position[0] = 0;
 		skipWhiteSpace(cmdBuffer, position);  // position at first non whitespace character
@@ -221,7 +221,7 @@ public class Parser {
 			busName = tokenBuffer.substring(0, dotpos).trim();
 			tokenSave = tokenBuffer;
 			// now get nodes
-			nodeBuffer = tokenBuffer.substring(dotpos, tokenBuffer.length()) + " ";
+			nodeBuffer = tokenBuffer.substring(dotpos + 1, tokenBuffer.length()) + " ";
 
 			nodeBufferPos = new int[] {0};
 			delimSave = delimChars;
@@ -230,8 +230,8 @@ public class Parser {
 			try {
 				while (tokenBuffer.length() > 0) {
 					numNodes[0] += 1;
-					nodeArray[numNodes[0]] = makeInteger();
-					if (convertError) nodeArray[numNodes[0]] = -1;  // indicate an error
+					nodeArray[numNodes[0] - 1] = makeInteger();
+					if (convertError) nodeArray[numNodes[0] - 1] = -1;  // indicate an error
 					tokenBuffer = getToken(nodeBuffer, nodeBufferPos);
 				}
 			} catch (Exception e) {
@@ -281,8 +281,7 @@ public class Parser {
 		}
 
 		delimChars = delimSave;  // restore to original delimiters
-		tokenBuffer = parseBuffer.substring(parseBufferPos[0],
-				parseBuffer.length() + parseBufferPos[0]);  // prepare for next trip
+		tokenBuffer = parseBuffer.substring(parseBufferPos[0]);  // prepare for next trip
 
 		return success;
 	}
@@ -439,7 +438,7 @@ public class Parser {
 	}
 
 	public String getRemainder() {
-		return cmdBuffer.substring(position[0], cmdBuffer.length());
+		return cmdBuffer.substring(position[0]);
 	}
 
 	/**
@@ -487,10 +486,6 @@ public class Parser {
 				parseBuffer.length() + parseBufferPos[0]);
 
 		return rpnCalc.getX();
-	}
-
-	public String getToken() {
-		return tokenBuffer;
 	}
 
 	private int processRPNCommand(final String tokenBuffer, RPNCalculator rpn) throws ParserProblem {
@@ -563,6 +558,22 @@ public class Parser {
 		}
 
 		return error;
+	}
+
+	public String getToken() {
+		return tokenBuffer;
+	}
+
+	public void setToken(String token) {
+		tokenBuffer = token;
+	}
+
+	public int getPosition() {
+		return position[0];
+	}
+
+	public void setPosition(int pos) {
+		position[0] = pos;
 	}
 
 }

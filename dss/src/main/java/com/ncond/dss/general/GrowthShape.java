@@ -257,7 +257,7 @@ public class GrowthShape extends DSSClass {
 			while (((s = br.readLine()) != null) && i < elem.getNpts()) {
 				// use aux parser to allow flexible formats
 				parser = DSS.auxParser;
-				parser.setCmdString(s);
+				parser.setCmdBuffer(s);
 				parser.getNextParam();
 				elem.getYear()[i] = parser.makeInteger();
 				parser.getNextParam();

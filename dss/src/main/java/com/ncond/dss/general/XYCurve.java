@@ -248,7 +248,7 @@ public class XYCurve extends DSSClass {
 			while (((s = br.readLine()) != null) && i < elem.getNumPoints()) {
 				/* Aux parser allows for commas or white space */
 				parser = DSS.auxParser;
-				parser.setCmdString(s);
+				parser.setCmdBuffer(s);
 				parser.getNextParam();
 				elem.getXValues()[i] = parser.makeDouble();
 				parser.getNextParam();

@@ -91,7 +91,7 @@ public class ExecHelper {
 		if (paramName.length() > 0) {  // if specified, must be object or an abbreviation.
 			if (Util.compareTextShortest(paramName, "object") != 0) {
 				DSS.doSimpleMsg("object=class.name expected as first parameter in command." +
-						DSS.CRLF + parser.getCmdString(), 240);
+						DSS.CRLF + parser.getCmdBuffer(), 240);
 				return;
 			}
 		}
@@ -178,7 +178,7 @@ public class ExecHelper {
 			switch (DSS.lastClassReferenced) {
 			case -1:
 				DSS.doSimpleMsg("BatchEdit command: Object type \"" + objType[0] +
-					"\" not found."+ DSS.CRLF + parser.getCmdString(), 267);
+					"\" not found."+ DSS.CRLF + parser.getCmdBuffer(), 267);
 				return success;
 			default:
 				params = parser.getPosition();
@@ -315,7 +315,7 @@ public class ExecHelper {
 				if (!DSS.activeDSSClass.setActive(objName[0])) {
 					// scroll through list of objects until a match
 					DSS.doSimpleMsg("Object \"" + objName[0] + "\" not found." +
-							DSS.CRLF + Parser.getInstance().getCmdString(), 245);
+							DSS.CRLF + Parser.getInstance().getCmdBuffer(), 245);
 					success = 0;
 				} else {
 					switch (DSS.activeDSSObject.getObjType()) {
@@ -494,7 +494,7 @@ public class ExecHelper {
 				switch (DSS.lastClassReferenced) {
 				case -1:
 					DSS.doSimpleMsg("Object type \"" + objType[0] + "\" not found." +
-						DSS.CRLF + Parser.getInstance().getCmdString(), 253);
+						DSS.CRLF + Parser.getInstance().getCmdBuffer(), 253);
 					return success;
 				default:
 					// intrinsic and user defined models
@@ -504,7 +504,7 @@ public class ExecHelper {
 						switch (DSS.activeDSSObject.getObjType()) {
 						case DSSClassDefs.DSS_OBJECT:
 							DSS.doSimpleMsg("Error in setActiveCktElement: Object not a circuit element." +
-									DSS.CRLF + Parser.getInstance().getCmdString(), 254);
+									DSS.CRLF + Parser.getInstance().getCmdBuffer(), 254);
 							break;
 						default:
 							DSS.activeCircuit.setActiveCktElement((CktElement) DSS.activeDSSClass.getActiveObj());
@@ -548,7 +548,7 @@ public class ExecHelper {
 							}
 						} else {
 							// just load up the parser and call the edit routine for the object in question
-							Parser.getInstance().setCmdString("enabled=true");  // will only work for CktElements
+							Parser.getInstance().setCmdBuffer("enabled=true");  // will only work for CktElements
 							success = editObject(objType[0], objName[0]);
 						}
 					}
@@ -587,7 +587,7 @@ public class ExecHelper {
 						}
 					} else {
 						// just load up the parser and call the edit routine for the object in question
-						Parser.getInstance().setCmdString("enabled=false");  // will only work for CktElements
+						Parser.getInstance().setCmdBuffer("enabled=false");  // will only work for CktElements
 						success = editObject(objType[0], objName[0]);
 					}
 
@@ -674,7 +674,7 @@ public class ExecHelper {
 					param2 = parser.makeString();
 					if (param2.equalsIgnoreCase("debug")) debugDump = true;
 					// set active element to be value in param
-					parser.setCmdString("\"" + param + "\"");  // put param back into parser
+					parser.setCmdBuffer("\"" + param + "\"");  // put param back into parser
 					getObjClassAndName(objClass, objName);
 					//if (doSelectCmd == 0) return result;
 					if (DSSClassDefs.setObjectClass(objClass[0])) {
@@ -810,7 +810,7 @@ public class ExecHelper {
 			DSS.setActiveBus(Util.stripExtension(ckt.getActiveCktElement().getBus(ckt.getActiveCktElement().getActiveTerminalIdx())));
 		} else {
 			DSS.doSimpleMsg("Error in Open command: Circuit element not found." +
-					DSS.CRLF + parser.getCmdString(), 259);
+					DSS.CRLF + parser.getCmdBuffer(), 259);
 		}
 
 		return 0;
@@ -840,7 +840,7 @@ public class ExecHelper {
 			DSS.setActiveBus(Util.stripExtension(ckt.getActiveCktElement().getBus(ckt.getActiveCktElement().getActiveTerminalIdx())));
 		} else {
 			DSS.doSimpleMsg("Error in Close command circuit element not found." +
-					DSS.CRLF + parser.getCmdString(), 260);
+					DSS.CRLF + parser.getCmdBuffer(), 260);
 		}
 		return 0;
 	}
@@ -1042,7 +1042,7 @@ public class ExecHelper {
 			DSS.activeDSSClass = DSS.solutionClass;
 			DSS.activeDSSObject = DSS.activeCircuit.getSolution();
 		} else {
-			Parser.getInstance().setCmdString("\"" + objName.toString() + "\"");
+			Parser.getInstance().setCmdBuffer("\"" + objName.toString() + "\"");
 			doSelectCmd();  // set object active
 		}
 
@@ -1116,7 +1116,7 @@ public class ExecHelper {
 		switch (DSS.lastClassReferenced) {
 		case -1:
 			DSS.doSimpleMsg("Object type \"" + objType + "\" not found." +
-					DSS.CRLF + parser.getCmdString(), 263);
+					DSS.CRLF + parser.getCmdBuffer(), 263);
 			return handle;
 		default:
 			// intrinsic and user defined models
@@ -1125,7 +1125,7 @@ public class ExecHelper {
 
 			// name must be supplied
 			if (name.length() == 0) {
-				DSS.doSimpleMsg("Object name missing" + DSS.CRLF + parser.getCmdString(), 264);
+				DSS.doSimpleMsg("Object name missing" + DSS.CRLF + parser.getCmdBuffer(), 264);
 				return handle;
 			}
 
@@ -1186,7 +1186,7 @@ public class ExecHelper {
 		switch (DSS.lastClassReferenced) {
 		case -1:
 			DSS.doSimpleMsg("Object type \"" + objType + "\" not found." +
-				DSS.CRLF + Parser.getInstance().getCmdString(), 267);
+				DSS.CRLF + Parser.getInstance().getCmdBuffer(), 267);
 			success = 0;
 			return success;
 		default:
@@ -1246,7 +1246,7 @@ public class ExecHelper {
 		ckt.getAutoAddBusList().clear();
 
 		// Load up auxiliary parser to reparse the array list or file name
-		parser.setCmdString(s);
+		parser.setCmdBuffer(s);
 		String parmName = parser.getNextParam();
 		String param = parser.makeString();
 
@@ -1259,7 +1259,7 @@ public class ExecHelper {
 				br = new BufferedReader(fr);
 
 				while ((s2 = br.readLine()) != null) {
-					parser.setCmdString(s2);
+					parser.setCmdBuffer(s2);
 					parmName = parser.getNextParam();
 					param = parser.makeString();
 					if (param.length() > 0)
@@ -1296,7 +1296,7 @@ public class ExecHelper {
 		Parser parser = DSS.auxParser;
 
 		// load up auxiliary parser to reparse the array list or file name
-		parser.setCmdString(s);
+		parser.setCmdBuffer(s);
 		String parmName = parser.getNextParam();
 		String param = parser.makeString();
 
@@ -1307,7 +1307,7 @@ public class ExecHelper {
 				br = new BufferedReader(fr);
 
 				while ((s2 = br.readLine()) != null) {
-					parser.setCmdString(s2);
+					parser.setCmdBuffer(s2);
 					parmName = parser.getNextParam();
 					param = parser.makeString();
 					if (param.length() > 0) {
@@ -2016,7 +2016,7 @@ public class ExecHelper {
 			while ((s = br.readLine()) != null) {
 				Parser parser = DSS.auxParser;  // user aux parser to parse line
 
-				parser.setCmdString(s);
+				parser.setCmdBuffer(s);
 				parser.getNextParam();
 				busName = parser.makeString();
 				ib = ckt.getBusList().find(busName);
@@ -2064,7 +2064,7 @@ public class ExecHelper {
 
 		ckt.setReductionStrategyString(s);
 
-		parser.setCmdString(s);
+		parser.setCmdBuffer(s);
 		parser.getNextParam();
 		String param = parser.makeString().toUpperCase();
 		parser.getNextParam();
@@ -2274,7 +2274,7 @@ public class ExecHelper {
 	        		PrintWriter pw = new PrintWriter(DSS.circuitName_ + "Vdiff.txt");
 
 	        		while ((line = br.readLine()) != null) {
-	        			parser.setCmdString(line);
+	        			parser.setCmdBuffer(line);
 	        			parser.getNextParam();
 	        			busName = parser.makeString();
 	        			if (busName.length() > 0) {
@@ -2613,7 +2613,7 @@ public class ExecHelper {
 			if (!unknown) {
 				switch (paramPointer) {
 				case 0:   // list of case names
-					DSS.auxParser.setCmdString(param);
+					DSS.auxParser.setCmdBuffer(param);
 					DSS.auxParser.getNextParam();
 					param = DSS.auxParser.makeString();
 					while (param.length() > 0) {
@@ -3006,7 +3006,7 @@ public class ExecHelper {
 
 			while ((s = br.readLine()) != null) {
 				named = null;
-				DSS.auxParser.setCmdString(s);
+				DSS.auxParser.setCmdBuffer(s);
 				DSS.auxParser.getNextParam();
 				nameVal = DSS.auxParser.makeString();
 				DSS.auxParser.getNextParam();
@@ -3071,7 +3071,7 @@ public class ExecHelper {
 			iLoadShape = loadShapeClass.getFirst();
 			while (iLoadShape >= 0) {
 				loadShape = (LoadShapeObj) loadShapeClass.getActiveObj();
-				Parser.getInstance().setCmdString(action);
+				Parser.getInstance().setCmdBuffer(action);
 				loadShape.edit();
 				pw.printf("new loadShape.%s npts=%d interval=%.8g %s",
 					loadShape.getName(), loadShape.getNumPoints(),

@@ -1580,7 +1580,7 @@ public class StorageObj extends PCElement {
 		if (nPhases > 1)
 			s = s + String.format(" kWrating=%-.5g  PF=%-.5g", kWRating / nPhases, PFNominal);
 
-		Parser.getInstance().setCmdString(s);
+		Parser.getInstance().setCmdBuffer(s);
 		edit();
 
 		super.makePosSequence();  // write out other properties

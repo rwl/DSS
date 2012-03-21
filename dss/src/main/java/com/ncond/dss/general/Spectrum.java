@@ -225,7 +225,7 @@ public class Spectrum extends DSSClass {
 			while (((s = br.readLine()) != null) && i < elem.getNumHarm()) {
 				// use aux parser, which allows for formats
 				parser = DSS.auxParser;
-				parser.setCmdString(s);
+				parser.setCmdBuffer(s);
 				parser.getNextParam();
 				elem.getHarmArray()[i] = parser.makeDouble();
 				parser.getNextParam();

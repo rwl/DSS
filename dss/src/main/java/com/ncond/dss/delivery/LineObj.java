@@ -724,7 +724,7 @@ public class LineObj extends PDElement {
 			}
 			// conductor current ratings
 			s = s + String.format(" normAmps=%-.5g  %-.5g", getNormAmps(), getEmergAmps());
-			Parser.getInstance().setCmdString(s);
+			Parser.getInstance().setCmdBuffer(s);
 			edit();
 		}
 
@@ -808,7 +808,7 @@ public class LineObj extends PDElement {
 					break;
 				}
 
-				Parser.getInstance().setCmdString(s);
+				Parser.getInstance().setCmdBuffer(s);
 				edit();
 			}
 
@@ -860,7 +860,7 @@ public class LineObj extends PDElement {
 						s = s + String.format(" %-g", (C0 * len + otherLine.getC0() * otherLine.getLen()) / totalLen * 1.0e9);
 					}
 				}
-				Parser.getInstance().setCmdString(s);   // this reset the length units
+				Parser.getInstance().setCmdBuffer(s);   // this reset the length units
 				edit();
 			} else {
 				/*------------------- Matrix Model ---------------------------*/
@@ -905,7 +905,7 @@ public class LineObj extends PDElement {
 						s = s + " | ";
 					}
 					s = s + "]";
-					Parser.getInstance().setCmdString(s);
+					Parser.getInstance().setCmdBuffer(s);
 					edit();
 
 					/* C matrix */
@@ -917,12 +917,12 @@ public class LineObj extends PDElement {
 						s = s + " | ";
 					}
 					s = s + "] ";
-					Parser.getInstance().setCmdString(s);
+					Parser.getInstance().setCmdBuffer(s);
 					edit();
 				}
 			}  // matrix definition
 
-			Parser.getInstance().setCmdString(String.format(" length=%-g units=%s", totalLen, LineUnits.lineUnitsStr(lenUnitsSaved)));
+			Parser.getInstance().setCmdBuffer(String.format(" length=%-g units=%s", totalLen, LineUnits.lineUnitsStr(lenUnitsSaved)));
 			edit();
 
 			otherLine.setEnabled(false);  // disable the other line
@@ -938,7 +938,7 @@ public class LineObj extends PDElement {
 		Circuit ckt = DSS.activeCircuit;
 		for (ControlElem elem : ckt.getControls()) {
 			if (oldName.equalsIgnoreCase(elem.getElementName())) {
-				Parser.getInstance().setCmdString(" element=" + newName);  // change name of the property
+				Parser.getInstance().setCmdBuffer(" element=" + newName);  // change name of the property
 				elem.edit();
 			}
 		}
@@ -977,7 +977,7 @@ public class LineObj extends PDElement {
 			istart = lineSpacingObj.getNPhases();
 		}
 
-		DSS.auxParser.setCmdString(code);
+		DSS.auxParser.setCmdBuffer(code);
 		for (i = istart; i < lineSpacingObj.getNWires(); i++) {
 			DSS.auxParser.getNextParam();  // ignore any parameter name  not expecting any
 			DSS.wireDataClass.setCode(DSS.auxParser.makeString());
@@ -1001,7 +1001,7 @@ public class LineObj extends PDElement {
 		phaseChoice = ConductorChoice.CONCENTRIC_NEUTRAL;
 		wireData = new ConductorDataObj[lineSpacingObj.getNWires()];
 
-		DSS.auxParser.setCmdString(code);
+		DSS.auxParser.setCmdBuffer(code);
 		for (i = 0; i < lineSpacingObj.getNPhases(); i++) {  // fill extra neutrals later
 			DSS.auxParser.getNextParam();  // ignore any parameter name  not expecting any
 			DSS.CNDataClass.setCode(DSS.auxParser.makeString());
@@ -1024,7 +1024,7 @@ public class LineObj extends PDElement {
 
 		phaseChoice = ConductorChoice.TAPE_SHIELD;
 		wireData = new ConductorDataObj[lineSpacingObj.getNWires()];
-		DSS.auxParser.setCmdString(code);
+		DSS.auxParser.setCmdBuffer(code);
 		for (i = 0; i < lineSpacingObj.getNPhases(); i++) {  // fill extra neutrals later
 			DSS.auxParser.getNextParam();  // ignore any parameter name  not expecting any
 			DSS.TSDataClass.setCode(DSS.auxParser.makeString());

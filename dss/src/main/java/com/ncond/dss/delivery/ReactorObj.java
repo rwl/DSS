@@ -466,7 +466,7 @@ public class ReactorObj extends PDElement {
 				break;
 			}
 
-			Parser.getInstance().setCmdString(s);
+			Parser.getInstance().setCmdBuffer(s);
 			edit();
 		}
 

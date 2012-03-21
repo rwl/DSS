@@ -1442,7 +1442,7 @@ public class LoadObj extends PCElement {
 			}
 		}
 
-		Parser.getInstance().setCmdString(s);
+		Parser.getInstance().setCmdBuffer(s);
 		edit();
 
 		super.makePosSequence();

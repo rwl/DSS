@@ -277,11 +277,11 @@ public class ShowOptions {
 					mon.translateToCSV(true);
 				} else {
 					DSS.doSimpleMsg("Monitor \"" + param + "\" not found." +
-							DSS.CRLF + parser.getCmdString(), 248);
+							DSS.CRLF + parser.getCmdBuffer(), 248);
 				}
 			} else {
 				DSS.doSimpleMsg("Monitor name not specified." + DSS.CRLF +
-						parser.getCmdString(), 249);
+						parser.getCmdBuffer(), 249);
 			}
 			break;
 		case 10:

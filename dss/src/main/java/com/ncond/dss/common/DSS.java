@@ -217,7 +217,7 @@ public class DSS {
 			if (!activeDSSClass.setActive(objName)) {
 				// scroll through list of objects until a match
 				doSimpleMsg("Error: Object \"" + objName + "\" not found." + CRLF +
-						Parser.getInstance().getCmdString(), 904);
+						Parser.getInstance().getCmdBuffer(), 904);
 			} else {
 				switch (activeDSSObject.getObjType()) {
 				case DSSClassDefs.DSS_OBJECT:

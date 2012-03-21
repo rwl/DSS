@@ -204,7 +204,7 @@ public class LineGeometry extends DSSClass {
 				elem.changeLineConstantsType(ConductorChoice.TAPE_SHIELD);
 				istop = elem.getNPhases() - 1;
 
-				DSS.auxParser.setCmdString(parser.makeString());
+				DSS.auxParser.setCmdBuffer(parser.makeString());
 				for (int i = istart; i < istop; i++) {
 					DSS.auxParser.getNextParam();  // ignore any parameter name  not expecting any
 					elem.setCondName(i, DSS.auxParser.makeString());
@@ -240,7 +240,7 @@ public class LineGeometry extends DSSClass {
 			case 2:
 				if (elem.getActiveCond() < 0 || elem.getActiveCond() >= elem.getNConds())
 					DSS.doSimpleMsg("Illegal cond= specification in line geometry:" +
-							DSS.CRLF + parser.getCmdString(), 10102);
+							DSS.CRLF + parser.getCmdBuffer(), 10102);
 				break;
 			case 3:
 			case 12:

@@ -1873,7 +1873,7 @@ public class ShowResults {
 					}
 				}
 			} else {
-				DSS.doSimpleMsg("Meter name not specified."+ DSS.CRLF + parser.getCmdString(), 221);
+				DSS.doSimpleMsg("Meter name not specified."+ DSS.CRLF + parser.getCmdBuffer(), 221);
 			}
 
 			pw.close();

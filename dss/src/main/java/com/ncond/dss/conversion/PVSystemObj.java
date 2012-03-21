@@ -1272,7 +1272,7 @@ public class PVSystemObj extends PCElement {
 		if (nPhases > 1)
 			s = s + String.format(" kva=%-.5g  PF=%-.5g", kVARating / nPhases, PFNominal);
 
-		Parser.getInstance().setCmdString(s);
+		Parser.getInstance().setCmdBuffer(s);
 		edit();
 
 		super.makePosSequence();  // write out other properties

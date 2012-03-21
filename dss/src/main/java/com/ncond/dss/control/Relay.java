@@ -284,7 +284,7 @@ public class Relay extends ControlClass {
 						elem.setPropertyValue(13, "(5.0)");
 						break;
 					}
-					DSS.auxParser.setCmdString(elem.getPropertyValue(13));
+					DSS.auxParser.setCmdBuffer(elem.getPropertyValue(13));
 					paramName = DSS.auxParser.getNextParam();
 					elem.setNumReclose(DSS.auxParser.parseAsVector(4, elem.getRecloseIntervals()));
 					break;

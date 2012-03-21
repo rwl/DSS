@@ -232,7 +232,7 @@ public class ISourceObj extends PCElement {
 	@Override
 	public void makePosSequence() {
 		if (getNumPhases() > 1) {
-			Parser.getInstance().setCmdString("phases=1");
+			Parser.getInstance().setCmdBuffer("phases=1");
 			edit();
 		}
 		super.makePosSequence();

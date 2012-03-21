@@ -450,7 +450,7 @@ public class ExecCommands {
 
 			/* Load up the parser and process the first parameter only */
 			lastCmdLine = cmdLine;
-			parser.setCmdString(lastCmdLine);  // load up command parser
+			parser.setCmdBuffer(lastCmdLine);  // load up command parser
 			DSS.lastCommandWasCompile = false;
 
 			paramPointer = -1;
@@ -561,7 +561,7 @@ public class ExecCommands {
 
 				/* If a command or no text before the = sign, then error */
 				if (paramName.length() == 0 || paramName.equalsIgnoreCase("command")) {
-					DSS.doSimpleMsg("Unknown command: \"" + param + "\" "+ DSS.CRLF + parser.getCmdString(), 302);
+					DSS.doSimpleMsg("Unknown command: \"" + param + "\" "+ DSS.CRLF + parser.getCmdBuffer(), 302);
 					DSS.cmdResult = 1;
 				} else {
 					ExecHelper.parseObjName(paramName, objName, propName);
@@ -570,7 +570,7 @@ public class ExecCommands {
 					if (DSS.activeDSSObject != null) {
 						// rebuild command line and pass to editor
 						// use quotes to ensure first parameter is interpreted ok after rebuild
-						parser.setCmdString(propName[0].toString() + "=\"" + param + "\" " + parser.getRemainder());
+						parser.setCmdBuffer(propName[0].toString() + "=\"" + param + "\" " + parser.getRemainder());
 						DSS.activeDSSClass.edit();
 					}
 				}
@@ -844,7 +844,7 @@ public class ExecCommands {
 			}
 		} catch (Exception e) {
 			DSS.doErrorMsg("Exception raised while processing DSS command:" +
-					DSS.CRLF + parser.getCmdString(),
+					DSS.CRLF + parser.getCmdBuffer(),
 					e.getMessage(),
 					"Error in command string or circuit data.", 303);
 			e.printStackTrace();

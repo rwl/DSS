@@ -2086,7 +2086,7 @@ public class GeneratorObj extends PCElement {
 				s = s + String.format(" MVA=%-.5g  ", genVars.kVARating / 1000.0 / nPhases);
 		}
 
-		Parser.getInstance().setCmdString(s);
+		Parser.getInstance().setCmdBuffer(s);
 		edit();
 
 		super.makePosSequence();

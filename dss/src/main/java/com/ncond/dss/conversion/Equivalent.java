@@ -236,7 +236,7 @@ public class Equivalent extends PCClass {
 		String busName;
 		Parser parser = DSS.auxParser;
 
-		parser.setCmdString(s);  // load up parser
+		parser.setCmdBuffer(s);  // load up parser
 
 		/* Loop for no more than the expected number of windings; ignore omitted values */
 		EquivalentObj elem = activeEquivalentObj;

@@ -146,7 +146,7 @@ public class ReduceAlgs {
 													/* Redefine bus connection for PC elements hanging on the bus that is eliminated */
 													loadElement = (LoadObj) parentNode.getFirstObject();
 													while (loadElement != null) {
-														Parser.getInstance().setCmdString("bus1=\"" + ckt.getBusList().get(branch.getToBusReference()) + "\"");
+														Parser.getInstance().setCmdBuffer("bus1=\"" + ckt.getBusList().get(branch.getToBusReference()) + "\"");
 														loadElement.edit();
 														loadElement = (LoadObj) parentNode.getNextObject();
 													}
@@ -167,7 +167,7 @@ public class ReduceAlgs {
 										/* Redefine bus connection to upline bus */
 										loadElement = (LoadObj) branch.getFirstChild().getFirstObject();
 										while (loadElement != null) {
-											Parser.getInstance().setCmdString("bus1=\"" + ckt.getBusList().get(branch.getFromBusReference() - 1) + "\"");
+											Parser.getInstance().setCmdBuffer("bus1=\"" + ckt.getBusList().get(branch.getFromBusReference() - 1) + "\"");
 											loadElement.edit();
 											loadElement = (LoadObj) branch.getFirstChild().getNextObject();
 										}

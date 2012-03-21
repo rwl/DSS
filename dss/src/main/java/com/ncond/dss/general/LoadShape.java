@@ -367,7 +367,7 @@ public class LoadShape extends DSSClass {
 			while (((s = br.readLine()) != null) && i < elem.getNumPoints()) {
 				/* aux parser allows commas or white space */
 				parser = DSS.auxParser;
-				parser.setCmdString(s);
+				parser.setCmdBuffer(s);
 				if (elem.getInterval() == 0.0) {
 					parser.getNextParam();
 					elem.getHours()[i] = parser.makeDouble();

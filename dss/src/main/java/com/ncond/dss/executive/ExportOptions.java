@@ -263,11 +263,11 @@ public class ExportOptions {
 					fileName = DSS.globalResult;
 				} else {
 					DSS.doSimpleMsg("Monitor \"" + parm2 + "\" not found." +
-							DSS.CRLF + parser.getCmdString(), 250);
+							DSS.CRLF + parser.getCmdBuffer(), 250);
 				}
 			} else {
 				DSS.doSimpleMsg("Monitor name not specified." + DSS.CRLF +
-						parser.getCmdString(), 251);
+						parser.getCmdBuffer(), 251);
 			}
 			break;
 		case 15: ExportResults.exportYprim(fileName); break;

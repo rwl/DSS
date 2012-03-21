@@ -160,7 +160,7 @@ public class XfmrCode extends DSSClass {
 	private void interpretWindings(String s, WdgParmChoice which) {
 		String str;
 
-		DSS.auxParser.setCmdString(s);
+		DSS.auxParser.setCmdBuffer(s);
 		XfmrCodeObj elem = activeXfmrCodeObj;
 
 		for (int i = 0; i < elem.getNumWindings(); i++) {

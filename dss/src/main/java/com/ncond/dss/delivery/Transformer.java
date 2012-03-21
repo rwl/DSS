@@ -455,7 +455,7 @@ public class Transformer extends PDClass {
 		String s2;
 		TransformerObj elem = activeTransfObj;
 
-		DSS.auxParser.setCmdString(s);  // load up parser
+		DSS.auxParser.setCmdBuffer(s);  // load up parser
 
 		/* Loop for no more than the expected number of windings */
 		for (int i = 0; i < elem.getNumWindings(); i++) {
@@ -474,7 +474,7 @@ public class Transformer extends PDClass {
 		String busName;
 		TransformerObj elem = activeTransfObj;
 
-		DSS.auxParser.setCmdString(s);  // load up parser
+		DSS.auxParser.setCmdBuffer(s);  // load up parser
 
 		/* Loop for no more than the expected number of windings; Ignore omitted values */
 		for (int i = 0; i < elem.getNumWindings(); i++) {
@@ -493,7 +493,7 @@ public class Transformer extends PDClass {
 		String dataStr;
 		TransformerObj elem = activeTransfObj;
 
-		DSS.auxParser.setCmdString(s);  // load up parser
+		DSS.auxParser.setCmdBuffer(s);  // load up parser
 
 		/* Loop for no more than the expected number of windings; ignore omitted values */
 		for (int i = 0; i < elem.getNumWindings(); i++) {
@@ -512,7 +512,7 @@ public class Transformer extends PDClass {
 		String dataStr;
 		TransformerObj elem = activeTransfObj;
 
-		DSS.auxParser.setCmdString(s);  // load up parser
+		DSS.auxParser.setCmdBuffer(s);  // load up parser
 
 		/* Loop for no more than the expected number of windings; ignore omitted values */
 		for (int i = 0; i < elem.getNumWindings(); i++) {
@@ -531,7 +531,7 @@ public class Transformer extends PDClass {
 		String dataStr;
 		TransformerObj elem = activeTransfObj;
 
-		DSS.auxParser.setCmdString(s);  // load up parser
+		DSS.auxParser.setCmdBuffer(s);  // load up parser
 
 		/* Loop for no more than the expected number of windings; ignore omitted values */
 		for (int i = 0; i < elem.getNumWindings(); i++) {
@@ -550,7 +550,7 @@ public class Transformer extends PDClass {
 		String dataStr;
 		TransformerObj elem = activeTransfObj;
 
-		DSS.auxParser.setCmdString(s);  // load up parser
+		DSS.auxParser.setCmdBuffer(s);  // load up parser
 
 		/* Loop for no more than the expected number of windings; ignore omitted values */
 		for (int i = 0; i < elem.getNumWindings(); i++) {

@@ -335,7 +335,7 @@ public class FaultObj extends PDElement {
 	@Override
 	public void makePosSequence() {
 		if (nPhases != 1) {
-			Parser.getInstance().setCmdString("phases=1");
+			Parser.getInstance().setCmdBuffer("phases=1");
 			edit();
 		}
 		super.makePosSequence();

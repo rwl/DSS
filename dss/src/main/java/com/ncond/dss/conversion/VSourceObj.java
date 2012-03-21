@@ -455,7 +455,7 @@ public class VSourceObj extends PCElement {
 		s = s + String.format("r1=%-.5g ", R1);
 		s = s + String.format("x1=%-.5g ", X1);
 
-		Parser.getInstance().setCmdString(s);
+		Parser.getInstance().setCmdBuffer(s);
 		edit();
 
 		super.makePosSequence();
