@@ -46,11 +46,11 @@ public class Spectrum extends DSSClass {
 
 		allocatePropertyArrays();
 
-		propertyName[0] = "NumHarm";
+		propertyName[0] = "numHarm";
 		propertyName[1] = "harmonic";
 		propertyName[2] = "%mag";
 		propertyName[3] = "angle";
-		propertyName[4] = "CSVFile";
+		propertyName[4] = "csvFile";
 
 		propertyHelp[0] = "Number of frequencies in this spectrum. (See CSVFile)";
 		propertyHelp[1] = "Array of harmonic values. You can also use the syntax" + CRLF +

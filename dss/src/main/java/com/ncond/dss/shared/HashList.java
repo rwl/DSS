@@ -305,6 +305,9 @@ public class HashList {
 		numElements = 0;
 	}
 
+	/**
+	 * @return string array (includes nulls)
+	 */
 	public String[] toArray() {
 		return stringArray;
 	}

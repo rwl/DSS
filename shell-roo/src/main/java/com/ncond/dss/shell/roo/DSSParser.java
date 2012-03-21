@@ -20,7 +20,7 @@ public class DSSParser implements Parser {
 	public DSSParser() {
 		completor = new DSSCompletor();
 		executive = Executive.getInstance();
-		//executive.createDefaultDSSItems();
+		executive.createDefaultDSSItems();
 	}
 
 	@Override

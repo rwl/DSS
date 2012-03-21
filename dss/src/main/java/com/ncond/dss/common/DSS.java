@@ -75,7 +75,7 @@ public class DSS {
 	public static List<DSSObject> DSSObjs;
 
 	// auxiliary parser for use by anybody for reparsing values
-	public static Parser auxParser = Parser.getInstance();
+	public static Parser auxParser = Parser.getAuxInstance();
 
 	public static boolean errorPending = false;
 	public static int cmdResult = 0;
