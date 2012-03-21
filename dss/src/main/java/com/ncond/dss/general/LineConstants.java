@@ -420,7 +420,7 @@ public class LineConstants {
 	}
 
 	protected void setFrequency(double value) {
-		setFrequency(value);
+		frequency = value;
 		w = TWO_PI * frequency;
 		me = new Complex(0.0, w * MU0 / rhoEarth).sqrt();
 	}

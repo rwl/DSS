@@ -106,13 +106,13 @@ public class LineGeometry extends DSSClass {
 	@Override
 	public int edit() {
 		int istart, istop;
-		Parser parser = Parser.getInstance();
+		LineGeometryObj elem;
 
-		LineGeometryObj elem = activeLineGeometryObj;
+		Parser parser = Parser.getInstance();
 
 		// continue parsing with contents of Parser
 		activeLineGeometryObj = (LineGeometryObj) elementList.getActive();
-		DSS.activeDSSObject = elem;
+		DSS.activeDSSObject = elem = activeLineGeometryObj;
 
 		int paramPointer = -1;
 		String paramName = parser.getNextParam();
@@ -137,7 +137,7 @@ public class LineGeometry extends DSSClass {
 				elem.setNConds(parser.makeInteger());  // use property value to force reallocations
 				break;
 			case 1:
-				elem.setNPhases(parser.makeInteger());
+				elem.nPhases = parser.makeInteger();
 				break;
 			case 2:
 				elem.setActiveCond(parser.makeInteger());

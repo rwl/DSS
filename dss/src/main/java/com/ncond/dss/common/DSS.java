@@ -273,7 +273,7 @@ public class DSS {
 		// Put a / on the end if not supplied. Allow a null specification.
 		if (dataDirectory.length() > 0) {
 			currentDirectory = dataDirectory;   // change to specified directory
-			if (dataDirectory.charAt(dataDirectory.length()) != '/')
+			if (dataDirectory.substring(dataDirectory.length() - 1) != SEPARATOR)
 				dataDirectory += SEPARATOR;
 		}
 	}

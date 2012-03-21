@@ -1,11 +1,14 @@
 package com.ncond.dss.executive.test;
 
+import com.ncond.dss.common.CktElement;
 import com.ncond.dss.common.DSS;
 import com.ncond.dss.common.DSSClassDefs;
 import com.ncond.dss.conversion.VSourceObj;
 import com.ncond.dss.executive.ExecCommands;
 import com.ncond.dss.executive.ExecOptions;
 import com.ncond.dss.executive.Executive;
+import com.ncond.dss.general.DSSObject;
+import com.ncond.dss.general.GrowthShapeObj;
 import com.ncond.dss.general.LoadShape;
 import com.ncond.dss.general.LoadShapeObj;
 
@@ -14,6 +17,8 @@ import junit.framework.TestCase;
 public class ExecutiveTest extends TestCase {
 
 	private static final double delta = 1e-6;
+
+	private static final String COMPILE_SCRIPT = "4Bus-GrdYD-Bal.dss";
 
 	public void testGetInstance() {
 		Executive exec = Executive.getInstance();
@@ -80,6 +85,22 @@ public class ExecutiveTest extends TestCase {
 		assertEquals(0, DSS.numCircuits);
 	}
 
+	public void testSetCommandComment() {
+		String cmd;
+
+		Executive exec = Executive.getInstance();
+
+		cmd = "!new circuit.ckt6";
+		exec.setCommand(cmd);
+
+		assertEquals(0, DSS.numCircuits);
+
+		cmd = "//new circuit.ckt6";
+		exec.setCommand(cmd);
+
+		assertEquals(0, DSS.numCircuits);
+	}
+
 	public void testSetCommandEdit() {
 		String cmd;
 		VSourceObj vsource;
@@ -109,6 +130,45 @@ public class ExecutiveTest extends TestCase {
 
 		assertEquals(2e4, vsource.getMVAsc3(), delta);
 		assertEquals(2.1e4, vsource.getMVAsc1(), delta);
+	}
+
+	public void testSetCommandSelect() {
+		String cmd;
+		DSSObject obj;
+		CktElement elem;
+
+		Executive exec = Executive.getInstance();
+		exec.createDefaultDSSItems();
+
+
+		cmd = "select growthshape.default";
+		exec.setCommand(cmd);
+
+		obj = DSS.activeDSSObject;
+		assertEquals("default", obj.getName());
+
+
+		cmd = "new Line.line1 phases=3 bus1=b1 bus2=b2";
+		exec.setCommand(cmd);
+
+		elem = (CktElement) DSS.activeDSSObject;
+		assertEquals("line1", elem.getName());
+		assertEquals(0, elem.getActiveTerminalIdx());
+
+		cmd = "select object=Line.line1 terminal=2";
+		exec.setCommand(cmd);
+		assertEquals(1, elem.getActiveTerminalIdx());
+	}
+
+	public void testSetCommandCompile() {
+		String cmd;
+
+		Executive exec = Executive.getInstance();
+
+		String script = ExecutiveTest.class.getResource(COMPILE_SCRIPT).getFile();
+
+		cmd = "compile filename=" + script;
+		exec.setCommand(cmd);
 	}
 
 }

@@ -35,7 +35,7 @@ public class LineGeometryObj extends DSSObject {
 
 	private ConductorChoice phaseChoice;
 	private int nConds;
-	private int nPhases;
+	protected int nPhases;
 	private String[] condNames;
 	private ConductorDataObj[] conductorData;
 	private double[] X;
