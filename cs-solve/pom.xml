@@ -18,8 +18,8 @@
   </licenses>
   <dependencies>
     <dependency>
-      <groupId>net.sourceforge.csparse</groupId>
-      <artifactId>CXSparseJ</artifactId>
+      <groupId>net.sourceforge.csparsej</groupId>
+      <artifactId>csparsej</artifactId>
     </dependency>
     <dependency>
       <groupId>org.apache.commons</groupId>

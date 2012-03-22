@@ -22,8 +22,8 @@
       <artifactId>cs-solve</artifactId>
     </dependency>
     <dependency>
-      <groupId>edu.ufl.cise</groupId>
-      <artifactId>CXSparseJ</artifactId>
+      <groupId>net.sourceforge.csparsej</groupId>
+      <artifactId>csparsej</artifactId>
     </dependency>
     <dependency>
       <groupId>edu.ufl.cise</groupId>
