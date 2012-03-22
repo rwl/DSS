@@ -203,7 +203,7 @@ public class ExecutiveTest extends TestCase {
 
 		/* change to invalid directory */
 		formsSave = DSS.noFormsAllowed;
-		DSS.noFormsAllowed = true;  // supress messages
+		DSS.noFormsAllowed = true;  // suppress messages
 
 		cmd = "cd /zyxjkl";
 		exec.setCommand(cmd);
