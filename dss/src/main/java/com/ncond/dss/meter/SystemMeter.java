@@ -190,14 +190,14 @@ public class SystemMeter {
 		PrintWriter pw = new PrintWriter(systemDIFile);
 
 		pw.printf("%-.6g", sol.getDblHour());
-		pw.printf(", %-g", cPower.getReal());
-		pw.printf(", %-g", cPower.getImaginary());
-		pw.printf(", %-g", peakKW);
-		pw.printf(", %-g", peakKVA);
+		pw.printf(", %g", cPower.getReal());
+		pw.printf(", %g", cPower.getImaginary());
+		pw.printf(", %g", peakKW);
+		pw.printf(", %g", peakKVA);
 
-		pw.printf(", %-g", cLosses.getReal());
-		pw.printf(", %-g", cLosses.getImaginary());
-		pw.printf(", %-g", peakLossesKW);
+		pw.printf(", %g", cLosses.getReal());
+		pw.printf(", %g", cLosses.getImaginary());
+		pw.printf(", %g", peakLossesKW);
 		pw.println();
 
 		pw.close();
@@ -208,13 +208,13 @@ public class SystemMeter {
 	}
 
 	private void writeRegisters(PrintWriter f) {
-		f.printf(", %-g", kWh[0]);
-		f.printf(", %-g", kVArh[0]);
-		f.printf(", %-g", peakKW);
-		f.printf(", %-g", peakKVA);
-		f.printf(", %-g", losses_kWh[0]);
-		f.printf(", %-g", losses_kVArh[0]);
-		f.printf(", %-g", peakLossesKW);
+		f.printf(", %g", kWh[0]);
+		f.printf(", %g", kVArh[0]);
+		f.printf(", %g", peakKW);
+		f.printf(", %g", peakKVA);
+		f.printf(", %g", losses_kWh[0]);
+		f.printf(", %g", losses_kVArh[0]);
+		f.printf(", %g", peakLossesKW);
 	}
 
 }

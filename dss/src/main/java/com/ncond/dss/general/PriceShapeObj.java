@@ -247,12 +247,12 @@ public class PriceShapeObj extends DSSObject {
 			break;
 		case 2:
 			for (int i = 0; i < numPoints; i++)
-				result = result + String.format("%-g, " , priceValues[i]);
+				result = result + String.format("%g, " , priceValues[i]);
 			break;
 		case 3:
 			if (hours != null)
 				for (int i = 0; i < numPoints; i++)
-					result = result + String.format("%-g, ", hours[i]);
+					result = result + String.format("%g, ", hours[i]);
 			break;
 		case 4:
 			result = String.format("%.8g", mean[0]);

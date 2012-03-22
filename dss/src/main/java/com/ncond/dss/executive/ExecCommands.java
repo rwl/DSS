@@ -9,6 +9,9 @@ import java.io.File;
 
 import com.ncond.dss.common.DSS;
 import com.ncond.dss.common.Util;
+import com.ncond.dss.common.exceptions.ControlProblem;
+import com.ncond.dss.common.exceptions.SolverError;
+import com.ncond.dss.common.exceptions.SolverProblem;
 import com.ncond.dss.parser.Parser;
 import com.ncond.dss.shared.CommandList;
 
@@ -842,11 +845,22 @@ public class ExecCommands {
 				// ignore excess parameters
 				break;
 			}
-		} catch (Exception e) {
-			DSS.doErrorMsg("Exception raised while processing DSS command:" +
-					DSS.CRLF + parser.getCmdBuffer(),
-					e.getMessage(),
-					"Error in command string or circuit data.", 303);
+		}
+//		catch (Exception e) {
+//			DSS.doErrorMsg("Exception raised while processing DSS command:" +
+//					DSS.CRLF + parser.getCmdBuffer(),
+//					e.getMessage(),
+//					"Error in command string or circuit data.", 303);
+//			e.printStackTrace();
+//		}
+		catch (SolverError e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ControlProblem e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (SolverProblem e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}

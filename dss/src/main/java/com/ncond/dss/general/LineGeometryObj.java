@@ -34,7 +34,7 @@ import com.ncond.dss.shared.LineUnits;
 public class LineGeometryObj extends DSSObject {
 
 	private ConductorChoice phaseChoice;
-	private int nConds;
+	protected int nConds;
 	protected int nPhases;
 	private String[] condNames;
 	private ConductorDataObj[] conductorData;
@@ -44,7 +44,7 @@ public class LineGeometryObj extends DSSObject {
 	private LineUnits lastUnit;
 	private boolean dataChanged;
 	private boolean reduce;
-	private int activeCond;
+	private int activeCondIdx;
 	private String spacingType;
 
 	private LineConstants lineData;
@@ -71,7 +71,7 @@ public class LineGeometryObj extends DSSObject {
 
 		setNConds(3);  // allocates terminals
 		nPhases = 3;
-		setActiveCond(0);
+		setActiveCondIdx(0);
 
 		lastUnit  = LineUnits.FT;
 		normAmps  = 0.0;
@@ -92,7 +92,7 @@ public class LineGeometryObj extends DSSObject {
 			pw.println("~ " + parentClass.getPropertyName(i) + "=" + getPropertyValue(i));
 
 		for (int j = 0; j < nConds; j++) {
-			setActiveCond(j);
+			setActiveCondIdx(j);
 			pw.println("~ " + parentClass.getPropertyName(2) + "=" + getPropertyValue(2));
 			pw.println("~ " + parentClass.getPropertyName(3) + "=" + getPropertyValue(3));
 			pw.println("~ " + parentClass.getPropertyName(4) + "=" + getPropertyValue(4));
@@ -112,21 +112,21 @@ public class LineGeometryObj extends DSSObject {
 
 		switch (index) {
 		case 2:
-			val = String.format("%d", activeCond);
+			val = String.format("%d", activeCondIdx);
 			break;
 		case 3:
 		case 12:
 		case 13:
-			val = condNames[activeCond];
+			val = condNames[activeCondIdx];
 			break;
 		case 4:
-			val = String.format("%-g", X[activeCond]);
+			val = String.format("%g", X[activeCondIdx]);
 			break;
 		case 5:
-			val = String.format("%-g", Y[activeCond]);
+			val = String.format("%g", Y[activeCondIdx]);
 			break;
 		case 6:
-			val = LineUnits.lineUnitsStr(units[activeCond]);
+			val = LineUnits.lineUnitsStr(units[activeCondIdx]);
 			break;
 		case 11:
 		case 14:
@@ -290,12 +290,12 @@ public class LineGeometryObj extends DSSObject {
 		}
 	}
 
-	public void setActiveCond(int value) {
+	public void setActiveCondIdx(int value) {
 		if (value >= 0 && value < nConds) {
-			activeCond = value;
-			if (units[activeCond] == null) {
+			activeCondIdx = value;
+			if (units[activeCondIdx] == null) {
 				// makes this a sticky value so you don't have to repeat it
-				units[activeCond] = lastUnit;
+				units[activeCondIdx] = lastUnit;
 			}
 		}
 	}
@@ -315,13 +315,13 @@ public class LineGeometryObj extends DSSObject {
 		if (needNew) {
 			switch (newPhaseChoice) {
 			case OVERHEAD:
-				newLineData = new OHLineConstants(getNConds());
+				newLineData = new OHLineConstants(nConds);
 				break;
 			case CONCENTRIC_NEUTRAL:
-				newLineData = new CNLineConstants(getNConds());
+				newLineData = new CNLineConstants(nConds);
 				break;
 			case TAPE_SHIELD:
-				newLineData = new TSLineConstants(getNConds());
+				newLineData = new TSLineConstants(nConds);
 				break;
 			}
 		}
@@ -433,7 +433,7 @@ public class LineGeometryObj extends DSSObject {
 		if (nConds > nPhases) reduce = true;
 
 		newPhaseChoice = ConductorChoice.OVERHEAD;
-		for (i = 0; i < getNConds(); i++) {
+		for (i = 0; i < nConds; i++) {
 			if (wires[i] instanceof CNDataObj) {
 				newPhaseChoice = ConductorChoice.CONCENTRIC_NEUTRAL;
 			}

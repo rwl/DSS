@@ -283,7 +283,7 @@ public class XfmrCodeObj extends DSSObject {
 			break;
 		case 17:
 			for (int i = 0; i < (numWindings - 1) * numWindings / 2; i++)
-				result += String.format("%-g, ", XSC[i] * 100.0);
+				result += String.format("%g, ", XSC[i] * 100.0);
 		case 23:
 			result = String.format("%.7g", pctLoadLoss);
 			break;

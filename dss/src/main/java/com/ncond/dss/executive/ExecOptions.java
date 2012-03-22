@@ -747,19 +747,19 @@ public class ExecOptions {
 					DSS.appendGlobalResult(String.valueOf(ckt.getSolution().getIntHour()));
 					break;
 				case 3:
-					DSS.appendGlobalResult(String.format("%-g", ckt.getSolution().getDynaVars().t));
+					DSS.appendGlobalResult(String.format("%g", ckt.getSolution().getDynaVars().t));
 					break;
 				case 4:
 					DSS.appendGlobalResult(String.valueOf(ckt.getSolution().getYear()));
 					break;
 				case 5:
-					DSS.appendGlobalResult(String.format("%-g", ckt.getSolution().getFrequency()));
+					DSS.appendGlobalResult(String.format("%g", ckt.getSolution().getFrequency()));
 					break;
 				case 6:
-					DSS.appendGlobalResult(String.format("%-g", ckt.getSolution().getDynaVars().h));
+					DSS.appendGlobalResult(String.format("%g", ckt.getSolution().getDynaVars().h));
 					break;
 				case 17:
-					DSS.appendGlobalResult(String.format("%-g", ckt.getSolution().getDynaVars().h));
+					DSS.appendGlobalResult(String.format("%g", ckt.getSolution().getDynaVars().h));
 					break;
 				case 7:
 					DSS.appendGlobalResult(Util.getSolutionModeID());
@@ -771,7 +771,7 @@ public class ExecOptions {
 					DSS.appendGlobalResult(String.valueOf(ckt.getSolution().getNumberOfTimes()));
 					break;
 				case 10:
-					DSS.appendGlobalResult(String.format("[ %d, %-g ]", String.valueOf(ckt.getSolution().getIntHour()), ckt.getSolution().getDynaVars().t));
+					DSS.appendGlobalResult(String.format("[ %d, %g ]", String.valueOf(ckt.getSolution().getIntHour()), ckt.getSolution().getDynaVars().t));
 					break;
 				case 13:
 					DSS.appendGlobalResult(ckt.getName());
@@ -780,7 +780,7 @@ public class ExecOptions {
 					DSS.appendGlobalResult(DSS.defaultEditor);
 					break;
 				case 15:
-					DSS.appendGlobalResult(String.format("%-g", ckt.getSolution().getConvergenceTolerance()));
+					DSS.appendGlobalResult(String.format("%g", ckt.getSolution().getConvergenceTolerance()));
 					break;
 				case 16:
 					DSS.appendGlobalResult(String.valueOf(ckt.getSolution().getMaxIterations()));
@@ -789,40 +789,40 @@ public class ExecOptions {
 					DSS.appendGlobalResult(Util.getLoadModel());
 					break;
 				case 19:
-					DSS.appendGlobalResult(String.format("%-g", ckt.getLoadMultiplier()));
+					DSS.appendGlobalResult(String.format("%g", ckt.getLoadMultiplier()));
 					break;
 				case 20:
-					DSS.appendGlobalResult(String.format("%-g", ckt.getNormalMinVolts()));
+					DSS.appendGlobalResult(String.format("%g", ckt.getNormalMinVolts()));
 					break;
 				case 21:
-					DSS.appendGlobalResult(String.format("%-g", ckt.getNormalMaxVolts()));
+					DSS.appendGlobalResult(String.format("%g", ckt.getNormalMaxVolts()));
 					break;
 				case 22:
-					DSS.appendGlobalResult(String.format("%-g", ckt.getEmergMinVolts()));
+					DSS.appendGlobalResult(String.format("%g", ckt.getEmergMinVolts()));
 					break;
 				case 23:
-					DSS.appendGlobalResult(String.format("%-g", ckt.getEmergMaxVolts()));
+					DSS.appendGlobalResult(String.format("%g", ckt.getEmergMaxVolts()));
 					break;
 				case 24:
-					DSS.appendGlobalResult(String.format("%-g", ckt.getDefaultDailyShapeObj().getMean() * 100.0));
+					DSS.appendGlobalResult(String.format("%g", ckt.getDefaultDailyShapeObj().getMean() * 100.0));
 					break;
 				case 25:
-					DSS.appendGlobalResult(String.format("%-g", ckt.getDefaultDailyShapeObj().getStdDev() * 100.0));
+					DSS.appendGlobalResult(String.format("%g", ckt.getDefaultDailyShapeObj().getStdDev() * 100.0));
 					break;
 				case 26:
 					DSS.appendGlobalResult(ckt.getLoadDurCurve());
 					break;
 				case 27:
-					DSS.appendGlobalResult(String.format("%-g", (ckt.getDefaultGrowthRate() - 1.0) * 100.0));
+					DSS.appendGlobalResult(String.format("%g", (ckt.getDefaultGrowthRate() - 1.0) * 100.0));
 					break;
 				case 28:
-					DSS.appendGlobalResult(String.format("%-g", ckt.getAutoAddObj().getGenKW()));
+					DSS.appendGlobalResult(String.format("%g", ckt.getAutoAddObj().getGenKW()));
 					break;
 				case 29:
-					DSS.appendGlobalResult(String.format("%-g", ckt.getAutoAddObj().getGenPF()));
+					DSS.appendGlobalResult(String.format("%g", ckt.getAutoAddObj().getGenPF()));
 					break;
 				case 30:
-					DSS.appendGlobalResult(String.format("%-g", ckt.getAutoAddObj().getCapKVAr()));
+					DSS.appendGlobalResult(String.format("%g", ckt.getAutoAddObj().getCapKVAr()));
 					break;
 				case 31:
 					switch (ckt.getAutoAddObj().getAddType()) {
@@ -849,10 +849,10 @@ public class ExecOptions {
 					}
 					break;
 				case 34:
-					DSS.appendGlobalResult(String.format("%-g", ckt.getUEWeight()));
+					DSS.appendGlobalResult(String.format("%g", ckt.getUEWeight()));
 					break;
 				case 35:
-					DSS.appendGlobalResult(String.format("%-g", ckt.getLossWeight()));
+					DSS.appendGlobalResult(String.format("%g", ckt.getLossWeight()));
 					break;
 				case 36:
 					DSS.appendGlobalResult(Util.intArrayToString(ckt.getUERegs(), ckt.getNumUERegs()));
@@ -863,7 +863,7 @@ public class ExecOptions {
 				case 38:
 					DSS.globalResult = "(";
 					for (double vBase : ckt.getLegalVoltageBases())
-						DSS.globalResult += String.format("%-g, ", vBase);
+						DSS.globalResult += String.format("%g, ", vBase);
 					DSS.globalResult += ")";
 					break;
 				case 39:
@@ -898,7 +898,7 @@ public class ExecOptions {
 					}
 					break;
 				case 44:
-					DSS.appendGlobalResult(String.format("%-g", ckt.getGenMultiplier()));
+					DSS.appendGlobalResult(String.format("%g", ckt.getGenMultiplier()));
 					break;
 				case 45:
 					DSS.appendGlobalResult(ckt.getDefaultDailyShapeObj().getName());
@@ -917,7 +917,7 @@ public class ExecOptions {
 					}
 					break;
 				case 49:
-					DSS.appendGlobalResult(String.format("%-g", ckt.getPriceSignal()));
+					DSS.appendGlobalResult(String.format("%g", ckt.getPriceSignal()));
 					break;
 				case 50:
 					DSS.appendGlobalResult(ckt.getPriceCurve());
@@ -926,14 +926,14 @@ public class ExecOptions {
 					DSS.appendGlobalResult(String.format("%d", ckt.getActiveCktElement().getActiveTerminalIdx()));
 					break;
 				case 52:
-					DSS.appendGlobalResult(String.format("%-g", ckt.getFundamental()));
+					DSS.appendGlobalResult(String.format("%g", ckt.getFundamental()));
 					break;
 				case 53:
 					if (ckt.getSolution().isDoAllHarmonics()) {
 						DSS.appendGlobalResult("ALL");
 					} else {
 						for (int i = 0; i < ckt.getSolution().getHarmonicListSize(); i++)
-							DSS.appendGlobalResult(String.format("%-g", ckt.getSolution().getHarmonicList()[i]));
+							DSS.appendGlobalResult(String.format("%g", ckt.getSolution().getHarmonicList()[i]));
 					}
 					break;
 				case 54:

@@ -348,12 +348,12 @@ public class LoadShapeObj extends DSSObject {
 			break;
 		case 2:
 			for (int i = 0; i < numPoints; i++)
-				val = val + String.format("%-g, ", PMultipliers[i]);
+				val = val + String.format("%g, ", PMultipliers[i]);
 			break;
 		case 3:
 			if (hours != null)
 				for (int i = 0; i < numPoints; i++)
-					val = val + String.format("%-g, ", hours[i]);
+					val = val + String.format("%g, ", hours[i]);
 			break;
 		case 4:
 			val = String.format("%.8g", mean[0]);
@@ -365,7 +365,7 @@ public class LoadShapeObj extends DSSObject {
 			if (QMultipliers != null) {
 				val = "(";
 				for (int i = 0; i < numPoints; i++)
-					val = val + String.format("%-g,", QMultipliers[i]);
+					val = val + String.format("%g,", QMultipliers[i]);
 				val = val + ")";
 			}
 			break;

@@ -789,7 +789,7 @@ public class EnergyMeter extends MeterClass {
 
 			pw.write(DSS.activeCircuit.getSolution().getYear());
 			for (i = 0; i < EnergyMeter.NUM_EM_REGISTERS; i++)
-				pw.printf(", %-g ", regSum[i]);
+				pw.printf(", %g ", regSum[i]);
 			pw.println();
 
 			pw.close();

@@ -7,7 +7,6 @@ package com.ncond.dss.common;
 
 import java.util.List;
 import java.util.Scanner;
-import java.util.logging.Level;
 
 import lombok.extern.java.Log;
 
@@ -84,14 +83,14 @@ public class CommandLineDSSForms implements DSSForms {
 	public int messageDlg(String msg, boolean err) {
 		int result;
 		if (err) {
-			System.err.println(msg);
+			log.warning(msg);
 			result = 0;
 		} else {
 			while (true) {
 				String answer;
 
-				log.log(Level.SEVERE, msg);
-				log.log(Level.SEVERE, "\nContinue (y/n)?: ");
+				log.warning(msg);
+				log.warning("\nContinue (y/n)?: ");
 
 				answer = sc.next();
 				if (answer.equalsIgnoreCase("n")) {

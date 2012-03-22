@@ -57,9 +57,9 @@ public class LineSpacingObj extends DSSObject {
 		// FIXME use StringBuffer
 		String r = "[";
 		if (n > 0)
-			r = r + String.format("%-g", pf[0]);
+			r = r + String.format("%g", pf[0]);
 		for (int i = 1; i < n; i++)
-			r = r + String.format(",%-g", pf[i]);
+			r = r + String.format(",%g", pf[i]);
 		return r + "]";
 	}
 

@@ -1768,8 +1768,8 @@ public class Util {
 			load = (LoadObj) loadClass.getElementList().get(i);
 			if (load.isEnabled()) {
 				pw.printf("new generator.DG_%d  bus1=%s", i, load.getBus(0));
-				pw.printf(" phases=%d kV=%-g", load.getNumPhases(), load.getKVLoadBase());
-				pw.printf(" kW=%-g", kWEach);
+				pw.printf(" phases=%d kV=%g", load.getNumPhases(), load.getKVLoadBase());
+				pw.printf(" kW=%g", kWEach);
 				pw.printf(" pf=%-.3g", pf);
 				pw.print(" model=1");
 				pw.println();
@@ -1806,8 +1806,8 @@ public class Util {
 			load = (LoadObj) loadClass.getElementList().get(i);
 			if (load.isEnabled()) {
 				pw.printf("new generator.DG_%d  bus1=%s", i, load.getBus(0));
-				pw.printf(" phases=%d kV=%-g", load.getNumPhases(), load.getKVLoadBase());
-				pw.printf(" kW=%-g", kWEach * Math.random() * 2.0);
+				pw.printf(" phases=%d kV=%g", load.getNumPhases(), load.getKVLoadBase());
+				pw.printf(" kW=%g", kWEach * Math.random() * 2.0);
 				pw.printf(" pf=%-.3g", pf);
 				pw.print(" model=1");
 				pw.println();
@@ -1857,8 +1857,8 @@ public class Util {
 			if (load.isEnabled()) {
 				if (skipCount == 0) {
 					pw.printf("new generator.DG_%d  bus1=%s", i, load.getBus(0));
-					pw.printf(" phases=%d kV=%-g", load.getNumPhases(), load.getKVLoadBase());
-					pw.printf(" kW=%-g ", kWEach * load.getKWBase());
+					pw.printf(" phases=%d kV=%g", load.getNumPhases(), load.getKVLoadBase());
+					pw.printf(" kW=%g ", kWEach * load.getKWBase());
 					pw.printf(" pf=%-.3g", pf);
 					pw.print(" model=1");
 					pw.println();
@@ -1901,8 +1901,8 @@ public class Util {
 			load = (LoadObj) loadClass.getElementList().get(i);
 			if (load.isEnabled()) {
 				pw.printf("new generator.DG_%d  bus1=%s", i, load.getBus(0));
-				pw.printf(" phases=%d kV=%-g", load.getNumPhases(), load.getKVLoadBase());
-				pw.printf(" kW=%-g", kWEach * load.getKWBase());
+				pw.printf(" phases=%d kV=%g", load.getNumPhases(), load.getKVLoadBase());
+				pw.printf(" kW=%g", kWEach * load.getKWBase());
 				pw.printf(" pf=%-.3g", pf);
 				pw.print(" model=1");
 				pw.println();

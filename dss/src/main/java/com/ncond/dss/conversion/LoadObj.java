@@ -1454,9 +1454,9 @@ public class LoadObj extends PCElement {
 		case 1:
 			return getBus(0);
 		case 2:
-			return String.format("%-g", kVLoadBase);
+			return String.format("%g", kVLoadBase);
 		case 3:
-			return String.format("%-g", kWBase);
+			return String.format("%g", kWBase);
 		case 4:
 			return String.format("%-.3g", PFNominal);
 		case 6:
@@ -1470,13 +1470,13 @@ public class LoadObj extends PCElement {
 		case 21:
 			return String.format("%-.3g", kVAAllocationFactor);
 		case 22:
-			return String.format("%-g", kVABase);
+			return String.format("%g", kVABase);
 		case 29:
 			return String.format("%-.3g", CFactor);
 		case 32:
 			String result = "";
 			for (int i = 0; i < nZIPV; i++)
-				result = result + String.format(" %-g", ZIPV[i]);
+				result = result + String.format(" %g", ZIPV[i]);
 			return result;
 		default:
 			return super.getPropertyValue(index);

@@ -61,19 +61,19 @@ public class SpectrumObj extends DSSObject {
 			case 1:
 				pw.print("~ " + parentClass.getPropertyName(i) + "=(");
 				for (j = 0; j < numHarm; j++)
-					pw.printf("%-g, ", harmArray[j]);
+					pw.printf("%g, ", harmArray[j]);
 				pw.println(")");
 				break;
 			case 2:
 				pw.print("~ " + parentClass.getPropertyName(i) + "=(");
 				for (j = 0; j < numHarm; j++)
-					pw.printf("%-g, ", puMagArray[j] * 100.0);
+					pw.printf("%g, ", puMagArray[j] * 100.0);
 				pw.println(")");
 				break;
 			case 3:
 				pw.print("~ " + parentClass.getPropertyName(i) + "=(");
 				for (j = 0; j < numHarm; j++)
-					pw.printf("%-g, ", angleArray[j]);
+					pw.printf("%g, ", angleArray[j]);
 				pw.println(")");
 				break;
 			default:
@@ -86,9 +86,9 @@ public class SpectrumObj extends DSSObject {
 			pw.println("Multiplier Array:");
 			pw.println("Harmonic, Mult.re, Mult.im, Mag,  Angle");
 			for (i = 0; i < numHarm; i++) {
-				pw.printf("%-g, ", harmArray[i]);
-				pw.printf("%-g, %-g, ", multArray[i].getReal(), multArray[i].getImaginary());
-				pw.printf("%-g, %-g", multArray[i].abs(), ComplexUtil.degArg( multArray[i] ));
+				pw.printf("%g, ", harmArray[i]);
+				pw.printf("%g, %g, ", multArray[i].getReal(), multArray[i].getImaginary());
+				pw.printf("%g, %g", multArray[i].abs(), ComplexUtil.degArg( multArray[i] ));
 				pw.println();
 			}
 		}
@@ -128,15 +128,15 @@ public class SpectrumObj extends DSSObject {
 			break;
 		case 1:
 			for (i = 0; i < numHarm; i++)
-				result = result + String.format("%-g, ", harmArray[i]);
+				result = result + String.format("%g, ", harmArray[i]);
 			break;
 		case 2:
 			for (i = 0; i < numHarm; i++)
-				result = result + String.format("%-g, ", puMagArray[i] * 100.0);
+				result = result + String.format("%g, ", puMagArray[i] * 100.0);
 			break;
 		case 3:
 			for (i = 0; i < numHarm; i++)
-				result = result + String.format("%-g, ", angleArray[i]);
+				result = result + String.format("%g, ", angleArray[i]);
 			break;
 		default:
 			result = super.getPropertyValue(index);

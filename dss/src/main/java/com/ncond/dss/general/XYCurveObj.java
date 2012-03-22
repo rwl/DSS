@@ -180,7 +180,7 @@ public class XYCurveObj extends DSSObject {
 		case 2:
 			if (YValues != null) {
 				for (int i = 0; i < numPoints; i++)
-					result = result + String.format("%-g, ", YValues[i]);
+					result = result + String.format("%g, ", YValues[i]);
 			} else {
 				result = "0";
 			}
@@ -188,7 +188,7 @@ public class XYCurveObj extends DSSObject {
 		case 3:
 			if (XValues != null) {
 				for (int i = 0; i < numPoints; i++)
-					result = result + String.format("%-g, ", XValues[i]);
+					result = result + String.format("%g, ", XValues[i]);
 			} else {
 				result = "0";
 			}

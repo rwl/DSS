@@ -316,7 +316,7 @@ public class FaultObj extends PDElement {
 			if (GMatrix != null) {
 				for (int i = 0; i < nPhases; i++) {
 					for (int j = 0; j < i; j++)
-						sb.append(String.format("%-g ", GMatrix[i * nPhases + j]));
+						sb.append(String.format("%g ", GMatrix[i * nPhases + j]));
 					if (i < nPhases - 1)
 						sb.append("|");
 				}

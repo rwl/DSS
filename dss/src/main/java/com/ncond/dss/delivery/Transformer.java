@@ -215,7 +215,7 @@ public class Transformer extends PDClass {
 				elem.setNumWindings(parser.makeInteger());  // reallocate stuff if bigger
 				break;
 			case 2:
-				setActiveWinding(parser.makeInteger());
+				setActiveWinding(parser.makeInteger() - 1);
 				break;
 			case 3:
 				elem.setBus(elem.getActiveWindingIdx(), param);

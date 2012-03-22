@@ -1569,7 +1569,7 @@ public class EnergyMeterObj extends MeterElement {
 		PrintWriter pw = new PrintWriter(DSS.energyMeterClass.getMeterTotals());
 		pw.print("\"" + getName() + "\"");
 		for (int i = 0; i < EnergyMeter.NUM_EM_REGISTERS; i++)
-			pw.printf(", %-g", registers[i]);
+			pw.printf(", %g", registers[i]);
 		pw.println();
 		pw.close();
 	}

@@ -2359,7 +2359,7 @@ public class ExecHelper {
 				s.append("Total Active Losses:   ****** MW, (**** %%)" + CRLF);
 			}
 			s.append(String.format("Total Reactive Losses: %-.6g Mvar", cLosses.getImaginary()) + CRLF);
-			s.append(String.format("Frequency = %-g Hz", ckt.getSolution().getFrequency()) + CRLF);
+			s.append(String.format("Frequency = %g Hz", ckt.getSolution().getFrequency()) + CRLF);
 			s.append("Mode = " + Util.getSolutionModeID() + CRLF);
 			s.append("Control Mode = " + Util.getControlModeID() + CRLF);
 			s.append("Load Model = " + Util.getLoadModel() + CRLF);

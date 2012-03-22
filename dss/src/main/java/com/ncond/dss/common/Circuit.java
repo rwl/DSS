@@ -569,7 +569,7 @@ public class Circuit extends NamedObject {
 
 			for (int i = 0; i < numBuses; i++) {
 				if (buses[i].isCoordDefined()) {
-					pw.printf("%s, %-g, %-g",
+					pw.printf("%s, %g, %g",
 						Util.checkForBlanks(busList.get(i)),
 						buses[i].getX(), buses[i].getY());
 					pw.println();

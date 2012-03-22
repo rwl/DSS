@@ -398,10 +398,10 @@ public class AutoAdd {
 							fw = new FileWriter(logFile, true);  // append
 							pw = new PrintWriter(fw);
 
-							pw.printf("\"%s\", %-g", testBus, ckt.getBus(busIndex).getKVBase() * DSS.SQRT3);
-							pw.printf(", %-g, %-g", kWLosses, puLossImprovement * 100.0);
-							pw.printf(", %-g, %-g", kWEEN, puEENImprovement * 100.0);
-							pw.printf(", %-g, %d", lossImproveFactor, sol.getIteration());
+							pw.printf("\"%s\", %g", testBus, ckt.getBus(busIndex).getKVBase() * DSS.SQRT3);
+							pw.printf(", %g, %g", kWLosses, puLossImprovement * 100.0);
+							pw.printf(", %g, %g", kWEEN, puEENImprovement * 100.0);
+							pw.printf(", %g, %d", lossImproveFactor, sol.getIteration());
 							pw.println();
 
 							fw.close();
@@ -437,10 +437,10 @@ public class AutoAdd {
 				commandString = "new, generator." + getUniqueGenName() +
 						", bus1=\"" + ckt.getBusList().get(minLossBus) +
 						"\", phases=" + minBusPhases +
-						", kv="+ String.format("%-g", kVrat) +
-						", kw=" + String.format("%-g", testGenKW) +
+						", kv="+ String.format("%g", kVrat) +
+						", kw=" + String.format("%g", testGenKW) +
 						", " + String.format("%5.2f", genPF) +
-						String.format("! Factor =  %-g (%-.3g, %-.3g)",
+						String.format("! Factor =  %g (%-.3g, %-.3g)",
 								maxLossImproveFactor,
 								ckt.getLossWeight(),
 								ckt.getUEWeight());
@@ -454,7 +454,7 @@ public class AutoAdd {
 
 			// return location of added generator
 			DSS.globalResult = ckt.getBusList().get(minLossBus) +
-					String.format(", %-g", maxLossImproveFactor);
+					String.format(", %g", maxLossImproveFactor);
 
 			DSS.forms.progressHide();
 
@@ -511,10 +511,10 @@ public class AutoAdd {
 						try {
 							fw = new FileWriter(logFile, true);  // append
 							pw = new PrintWriter(fw);
-							pw.printf("\"%s\", %-g", testBus, ckt.getBus(busIndex).getKVBase() * DSS.SQRT3);
-							pw.printf(", %-g, %-g", kWLosses, puLossImprovement * 100.0);
-							pw.printf(", %-g, %-g", kWEEN, puEENImprovement * 100.0);
-							pw.printf(", %-g, %d", lossImproveFactor, sol.getIteration());
+							pw.printf("\"%s\", %g", testBus, ckt.getBus(busIndex).getKVBase() * DSS.SQRT3);
+							pw.printf(", %g, %g", kWLosses, puLossImprovement * 100.0);
+							pw.printf(", %g, %g", kWEEN, puEENImprovement * 100.0);
+							pw.printf(", %g, %d", lossImproveFactor, sol.getIteration());
 							pw.println();
 							fw.close();
 							pw.close();
@@ -549,8 +549,8 @@ public class AutoAdd {
 				commandString = "new, capacitor." + getUniqueCapName() +
 						", bus1=\"" + ckt.getBusList().get(minLossBus) +
 						"\", phases=" + minBusPhases +
-						", kvar=" + String.format("%-g", testCapKVAr) +
-						", kv=" + String.format("%-g", kVrat);
+						", kvar=" + String.format("%g", testCapKVAr) +
+						", kv=" + String.format("%g", kVrat);
 				exec.setCommand(commandString);  // defines capacitor
 
 				// append this command to 'DSSAutoAddedCapacitors.txt'

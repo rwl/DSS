@@ -128,7 +128,7 @@ public class TransformerObj extends PDElement {
 			numWindings = n;
 			maxWindings = n;
 			newWdgSize = (numWindings - 1) * numWindings / 2;
-			setNumConds(nPhases + 1);
+			nConds = nPhases + 1;
 			setNumTerms(numWindings);
 
 			windings = Util.resizeArray(windings, maxWindings);  // reallocate collector array
@@ -323,7 +323,7 @@ public class TransformerObj extends PDElement {
 			for (i = 0; i < nPhases; i++) {
 				for (j = 0; j < numWindings; j++) {
 					k += 1;
-					switch (windings[i].getConnection()) {
+					switch (windings[j].getConnection()) {
 					case WYE:
 						termRef[k] = j * nConds + i;
 						k += 1;
@@ -782,7 +782,7 @@ public class TransformerObj extends PDElement {
 			break;
 		case 19:
 			for (i = 0; i < (numWindings - 1) * numWindings / 2; i++)
-				val = val + String.format("%-g, ", XSC[i] * 100.0);// Parser.ParseAsVector(((NumWindings - 1)*NumWindings div 2), Xsc);
+				val = val + String.format("%g, ", XSC[i] * 100.0);// Parser.ParseAsVector(((NumWindings - 1)*NumWindings div 2), Xsc);
 			break;
 		case 25:
 			val = String.format("%.7g", pctLoadLoss);
@@ -1054,7 +1054,7 @@ public class TransformerObj extends PDElement {
 		// off diagonals
 		k = numWindings - 1;
 		for (i = 0; i < numWindings - 1; i++) {
-			for (j = 0; j < numWindings - 1; j++) {
+			for (j = i + 1; j < numWindings - 1; j++) {
 				ZB.setSym(i, j, ZB.get(i, i).add( ZB.get(j, j) ).subtract(new Complex(
 					(windings[i + 1].getRpu() + windings[j + 1].getRpu()),
 					freqMult * XSC[k]
@@ -1100,7 +1100,7 @@ public class TransformerObj extends PDElement {
 		for (i = 0; i < numWindings - 1; i++)
 			At.set(0, i, cMinusOne);
 
-		cTempArray1[numWindings] = Complex.ZERO;
+		cTempArray1[numWindings - 1] = Complex.ZERO;
 		for (i = 0; i < numWindings; i++) {
 			if (i == 0) {
 				for (k = 0; k < numWindings - 1; k++)

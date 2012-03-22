@@ -1849,7 +1849,7 @@ public class ExportResults {
 						pw.printf("Total Active Losses:   ****** MW, (**** %%)");
 					}
 					pw.printf(", %-.6g", cLosses.getImaginary());
-					pw.printf(", %-g", ckt.getSolution().getFrequency());
+					pw.printf(", %g", ckt.getSolution().getFrequency());
 				}
 			}
 			pw.println();

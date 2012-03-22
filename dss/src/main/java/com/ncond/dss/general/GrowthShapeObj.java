@@ -135,7 +135,7 @@ public class GrowthShapeObj extends DSSObject {
 			break;
 		case 2:
 			for (i = 0; i < npts; i++)
-				val += String.format("%-g, ", multiplier[i]);
+				val += String.format("%g, ", multiplier[i]);
 			break;
 		default:
 			val = super.getPropertyValue(index);

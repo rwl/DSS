@@ -231,9 +231,9 @@ public class PVSystemObj extends PCElement {
 		setPropertyValue(0, "3");         // "phases";
 		setPropertyValue(1, getBus(0));   // "bus1";
 
-		setPropertyValue(PVSystem.KV, String.format("%-g", kVPVSystemBase));
-		setPropertyValue(PVSystem.IRRADIANCE, String.format("%-g", irradiance));
-		setPropertyValue(PVSystem.PF, String.format("%-g", PFNominal));
+		setPropertyValue(PVSystem.KV, String.format("%g", kVPVSystemBase));
+		setPropertyValue(PVSystem.IRRADIANCE, String.format("%g", irradiance));
+		setPropertyValue(PVSystem.PF, String.format("%g", PFNominal));
 		setPropertyValue(PVSystem.MODEL, "1");
 		setPropertyValue(PVSystem.YEARLY, "");
 		setPropertyValue(PVSystem.DAILY, "");
@@ -242,23 +242,23 @@ public class PVSystemObj extends PCElement {
 		setPropertyValue(PVSystem.T_DAILY, "");
 		setPropertyValue(PVSystem.T_DUTY, "");
 		setPropertyValue(PVSystem.CONNECTION, "wye");
-		setPropertyValue(PVSystem.KVAR, String.format("%-g", getPresentKVAr()));
+		setPropertyValue(PVSystem.KVAR, String.format("%g", getPresentKVAr()));
 
-		setPropertyValue(PVSystem.PCTR, String.format("%-g", pctR));
-		setPropertyValue(PVSystem.PCTX, String.format("%-g", pctX));
+		setPropertyValue(PVSystem.PCTR, String.format("%g", pctR));
+		setPropertyValue(PVSystem.PCTX, String.format("%g", pctX));
 
 		setPropertyValue(PVSystem.CLASS, "1"); //"class"
 
 		setPropertyValue(PVSystem.INV_EFF_CURVE, "");
-		setPropertyValue(PVSystem.TEMP, String.format("%-g", temperature));
-		setPropertyValue(PVSystem.PMPP, String.format("%-g", Pmpp));
+		setPropertyValue(PVSystem.TEMP, String.format("%g", temperature));
+		setPropertyValue(PVSystem.PMPP, String.format("%g", Pmpp));
 		setPropertyValue(PVSystem.P_T_CURVE, "");
 		setPropertyValue(PVSystem.CUT_IN, "20");
 		setPropertyValue(PVSystem.CUT_OUT, "20");
 
 		setPropertyValue(PVSystem.VMIN_PU, "0.90");
 		setPropertyValue(PVSystem.VMAX_PU, "1.10");
-		setPropertyValue(PVSystem.KVA, String.format("%-g", kVARating));
+		setPropertyValue(PVSystem.KVA, String.format("%g", kVARating));
 
 		setPropertyValue(PVSystem.USER_MODEL, "");  // UserModel
 		setPropertyValue(PVSystem.USER_DATA, "");   // UserData

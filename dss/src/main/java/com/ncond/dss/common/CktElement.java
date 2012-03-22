@@ -242,7 +242,7 @@ abstract public class CktElement extends DSSObject {
 						newBusNames[i] = busNames[i];  // copy old into new
 					for (i = 0; i < nTerms; i++)
 						busNames[i] = "";  // decrement usage counts by setting to empty string
-					for (i = 0; i < nTerms + 1; i++)
+					for (i = nTerms; i < value; i++)
 						newBusNames[i] = getName() + "_" + i;  // make up a bus name to stick in
 					busNames = newBusNames;
 				}

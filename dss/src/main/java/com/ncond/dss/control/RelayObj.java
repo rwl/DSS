@@ -421,7 +421,7 @@ public class RelayObj extends ControlElem {
 			} else {
 				StringBuffer sb = new StringBuffer("(");
 				for (int i = 0; i < numReclose; i++)
-					sb.append(String.format("%-g, " , recloseIntervals[i]));
+					sb.append(String.format("%g, " , recloseIntervals[i]));
 				sb.append(")");
 				val = sb.toString();
 			}

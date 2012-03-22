@@ -934,7 +934,7 @@ public class SolutionAlgs {
 				sol.setFrequency(frequencyList[i]);
 				if (Math.abs(sol.getHarmonic() - 1.0) > DSS.EPSILON) {  // Skip fundamental
 					DSS.forms.progressCaption("Solving at frequency = " +
-							String.format("%-g", sol.getFrequency()));
+							String.format("%g", sol.getFrequency()));
 					DSS.forms.showPctProgress((int) Math.round((100.0 * i) / nFreq[0]));
 					sol.solveDirect();
 					DSS.monitorClass.sampleAll();

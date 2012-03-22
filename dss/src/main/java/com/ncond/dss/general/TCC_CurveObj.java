@@ -193,11 +193,11 @@ public class TCC_CurveObj extends DSSObject {
 		switch (index) {
 		case 1:
 			for (i = 0; i < npts; i++)
-				result += String.format("%-g, ", cValues[i]);
+				result += String.format("%g, ", cValues[i]);
 			break;
 		case 2:
 			for (i = 0; i < npts; i++)
-				result += String.format("%-g, ", tValues[i]);
+				result += String.format("%g, ", tValues[i]);
 			break;
 		default:
 			result = super.getPropertyValue(index);

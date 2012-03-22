@@ -257,9 +257,9 @@ public class StorageObj extends PCElement {
 		setPropertyValue(0, "3");         // "phases";
 		setPropertyValue(1, getBus(0));   // "bus1";
 
-		setPropertyValue(Storage.KV, String.format("%-g", kVStorageBase));
-		setPropertyValue(Storage.KW, String.format("%-g", kWOut));
-		setPropertyValue(Storage.PF, String.format("%-g", PFNominal));
+		setPropertyValue(Storage.KV, String.format("%g", kVStorageBase));
+		setPropertyValue(Storage.KW, String.format("%g", kWOut));
+		setPropertyValue(Storage.PF, String.format("%g", PFNominal));
 		setPropertyValue(Storage.MODEL, "1");
 		setPropertyValue(Storage.YEARLY, "");
 		setPropertyValue(Storage.DAILY, "");
@@ -267,10 +267,10 @@ public class StorageObj extends PCElement {
 		setPropertyValue(Storage.DISP_MODE, "Default");
 		setPropertyValue(Storage.IDLE_KVAR, "0");
 		setPropertyValue(Storage.CONNECTION, "wye");
-		setPropertyValue(Storage.KVAR, String.format("%-g", getPresentKVAr()));
+		setPropertyValue(Storage.KVAR, String.format("%g", getPresentKVAr()));
 
-		setPropertyValue(Storage.PCTR, String.format("%-g", pctR));
-		setPropertyValue(Storage.PCTX, String.format("%-g", pctX));
+		setPropertyValue(Storage.PCTR, String.format("%g", pctR));
+		setPropertyValue(Storage.PCTX, String.format("%g", pctX));
 
 		setPropertyValue(Storage.IDLE_KW, "1");  // percent
 		setPropertyValue(Storage.CLASS, "1");    // "class"
@@ -284,13 +284,13 @@ public class StorageObj extends PCElement {
 		setPropertyValue(Storage.VMIN_PU, "0.90");
 		setPropertyValue(Storage.VMAX_PU, "1.10");
 		setPropertyValue(Storage.STATE, "IDLING");
-		setPropertyValue(Storage.KVA, String.format("%-g", kVARating));
-		setPropertyValue(Storage.KW_RATED, String.format("%-g", kWRating));
-		setPropertyValue(Storage.KWH_RATED, String.format("%-g", kWhRating));
-		setPropertyValue(Storage.KWH_STORED, String.format("%-g", kWhStored));
-		setPropertyValue(Storage.PCT_STORED, String.format("%-g", kWhStored / kWhRating * 100.0));
-		setPropertyValue(Storage.PCT_RESERVE, String.format("%-g", pctReserve));
-		setPropertyValue(Storage.CHARGE_TIME, String.format("%-g", chargeTime));
+		setPropertyValue(Storage.KVA, String.format("%g", kVARating));
+		setPropertyValue(Storage.KW_RATED, String.format("%g", kWRating));
+		setPropertyValue(Storage.KWH_RATED, String.format("%g", kWhRating));
+		setPropertyValue(Storage.KWH_STORED, String.format("%g", kWhStored));
+		setPropertyValue(Storage.PCT_STORED, String.format("%g", kWhStored / kWhRating * 100.0));
+		setPropertyValue(Storage.PCT_RESERVE, String.format("%g", pctReserve));
+		setPropertyValue(Storage.CHARGE_TIME, String.format("%g", chargeTime));
 
 		setPropertyValue(Storage.USER_MODEL, "");  // UserModel
 		setPropertyValue(Storage.USER_DATA, "");  // UserData

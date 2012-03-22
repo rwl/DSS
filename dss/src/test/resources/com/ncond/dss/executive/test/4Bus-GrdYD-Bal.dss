@@ -37,8 +37,8 @@ new load.load1 phases=3 bus1=n4 conn=delta kV=4.16 kW=5400 pf=0.9 model=1
 ! **** DEFAULT IN DSS IS .95, BELOW WHICH IT REVERTS TO LINEAR MODEL
 ~ vminpu=0.75    ! model will remain const p,q down to 0.75 pu voltage
 
-set voltagebases=[12.47, 4.16]
-calcVoltageBases     ! **** let DSS compute voltage bases
+//set voltagebases=[12.47, 4.16]
+//calcVoltageBases     ! **** let DSS compute voltage bases
 //solve
 
 ! Various reports ...
