@@ -537,7 +537,11 @@ public class ExecCommands {
 			case 71:
 				paramName = parser.getNextParam();
 				param = parser.makeString();
-				if (new File(DSS.currentDirectory).exists()) {
+
+				if (!new File(param).exists())  // try relative to cwd
+					param = new File(DSS.currentDirectory, param).getAbsolutePath();
+
+				if (new File(param).exists()) {
 					DSS.currentDirectory = param;
 					DSS.cmdResult = 0;
 					DSS.setDataPath(param);  // change DSS data directory

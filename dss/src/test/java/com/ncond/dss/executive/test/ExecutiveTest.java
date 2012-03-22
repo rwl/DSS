@@ -1,15 +1,17 @@
 package com.ncond.dss.executive.test;
 
+import java.io.File;
+
+import com.google.common.io.Files;
 import com.ncond.dss.common.CktElement;
 import com.ncond.dss.common.DSS;
 import com.ncond.dss.common.DSSClassDefs;
 import com.ncond.dss.conversion.VSourceObj;
+import com.ncond.dss.delivery.TransformerObj;
 import com.ncond.dss.executive.ExecCommands;
 import com.ncond.dss.executive.ExecOptions;
 import com.ncond.dss.executive.Executive;
 import com.ncond.dss.general.DSSObject;
-import com.ncond.dss.general.GrowthShapeObj;
-import com.ncond.dss.general.LoadShape;
 import com.ncond.dss.general.LoadShapeObj;
 
 import junit.framework.TestCase;
@@ -161,14 +163,67 @@ public class ExecutiveTest extends TestCase {
 	}
 
 	public void testSetCommandCompile() {
-		String cmd;
+		String cmd, path;
+		File file;
+		TransformerObj xfmr;
 
 		Executive exec = Executive.getInstance();
 
-		String script = ExecutiveTest.class.getResource(COMPILE_SCRIPT).getFile();
+		path = ExecutiveTest.class.getResource(COMPILE_SCRIPT).getPath();
+		file = new File(path);
 
-		cmd = "compile filename=" + script;
+		cmd = "compile filename=" + file.getAbsolutePath();
 		exec.setCommand(cmd);
+
+		assertEquals(file.getParent(), DSS.currentDirectory);
+		assertEquals(file.getParent() + DSS.SEPARATOR, DSS.dataDirectory);
+
+		//assertTrue(DSS.activeCircuit.isSolved());
+
+		xfmr = (TransformerObj) DSSClassDefs.getDSSClass("transformer").find("t1");
+		assertNotNull(xfmr);
+	}
+
+	public void testSetCommandCD() {
+		String cmd, dirName;
+		boolean formsSave;
+		File tempDir, tempDir2;
+
+		tempDir = Files.createTempDir();
+
+		Executive exec = Executive.getInstance();
+
+		/* change to valid directory */
+		cmd = "cd " + tempDir.getAbsolutePath();
+		exec.setCommand(cmd);
+
+		assertEquals(tempDir.getAbsolutePath(), DSS.currentDirectory);
+		assertEquals(tempDir.getAbsolutePath() + DSS.SEPARATOR, DSS.dataDirectory);
+
+
+		/* change to invalid directory */
+		formsSave = DSS.noFormsAllowed;
+		DSS.noFormsAllowed = true;  // supress messages
+
+		cmd = "cd /zyxjkl";
+		exec.setCommand(cmd);
+
+		DSS.noFormsAllowed = formsSave;
+
+		assertEquals(tempDir.getAbsolutePath(), DSS.currentDirectory);
+		assertEquals(tempDir.getAbsolutePath() + DSS.SEPARATOR, DSS.dataDirectory);
+
+
+		/* change to relative directory */
+		dirName = "dssdata";
+		tempDir2 = new File(tempDir, dirName);
+		tempDir2.mkdir();
+
+		cmd = "cd " + dirName;
+		exec.setCommand(cmd);
+
+		assertEquals(tempDir2.getAbsolutePath(), DSS.currentDirectory);
+		assertEquals(tempDir2.getAbsolutePath() + DSS.SEPARATOR, DSS.dataDirectory);
 	}
 
 }
