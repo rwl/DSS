@@ -72,7 +72,7 @@ public abstract class DSSAbstractShell extends AbstractShellStatusPublisher  // 
                 final Manifest manifest = new Manifest(
                         jarFile.getInputStream(manifestEntry));
                 bundleVersion = manifest.getMainAttributes().getValue(
-                        "Bundle-Version");
+                        "Specification-Version");                            // **** CHANGE FROM ORIGINAL ROO VERSION ****
                 gitCommitHash = manifest.getMainAttributes().getValue(
                         "Git-Commit-Hash");
             }
