@@ -20,7 +20,7 @@ The DSS shell interface can be downloaded as an archive from here:
 
 Unpack the archive and execute either the batch file or the shell script,
 dependng on your system. Type `help` at the dss prompt for a description
-of each the available commands. Type `help &lt;command&gt;` for a more
+of each the available commands. Type `help <command>` for a more
 detailed description of an individual command.
 
 Build and Install
@@ -55,9 +55,9 @@ Package Explorer view and select Configure->"Convert to Maven project".
 License and Copyright
 ---------------------
 
-    Copyright (C) 2008-2012 Electric Power Research Institute, Inc.  
-    Copyright (C) 2009-2012 Richard Lincoln
-    All rights reserved.
+Copyright (C) 2008-2012 Electric Power Research Institute, Inc.  
+Copyright (C) 2009-2012 Richard Lincoln
+All rights reserved.
 
     Redistribution and use in source and binary forms, with or without  
     modification, are permitted provided that the following conditions are met:  
