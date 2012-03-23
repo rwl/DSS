@@ -849,23 +849,23 @@ public class ExecCommands {
 				break;
 			}
 		}
-//		catch (Exception e) {
-//			DSS.doErrorMsg("Exception raised while processing DSS command:" +
-//					DSS.CRLF + parser.getCmdBuffer(),
-//					e.getMessage(),
-//					"Error in command string or circuit data.", 303);
-//			e.printStackTrace();
-//		}
-		catch (SolverError e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (ControlProblem e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (SolverProblem e) {
-			// TODO Auto-generated catch block
+		catch (Exception e) {
+			DSS.doErrorMsg("Exception raised while processing DSS command:" +
+					DSS.CRLF + parser.getCmdBuffer(),
+					e.getMessage(),
+					"Error in command string or circuit data.", 303);
 			e.printStackTrace();
 		}
+//		catch (SolverError e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		} catch (ControlProblem e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		} catch (SolverProblem e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
 	}
 
 }

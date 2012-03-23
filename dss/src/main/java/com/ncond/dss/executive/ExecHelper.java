@@ -17,6 +17,8 @@ import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import lombok.extern.java.Log;
+
 import org.apache.commons.math.complex.Complex;
 
 import com.ncond.dss.common.Bus;
@@ -58,6 +60,7 @@ import com.ncond.dss.shared.ComplexUtil;
 import com.ncond.dss.shared.MathUtil;
 import com.ncond.dss.shared.PstCalc;
 
+@Log
 public class ExecHelper {
 
 	private static CommandList saveCommands = new CommandList(new String[] {"class", "file", "dir", "keepdisabled"}, true);
@@ -255,6 +258,7 @@ public class ExecHelper {
 
 				while ((inputLine = br.readLine()) != null || DSS.redirectAbort) {
 					if (!DSS.solutionAbort) {
+						log.info(inputLine);
 						ExecCommands.processCommand(inputLine);
 					} else {
 						DSS.redirectAbort = true;  // abort file if solution was aborted
