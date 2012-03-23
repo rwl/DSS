@@ -51,7 +51,8 @@ public class CompletorTest extends TestCase {
 		cursor = 0;
 		idx = completor.complete(buffer, cursor, candidates);
 
-		assertEquals(commands.size() +
+		assertEquals(commands.size() -
+				7 +  // step control commands (named with leading "_")
 				//classNames.size() +  // too many
 				1, candidates.size());
 		assertEquals(0, idx);
