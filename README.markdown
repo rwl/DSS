@@ -21,14 +21,14 @@ from here:
 
 Unpack the archive and execute either the batch file or the shell script,
 dependng on your system. Type `help` at the `dss>` prompt for a description
-of each the available commands. Type `help <command>` for a more
-detailed description of an individual command. Existing scripts of commands
-may be read using the `compile` command:
+of each available command. Type `help <command>` for a more detailed
+description of an individual command. Existing scripts of DSS commands may be
+read using the `compile` command. For example:
 
-    dss> compile /path/to/script.dss
+    dss> compile examples/4Bus-GrdYD-Bal.dss
 
-Check the `examples` sub-directory of the DSS archive for a selection of
-example scripts.
+Check the `examples` sub-directory of the archive for a selection of
+DSS scripts.
 
 Build and Install
 -----------------
