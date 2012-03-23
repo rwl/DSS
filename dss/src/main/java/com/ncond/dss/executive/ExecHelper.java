@@ -455,7 +455,13 @@ public class ExecHelper {
 	}
 
 	public static int doHelpCmd() {
-		DSS.forms.showHelpForm();
+		Parser parser = Parser.getInstance();
+
+		parser.getNextParam();
+		String cmd = parser.makeString();
+
+		DSS.forms.showHelpForm(cmd);
+
 		return 0;
 	}
 

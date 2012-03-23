@@ -57,6 +57,10 @@ public class SwingDSSForms implements DSSForms {
 
 	}
 
+	public void showHelpForm(String cmd) {
+
+	}
+
 	public void showHelpForm() {
 
 	}

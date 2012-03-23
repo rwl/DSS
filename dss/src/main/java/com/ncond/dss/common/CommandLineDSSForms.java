@@ -62,16 +62,36 @@ public class CommandLineDSSForms implements DSSForms {
 
 	}
 
+	public void showHelpForm(String cmd) {
+		int idx;
+		String help;
+
+		if (cmd == null || cmd.length() == 0) {
+			showHelpForm();
+			return;
+		}
+
+		idx = ExecCommands.commandList.getCommand(cmd);
+		if (idx >= 0) {
+			help = ExecCommands.commandHelp[idx];
+			log.info(help);
+		} else {
+			log.warning("Command not found: " + cmd);
+		}
+	}
+
 	public void showHelpForm() {
 		int i, dotpos;
 		String cmd, help;
 
 		for (i = 0; i < ExecCommands.NumExecCommands; i++) {
 			cmd = ExecCommands.execCommand[i];
-			help = ExecCommands.commandHelp[i];
-			dotpos = help.indexOf('.');
-			if (dotpos >= 0) help = help.substring(0, dotpos + 1);
-			log.info("* " + cmd + " - " + help);
+			if (cmd.charAt(0) != '_') {
+				help = ExecCommands.commandHelp[i];
+				dotpos = help.indexOf('.');
+				if (dotpos >= 0) help = help.substring(0, dotpos + 1);
+				log.info("* " + cmd + " - " + help);
+			}
 		}
 	}
 

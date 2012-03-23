@@ -8,6 +8,7 @@ import org.springframework.roo.shell.Completion;
 import org.springframework.roo.shell.ParseResult;
 import org.springframework.roo.shell.Parser;
 
+import com.ncond.dss.common.DSS;
 import com.ncond.dss.executive.Executive;
 import com.ncond.dss.shell.DSSCompletor;
 
@@ -15,12 +16,8 @@ public class DSSParser implements Parser {
 
 	DSSCompletor completor;
 
-	private Executive executive;
-
 	public DSSParser() {
 		completor = new DSSCompletor();
-		executive = Executive.getInstance();
-		executive.createDefaultDSSItems();
 	}
 
 	@Override
@@ -43,6 +40,7 @@ public class DSSParser implements Parser {
 	@Override
 	public ParseResult parse(String line) {
 		Method method;
+		Executive executive = Executive.getInstance();
 		try {
 			method = executive.getClass().getMethod("setCommand", new Class[] {String.class});
 		} catch (SecurityException e) {

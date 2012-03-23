@@ -10,6 +10,7 @@ import org.springframework.roo.shell.jline.DSSJLineShell;
 import static org.apache.commons.io.IOUtils.LINE_SEPARATOR;
 
 import com.ncond.dss.common.DSS;
+import com.ncond.dss.executive.Executive;
 import com.ncond.dss.general.DSSObject;
 
 public class DSSShell extends DSSJLineShell {
@@ -27,6 +28,41 @@ public class DSSShell extends DSSJLineShell {
 	@Override
 	protected Parser getParser() {
 		return new DSSParser();
+	}
+
+	@Override
+	public boolean executeCommand(final String line) {
+		boolean success = super.executeCommand(line);
+		setDSSPromptPath();
+		return success;
+	}
+
+	@Override
+	protected void logCommandIfRequired(final String line,
+			final boolean successful) {
+		super.logCommandIfRequired(line, successful);
+
+		if (!successful) logger.warning("Error processing command: " + line);
+	}
+
+	@Override
+	public void run() {
+		Executive executive = Executive.getInstance();
+		executive.createDefaultDSSItems();
+		DSS.makeNewCircuit("ckt1");
+		DSS.setObject("source");
+		super.run();
+	}
+
+	@Override
+	public void promptLoop() {
+		setDSSPromptPath();
+		super.promptLoop();
+	}
+
+	private void setDSSPromptPath() {
+		DSSObject obj = DSS.activeDSSObject;
+		if (obj != null) setPromptPath(obj.getDSSClassName() + "." + obj.getName());
 	}
 
 	@Override
@@ -53,15 +89,6 @@ public class DSSShell extends DSSJLineShell {
 		}
 
 	        return sb.toString();
-	}
-
-
-	public boolean executeCommand(final String line) {
-		boolean success = super.executeCommand(line);
-		DSSObject obj = DSS.activeDSSObject;
-		if (obj != null)
-			setPromptPath(obj.getDSSClassName() + "." + obj.getName());
-		return success;
 	}
 
 	public static void main(String[] args) {

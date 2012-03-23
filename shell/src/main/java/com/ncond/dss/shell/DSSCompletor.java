@@ -116,7 +116,8 @@ public class DSSCompletor {
 
 				// command values
 				for (String cmd : ExecCommands.execCommand)
-					if (suitable(cmd, value)) candidates.add(cmd);
+					if (suitable(cmd, value) && cmd.charAt(0) != '_')
+						candidates.add(cmd);
 
 				/* If no dot this assumes its all object name, but
 				 * without a dot, we're completing a class name. */

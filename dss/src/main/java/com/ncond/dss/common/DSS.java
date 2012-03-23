@@ -194,7 +194,7 @@ public class DSS {
 	 * Set object active by name.
 	 */
 	public static void setObject(String param) {
-		String objName, objClass = null;
+		String objName, objClass = "";
 
 		// Split off obj class and name
 		int dotpos = param.indexOf(".");

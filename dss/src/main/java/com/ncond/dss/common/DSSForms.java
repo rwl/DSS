@@ -23,6 +23,8 @@ public interface DSSForms {
 
 	void showControlPanel();
 
+	void showHelpForm(String cmd);
+
 	void showHelpForm();
 
 	void showAboutBox();

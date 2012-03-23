@@ -412,14 +412,10 @@ public class ExecOptions {
 				DSS.doSimpleMsg("Unknown parameter \"" + paramName + "\" for set command ", 130);
 				break;
 			case 0:
-				DSSClassDefs.setObjectClass(param);
-				break;
 			case 11:
 				DSSClassDefs.setObjectClass(param);
 				break;
 			case 1:
-				DSS.setObject(param);
-				break;
 			case 12:
 				DSS.setObject(param);
 				break;
