@@ -98,7 +98,8 @@ public class DSSCompletor {
 		switch (keys.size()) {
 		case 0:
 			candidates.add(COMMAND_KEY);
-			Collections.addAll(candidates, ExecCommands.execCommand);
+			for (String cmd : ExecCommands.execCommand)
+				if (cmd.charAt(0) != '_') candidates.add(cmd);
 			// defaults to edit command
 			/*for (String name : DSS.classNames.toArray())  // too many
 				if (name != null) candidates.add(name);*/
@@ -116,7 +117,7 @@ public class DSSCompletor {
 
 				// command values
 				for (String cmd : ExecCommands.execCommand)
-					if (suitable(cmd, value) && cmd.charAt(0) != '_')
+					if (suitable(cmd, value))
 						candidates.add(cmd);
 
 				/* If no dot this assumes its all object name, but
