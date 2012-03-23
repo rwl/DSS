@@ -17,6 +17,7 @@
     <module>shell</module>
     <module>shell-jline</module>
     <module>shell-roo</module>
+    <module>bootstrap</module>
   </modules>
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -127,6 +128,11 @@
       <dependency>
         <groupId>com.ncond.dss</groupId>
           <artifactId>shell-roo</artifactId>
+          <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.ncond.dss</groupId>
+          <artifactId>bootstrap</artifactId>
           <version>${project.version}</version>
       </dependency>
       <!-- SuiteSparse dependencies -->

@@ -1,0 +1,59 @@
+<assembly>
+    <id>bin</id>
+    <formats>
+        <format>tar.gz</format>
+        <!-- <format>tar.bz2</format>
+        <format>zip</format>  -->
+    </formats>
+
+    <dependencySets>
+        <dependencySet>
+            <useProjectArtifact>false</useProjectArtifact>
+            <outputDirectory>lib</outputDirectory>
+            <unpack>false</unpack>
+        </dependencySet>
+    </dependencySets>
+
+    <fileSets>
+        <fileSet>
+          <!-- <directory>..</directory> -->
+          <includes>
+            <include>README</include>
+            <include>LICENSE</include>
+          </includes>
+	    </fileSet>
+        <fileSet>
+            <directory>src/bin</directory>
+            <outputDirectory></outputDirectory>
+            <includes>
+                <include>*.bat</include>
+            </includes>
+            <lineEnding>dos</lineEnding>
+        </fileSet>
+        <fileSet>
+            <directory>src/bin</directory>
+            <outputDirectory></outputDirectory>
+            <includes>
+                <include>*.sh</include>
+            </includes>
+            <lineEnding>unix</lineEnding>
+            <fileMode>0755</fileMode>
+        </fileSet>
+
+<!--         <fileSet>
+            <directory>${project.build.directory}</directory>
+            <outputDirectory></outputDirectory>
+            <includes>
+                <include>bootstrap*.jar</include>
+            </includes>
+        </fileSet>   -->
+    </fileSets>
+
+    <files>
+        <file>
+            <source>${project.build.directory}/${artifactId}-${version}.${packaging}</source>
+            <outputDirectory></outputDirectory>
+            <destName>bootstrap.jar</destName>
+        </file>
+    </files>
+</assembly>
