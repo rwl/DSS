@@ -582,6 +582,6 @@ public abstract class DSSJLineShell extends DSSAbstractShell implements  // ****
         }
 
         // The shellPrompt is now correct; let's ensure it now gets used
-        reader.setDefaultPrompt(AbstractShell.shellPrompt);
+        reader.setDefaultPrompt(DSSAbstractShell.shellPrompt);  // **** CHANGE FROM ORIGINAL ROO VERSION ****
     }
 }

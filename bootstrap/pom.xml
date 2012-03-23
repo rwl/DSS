@@ -28,7 +28,6 @@
     <plugins>
       <plugin>
         <artifactId>maven-assembly-plugin</artifactId>
-        <version>2.3</version>
         <configuration>
           <descriptors>
             <descriptor>src/main/assembly/bin.xml</descriptor>
@@ -48,7 +47,6 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-jar-plugin</artifactId>
-        <version>2.4</version>
         <configuration>
           <archive>
             <manifest>

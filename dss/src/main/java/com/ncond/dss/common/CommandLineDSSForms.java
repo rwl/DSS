@@ -8,6 +8,8 @@ package com.ncond.dss.common;
 import java.util.List;
 import java.util.Scanner;
 
+import com.ncond.dss.executive.ExecCommands;
+
 import lombok.extern.java.Log;
 
 @Log
@@ -61,7 +63,16 @@ public class CommandLineDSSForms implements DSSForms {
 	}
 
 	public void showHelpForm() {
+		int i, dotpos;
+		String cmd, help;
 
+		for (i = 0; i < ExecCommands.NumExecCommands; i++) {
+			cmd = ExecCommands.execCommand[i];
+			help = ExecCommands.commandHelp[i];
+			dotpos = help.indexOf('.');
+			if (dotpos >= 0) help = help.substring(0, dotpos + 1);
+			log.info("* " + cmd + " - " + help);
+		}
 	}
 
 	public void showAboutBox() {
