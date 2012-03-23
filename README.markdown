@@ -14,14 +14,21 @@ tools, including commercial products.
 Getting Started
 ---------------
 
-The DSS shell interface can be downloaded as an archive from here:
+The latest release of the DSS shell interface can be downloaded as an archive
+from here:
 
  * https://github.com/rwl/DSS/downloads
 
 Unpack the archive and execute either the batch file or the shell script,
-dependng on your system. Type `help` at the dss prompt for a description
+dependng on your system. Type `help` at the `dss>` prompt for a description
 of each the available commands. Type `help <command>` for a more
-detailed description of an individual command.
+detailed description of an individual command. Existing scripts of commands
+may be read using the `compile` command:
+
+    dss> compile /path/to/script.dss
+
+Check the `examples` sub-directory of the DSS archive for a selection of
+example scripts.
 
 Build and Install
 -----------------
@@ -56,7 +63,7 @@ License and Copyright
 ---------------------
 
 Copyright (C) 2008-2012 Electric Power Research Institute, Inc.  
-Copyright (C) 2009-2012 Richard Lincoln
+Copyright (C) 2009-2012 Richard Lincoln  
 All rights reserved.
 
     Redistribution and use in source and binary forms, with or without  
