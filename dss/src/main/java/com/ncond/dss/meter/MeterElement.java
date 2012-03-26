@@ -5,9 +5,6 @@
  */
 package com.ncond.dss.meter;
 
-import lombok.Getter;
-import lombok.Setter;
-
 import org.apache.commons.math.complex.Complex;
 
 import com.ncond.dss.common.CktElement;
@@ -15,7 +12,6 @@ import com.ncond.dss.common.DSSClass;
 import com.ncond.dss.common.DSSClassDefs;
 import com.ncond.dss.common.Util;
 
-@Getter @Setter
 abstract public class MeterElement extends CktElement {
 
 	protected String elementName;
@@ -111,6 +107,38 @@ abstract public class MeterElement extends CktElement {
 
 	public Complex[] getCalculatedVoltage() {
 		return calculatedVoltage;
+	}
+
+	public String getElementName() {
+		return elementName;
+	}
+
+	public void setElementName(String elementName) {
+		this.elementName = elementName;
+	}
+
+	public int getMeteredTerminalIdx() {
+		return meteredTerminalIdx;
+	}
+
+	public void setMeteredTerminalIdx(int meteredTerminalIdx) {
+		this.meteredTerminalIdx = meteredTerminalIdx;
+	}
+
+	public CktElement getMeteredElement() {
+		return meteredElement;
+	}
+
+	public double[] getPhsAllocationFactor() {
+		return phsAllocationFactor;
+	}
+
+	public void setMeteredElementChanged(boolean meteredElementChanged) {
+		this.meteredElementChanged = meteredElementChanged;
+	}
+
+	public void setMeteredElement(CktElement meteredElement) {
+		this.meteredElement = meteredElement;
 	}
 
 }

@@ -8,9 +8,6 @@ package com.ncond.dss.delivery;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 
-import lombok.Getter;
-import lombok.Setter;
-
 import org.apache.commons.math.complex.Complex;
 
 import com.ncond.dss.common.DSS;
@@ -23,7 +20,7 @@ import com.ncond.dss.parser.Parser;
 import com.ncond.dss.shared.CMatrix;
 import com.ncond.dss.shared.ComplexUtil;
 
-@Getter @Setter
+@SuppressWarnings("unused")
 public class TransformerObj extends PDElement {
 
 	private int deltaDirection;
@@ -1285,6 +1282,182 @@ public class TransformerObj extends PDElement {
 
 	public Winding getWinding(int idx) {
 		return windings[idx];
+	}
+
+	public int getNumWindings() {
+		return numWindings;
+	}
+
+	public double getNormMaxHKVA() {
+		return normMaxHKVA;
+	}
+
+	public double getEmergMaxHKVA() {
+		return emergMaxHKVA;
+	}
+
+	public double getNThermal() {
+		return nThermal;
+	}
+
+	public double getMThermal() {
+		return mThermal;
+	}
+
+	public double getFLRise() {
+		return FLRise;
+	}
+
+	public double getHSRise() {
+		return HSRise;
+	}
+
+	public int getActiveWindingIdx() {
+		return activeWindingIdx;
+	}
+
+	public double getPpmFloatFactor() {
+		return ppmFloatFactor;
+	}
+
+	public double getPctImag() {
+		return pctImag;
+	}
+
+	public double getXHL() {
+		return XHL;
+	}
+
+	public double getXHT() {
+		return XHT;
+	}
+
+	public double getXLT() {
+		return XLT;
+	}
+
+	public double getVABase() {
+		return VABase;
+	}
+
+	public CMatrix getZB() {
+		return ZB;
+	}
+
+	public CMatrix getY_1Volt() {
+		return Y_1Volt;
+	}
+
+	public CMatrix getY_Term() {
+		return Y_Term;
+	}
+
+	public CMatrix getY_1Volt_NL() {
+		return Y_1Volt_NL;
+	}
+
+	public CMatrix getY_Term_NL() {
+		return Y_Term_NL;
+	}
+
+	public double getThermalTimeConst() {
+		return thermalTimeConst;
+	}
+
+	public double getPctLoadLoss() {
+		return pctLoadLoss;
+	}
+
+	public double getPctNoLoadLoss() {
+		return pctNoLoadLoss;
+	}
+
+	public String getXfmrBank() {
+		return XfmrBank;
+	}
+
+	public String getXfmrCode() {
+		return XfmrCode;
+	}
+
+	public void setPpmFloatFactor(double ppmFloatFactor) {
+		this.ppmFloatFactor = ppmFloatFactor;
+	}
+
+	public void setPctImag(double pctImag) {
+		this.pctImag = pctImag;
+	}
+
+	public void setXHL(double xHL) {
+		XHL = xHL;
+	}
+
+	public void setNormMaxHKVA(double normMaxHKVA) {
+		this.normMaxHKVA = normMaxHKVA;
+	}
+
+	public void setEmergMaxHKVA(double emergMaxHKVA) {
+		this.emergMaxHKVA = emergMaxHKVA;
+	}
+
+	public void setThermalTimeConst(double thermalTimeConst) {
+		this.thermalTimeConst = thermalTimeConst;
+	}
+
+	public void setNThermal(double nThermal) {
+		this.nThermal = nThermal;
+	}
+
+	public void setMThermal(double mThermal) {
+		this.mThermal = mThermal;
+	}
+
+	public void setFLRise(double fLRise) {
+		FLRise = fLRise;
+	}
+
+	public void setHSRise(double hSRise) {
+		HSRise = hSRise;
+	}
+
+	public void setPctLoadLoss(double pctLoadLoss) {
+		this.pctLoadLoss = pctLoadLoss;
+	}
+
+	public void setPctNoLoadLoss(double pctNoLoadLoss) {
+		this.pctNoLoadLoss = pctNoLoadLoss;
+	}
+
+	public void setXHLChanged(boolean xHLChanged) {
+		XHLChanged = xHLChanged;
+	}
+
+	public void setActiveWindingIdx(int activeWindingIdx) {
+		this.activeWindingIdx = activeWindingIdx;
+	}
+
+	public void setSubstation(boolean isSubstation) {
+		this.isSubstation = isSubstation;
+	}
+
+	public void setSubstationName(String substationName) {
+		this.substationName = substationName;
+	}
+
+	public void setXfmrBank(String xfmrBank) {
+		XfmrBank = xfmrBank;
+	}
+
+	public void setXfmrCode(String xfmrCode) {
+		XfmrCode = xfmrCode;
+	}
+
+	public void setXHT(double xHT) {
+		XHT = xHT;
+	}
+
+	public void setXLT(double xLT) {
+		XLT = xLT;
 	}
 
 }

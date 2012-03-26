@@ -9,9 +9,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 
-import lombok.Getter;
-import lombok.Setter;
-
 import com.ncond.dss.common.DSS;
 import com.ncond.dss.common.DSSClassDefs;
 import com.ncond.dss.common.Util;
@@ -23,7 +20,6 @@ import com.ncond.dss.general.XYCurveObj;
 import com.ncond.dss.parser.Parser;
 import com.ncond.dss.shared.CommandList;
 
-@Getter @Setter
 public class PVSystem extends PCClass {
 
 	public static final int NumPVSystemRegisters = 5;  // number of energy meter registers

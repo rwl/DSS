@@ -9,9 +9,6 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 
-import lombok.Getter;
-import lombok.Setter;
-
 import com.ncond.dss.common.DSS;
 import com.ncond.dss.common.DSSClass;
 import com.ncond.dss.shared.MathUtil;
@@ -49,7 +46,6 @@ import com.ncond.dss.shared.MathUtil;
  *
  *
  */
-@Getter @Setter
 public class PriceShapeObj extends DSSObject {
 
 	private int lastValueAccessed, numPoints;  // number of points in curve
@@ -349,6 +345,42 @@ public class PriceShapeObj extends DSSObject {
 	public void setStdDev(double stddev) {
 		stdDevCalculated = true;
 		stdDev[0] = stddev;
+	}
+
+	public double[] getHours() {
+		return hours;
+	}
+
+	public void setHours(double[] hours) {
+		this.hours = hours;
+	}
+
+	public int getNumPoints() {
+		return numPoints;
+	}
+
+	public double getInterval() {
+		return interval;
+	}
+
+	public double[] getPriceValues() {
+		return priceValues;
+	}
+
+	public void setArrayPropertyIndex(int arrayPropertyIndex) {
+		this.arrayPropertyIndex = arrayPropertyIndex;
+	}
+
+	public void setInterval(double interval) {
+		this.interval = interval;
+	}
+
+	public void setPriceValues(double[] priceValues) {
+		this.priceValues = priceValues;
+	}
+
+	public void setStdDevCalculated(boolean stdDevCalculated) {
+		this.stdDevCalculated = stdDevCalculated;
 	}
 
 }

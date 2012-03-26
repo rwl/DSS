@@ -5,12 +5,8 @@
  */
 package com.ncond.dss.parser;
 
-import lombok.Getter;
-import lombok.Setter;
-
 import com.ncond.dss.common.DSS;
 
-@Getter @Setter
 public class Parser {
 
 	private static final char COMMENT_CHAR = '!';
@@ -574,6 +570,18 @@ public class Parser {
 
 	public void setPosition(int pos) {
 		position[0] = pos;
+	}
+
+	public String getDelimChars() {
+		return delimChars;
+	}
+
+	public void setDelimChars(String delimChars) {
+		this.delimChars = delimChars;
+	}
+
+	public String getCmdBuffer() {
+		return cmdBuffer;
 	}
 
 }

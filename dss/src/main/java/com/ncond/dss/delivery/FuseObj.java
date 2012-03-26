@@ -8,9 +8,6 @@ package com.ncond.dss.delivery;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 
-import lombok.Getter;
-import lombok.Setter;
-
 import org.apache.commons.math.complex.Complex;
 
 import com.ncond.dss.common.Circuit;
@@ -32,7 +29,6 @@ import com.ncond.dss.general.TCC_CurveObj;
  * CktElement to be controlled must already exist.
  *
  */
-@Getter @Setter
 public class FuseObj extends ControlElem {
 
 	private TCC_CurveObj fuseCurve;
@@ -314,6 +310,66 @@ public class FuseObj extends ControlElem {
 	@Override
 	public int injCurrents() {
 		throw new UnsupportedOperationException();
+	}
+
+	public TCC_CurveObj getFuseCurve() {
+		return fuseCurve;
+	}
+
+	public void setFuseCurve(TCC_CurveObj fuseCurve) {
+		this.fuseCurve = fuseCurve;
+	}
+
+	public String getMonitoredElementName() {
+		return monitoredElementName;
+	}
+
+	public void setMonitoredElementName(String monitoredElementName) {
+		this.monitoredElementName = monitoredElementName;
+	}
+
+	public int getMonitoredElementTerminalIdx() {
+		return monitoredElementTerminalIdx;
+	}
+
+	public void setMonitoredElementTerminalIdx(int monitoredElementTerminalIdx) {
+		this.monitoredElementTerminalIdx = monitoredElementTerminalIdx;
+	}
+
+	public double getRatedCurrent() {
+		return ratedCurrent;
+	}
+
+	public CktElement getMonitoredElement() {
+		return monitoredElement;
+	}
+
+	public ControlAction[] getPresentState() {
+		return presentState;
+	}
+
+	public int getCondOffset() {
+		return condOffset;
+	}
+
+	public void setDelayTime(double delayTime) {
+		this.delayTime = delayTime;
+	}
+
+	public void setRatedCurrent(double ratedCurrent) {
+		this.ratedCurrent = ratedCurrent;
+	}
+
+	public void setMonitoredElement(CktElement monitoredElement) {
+		this.monitoredElement = monitoredElement;
+	}
+
+	public void setPresentState(ControlAction[] presentState) {
+		this.presentState = presentState;
+	}
+
+	public void setCondOffset(int condOffset) {
+		this.condOffset = condOffset;
 	}
 
 }

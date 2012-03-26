@@ -8,9 +8,6 @@ package com.ncond.dss.conversion;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 
-import lombok.Getter;
-import lombok.Setter;
-
 import org.apache.commons.math.complex.Complex;
 
 import com.ncond.dss.common.DSS;
@@ -29,7 +26,6 @@ import com.ncond.dss.shared.ComplexUtil;
  * sequence, use three single-phase ISource.
  *
  */
-@Getter @Setter
 public class ISourceObj extends PCElement {
 
 	private double amps;
@@ -236,6 +232,54 @@ public class ISourceObj extends PCElement {
 			edit();
 		}
 		super.makePosSequence();
+	}
+
+	public double getAmps() {
+		return amps;
+	}
+
+	public void setAmps(double amps) {
+		this.amps = amps;
+	}
+
+	public double getAngle() {
+		return angle;
+	}
+
+	public void setAngle(double angle) {
+		this.angle = angle;
+	}
+
+	public double getPhaseShift() {
+		return phaseShift;
+	}
+
+	public void setPhaseShift(double phaseShift) {
+		this.phaseShift = phaseShift;
+	}
+
+	public SequenceType getScanType() {
+		return scanType;
+	}
+
+	public void setScanType(SequenceType scanType) {
+		this.scanType = scanType;
+	}
+
+	public SequenceType getSequenceType() {
+		return sequenceType;
+	}
+
+	public void setSequenceType(SequenceType sequenceType) {
+		this.sequenceType = sequenceType;
+	}
+
+	public double getSrcFrequency() {
+		return srcFrequency;
+	}
+
+	public void setSrcFrequency(double srcFrequency) {
+		this.srcFrequency = srcFrequency;
 	}
 
 }

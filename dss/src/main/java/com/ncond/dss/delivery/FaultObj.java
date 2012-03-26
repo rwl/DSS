@@ -8,9 +8,6 @@ package com.ncond.dss.delivery;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 
-import lombok.Getter;
-import lombok.Setter;
-
 import org.apache.commons.math.complex.Complex;
 
 import com.ncond.dss.common.DSS;
@@ -44,7 +41,6 @@ import com.ncond.dss.shared.MathUtil;
  * Fault may be designated as temporary. That is, after it is enabled, it will
  * disable itself if the fault current drops below the minAmps value.
  */
-@Getter @Setter
 public class FaultObj extends PDElement {
 
 	private double minAmps;
@@ -349,6 +345,74 @@ public class FaultObj extends PDElement {
 	@Override
 	public int injCurrents() {
 		throw new UnsupportedOperationException();
+	}
+
+	public double getMinAmps() {
+		return minAmps;
+	}
+
+	public void setMinAmps(double minAmps) {
+		this.minAmps = minAmps;
+	}
+
+	public boolean isTemporary() {
+		return isTemporary;
+	}
+
+	public void setTemporary(boolean isTemporary) {
+		this.isTemporary = isTemporary;
+	}
+
+	public boolean isCleared() {
+		return cleared;
+	}
+
+	public void setCleared(boolean cleared) {
+		this.cleared = cleared;
+	}
+
+	public double getOnTime() {
+		return onTime;
+	}
+
+	public void setOnTime(double onTime) {
+		this.onTime = onTime;
+	}
+
+	public double getG() {
+		return G;
+	}
+
+	public void setG(double g) {
+		G = g;
+	}
+
+	public double[] getGMatrix() {
+		return GMatrix;
+	}
+
+	public void setGMatrix(double[] gMatrix) {
+		GMatrix = gMatrix;
+	}
+
+	public int getSpecType() {
+		return specType;
+	}
+
+	public void setSpecType(int specType) {
+		this.specType = specType;
+	}
+
+	public boolean isOn() {
+		return isOn;
+	}
+
+	public void setStdDev(double stdDev) {
+		this.stdDev = stdDev;
+	}
+
+	public void setOn(boolean isOn) {
+		this.isOn = isOn;
 	}
 
 }

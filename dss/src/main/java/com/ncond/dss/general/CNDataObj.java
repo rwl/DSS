@@ -8,12 +8,8 @@ package com.ncond.dss.general;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 
-import lombok.Getter;
-import lombok.Setter;
-
 import com.ncond.dss.common.DSSClass;
 
-@Getter @Setter
 public class CNDataObj extends CableDataObj {
 
 	private int kStrand;
@@ -69,6 +65,38 @@ public class CNDataObj extends CableDataObj {
 		setPropertyValue(3, "-1");
 
 		super.initPropertyValues(arrayOffset + CNData.NumPropsThisClass);
+	}
+
+	public int getKStrand() {
+		return kStrand;
+	}
+
+	public void setKStrand(int kStrand) {
+		this.kStrand = kStrand;
+	}
+
+	public double getDiaStrand() {
+		return diaStrand;
+	}
+
+	public void setDiaStrand(double diaStrand) {
+		this.diaStrand = diaStrand;
+	}
+
+	public double getGmrStrand() {
+		return gmrStrand;
+	}
+
+	public void setGmrStrand(double gmrStrand) {
+		this.gmrStrand = gmrStrand;
+	}
+
+	public double getRStrand() {
+		return rStrand;
+	}
+
+	public void setRStrand(double rStrand) {
+		this.rStrand = rStrand;
 	}
 
 }

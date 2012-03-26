@@ -8,9 +8,6 @@ package com.ncond.dss.conversion;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 
-import lombok.Getter;
-import lombok.Setter;
-
 import org.apache.commons.math.complex.Complex;
 
 import com.ncond.dss.common.Circuit;
@@ -29,7 +26,6 @@ import com.ncond.dss.shared.CMatrix;
 import com.ncond.dss.shared.ComplexUtil;
 import com.ncond.dss.shared.MathUtil;
 
-@Getter @Setter
 public class LoadObj extends PCElement {
 
 	private static final Complex CDOUBLEONE = new Complex(1.0, 1.0);
@@ -1485,6 +1481,338 @@ public class LoadObj extends PCElement {
 
 	public boolean shapeIsActual() {
 		return shapeIsActual;
+	}
+
+	public double getAllocationFactor() {
+		return allocationFactor;
+	}
+
+	public double getKVAAllocationFactor() {
+		return kVAAllocationFactor;
+	}
+
+	public double getConnectedkVA() {
+		return connectedkVA;
+	}
+
+	public double getCFactor() {
+		return CFactor;
+	}
+
+	public Connection getConnection() {
+		return connection;
+	}
+
+	public String getDailyShape() {
+		return dailyShape;
+	}
+
+	public LoadShapeObj getDailyShapeObj() {
+		return dailyShapeObj;
+	}
+
+	public String getDutyShape() {
+		return dutyShape;
+	}
+
+	public LoadShapeObj getDutyShapeObj() {
+		return dutyShapeObj;
+	}
+
+	public double getEEN_Factor() {
+		return EEN_Factor;
+	}
+
+	public String getGrowthShape() {
+		return growthShape;
+	}
+
+	public Boolean getHasBeenAllocated() {
+		return hasBeenAllocated;
+	}
+
+	public double getKVABase() {
+		return kVABase;
+	}
+
+	public double getKVArBase() {
+		return kVArBase;
+	}
+
+	public double getKVLoadBase() {
+		return kVLoadBase;
+	}
+
+	public String getCVRShape() {
+		return CVRShape;
+	}
+
+	public LoadShapeObj getCVRShapeObj() {
+		return CVRShapeObj;
+	}
+
+	public int getNZIPV() {
+		return nZIPV;
+	}
+
+	public double getCVRwattFactor() {
+		return CVRwattFactor;
+	}
+
+	public double getCVRvarFactor() {
+		return CVRvarFactor;
+	}
+
+	public GrowthShapeObj getGrowthShapeObj() {
+		return growthShapeObj;
+	}
+
+	public double getKWBase() {
+		return kWBase;
+	}
+
+	public int getLoadClass() {
+		return loadClass;
+	}
+
+	public int getNumCustomers() {
+		return numCustomers;
+	}
+
+	public LoadSpecType getLoadSpecType() {
+		return loadSpecType;
+	}
+
+	public double getPFNominal() {
+		return PFNominal;
+	}
+
+	public LoadModel getLoadModel() {
+		return loadModel;
+	}
+
+	public double getVarNominal() {
+		return varNominal;
+	}
+
+	public double getVBase() {
+		return VBase;
+	}
+
+	public double getVBase105() {
+		return VBase105;
+	}
+
+	public double getVBase95() {
+		return VBase95;
+	}
+
+	public double getWNominal() {
+		return WNominal;
+	}
+
+	public double[] getZIPV() {
+		return ZIPV;
+	}
+
+	public double getVMaxPU() {
+		return VMaxPU;
+	}
+
+	public double getVMinPU() {
+		return VMinPU;
+	}
+
+	public boolean isExemptFromLDCurve() {
+		return exemptFromLDCurve;
+	}
+
+	public boolean isFixed() {
+		return fixed;
+	}
+
+	public double getRNeut() {
+		return RNeut;
+	}
+
+	public double getUE_Factor() {
+		return UE_Factor;
+	}
+
+	public double getXNeut() {
+		return XNeut;
+	}
+
+	public String getYearlyShape() {
+		return yearlyShape;
+	}
+
+	public LoadShapeObj getYearlyShapeObj() {
+		return yearlyShapeObj;
+	}
+
+	public void setConnection(Connection connection) {
+		this.connection = connection;
+	}
+
+	public void setCVRShape(String cVRShape) {
+		CVRShape = cVRShape;
+	}
+
+	public void setCVRShapeObj(LoadShapeObj cVRShapeObj) {
+		CVRShapeObj = cVRShapeObj;
+	}
+
+	public void setPFChanged(boolean pFChanged) {
+		PFChanged = pFChanged;
+	}
+
+	public void setCVRwattFactor(double cVRwattFactor) {
+		CVRwattFactor = cVRwattFactor;
+	}
+
+	public void setCVRvarFactor(double cVRvarFactor) {
+		CVRvarFactor = cVRvarFactor;
+	}
+
+	public void setExemptFromLDCurve(boolean exemptFromLDCurve) {
+		this.exemptFromLDCurve = exemptFromLDCurve;
+	}
+
+	public void setFixed(boolean fixed) {
+		this.fixed = fixed;
+	}
+
+	public void setDailyShape(String dailyShape) {
+		this.dailyShape = dailyShape;
+	}
+
+	public void setDailyShapeObj(LoadShapeObj dailyShapeObj) {
+		this.dailyShapeObj = dailyShapeObj;
+	}
+
+	public void setDutyShape(String dutyShape) {
+		this.dutyShape = dutyShape;
+	}
+
+	public void setDutyShapeObj(LoadShapeObj dutyShapeObj) {
+		this.dutyShapeObj = dutyShapeObj;
+	}
+
+	public void setEEN_Factor(double eEN_Factor) {
+		EEN_Factor = eEN_Factor;
+	}
+
+	public void setGrowthShape(String growthShape) {
+		this.growthShape = growthShape;
+	}
+
+	public void setGrowthShapeObj(GrowthShapeObj growthShapeObj) {
+		this.growthShapeObj = growthShapeObj;
+	}
+
+	public void setKWBase(double kWBase) {
+		this.kWBase = kWBase;
+	}
+
+	public void setKVABase(double kVABase) {
+		this.kVABase = kVABase;
+	}
+
+	public void setKVArBase(double kVArBase) {
+		this.kVArBase = kVArBase;
+	}
+
+	public void setKVLoadBase(double kVLoadBase) {
+		this.kVLoadBase = kVLoadBase;
+	}
+
+	public void setLoadClass(int loadClass) {
+		this.loadClass = loadClass;
+	}
+
+	public void setNumCustomers(int numCustomers) {
+		this.numCustomers = numCustomers;
+	}
+
+	public void setLoadSpecType(LoadSpecType loadSpecType) {
+		this.loadSpecType = loadSpecType;
+	}
+
+	public void setLoadModel(LoadModel loadModel) {
+		this.loadModel = loadModel;
+	}
+
+	public void setVarNominal(double varNominal) {
+		this.varNominal = varNominal;
+	}
+
+	public void setVBase(double vBase) {
+		VBase = vBase;
+	}
+
+	public void setVBase105(double vBase105) {
+		VBase105 = vBase105;
+	}
+
+	public void setVBase95(double vBase95) {
+		VBase95 = vBase95;
+	}
+
+	public void setWNominal(double wNominal) {
+		WNominal = wNominal;
+	}
+
+	public void setPuMean(double puMean) {
+		this.puMean = puMean;
+	}
+
+	public void setPuStdDev(double puStdDev) {
+		this.puStdDev = puStdDev;
+	}
+
+	public void setVMaxPU(double vMaxPU) {
+		VMaxPU = vMaxPU;
+	}
+
+	public void setVMinEmerg(double vMinEmerg) {
+		VMinEmerg = vMinEmerg;
+	}
+
+	public void setVMinNormal(double vMinNormal) {
+		VMinNormal = vMinNormal;
+	}
+
+	public void setVMinPU(double vMinPU) {
+		VMinPU = vMinPU;
+	}
+
+	public void setShapeIsActual(boolean shapeIsActual) {
+		this.shapeIsActual = shapeIsActual;
+	}
+
+	public void setPFNominal(double pFNominal) {
+		PFNominal = pFNominal;
+	}
+
+	public void setRNeut(double rNeut) {
+		RNeut = rNeut;
+	}
+
+	public void setUE_Factor(double uE_Factor) {
+		UE_Factor = uE_Factor;
+	}
+
+	public void setXNeut(double xNeut) {
+		XNeut = xNeut;
+	}
+
+	public void setYearlyShape(String yearlyShape) {
+		this.yearlyShape = yearlyShape;
+	}
+
+	public void setYearlyShapeObj(LoadShapeObj yearlyShapeObj) {
+		this.yearlyShapeObj = yearlyShapeObj;
 	}
 
 }

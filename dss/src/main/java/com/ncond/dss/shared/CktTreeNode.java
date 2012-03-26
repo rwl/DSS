@@ -5,13 +5,9 @@
  */
 package com.ncond.dss.shared;
 
-import lombok.Getter;
-import lombok.Setter;
-
 import com.ncond.dss.common.Util;
 import com.ncond.dss.general.DSSObject;
 
-@Getter @Setter
 public class CktTreeNode {
 
 	private PointerList childBranches;
@@ -125,6 +121,78 @@ public class CktTreeNode {
 
 	public DSSObject getNextObject() {
 		return (DSSObject) shuntObjects.getNext();
+	}
+
+	public int getLexicalLevel() {
+		return lexicalLevel;
+	}
+
+	public DSSObject getCktObject() {
+		return cktObject;
+	}
+
+	public int getFromBusReference() {
+		return fromBusReference;
+	}
+
+	public int getFromTerminalIdx() {
+		return fromTerminalIdx;
+	}
+
+	public Object getLoopLineObj() {
+		return loopLineObj;
+	}
+
+	public boolean isChildAdded() {
+		return childAdded;
+	}
+
+	public void setChildAdded(boolean childAdded) {
+		this.childAdded = childAdded;
+	}
+
+	public int getVoltBaseIndex() {
+		return voltBaseIndex;
+	}
+
+	public void setVoltBaseIndex(int voltBaseIndex) {
+		this.voltBaseIndex = voltBaseIndex;
+	}
+
+	public boolean isLoopedHere() {
+		return isLoopedHere;
+	}
+
+	public void setLoopedHere(boolean isLoopedHere) {
+		this.isLoopedHere = isLoopedHere;
+	}
+
+	public boolean isParallel() {
+		return isParallel;
+	}
+
+	public void setParallel(boolean isParallel) {
+		this.isParallel = isParallel;
+	}
+
+	public boolean isDangling() {
+		return isDangling;
+	}
+
+	public void setDangling(boolean isDangling) {
+		this.isDangling = isDangling;
+	}
+
+	public void setFromBusReference(int fromBusReference) {
+		this.fromBusReference = fromBusReference;
+	}
+
+	public void setFromTerminalIdx(int fromTerminalIdx) {
+		this.fromTerminalIdx = fromTerminalIdx;
+	}
+
+	public void setLoopLineObj(Object loopLineObj) {
+		this.loopLineObj = loopLineObj;
 	}
 
 }

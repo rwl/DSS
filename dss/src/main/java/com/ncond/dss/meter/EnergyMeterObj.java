@@ -12,9 +12,6 @@ import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.util.List;
 
-import lombok.Getter;
-import lombok.Setter;
-
 import org.apache.commons.math.complex.Complex;
 
 import com.ncond.dss.common.Bus;
@@ -71,7 +68,6 @@ import com.ncond.dss.shared.LineUnits;
  * Emergency min voltage must be less than normal min voltage.
  *
  */
-@Getter @Setter
 public class EnergyMeterObj extends MeterElement {
 
 	public static final int NumEMVbase = 7;
@@ -1781,6 +1777,130 @@ public class EnergyMeterObj extends MeterElement {
 
 	public boolean hasFeeder() {
 		return hasFeeder;
+	}
+
+	public boolean isExcessFlag() {
+		return excessFlag;
+	}
+
+	public boolean isLocalOnly() {
+		return localOnly;
+	}
+
+	public boolean isLosses() {
+		return losses;
+	}
+
+	public boolean isLineLosses() {
+		return lineLosses;
+	}
+
+	public boolean isPhaseVoltageReport() {
+		return phaseVoltageReport;
+	}
+
+	public String[] getDefinedZoneList() {
+		return definedZoneList;
+	}
+
+	public int getDefinedZoneListSize() {
+		return definedZoneListSize;
+	}
+
+	public double getMaxZoneKVANorm() {
+		return maxZoneKVANorm;
+	}
+
+	public double getMaxZoneKVAEmerg() {
+		return maxZoneKVAEmerg;
+	}
+
+	public String[] getRegisterNames() {
+		return registerNames;
+	}
+
+	public CktTree getBranchList() {
+		return branchList;
+	}
+
+	public boolean isVoltageUEOnly() {
+		return voltageUEOnly;
+	}
+
+	public void setVoltageUEOnly(boolean voltageUEOnly) {
+		this.voltageUEOnly = voltageUEOnly;
+	}
+
+	public boolean isXfmrLosses() {
+		return xfmrLosses;
+	}
+
+	public void setXfmrLosses(boolean xfmrLosses) {
+		this.xfmrLosses = xfmrLosses;
+	}
+
+	public boolean isSeqLosses() {
+		return seqLosses;
+	}
+
+	public void setSeqLosses(boolean seqLosses) {
+		this.seqLosses = seqLosses;
+	}
+
+	public boolean isThreePhaseLosses() {
+		return threePhaseLosses;
+	}
+
+	public void setThreePhaseLosses(boolean threePhaseLosses) {
+		this.threePhaseLosses = threePhaseLosses;
+	}
+
+	public boolean isVBaseLosses() {
+		return VBaseLosses;
+	}
+
+	public void setVBaseLosses(boolean vBaseLosses) {
+		VBaseLosses = vBaseLosses;
+	}
+
+	public void setExcessFlag(boolean excessFlag) {
+		this.excessFlag = excessFlag;
+	}
+
+	public void setZoneIsRadial(boolean zoneIsRadial) {
+		this.zoneIsRadial = zoneIsRadial;
+	}
+
+	public void setLocalOnly(boolean localOnly) {
+		this.localOnly = localOnly;
+	}
+
+	public void setLosses(boolean losses) {
+		this.losses = losses;
+	}
+
+	public void setLineLosses(boolean lineLosses) {
+		this.lineLosses = lineLosses;
+	}
+
+	public void setPhaseVoltageReport(boolean phaseVoltageReport) {
+		this.phaseVoltageReport = phaseVoltageReport;
+	}
+
+	public void setDefinedZoneList(String[] definedZoneList) {
+		this.definedZoneList = definedZoneList;
+	}
+
+	public void setDefinedZoneListSize(int definedZoneListSize) {
+		this.definedZoneListSize = definedZoneListSize;
+	}
+
+	public void setMaxZoneKVANorm(double maxZoneKVANorm) {
+		this.maxZoneKVANorm = maxZoneKVANorm;
+	}
+
+	public void setMaxZoneKVAEmerg(double maxZoneKVAEmerg) {
+		this.maxZoneKVAEmerg = maxZoneKVAEmerg;
 	}
 
 }

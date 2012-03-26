@@ -8,13 +8,9 @@ package com.ncond.dss.general;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 
-import lombok.Getter;
-import lombok.Setter;
-
 import com.ncond.dss.common.DSSClass;
 import com.ncond.dss.common.Util;
 
-@Getter @Setter
 abstract public class DSSObject extends NamedObject {
 
 	protected int propSeqCount;
@@ -145,6 +141,42 @@ abstract public class DSSObject extends NamedObject {
 
 	public String[] getPropertyValue() {
 		return propertyValues;
+	}
+
+	public int getObjType() {
+		return objType;
+	}
+
+	public int getClassIndex() {
+		return classIndex;
+	}
+
+	public DSSClass getParentClass() {
+		return parentClass;
+	}
+
+	public boolean isHasBeenSaved() {
+		return hasBeenSaved;
+	}
+
+	public void setHasBeenSaved(boolean hasBeenSaved) {
+		this.hasBeenSaved = hasBeenSaved;
+	}
+
+	public boolean isFlag() {
+		return flag;
+	}
+
+	public void setFlag(boolean flag) {
+		this.flag = flag;
+	}
+
+	public int[] getPrpSequence() {
+		return prpSequence;
+	}
+
+	public void setClassIndex(int classIndex) {
+		this.classIndex = classIndex;
 	}
 
 }

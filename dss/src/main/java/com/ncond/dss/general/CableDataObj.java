@@ -8,12 +8,8 @@ package com.ncond.dss.general;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 
-import lombok.Getter;
-import lombok.Setter;
-
 import com.ncond.dss.common.DSSClass;
 
-@Getter @Setter
 public class CableDataObj extends ConductorDataObj {
 
 	private double epsR;
@@ -68,6 +64,38 @@ public class CableDataObj extends ConductorDataObj {
 		setPropertyValue(arrayOffset + 4, "-1");
 
 		super.initPropertyValues(arrayOffset + 4);
+	}
+
+	public double getEpsR() {
+		return epsR;
+	}
+
+	public void setEpsR(double epsR) {
+		this.epsR = epsR;
+	}
+
+	public double getDiaIns() {
+		return diaIns;
+	}
+
+	public void setDiaIns(double diaIns) {
+		this.diaIns = diaIns;
+	}
+
+	public double getDiaCable() {
+		return diaCable;
+	}
+
+	public void setDiaCable(double diaCable) {
+		this.diaCable = diaCable;
+	}
+
+	public void setInsLayer(double insLayer) {
+		this.insLayer = insLayer;
+	}
+
+	public double getInsLayer() {
+		return insLayer;
 	}
 
 }

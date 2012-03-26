@@ -8,9 +8,6 @@ package com.ncond.dss.general;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 
-import lombok.Getter;
-import lombok.Setter;
-
 import org.apache.commons.math.complex.Complex;
 
 import com.ncond.dss.common.DSS;
@@ -24,7 +21,6 @@ import com.ncond.dss.shared.ComplexUtil;
  * Spectrum is shifted by the fundamental angle and stored in MultArray
  * so that the fundamental is at zero degrees phase shift.
  */
-@Getter @Setter
 public class SpectrumObj extends DSSObject {
 
 	private double[] puMagArray;
@@ -192,6 +188,38 @@ public class SpectrumObj extends DSSObject {
 
 	public double getHarmonic(int idx) {
 		return harmArray[idx];
+	}
+
+	public double[] getPuMagArray() {
+		return puMagArray;
+	}
+
+	public double[] getAngleArray() {
+		return angleArray;
+	}
+
+	public int getNumHarm() {
+		return numHarm;
+	}
+
+	public double[] getHarmArray() {
+		return harmArray;
+	}
+
+	public void setPuMagArray(double[] puMagArray) {
+		this.puMagArray = puMagArray;
+	}
+
+	public void setAngleArray(double[] angleArray) {
+		this.angleArray = angleArray;
+	}
+
+	public void setHarmArray(double[] harmArray) {
+		this.harmArray = harmArray;
+	}
+
+	public void setNumHarm(int numHarm) {
+		this.numHarm = numHarm;
 	}
 
 }

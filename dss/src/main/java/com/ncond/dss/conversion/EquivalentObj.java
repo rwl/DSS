@@ -8,9 +8,6 @@ package com.ncond.dss.conversion;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 
-import lombok.Getter;
-import lombok.Setter;
-
 import org.apache.commons.math.complex.Complex;
 
 import com.ncond.dss.common.DSS;
@@ -22,7 +19,6 @@ import com.ncond.dss.parser.Parser;
 import com.ncond.dss.shared.CMatrix;
 import com.ncond.dss.shared.ComplexUtil;
 
-@Getter @Setter
 public class EquivalentObj extends PCElement {
 
 	private double kVBase;
@@ -366,6 +362,78 @@ public class EquivalentObj extends PCElement {
 		X1 = Util.resizeArray(X1, (int) Math.pow(nTerms, 2));
 		R0 = Util.resizeArray(R0, (int) Math.pow(nTerms, 2));
 		X0 = Util.resizeArray(X0, (int) Math.pow(nTerms, 2));
+	}
+
+	public double getKVBase() {
+		return kVBase;
+	}
+
+	public void setKVBase(double kVBase) {
+		this.kVBase = kVBase;
+	}
+
+	public double getPerUnit() {
+		return perUnit;
+	}
+
+	public void setPerUnit(double perUnit) {
+		this.perUnit = perUnit;
+	}
+
+	public double getAngle() {
+		return angle;
+	}
+
+	public void setAngle(double angle) {
+		this.angle = angle;
+	}
+
+	public double getEquivFrequency() {
+		return equivFrequency;
+	}
+
+	public void setEquivFrequency(double equivFrequency) {
+		this.equivFrequency = equivFrequency;
+	}
+
+	public CMatrix getZ() {
+		return Z;
+	}
+
+	public void setZ(CMatrix z) {
+		Z = z;
+	}
+
+	public double getVmag() {
+		return Vmag;
+	}
+
+	public double[] getR1() {
+		return R1;
+	}
+
+	public double[] getX1() {
+		return X1;
+	}
+
+	public double[] getR0() {
+		return R0;
+	}
+
+	public double[] getX0() {
+		return X0;
+	}
+
+	public void setNeedToDoRecalc(boolean needToDoRecalc) {
+		this.needToDoRecalc = needToDoRecalc;
+	}
+
+	public void setZinv(CMatrix zinv) {
+		Zinv = zinv;
+	}
+
+	public void setVmag(double vmag) {
+		Vmag = vmag;
 	}
 
 }

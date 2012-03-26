@@ -8,13 +8,9 @@ package com.ncond.dss.general;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 
-import lombok.Getter;
-import lombok.Setter;
-
 import com.ncond.dss.common.DSSClass;
 import com.ncond.dss.shared.LineUnits;
 
-@Getter @Setter
 public class LineSpacingObj extends DSSObject {
 
 	private int nConds;
@@ -22,7 +18,7 @@ public class LineSpacingObj extends DSSObject {
 	private double[] X;
 	private double[] Y;
 	private LineUnits units;
-	private boolean dataChanged;
+	@SuppressWarnings("unused") private boolean dataChanged;
 
 	public LineSpacingObj(DSSClass parClass, String lineSpacingName) {
 		super(parClass);
@@ -114,6 +110,30 @@ public class LineSpacingObj extends DSSObject {
 
 	public int getNWires() {
 		return nConds;
+	}
+
+	public int getNPhases() {
+		return nPhases;
+	}
+
+	public void setNPhases(int nPhases) {
+		this.nPhases = nPhases;
+	}
+
+	public LineUnits getUnits() {
+		return units;
+	}
+
+	public void setUnits(LineUnits units) {
+		this.units = units;
+	}
+
+	public int getNConds() {
+		return nConds;
+	}
+
+	public void setDataChanged(boolean dataChanged) {
+		this.dataChanged = dataChanged;
 	}
 
 }

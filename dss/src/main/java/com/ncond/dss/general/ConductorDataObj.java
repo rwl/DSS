@@ -8,9 +8,6 @@ package com.ncond.dss.general;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 
-import lombok.Getter;
-import lombok.Setter;
-
 import com.ncond.dss.common.DSSClass;
 import com.ncond.dss.shared.LineUnits;
 
@@ -26,7 +23,6 @@ import com.ncond.dss.shared.LineUnits;
  * Then the values of that code can be retrieved via the public variables.
  *
  */
-@Getter @Setter
 public class ConductorDataObj extends DSSObject {
 
 	private double Rdc;
@@ -116,6 +112,78 @@ public class ConductorDataObj extends DSSObject {
 		setPropertyValue(arrayOffset + 10, "-1");
 
 		super.initPropertyValues(arrayOffset + 10);
+	}
+
+	public double getR60() {
+		return R60;
+	}
+
+	public double getGmr60() {
+		return gmr60;
+	}
+
+	public double getRadius() {
+		return radius;
+	}
+
+	public LineUnits getGmrUnits() {
+		return gmrUnits;
+	}
+
+	public double getNormAmps() {
+		return normAmps;
+	}
+
+	public double getEmergAmps() {
+		return emergAmps;
+	}
+
+	public double getRdc() {
+		return Rdc;
+	}
+
+	public void setRdc(double rdc) {
+		Rdc = rdc;
+	}
+
+	public LineUnits getResistanceUnits() {
+		return resistanceUnits;
+	}
+
+	public void setResistanceUnits(LineUnits resistanceUnits) {
+		this.resistanceUnits = resistanceUnits;
+	}
+
+	public LineUnits getRadiusUnits() {
+		return radiusUnits;
+	}
+
+	public void setRadiusUnits(LineUnits radiusUnits) {
+		this.radiusUnits = radiusUnits;
+	}
+
+	public void setR60(double r60) {
+		R60 = r60;
+	}
+
+	public void setGmr60(double gmr60) {
+		this.gmr60 = gmr60;
+	}
+
+	public void setRadius(double radius) {
+		this.radius = radius;
+	}
+
+	public void setGmrUnits(LineUnits gmrUnits) {
+		this.gmrUnits = gmrUnits;
+	}
+
+	public void setNormAmps(double normAmps) {
+		this.normAmps = normAmps;
+	}
+
+	public void setEmergAmps(double emergAmps) {
+		this.emergAmps = emergAmps;
 	}
 
 }

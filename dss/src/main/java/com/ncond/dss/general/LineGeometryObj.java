@@ -8,9 +8,6 @@ package com.ncond.dss.general;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 
-import lombok.Getter;
-import lombok.Setter;
-
 import com.ncond.dss.common.DSS;
 import com.ncond.dss.common.DSSClass;
 import com.ncond.dss.common.Util;
@@ -30,7 +27,6 @@ import com.ncond.dss.shared.LineUnits;
  * Then the values of that code can be retrieved via the public variables.
  *
  */
-@Getter @Setter
 public class LineGeometryObj extends DSSObject {
 
 	private ConductorChoice phaseChoice;
@@ -482,6 +478,62 @@ public class LineGeometryObj extends DSSObject {
 
 	public void setCondName(int idx, String val) {
 		condNames[idx] = val;
+	}
+
+	public LineUnits getLastUnit() {
+		return lastUnit;
+	}
+
+	public void setLastUnit(LineUnits lastUnit) {
+		this.lastUnit = lastUnit;
+	}
+
+	public String getSpacingType() {
+		return spacingType;
+	}
+
+	public void setSpacingType(String spacingType) {
+		this.spacingType = spacingType;
+	}
+
+	public double getNormAmps() {
+		return normAmps;
+	}
+
+	public void setNormAmps(double normAmps) {
+		this.normAmps = normAmps;
+	}
+
+	public double getEmergAmps() {
+		return emergAmps;
+	}
+
+	public void setEmergAmps(double emergAmps) {
+		this.emergAmps = emergAmps;
+	}
+
+	public ConductorChoice getPhaseChoice() {
+		return phaseChoice;
+	}
+
+	public int getNPhases() {
+		return nPhases;
+	}
+
+	public int getActiveCondIdx() {
+		return activeCondIdx;
+	}
+
+	public void setDataChanged(boolean dataChanged) {
+		this.dataChanged = dataChanged;
+	}
+
+	public void setReduce(boolean reduce) {
+		this.reduce = reduce;
+	}
+
+	public void setPhaseChoice(ConductorChoice phaseChoice) {
+		this.phaseChoice = phaseChoice;
 	}
 
 }

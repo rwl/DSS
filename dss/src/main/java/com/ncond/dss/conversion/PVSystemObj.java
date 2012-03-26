@@ -11,9 +11,6 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 
-import lombok.Getter;
-import lombok.Setter;
-
 import org.apache.commons.math.complex.Complex;
 
 import com.ncond.dss.common.Circuit;
@@ -45,7 +42,7 @@ import com.ncond.dss.shared.MathUtil;
  *   Define state vars and dynamics mode behavior
  *   Complete harmonics mode algorithm (generator mode is implemented)
  */
-@Getter @Setter
+@SuppressWarnings("unused")
 public class PVSystemObj extends PCElement {
 
 	private static final Complex CDOUBLEONE = new Complex(1.0, 1.0);
@@ -1318,6 +1315,342 @@ public class PVSystemObj extends PCElement {
 
 	public double getPowerFactor() {
 		return PFNominal;
+	}
+
+	public double getKVARating() {
+		return kVARating;
+	}
+
+	public double getKVPVSystemBase() {
+		return kVPVSystemBase;
+	}
+
+	public double getKVArOut() {
+		return kVArOut;
+	}
+
+	public double getKWOut() {
+		return kWOut;
+	}
+
+	public double getPanelKW() {
+		return panelKW;
+	}
+
+	public double getIrradiance() {
+		return irradiance;
+	}
+
+	public double getTemperature() {
+		return temperature;
+	}
+
+	public double getEffFactor() {
+		return effFactor;
+	}
+
+	public double getTempFactor() {
+		return tempFactor;
+	}
+
+	public double getPctCutIn() {
+		return pctCutIn;
+	}
+
+	public double getPctCutOut() {
+		return pctCutOut;
+	}
+
+	public double getPctR() {
+		return pctR;
+	}
+
+	public double getPctX() {
+		return pctX;
+	}
+
+	public double getPNominalPerPhase() {
+		return PNominalPerPhase;
+	}
+
+	public double getQNominalPerPhase() {
+		return QNominalPerPhase;
+	}
+
+	public double getRandomMult() {
+		return randomMult;
+	}
+
+	public Connection getConnection() {
+		return connection;
+	}
+
+	public String getDailyShape() {
+		return dailyShape;
+	}
+
+	public LoadShapeObj getDailyShapeObj() {
+		return dailyShapeObj;
+	}
+
+	public String getDutyShape() {
+		return dutyShape;
+	}
+
+	public LoadShapeObj getDutyShapeObj() {
+		return dutyShapeObj;
+	}
+
+	public String getDailyTShape() {
+		return dailyTShape;
+	}
+
+	public TempShapeObj getDailyTShapeObj() {
+		return dailyTShapeObj;
+	}
+
+	public String getDutyTShape() {
+		return dutyTShape;
+	}
+
+	public TempShapeObj getDutyTShapeObj() {
+		return dutyTShapeObj;
+	}
+
+	public String getInverterCurve() {
+		return inverterCurve;
+	}
+
+	public XYCurveObj getInverterCurveObj() {
+		return inverterCurveObj;
+	}
+
+	public String getPowerTempCurve() {
+		return powerTempCurve;
+	}
+
+	public XYCurveObj getPowerTempCurveObj() {
+		return powerTempCurveObj;
+	}
+
+	public int getFClass() {
+		return FClass;
+	}
+
+	public boolean isDebugTrace() {
+		return debugTrace;
+	}
+
+	public PVSystemUserModel getUserModel() {
+		return userModel;
+	}
+
+	public double getVBase() {
+		return VBase;
+	}
+
+	public double getVBase105() {
+		return VBase105;
+	}
+
+	public double getVBase95() {
+		return VBase95;
+	}
+
+	public double getVMaxPU() {
+		return VMaxPU;
+	}
+
+	public double getVMinPU() {
+		return VMinPU;
+	}
+
+	public String getYearlyShape() {
+		return yearlyShape;
+	}
+
+	public LoadShapeObj getYearlyShapeObj() {
+		return yearlyShapeObj;
+	}
+
+	public String getYearlyTShape() {
+		return yearlyTShape;
+	}
+
+	public TempShapeObj getYearlyTShapeObj() {
+		return yearlyTShapeObj;
+	}
+
+	public PVSystemModel getVoltageModel() {
+		return voltageModel;
+	}
+
+	public double getPmpp() {
+		return Pmpp;
+	}
+
+	public void setDebugTrace(boolean debugTrace) {
+		this.debugTrace = debugTrace;
+	}
+
+	public void setKVArSpecified(boolean kVArSpecified) {
+		this.kVArSpecified = kVArSpecified;
+	}
+
+	public void setKVARating(double kVARating) {
+		this.kVARating = kVARating;
+	}
+
+	public void setIrradiance(double irradiance) {
+		this.irradiance = irradiance;
+	}
+
+	public void setPctCutIn(double pctCutIn) {
+		this.pctCutIn = pctCutIn;
+	}
+
+	public void setPctCutOut(double pctCutOut) {
+		this.pctCutOut = pctCutOut;
+	}
+
+	public void setConnection(Connection connection) {
+		this.connection = connection;
+	}
+
+	public void setDailyShape(String dailyShape) {
+		this.dailyShape = dailyShape;
+	}
+
+	public void setDailyShapeObj(LoadShapeObj dailyShapeObj) {
+		this.dailyShapeObj = dailyShapeObj;
+	}
+
+	public void setDutyShape(String dutyShape) {
+		this.dutyShape = dutyShape;
+	}
+
+	public void setDutyShapeObj(LoadShapeObj dutyShapeObj) {
+		this.dutyShapeObj = dutyShapeObj;
+	}
+
+	public void setDailyTShape(String dailyTShape) {
+		this.dailyTShape = dailyTShape;
+	}
+
+	public void setDailyTShapeObj(TempShapeObj dailyTShapeObj) {
+		this.dailyTShapeObj = dailyTShapeObj;
+	}
+
+	public void setDutyTShape(String dutyTShape) {
+		this.dutyTShape = dutyTShape;
+	}
+
+	public void setDutyTShapeObj(TempShapeObj dutyTShapeObj) {
+		this.dutyTShapeObj = dutyTShapeObj;
+	}
+
+	public void setInverterCurve(String inverterCurve) {
+		this.inverterCurve = inverterCurve;
+	}
+
+	public void setInverterCurveObj(XYCurveObj inverterCurveObj) {
+		this.inverterCurveObj = inverterCurveObj;
+	}
+
+	public void setFClass(int fClass) {
+		FClass = fClass;
+	}
+
+	public void setPFSpecified(boolean pFSpecified) {
+		PFSpecified = pFSpecified;
+	}
+
+	public void setTemperature(double temperature) {
+		this.temperature = temperature;
+	}
+
+	public void setPmpp(double pmpp) {
+		Pmpp = pmpp;
+	}
+
+	public void setPctR(double pctR) {
+		this.pctR = pctR;
+	}
+
+	public void setPctX(double pctX) {
+		this.pctX = pctX;
+	}
+
+	public void setPNominalPerPhase(double pNominalPerPhase) {
+		PNominalPerPhase = pNominalPerPhase;
+	}
+
+	public void setQNominalPerPhase(double qNominalPerPhase) {
+		QNominalPerPhase = qNominalPerPhase;
+	}
+
+	public void setRandomMult(double randomMult) {
+		this.randomMult = randomMult;
+	}
+
+	public void setVBase(double vBase) {
+		VBase = vBase;
+	}
+
+	public void setVBase105(double vBase105) {
+		VBase105 = vBase105;
+	}
+
+	public void setVBase95(double vBase95) {
+		VBase95 = vBase95;
+	}
+
+	public void setVMaxPU(double vMaxPU) {
+		VMaxPU = vMaxPU;
+	}
+
+	public void setVMinPU(double vMinPU) {
+		VMinPU = vMinPU;
+	}
+
+	public void setYearlyShape(String yearlyShape) {
+		this.yearlyShape = yearlyShape;
+	}
+
+	public void setYearlyShapeObj(LoadShapeObj yearlyShapeObj) {
+		this.yearlyShapeObj = yearlyShapeObj;
+	}
+
+	public void setYearlyTShape(String yearlyTShape) {
+		this.yearlyTShape = yearlyTShape;
+	}
+
+	public void setYearlyTShapeObj(TempShapeObj yearlyTShapeObj) {
+		this.yearlyTShapeObj = yearlyTShapeObj;
+	}
+
+	public void setPowerTempCurve(String powerTempCurve) {
+		this.powerTempCurve = powerTempCurve;
+	}
+
+	public void setPowerTempCurveObj(XYCurveObj powerTempCurveObj) {
+		this.powerTempCurveObj = powerTempCurveObj;
+	}
+
+	public void setVoltageModel(PVSystemModel voltageModel) {
+		this.voltageModel = voltageModel;
+	}
+
+	public void setKVPVSystemBase(double kVPVSystemBase) {
+		this.kVPVSystemBase = kVPVSystemBase;
+	}
+
+	public void setKVArOut(double kVArOut) {
+		this.kVArOut = kVArOut;
+	}
+
+	public void setKWOut(double kWOut) {
+		this.kWOut = kWOut;
 	}
 
 }

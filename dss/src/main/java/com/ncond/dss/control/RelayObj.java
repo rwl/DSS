@@ -8,9 +8,6 @@ package com.ncond.dss.control;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 
-import lombok.Getter;
-import lombok.Setter;
-
 import org.apache.commons.math.complex.Complex;
 
 import com.ncond.dss.common.Circuit;
@@ -50,7 +47,6 @@ import com.ncond.dss.shared.MathUtil;
  * set time after the voltage comes back in the normal range.
  *
  */
-@Getter @Setter
 public class RelayObj extends ControlElem {
 
 	private RelayControlType controlType;
@@ -883,6 +879,254 @@ public class RelayObj extends ControlElem {
 	@Override
 	public int injCurrents() {
 		throw new UnsupportedOperationException();
+	}
+
+	public RelayControlType getControlType() {
+		return controlType;
+	}
+
+	public TCC_CurveObj getPhaseCurve() {
+		return phaseCurve;
+	}
+
+	public TCC_CurveObj getGroundCurve() {
+		return groundCurve;
+	}
+
+	public double getPhaseTrip() {
+		return phaseTrip;
+	}
+
+	public double getGroundTrip() {
+		return groundTrip;
+	}
+
+	public double getPhaseInst() {
+		return phaseInst;
+	}
+
+	public double getGroundInst() {
+		return groundInst;
+	}
+
+	public double[] getRecloseIntervals() {
+		return recloseIntervals;
+	}
+
+	public int getNumReclose() {
+		return numReclose;
+	}
+
+	public double getResetTime() {
+		return resetTime;
+	}
+
+	public double getDelayTime() {
+		return delayTime;
+	}
+
+	public double getTDPhase() {
+		return TDPhase;
+	}
+
+	public double getTDGround() {
+		return TDGround;
+	}
+
+	public TCC_CurveObj getOVCurve() {
+		return OVCurve;
+	}
+
+	public TCC_CurveObj getUVCurve() {
+		return UVCurve;
+	}
+
+	public double getKVBase() {
+		return kVBase;
+	}
+
+	public double getPickupAmps46() {
+		return pickupAmps46;
+	}
+
+	public double getPctPickup46() {
+		return pctPickup46;
+	}
+
+	public double getBaseAmps46() {
+		return baseAmps46;
+	}
+
+	public double getIsqt46() {
+		return isqt46;
+	}
+
+	public double getPickupVolts47() {
+		return pickupVolts47;
+	}
+
+	public double getPctPickup47() {
+		return pctPickup47;
+	}
+
+	public double getOverTrip() {
+		return overTrip;
+	}
+
+	public double getUnderTrip() {
+		return underTrip;
+	}
+
+	public String getMonitoredElementName() {
+		return monitoredElementName;
+	}
+
+	public int getMonitoredElementTerminalIdx() {
+		return monitoredElementTerminalIdx;
+	}
+
+	public CktElement getMonitoredElement() {
+		return monitoredElement;
+	}
+
+	public ControlAction getPresentState() {
+		return presentState;
+	}
+
+	public boolean isLockedOut() {
+		return lockedOut;
+	}
+
+	public int getCondOffset() {
+		return condOffset;
+	}
+
+	public double getBreakerTime() {
+		return breakerTime;
+	}
+
+	public void setBreakerTime(double breakerTime) {
+		this.breakerTime = breakerTime;
+	}
+
+	public void setControlType(RelayControlType controlType) {
+		this.controlType = controlType;
+	}
+
+	public void setPhaseCurve(TCC_CurveObj phaseCurve) {
+		this.phaseCurve = phaseCurve;
+	}
+
+	public void setGroundCurve(TCC_CurveObj groundCurve) {
+		this.groundCurve = groundCurve;
+	}
+
+	public void setPhaseTrip(double phaseTrip) {
+		this.phaseTrip = phaseTrip;
+	}
+
+	public void setGroundTrip(double groundTrip) {
+		this.groundTrip = groundTrip;
+	}
+
+	public void setPhaseInst(double phaseInst) {
+		this.phaseInst = phaseInst;
+	}
+
+	public void setGroundInst(double groundInst) {
+		this.groundInst = groundInst;
+	}
+
+	public void setNumReclose(int numReclose) {
+		this.numReclose = numReclose;
+	}
+
+	public void setDelayTime(double delayTime) {
+		this.delayTime = delayTime;
+	}
+
+	public void setOVCurve(TCC_CurveObj oVCurve) {
+		OVCurve = oVCurve;
+	}
+
+	public void setKVBase(double kVBase) {
+		this.kVBase = kVBase;
+	}
+
+	public void setPickupAmps46(double pickupAmps46) {
+		this.pickupAmps46 = pickupAmps46;
+	}
+
+	public void setPctPickup46(double pctPickup46) {
+		this.pctPickup46 = pctPickup46;
+	}
+
+	public void setBaseAmps46(double baseAmps46) {
+		this.baseAmps46 = baseAmps46;
+	}
+
+	public void setIsqt46(double isqt46) {
+		this.isqt46 = isqt46;
+	}
+
+	public void setPickupVolts47(double pickupVolts47) {
+		this.pickupVolts47 = pickupVolts47;
+	}
+
+	public void setPctPickup47(double pctPickup47) {
+		this.pctPickup47 = pctPickup47;
+	}
+
+	public void setOverTrip(double overTrip) {
+		this.overTrip = overTrip;
+	}
+
+	public void setMonitoredElementName(String monitoredElementName) {
+		this.monitoredElementName = monitoredElementName;
+	}
+
+	public void setMonitoredElementTerminalIdx(int monitoredElementTerminalIdx) {
+		this.monitoredElementTerminalIdx = monitoredElementTerminalIdx;
+	}
+
+	public void setMonitoredElement(CktElement monitoredElement) {
+		this.monitoredElement = monitoredElement;
+	}
+
+	public void setLockedOut(boolean lockedOut) {
+		this.lockedOut = lockedOut;
+	}
+
+	public void setCondOffset(int condOffset) {
+		this.condOffset = condOffset;
+	}
+
+	public void setRecloseIntervals(double[] recloseIntervals) {
+		this.recloseIntervals = recloseIntervals;
+	}
+
+	public void setResetTime(double resetTime) {
+		this.resetTime = resetTime;
+	}
+
+	public void setTDPhase(double tDPhase) {
+		TDPhase = tDPhase;
+	}
+
+	public void setTDGround(double tDGround) {
+		TDGround = tDGround;
+	}
+
+	public void setUVCurve(TCC_CurveObj uVCurve) {
+		UVCurve = uVCurve;
+	}
+
+	public void setUnderTrip(double underTrip) {
+		this.underTrip = underTrip;
+	}
+
+	public void setPresentState(ControlAction presentState) {
+		this.presentState = presentState;
 	}
 
 }

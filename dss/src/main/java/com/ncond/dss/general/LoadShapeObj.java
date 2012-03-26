@@ -9,9 +9,6 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 
-import lombok.Getter;
-import lombok.Setter;
-
 import org.apache.commons.math.complex.Complex;
 
 import com.ncond.dss.common.DSS;
@@ -59,7 +56,6 @@ import com.ncond.dss.shared.MathUtil;
  * that the maximum value is 1.0.
  *
  */
-@Getter @Setter
 public class LoadShapeObj extends DSSObject {
 
 	private int lastValueAccessed;
@@ -521,6 +517,86 @@ public class LoadShapeObj extends DSSObject {
 
 	public void setHour(int idx, double val) {
 		hours[idx] = val;
+	}
+
+	public int getNumPoints() {
+		return numPoints;
+	}
+
+	public double[] getHours() {
+		return hours;
+	}
+
+	public double getMaxP() {
+		return maxP;
+	}
+
+	public double getMaxQ() {
+		return maxQ;
+	}
+
+	public double getBaseP() {
+		return baseP;
+	}
+
+	public double getBaseQ() {
+		return baseQ;
+	}
+
+	public double[] getPMultipliers() {
+		return PMultipliers;
+	}
+
+	public double[] getQMultipliers() {
+		return QMultipliers;
+	}
+
+	public boolean isUseActual() {
+		return useActual;
+	}
+
+	public void setArrayPropertyIndex(int arrayPropertyIndex) {
+		this.arrayPropertyIndex = arrayPropertyIndex;
+	}
+
+	public void setInterval(double interval) {
+		this.interval = interval;
+	}
+
+	public void setHours(double[] hours) {
+		this.hours = hours;
+	}
+
+	public void setPMultipliers(double[] pMultipliers) {
+		PMultipliers = pMultipliers;
+	}
+
+	public void setQMultipliers(double[] qMultipliers) {
+		QMultipliers = qMultipliers;
+	}
+
+	public void setMaxP(double maxP) {
+		this.maxP = maxP;
+	}
+
+	public void setMaxQ(double maxQ) {
+		this.maxQ = maxQ;
+	}
+
+	public void setBaseP(double baseP) {
+		this.baseP = baseP;
+	}
+
+	public void setBaseQ(double baseQ) {
+		this.baseQ = baseQ;
+	}
+
+	public void setUseActual(boolean useActual) {
+		this.useActual = useActual;
+	}
+
+	public void setStdDevCalculated(boolean stdDevCalculated) {
+		this.stdDevCalculated = stdDevCalculated;
 	}
 
 }

@@ -5,15 +5,11 @@
  */
 package com.ncond.dss.control;
 
-import lombok.Getter;
-import lombok.Setter;
-
 import com.ncond.dss.common.Bus;
 import com.ncond.dss.common.CktElement;
 import com.ncond.dss.common.DSSClass;
 import com.ncond.dss.common.DSSClassDefs;
 
-@Getter @Setter
 abstract public class ControlElem extends CktElement {
 
 	public static final double USER_BASE_ACTION_CODE = 100;
@@ -65,6 +61,58 @@ abstract public class ControlElem extends CktElement {
 				controlledElement.setControlElement(this);
 			}
 		}
+	}
+
+	public CktElement getControlledElement() {
+		return controlledElement;
+	}
+
+	public String getElementName() {
+		return elementName;
+	}
+
+	public void setElementName(String elementName) {
+		this.elementName = elementName;
+	}
+
+	public int getElementTerminalIdx() {
+		return elementTerminalIdx;
+	}
+
+	public void setElementTerminalIdx(int elementTerminalIdx) {
+		this.elementTerminalIdx = elementTerminalIdx;
+	}
+
+	public String getMonitorVariable() {
+		return monitorVariable;
+	}
+
+	public double getTimeDelay() {
+		return timeDelay;
+	}
+
+	public double getTraceParameter() {
+		return traceParameter;
+	}
+
+	public boolean isShowEventLog() {
+		return showEventLog;
+	}
+
+	public void setMonitorVariable(String monitorVariable) {
+		this.monitorVariable = monitorVariable;
+	}
+
+	public void setTimeDelay(double timeDelay) {
+		this.timeDelay = timeDelay;
+	}
+
+	public void setTraceParameter(double traceParameter) {
+		this.traceParameter = traceParameter;
+	}
+
+	public void setShowEventLog(boolean showEventLog) {
+		this.showEventLog = showEventLog;
 	}
 
 }

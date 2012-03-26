@@ -12,9 +12,6 @@ import java.io.FileWriter;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 
-import lombok.Getter;
-import lombok.Setter;
-
 import org.apache.commons.math.complex.Complex;
 
 import com.ncond.dss.common.CktElement;
@@ -83,7 +80,7 @@ import com.ncond.dss.shared.MathUtil;
  *  +64: Pos Seq only or average of phases
  *
  */
-@Getter @Setter
+@SuppressWarnings("unused")
 public class MonitorObj extends MeterElement {
 
 	private static StringBuffer strBuffer = new StringBuffer();
@@ -882,6 +879,38 @@ public class MonitorObj extends MeterElement {
 	@Override
 	public int injCurrents() {
 		throw new UnsupportedOperationException();
+	}
+
+	public boolean isIncludeResidual() {
+		return includeResidual;
+	}
+
+	public void setIncludeResidual(boolean includeResidual) {
+		this.includeResidual = includeResidual;
+	}
+
+	public int getMode() {
+		return mode;
+	}
+
+	public void setMode(int mode) {
+		this.mode = mode;
+	}
+
+	public int getBufferSize() {
+		return bufferSize;
+	}
+
+	public void setVIpolar(boolean vIpolar) {
+		VIpolar = vIpolar;
+	}
+
+	public void setPpolar(boolean ppolar) {
+		Ppolar = ppolar;
+	}
+
+	public void setBufferSize(int bufferSize) {
+		this.bufferSize = bufferSize;
 	}
 
 }

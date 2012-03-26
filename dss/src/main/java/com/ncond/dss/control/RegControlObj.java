@@ -11,9 +11,6 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 
-import lombok.Getter;
-import lombok.Setter;
-
 import org.apache.commons.math.complex.Complex;
 
 import com.ncond.dss.common.Circuit;
@@ -34,7 +31,6 @@ import com.ncond.dss.shared.ComplexUtil;
  * Transformer to be controlled must already exist.
  *
  */
-@Getter @Setter
 public class RegControlObj extends ControlElem {
 
 	private static int lastChange;
@@ -724,6 +720,194 @@ public class RegControlObj extends ControlElem {
 	@Override
 	public int injCurrents() {
 		throw new UnsupportedOperationException();
+	}
+
+	public double getBandwidth() {
+		return bandwidth;
+	}
+
+	public void setBandwidth(double bandwidth) {
+		this.bandwidth = bandwidth;
+	}
+
+	public double getPTRatio() {
+		return PTRatio;
+	}
+
+	public void setPTRatio(double pTRatio) {
+		PTRatio = pTRatio;
+	}
+
+	public double getCTRating() {
+		return CTRating;
+	}
+
+	public void setCTRating(double cTRating) {
+		CTRating = cTRating;
+	}
+
+	public double getR() {
+		return R;
+	}
+
+	public void setR(double r) {
+		R = r;
+	}
+
+	public double getRevVreg() {
+		return revVreg;
+	}
+
+	public void setRevVreg(double revVreg) {
+		this.revVreg = revVreg;
+	}
+
+	public double getRevBandwidth() {
+		return revBandwidth;
+	}
+
+	public void setRevBandwidth(double revBandwidth) {
+		this.revBandwidth = revBandwidth;
+	}
+
+	public double getKWRevPowerThreshold() {
+		return kWRevPowerThreshold;
+	}
+
+	public void setKWRevPowerThreshold(double kWRevPowerThreshold) {
+		this.kWRevPowerThreshold = kWRevPowerThreshold;
+	}
+
+	public double getRevDelay() {
+		return revDelay;
+	}
+
+	public void setRevDelay(double revDelay) {
+		this.revDelay = revDelay;
+	}
+
+	public double getRevR() {
+		return revR;
+	}
+
+	public void setRevR(double revR) {
+		this.revR = revR;
+	}
+
+	public double getRevX() {
+		return revX;
+	}
+
+	public void setRevX(double revX) {
+		this.revX = revX;
+	}
+
+	public String getRegulatedBus() {
+		return regulatedBus;
+	}
+
+	public void setRegulatedBus(String regulatedBus) {
+		this.regulatedBus = regulatedBus;
+	}
+
+	public double getTapDelay() {
+		return tapDelay;
+	}
+
+	public void setTapDelay(double tapDelay) {
+		this.tapDelay = tapDelay;
+	}
+
+	public boolean isDebugTrace() {
+		return debugTrace;
+	}
+
+	public void setDebugTrace(boolean debugTrace) {
+		this.debugTrace = debugTrace;
+	}
+
+	public boolean isInverseTime() {
+		return inverseTime;
+	}
+
+	public void setInverseTime(boolean inverseTime) {
+		this.inverseTime = inverseTime;
+	}
+
+	public int getPTPhaseIdx() {
+		return PTPhaseIdx;
+	}
+
+	public void setPTPhaseIdx(int pTPhaseIdx) {
+		PTPhaseIdx = pTPhaseIdx;
+	}
+
+	public double getVreg() {
+		return Vreg;
+	}
+
+	public double getX() {
+		return X;
+	}
+
+	public double getRevPowerThreshold() {
+		return revPowerThreshold;
+	}
+
+	public boolean isReversible() {
+		return isReversible;
+	}
+
+	public int getTapLimitPerChange() {
+		return tapLimitPerChange;
+	}
+
+	public int getTapWindingIdx() {
+		return tapWindingIdx;
+	}
+
+	public double getVLimit() {
+		return VLimit;
+	}
+
+	public void setReverseNeutral(boolean reverseNeutral) {
+		this.reverseNeutral = reverseNeutral;
+	}
+
+	public boolean isReverseNeutral() {
+		return reverseNeutral;
+	}
+
+	public void setVreg(double vreg) {
+		Vreg = vreg;
+	}
+
+	public void setX(double x) {
+		X = x;
+	}
+
+	public void setRevPowerThreshold(double revPowerThreshold) {
+		this.revPowerThreshold = revPowerThreshold;
+	}
+
+	public void setReversible(boolean isReversible) {
+		this.isReversible = isReversible;
+	}
+
+	public void setTapLimitPerChange(int tapLimitPerChange) {
+		this.tapLimitPerChange = tapLimitPerChange;
+	}
+
+	public void setTapWindingIdx(int tapWindingIdx) {
+		this.tapWindingIdx = tapWindingIdx;
+	}
+
+	public void setVLimit(double vLimit) {
+		VLimit = vLimit;
+	}
+
+	public void setVLimitActive(boolean vLimitActive) {
+		VLimitActive = vLimitActive;
 	}
 
 }

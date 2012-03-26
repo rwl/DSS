@@ -8,9 +8,6 @@ package com.ncond.dss.general;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 
-import lombok.Getter;
-import lombok.Setter;
-
 import com.ncond.dss.common.DSSClass;
 
 /**
@@ -20,7 +17,6 @@ import com.ncond.dss.common.DSSClass;
  * Log-Log as traditional TCC or as over- or under-voltage definite time.
  *
  */
-@Getter @Setter
 public class TCC_CurveObj extends DSSObject {
 
 	private int lastValueAccessed, npts;
@@ -221,6 +217,46 @@ public class TCC_CurveObj extends DSSObject {
 		setPropertyValue(2, "");   // vector of sec values
 
 		super.initPropertyValues(TCC_Curve.NumPropsThisClass - 1);
+	}
+
+	public int getNpts() {
+		return npts;
+	}
+
+	public void setNpts(int npts) {
+		this.npts = npts;
+	}
+
+	public double[] getLogT() {
+		return logT;
+	}
+
+	public double[] getLogC() {
+		return logC;
+	}
+
+	public double[] getTValues() {
+		return tValues;
+	}
+
+	public double[] getCValues() {
+		return cValues;
+	}
+
+	public void setLogT(double[] logT) {
+		this.logT = logT;
+	}
+
+	public void setLogC(double[] logC) {
+		this.logC = logC;
+	}
+
+	public void setTValues(double[] tValues) {
+		this.tValues = tValues;
+	}
+
+	public void setCValues(double[] cValues) {
+		this.cValues = cValues;
 	}
 
 }

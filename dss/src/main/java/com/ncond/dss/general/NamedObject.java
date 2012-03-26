@@ -7,10 +7,6 @@ package com.ncond.dss.general;
 
 import java.util.UUID;
 
-import lombok.Getter;
-import lombok.Setter;
-
-@Getter @Setter
 public class NamedObject {
 
 	/**
@@ -71,6 +67,18 @@ public class NamedObject {
 
 	public String UUIDToCIMString(UUID uUID) {
 		return uUID.toString();
+	}
+
+	public String getLocalName() {
+		return localName;
+	}
+
+	public void setLocalName(String localName) {
+		this.localName = localName;
+	}
+
+	public String getDSSClassName() {
+		return DSSClassName;
 	}
 
 }

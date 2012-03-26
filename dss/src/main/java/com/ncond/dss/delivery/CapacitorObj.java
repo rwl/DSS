@@ -8,9 +8,6 @@ package com.ncond.dss.delivery;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 
-import lombok.Getter;
-import lombok.Setter;
-
 import org.apache.commons.math.complex.Complex;
 
 import com.ncond.dss.common.DSS;
@@ -57,7 +54,6 @@ import com.ncond.dss.shared.ComplexUtil;
  *       Microfarads.
  *
  */
-@Getter @Setter
 public class CapacitorObj extends PDElement {
 
 	// single C per phase (line rating) if Cmatrix not specified
@@ -675,6 +671,78 @@ public class CapacitorObj extends PDElement {
 	@Override
 	public int injCurrents() {
 		throw new UnsupportedOperationException();
+	}
+
+	public double[] getC() {
+		return C;
+	}
+
+	public double[] getKVArRating() {
+		return kVArRating;
+	}
+
+	public double[] getHarm() {
+		return harm;
+	}
+
+	public double getKVRating() {
+		return kVRating;
+	}
+
+	public int getNumSteps() {
+		return numSteps;
+	}
+
+	public double[] getCmatrix() {
+		return Cmatrix;
+	}
+
+	public Connection getConnection() {
+		return connection;
+	}
+
+	public double[] getXL() {
+		return XL;
+	}
+
+	public double[] getR() {
+		return R;
+	}
+
+	public boolean[] getStates() {
+		return states;
+	}
+
+	public double getTotalKVAr() {
+		return totalKVAr;
+	}
+
+	public CapacitorSpecType getSpecType() {
+		return specType;
+	}
+
+	public void setKVRating(double kVRating) {
+		this.kVRating = kVRating;
+	}
+
+	public void setLastStepInService(int lastStepInService) {
+		this.lastStepInService = lastStepInService;
+	}
+
+	public void setCmatrix(double[] cmatrix) {
+		Cmatrix = cmatrix;
+	}
+
+	public void setDoHarmonicRecalc(boolean doHarmonicRecalc) {
+		this.doHarmonicRecalc = doHarmonicRecalc;
+	}
+
+	public void setSpecType(CapacitorSpecType specType) {
+		this.specType = specType;
+	}
+
+	public void setConnection(Connection connection) {
+		this.connection = connection;
 	}
 
 }

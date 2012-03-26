@@ -10,9 +10,6 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 
-import lombok.Getter;
-import lombok.Setter;
-
 import org.apache.commons.math.complex.Complex;
 
 import com.ncond.dss.common.Circuit;
@@ -38,7 +35,6 @@ import com.ncond.dss.general.LoadShapeObj;
  * are included by default and controlled as a fleet.
  *
  */
-@Getter @Setter
 public class StorageControllerObj extends ControlElem {
 
 	private static final Complex CDOUBLEONE = new Complex(1.0, 1.0);
@@ -1119,6 +1115,246 @@ public class StorageControllerObj extends ControlElem {
 	@Override
 	public int injCurrents() {
 		throw new UnsupportedOperationException();
+	}
+
+	public double getKWTarget() {
+		return kWTarget;
+	}
+
+	public double getKWThreshold() {
+		return kWThreshold;
+	}
+
+	public double getPctkWBand() {
+		return pctkWBand;
+	}
+
+	public double getPFTarget() {
+		return PFTarget;
+	}
+
+	public double getHalfPFBand() {
+		return halfPFBand;
+	}
+
+	public int getFleetSize() {
+		return fleetSize;
+	}
+
+	public StorageState getFleetState() {
+		return fleetState;
+	}
+
+	public List<String> getStorageNameList() {
+		return storageNameList;
+	}
+
+	public List<Object> getFleetPointerList() {
+		return fleetPointerList;
+	}
+
+	public StorageControlMode getDischargeMode() {
+		return dischargeMode;
+	}
+
+	public StorageControlMode getChargeMode() {
+		return chargeMode;
+	}
+
+	public double getDischargeTriggerTime() {
+		return dischargeTriggerTime;
+	}
+
+	public double getChargeTriggerTime() {
+		return chargeTriggerTime;
+	}
+
+	public double getPctKVArRate() {
+		return pctKVArRate;
+	}
+
+	public double getPctChargeRate() {
+		return pctChargeRate;
+	}
+
+	public double getPctFleetReserve() {
+		return pctFleetReserve;
+	}
+
+	public int getInhibitHrs() {
+		return inhibitHrs;
+	}
+
+	public double getFlatTime() {
+		return flatTime;
+	}
+
+	public double getDnRampTime() {
+		return dnRampTime;
+	}
+
+	public String getDailyShape() {
+		return dailyShape;
+	}
+
+	public LoadShapeObj getDailyShapeObj() {
+		return dailyShapeObj;
+	}
+
+	public String getDutyShape() {
+		return dutyShape;
+	}
+
+	public LoadShapeObj getDutyShapeObj() {
+		return dutyShapeObj;
+	}
+
+	public CktElement getMonitoredElement() {
+		return monitoredElement;
+	}
+
+	public double[] getWeights() {
+		return weights;
+	}
+
+	public double getPctKWRate() {
+		return pctKWRate;
+	}
+
+	public boolean isDispatchVars() {
+		return dispatchVars;
+	}
+
+	public double getUpRampTime() {
+		return upRampTime;
+	}
+
+	public String getYearlyShape() {
+		return yearlyShape;
+	}
+
+	public LoadShapeObj getYearlyShapeObj() {
+		return yearlyShapeObj;
+	}
+
+	public void setFleetSize(int fleetSize) {
+		this.fleetSize = fleetSize;
+	}
+
+	public void setElementListSpecified(boolean elementListSpecified) {
+		this.elementListSpecified = elementListSpecified;
+	}
+
+	public void setChargeMode(StorageControlMode chargeMode) {
+		this.chargeMode = chargeMode;
+	}
+
+	public void setDischargeTriggerTime(double dischargeTriggerTime) {
+		this.dischargeTriggerTime = dischargeTriggerTime;
+	}
+
+	public void setFleetListChanged(boolean fleetListChanged) {
+		this.fleetListChanged = fleetListChanged;
+	}
+
+	public void setFlatTime(double flatTime) {
+		this.flatTime = flatTime;
+	}
+
+	public void setDnRampTime(double dnRampTime) {
+		this.dnRampTime = dnRampTime;
+	}
+
+	public void setDutyShape(String dutyShape) {
+		this.dutyShape = dutyShape;
+	}
+
+	public void setDutyShapeObj(LoadShapeObj dutyShapeObj) {
+		this.dutyShapeObj = dutyShapeObj;
+	}
+
+	public void setKWTarget(double kWTarget) {
+		this.kWTarget = kWTarget;
+	}
+
+	public void setKWThreshold(double kWThreshold) {
+		this.kWThreshold = kWThreshold;
+	}
+
+	public void setPctkWBand(double pctkWBand) {
+		this.pctkWBand = pctkWBand;
+	}
+
+	public void setPFTarget(double pFTarget) {
+		PFTarget = pFTarget;
+	}
+
+	public void setHalfPFBand(double halfPFBand) {
+		this.halfPFBand = halfPFBand;
+	}
+
+	public void setWeights(double[] weights) {
+		this.weights = weights;
+	}
+
+	public void setDischargeMode(StorageControlMode dischargeMode) {
+		this.dischargeMode = dischargeMode;
+	}
+
+	public void setChargeTriggerTime(double chargeTriggerTime) {
+		this.chargeTriggerTime = chargeTriggerTime;
+	}
+
+	public void setPctKWRate(double pctKWRate) {
+		this.pctKWRate = pctKWRate;
+	}
+
+	public void setPctKVArRate(double pctKVArRate) {
+		this.pctKVArRate = pctKVArRate;
+	}
+
+	public void setPctChargeRate(double pctChargeRate) {
+		this.pctChargeRate = pctChargeRate;
+	}
+
+	public void setPctFleetReserve(double pctFleetReserve) {
+		this.pctFleetReserve = pctFleetReserve;
+	}
+
+	public void setDispatchVars(boolean dispatchVars) {
+		this.dispatchVars = dispatchVars;
+	}
+
+	public void setInhibitHrs(int inhibitHrs) {
+		this.inhibitHrs = inhibitHrs;
+	}
+
+	public void setUpRampTime(double upRampTime) {
+		this.upRampTime = upRampTime;
+	}
+
+	public void setYearlyShape(String yearlyShape) {
+		this.yearlyShape = yearlyShape;
+	}
+
+	public void setYearlyShapeObj(LoadShapeObj yearlyShapeObj) {
+		this.yearlyShapeObj = yearlyShapeObj;
+	}
+
+	public void setDailyShape(String dailyShape) {
+		this.dailyShape = dailyShape;
+	}
+
+	public void setDailyShapeObj(LoadShapeObj dailyShapeObj) {
+		this.dailyShapeObj = dailyShapeObj;
+	}
+
+	public void setMonitoredElement(CktElement monitoredElement) {
+		this.monitoredElement = monitoredElement;
+	}
+
+	public void setHalfKWBand(double halfKWBand) {
+		this.halfKWBand = halfKWBand;
 	}
 
 }

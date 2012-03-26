@@ -5,16 +5,12 @@
  */
 package com.ncond.dss.general;
 
-import lombok.Getter;
-import lombok.Setter;
-
 import com.ncond.dss.common.DSS;
 import com.ncond.dss.common.DSSClass;
 import com.ncond.dss.common.DSSClassDefs;
 import com.ncond.dss.parser.Parser;
 import com.ncond.dss.shared.LineUnits;
 
-@Getter @Setter
 abstract public class ConductorData extends DSSClass {
 
 	public static final String LineUnitsHelp = "{mi|kft|km|m|Ft|in|cm|mm} default=none.";
@@ -179,6 +175,10 @@ abstract public class ConductorData extends DSSClass {
 		elem.setNormAmps(other.getNormAmps());
 		elem.setEmergAmps(other.getEmergAmps());
 		//super.classMakeLike(OtherObj);
+	}
+
+	public int getNumConductorClassProps() {
+		return numConductorClassProps;
 	}
 
 }

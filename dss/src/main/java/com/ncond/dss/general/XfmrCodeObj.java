@@ -8,9 +8,6 @@ package com.ncond.dss.general;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 
-import lombok.Getter;
-import lombok.Setter;
-
 import com.ncond.dss.common.DSS;
 import com.ncond.dss.common.DSSClass;
 import com.ncond.dss.common.Util;
@@ -18,7 +15,6 @@ import com.ncond.dss.delivery.Transformer;
 import com.ncond.dss.delivery.TransformerObj;
 import com.ncond.dss.delivery.Winding;
 
-@Getter @Setter
 public class XfmrCodeObj extends DSSObject {
 
 	private int nPhases;
@@ -38,7 +34,7 @@ public class XfmrCodeObj extends DSSObject {
 	private double pctLoadLoss;
 	private double pctNoLoadLoss;
 	private double ppmFloatFactor;  // parts per million winding float factor
-	private double pctImag;
+	@SuppressWarnings("unused") private double pctImag;
 	private Winding[] windings;
 
 	public XfmrCodeObj(DSSClass parClass, String xfmrCodeName) {
@@ -367,6 +363,134 @@ public class XfmrCodeObj extends DSSObject {
 
 	public Winding getWinding(int idx) {
 		return windings[idx];
+	}
+
+	public int getNPhases() {
+		return nPhases;
+	}
+
+	public int getActiveWindingIdx() {
+		return activeWindingIdx;
+	}
+
+	public int getNumWindings() {
+		return numWindings;
+	}
+
+	public double getNormMaxHKVA() {
+		return normMaxHKVA;
+	}
+
+	public double getEmergMaxHKVA() {
+		return emergMaxHKVA;
+	}
+
+	public double getNThermal() {
+		return nThermal;
+	}
+
+	public double getMThermal() {
+		return mThermal;
+	}
+
+	public double getLRise() {
+		return LRise;
+	}
+
+	public double getHSRise() {
+		return HSRise;
+	}
+
+	public double getXHL() {
+		return XHL;
+	}
+
+	public double getXHT() {
+		return XHT;
+	}
+
+	public double getXLT() {
+		return XLT;
+	}
+
+	public double[] getXSC() {
+		return XSC;
+	}
+
+	public double getThermalTimeConst() {
+		return thermalTimeConst;
+	}
+
+	public double getPctLoadLoss() {
+		return pctLoadLoss;
+	}
+
+	public double getPctNoLoadLoss() {
+		return pctNoLoadLoss;
+	}
+
+	public void setNPhases(int nPhases) {
+		this.nPhases = nPhases;
+	}
+
+	public void setActiveWindingIdx(int activeWindingIdx) {
+		this.activeWindingIdx = activeWindingIdx;
+	}
+
+	public void setXHL(double xHL) {
+		XHL = xHL;
+	}
+
+	public void setXHT(double xHT) {
+		XHT = xHT;
+	}
+
+	public void setXLT(double xLT) {
+		XLT = xLT;
+	}
+
+	public void setNormMaxHKVA(double normMaxHKVA) {
+		this.normMaxHKVA = normMaxHKVA;
+	}
+
+	public void setEmergMaxHKVA(double emergMaxHKVA) {
+		this.emergMaxHKVA = emergMaxHKVA;
+	}
+
+	public void setThermalTimeConst(double thermalTimeConst) {
+		this.thermalTimeConst = thermalTimeConst;
+	}
+
+	public void setNThermal(double nThermal) {
+		this.nThermal = nThermal;
+	}
+
+	public void setMThermal(double mThermal) {
+		this.mThermal = mThermal;
+	}
+
+	public void setLRise(double lRise) {
+		LRise = lRise;
+	}
+
+	public void setHSRise(double hSRise) {
+		HSRise = hSRise;
+	}
+
+	public void setPctLoadLoss(double pctLoadLoss) {
+		this.pctLoadLoss = pctLoadLoss;
+	}
+
+	public void setPctNoLoadLoss(double pctNoLoadLoss) {
+		this.pctNoLoadLoss = pctNoLoadLoss;
+	}
+
+	public void setPpmFloatFactor(double ppmFloatFactor) {
+		this.ppmFloatFactor = ppmFloatFactor;
+	}
+
+	public void setPctImag(double pctImag) {
+		this.pctImag = pctImag;
 	}
 
 }

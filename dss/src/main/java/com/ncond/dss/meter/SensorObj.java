@@ -8,9 +8,6 @@ package com.ncond.dss.meter;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 
-import lombok.Getter;
-import lombok.Setter;
-
 import org.apache.commons.math.complex.Complex;
 
 import com.ncond.dss.common.DSS;
@@ -23,7 +20,6 @@ import com.ncond.dss.common.types.Connection;
  * current quantities based on rated kVBase, or actual voltage if voltage
  * measurement specified.
  */
-@Getter @Setter
 public class SensorObj extends MeterElement {
 
 	private boolean validSensor;
@@ -335,6 +331,54 @@ public class SensorObj extends MeterElement {
 
 	public void setAction(String value) {
 
+	}
+
+	public boolean isClearSpecified() {
+		return clearSpecified;
+	}
+
+	public void setClearSpecified(boolean clearSpecified) {
+		this.clearSpecified = clearSpecified;
+	}
+
+	public double[] getSensorKW() {
+		return sensorKW;
+	}
+
+	public double[] getSensorKVAr() {
+		return sensorKVAr;
+	}
+
+	public void setKVBase(double kVBase) {
+		this.kVBase = kVBase;
+	}
+
+	public void setISpecified(boolean iSpecified) {
+		ISpecified = iSpecified;
+	}
+
+	public void setPSpecified(boolean pSpecified) {
+		PSpecified = pSpecified;
+	}
+
+	public void setQSpecified(boolean qSpecified) {
+		QSpecified = qSpecified;
+	}
+
+	public void setDeltaDirection(int deltaDirection) {
+		this.deltaDirection = deltaDirection;
+	}
+
+	public void setPctError(double pctError) {
+		this.pctError = pctError;
+	}
+
+	public void setVSpecified(boolean vSpecified) {
+		VSpecified = vSpecified;
+	}
+
+	public void setWeight(double weight) {
+		this.weight = weight;
 	}
 
 }

@@ -11,9 +11,6 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 
-import lombok.Getter;
-import lombok.Setter;
-
 import org.apache.commons.math.complex.Complex;
 import org.apache.commons.math.complex.ComplexUtils;
 
@@ -78,7 +75,7 @@ import com.ncond.dss.shared.MathUtil;
  *   Dutycycle: Defaults to Daily shape
  *
  */
-@Getter @Setter
+@SuppressWarnings("unused")
 public class GeneratorObj extends PCElement {
 
 	/** Number of energy meter registers. */
@@ -2194,6 +2191,246 @@ public class GeneratorObj extends PCElement {
 
 	public double getRegister(int idx) {
 		return registers[idx];
+	}
+
+	public DispatchMode getDispatchMode() {
+		return dispatchMode;
+	}
+
+	public double getDispatchValue() {
+		return dispatchValue;
+	}
+
+	public Connection getConnection() {
+		return connection;
+	}
+
+	public String getDailyDispShape() {
+		return dailyDispShape;
+	}
+
+	public LoadShapeObj getDailyDispShapeObj() {
+		return dailyDispShapeObj;
+	}
+
+	public String getDutyShape() {
+		return dutyShape;
+	}
+
+	public LoadShapeObj getDutyShapeObj() {
+		return dutyShapeObj;
+	}
+
+	public int getGenClass() {
+		return genClass;
+	}
+
+	public GeneratorModel getGenModel() {
+		return genModel;
+	}
+
+	public GeneratorVars getGenVars() {
+		return genVars;
+	}
+
+	public boolean isDebugTrace() {
+		return debugTrace;
+	}
+
+	public boolean isForcedOn() {
+		return forcedOn;
+	}
+
+	public boolean isFixed() {
+		return fixed;
+	}
+
+	public boolean isKVANotSet() {
+		return kVANotSet;
+	}
+
+	public GenUserModel getUserModel() {
+		return userModel;
+	}
+
+	public GenUserModel getShaftModel() {
+		return shaftModel;
+	}
+
+	public double getVarMax() {
+		return varMax;
+	}
+
+	public double getVarMin() {
+		return varMin;
+	}
+
+	public double getVBase() {
+		return VBase;
+	}
+
+	public double getVBase105() {
+		return VBase105;
+	}
+
+	public double getVBase95() {
+		return VBase95;
+	}
+
+	public double getVMaxPU() {
+		return VMaxPU;
+	}
+
+	public double getVMinPU() {
+		return VMinPU;
+	}
+
+	public double getKVArBase() {
+		return kVArBase;
+	}
+
+	public double getKVArMax() {
+		return kVArMax;
+	}
+
+	public double getKVArMin() {
+		return kVArMin;
+	}
+
+	public double getKWBase() {
+		return kWBase;
+	}
+
+	public double getVpu() {
+		return Vpu;
+	}
+
+	public double getVTarget() {
+		return VTarget;
+	}
+
+	public String getYearlyShape() {
+		return yearlyShape;
+	}
+
+	public LoadShapeObj getYearlyShapeObj() {
+		return yearlyShapeObj;
+	}
+
+	public void setDebugTrace(boolean debugTrace) {
+		this.debugTrace = debugTrace;
+	}
+
+	public void setDispatchMode(DispatchMode dispatchMode) {
+		this.dispatchMode = dispatchMode;
+	}
+
+	public void setDispatchValue(double dispatchValue) {
+		this.dispatchValue = dispatchValue;
+	}
+
+	public void setForcedOn(boolean forcedOn) {
+		this.forcedOn = forcedOn;
+	}
+
+	public void setFixed(boolean fixed) {
+		this.fixed = fixed;
+	}
+
+	public void setKVANotSet(boolean kVANotSet) {
+		this.kVANotSet = kVANotSet;
+	}
+
+	public void setPVFactor(double pVFactor) {
+		PVFactor = pVFactor;
+	}
+
+	public void setVarMax(double varMax) {
+		this.varMax = varMax;
+	}
+
+	public void setVarMin(double varMin) {
+		this.varMin = varMin;
+	}
+
+	public void setVBase(double vBase) {
+		VBase = vBase;
+	}
+
+	public void setConnection(Connection connection) {
+		this.connection = connection;
+	}
+
+	public void setDailyDispShape(String dailyDispShape) {
+		this.dailyDispShape = dailyDispShape;
+	}
+
+	public void setDailyDispShapeObj(LoadShapeObj dailyDispShapeObj) {
+		this.dailyDispShapeObj = dailyDispShapeObj;
+	}
+
+	public void setDutyShape(String dutyShape) {
+		this.dutyShape = dutyShape;
+	}
+
+	public void setDutyShapeObj(LoadShapeObj dutyShapeObj) {
+		this.dutyShapeObj = dutyShapeObj;
+	}
+
+	public void setGenClass(int genClass) {
+		this.genClass = genClass;
+	}
+
+	public void setGenModel(GeneratorModel genModel) {
+		this.genModel = genModel;
+	}
+
+	public void setKVArBase(double kVArBase) {
+		this.kVArBase = kVArBase;
+	}
+
+	public void setKVArMax(double kVArMax) {
+		this.kVArMax = kVArMax;
+	}
+
+	public void setKVArMin(double kVArMin) {
+		this.kVArMin = kVArMin;
+	}
+
+	public void setKWBase(double kWBase) {
+		this.kWBase = kWBase;
+	}
+
+	public void setVBase105(double vBase105) {
+		VBase105 = vBase105;
+	}
+
+	public void setVBase95(double vBase95) {
+		VBase95 = vBase95;
+	}
+
+	public void setVMaxPU(double vMaxPU) {
+		VMaxPU = vMaxPU;
+	}
+
+	public void setVMinPU(double vMinPU) {
+		VMinPU = vMinPU;
+	}
+
+	public void setVpu(double vpu) {
+		Vpu = vpu;
+	}
+
+	public void setVTarget(double vTarget) {
+		VTarget = vTarget;
+	}
+
+	public void setYearlyShape(String yearlyShape) {
+		this.yearlyShape = yearlyShape;
+	}
+
+	public void setYearlyShapeObj(LoadShapeObj yearlyShapeObj) {
+		this.yearlyShapeObj = yearlyShapeObj;
 	}
 
 }

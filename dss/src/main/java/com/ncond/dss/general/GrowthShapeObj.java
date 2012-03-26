@@ -8,13 +8,9 @@ package com.ncond.dss.general;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 
-import lombok.Getter;
-import lombok.Setter;
-
 import com.ncond.dss.common.DSSClass;
 import com.ncond.dss.common.Util;
 
-@Getter @Setter
 public class GrowthShapeObj extends DSSObject {
 
 	/** Number of points in curve */
@@ -163,6 +159,34 @@ public class GrowthShapeObj extends DSSObject {
 		setPropertyValue(5, "");   // switch input to a binary file of doubles (year, mult)
 
 		super.initPropertyValues(GrowthShape.NumPropsThisClass - 1);
+	}
+
+	public int getNpts() {
+		return npts;
+	}
+
+	public void setNpts(int npts) {
+		this.npts = npts;
+	}
+
+	public int[] getYear() {
+		return year;
+	}
+
+	public double[] getMultiplier() {
+		return multiplier;
+	}
+
+	public void setBaseYear(int baseYear) {
+		this.baseYear = baseYear;
+	}
+
+	public void setYear(int[] year) {
+		this.year = year;
+	}
+
+	public void setMultiplier(double[] multiplier) {
+		this.multiplier = multiplier;
 	}
 
 }

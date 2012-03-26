@@ -8,9 +8,6 @@ package com.ncond.dss.conversion;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 
-import lombok.Getter;
-import lombok.Setter;
-
 import org.apache.commons.math.complex.Complex;
 
 import com.ncond.dss.common.DSS;
@@ -22,7 +19,6 @@ import com.ncond.dss.parser.Parser;
 import com.ncond.dss.shared.CMatrix;
 import com.ncond.dss.shared.ComplexUtil;
 
-@Getter @Setter
 public class VSourceObj extends PCElement {
 
 	private double MVAsc3;
@@ -459,6 +455,134 @@ public class VSourceObj extends PCElement {
 		edit();
 
 		super.makePosSequence();
+	}
+
+	public double getX1R1() {
+		return X1R1;
+	}
+
+	public void setX1R1(double x1r1) {
+		X1R1 = x1r1;
+	}
+
+	public double getX0R0() {
+		return X0R0;
+	}
+
+	public void setX0R0(double x0r0) {
+		X0R0 = x0r0;
+	}
+
+	public SequenceType getScanType() {
+		return scanType;
+	}
+
+	public void setScanType(SequenceType scanType) {
+		this.scanType = scanType;
+	}
+
+	public SequenceType getSequenceType() {
+		return sequenceType;
+	}
+
+	public void setSequenceType(SequenceType sequenceType) {
+		this.sequenceType = sequenceType;
+	}
+
+	public CMatrix getZ() {
+		return Z;
+	}
+
+	public void setZ(CMatrix z) {
+		Z = z;
+	}
+
+	public double getPerUnit() {
+		return perUnit;
+	}
+
+	public void setPerUnit(double perUnit) {
+		this.perUnit = perUnit;
+	}
+
+	public double getAngle() {
+		return angle;
+	}
+
+	public void setAngle(double angle) {
+		this.angle = angle;
+	}
+
+	public double getSrcFrequency() {
+		return srcFrequency;
+	}
+
+	public void setSrcFrequency(double srcFrequency) {
+		this.srcFrequency = srcFrequency;
+	}
+
+	public double getMVAsc3() {
+		return MVAsc3;
+	}
+
+	public double getMVAsc1() {
+		return MVAsc1;
+	}
+
+	public double getVmag() {
+		return Vmag;
+	}
+
+	public double getKVBase() {
+		return kVBase;
+	}
+
+	public void setIsc3(double isc3) {
+		Isc3 = isc3;
+	}
+
+	public void setIsc1(double isc1) {
+		Isc1 = isc1;
+	}
+
+	public void setZspecType(ZSpecType zspecType) {
+		ZspecType = zspecType;
+	}
+
+	public void setR1(double r1) {
+		R1 = r1;
+	}
+
+	public void setX1(double x1) {
+		X1 = x1;
+	}
+
+	public void setR0(double r0) {
+		R0 = r0;
+	}
+
+	public void setX0(double x0) {
+		X0 = x0;
+	}
+
+	public void setZinv(CMatrix zinv) {
+		Zinv = zinv;
+	}
+
+	public void setMVAsc3(double mVAsc3) {
+		MVAsc3 = mVAsc3;
+	}
+
+	public void setMVAsc1(double mVAsc1) {
+		MVAsc1 = mVAsc1;
+	}
+
+	public void setVmag(double vmag) {
+		Vmag = vmag;
+	}
+
+	public void setKVBase(double kVBase) {
+		this.kVBase = kVBase;
 	}
 
 }

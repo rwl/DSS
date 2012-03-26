@@ -8,9 +8,6 @@ package com.ncond.dss.control;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 
-import lombok.Getter;
-import lombok.Setter;
-
 import org.apache.commons.math.complex.Complex;
 
 import com.ncond.dss.common.Bus;
@@ -32,7 +29,6 @@ import com.ncond.dss.delivery.CapacitorObj;
  *
  * Capacitor to be controlled must already exist.
  */
-@Getter @Setter
 public class CapControlObj extends ControlElem {
 
 	private static boolean SRPInhibit = false;
@@ -823,6 +819,162 @@ public class CapControlObj extends ControlElem {
 	public void setPendingChange(ControlAction value) {
 		pendingChange = value;
 		traceParameter = value.code();
+	}
+
+	public CapControlType getControlType() {
+		return controlType;
+	}
+
+	public void setControlType(CapControlType controlType) {
+		this.controlType = controlType;
+	}
+
+	public int getCTPhaseIdx() {
+		return CTPhaseIdx;
+	}
+
+	public void setCTPhaseIdx(int cTPhaseIdx) {
+		CTPhaseIdx = cTPhaseIdx;
+	}
+
+	public String getCapacitorName() {
+		return capacitorName;
+	}
+
+	public void setCapacitorName(String capacitorName) {
+		this.capacitorName = capacitorName;
+	}
+
+	public int getPTPhaseIdx() {
+		return PTPhaseIdx;
+	}
+
+	public double getOnValue() {
+		return onValue;
+	}
+
+	public double getOffValue() {
+		return offValue;
+	}
+
+	public double getPFOnValue() {
+		return PFOnValue;
+	}
+
+	public double getPFOffValue() {
+		return PFOffValue;
+	}
+
+	public double getCTRatio() {
+		return CTRatio;
+	}
+
+	public double getPTRatio() {
+		return PTRatio;
+	}
+
+	public boolean isVOverride() {
+		return VOverride;
+	}
+
+	public boolean isVOverrideBusSpecified() {
+		return VOverrideBusSpecified;
+	}
+
+	public String getVOverrideBusName() {
+		return VOverrideBusName;
+	}
+
+	public CktElement getMonitoredElement() {
+		return monitoredElement;
+	}
+
+	public boolean isShouldSwitch() {
+		return shouldSwitch;
+	}
+
+	public ControlAction getPresentState() {
+		return presentState;
+	}
+
+	public int getCondOffset() {
+		return condOffset;
+	}
+
+	public void setPTPhaseIdx(int pTPhaseIdx) {
+		PTPhaseIdx = pTPhaseIdx;
+	}
+
+	public void setOnValue(double onValue) {
+		this.onValue = onValue;
+	}
+
+	public void setOffValue(double offValue) {
+		this.offValue = offValue;
+	}
+
+	public void setPFOnValue(double pFOnValue) {
+		PFOnValue = pFOnValue;
+	}
+
+	public void setPFOffValue(double pFOffValue) {
+		PFOffValue = pFOffValue;
+	}
+
+	public void setCTRatio(double cTRatio) {
+		CTRatio = cTRatio;
+	}
+
+	public void setPTRatio(double pTRatio) {
+		PTRatio = pTRatio;
+	}
+
+	public void setOnDelay(double onDelay) {
+		this.onDelay = onDelay;
+	}
+
+	public void setOffDelay(double offDelay) {
+		OffDelay = offDelay;
+	}
+
+	public void setDeadTime(double deadTime) {
+		this.deadTime = deadTime;
+	}
+
+	public void setVOverride(boolean vOverride) {
+		VOverride = vOverride;
+	}
+
+	public void setVOverrideBusSpecified(boolean vOverrideBusSpecified) {
+		VOverrideBusSpecified = vOverrideBusSpecified;
+	}
+
+	public void setVOverrideBusName(String vOverrideBusName) {
+		VOverrideBusName = vOverrideBusName;
+	}
+
+	public void setVMax(double vMax) {
+		VMax = vMax;
+	}
+
+	public void setVMin(double vMin) {
+		VMin = vMin;
+	}
+
+	public void setMonitoredElement(CktElement monitoredElement) {
+		this.monitoredElement = monitoredElement;
+	}
+
+	public void setShouldSwitch(boolean shouldSwitch) {
+		this.shouldSwitch = shouldSwitch;
+	}
+
+	public void setPresentState(ControlAction presentState) {
+		this.presentState = presentState;
+	}
+
+	public void setCondOffset(int condOffset) {
+		this.condOffset = condOffset;
 	}
 
 }

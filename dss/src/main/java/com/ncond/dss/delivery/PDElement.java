@@ -5,9 +5,6 @@
  */
 package com.ncond.dss.delivery;
 
-import lombok.Getter;
-import lombok.Setter;
-
 import org.apache.commons.math.complex.Complex;
 
 import com.ncond.dss.common.CktElement;
@@ -17,7 +14,7 @@ import com.ncond.dss.common.DSSClassDefs;
 import com.ncond.dss.common.SolutionObj;
 import com.ncond.dss.meter.MeterElement;
 
-@Getter @Setter
+@SuppressWarnings("unused")
 abstract public class PDElement extends CktElement {
 
 	protected double normAmps, emergAmps, faultRate, pctPerm, hrsToRepair;
@@ -127,6 +124,114 @@ abstract public class PDElement extends CktElement {
 		setPropertyValue(arrayOffset + 5, "3");    // hrsToRepair
 
 		super.initPropertyValues(arrayOffset + 5);
+	}
+
+	public double getEmergAmps() {
+		return emergAmps;
+	}
+
+	public double getFaultRate() {
+		return faultRate;
+	}
+
+	public double getHrsToRepair() {
+		return hrsToRepair;
+	}
+
+	public MeterElement getMeterObj() {
+		return meterObj;
+	}
+
+	public double getNormAmps() {
+		return normAmps;
+	}
+
+	public double getPctPerm() {
+		return pctPerm;
+	}
+
+	public int getNumCustomers() {
+		return numCustomers;
+	}
+
+	public PDElement getParentPDElement() {
+		return parentPDElement;
+	}
+
+	public double getOverloadUE() {
+		return overloadUE;
+	}
+
+	public double getOverloadEEN() {
+		return overloadEEN;
+	}
+
+	public boolean isShunt() {
+		return isShunt;
+	}
+
+	public int getTotalCustomers() {
+		return totalCustomers;
+	}
+
+	public MeterElement getSensorObj() {
+		return sensorObj;
+	}
+
+	public void setNormAmps(double normAmps) {
+		this.normAmps = normAmps;
+	}
+
+	public void setEmergAmps(double emergAmps) {
+		this.emergAmps = emergAmps;
+	}
+
+	public void setFaultRate(double faultRate) {
+		this.faultRate = faultRate;
+	}
+
+	public void setHrsToRepair(double hrsToRepair) {
+		this.hrsToRepair = hrsToRepair;
+	}
+
+	public void setFromTerminal(int fromTerminal) {
+		this.fromTerminal = fromTerminal;
+	}
+
+	public void setMeterObj(MeterElement meterObj) {
+		this.meterObj = meterObj;
+	}
+
+	public void setPctPerm(double pctPerm) {
+		this.pctPerm = pctPerm;
+	}
+
+	public void setShunt(boolean isShunt) {
+		this.isShunt = isShunt;
+	}
+
+	public void setNumCustomers(int numCustomers) {
+		this.numCustomers = numCustomers;
+	}
+
+	public void setTotalCustomers(int totalCustomers) {
+		this.totalCustomers = totalCustomers;
+	}
+
+	public void setParentPDElement(PDElement parentPDElement) {
+		this.parentPDElement = parentPDElement;
+	}
+
+	public void setSensorObj(MeterElement sensorObj) {
+		this.sensorObj = sensorObj;
+	}
+
+	public void setOverloadUE(double overloadUE) {
+		this.overloadUE = overloadUE;
+	}
+
+	public void setOverloadEEN(double overloadEEN) {
+		this.overloadEEN = overloadEEN;
 	}
 
 }

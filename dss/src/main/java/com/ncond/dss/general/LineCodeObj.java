@@ -8,9 +8,6 @@ package com.ncond.dss.general;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 
-import lombok.Getter;
-import lombok.Setter;
-
 import org.apache.commons.math.complex.Complex;
 
 import com.ncond.dss.common.DSS;
@@ -30,7 +27,6 @@ import com.ncond.dss.shared.LineUnits;
  * Then the values of that code can be retrieved via the public variables.
  *
  */
-@Getter @Setter
 public class LineCodeObj extends DSSObject {
 
 	private int neutralConductor;
@@ -335,6 +331,182 @@ public class LineCodeObj extends DSSObject {
 		} else {
 			DSS.doSimpleMsg("Cannot perform Kron reduction on a 1-phase line code: LineCode." + getName(), 103);
 		}
+	}
+
+	public int getNeutralConductor() {
+		return neutralConductor;
+	}
+
+	public CMatrix getZ() {
+		return Z;
+	}
+
+	public CMatrix getZinv() {
+		return Zinv;
+	}
+
+	public CMatrix getYc() {
+		return Yc;
+	}
+
+	public double getBaseFrequency() {
+		return baseFrequency;
+	}
+
+	public double getR1() {
+		return R1;
+	}
+
+	public double getX1() {
+		return X1;
+	}
+
+	public double getR0() {
+		return R0;
+	}
+
+	public double getX0() {
+		return X0;
+	}
+
+	public double getC1() {
+		return C1;
+	}
+
+	public double getC0() {
+		return C0;
+	}
+
+	public double getNormAmps() {
+		return normAmps;
+	}
+
+	public double getEmergAmps() {
+		return emergAmps;
+	}
+
+	public double getFaultRate() {
+		return faultRate;
+	}
+
+	public double getPctPerm() {
+		return pctPerm;
+	}
+
+	public double getHrsToRepair() {
+		return hrsToRepair;
+	}
+
+	public double getXg() {
+		return Xg;
+	}
+
+	public double getRho() {
+		return rho;
+	}
+
+	public LineUnits getUnits() {
+		return units;
+	}
+
+	public boolean isSymComponentsModel() {
+		return symComponentsModel;
+	}
+
+	public boolean isReduceByKron() {
+		return reduceByKron;
+	}
+
+	public double getRg() {
+		return Rg;
+	}
+
+	public void setNeutralConductor(int neutralConductor) {
+		this.neutralConductor = neutralConductor;
+	}
+
+	public void setSymComponentsModel(boolean symComponentsModel) {
+		this.symComponentsModel = symComponentsModel;
+	}
+
+	public void setReduceByKron(boolean reduceByKron) {
+		this.reduceByKron = reduceByKron;
+	}
+
+	public void setZ(CMatrix z) {
+		Z = z;
+	}
+
+	public void setZinv(CMatrix zinv) {
+		Zinv = zinv;
+	}
+
+	public void setYc(CMatrix yc) {
+		Yc = yc;
+	}
+
+	public void setBaseFrequency(double baseFrequency) {
+		this.baseFrequency = baseFrequency;
+	}
+
+	public void setR1(double r1) {
+		R1 = r1;
+	}
+
+	public void setX1(double x1) {
+		X1 = x1;
+	}
+
+	public void setR0(double r0) {
+		R0 = r0;
+	}
+
+	public void setX0(double x0) {
+		X0 = x0;
+	}
+
+	public void setC1(double c1) {
+		C1 = c1;
+	}
+
+	public void setC0(double c0) {
+		C0 = c0;
+	}
+
+	public void setNormAmps(double normAmps) {
+		this.normAmps = normAmps;
+	}
+
+	public void setEmergAmps(double emergAmps) {
+		this.emergAmps = emergAmps;
+	}
+
+	public void setFaultRate(double faultRate) {
+		this.faultRate = faultRate;
+	}
+
+	public void setPctPerm(double pctPerm) {
+		this.pctPerm = pctPerm;
+	}
+
+	public void setHrsToRepair(double hrsToRepair) {
+		this.hrsToRepair = hrsToRepair;
+	}
+
+	public void setRg(double rg) {
+		Rg = rg;
+	}
+
+	public void setXg(double xg) {
+		Xg = xg;
+	}
+
+	public void setUnits(LineUnits units) {
+		this.units = units;
+	}
+
+	public void setRho(double rho) {
+		this.rho = rho;
 	}
 
 }

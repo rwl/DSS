@@ -10,9 +10,6 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 
-import lombok.Getter;
-import lombok.Setter;
-
 import org.apache.commons.math.complex.Complex;
 
 import com.ncond.dss.common.Circuit;
@@ -31,7 +28,6 @@ import com.ncond.dss.conversion.GeneratorObj;
  *
  *   new genDispatcher.name=myName element=devClass.name terminal=[ 1|2|...] capacitorList=(gen1 gen2 ...)
  */
-@Getter @Setter
 public class GenDispatcherObj extends ControlElem {
 
 	private double kWLimit, kWBand, halfKWBand, kVArLimit, totalWeight;
@@ -269,6 +265,58 @@ public class GenDispatcherObj extends ControlElem {
 	@Override
 	public int injCurrents() {
 		throw new UnsupportedOperationException();
+	}
+
+	public double getKWBand() {
+		return kWBand;
+	}
+
+	public void setKWBand(double kWBand) {
+		this.kWBand = kWBand;
+	}
+
+	public int getListSize() {
+		return listSize;
+	}
+
+	public List<String> getGeneratorNames() {
+		return generatorNames;
+	}
+
+	public List<GeneratorObj> getGenerators() {
+		return generators;
+	}
+
+	public double[] getWeights() {
+		return weights;
+	}
+
+	public CktElement getMonitoredElement() {
+		return monitoredElement;
+	}
+
+	public void setKWLimit(double kWLimit) {
+		this.kWLimit = kWLimit;
+	}
+
+	public void setKVArLimit(double kVArLimit) {
+		this.kVArLimit = kVArLimit;
+	}
+
+	public void setHalfKWBand(double halfKWBand) {
+		this.halfKWBand = halfKWBand;
+	}
+
+	public void setWeights(double[] weights) {
+		this.weights = weights;
+	}
+
+	public void setMonitoredElement(CktElement monitoredElement) {
+		this.monitoredElement = monitoredElement;
+	}
+
+	public void setListSize(int listSize) {
+		this.listSize = listSize;
 	}
 
 }

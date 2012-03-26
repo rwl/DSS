@@ -8,9 +8,6 @@ package com.ncond.dss.general;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 
-import lombok.Getter;
-import lombok.Setter;
-
 import com.ncond.dss.common.DSSClass;
 
 /**
@@ -31,7 +28,6 @@ import com.ncond.dss.common.DSSClass;
  * one point to a line.
  *
  */
-@Getter @Setter
 public class XYCurveObj extends DSSObject {
 
 	private int lastValueAccessed, numPoints;
@@ -296,6 +292,42 @@ public class XYCurveObj extends DSSObject {
 			setPropertyValue(arrayPropertyIndex, getPropertyValue(arrayPropertyIndex));
 
 		numPoints = num;  // now assign the value
+	}
+
+	public int getNumPoints() {
+		return numPoints;
+	}
+
+	public double[] getXValues() {
+		return XValues;
+	}
+
+	public double[] getYValues() {
+		return YValues;
+	}
+
+	public void setLastValueAccessed(int lastValueAccessed) {
+		this.lastValueAccessed = lastValueAccessed;
+	}
+
+	public void setArrayPropertyIndex(int arrayPropertyIndex) {
+		this.arrayPropertyIndex = arrayPropertyIndex;
+	}
+
+	public void setX(double x) {
+		X = x;
+	}
+
+	public void setY(double y) {
+		Y = y;
+	}
+
+	public void setXValues(double[] xValues) {
+		XValues = xValues;
+	}
+
+	public void setYValues(double[] yValues) {
+		YValues = yValues;
 	}
 
 }

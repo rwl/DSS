@@ -8,9 +8,6 @@ package com.ncond.dss.delivery;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 
-import lombok.Getter;
-import lombok.Setter;
-
 import org.apache.commons.math.complex.Complex;
 
 import com.ncond.dss.common.Circuit;
@@ -34,7 +31,6 @@ import com.ncond.dss.shared.ComplexUtil;
 import com.ncond.dss.shared.LineUnits;
 import com.ncond.dss.shared.MathUtil;
 
-@Getter @Setter
 public class LineObj extends PDElement {
 
 	/* keep track of last frequency computed for geometry */
@@ -1184,6 +1180,210 @@ public class LineObj extends PDElement {
 	@Override
 	public int injCurrents() {
 		throw new UnsupportedOperationException();
+	}
+
+	public LineUnits getLineCodeUnits() {
+		return lineCodeUnits;
+	}
+
+	public LineGeometryObj getLineGeometryObj() {
+		return lineGeometryObj;
+	}
+
+	public LineSpacingObj getLineSpacingObj() {
+		return lineSpacingObj;
+	}
+
+	public EarthModel getEarthModel() {
+		return earthModel;
+	}
+
+	public double getR1() {
+		return R1;
+	}
+
+	public double getR0() {
+		return R0;
+	}
+
+	public double getC1() {
+		return C1;
+	}
+
+	public double getC0() {
+		return C0;
+	}
+
+	public double getLen() {
+		return len;
+	}
+
+	public LineUnits getLengthUnits() {
+		return lengthUnits;
+	}
+
+	public String getCondCode() {
+		return condCode;
+	}
+
+	public double getUnitsConvert() {
+		return unitsConvert;
+	}
+
+	public ConductorDataObj[] getWireData() {
+		return wireData;
+	}
+
+	public boolean isLineCodeSpecified() {
+		return lineCodeSpecified;
+	}
+
+	public boolean isCapSpecified() {
+		return capSpecified;
+	}
+
+	public CMatrix getZ() {
+		return Z;
+	}
+
+	public CMatrix getYc() {
+		return Yc;
+	}
+
+	public double getX1() {
+		return X1;
+	}
+
+	public double getX0() {
+		return X0;
+	}
+
+	public double getXg() {
+		return Xg;
+	}
+
+	public double getRho() {
+		return rho;
+	}
+
+	public boolean isGeometrySpecified() {
+		return geometrySpecified;
+	}
+
+	public boolean isSymComponentsModel() {
+		return symComponentsModel;
+	}
+
+	public boolean isSwitch() {
+		return isSwitch;
+	}
+
+	public void setLineGeometryObj(LineGeometryObj lineGeometryObj) {
+		this.lineGeometryObj = lineGeometryObj;
+	}
+
+	public void setLineSpacingObj(LineSpacingObj lineSpacingObj) {
+		this.lineSpacingObj = lineSpacingObj;
+	}
+
+	public void setRhoSpecified(boolean rhoSpecified) {
+		this.rhoSpecified = rhoSpecified;
+	}
+
+	public void setLineCodeSpecified(boolean lineCodeSpecified) {
+		this.lineCodeSpecified = lineCodeSpecified;
+	}
+
+	public void setEarthModel(EarthModel earthModel) {
+		this.earthModel = earthModel;
+	}
+
+	public void setCapSpecified(boolean capSpecified) {
+		this.capSpecified = capSpecified;
+	}
+
+	public void setR1(double r1) {
+		R1 = r1;
+	}
+
+	public void setR0(double r0) {
+		R0 = r0;
+	}
+
+	public void setC1(double c1) {
+		C1 = c1;
+	}
+
+	public void setC0(double c0) {
+		C0 = c0;
+	}
+
+	public void setLen(double len) {
+		this.len = len;
+	}
+
+	public void setLengthUnits(LineUnits lengthUnits) {
+		this.lengthUnits = lengthUnits;
+	}
+
+	public void setRg(double rg) {
+		Rg = rg;
+	}
+
+	public void setKXg(double kXg) {
+		this.kXg = kXg;
+	}
+
+	public void setRho(double rho) {
+		this.rho = rho;
+	}
+
+	public void setGeometrySpecified(boolean geometrySpecified) {
+		this.geometrySpecified = geometrySpecified;
+	}
+
+	public void setSpacingSpecified(boolean spacingSpecified) {
+		this.spacingSpecified = spacingSpecified;
+	}
+
+	public void setSymComponentsChanged(boolean symComponentsChanged) {
+		this.symComponentsChanged = symComponentsChanged;
+	}
+
+	public void setSymComponentsModel(boolean symComponentsModel) {
+		this.symComponentsModel = symComponentsModel;
+	}
+
+	public void setSwitch(boolean isSwitch) {
+		this.isSwitch = isSwitch;
+	}
+
+	public void setUnitsConvert(double unitsConvert) {
+		this.unitsConvert = unitsConvert;
+	}
+
+	public void setZinv(CMatrix zinv) {
+		Zinv = zinv;
+	}
+
+	public void setZ(CMatrix z) {
+		Z = z;
+	}
+
+	public void setYc(CMatrix yc) {
+		Yc = yc;
+	}
+
+	public void setX1(double x1) {
+		X1 = x1;
+	}
+
+	public void setX0(double x0) {
+		X0 = x0;
+	}
+
+	public void setXg(double xg) {
+		Xg = xg;
 	}
 
 }

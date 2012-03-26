@@ -10,9 +10,6 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 
-import lombok.Getter;
-import lombok.Setter;
-
 import org.apache.commons.math.complex.Complex;
 
 import com.ncond.dss.common.Circuit;
@@ -26,7 +23,6 @@ import com.ncond.dss.conversion.GeneratorObj;
 import com.ncond.dss.general.XYCurveObj;
 import com.ncond.dss.shared.PointerList;
 
-@Getter @Setter
 public class VVControlObj extends ControlElem {
 
 	private static final int NONE = 0;
@@ -44,7 +40,7 @@ public class VVControlObj extends ControlElem {
 	private double totalWeight;
 	private double QOldDeliver, QDeliver, QNew;
 	private double VAvgPuPrior, VAvgPu;
-	private double presentHour;
+	@SuppressWarnings("unused") private double presentHour;
 
 	private int controlActionHandle;
 	private int listSize;
@@ -514,6 +510,118 @@ public class VVControlObj extends ControlElem {
 	@Override
 	public int injCurrents() {
 		throw new UnsupportedOperationException();
+	}
+
+	public XYCurveObj getVvc_Curve() {
+		return vvc_Curve;
+	}
+
+	public void setVvc_Curve(XYCurveObj vvc_Curve) {
+		this.vvc_Curve = vvc_Curve;
+	}
+
+	public double getDeltaVTolerance() {
+		return deltaVTolerance;
+	}
+
+	public int getListSize() {
+		return listSize;
+	}
+
+	public List<String> getGeneratorNames() {
+		return generatorNames;
+	}
+
+	public PointerList getGenerators() {
+		return generators;
+	}
+
+	public double[] getWeights() {
+		return weights;
+	}
+
+	public CktElement getMonitoredElement() {
+		return monitoredElement;
+	}
+
+	public int getCondOffset() {
+		return condOffset;
+	}
+
+	public void setVvc_VMaxPU(double vvc_VMaxPU) {
+		this.vvc_VMaxPU = vvc_VMaxPU;
+	}
+
+	public void setVvc_VMinPU(double vvc_VMinPU) {
+		this.vvc_VMinPU = vvc_VMinPU;
+	}
+
+	public void setKVA_Rating(double kVA_Rating) {
+		this.kVA_Rating = kVA_Rating;
+	}
+
+	public void setKW_Rating(double kW_Rating) {
+		this.kW_Rating = kW_Rating;
+	}
+
+	public void setKVAr_FullOutput(double kVAr_FullOutput) {
+		this.kVAr_FullOutput = kVAr_FullOutput;
+	}
+
+	public void setPf(double pf) {
+		this.pf = pf;
+	}
+
+	public void setDelay(double delay) {
+		this.delay = delay;
+	}
+
+	public void setDelayOff(double delayOff) {
+		this.delayOff = delayOff;
+	}
+
+	public void setKW_RampRate(double kW_RampRate) {
+		this.kW_RampRate = kW_RampRate;
+	}
+
+	public void setKVAr_RampRate(double kVAr_RampRate) {
+		this.kVAr_RampRate = kVAr_RampRate;
+	}
+
+	public void setKW_Limit(double kW_Limit) {
+		this.kW_Limit = kW_Limit;
+	}
+
+	public void setKVAr_Limit(double kVAr_Limit) {
+		this.kVAr_Limit = kVAr_Limit;
+	}
+
+	public void setDeltaQFactor(double deltaQFactor) {
+		this.deltaQFactor = deltaQFactor;
+	}
+
+	public int getVvc_CurveSize() {
+		return vvc_CurveSize;
+	}
+
+	public void setVvc_CurveSize(int vvc_CurveSize) {
+		this.vvc_CurveSize = vvc_CurveSize;
+	}
+
+	public void setDeltaVTolerance(double deltaVTolerance) {
+		this.deltaVTolerance = deltaVTolerance;
+	}
+
+	public void setListSize(int listSize) {
+		this.listSize = listSize;
+	}
+
+	public void setMonitoredElement(CktElement monitoredElement) {
+		this.monitoredElement = monitoredElement;
+	}
+
+	public void setCondOffset(int condOffset) {
+		this.condOffset = condOffset;
 	}
 
 }

@@ -7,9 +7,6 @@ package com.ncond.dss.conversion;
 
 import java.io.PrintStream;
 
-import lombok.Getter;
-import lombok.Setter;
-
 import org.apache.commons.math.complex.Complex;
 
 import com.ncond.dss.common.CktElement;
@@ -20,7 +17,6 @@ import com.ncond.dss.common.SolutionObj;
 import com.ncond.dss.general.SpectrumObj;
 import com.ncond.dss.meter.MeterElement;
 
-@Getter @Setter
 public abstract class PCElement extends CktElement {
 
 	private boolean ITerminalUpdated;
@@ -224,6 +220,46 @@ public abstract class PCElement extends CktElement {
 
 	public Complex[] getInjCurrent() {
 		return injCurrent;
+	}
+
+	public boolean isITerminalUpdated() {
+		return ITerminalUpdated;
+	}
+
+	public String getSpectrum() {
+		return spectrum;
+	}
+
+	public SpectrumObj getSpectrumObj() {
+		return spectrumObj;
+	}
+
+	public MeterElement getMeterObj() {
+		return meterObj;
+	}
+
+	public MeterElement getSensorObj() {
+		return sensorObj;
+	}
+
+	public void setSpectrum(String spectrum) {
+		this.spectrum = spectrum;
+	}
+
+	public void setSpectrumObj(SpectrumObj spectrumObj) {
+		this.spectrumObj = spectrumObj;
+	}
+
+	public void setMeterObj(MeterElement meterObj) {
+		this.meterObj = meterObj;
+	}
+
+	public void setSensorObj(MeterElement sensorObj) {
+		this.sensorObj = sensorObj;
+	}
+
+	public void setInjCurrent(Complex[] injCurrent) {
+		this.injCurrent = injCurrent;
 	}
 
 }

@@ -9,9 +9,6 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 
-import lombok.Getter;
-import lombok.Setter;
-
 import com.ncond.dss.common.DSS;
 import com.ncond.dss.common.DSSClass;
 import com.ncond.dss.shared.MathUtil;
@@ -48,7 +45,6 @@ import com.ncond.dss.shared.MathUtil;
  * The Mean and Std Deviation are automatically computed upon demand when new series of points is entered.
  *
  */
-@Getter @Setter
 public class TempShapeObj extends DSSObject {
 
 	private int lastValueAccessed, numPoints;
@@ -340,6 +336,42 @@ public class TempShapeObj extends DSSObject {
 	public void setStdDev(double stddev) {
 		stdDevCalculated = true;
 		stdDev[0] = stddev;
+	}
+
+	public int getNumPoints() {
+		return numPoints;
+	}
+
+	public double getInterval() {
+		return interval;
+	}
+
+	public double[] getHours() {
+		return hours;
+	}
+
+	public double[] getTempValues() {
+		return tempValues;
+	}
+
+	public void setArrayPropertyIndex(int arrayPropertyIndex) {
+		this.arrayPropertyIndex = arrayPropertyIndex;
+	}
+
+	public void setStdDevCalculated(boolean stdDevCalculated) {
+		this.stdDevCalculated = stdDevCalculated;
+	}
+
+	public void setInterval(double interval) {
+		this.interval = interval;
+	}
+
+	public void setHours(double[] hours) {
+		this.hours = hours;
+	}
+
+	public void setTempValues(double[] tempValues) {
+		this.tempValues = tempValues;
 	}
 
 }

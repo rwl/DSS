@@ -5,12 +5,8 @@
  */
 package com.ncond.dss.shared;
 
-import lombok.Getter;
-import lombok.Setter;
-
 import com.ncond.dss.common.Util;
 
-@Getter @Setter
 public class ZoneEndsList {
 
 	private PointerList endNodeList;
@@ -34,6 +30,10 @@ public class ZoneEndsList {
 	public int get(int i, CktTreeNode node) {
 		node = (CktTreeNode) endNodeList.get(i);
 		return endBuses[i];
+	}
+
+	public int getNumEnds() {
+		return numEnds;
 	}
 
 }

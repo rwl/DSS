@@ -8,9 +8,6 @@ package com.ncond.dss.delivery;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 
-import lombok.Getter;
-import lombok.Setter;
-
 import org.apache.commons.math.complex.Complex;
 
 import com.ncond.dss.common.DSS;
@@ -65,7 +62,6 @@ import com.ncond.dss.shared.MathUtil;
  *       Note that Rmatrix may be in parallel with Xmatrix (set parallel = Yes)
  *
  */
-@Getter @Setter
 public class ReactorObj extends PDElement {
 
 	private double R, Rp, Gp, X, kVArRating, kVRating;
@@ -481,6 +477,94 @@ public class ReactorObj extends PDElement {
 	@Override
 	public int injCurrents() {
 		throw new UnsupportedOperationException();
+	}
+
+	public double getR() {
+		return R;
+	}
+
+	public void setR(double r) {
+		R = r;
+	}
+
+	public double getRp() {
+		return Rp;
+	}
+
+	public void setRp(double rp) {
+		Rp = rp;
+	}
+
+	public double getX() {
+		return X;
+	}
+
+	public void setX(double x) {
+		X = x;
+	}
+
+	public double getKVArRating() {
+		return kVArRating;
+	}
+
+	public void setKVArRating(double kVArRating) {
+		this.kVArRating = kVArRating;
+	}
+
+	public double getKVRating() {
+		return kVRating;
+	}
+
+	public void setKVRating(double kVRating) {
+		this.kVRating = kVRating;
+	}
+
+	public double[] getRmatrix() {
+		return Rmatrix;
+	}
+
+	public void setRmatrix(double[] rmatrix) {
+		Rmatrix = rmatrix;
+	}
+
+	public double[] getXmatrix() {
+		return Xmatrix;
+	}
+
+	public void setXmatrix(double[] xmatrix) {
+		Xmatrix = xmatrix;
+	}
+
+	public Connection getConnection() {
+		return connection;
+	}
+
+	public void setConnection(Connection connection) {
+		this.connection = connection;
+	}
+
+	public ReactorSpecType getSpecType() {
+		return specType;
+	}
+
+	public void setSpecType(ReactorSpecType specType) {
+		this.specType = specType;
+	}
+
+	public boolean isParallel() {
+		return isParallel;
+	}
+
+	public void setParallel(boolean isParallel) {
+		this.isParallel = isParallel;
+	}
+
+	public boolean isRpSpecified() {
+		return RpSpecified;
+	}
+
+	public void setRpSpecified(boolean rpSpecified) {
+		RpSpecified = rpSpecified;
 	}
 
 }

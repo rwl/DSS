@@ -8,9 +8,6 @@ package com.ncond.dss.control;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 
-import lombok.Getter;
-import lombok.Setter;
-
 import org.apache.commons.math.complex.Complex;
 
 import com.ncond.dss.common.Circuit;
@@ -29,7 +26,6 @@ import com.ncond.dss.general.TCC_CurveObj;
  *
  * CktElement to be controlled must already exist.
  */
-@Getter @Setter
 public class RecloserObj extends ControlElem {
 
 	private TCC_CurveObj phaseDelayed, groundDelayed, phaseFast, groundFast;
@@ -476,6 +472,170 @@ public class RecloserObj extends ControlElem {
 	@Override
 	public int injCurrents() {
 		throw new UnsupportedOperationException();
+	}
+
+	public TCC_CurveObj getPhaseDelayed() {
+		return phaseDelayed;
+	}
+
+	public void setPhaseDelayed(TCC_CurveObj phaseDelayed) {
+		this.phaseDelayed = phaseDelayed;
+	}
+
+	public TCC_CurveObj getGroundDelayed() {
+		return groundDelayed;
+	}
+
+	public void setGroundDelayed(TCC_CurveObj groundDelayed) {
+		this.groundDelayed = groundDelayed;
+	}
+
+	public TCC_CurveObj getPhaseFast() {
+		return phaseFast;
+	}
+
+	public void setPhaseFast(TCC_CurveObj phaseFast) {
+		this.phaseFast = phaseFast;
+	}
+
+	public TCC_CurveObj getGroundFast() {
+		return groundFast;
+	}
+
+	public void setGroundFast(TCC_CurveObj groundFast) {
+		this.groundFast = groundFast;
+	}
+
+	public double getPhaseTrip() {
+		return phaseTrip;
+	}
+
+	public void setPhaseTrip(double phaseTrip) {
+		this.phaseTrip = phaseTrip;
+	}
+
+	public double getGroundTrip() {
+		return groundTrip;
+	}
+
+	public void setGroundTrip(double groundTrip) {
+		this.groundTrip = groundTrip;
+	}
+
+	public double getPhaseInst() {
+		return phaseInst;
+	}
+
+	public void setPhaseInst(double phaseInst) {
+		this.phaseInst = phaseInst;
+	}
+
+	public double getGroundInst() {
+		return groundInst;
+	}
+
+	public void setGroundInst(double groundInst) {
+		this.groundInst = groundInst;
+	}
+
+	public int getNumFast() {
+		return numFast;
+	}
+
+	public void setNumFast(int numFast) {
+		this.numFast = numFast;
+	}
+
+	public int getNumReclose() {
+		return numReclose;
+	}
+
+	public void setNumReclose(int numReclose) {
+		this.numReclose = numReclose;
+	}
+
+	public double getResetTime() {
+		return resetTime;
+	}
+
+	public void setResetTime(double resetTime) {
+		this.resetTime = resetTime;
+	}
+
+	public String getMonitoredElementName() {
+		return monitoredElementName;
+	}
+
+	public void setMonitoredElementName(String monitoredElementName) {
+		this.monitoredElementName = monitoredElementName;
+	}
+
+	public int getMonitoredElementTerminalIdx() {
+		return monitoredElementTerminalIdx;
+	}
+
+	public void setMonitoredElementTerminalIdx(int monitoredElementTerminalIdx) {
+		this.monitoredElementTerminalIdx = monitoredElementTerminalIdx;
+	}
+
+	public double[] getRecloseIntervals() {
+		return recloseIntervals;
+	}
+
+	public CktElement getMonitoredElement() {
+		return monitoredElement;
+	}
+
+	public ControlAction getPresentState() {
+		return presentState;
+	}
+
+	public boolean isLockedOut() {
+		return lockedOut;
+	}
+
+	public int getCondOffset() {
+		return condOffset;
+	}
+
+	public void setDelayTime(double delayTime) {
+		this.delayTime = delayTime;
+	}
+
+	public void setTDGrDelayed(double tDGrDelayed) {
+		TDGrDelayed = tDGrDelayed;
+	}
+
+	public void setTDPhDelayed(double tDPhDelayed) {
+		TDPhDelayed = tDPhDelayed;
+	}
+
+	public void setTDGrFast(double tDGrFast) {
+		TDGrFast = tDGrFast;
+	}
+
+	public void setTDPhFast(double tDPhFast) {
+		TDPhFast = tDPhFast;
+	}
+
+	public void setRecloseIntervals(double[] recloseIntervals) {
+		this.recloseIntervals = recloseIntervals;
+	}
+
+	public void setMonitoredElement(CktElement monitoredElement) {
+		this.monitoredElement = monitoredElement;
+	}
+
+	public void setPresentState(ControlAction presentState) {
+		this.presentState = presentState;
+	}
+
+	public void setLockedOut(boolean lockedOut) {
+		this.lockedOut = lockedOut;
+	}
+
+	public void setCondOffset(int condOffset) {
+		this.condOffset = condOffset;
 	}
 
 }

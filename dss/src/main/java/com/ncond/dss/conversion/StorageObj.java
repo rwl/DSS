@@ -11,9 +11,6 @@ import java.io.IOException;
 import java.io.PrintStream;
 import java.io.PrintWriter;
 
-import lombok.Getter;
-import lombok.Setter;
-
 import org.apache.commons.math.complex.Complex;
 
 import com.ncond.dss.common.Circuit;
@@ -49,7 +46,7 @@ import com.ncond.dss.shared.MathUtil;
  * TODO: Complete harmonics mode algorithm (generator mode is implemented)
  *
  */
-@Getter @Setter
+@SuppressWarnings("unused")
 public class StorageObj extends PCElement {
 
 	private static final Complex CDOUBLEONE = new Complex(1.0, 1.0);
@@ -1682,6 +1679,346 @@ public class StorageObj extends PCElement {
 
 	public double getPowerFactor() {
 		return PFNominal;
+	}
+
+	public double getKVARating() {
+		return kVARating;
+	}
+
+	public double getKVStorageBase() {
+		return kVStorageBase;
+	}
+
+	public double getKVArOut() {
+		return kVArOut;
+	}
+
+	public double getKWOut() {
+		return kWOut;
+	}
+
+	public double getPctChargeEff() {
+		return pctChargeEff;
+	}
+
+	public double getPctDischargeEff() {
+		return pctDischargeEff;
+	}
+
+	public double getDischargeTrigger() {
+		return dischargeTrigger;
+	}
+
+	public double getChargeTrigger() {
+		return chargeTrigger;
+	}
+
+	public double getChargeTime() {
+		return chargeTime;
+	}
+
+	public double getKWhBeforeUpdate() {
+		return kWhBeforeUpdate;
+	}
+
+	public Connection getConnection() {
+		return connection;
+	}
+
+	public String getDailyShape() {
+		return dailyShape;
+	}
+
+	public LoadShapeObj getDailyShapeObj() {
+		return dailyShapeObj;
+	}
+
+	public String getDutyShape() {
+		return dutyShape;
+	}
+
+	public LoadShapeObj getDutyShapeObj() {
+		return dutyShapeObj;
+	}
+
+	public double getKWRating() {
+		return kWRating;
+	}
+
+	public double getKWhRating() {
+		return kWhRating;
+	}
+
+	public double getKWhStored() {
+		return kWhStored;
+	}
+
+	public double getKWhReserve() {
+		return kWhReserve;
+	}
+
+	public DispatchMode getDispatchMode() {
+		return dispatchMode;
+	}
+
+	public StorageState getState() {
+		return state;
+	}
+
+	public double getPctIdleKW() {
+		return pctIdleKW;
+	}
+
+	public double getPctIdleKVAr() {
+		return pctIdleKVAr;
+	}
+
+	public double getPctR() {
+		return pctR;
+	}
+
+	public double getPctX() {
+		return pctX;
+	}
+
+	public double getPNominalPerPhase() {
+		return PNominalPerPhase;
+	}
+
+	public double getQNominalPerPhase() {
+		return QNominalPerPhase;
+	}
+
+	public double getRandomMult() {
+		return randomMult;
+	}
+
+	public double getPctReserve() {
+		return pctReserve;
+	}
+
+	public boolean isDebugTrace() {
+		return debugTrace;
+	}
+
+	public boolean isStateChanged() {
+		return stateChanged;
+	}
+
+	public boolean isKVANotSet() {
+		return kVANotSet;
+	}
+
+	public StoreUserModel getUserModel() {
+		return userModel;
+	}
+
+	public double getVBase() {
+		return VBase;
+	}
+
+	public double getVBase105() {
+		return VBase105;
+	}
+
+	public double getVBase95() {
+		return VBase95;
+	}
+
+	public double getVMaxPU() {
+		return VMaxPU;
+	}
+
+	public double getVMinPU() {
+		return VMinPU;
+	}
+
+	public int getStorageClass() {
+		return storageClass;
+	}
+
+	public int getVoltageModel() {
+		return voltageModel;
+	}
+
+	public String getYearlyShape() {
+		return yearlyShape;
+	}
+
+	public LoadShapeObj getYearlyShapeObj() {
+		return yearlyShapeObj;
+	}
+
+	public double getPctKWIn() {
+		return pctKWIn;
+	}
+
+	public void setDebugTrace(boolean debugTrace) {
+		this.debugTrace = debugTrace;
+	}
+
+	public void setKVANotSet(boolean kVANotSet) {
+		this.kVANotSet = kVANotSet;
+	}
+
+	public void setKVARating(double kVARating) {
+		this.kVARating = kVARating;
+	}
+
+	public void setKWOut(double kWOut) {
+		this.kWOut = kWOut;
+	}
+
+	public void setPctIdleKW(double pctIdleKW) {
+		this.pctIdleKW = pctIdleKW;
+	}
+
+	public void setPctIdleKVAr(double pctIdleKVAr) {
+		this.pctIdleKVAr = pctIdleKVAr;
+	}
+
+	public void setPctChargeEff(double pctChargeEff) {
+		this.pctChargeEff = pctChargeEff;
+	}
+
+	public void setDischargeTrigger(double dischargeTrigger) {
+		this.dischargeTrigger = dischargeTrigger;
+	}
+
+	public void setChargeTrigger(double chargeTrigger) {
+		this.chargeTrigger = chargeTrigger;
+	}
+
+	public void setChargeTime(double chargeTime) {
+		this.chargeTime = chargeTime;
+	}
+
+	public void setConnection(Connection connection) {
+		this.connection = connection;
+	}
+
+	public void setDailyShape(String dailyShape) {
+		this.dailyShape = dailyShape;
+	}
+
+	public void setDailyShapeObj(LoadShapeObj dailyShapeObj) {
+		this.dailyShapeObj = dailyShapeObj;
+	}
+
+	public void setDutyShape(String dutyShape) {
+		this.dutyShape = dutyShape;
+	}
+
+	public void setDutyShapeObj(LoadShapeObj dutyShapeObj) {
+		this.dutyShapeObj = dutyShapeObj;
+	}
+
+	public void setKWRating(double kWRating) {
+		this.kWRating = kWRating;
+	}
+
+	public void setKWhStored(double kWhStored) {
+		this.kWhStored = kWhStored;
+	}
+
+	public void setPctKWIn(double pctKWIn) {
+		this.pctKWIn = pctKWIn;
+	}
+
+	public void setDispatchMode(DispatchMode dispatchMode) {
+		this.dispatchMode = dispatchMode;
+	}
+
+	public void setStateChanged(boolean stateChanged) {
+		this.stateChanged = stateChanged;
+	}
+
+	public void setPctDischargeEff(double pctDischargeEff) {
+		this.pctDischargeEff = pctDischargeEff;
+	}
+
+	public void setPctR(double pctR) {
+		this.pctR = pctR;
+	}
+
+	public void setPctX(double pctX) {
+		this.pctX = pctX;
+	}
+
+	public void setPNominalPerPhase(double pNominalPerPhase) {
+		PNominalPerPhase = pNominalPerPhase;
+	}
+
+	public void setQNominalPerPhase(double qNominalPerPhase) {
+		QNominalPerPhase = qNominalPerPhase;
+	}
+
+	public void setRandomMult(double randomMult) {
+		this.randomMult = randomMult;
+	}
+
+	public void setVBase(double vBase) {
+		VBase = vBase;
+	}
+
+	public void setVBase105(double vBase105) {
+		VBase105 = vBase105;
+	}
+
+	public void setVBase95(double vBase95) {
+		VBase95 = vBase95;
+	}
+
+	public void setVMaxPU(double vMaxPU) {
+		VMaxPU = vMaxPU;
+	}
+
+	public void setVMinPU(double vMinPU) {
+		VMinPU = vMinPU;
+	}
+
+	public void setStorageClass(int storageClass) {
+		this.storageClass = storageClass;
+	}
+
+	public void setVoltageModel(int voltageModel) {
+		this.voltageModel = voltageModel;
+	}
+
+	public void setYearlyShape(String yearlyShape) {
+		this.yearlyShape = yearlyShape;
+	}
+
+	public void setYearlyShapeObj(LoadShapeObj yearlyShapeObj) {
+		this.yearlyShapeObj = yearlyShapeObj;
+	}
+
+	public void setPctReserve(double pctReserve) {
+		this.pctReserve = pctReserve;
+	}
+
+	public double getPctKWout() {
+		return pctKWout;
+	}
+
+	public void setKVStorageBase(double kVStorageBase) {
+		this.kVStorageBase = kVStorageBase;
+	}
+
+	public void setKVArOut(double kVArOut) {
+		this.kVArOut = kVArOut;
+	}
+
+	public void setKWhBeforeUpdate(double kWhBeforeUpdate) {
+		this.kWhBeforeUpdate = kWhBeforeUpdate;
+	}
+
+	public void setKWhRating(double kWhRating) {
+		this.kWhRating = kWhRating;
+	}
+
+	public void setKWhReserve(double kWhReserve) {
+		this.kWhReserve = kWhReserve;
 	}
 
 }

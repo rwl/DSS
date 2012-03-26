@@ -11,9 +11,6 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.List;
 
-import lombok.Getter;
-import lombok.Setter;
-
 import com.ncond.dss.common.Bus;
 import com.ncond.dss.common.Circuit;
 import com.ncond.dss.common.CktElement;
@@ -27,7 +24,6 @@ import com.ncond.dss.parser.Parser;
 import com.ncond.dss.shared.CktTree;
 import com.ncond.dss.shared.CommandList;
 
-@Getter @Setter
 public class EnergyMeter extends MeterClass {
 
 	public static final int NumPropsThisClass = 17;
@@ -912,6 +908,42 @@ public class EnergyMeter extends MeterClass {
 			DSS.doSimpleMsg("Error opening demand interval file \"" + DSS.energyMeterClass.getDI_Dir() + DSS.SEPARATOR +
 					"DI_VoltExceptions.csv\" for writing." + DSS.CRLF + e.getMessage(), 541);
 		}
+	}
+
+	public boolean isDoOverloadReport() {
+		return doOverloadReport;
+	}
+
+	public void setDoOverloadReport(boolean doOverloadReport) {
+		this.doOverloadReport = doOverloadReport;
+	}
+
+	public boolean isSaveDemandInterval() {
+		return saveDemandInterval;
+	}
+
+	public boolean isDI_Verbose() {
+		return DI_Verbose;
+	}
+
+	public String getDI_Dir() {
+		return DI_Dir;
+	}
+
+	public FileWriter getMeterTotals() {
+		return meterTotals;
+	}
+
+	public void setDoVoltageExceptionReport(boolean doVoltageExceptionReport) {
+		this.doVoltageExceptionReport = doVoltageExceptionReport;
+	}
+
+	public double[] getDI_RegisterTotals() {
+		return DI_RegisterTotals;
+	}
+
+	public boolean isDoVoltageExceptionReport() {
+		return doVoltageExceptionReport;
 	}
 
 }

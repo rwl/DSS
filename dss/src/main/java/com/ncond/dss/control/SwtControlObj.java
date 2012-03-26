@@ -8,16 +8,12 @@ package com.ncond.dss.control;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 
-import lombok.Getter;
-import lombok.Setter;
-
 import org.apache.commons.math.complex.Complex;
 
 import com.ncond.dss.common.DSS;
 import com.ncond.dss.common.DSSClass;
 import com.ncond.dss.common.Util;
 
-@Getter @Setter
 public class SwtControlObj extends ControlElem {
 
 	private ControlAction presentState;
@@ -196,6 +192,11 @@ public class SwtControlObj extends ControlElem {
 		super.initPropertyValues(SwtControl.NumPropsThisClass - 1);
 	}
 
+	@Override
+	public int injCurrents() {
+		throw new UnsupportedOperationException();
+	}
+
 	public ControlAction getPresentState() {
 		return presentState;
 	}
@@ -204,9 +205,12 @@ public class SwtControlObj extends ControlElem {
 		return locked;
 	}
 
-	@Override
-	public int injCurrents() {
-		throw new UnsupportedOperationException();
+	public void setPresentState(ControlAction presentState) {
+		this.presentState = presentState;
+	}
+
+	public void setLocked(boolean locked) {
+		this.locked = locked;
 	}
 
 }

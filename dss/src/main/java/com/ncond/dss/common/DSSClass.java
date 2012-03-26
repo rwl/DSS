@@ -348,4 +348,12 @@ abstract public class DSSClass {
 		this.elementNamesOutOfSynch = elementNamesOutOfSynch;
 	}
 
+	public CommandList getCommandList() {
+		return commandList;
+	}
+
+	public HashList getElementNameList() {
+		return elementNameList;
+	}
+
 }

@@ -9,9 +9,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
 
-import lombok.Getter;
-import lombok.Setter;
-
 import com.ncond.dss.common.Circuit;
 import com.ncond.dss.common.CktElement;
 import com.ncond.dss.common.DSS;
@@ -20,7 +17,6 @@ import com.ncond.dss.conversion.PCElement;
 import com.ncond.dss.delivery.PDElement;
 import com.ncond.dss.general.DSSObject;
 
-@Getter @Setter
 public class CktTree {
 
 	private CktTreeNode firstNode;
@@ -389,6 +385,14 @@ public class CktTree {
 			lstPD[i] = null;
 			lstPC[i] = null;
 		}
+	}
+
+	public CktTreeNode getPresentBranch() {
+		return presentBranch;
+	}
+
+	public ZoneEndsList getZoneEndsList() {
+		return zoneEndsList;
 	}
 
 }

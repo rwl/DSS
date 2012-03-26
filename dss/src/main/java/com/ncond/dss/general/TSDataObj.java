@@ -8,12 +8,8 @@ package com.ncond.dss.general;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 
-import lombok.Getter;
-import lombok.Setter;
-
 import com.ncond.dss.common.DSSClass;
 
-@Getter @Setter
 public class TSDataObj extends CableDataObj {
 
 	private double diaShield;
@@ -61,6 +57,30 @@ public class TSDataObj extends CableDataObj {
 		setPropertyValue(1, "-1");
 		setPropertyValue(2, "20.0");
 		super.initPropertyValues(arrayOffset + TSData.NumPropsThisClass);
+	}
+
+	public double getDiaShield() {
+		return diaShield;
+	}
+
+	public void setDiaShield(double diaShield) {
+		this.diaShield = diaShield;
+	}
+
+	public double getTapeLayer() {
+		return tapeLayer;
+	}
+
+	public void setTapeLayer(double tapeLayer) {
+		this.tapeLayer = tapeLayer;
+	}
+
+	public double getTapeLap() {
+		return tapeLap;
+	}
+
+	public void setTapeLap(double tapeLap) {
+		this.tapeLap = tapeLap;
 	}
 
 }
