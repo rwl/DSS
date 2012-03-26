@@ -141,7 +141,7 @@ public class Parser {
 				while ((pos[0] < buffer.length() - 1) && !isDelimiter(buffer, pos))
 					pos[0] += 1;
 
-				tok = buffer.substring(tokenStart, pos[0]);  // TODO check Copy translation
+				tok = buffer.substring(tokenStart, pos[0]);
 			}
 
 			// if stop on comment, ignore rest of line.
@@ -173,7 +173,7 @@ public class Parser {
 		while ((pos[0] < buffer.length() - 1) && buffer.charAt(pos[0]) != endChar)
 			pos[0] += 1;
 
-		tok = buffer.substring(tokenStart, pos[0]);  // TODO check Copy translation
+		tok = buffer.substring(tokenStart, pos[0]);
 
 		if (pos[0] < buffer.length() - 1)
 			pos[0] += 1;  // increment past endchar
