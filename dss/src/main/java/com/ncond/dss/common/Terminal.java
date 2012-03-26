@@ -5,14 +5,10 @@
  */
 package com.ncond.dss.common;
 
-import lombok.Getter;
-import lombok.Setter;
-
-@Getter @Setter
 public class Terminal {
 
 	private int numCond;
-	private int activeConductor;
+	@SuppressWarnings("unused") private int activeConductor;
 
 	protected int busRef;
 
@@ -45,6 +41,22 @@ public class Terminal {
 
 	public int[] getTermNodeRef() {
 		return termNodeRef;
+	}
+
+	public int getBusRef() {
+		return busRef;
+	}
+
+	public void setBusRef(int busRef) {
+		this.busRef = busRef;
+	}
+
+	public boolean isChecked() {
+		return checked;
+	}
+
+	public void setChecked(boolean checked) {
+		this.checked = checked;
 	}
 
 }

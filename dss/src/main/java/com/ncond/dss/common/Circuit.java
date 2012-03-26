@@ -11,9 +11,6 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 
-import lombok.Getter;
-import lombok.Setter;
-
 import org.apache.commons.math.complex.Complex;
 
 import com.ncond.dss.common.Bus.NodeBus;
@@ -46,7 +43,6 @@ import com.ncond.dss.parser.Parser;
 import com.ncond.dss.shared.CktTree;
 import com.ncond.dss.shared.HashList;
 
-@Getter @Setter
 public class Circuit extends NamedObject {
 
 	public class CktElementDef {
@@ -1089,6 +1085,494 @@ public class Circuit extends NamedObject {
 
 	public double getLegalVoltageBase(int idx) {
 		return legalVoltageBases[idx];
+	}
+
+	public int getActiveBusIndex() {
+		return activeBusIndex;
+	}
+
+	public HashList getBusList() {
+		return busList;
+	}
+
+	public HashList getAutoAddBusList() {
+		return autoAddBusList;
+	}
+
+	public AutoAdd getAutoAddObj() {
+		return autoAddObj;
+	}
+
+	public SequentialTime getActiveLoadShapeClass() {
+		return activeLoadShapeClass;
+	}
+
+	public List<CktElement> getCktElements() {
+		return cktElements;
+	}
+
+	public ControlQueue getControlQueue() {
+		return controlQueue;
+	}
+
+	public double getDefaultGrowthFactor() {
+		return defaultGrowthFactor;
+	}
+
+	public double getDefaultGrowthRate() {
+		return defaultGrowthRate;
+	}
+
+	public Complex getDefaultHourMult() {
+		return defaultHourMult;
+	}
+
+	public LoadShapeObj getDefaultDailyShapeObj() {
+		return defaultDailyShapeObj;
+	}
+
+	public HashList getDeviceList() {
+		return deviceList;
+	}
+
+	public CktElementDef[] getDeviceRef() {
+		return deviceRef;
+	}
+
+	public List<ControlElem> getControls() {
+		return controls;
+	}
+
+	public List<EnergyMeterObj> getEnergyMeters() {
+		return energyMeters;
+	}
+
+	public double getEmergMaxVolts() {
+		return emergMaxVolts;
+	}
+
+	public double getEmergMinVolts() {
+		return emergMinVolts;
+	}
+
+	public LoadShapeObj getDefaultYearlyShapeObj() {
+		return defaultYearlyShapeObj;
+	}
+
+	public double getFundamental() {
+		return fundamental;
+	}
+
+	public List<FaultObj> getFaults() {
+		return faults;
+	}
+
+	public List<GeneratorObj> getGenerators() {
+		return generators;
+	}
+
+	public List<FeederObj> getFeeders() {
+		return feeders;
+	}
+
+	public double getGeneratorDispatchReference() {
+		return generatorDispatchReference;
+	}
+
+	public List<LineObj> getLines() {
+		return lines;
+	}
+
+	public List<LoadObj> getLoads() {
+		return loads;
+	}
+
+	public int[] getLossRegs() {
+		return lossRegs;
+	}
+
+	public String getLoadDurCurve() {
+		return loadDurCurve;
+	}
+
+	public LoadShapeObj getLoadDurCurveObj() {
+		return loadDurCurveObj;
+	}
+
+	public double[] getLegalVoltageBases() {
+		return legalVoltageBases;
+	}
+
+	public double getGenMultiplier() {
+		return genMultiplier;
+	}
+
+	public List<MeterElement> getMeterElements() {
+		return meterElements;
+	}
+
+	public List<MonitorObj> getMonitors() {
+		return monitors;
+	}
+
+	public double getLossWeight() {
+		return lossWeight;
+	}
+
+	public int getNumBuses() {
+		return numBuses;
+	}
+
+	public double getNormalMinVolts() {
+		return normalMinVolts;
+	}
+
+	public double getNormalMaxVolts() {
+		return normalMaxVolts;
+	}
+
+	public int getNodeMarkerCode() {
+		return nodeMarkerCode;
+	}
+
+	public int getNodeMarkerWidth() {
+		return nodeMarkerWidth;
+	}
+
+	public int getNumUERegs() {
+		return numUERegs;
+	}
+
+	public int getNumLossRegs() {
+		return numLossRegs;
+	}
+
+	public int getNumDevices() {
+		return numDevices;
+	}
+
+	public int getNumNodes() {
+		return numNodes;
+	}
+
+	public List<PDElement> getPDElements() {
+		return PDElements;
+	}
+
+	public List<PCElement> getPCElements() {
+		return PCElements;
+	}
+
+	public double getPctNormalFactor() {
+		return pctNormalFactor;
+	}
+
+	public List<SensorObj> getSensors() {
+		return sensors;
+	}
+
+	public List<RegControlObj> getRegControls() {
+		return regControls;
+	}
+
+	public String getPriceCurve() {
+		return priceCurve;
+	}
+
+	public PriceShapeObj getPriceCurveObj() {
+		return priceCurveObj;
+	}
+
+	public double getPriceSignal() {
+		return priceSignal;
+	}
+
+	public double[] getRegisterTotals() {
+		return registerTotals;
+	}
+
+	public ReductionStrategy getReductionStrategy() {
+		return reductionStrategy;
+	}
+
+	public double getReductionZmag() {
+		return reductionZmag;
+	}
+
+	public String getReductionStrategyString() {
+		return reductionStrategyString;
+	}
+
+	public SolutionObj getSolution() {
+		return solution;
+	}
+
+	public List<PCElement> getSources() {
+		return sources;
+	}
+
+	public double getUEWeight() {
+		return UEWeight;
+	}
+
+	public int[] getUERegs() {
+		return UERegs;
+	}
+
+	public int getSwitchMarkerCode() {
+		return switchMarkerCode;
+	}
+
+	public int getTransMarkerSize() {
+		return transMarkerSize;
+	}
+
+	public int getTransMarkerCode() {
+		return transMarkerCode;
+	}
+
+	public boolean isLogEvents() {
+		return logEvents;
+	}
+
+	public boolean isDuplicatesAllowed() {
+		return duplicatesAllowed;
+	}
+
+	public boolean isMeterZonesComputed() {
+		return meterZonesComputed;
+	}
+
+	public boolean isPositiveSequence() {
+		return positiveSequence;
+	}
+
+	public boolean isMarkSwitches() {
+		return markSwitches;
+	}
+
+	public boolean isMarkTransformers() {
+		return markTransformers;
+	}
+
+	public boolean isTrapezoidalIntegration() {
+		return trapezoidalIntegration;
+	}
+
+	public boolean isSolved() {
+		return solved;
+	}
+
+	public boolean isZonesLocked() {
+		return zonesLocked;
+	}
+
+	public void setActiveBusIndex(int activeBusIndex) {
+		this.activeBusIndex = activeBusIndex;
+	}
+
+	public void setControlBusNameRedefined(boolean controlBusNameRedefined) {
+		this.controlBusNameRedefined = controlBusNameRedefined;
+	}
+
+	public void setBusList(HashList busList) {
+		this.busList = busList;
+	}
+
+	public void setCapacityStart(double capacityStart) {
+		this.capacityStart = capacityStart;
+	}
+
+	public void setCapacityIncrement(double capacityIncrement) {
+		this.capacityIncrement = capacityIncrement;
+	}
+
+	public void setDefaultGrowthFactor(double defaultGrowthFactor) {
+		this.defaultGrowthFactor = defaultGrowthFactor;
+	}
+
+	public void setDefaultGrowthRate(double defaultGrowthRate) {
+		this.defaultGrowthRate = defaultGrowthRate;
+	}
+
+	public void setDefaultHourMult(Complex defaultHourMult) {
+		this.defaultHourMult = defaultHourMult;
+	}
+
+	public void setDefaultDailyShapeObj(LoadShapeObj defaultDailyShapeObj) {
+		this.defaultDailyShapeObj = defaultDailyShapeObj;
+	}
+
+	public void setCurrentDirectory(String currentDirectory) {
+		this.currentDirectory = currentDirectory;
+	}
+
+	public void setActiveLoadShapeClass(SequentialTime activeLoadShapeClass) {
+		this.activeLoadShapeClass = activeLoadShapeClass;
+	}
+
+	public void setFundamental(double fundamental) {
+		this.fundamental = fundamental;
+	}
+
+	public void setDeviceList(HashList deviceList) {
+		this.deviceList = deviceList;
+	}
+
+	public void setLossWeight(double lossWeight) {
+		this.lossWeight = lossWeight;
+	}
+
+	public void setNumUERegs(int numUERegs) {
+		this.numUERegs = numUERegs;
+	}
+
+	public void setNumLossRegs(int numLossRegs) {
+		this.numLossRegs = numLossRegs;
+	}
+
+	public void setLossRegs(int[] lossRegs) {
+		this.lossRegs = lossRegs;
+	}
+
+	public void setLogEvents(boolean logEvents) {
+		this.logEvents = logEvents;
+	}
+
+	public void setLoadDurCurve(String loadDurCurve) {
+		this.loadDurCurve = loadDurCurve;
+	}
+
+	public void setLoadDurCurveObj(LoadShapeObj loadDurCurveObj) {
+		this.loadDurCurveObj = loadDurCurveObj;
+	}
+
+	public void setPriceCurve(String priceCurve) {
+		this.priceCurve = priceCurve;
+	}
+
+	public void setNumNodes(int numNodes) {
+		this.numNodes = numNodes;
+	}
+
+	public void setDuplicatesAllowed(boolean duplicatesAllowed) {
+		this.duplicatesAllowed = duplicatesAllowed;
+	}
+
+	public void setMeterZonesComputed(boolean meterZonesComputed) {
+		this.meterZonesComputed = meterZonesComputed;
+	}
+
+	public void setPositiveSequence(boolean positiveSequence) {
+		this.positiveSequence = positiveSequence;
+	}
+
+	public void setNormalMinVolts(double normalMinVolts) {
+		this.normalMinVolts = normalMinVolts;
+	}
+
+	public void setNormalMaxVolts(double normalMaxVolts) {
+		this.normalMaxVolts = normalMaxVolts;
+	}
+
+	public void setEmergMaxVolts(double emergMaxVolts) {
+		this.emergMaxVolts = emergMaxVolts;
+	}
+
+	public void setEmergMinVolts(double emergMinVolts) {
+		this.emergMinVolts = emergMinVolts;
+	}
+
+	public void setLegalVoltageBases(double[] legalVoltageBases) {
+		this.legalVoltageBases = legalVoltageBases;
+	}
+
+	public void setGeneratorDispatchReference(double generatorDispatchReference) {
+		this.generatorDispatchReference = generatorDispatchReference;
+	}
+
+	public void setGenMultiplier(double genMultiplier) {
+		this.genMultiplier = genMultiplier;
+	}
+
+	public void setPriceSignal(double priceSignal) {
+		this.priceSignal = priceSignal;
+	}
+
+	public void setDefaultYearlyShapeObj(LoadShapeObj defaultYearlyShapeObj) {
+		this.defaultYearlyShapeObj = defaultYearlyShapeObj;
+	}
+
+	public void setReductionStrategy(ReductionStrategy reductionStrategy) {
+		this.reductionStrategy = reductionStrategy;
+	}
+
+	public void setReductionMaxAngle(double reductionMaxAngle) {
+		this.reductionMaxAngle = reductionMaxAngle;
+	}
+
+	public void setPctNormalFactor(double pctNormalFactor) {
+		this.pctNormalFactor = pctNormalFactor;
+	}
+
+	public void setNodeMarkerCode(int nodeMarkerCode) {
+		this.nodeMarkerCode = nodeMarkerCode;
+	}
+
+	public void setNodeMarkerWidth(int nodeMarkerWidth) {
+		this.nodeMarkerWidth = nodeMarkerWidth;
+	}
+
+	public void setMarkSwitches(boolean markSwitches) {
+		this.markSwitches = markSwitches;
+	}
+
+	public void setMarkTransformers(boolean markTransformers) {
+		this.markTransformers = markTransformers;
+	}
+
+	public void setUERegs(int[] uERegs) {
+		UERegs = uERegs;
+	}
+
+	public void setTrapezoidalIntegration(boolean trapezoidalIntegration) {
+		this.trapezoidalIntegration = trapezoidalIntegration;
+	}
+
+	public void setPriceCurveObj(PriceShapeObj priceCurveObj) {
+		this.priceCurveObj = priceCurveObj;
+	}
+
+	public void setSolved(boolean solved) {
+		this.solved = solved;
+	}
+
+	public void setZonesLocked(boolean zonesLocked) {
+		this.zonesLocked = zonesLocked;
+	}
+
+	public void setReductionZmag(double reductionZmag) {
+		this.reductionZmag = reductionZmag;
+	}
+
+	public void setReductionStrategyString(String reductionStrategyString) {
+		this.reductionStrategyString = reductionStrategyString;
+	}
+
+	public void setSwitchMarkerCode(int switchMarkerCode) {
+		this.switchMarkerCode = switchMarkerCode;
+	}
+
+	public void setTransMarkerSize(int transMarkerSize) {
+		this.transMarkerSize = transMarkerSize;
+	}
+
+	public void setTransMarkerCode(int transMarkerCode) {
+		this.transMarkerCode = transMarkerCode;
+	}
+
+	public void setUEWeight(double uEWeight) {
+		UEWeight = uEWeight;
 	}
 
 }

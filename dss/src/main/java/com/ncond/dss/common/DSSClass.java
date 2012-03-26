@@ -5,9 +5,6 @@
  */
 package com.ncond.dss.common;
 
-import lombok.Getter;
-import lombok.Setter;
-
 import com.ncond.dss.general.DSSObject;
 import com.ncond.dss.parser.Parser;
 import com.ncond.dss.shared.CommandList;
@@ -18,7 +15,6 @@ import com.ncond.dss.shared.PointerList;
  * Base class for all DSS collection classes.
  * Keeps track of objects of each class, dispatches edits, etc.
  */
-@Getter @Setter
 abstract public class DSSClass {
 
 	public static com.ncond.dss.common.DSSClasses DSSClasses;
@@ -318,6 +314,38 @@ abstract public class DSSClass {
 
 	public int[] getRevPropertyIdxMap() {
 		return revPropertyIdxMap;
+	}
+
+	public String getClassName() {
+		return className;
+	}
+
+	public int getClassType() {
+		return classType;
+	}
+
+	public int getNumProperties() {
+		return numProperties;
+	}
+
+	public PointerList getElementList() {
+		return elementList;
+	}
+
+	public boolean isSaved() {
+		return saved;
+	}
+
+	public void setSaved(boolean saved) {
+		this.saved = saved;
+	}
+
+	public String[] getPropertyHelp() {
+		return propertyHelp;
+	}
+
+	public void setElementNamesOutOfSynch(boolean elementNamesOutOfSynch) {
+		this.elementNamesOutOfSynch = elementNamesOutOfSynch;
 	}
 
 }

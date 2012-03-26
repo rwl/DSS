@@ -5,15 +5,11 @@
  */
 package com.ncond.dss.common;
 
-import lombok.Getter;
-import lombok.Setter;
-
 import org.apache.commons.math.complex.Complex;
 
 import com.ncond.dss.general.NamedObject;
 import com.ncond.dss.shared.CMatrix;
 
-@Getter @Setter
 public class Bus extends NamedObject {
 
 	public static class NodeBus {
@@ -197,6 +193,78 @@ public class Bus extends NamedObject {
 
 	public Complex[] getBusCurrent() {
 		return busCurrent;
+	}
+
+	public double getKVBase() {
+		return kVBase;
+	}
+
+	public double getDistFromMeter() {
+		return distFromMeter;
+	}
+
+	public int getNumNodesThisBus() {
+		return numNodesThisBus;
+	}
+
+	public CMatrix getYsc() {
+		return Ysc;
+	}
+
+	public double getX() {
+		return x;
+	}
+
+	public double getY() {
+		return y;
+	}
+
+	public boolean isBusChecked() {
+		return busChecked;
+	}
+
+	public void setBusChecked(boolean busChecked) {
+		this.busChecked = busChecked;
+	}
+
+	public CMatrix getZsc() {
+		return Zsc;
+	}
+
+	public boolean isCoordDefined() {
+		return coordDefined;
+	}
+
+	public boolean isKeep() {
+		return keep;
+	}
+
+	public void setX(double x) {
+		this.x = x;
+	}
+
+	public void setY(double y) {
+		this.y = y;
+	}
+
+	public void setKVBase(double kVBase) {
+		this.kVBase = kVBase;
+	}
+
+	public void setDistFromMeter(double distFromMeter) {
+		this.distFromMeter = distFromMeter;
+	}
+
+	public void setCoordDefined(boolean coordDefined) {
+		this.coordDefined = coordDefined;
+	}
+
+	public void setKeep(boolean keep) {
+		this.keep = keep;
+	}
+
+	public void setRadialBus(boolean isRadialBus) {
+		this.isRadialBus = isRadialBus;
 	}
 
 }

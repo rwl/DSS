@@ -10,9 +10,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 
-import lombok.Getter;
-import lombok.Setter;
-
 import org.apache.commons.math.complex.Complex;
 
 import com.ncond.dss.common.exceptions.ControlProblem;
@@ -37,7 +34,6 @@ import com.ncond.dss.shared.HashList;
  * There is one of these per circuit.
  *
  */
-@Getter @Setter
 public class AutoAdd {
 
 	private Generator generatorClass;
@@ -649,6 +645,42 @@ public class AutoAdd {
 		computekWLossesEEN();
 		baseLosses = kWLosses;
 		baseEEN = kWEEN;
+	}
+
+	public double getGenKW() {
+		return genKW;
+	}
+
+	public void setGenKW(double genKW) {
+		this.genKW = genKW;
+	}
+
+	public double getGenPF() {
+		return genPF;
+	}
+
+	public void setGenPF(double genPF) {
+		this.genPF = genPF;
+	}
+
+	public double getCapKVAr() {
+		return capKVAr;
+	}
+
+	public void setCapKVAr(double capKVAr) {
+		this.capKVAr = capKVAr;
+	}
+
+	public AutoAddType getAddType() {
+		return addType;
+	}
+
+	public void setAddType(AutoAddType addType) {
+		this.addType = addType;
+	}
+
+	public void setModeChanged(boolean modeChanged) {
+		this.modeChanged = modeChanged;
 	}
 
 }

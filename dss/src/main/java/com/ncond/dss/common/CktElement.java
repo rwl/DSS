@@ -8,16 +8,12 @@ package com.ncond.dss.common;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 
-import lombok.Getter;
-import lombok.Setter;
-
 import org.apache.commons.math.complex.Complex;
 
 import com.ncond.dss.common.types.YPrimType;
 import com.ncond.dss.general.DSSObject;
 import com.ncond.dss.shared.CMatrix;
 
-@Getter @Setter
 abstract public class CktElement extends DSSObject {
 
 	private String[] busNames;
@@ -843,6 +839,74 @@ abstract public class CktElement extends DSSObject {
 
 	public boolean hasControl() {
 		return hasControl;
+	}
+
+	public int getNPhases() {
+		return nPhases;
+	}
+
+	public int getYOrder() {
+		return YOrder;
+	}
+
+	public CktElement getControlElement() {
+		return controlElement;
+	}
+
+	public double getBaseFrequency() {
+		return baseFrequency;
+	}
+
+	public Terminal getActiveTerminal() {
+		return activeTerminal;
+	}
+
+	public boolean isChecked() {
+		return checked;
+	}
+
+	public void setChecked(boolean checked) {
+		this.checked = checked;
+	}
+
+	public boolean isIsolated() {
+		return isIsolated;
+	}
+
+	public void setHasEnergyMeter(boolean hasEnergyMeter) {
+		this.hasEnergyMeter = hasEnergyMeter;
+	}
+
+	public void setHasControl(boolean hasControl) {
+		this.hasControl = hasControl;
+	}
+
+	public void setControlElement(CktElement controlElement) {
+		this.controlElement = controlElement;
+	}
+
+	public void setBaseFrequency(double baseFrequency) {
+		this.baseFrequency = baseFrequency;
+	}
+
+	public void setYOrder(int yOrder) {
+		YOrder = yOrder;
+	}
+
+	public void setLastTerminalChecked(int lastTerminalChecked) {
+		this.lastTerminalChecked = lastTerminalChecked;
+	}
+
+	public void setHasSensorObj(boolean hasSensorObj) {
+		this.hasSensorObj = hasSensorObj;
+	}
+
+	public void setIsolated(boolean isIsolated) {
+		this.isIsolated = isIsolated;
+	}
+
+	public void setPartOfFeeder(boolean isPartOfFeeder) {
+		this.isPartOfFeeder = isPartOfFeeder;
 	}
 
 }

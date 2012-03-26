@@ -11,9 +11,6 @@ import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.util.UUID;
 
-import lombok.Getter;
-import lombok.Setter;
-
 import org.apache.commons.math.complex.Complex;
 
 import com.ncond.dss.common.Bus.NodeBus;
@@ -36,7 +33,6 @@ import com.ncond.dss.general.DSSObject;
 import com.ncond.dss.shared.ComplexUtil;
 import com.ncond.dss.shared.DynamicsRec;
 
-@Getter @Setter
 public class SolutionObj extends DSSObject {
 
 	/* Array of delta V for Newton iteration */
@@ -1507,6 +1503,266 @@ public class SolutionObj extends DSSObject {
 
 	public double getHarmonic() {
 		return harmonic;
+	}
+
+	public Algorithm getAlgorithm() {
+		return algorithm;
+	}
+
+	public Complex[] getAuxCurrents() {
+		return auxCurrents;
+	}
+
+	public int getControlIteration() {
+		return controlIteration;
+	}
+
+	public ControlMode getControlMode() {
+		return controlMode;
+	}
+
+	public double getConvergenceTolerance() {
+		return convergenceTolerance;
+	}
+
+	public double getDblHour() {
+		return dblHour;
+	}
+
+	public Complex[] getCurrents() {
+		return currents;
+	}
+
+	public SolutionLoadModel getDefaultLoadModel() {
+		return defaultLoadModel;
+	}
+
+	public DynamicsRec getDynaVars() {
+		return dynaVars;
+	}
+
+	public double getFrequency() {
+		return frequency;
+	}
+
+	public double[] getHarmonicList() {
+		return harmonicList;
+	}
+
+	public int getHarmonicListSize() {
+		return harmonicListSize;
+	}
+
+	public int getIntHour() {
+		return intHour;
+	}
+
+	public double getIntervalHrs() {
+		return intervalHrs;
+	}
+
+	public int getIteration() {
+		return iteration;
+	}
+
+	public SolutionLoadModel getLoadModel() {
+		return loadModel;
+	}
+
+	public int getMaxControlIterations() {
+		return maxControlIterations;
+	}
+
+	public int getMaxIterations() {
+		return maxIterations;
+	}
+
+	public int getMostIterationsDone() {
+		return mostIterationsDone;
+	}
+
+	public double[] getNodeVBase() {
+		return nodeVBase;
+	}
+
+	public int getNumberOfTimes() {
+		return numberOfTimes;
+	}
+
+	public int getYear() {
+		return year;
+	}
+
+	public UUID getY() {
+		return Y;
+	}
+
+	public Randomization getRandomType() {
+		return randomType;
+	}
+
+	public int getSolutionCount() {
+		return solutionCount;
+	}
+
+	public boolean isDynamicModel() {
+		return isDynamicModel;
+	}
+
+	public boolean isHarmonicModel() {
+		return isHarmonicModel;
+	}
+
+	public boolean isPreserveNodeVoltages() {
+		return preserveNodeVoltages;
+	}
+
+	public boolean isSystemYChanged() {
+		return systemYChanged;
+	}
+
+	public void setAlgorithm(Algorithm algorithm) {
+		this.algorithm = algorithm;
+	}
+
+	public void setAuxCurrents(Complex[] auxCurrents) {
+		this.auxCurrents = auxCurrents;
+	}
+
+	public void setControlMode(ControlMode controlMode) {
+		this.controlMode = controlMode;
+	}
+
+	public void setConvergenceTolerance(double convergenceTolerance) {
+		this.convergenceTolerance = convergenceTolerance;
+	}
+
+	public void setDefaultControlMode(ControlMode defaultControlMode) {
+		this.defaultControlMode = defaultControlMode;
+	}
+
+	public void setDefaultLoadModel(SolutionLoadModel defaultLoadModel) {
+		this.defaultLoadModel = defaultLoadModel;
+	}
+
+	public void setDblHour(double dblHour) {
+		this.dblHour = dblHour;
+	}
+
+	public void setCurrents(Complex[] currents) {
+		this.currents = currents;
+	}
+
+	public boolean isDoAllHarmonics() {
+		return doAllHarmonics;
+	}
+
+	public void setDoAllHarmonics(boolean doAllHarmonics) {
+		this.doAllHarmonics = doAllHarmonics;
+	}
+
+	public boolean isFrequencyChanged() {
+		return frequencyChanged;
+	}
+
+	public void setFrequencyChanged(boolean frequencyChanged) {
+		this.frequencyChanged = frequencyChanged;
+	}
+
+	public UUID getYSystem() {
+		return YSystem;
+	}
+
+	public UUID getYSeries() {
+		return YSeries;
+	}
+
+	public void setErrorSaved(double[] errorSaved) {
+		this.errorSaved = errorSaved;
+	}
+
+	public void setHarmonicList(double[] harmonicList) {
+		this.harmonicList = harmonicList;
+	}
+
+	public void setHarmonicListSize(int harmonicListSize) {
+		this.harmonicListSize = harmonicListSize;
+	}
+
+	public void setIntHour(int intHour) {
+		this.intHour = intHour;
+	}
+
+	public void setIntervalHrs(double intervalHrs) {
+		this.intervalHrs = intervalHrs;
+	}
+
+	public void setLoadModel(SolutionLoadModel loadModel) {
+		this.loadModel = loadModel;
+	}
+
+	public void setLoadsNeedUpdating(boolean loadsNeedUpdating) {
+		this.loadsNeedUpdating = loadsNeedUpdating;
+	}
+
+	public void setMaxControlIterations(int maxControlIterations) {
+		this.maxControlIterations = maxControlIterations;
+	}
+
+	public void setYSystem(UUID ySystem) {
+		YSystem = ySystem;
+	}
+
+	public void setYSeries(UUID ySeries) {
+		YSeries = ySeries;
+	}
+
+	public void setY(UUID y) {
+		Y = y;
+	}
+
+	public void setMaxIterations(int maxIterations) {
+		this.maxIterations = maxIterations;
+	}
+
+	public void setNumberOfTimes(int numberOfTimes) {
+		this.numberOfTimes = numberOfTimes;
+	}
+
+	public void setRandomType(Randomization randomType) {
+		this.randomType = randomType;
+	}
+
+	public void setSeriesYInvalid(boolean seriesYInvalid) {
+		this.seriesYInvalid = seriesYInvalid;
+	}
+
+	public void setSolutionInitialized(boolean solutionInitialized) {
+		this.solutionInitialized = solutionInitialized;
+	}
+
+	public void setSystemYChanged(boolean systemYChanged) {
+		this.systemYChanged = systemYChanged;
+	}
+
+	public void setUseAuxCurrents(boolean useAuxCurrents) {
+		this.useAuxCurrents = useAuxCurrents;
+	}
+
+	public void setVMagSaved(double[] vMagSaved) {
+		VMagSaved = vMagSaved;
+	}
+
+	public void setVoltageBaseChanged(boolean voltageBaseChanged) {
+		this.voltageBaseChanged = voltageBaseChanged;
+	}
+
+	public void setNodeV(Complex[] nodeV) {
+		this.nodeV = nodeV;
+	}
+
+	public void setNodeVBase(double[] nodeVBase) {
+		this.nodeVBase = nodeVBase;
 	}
 
 }

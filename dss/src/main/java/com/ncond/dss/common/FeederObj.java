@@ -9,9 +9,6 @@ import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.List;
 
-import lombok.Getter;
-import lombok.Setter;
-
 import org.apache.commons.math.complex.Complex;
 
 import com.ncond.dss.conversion.PCElement;
@@ -30,7 +27,6 @@ import com.ncond.dss.shared.CktTree;
  *
  * Feeders are not saved. This is implicit with the EnergyMeter saving.
  */
-@Getter @Setter
 public class FeederObj extends PCElement {
 
 	private List<CktElement> sequenceList;

@@ -7,15 +7,15 @@ package com.ncond.dss.common;
 
 import java.util.List;
 import java.util.Scanner;
+import java.util.logging.Logger;
 
 import com.ncond.dss.executive.ExecCommands;
 
-import lombok.extern.java.Log;
-
-@Log
 public class CommandLineDSSForms implements DSSForms {
 
 	private static Scanner sc = new Scanner(System.in);
+
+	private Logger log = Logger.getLogger(CommandLineDSSForms.class.getName());
 
 //	private boolean controlPanelCreated;
 //	private static ControlPanel controlPanel;

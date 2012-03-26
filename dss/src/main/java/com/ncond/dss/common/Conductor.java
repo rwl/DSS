@@ -5,16 +5,12 @@
  */
 package com.ncond.dss.common;
 
-import lombok.Getter;
-import lombok.Setter;
-
-@Getter @Setter
 public class Conductor {
 
 	private String TCCName;
-	private double ambientTemp;
+	@SuppressWarnings("unused") private double ambientTemp;
 	/** accumulated I2t */
-	private double accumIsqt;
+	@SuppressWarnings("unused") private double accumIsqt;
 
 	/** Change this variable to indicate open or closed switch. */
 	protected boolean closed;
@@ -52,6 +48,14 @@ public class Conductor {
 	 */
 	public void resetIsqt() {
 		DSS.doSimpleMsg("Need to implement Conductor.resetIsqt", 771);
+	}
+
+	public boolean isClosed() {
+		return closed;
+	}
+
+	public void setClosed(boolean closed) {
+		this.closed = closed;
 	}
 
 }
