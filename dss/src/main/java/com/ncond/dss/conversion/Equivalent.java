@@ -92,7 +92,7 @@ public class Equivalent extends PCClass {
 
 		int paramPointer = -1;
 		String paramName = parser.getNextParam();
-		String param = parser.makeString();
+		String param = parser.stringValue();
 
 		while (param.length() > 0) {
 			if (paramName.length() == 0) {
@@ -110,25 +110,25 @@ public class Equivalent extends PCClass {
 						elem.getName() + "\"", 800);
 				break;
 			case 0:
-				elem.setNumTerms(elem.doTerminalsDef(parser.makeInteger()));
+				elem.setNumTerms(elem.doTerminalsDef(parser.integerValue()));
 				break;
 			case 1:
 				interpretAllBuses(param);
 				break;
 			case 2:
-				elem.setKVBase(parser.makeDouble());  // basekv
+				elem.setKVBase(parser.doubleValue());  // basekv
 				break;
 			case 3:
-				elem.setPerUnit(parser.makeDouble());  // pu
+				elem.setPerUnit(parser.doubleValue());  // pu
 				break;
 			case 4:
-				elem.setAngle(parser.makeDouble());  // ang
+				elem.setAngle(parser.doubleValue());  // ang
 				break;
 			case 5:
-				elem.setEquivFrequency(parser.makeDouble());  // freq
+				elem.setEquivFrequency(parser.doubleValue());  // freq
 				break;
 			case 6:
-				elem.setNumPhases(parser.makeInteger());  // num phases
+				elem.setNumPhases(parser.integerValue());  // num phases
 				elem.setNumConds(elem.getNumPhases());  // force reallocation of terminal info
 				break;
 			case 7:
@@ -158,7 +158,7 @@ public class Equivalent extends PCClass {
 			}
 
 			paramName = parser.getNextParam();
-			param = parser.makeString();
+			param = parser.stringValue();
 		}
 
 		// recalcElementData();
@@ -236,13 +236,13 @@ public class Equivalent extends PCClass {
 		String busName;
 		Parser parser = DSS.auxParser;
 
-		parser.setCmdBuffer(s);  // load up parser
+		parser.setCommand(s);  // load up parser
 
 		/* Loop for no more than the expected number of windings; ignore omitted values */
 		EquivalentObj elem = activeEquivalentObj;
 		for (int i = 0; i < elem.getNumTerms(); i++) {
 			parser.getNextParam();  // ignore any parameter name  not expecting any
-			busName = parser.makeString();
+			busName = parser.stringValue();
 			if (busName.length() > 0)
 				elem.setBus(i, busName);
 		}

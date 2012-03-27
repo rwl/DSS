@@ -122,7 +122,7 @@ public class ExportOptions {
 		Circuit ckt = DSS.activeCircuit;
 
 		Parser.getInstance().getNextParam();
-		parm1 = Parser.getInstance().makeString().toLowerCase();
+		parm1 = Parser.getInstance().stringValue().toLowerCase();
 		paramPointer = exportCommands.getCommand(parm1);
 
 		/* Check commands requiring a solution and abort if no solution or circuit */
@@ -144,7 +144,7 @@ public class ExportOptions {
 		switch (paramPointer) {
 		case 8:  // trap export powers command and look for MVA/kVA option
 			parser.getNextParam();
-			parm2 = Parser.getInstance().makeString().toLowerCase();
+			parm2 = Parser.getInstance().stringValue().toLowerCase();
 			MVAOpt = 0;
 			if (parm2.length() > 0)
 				if (parm2.charAt(0) == 'm')
@@ -152,7 +152,7 @@ public class ExportOptions {
 			break;
 		case 18:
 			parser.getNextParam();
-			parm2 = Parser.getInstance().makeString().toLowerCase();
+			parm2 = Parser.getInstance().stringValue().toLowerCase();
 			MVAOpt = 0;
 			if (parm2.length() > 0)
 				if (parm2.charAt(0) == 'm')
@@ -160,7 +160,7 @@ public class ExportOptions {
 			break;
 		case 7:  // trap UE only flag
 			parser.getNextParam();
-			parm2 = parser.makeString().toLowerCase();
+			parm2 = parser.stringValue().toLowerCase();
 			UEOnlyOpt = false;
 			if (parm2.length() > 0)
 				if (parm2.charAt(0) == 'u')
@@ -168,11 +168,11 @@ public class ExportOptions {
 			break;
 		case 14:  // get monitor name for export monitors command
 			parser.getNextParam();
-			parm2 = parser.makeString();
+			parm2 = parser.stringValue();
 			break;
 		case 31:  // get phases to plot
 			parser.getNextParam();
-			parm2 = parser.makeString();
+			parm2 = parser.stringValue();
 			phasesToPlot = ProfilePlot.THREEPH.phs();  // the default
 			if (Util.compareTextShortest(parm2, "default") == 0) {
 				phasesToPlot = ProfilePlot.THREEPH.phs();
@@ -187,14 +187,14 @@ public class ExportOptions {
 			} else if (Util.compareTextShortest(parm2, "llprimary") == 0) {
 				phasesToPlot = ProfilePlot.LLPRI.phs();
 			} else if (parm2.length() == 1) {
-				phasesToPlot = parser.makeInteger();
+				phasesToPlot = parser.integerValue();
 			}
 			break;
 		}
 
 		/* Pick up last parameter on line, alternate file name, if any */
 		parser.getNextParam();
-		fileName = parser.makeString().toLowerCase();  // should be full path name to work universally
+		fileName = parser.stringValue().toLowerCase();  // should be full path name to work universally
 
 		DSS.inShowResults = true;
 
@@ -263,11 +263,11 @@ public class ExportOptions {
 					fileName = DSS.globalResult;
 				} else {
 					DSS.doSimpleMsg("Monitor \"" + parm2 + "\" not found." +
-							DSS.CRLF + parser.getCmdBuffer(), 250);
+							DSS.CRLF + parser.getCommand(), 250);
 				}
 			} else {
 				DSS.doSimpleMsg("Monitor name not specified." + DSS.CRLF +
-						parser.getCmdBuffer(), 251);
+						parser.getCommand(), 251);
 			}
 			break;
 		case 15: ExportResults.exportYprim(fileName); break;

@@ -90,7 +90,7 @@ public class Spectrum extends DSSClass {
 
 		int paramPointer = -1;
 		String paramName = parser.getNextParam();
-		String param = parser.makeString();
+		String param = parser.stringValue();
 
 		while (param.length() > 0) {
 			if (paramName.length() == 0) {
@@ -108,7 +108,7 @@ public class Spectrum extends DSSClass {
 						getClassName() + "\"", 650);
 				break;
 			case 0:
-				elem.setNumHarm(parser.makeInteger());
+				elem.setNumHarm(parser.integerValue());
 				elem.setAngleArray(Util.resizeArray(elem.getAngleArray(), elem.getNumHarm()));  // make a dummy angle array
 				for (int i = 0; i < elem.getNumHarm(); i++)
 					elem.getAngleArray()[i] = 0.0;
@@ -137,7 +137,7 @@ public class Spectrum extends DSSClass {
 			}
 
 			paramName = parser.getNextParam();
-			param = parser.makeString();
+			param = parser.stringValue();
 		}
 
 		if (elem.getHarmArray() != null && elem.getPuMagArray() != null && elem.getAngleArray() != null)
@@ -225,13 +225,13 @@ public class Spectrum extends DSSClass {
 			while (((s = br.readLine()) != null) && i < elem.getNumHarm()) {
 				// use aux parser, which allows for formats
 				parser = DSS.auxParser;
-				parser.setCmdBuffer(s);
+				parser.setCommand(s);
 				parser.getNextParam();
-				elem.getHarmArray()[i] = parser.makeDouble();
+				elem.getHarmArray()[i] = parser.doubleValue();
 				parser.getNextParam();
-				elem.getPuMagArray()[i] = parser.makeDouble() * 0.01;
+				elem.getPuMagArray()[i] = parser.doubleValue() * 0.01;
 				parser.getNextParam();
-				elem.getAngleArray()[i] = parser.makeDouble();
+				elem.getAngleArray()[i] = parser.doubleValue();
 				i += 1;
 			}
 

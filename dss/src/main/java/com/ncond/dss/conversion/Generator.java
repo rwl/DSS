@@ -271,7 +271,7 @@ public class Generator extends PCClass {
 
 		int paramPointer = -1;
 		String paramName = parser.getNextParam();
-		String param = parser.makeString();
+		String param = parser.stringValue();
 
 		while (param.length() > 0) {
 			if (paramName.length() == 0) {
@@ -294,22 +294,22 @@ public class Generator extends PCClass {
 							getClassName() + "." + elem.getName() + "\"", 561);
 					break;
 				case 0:
-					elem.setNumPhases(parser.makeInteger());  // num phases
+					elem.setNumPhases(parser.integerValue());  // num phases
 					break;
 				case 1:
 					elem.setBus(0, param);
 					break;
 				case 2:
-					elem.setPresentKV(parser.makeDouble());
+					elem.setPresentKV(parser.doubleValue());
 					break;
 				case 3:
-					elem.setKWBase(parser.makeDouble());
+					elem.setKWBase(parser.doubleValue());
 					break;
 				case 4:
-					elem.setPowerFactor(parser.makeDouble());
+					elem.setPowerFactor(parser.doubleValue());
 					break;
 				case 5:
-					elem.setGenModel(GeneratorModel.values()[parser.makeInteger() - 1]);
+					elem.setGenModel(GeneratorModel.values()[parser.integerValue() - 1]);
 					break;
 				case 6:
 					elem.setYearlyShape(param);
@@ -324,13 +324,13 @@ public class Generator extends PCClass {
 					elem.setDispatchMode(interpretDispMode(param));
 					break;
 				case 10:
-					elem.setDispatchValue(parser.makeDouble());
+					elem.setDispatchValue(parser.doubleValue());
 					break;
 				case 11:
 					interpretConnection(param);
 					break;
 				case 12:
-					elem.setPresentKVAr(parser.makeDouble());
+					elem.setPresentKVAr(parser.doubleValue());
 					break;
 				case 13:
 					DSS.doSimpleMsg("Rneut property has been deleted. Use external impedance.", 5611);
@@ -346,64 +346,64 @@ public class Generator extends PCClass {
 					}
 					break;
 				case 16:
-					elem.setGenClass(parser.makeInteger());
+					elem.setGenClass(parser.integerValue());
 					break;
 				case 17:
-					elem.setVpu(parser.makeDouble());
+					elem.setVpu(parser.doubleValue());
 					break;
 				case 18:
-					elem.setKVArMax(parser.makeDouble());
+					elem.setKVArMax(parser.doubleValue());
 					break;
 				case 19:
-					elem.setKVArMin(parser.makeDouble());
+					elem.setKVArMin(parser.doubleValue());
 					break;
 				case 20:
-					elem.setPVFactor(parser.makeDouble());  // declaration factor
+					elem.setPVFactor(parser.doubleValue());  // declaration factor
 					break;
 				case 21:
 					elem.setDebugTrace(Util.interpretYesNo(param));
 					break;
 				case 22:
-					elem.setVMinPU(parser.makeDouble());
+					elem.setVMinPU(parser.doubleValue());
 					break;
 				case 23:
-					elem.setVMaxPU(parser.makeDouble());
+					elem.setVMaxPU(parser.doubleValue());
 					break;
 				case 24:
 					elem.setForcedOn(Util.interpretYesNo(param));
 					break;
 				case 25:
-					elem.getGenVars().kVARating = parser.makeDouble();
+					elem.getGenVars().kVARating = parser.doubleValue();
 					break;
 				case 26:
-					elem.getGenVars().kVARating = parser.makeDouble() * 1000.0;  // "MVA";
+					elem.getGenVars().kVARating = parser.doubleValue() * 1000.0;  // "MVA";
 					break;
 				case 27:
-					elem.getGenVars().puXd = parser.makeDouble();
+					elem.getGenVars().puXd = parser.doubleValue();
 					break;
 				case 28:
-					elem.getGenVars().puXdp = parser.makeDouble();
+					elem.getGenVars().puXdp = parser.doubleValue();
 					break;
 				case 29:
-					elem.getGenVars().puXdpp = parser.makeDouble();
+					elem.getGenVars().puXdpp = parser.doubleValue();
 					break;
 				case 30:
-					elem.getGenVars().HMass = parser.makeDouble();
+					elem.getGenVars().HMass = parser.doubleValue();
 					break;
 				case 31:
-					elem.getGenVars().Dpu = parser.makeDouble();
+					elem.getGenVars().Dpu = parser.doubleValue();
 					break;
 				case 32:
-					elem.getUserModel().setName(parser.makeString());  // connect to user written models
+					elem.getUserModel().setName(parser.stringValue());  // connect to user written models
 					break;
 				case 33:
-					elem.getUserModel().edit(parser.makeString());  // send edit string to user model
+					elem.getUserModel().edit(parser.stringValue());  // send edit string to user model
 					break;
 				case 34:
-					elem.getShaftModel().setName(parser.makeString());
+					elem.getShaftModel().setName(parser.stringValue());
 					break;
 				case 35:
-					elem.getShaftModel().edit(parser.makeString());
+					elem.getShaftModel().edit(parser.stringValue());
 					break;
 				default:
 					// inherited parameters
@@ -483,7 +483,7 @@ public class Generator extends PCClass {
 			}
 
 			paramName = parser.getNextParam();
-			param = parser.makeString();
+			param = parser.stringValue();
 		}
 
 		elem.recalcElementData();

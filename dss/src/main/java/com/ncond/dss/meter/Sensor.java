@@ -103,7 +103,7 @@ public class Sensor extends MeterClass {
 
 		int paramPointer = -1;
 		String paramName = parser.getNextParam();
-		String param = parser.makeString();
+		String param = parser.stringValue();
 
 		while (param.length() > 0) {
 			if (paramName.length() == 0) {
@@ -124,10 +124,10 @@ public class Sensor extends MeterClass {
 				elem.setElementName(param.toLowerCase());
 				break;
 			case 1:
-				elem.setMeteredTerminalIdx(parser.makeInteger() - 1);
+				elem.setMeteredTerminalIdx(parser.integerValue() - 1);
 				break;
 			case 2:
-				elem.setKVBase(parser.makeDouble());
+				elem.setKVBase(parser.doubleValue());
 				break;
 			case 3:
 				elem.setClearSpecified(Util.interpretYesNo(param));
@@ -148,13 +148,13 @@ public class Sensor extends MeterClass {
 				elem.setConn(Util.interpretConnection(param));
 				break;
 			case 9:
-				elem.setDeltaDirection( elem.limitToPlusMinusOne(parser.makeInteger()) );
+				elem.setDeltaDirection( elem.limitToPlusMinusOne(parser.integerValue()) );
 				break;
 			case 10:
-				elem.setPctError(parser.makeDouble());
+				elem.setPctError(parser.doubleValue());
 				break;
 			case 11:
-				elem.setWeight(parser.makeDouble());
+				elem.setWeight(parser.doubleValue());
 				break;
 			case 12:
 				elem.setAction(param);  // put sq error in global result
@@ -198,7 +198,7 @@ public class Sensor extends MeterClass {
 			}
 
 			paramName = parser.getNextParam();
-			param = parser.makeString();
+			param = parser.stringValue();
 		}
 
 		if (doRecalcElementData) elem.recalcElementData();

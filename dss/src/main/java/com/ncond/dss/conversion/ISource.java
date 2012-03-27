@@ -86,7 +86,7 @@ public class ISource extends PCClass {
 
 		int paramPointer = -1;
 		String paramName = parser.getNextParam();
-		String param = parser.makeString();
+		String param = parser.stringValue();
 
 		while (param.length() > 0) {
 			if (paramName.length() == 0) {
@@ -107,16 +107,16 @@ public class ISource extends PCClass {
 				elem.setBus(0, param);
 				break;
 			case 1:
-				elem.setAmps(parser.makeDouble());
+				elem.setAmps(parser.doubleValue());
 				break;
 			case 2:
-				elem.setAngle(parser.makeDouble());  // ang
+				elem.setAngle(parser.doubleValue());  // ang
 				break;
 			case 3:
-				elem.setSrcFrequency(parser.makeDouble()); // freq
+				elem.setSrcFrequency(parser.doubleValue()); // freq
 				break;
 			case 4:
-				elem.setNumPhases(parser.makeInteger()); // num phases
+				elem.setNumPhases(parser.integerValue()); // num phases
 				switch (elem.getNumPhases()) {
 				case 1:
 					elem.setPhaseShift(0.0);
@@ -173,7 +173,7 @@ public class ISource extends PCClass {
 			}
 
 			paramName = parser.getNextParam();
-			param     = parser.makeString();
+			param     = parser.stringValue();
 		}
 
 		elem.recalcElementData();

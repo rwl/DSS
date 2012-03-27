@@ -191,7 +191,7 @@ public class Transformer extends PDClass {
 
 		int paramPointer = -1;
 		String paramName = parser.getNextParam();
-		String param = parser.makeString();
+		String param = parser.stringValue();
 
 		while (param.length() > 0) {
 			if (paramName.length() == 0) {
@@ -209,13 +209,13 @@ public class Transformer extends PDClass {
 						elem.getName() + "\"", 110);
 				break;
 			case 0:
-				elem.setNumPhases(parser.makeInteger());
+				elem.setNumPhases(parser.integerValue());
 				break;
 			case 1:
-				elem.setNumWindings(parser.makeInteger());  // reallocate stuff if bigger
+				elem.setNumWindings(parser.integerValue());  // reallocate stuff if bigger
 				break;
 			case 2:
-				setActiveWinding(parser.makeInteger() - 1);
+				setActiveWinding(parser.integerValue() - 1);
 				break;
 			case 3:
 				elem.setBus(elem.getActiveWindingIdx(), param);
@@ -224,22 +224,22 @@ public class Transformer extends PDClass {
 				interpretConnection(param);
 				break;
 			case 5:
-				elem.getWinding(elem.getActiveWindingIdx()).setKVLL(parser.makeDouble());
+				elem.getWinding(elem.getActiveWindingIdx()).setKVLL(parser.doubleValue());
 				break;
 			case 6:
-				elem.getWinding(elem.getActiveWindingIdx()).setKVA(parser.makeDouble());
+				elem.getWinding(elem.getActiveWindingIdx()).setKVA(parser.doubleValue());
 				break;
 			case 7:
-				elem.getWinding(elem.getActiveWindingIdx()).setPuTap(parser.makeDouble());
+				elem.getWinding(elem.getActiveWindingIdx()).setPuTap(parser.doubleValue());
 				break;
 			case 8:
-				elem.getWinding(elem.getActiveWindingIdx()).setRpu(parser.makeDouble() * 0.01);  // %R
+				elem.getWinding(elem.getActiveWindingIdx()).setRpu(parser.doubleValue() * 0.01);  // %R
 				break;
 			case 9:
-				elem.getWinding(elem.getActiveWindingIdx()).setRNeut(parser.makeDouble());
+				elem.getWinding(elem.getActiveWindingIdx()).setRNeut(parser.doubleValue());
 				break;
 			case 10:
-				elem.getWinding(elem.getActiveWindingIdx()).setXNeut(parser.makeDouble());
+				elem.getWinding(elem.getActiveWindingIdx()).setXNeut(parser.doubleValue());
 				break;
 			case 11:
 				interpretAllBuses(param);
@@ -257,64 +257,64 @@ public class Transformer extends PDClass {
 				interpretAllTaps(param);
 				break;
 			case 16:
-				elem.setXHL(parser.makeDouble() * 0.01);
+				elem.setXHL(parser.doubleValue() * 0.01);
 				break;
 			case 17:
-				elem.setXHT(parser.makeDouble() * 0.01);
+				elem.setXHT(parser.doubleValue() * 0.01);
 				break;
 			case 18:
-				elem.setXLT(parser.makeDouble() * 0.01);
+				elem.setXLT(parser.doubleValue() * 0.01);
 				break;
 			case 19:
 				parser.parseAsVector(((elem.getNumWindings() - 1) * elem.getNumWindings() / 2), elem.getXSC());
 				break;
 			case 20:
-				elem.setThermalTimeConst(parser.makeDouble());
+				elem.setThermalTimeConst(parser.doubleValue());
 				break;
 			case 21:
-				elem.setNThermal(parser.makeDouble());
+				elem.setNThermal(parser.doubleValue());
 				break;
 			case 22:
-				elem.setMThermal(parser.makeDouble());
+				elem.setMThermal(parser.doubleValue());
 				break;
 			case 23:
-				elem.setFLRise(parser.makeDouble());
+				elem.setFLRise(parser.doubleValue());
 				break;
 			case 24:
-				elem.setHSRise(parser.makeDouble());
+				elem.setHSRise(parser.doubleValue());
 				break;
 			case 25:
-				elem.setPctLoadLoss(parser.makeDouble());
+				elem.setPctLoadLoss(parser.doubleValue());
 				break;
 			case 26:
-				elem.setPctNoLoadLoss(parser.makeDouble());
+				elem.setPctNoLoadLoss(parser.doubleValue());
 				break;
 			case 27:
-				elem.setNormMaxHKVA(parser.makeDouble());
+				elem.setNormMaxHKVA(parser.doubleValue());
 				break;
 			case 28:
-				elem.setEmergMaxHKVA(parser.makeDouble());
+				elem.setEmergMaxHKVA(parser.doubleValue());
 				break;
 			case 29:
 				elem.setSubstation(Util.interpretYesNo(param));
 				break;
 			case 30:
-				elem.getWinding(elem.getActiveWindingIdx()).setMaxTap(parser.makeDouble());
+				elem.getWinding(elem.getActiveWindingIdx()).setMaxTap(parser.doubleValue());
 				break;
 			case 31:
-				elem.getWinding(elem.getActiveWindingIdx()).setMinTap(parser.makeDouble());
+				elem.getWinding(elem.getActiveWindingIdx()).setMinTap(parser.doubleValue());
 				break;
 			case 32:
-				elem.getWinding(elem.getActiveWindingIdx()).setNumTaps(parser.makeInteger());
+				elem.getWinding(elem.getActiveWindingIdx()).setNumTaps(parser.integerValue());
 				break;
 			case 33:
 				elem.setSubstationName(param);
 				break;
 			case 34:
-				elem.setPctImag(parser.makeDouble());
+				elem.setPctImag(parser.doubleValue());
 				break;
 			case 35:
-				elem.setPpmFloatFactor(parser.makeDouble() * 1.0e-6);
+				elem.setPpmFloatFactor(parser.doubleValue() * 1.0e-6);
 				break;
 			case 36:
 				interpretAllRs(param);
@@ -395,7 +395,7 @@ public class Transformer extends PDClass {
 
 			/* Advance to next property on input line */
 			paramName = parser.getNextParam();
-			param = parser.makeString();
+			param = parser.stringValue();
 		}
 
 		elem.recalcElementData();
@@ -455,13 +455,13 @@ public class Transformer extends PDClass {
 		String s2;
 		TransformerObj elem = activeTransfObj;
 
-		DSS.auxParser.setCmdBuffer(s);  // load up parser
+		DSS.auxParser.setCommand(s);  // load up parser
 
 		/* Loop for no more than the expected number of windings */
 		for (int i = 0; i < elem.getNumWindings(); i++) {
 			elem.setActiveWindingIdx(i);
 			DSS.auxParser.getNextParam();  // ignore any parameter name not expecting any
-			s2 = DSS.auxParser.makeString();
+			s2 = DSS.auxParser.stringValue();
 			if (s2.length() > 0)
 				interpretConnection(s2);
 		}
@@ -474,13 +474,13 @@ public class Transformer extends PDClass {
 		String busName;
 		TransformerObj elem = activeTransfObj;
 
-		DSS.auxParser.setCmdBuffer(s);  // load up parser
+		DSS.auxParser.setCommand(s);  // load up parser
 
 		/* Loop for no more than the expected number of windings; Ignore omitted values */
 		for (int i = 0; i < elem.getNumWindings(); i++) {
 			elem.setActiveWindingIdx(i);
 			DSS.auxParser.getNextParam();  // ignore any parameter name  not expecting any
-			busName = DSS.auxParser.makeString();
+			busName = DSS.auxParser.stringValue();
 			if (busName.length() > 0)
 				elem.setBus(elem.getActiveWindingIdx(), busName);
 		}
@@ -493,15 +493,15 @@ public class Transformer extends PDClass {
 		String dataStr;
 		TransformerObj elem = activeTransfObj;
 
-		DSS.auxParser.setCmdBuffer(s);  // load up parser
+		DSS.auxParser.setCommand(s);  // load up parser
 
 		/* Loop for no more than the expected number of windings; ignore omitted values */
 		for (int i = 0; i < elem.getNumWindings(); i++) {
 			elem.setActiveWindingIdx(i);
 			DSS.auxParser.getNextParam();  // ignore any parameter name  not expecting any
-			dataStr = DSS.auxParser.makeString();
+			dataStr = DSS.auxParser.stringValue();
 			if (dataStr.length() > 0)
-				elem.getWinding(elem.getActiveWindingIdx()).setKVLL(DSS.auxParser.makeDouble());
+				elem.getWinding(elem.getActiveWindingIdx()).setKVLL(DSS.auxParser.doubleValue());
 		}
 	}
 
@@ -512,15 +512,15 @@ public class Transformer extends PDClass {
 		String dataStr;
 		TransformerObj elem = activeTransfObj;
 
-		DSS.auxParser.setCmdBuffer(s);  // load up parser
+		DSS.auxParser.setCommand(s);  // load up parser
 
 		/* Loop for no more than the expected number of windings; ignore omitted values */
 		for (int i = 0; i < elem.getNumWindings(); i++) {
 			elem.setActiveWindingIdx(i);
 			DSS.auxParser.getNextParam();  // ignore any parameter name not expecting any
-			dataStr = DSS.auxParser.makeString();
+			dataStr = DSS.auxParser.stringValue();
 			if (dataStr.length() > 0)
-				elem.getWinding(elem.getActiveWindingIdx()).setKVA(DSS.auxParser.makeDouble());
+				elem.getWinding(elem.getActiveWindingIdx()).setKVA(DSS.auxParser.doubleValue());
 		}
 	}
 
@@ -531,15 +531,15 @@ public class Transformer extends PDClass {
 		String dataStr;
 		TransformerObj elem = activeTransfObj;
 
-		DSS.auxParser.setCmdBuffer(s);  // load up parser
+		DSS.auxParser.setCommand(s);  // load up parser
 
 		/* Loop for no more than the expected number of windings; ignore omitted values */
 		for (int i = 0; i < elem.getNumWindings(); i++) {
 			elem.setActiveWindingIdx(i);
 			DSS.auxParser.getNextParam();  // ignore any parameter name not expecting any
-			dataStr = DSS.auxParser.makeString();
+			dataStr = DSS.auxParser.stringValue();
 			if (dataStr.length() > 0)
-				elem.getWinding(elem.getActiveWindingIdx()).setRpu(DSS.auxParser.makeDouble() * 0.01);
+				elem.getWinding(elem.getActiveWindingIdx()).setRpu(DSS.auxParser.doubleValue() * 0.01);
 		}
 	}
 
@@ -550,15 +550,15 @@ public class Transformer extends PDClass {
 		String dataStr;
 		TransformerObj elem = activeTransfObj;
 
-		DSS.auxParser.setCmdBuffer(s);  // load up parser
+		DSS.auxParser.setCommand(s);  // load up parser
 
 		/* Loop for no more than the expected number of windings; ignore omitted values */
 		for (int i = 0; i < elem.getNumWindings(); i++) {
 			elem.setActiveWindingIdx(i);
 			DSS.auxParser.getNextParam();  // ignore any parameter name, not expecting any
-			dataStr = DSS.auxParser.makeString();
+			dataStr = DSS.auxParser.stringValue();
 			if (dataStr.length() > 0)
-				elem.getWinding(elem.getActiveWindingIdx()).setPuTap(DSS.auxParser.makeDouble());
+				elem.getWinding(elem.getActiveWindingIdx()).setPuTap(DSS.auxParser.doubleValue());
 		}
 	}
 

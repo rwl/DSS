@@ -90,11 +90,11 @@ public class ExecHelper {
 		Parser parser = Parser.getInstance();
 
 		paramName = parser.getNextParam().toLowerCase();
-		param = parser.makeString();
+		param = parser.stringValue();
 		if (paramName.length() > 0) {  // if specified, must be object or an abbreviation.
 			if (Util.compareTextShortest(paramName, "object") != 0) {
 				DSS.doSimpleMsg("object=class.name expected as first parameter in command." +
-						DSS.CRLF + parser.getCmdBuffer(), 240);
+						DSS.CRLF + parser.getCommand(), 240);
 				return;
 			}
 		}
@@ -181,7 +181,7 @@ public class ExecHelper {
 			switch (DSS.lastClassReferenced) {
 			case -1:
 				DSS.doSimpleMsg("BatchEdit command: Object type \"" + objType[0] +
-					"\" not found."+ DSS.CRLF + parser.getCmdBuffer(), 267);
+					"\" not found."+ DSS.CRLF + parser.getCommand(), 267);
 				return success;
 			default:
 				params = parser.getPosition();
@@ -218,7 +218,7 @@ public class ExecHelper {
 
 		// get next parm and try to interpret as a file name
 		Parser.getInstance().getNextParam();
-		ExecCommands.redirFile = Util.expandFileName(Parser.getInstance().makeString());
+		ExecCommands.redirFile = Util.expandFileName(Parser.getInstance().stringValue());
 
 		if (!ExecCommands.redirFile.equals("")) {
 			saveDir = DSS.currentDirectory;
@@ -319,7 +319,7 @@ public class ExecHelper {
 				if (!DSS.activeDSSClass.setActive(objName[0])) {
 					// scroll through list of objects until a match
 					DSS.doSimpleMsg("Object \"" + objName[0] + "\" not found." +
-							DSS.CRLF + Parser.getInstance().getCmdBuffer(), 245);
+							DSS.CRLF + Parser.getInstance().getCommand(), 245);
 					success = 0;
 				} else {
 					switch (DSS.activeDSSObject.getObjType()) {
@@ -330,9 +330,9 @@ public class ExecHelper {
 						ckt.setActiveCktElement((CktElement) DSS.activeDSSClass.getActiveObj());
 						// now check for active terminal designation
 						Parser.getInstance().getNextParam().toLowerCase();
-						param = Parser.getInstance().makeString();
+						param = Parser.getInstance().stringValue();
 						if (param.length() > 0) {
-							ckt.getActiveCktElement().setActiveTerminalIdx(Parser.getInstance().makeInteger() - 1);
+							ckt.getActiveCktElement().setActiveTerminalIdx(Parser.getInstance().integerValue() - 1);
 						} else {
 							ckt.getActiveCktElement().setActiveTerminalIdx(0);
 						}
@@ -381,7 +381,7 @@ public class ExecHelper {
 
 		paramPointer = -1;
 		paramName = parser.getNextParam();
-		param = parser.makeString();
+		param = parser.stringValue();
 
 		while (param.length() > 0) {
 			if (paramName.length() == 0) {
@@ -392,20 +392,20 @@ public class ExecHelper {
 
 			switch (paramPointer) {
 			case 0:
-				objClass = parser.makeString();
+				objClass = parser.stringValue();
 				break;
 			case 1:
-				saveFile = parser.makeString();   // file name for saving a class
+				saveFile = parser.stringValue();   // file name for saving a class
 				break;
 			case 2:
-				saveDir = parser.makeString();
+				saveDir = parser.stringValue();
 				break;
 			default:
 				break;
 			}
 
 			paramName = parser.getNextParam();
-			param = parser.makeString();
+			param = parser.stringValue();
 		}
 
 		DSS.inShowResults = true;
@@ -462,7 +462,7 @@ public class ExecHelper {
 		Parser parser = Parser.getInstance();
 
 		parser.getNextParam();
-		String cmd = parser.makeString();
+		String cmd = parser.stringValue();
 
 		DSS.forms.showHelpForm(cmd);
 
@@ -504,7 +504,7 @@ public class ExecHelper {
 				switch (DSS.lastClassReferenced) {
 				case -1:
 					DSS.doSimpleMsg("Object type \"" + objType[0] + "\" not found." +
-						DSS.CRLF + Parser.getInstance().getCmdBuffer(), 253);
+						DSS.CRLF + Parser.getInstance().getCommand(), 253);
 					return success;
 				default:
 					// intrinsic and user defined models
@@ -514,7 +514,7 @@ public class ExecHelper {
 						switch (DSS.activeDSSObject.getObjType()) {
 						case DSSClassDefs.DSS_OBJECT:
 							DSS.doSimpleMsg("Error in setActiveCktElement: Object not a circuit element." +
-									DSS.CRLF + Parser.getInstance().getCmdBuffer(), 254);
+									DSS.CRLF + Parser.getInstance().getCommand(), 254);
 							break;
 						default:
 							DSS.activeCircuit.setActiveCktElement((CktElement) DSS.activeDSSClass.getActiveObj());
@@ -558,7 +558,7 @@ public class ExecHelper {
 							}
 						} else {
 							// just load up the parser and call the edit routine for the object in question
-							Parser.getInstance().setCmdBuffer("enabled=true");  // will only work for CktElements
+							Parser.getInstance().setCommand("enabled=true");  // will only work for CktElements
 							success = editObject(objType[0], objName[0]);
 						}
 					}
@@ -597,7 +597,7 @@ public class ExecHelper {
 						}
 					} else {
 						// just load up the parser and call the edit routine for the object in question
-						Parser.getInstance().setCmdBuffer("enabled=false");  // will only work for CktElements
+						Parser.getInstance().setCommand("enabled=false");  // will only work for CktElements
 						success = editObject(objType[0], objName[0]);
 					}
 
@@ -632,7 +632,7 @@ public class ExecHelper {
 
 		// continue parsing command line - check for object name
 		paramName = parser.getNextParam();
-		param = parser.makeString();
+		param = parser.stringValue();
 		if (param.length() > 0) {
 			if (param.equalsIgnoreCase("commands")) {
 				if (!DSS.noFormsAllowed) {
@@ -681,10 +681,10 @@ public class ExecHelper {
 					singleObject = true;
 					// check to see if we want a debug dump on this object
 					paramName = parser.getNextParam();
-					param2 = parser.makeString();
+					param2 = parser.stringValue();
 					if (param2.equalsIgnoreCase("debug")) debugDump = true;
 					// set active element to be value in param
-					parser.setCmdBuffer("\"" + param + "\"");  // put param back into parser
+					parser.setCommand("\"" + param + "\"");  // put param back into parser
 					getObjClassAndName(objClass, objName);
 					//if (doSelectCmd == 0) return result;
 					if (DSSClassDefs.setObjectClass(objClass[0])) {
@@ -811,16 +811,16 @@ public class ExecHelper {
 		int retval = setActiveCktElement();
 		if (retval > 0) {
 			parser.getNextParam();
-			terminal = parser.makeInteger();
+			terminal = parser.integerValue();
 			parser.getNextParam();
-			conductor = parser.makeInteger();
+			conductor = parser.integerValue();
 
 			ckt.getActiveCktElement().setActiveTerminalIdx(terminal);
 			ckt.getActiveCktElement().setConductorClosed(conductor, false);
 			DSS.setActiveBus(Util.stripExtension(ckt.getActiveCktElement().getBus(ckt.getActiveCktElement().getActiveTerminalIdx())));
 		} else {
 			DSS.doSimpleMsg("Error in Open command: Circuit element not found." +
-					DSS.CRLF + parser.getCmdBuffer(), 259);
+					DSS.CRLF + parser.getCommand(), 259);
 		}
 
 		return 0;
@@ -841,16 +841,16 @@ public class ExecHelper {
 		int retval = setActiveCktElement();
 		if (retval > 0) {
 			parser.getNextParam();
-			terminal = parser.makeInteger();
+			terminal = parser.integerValue();
 			parser.getNextParam();
-			conductor = parser.makeInteger();
+			conductor = parser.integerValue();
 
 			ckt.getActiveCktElement().setActiveTerminalIdx(terminal);
 			ckt.getActiveCktElement().setConductorClosed(conductor, true);
 			DSS.setActiveBus(Util.stripExtension(ckt.getActiveCktElement().getBus(ckt.getActiveCktElement().getActiveTerminalIdx())));
 		} else {
 			DSS.doSimpleMsg("Error in Close command circuit element not found." +
-					DSS.CRLF + parser.getCmdBuffer(), 260);
+					DSS.CRLF + parser.getCommand(), 260);
 		}
 		return 0;
 	}
@@ -861,7 +861,7 @@ public class ExecHelper {
 
 		// get next parm and try to interpret as a file name
 		parser.getNextParam();
-		param = parser.makeString().toUpperCase();
+		param = parser.stringValue().toUpperCase();
 
 		if (param.length() == 0) {
 			doResetMonitors();
@@ -950,7 +950,7 @@ public class ExecHelper {
 
 		// get next parm and try to interpret as a file name
 		Parser.getInstance().getNextParam();
-		param = Parser.getInstance().makeString().toUpperCase();
+		param = Parser.getInstance().stringValue().toUpperCase();
 
 		/* Mark capacitor and reactor buses as keep so we don't lose them */
 		markCapAndReactorBuses();
@@ -992,7 +992,7 @@ public class ExecHelper {
 
 		// get next parm and try to interpret as a file name
 		Parser.getInstance().getNextParam();
-		param = Parser.getInstance().makeString();
+		param = Parser.getInstance().stringValue();
 
 		if (new File(param).exists()) {
 			Util.fireOffEditor(param);
@@ -1044,7 +1044,7 @@ public class ExecHelper {
 		String[] propName = new String[1];
 
 		Parser.getInstance().getNextParam();
-		param = Parser.getInstance().makeString();
+		param = Parser.getInstance().stringValue();
 
 		parseObjName(param, objName, propName);
 
@@ -1052,7 +1052,7 @@ public class ExecHelper {
 			DSS.activeDSSClass = DSS.solutionClass;
 			DSS.activeDSSObject = DSS.activeCircuit.getSolution();
 		} else {
-			Parser.getInstance().setCmdBuffer("\"" + objName.toString() + "\"");
+			Parser.getInstance().setCommand("\"" + objName.toString() + "\"");
 			doSelectCmd();  // set object active
 		}
 
@@ -1083,7 +1083,7 @@ public class ExecHelper {
 
 		// get next parm and try to interpret as a file name
 		Parser.getInstance().getNextParam();
-		param = Parser.getInstance().makeString();
+		param = Parser.getInstance().stringValue();
 
 		solution = DSS.activeCircuit.getSolution();
 
@@ -1126,7 +1126,7 @@ public class ExecHelper {
 		switch (DSS.lastClassReferenced) {
 		case -1:
 			DSS.doSimpleMsg("Object type \"" + objType + "\" not found." +
-					DSS.CRLF + parser.getCmdBuffer(), 263);
+					DSS.CRLF + parser.getCommand(), 263);
 			return handle;
 		default:
 			// intrinsic and user defined models
@@ -1135,7 +1135,7 @@ public class ExecHelper {
 
 			// name must be supplied
 			if (name.length() == 0) {
-				DSS.doSimpleMsg("Object name missing" + DSS.CRLF + parser.getCmdBuffer(), 264);
+				DSS.doSimpleMsg("Object name missing" + DSS.CRLF + parser.getCommand(), 264);
 				return handle;
 			}
 
@@ -1196,7 +1196,7 @@ public class ExecHelper {
 		switch (DSS.lastClassReferenced) {
 		case -1:
 			DSS.doSimpleMsg("Object type \"" + objType + "\" not found." +
-				DSS.CRLF + Parser.getInstance().getCmdBuffer(), 267);
+				DSS.CRLF + Parser.getInstance().getCommand(), 267);
 			success = 0;
 			return success;
 		default:
@@ -1216,10 +1216,10 @@ public class ExecHelper {
 
 		// parse off next two items on line
 		String paramName = Parser.getInstance().getNextParam();
-		String busName = Parser.getInstance().makeString();
+		String busName = Parser.getInstance().stringValue();
 
 		paramName = Parser.getInstance().getNextParam();
-		double kVValue = Parser.getInstance().makeDouble();
+		double kVValue = Parser.getInstance().doubleValue();
 
 		// now find the bus and set the value
 		Circuit ckt = DSS.activeCircuit;
@@ -1256,9 +1256,9 @@ public class ExecHelper {
 		ckt.getAutoAddBusList().clear();
 
 		// Load up auxiliary parser to reparse the array list or file name
-		parser.setCmdBuffer(s);
+		parser.setCommand(s);
 		String parmName = parser.getNextParam();
-		String param = parser.makeString();
+		String param = parser.stringValue();
 
 		/* Syntax can be either a list of bus names or a file specification: file= ... */
 
@@ -1269,9 +1269,9 @@ public class ExecHelper {
 				br = new BufferedReader(fr);
 
 				while ((s2 = br.readLine()) != null) {
-					parser.setCmdBuffer(s2);
+					parser.setCommand(s2);
 					parmName = parser.getNextParam();
-					param = parser.makeString();
+					param = parser.stringValue();
 					if (param.length() > 0)
 						ckt.getAutoAddBusList().add(param);
 				}
@@ -1285,7 +1285,7 @@ public class ExecHelper {
 			while (param.length() > 0) {
 				ckt.getAutoAddBusList().add(param);
 				parser.getNextParam();
-				param = parser.makeString();
+				param = parser.stringValue();
 			}
 		}
 	}
@@ -1306,9 +1306,9 @@ public class ExecHelper {
 		Parser parser = DSS.auxParser;
 
 		// load up auxiliary parser to reparse the array list or file name
-		parser.setCmdBuffer(s);
+		parser.setCommand(s);
 		String parmName = parser.getNextParam();
-		String param = parser.makeString();
+		String param = parser.stringValue();
 
 		if (parmName.equalsIgnoreCase("file")) {
 			// load the list from a file
@@ -1317,9 +1317,9 @@ public class ExecHelper {
 				br = new BufferedReader(fr);
 
 				while ((s2 = br.readLine()) != null) {
-					parser.setCmdBuffer(s2);
+					parser.setCommand(s2);
 					parmName = parser.getNextParam();
-					param = parser.makeString();
+					param = parser.stringValue();
 					if (param.length() > 0) {
 						iBus = ckt.getBusList().find(param);
 						if (iBus >= 0) ckt.getBus(iBus).setKeep(true);
@@ -1338,7 +1338,7 @@ public class ExecHelper {
 				if (iBus >= 0) ckt.getBus(iBus).setKeep(true);
 
 				parser.getNextParam();
-				param = parser.makeString();
+				param = parser.stringValue();
 			}
 		}
 	}
@@ -1813,7 +1813,7 @@ public class ExecHelper {
 
 		int paramPointer = -1;
 		String paramName = parser.getNextParam();
-		String param = parser.makeString();
+		String param = parser.stringValue();
 
 		while (param.length() > 0) {
 			if (paramName.length() == 0) {
@@ -1837,15 +1837,15 @@ public class ExecHelper {
 				DSS.doSimpleMsg("Unknown parameter \"" + paramName + "\" for capacity command", 273);
 				break;
 			case 0:
-				ckt.setCapacityStart(parser.makeDouble());
+				ckt.setCapacityStart(parser.doubleValue());
 				break;
 			case 1:
-				ckt.setCapacityIncrement(parser.makeDouble());
+				ckt.setCapacityIncrement(parser.doubleValue());
 				break;
 			}
 
 			paramName = parser.getNextParam();
-			param = parser.makeString();
+			param = parser.stringValue();
 		}
 
 		if (ckt.computeCapacity()) {  // totalizes energy meters at end
@@ -1938,7 +1938,7 @@ public class ExecHelper {
 			/* Get next parameter on command line */
 
 			paramName = parser.getNextParam().toUpperCase();
-			param = parser.makeString();
+			param = parser.stringValue();
 
 			propIndex = 0;
 			if (paramName.length() > 0) {
@@ -1961,7 +1961,7 @@ public class ExecHelper {
 				varIndex = elem.lookupVariable(param);  // look up property index
 				break;
 			case 1:
-				varIndex = parser.makeInteger() - 1;
+				varIndex = parser.integerValue() - 1;
 				break;
 			default:
 				break;
@@ -2017,7 +2017,7 @@ public class ExecHelper {
 
 		/* Get next parameter on command line */
 		Parser.getInstance().getNextParam();
-		String param = Parser.getInstance().makeString();
+		String param = Parser.getInstance().stringValue();
 
 		try {
 			fr = new FileReader(param);
@@ -2026,23 +2026,23 @@ public class ExecHelper {
 			while ((s = br.readLine()) != null) {
 				Parser parser = DSS.auxParser;  // user aux parser to parse line
 
-				parser.setCmdBuffer(s);
+				parser.setCommand(s);
 				parser.getNextParam();
-				busName = parser.makeString();
+				busName = parser.stringValue();
 				ib = ckt.getBusList().find(busName);
 				if (ib >= 0) {
 					bus = ckt.getBus(ib);
 					parser.getNextParam();
 					if (swapXY) {
-						bus.setY(parser.makeDouble());
+						bus.setY(parser.doubleValue());
 					} else {
-						bus.setX(parser.makeDouble());
+						bus.setX(parser.doubleValue());
 					}
 					parser.getNextParam();
 					if (swapXY) {
-						bus.setX(parser.makeDouble());
+						bus.setX(parser.doubleValue());
 					} else {
-						bus.setY(parser.makeDouble());
+						bus.setY(parser.doubleValue());
 					}
 					bus.setCoordDefined(true);
 				}
@@ -2074,11 +2074,11 @@ public class ExecHelper {
 
 		ckt.setReductionStrategyString(s);
 
-		parser.setCmdBuffer(s);
+		parser.setCommand(s);
 		parser.getNextParam();
-		String param = parser.makeString().toUpperCase();
+		String param = parser.stringValue().toUpperCase();
 		parser.getNextParam();
-		String param2 = parser.makeString();
+		String param2 = parser.stringValue();
 
 		ckt.setReductionStrategy(ReductionStrategy.DEFAULT);
 
@@ -2101,7 +2101,7 @@ public class ExecHelper {
 			ckt.setReductionStrategy(ReductionStrategy.TAP_ENDS);
 			ckt.setReductionMaxAngle(15.0);  // default
 			if (param2.length() > 0)
-				ckt.setReductionMaxAngle(parser.makeDouble());
+				ckt.setReductionMaxAngle(parser.doubleValue());
 			break;
 		case 'S':  // stubs
 			if (Util.compareTextShortest(param, "switch") == 0) {
@@ -2110,7 +2110,7 @@ public class ExecHelper {
 				ckt.setReductionZmag(0.02);
 				ckt.setReductionStrategy(ReductionStrategy.STUBS);
 				if (param2.length() > 0) {
-					ckt.setReductionZmag(parser.makeDouble());
+					ckt.setReductionZmag(parser.doubleValue());
 				}
 			}
 			break;
@@ -2130,7 +2130,7 @@ public class ExecHelper {
 		Circuit ckt = DSS.activeCircuit;
 
 		Parser.getInstance().getNextParam();
-		param = Parser.getInstance().makeString().toUpperCase();
+		param = Parser.getInstance().stringValue().toUpperCase();
 
 		// initialize the checked flag for all circuit elements
 
@@ -2169,7 +2169,7 @@ public class ExecHelper {
 		int ret = 0;
 
 		Parser.getInstance().getNextParam();
-		String param = Parser.getInstance().makeString();
+		String param = Parser.getInstance().stringValue();
 
 		if (new File(param).exists()) {
 			if (!Util.rewriteAlignedFile(param)) ret = 1;
@@ -2189,10 +2189,10 @@ public class ExecHelper {
 	 */
 	public static int doTOPCmd() {
 		Parser.getInstance().getNextParam();
-		String param = Parser.getInstance().makeString().toUpperCase();
+		String param = Parser.getInstance().stringValue().toUpperCase();
 
 		Parser.getInstance().getNextParam();
-		String objName = Parser.getInstance().makeString().toUpperCase();
+		String objName = Parser.getInstance().stringValue().toUpperCase();
 
 		if (objName.length() == 0)
 			objName = "ALL";
@@ -2234,7 +2234,7 @@ public class ExecHelper {
 
 		if (ckt != null) {
 			Parser.getInstance().getNextParam();
-			angle = Parser.getInstance().makeDouble() * DSS.PI / 180.0;   // deg to rad
+			angle = Parser.getInstance().doubleValue() * DSS.PI / 180.0;   // deg to rad
 
 			a = new Complex(Math.cos(angle), Math.sin(angle));
 			xmin =  1.0e50;
@@ -2284,19 +2284,19 @@ public class ExecHelper {
 	        		PrintWriter pw = new PrintWriter(DSS.circuitName_ + "Vdiff.txt");
 
 	        		while ((line = br.readLine()) != null) {
-	        			parser.setCmdBuffer(line);
+	        			parser.setCommand(line);
 	        			parser.getNextParam();
-	        			busName = parser.makeString();
+	        			busName = parser.stringValue();
 	        			if (busName.length() > 0) {
 	        				busIndex = ckt.getBusList().find(busName);
 	        				if (busIndex >= 0) {
 	        					parser.getNextParam();
-	        					node = parser.makeInteger();
+	        					node = parser.integerValue();
 	        					Bus bus = ckt.getBus(busIndex);
 	        					for (i = 0; i < bus.getNumNodesThisBus(); i++) {
 								if (bus.getNum(i) == node) {
 									parser.getNextParam();
-									Vmag = parser.makeDouble();
+									Vmag = parser.doubleValue();
 									diff = ckt.getSolution().getNodeV(bus.getRef(i)).abs() - Vmag;
 									if (Vmag != 0.0) {
 										pw.println(busName + "." + node + ", " + (diff / Vmag * 100.0) + ", %");
@@ -2407,7 +2407,7 @@ public class ExecHelper {
 
 		int paramPointer = -1;
 		String paramName = parser.getNextParam();
-		String param = parser.makeString();
+		String param = parser.stringValue();
 
 		while (param.length() > 0) {
 			if (paramName.length() == 0) {
@@ -2418,22 +2418,22 @@ public class ExecHelper {
 
 			switch (paramPointer) {
 			case 0:
-				kW = parser.makeDouble();
+				kW = parser.doubleValue();
 				break;
 			case 1:
-				how = interpretDistribution(parser.makeString());
+				how = interpretDistribution(parser.stringValue());
 				break;
 			case 2:
-				skip = parser.makeInteger();
+				skip = parser.integerValue();
 				break;
 			case 3:
-				pf = parser.makeDouble();
+				pf = parser.doubleValue();
 				break;
 			case 4:
-				fileName = parser.makeString();
+				fileName = parser.stringValue();
 				break;
 			case 5:
-				kW = parser.makeDouble() * 1000.0;
+				kW = parser.doubleValue() * 1000.0;
 				break;
 			default:
 				// ignore unnamed and extra parms
@@ -2441,7 +2441,7 @@ public class ExecHelper {
 			}
 
 			paramName = parser.getNextParam();
-			param = parser.makeString();
+			param = parser.stringValue();
 		}
 
 		Util.makeDistributedGenerators(kW, pf, how, skip, fileName);
@@ -2470,7 +2470,7 @@ public class ExecHelper {
 
 		int paramPointer = -1;
 		String paramName = parser.getNextParam();
-		String param = parser.makeString();
+		String param = parser.stringValue();
 
 		while (param.length() > 0) {
 			if (paramName.length() == 0) {
@@ -2484,7 +2484,7 @@ public class ExecHelper {
 				caseName = param;
 				break;
 			case 1:
-				caseYear = parser.makeInteger();
+				caseYear = parser.integerValue();
 				break;
 			case 2:
 				numRegs = parser.parseAsVector(EnergyMeterObj.NumEMRegisters, dRegisters);
@@ -2496,7 +2496,7 @@ public class ExecHelper {
 				peakDay = Util.interpretYesNo(param);
 				break;
 			case 4:
-				meterName = parser.makeString();
+				meterName = parser.stringValue();
 				break;
 			default:
 				// ignore unnamed and extra parms
@@ -2504,7 +2504,7 @@ public class ExecHelper {
 			}
 
 			paramName = parser.getNextParam();
-			param = parser.makeString();
+			param = parser.stringValue();
 		}
 
 		DSSPlot.getDSSPlotObj().doDI_Plot(caseName, caseYear, iRegisters, peakDay, meterName);
@@ -2528,7 +2528,7 @@ public class ExecHelper {
 
 		int paramPointer = -1;
 		String paramName = Parser.getInstance().getNextParam().toUpperCase();
-		String param = Parser.getInstance().makeString();
+		String param = Parser.getInstance().stringValue();
 
 		while (param.length() > 0) {
 			unknown = false;
@@ -2557,7 +2557,7 @@ public class ExecHelper {
 					caseName2 = param;
 					break;
 				case 2:
-					reg = Parser.getInstance().makeInteger();
+					reg = Parser.getInstance().integerValue();
 					break;
 				case 3:
 					whichFile = param;
@@ -2568,7 +2568,7 @@ public class ExecHelper {
 				}
 			}
 			paramName = Parser.getInstance().getNextParam().toUpperCase();
-			param = Parser.getInstance().makeString();
+			param = Parser.getInstance().stringValue();
 		}
 
 		DSSPlot.getDSSPlotObj().doCompareCases(caseName1, caseName2, whichFile, reg);
@@ -2596,7 +2596,7 @@ public class ExecHelper {
 
 		int paramPointer = -1;
 		String paramName = Parser.getInstance().getNextParam();
-		String param = Parser.getInstance().makeString();
+		String param = Parser.getInstance().stringValue();
 
 		while (param.length() > 0) {
 			unknown = false;
@@ -2623,13 +2623,13 @@ public class ExecHelper {
 			if (!unknown) {
 				switch (paramPointer) {
 				case 0:   // list of case names
-					DSS.auxParser.setCmdBuffer(param);
+					DSS.auxParser.setCommand(param);
 					DSS.auxParser.getNextParam();
-					param = DSS.auxParser.makeString();
+					param = DSS.auxParser.stringValue();
 					while (param.length() > 0) {
 						caseNames.add(param);
 						DSS.auxParser.getNextParam();
-						param = DSS.auxParser.makeString();
+						param = DSS.auxParser.stringValue();
 					}
 					break;
 				case 1:
@@ -2648,7 +2648,7 @@ public class ExecHelper {
 			}
 
 			paramName = Parser.getInstance().getNextParam();
-			param = Parser.getInstance().makeString();
+			param = Parser.getInstance().stringValue();
 		}
 
 		DSSPlot.getDSSPlotObj().doYearlyCurvePlot(caseNames, whichFile, iRegisters);
@@ -2682,7 +2682,7 @@ public class ExecHelper {
 		/* Parse rest of command line */
 		int paramPointer = -1;
 		String paramName = Parser.getInstance().getNextParam().toUpperCase();
-		String param = Parser.getInstance().makeString();
+		String param = Parser.getInstance().stringValue();
 
 		while (param.length() > 0) {
 			unknown = false;
@@ -2723,7 +2723,7 @@ public class ExecHelper {
 			}
 
 			paramName = Parser.getInstance().getNextParam().toUpperCase();
-			param = Parser.getInstance().makeString();
+			param = Parser.getInstance().stringValue();
 		}
 
 		devIndex = Util.getCktElementIndex(elemName);
@@ -2783,7 +2783,7 @@ public class ExecHelper {
 		nPhases = 0;  // no filtering by number of phases
 
 		String paramName = Parser.getInstance().getNextParam();
-		String param = Parser.getInstance().makeString();
+		String param = Parser.getInstance().stringValue();
 		while (param.length() > 0) {
 			if (paramName.length() == 0) {
 				paramPointer += 1;
@@ -2812,14 +2812,14 @@ public class ExecHelper {
 				myEditString = param;
 				break;
 			case 5:
-				nPhases = Parser.getInstance().makeInteger();
+				nPhases = Parser.getInstance().integerValue();
 			default:
 				DSS.doSimpleMsg("Error: Unknown parameter on command line: "+param, 28701);
 				break;
 			}
 
 			paramName = Parser.getInstance().getNextParam();
-			param = Parser.getInstance().makeString();
+			param = Parser.getInstance().stringValue();
 		}
 
 		/* Check for errors */
@@ -2908,7 +2908,7 @@ public class ExecHelper {
 
 		int paramPointer = -1;
 		String paramName = parser.getNextParam();
-		String param = parser.makeString();
+		String param = parser.stringValue();
 
 		while (param.length() > 0) {
 			if (paramName.length() == 0) {
@@ -2922,13 +2922,13 @@ public class ExecHelper {
 				busName = param;
 				break;
 			case 1:
-				DSSPlot.setAddMarkerCode(parser.makeInteger());
+				DSSPlot.setAddMarkerCode(parser.integerValue());
 				break;
 			case 2:
-				DSSPlot.setAddMarkerColor(parser.makeInteger());
+				DSSPlot.setAddMarkerColor(parser.integerValue());
 				break;
 			case 3:
-				DSSPlot.setAddMarkerSize(parser.makeInteger());
+				DSSPlot.setAddMarkerSize(parser.integerValue());
 				break;
 			default:
 				// ignore unnamed and extra params
@@ -2936,7 +2936,7 @@ public class ExecHelper {
 			}
 
 			paramName = parser.getNextParam();
-			param = parser.makeString();
+			param = parser.stringValue();
 		}
 
 		busIdx = ckt.getBusList().find(busName);
@@ -3008,7 +3008,7 @@ public class ExecHelper {
 		Parser parser = Parser.getInstance();
 
 		paramName = parser.getNextParam();
-		param = parser.makeString();
+		param = parser.stringValue();
 
 		try {
 			fr = new FileReader(param);
@@ -3016,11 +3016,11 @@ public class ExecHelper {
 
 			while ((s = br.readLine()) != null) {
 				named = null;
-				DSS.auxParser.setCmdBuffer(s);
+				DSS.auxParser.setCommand(s);
 				DSS.auxParser.getNextParam();
-				nameVal = DSS.auxParser.makeString();
+				nameVal = DSS.auxParser.stringValue();
 				DSS.auxParser.getNextParam();
-				uuidVal = DSS.auxParser.makeString();
+				uuidVal = DSS.auxParser.stringValue();
 				// format the UUID properly
 				if (uuidVal.indexOf('{') < 0)
 					uuidVal = '{' + uuidVal + '}';
@@ -3057,7 +3057,7 @@ public class ExecHelper {
 		PrintWriter pw;
 
 		Parser.getInstance().getNextParam();
-		String param = Parser.getInstance().makeString();
+		String param = Parser.getInstance().stringValue();
 
 		if (param.length() == 0) param = "s";
 
@@ -3081,7 +3081,7 @@ public class ExecHelper {
 			iLoadShape = loadShapeClass.getFirst();
 			while (iLoadShape >= 0) {
 				loadShape = (LoadShapeObj) loadShapeClass.getActiveObj();
-				Parser.getInstance().setCmdBuffer(action);
+				Parser.getInstance().setCommand(action);
 				loadShape.edit();
 				pw.printf("new loadShape.%s npts=%d interval=%.8g %s",
 					loadShape.getName(), loadShape.getNumPoints(),
@@ -3113,13 +3113,13 @@ public class ExecHelper {
 		Circuit ckt = DSS.activeCircuit;
 
 		String paramName = Parser.getInstance().getNextParam();
-		String param = Parser.getInstance().makeString();
+		String param = Parser.getInstance().stringValue();
 		sNode1 = param;
 
 		if (paramName.indexOf('2') >= 0) sNode2 = param;
 
 		paramName = Parser.getInstance().getNextParam();
-		param = Parser.getInstance().makeString();
+		param = Parser.getInstance().stringValue();
 		sNode2 = param;
 
 		if (paramName.indexOf('1') > 0) sNode1 = param;
@@ -3171,7 +3171,7 @@ public class ExecHelper {
 		boolean transfStop = true;  // stop at transformers
 
 		String paramName = Parser.getInstance().getNextParam();
-		String param = Parser.getInstance().makeString();
+		String param = Parser.getInstance().stringValue();
 
 		while (param.length() > 0) {
 			if (paramName.length() == 0) {
@@ -3202,7 +3202,7 @@ public class ExecHelper {
 			}
 
 			paramName = Parser.getInstance().getNextParam();
-			param = Parser.getInstance().makeString();
+			param = Parser.getInstance().stringValue();
 		}
 
 		lineClass = (Line) DSS.DSSClassList.get(DSS.classNames.find("Line"));
@@ -3234,7 +3234,7 @@ public class ExecHelper {
 		Circuit ckt = DSS.activeCircuit;
 
 		String paramName = Parser.getInstance().getNextParam();
-		String param = Parser.getInstance().makeString();
+		String param = Parser.getInstance().stringValue();
 		int paramPointer = -1;
 
 		while (param.length() > 0) {
@@ -3249,10 +3249,10 @@ public class ExecHelper {
 				busName = param;
 				break;
 			case 1:
-				Xval = Parser.getInstance().makeDouble();
+				Xval = Parser.getInstance().doubleValue();
 				break;
 			case 2:
-				Yval = Parser.getInstance().makeDouble();
+				Yval = Parser.getInstance().doubleValue();
 				break;
 			default:
 				DSS.doSimpleMsg("Unknown parameter on command line: "+param, 28721);
@@ -3269,7 +3269,7 @@ public class ExecHelper {
 			}
 
 			paramName = Parser.getInstance().getNextParam();
-			param = Parser.getInstance().makeString();
+			param = Parser.getInstance().stringValue();
 		}
 
 		return 0;
@@ -3304,7 +3304,7 @@ public class ExecHelper {
 		freq = DSS.defaultBaseFreq;
 
 		paramName      = parser.getNextParam();
-		param          = parser.makeString();
+		param          = parser.stringValue();
 		paramPointer   = -1;
 
 		while (param.length() > 0) {
@@ -3316,7 +3316,7 @@ public class ExecHelper {
 
 			switch (paramPointer) {
 			case 0:
-				npts = parser.makeInteger();
+				npts = parser.integerValue();
 				Varray = Util.resizeArray(Varray, npts);
 				break;
 			case 1:
@@ -3324,20 +3324,20 @@ public class ExecHelper {
 				break;
 			case 3:
 				double f = DSS.activeCircuit.getSolution().getFrequency();
-				cyclesPerSample = (int) Math.round(f * parser.makeDouble());
+				cyclesPerSample = (int) Math.round(f * parser.doubleValue());
 				break;
 			case 4:
-				freq = parser.makeDouble();
+				freq = parser.doubleValue();
 				break;
 			case 5:
-				lamp = parser.makeInteger();
+				lamp = parser.integerValue();
 				break;
 			default:
 				DSS.doSimpleMsg("Unknown parameter on command line: " + param, 28722);
 			}
 
 			paramName = parser.getNextParam();
-			param = parser.makeString();
+			param = parser.stringValue();
 		}
 
 		if (npts > 10) {

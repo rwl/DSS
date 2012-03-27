@@ -142,7 +142,7 @@ public class LoadShape extends DSSClass {
 
 		int paramPointer = -1;
 		String paramName = parser.getNextParam();
-		String param = parser.makeString();
+		String param = parser.stringValue();
 
 		while (param.length() > 0) {
 			if (paramName.length() == 0){
@@ -160,10 +160,10 @@ public class LoadShape extends DSSClass {
 						getClassName() +"."+ elem.getName() + "\"", 610);
 				break;
 			case 0:
-				elem.setNumPoints(parser.makeInteger());
+				elem.setNumPoints(parser.integerValue());
 				break;
 			case 1:
-				elem.setInterval(parser.makeDouble());
+				elem.setInterval(parser.doubleValue());
 				break;
 			case 2:
 				elem.setPMultipliers(Util.resizeArray(elem.getPMultipliers(), elem.getNumPoints()));
@@ -176,10 +176,10 @@ public class LoadShape extends DSSClass {
 				elem.setInterval(0.0);
 				break;
 			case 4:
-				elem.setMean(parser.makeDouble());
+				elem.setMean(parser.doubleValue());
 				break;
 			case 5:
-				elem.setStdDev(parser.makeDouble());
+				elem.setStdDev(parser.doubleValue());
 				break;
 			case 6:
 				doCSVFile(param);
@@ -211,22 +211,22 @@ public class LoadShape extends DSSClass {
 				elem.setUseActual(Util.interpretYesNo(param));
 				break;
 			case 12:
-				elem.setMaxP(parser.makeDouble());
+				elem.setMaxP(parser.doubleValue());
 				break;
 			case 13:
-				elem.setMaxQ(parser.makeDouble());
+				elem.setMaxQ(parser.doubleValue());
 				break;
 			case 14:
-				elem.setInterval(parser.makeDouble() / 3600.0);  // convert seconds to hr
+				elem.setInterval(parser.doubleValue() / 3600.0);  // convert seconds to hr
 				break;
 			case 15:
-				elem.setInterval(parser.makeDouble() / 60.0);    // convert minutes to hr
+				elem.setInterval(parser.doubleValue() / 60.0);    // convert minutes to hr
 				break;
 			case 16:
-				elem.setBaseP(parser.makeDouble());
+				elem.setBaseP(parser.doubleValue());
 				break;
 			case 17:
-				elem.setBaseQ(parser.makeDouble());
+				elem.setBaseQ(parser.doubleValue());
 				break;
 			default:
 				// inherited parameters
@@ -247,7 +247,7 @@ public class LoadShape extends DSSClass {
 			}
 
 			paramName = parser.getNextParam();
-			param = parser.makeString();
+			param = parser.stringValue();
 		}
 
 		if (elem.getPMultipliers() != null) elem.setMaxPandQ();
@@ -367,13 +367,13 @@ public class LoadShape extends DSSClass {
 			while (((s = br.readLine()) != null) && i < elem.getNumPoints()) {
 				/* aux parser allows commas or white space */
 				parser = DSS.auxParser;
-				parser.setCmdBuffer(s);
+				parser.setCommand(s);
 				if (elem.getInterval() == 0.0) {
 					parser.getNextParam();
-					elem.getHours()[i] = parser.makeDouble();
+					elem.getHours()[i] = parser.doubleValue();
 				}
 				parser.getNextParam();
-				elem.getPMultipliers()[i] = parser.makeDouble();
+				elem.getPMultipliers()[i] = parser.doubleValue();
 				i += 1;
 			}
 			br.close();

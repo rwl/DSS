@@ -147,7 +147,7 @@ public class VVControl extends ControlClass {
 
 		int paramPointer = -1;
 		String paramName = parser.getNextParam();
-		String param = parser.makeString();
+		String param = parser.stringValue();
 
 		while (param.length() > 0) {
 			if (paramName.length() == 0) {
@@ -168,43 +168,43 @@ public class VVControl extends ControlClass {
 				elem.setElementName(param.toLowerCase());
 				break;
 			case 1:
-				elem.setElementTerminalIdx(parser.makeInteger() - 1);
+				elem.setElementTerminalIdx(parser.integerValue() - 1);
 				break;
 			case 2:
-				elem.setVvc_VMaxPU(parser.makeDouble());
+				elem.setVvc_VMaxPU(parser.doubleValue());
 				break;
 			case 3:
-				elem.setVvc_VMinPU(parser.makeDouble());
+				elem.setVvc_VMinPU(parser.doubleValue());
 				break;
 			case 4:
-				elem.setKVA_Rating(parser.makeDouble());
+				elem.setKVA_Rating(parser.doubleValue());
 				break;
 			case 5:
-				elem.setKW_Rating(parser.makeDouble());
+				elem.setKW_Rating(parser.doubleValue());
 				break;
 			case 6:
-				elem.setKVAr_FullOutput(parser.makeDouble());
+				elem.setKVAr_FullOutput(parser.doubleValue());
 				break;
 			case 7:
-				elem.setPf(parser.makeDouble());
+				elem.setPf(parser.doubleValue());
 				break;
 			case 8:
-				elem.setDelay(parser.makeDouble());
+				elem.setDelay(parser.doubleValue());
 				break;
 			case 9:
-				elem.setDelayOff(parser.makeDouble());
+				elem.setDelayOff(parser.doubleValue());
 				break;
 			case 10:
-				elem.setKW_RampRate(parser.makeDouble());
+				elem.setKW_RampRate(parser.doubleValue());
 				break;
 			case 11:
-				elem.setKVAr_RampRate(parser.makeDouble());
+				elem.setKVAr_RampRate(parser.doubleValue());
 				break;
 			case 12:
-				elem.setKW_Limit(parser.makeDouble());
+				elem.setKW_Limit(parser.doubleValue());
 				break;
 			case 13:
-				elem.setKVAr_Limit(parser.makeDouble());
+				elem.setKVAr_Limit(parser.doubleValue());
 				break;
 
 			case 14:
@@ -218,13 +218,13 @@ public class VVControl extends ControlClass {
 				}
 				break;
 			case 16:
-				elem.setVvc_CurveSize(parser.makeInteger());
+				elem.setVvc_CurveSize(parser.integerValue());
 				break;
 			case 17:
 				elem.setVvc_Curve(getVVCCurve(param));
 				break;
 			case 18:
-				elem.setDeltaQFactor(parser.makeDouble());
+				elem.setDeltaQFactor(parser.doubleValue());
 				break;
 			default:
 				// inherited parameters
@@ -248,7 +248,7 @@ public class VVControl extends ControlClass {
 			}
 
 			paramName = parser.getNextParam();
-			param = parser.makeString();
+			param = parser.stringValue();
 		}
 
 		elem.recalcElementData();

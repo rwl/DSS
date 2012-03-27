@@ -720,7 +720,7 @@ public class LineObj extends PDElement {
 			}
 			// conductor current ratings
 			s = s + String.format(" normAmps=%-.5g  %-.5g", getNormAmps(), getEmergAmps());
-			Parser.getInstance().setCmdBuffer(s);
+			Parser.getInstance().setCommand(s);
 			edit();
 		}
 
@@ -804,7 +804,7 @@ public class LineObj extends PDElement {
 					break;
 				}
 
-				Parser.getInstance().setCmdBuffer(s);
+				Parser.getInstance().setCommand(s);
 				edit();
 			}
 
@@ -856,7 +856,7 @@ public class LineObj extends PDElement {
 						s = s + String.format(" %g", (C0 * len + otherLine.getC0() * otherLine.getLen()) / totalLen * 1.0e9);
 					}
 				}
-				Parser.getInstance().setCmdBuffer(s);   // this reset the length units
+				Parser.getInstance().setCommand(s);   // this reset the length units
 				edit();
 			} else {
 				/*------------------- Matrix Model ---------------------------*/
@@ -901,7 +901,7 @@ public class LineObj extends PDElement {
 						s = s + " | ";
 					}
 					s = s + "]";
-					Parser.getInstance().setCmdBuffer(s);
+					Parser.getInstance().setCommand(s);
 					edit();
 
 					/* C matrix */
@@ -913,12 +913,12 @@ public class LineObj extends PDElement {
 						s = s + " | ";
 					}
 					s = s + "] ";
-					Parser.getInstance().setCmdBuffer(s);
+					Parser.getInstance().setCommand(s);
 					edit();
 				}
 			}  // matrix definition
 
-			Parser.getInstance().setCmdBuffer(String.format(" length=%g units=%s", totalLen, LineUnits.lineUnitsStr(lenUnitsSaved)));
+			Parser.getInstance().setCommand(String.format(" length=%g units=%s", totalLen, LineUnits.lineUnitsStr(lenUnitsSaved)));
 			edit();
 
 			otherLine.setEnabled(false);  // disable the other line
@@ -934,7 +934,7 @@ public class LineObj extends PDElement {
 		Circuit ckt = DSS.activeCircuit;
 		for (ControlElem elem : ckt.getControls()) {
 			if (oldName.equalsIgnoreCase(elem.getElementName())) {
-				Parser.getInstance().setCmdBuffer(" element=" + newName);  // change name of the property
+				Parser.getInstance().setCommand(" element=" + newName);  // change name of the property
 				elem.edit();
 			}
 		}
@@ -973,15 +973,15 @@ public class LineObj extends PDElement {
 			istart = lineSpacingObj.getNPhases();
 		}
 
-		DSS.auxParser.setCmdBuffer(code);
+		DSS.auxParser.setCommand(code);
 		for (i = istart; i < lineSpacingObj.getNWires(); i++) {
 			DSS.auxParser.getNextParam();  // ignore any parameter name  not expecting any
-			DSS.wireDataClass.setCode(DSS.auxParser.makeString());
+			DSS.wireDataClass.setCode(DSS.auxParser.stringValue());
 
 			if (ConductorData.activeConductorDataObj != null) {
 				wireData[i] = ConductorData.activeConductorDataObj;
 			} else {
-				DSS.doSimpleMsg("Wire " + DSS.auxParser.makeString() + " was not defined first.", 181);
+				DSS.doSimpleMsg("Wire " + DSS.auxParser.stringValue() + " was not defined first.", 181);
 			}
 		}
 	}
@@ -997,15 +997,15 @@ public class LineObj extends PDElement {
 		phaseChoice = ConductorChoice.CONCENTRIC_NEUTRAL;
 		wireData = new ConductorDataObj[lineSpacingObj.getNWires()];
 
-		DSS.auxParser.setCmdBuffer(code);
+		DSS.auxParser.setCommand(code);
 		for (i = 0; i < lineSpacingObj.getNPhases(); i++) {  // fill extra neutrals later
 			DSS.auxParser.getNextParam();  // ignore any parameter name  not expecting any
-			DSS.CNDataClass.setCode(DSS.auxParser.makeString());
+			DSS.CNDataClass.setCode(DSS.auxParser.stringValue());
 
 			if (ConductorData.activeConductorDataObj != null) {
 				wireData[i] = ConductorData.activeConductorDataObj;
 			} else {
-				DSS.doSimpleMsg("CN cable " + DSS.auxParser.makeString() + " was not defined first.", 181);
+				DSS.doSimpleMsg("CN cable " + DSS.auxParser.stringValue() + " was not defined first.", 181);
 			}
 		}
 	}
@@ -1020,15 +1020,15 @@ public class LineObj extends PDElement {
 
 		phaseChoice = ConductorChoice.TAPE_SHIELD;
 		wireData = new ConductorDataObj[lineSpacingObj.getNWires()];
-		DSS.auxParser.setCmdBuffer(code);
+		DSS.auxParser.setCommand(code);
 		for (i = 0; i < lineSpacingObj.getNPhases(); i++) {  // fill extra neutrals later
 			DSS.auxParser.getNextParam();  // ignore any parameter name  not expecting any
-			DSS.TSDataClass.setCode(DSS.auxParser.makeString());
+			DSS.TSDataClass.setCode(DSS.auxParser.stringValue());
 
 			if (ConductorData.activeConductorDataObj != null) {
 				wireData[i] = ConductorData.activeConductorDataObj;
 			} else {
-				DSS.doSimpleMsg("TS cable " + DSS.auxParser.makeString() + " was not defined first.", 181);
+				DSS.doSimpleMsg("TS cable " + DSS.auxParser.stringValue() + " was not defined first.", 181);
 			}
 		}
 	}

@@ -200,7 +200,7 @@ abstract public class DSSClass {
 		if (paramPointer >= 0) {
 			switch (paramPointer) {
 			case 0:
-				makeLike(Parser.getInstance().makeString());  // like command
+				makeLike(Parser.getInstance().stringValue());  // like command
 				break;
 			}
 		}

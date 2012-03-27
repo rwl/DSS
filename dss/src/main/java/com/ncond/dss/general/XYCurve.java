@@ -116,7 +116,7 @@ public class XYCurve extends DSSClass {
 
 		int paramPointer = -1;
 		String paramName = parser.getNextParam();
-		String param = parser.makeString();
+		String param = parser.stringValue();
 
 		while (param.length() > 0) {
 			if (paramName.length() == 0) {
@@ -134,7 +134,7 @@ public class XYCurve extends DSSClass {
 						getClassName() +"."+ elem.getName() + "\"", 610);
 				break;
 			case 0:
-				elem.setNumPoints(parser.makeInteger());
+				elem.setNumPoints(parser.integerValue());
 				break;
 			case 1:
 				tempPointsBuffer = Util.resizeArray(tempPointsBuffer, elem.getNumPoints() * 2);
@@ -170,10 +170,10 @@ public class XYCurve extends DSSClass {
 				doDblFile(param);
 				break;
 			case 7:
-				elem.setX(parser.makeDouble());
+				elem.setX(parser.doubleValue());
 				break;
 			case 8:
-				elem.setY(parser.makeDouble());
+				elem.setY(parser.doubleValue());
 				break;
 			default:
 				// inherited parameters
@@ -204,7 +204,7 @@ public class XYCurve extends DSSClass {
 			}
 
 			paramName = parser.getNextParam();
-			param = parser.makeString();
+			param = parser.stringValue();
 		}
 		return 0;
 	}
@@ -248,11 +248,11 @@ public class XYCurve extends DSSClass {
 			while (((s = br.readLine()) != null) && i < elem.getNumPoints()) {
 				/* Aux parser allows for commas or white space */
 				parser = DSS.auxParser;
-				parser.setCmdBuffer(s);
+				parser.setCommand(s);
 				parser.getNextParam();
-				elem.getXValues()[i] = parser.makeDouble();
+				elem.getXValues()[i] = parser.doubleValue();
 				parser.getNextParam();
-				elem.getYValues()[i] = parser.makeDouble();
+				elem.getYValues()[i] = parser.doubleValue();
 				i += 1;
 			}
 

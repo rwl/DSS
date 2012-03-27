@@ -324,7 +324,7 @@ public class PVSystem extends PCClass {
 
 		int paramPointer = -1;
 		String paramName = parser.getNextParam();  // parse next property off the command line
-		String param = parser.makeString();  // put the string value of the property value in local memory for faster access
+		String param = parser.stringValue();  // put the string value of the property value in local memory for faster access
 
 		while (param.length() > 0) {
 			if (paramName.length() == 0) {
@@ -347,24 +347,24 @@ public class PVSystem extends PCClass {
 							getClassName() +"."+ elem.getName() + "\"", 561);
 					break;
 				case 0:
-					elem.setNumPhases(parser.makeInteger());  // num phases
+					elem.setNumPhases(parser.integerValue());  // num phases
 					break;
 				case 1:
 					elem.setBus(0, param);
 					break;
 				case KV:
-					elem.setPresentKV(parser.makeDouble());
+					elem.setPresentKV(parser.doubleValue());
 					break;
 				case IRRADIANCE:
-					elem.setIrradiance(parser.makeDouble());
+					elem.setIrradiance(parser.doubleValue());
 					break;
 				case PF:
 					elem.setPFSpecified(true);
 					elem.setKVArSpecified(false);
-					elem.PFNominal = parser.makeDouble();
+					elem.PFNominal = parser.doubleValue();
 					break;
 				case MODEL:
-					elem.setVoltageModel(PVSystemModel.values()[parser.makeInteger() - 1]);
+					elem.setVoltageModel(PVSystemModel.values()[parser.integerValue() - 1]);
 					break;
 				case YEARLY:
 					elem.setYearlyShape(param);
@@ -390,49 +390,49 @@ public class PVSystem extends PCClass {
 				case KVAR:
 					elem.setKVArSpecified(true);
 					elem.setPFSpecified(false);
-					elem.setPresentKVAr(parser.makeDouble());
+					elem.setPresentKVAr(parser.doubleValue());
 					break;
 				case PCTR:
-					elem.setPctR(parser.makeDouble());
+					elem.setPctR(parser.doubleValue());
 					break;
 				case PCTX:
-					elem.setPctX(parser.makeDouble());
+					elem.setPctX(parser.doubleValue());
 					break;
 				case CLASS:
-					elem.setFClass(parser.makeInteger());
+					elem.setFClass(parser.integerValue());
 					break;
 				case INV_EFF_CURVE:
 					elem.setInverterCurve(param);
 					break;
 				case TEMP:
-					elem.setTemperature(parser.makeDouble());
+					elem.setTemperature(parser.doubleValue());
 					break;
 				case PMPP:
-					elem.setPmpp(parser.makeDouble());
+					elem.setPmpp(parser.doubleValue());
 					break;
 				case P_T_CURVE:
 					elem.setPowerTempCurve(param);
 					break;
 				case CUT_IN:
-					elem.setPctCutIn(parser.makeDouble());
+					elem.setPctCutIn(parser.doubleValue());
 					break;
 				case CUT_OUT:
-					elem.setPctCutOut(parser.makeDouble());
+					elem.setPctCutOut(parser.doubleValue());
 					break;
 				case VMIN_PU:
-					elem.setVMinPU(parser.makeDouble());
+					elem.setVMinPU(parser.doubleValue());
 					break;
 				case VMAX_PU:
-					elem.setVMaxPU(parser.makeDouble());
+					elem.setVMaxPU(parser.doubleValue());
 					break;
 				case KVA:
-					elem.setKVARating(parser.makeDouble());
+					elem.setKVARating(parser.doubleValue());
 					break;
 				case USER_MODEL:
-					elem.getUserModel().setName(parser.makeString());  // connect to user written models
+					elem.getUserModel().setName(parser.stringValue());  // connect to user written models
 					break;
 				case USER_DATA:
-					elem.getUserModel().edit(parser.makeString());  // send edit string to user model
+					elem.getUserModel().edit(parser.stringValue());  // send edit string to user model
 					break;
 				case DEBUG_TRACE:
 					elem.setDebugTrace(Util.interpretYesNo(param));
@@ -501,7 +501,7 @@ public class PVSystem extends PCClass {
 				}
 			}
 			paramName = parser.getNextParam();
-			param = parser.makeString();
+			param = parser.stringValue();
 		}
 
 		elem.recalcElementData();

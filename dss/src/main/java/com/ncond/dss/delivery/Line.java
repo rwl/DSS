@@ -250,7 +250,7 @@ public class Line extends PDClass {
 
 		int paramPointer = -1;
 		String paramName = parser.getNextParam();
-		String param = parser.makeString();
+		String param = parser.stringValue();
 
 		while (param.length() > 0) {
 			if (paramName.length() == 0) {
@@ -277,28 +277,28 @@ public class Line extends PDClass {
 				elem.fetchLineCode(param);  // define line by conductor code
 				break;
 			case 3:
-				elem.setLen(parser.makeDouble());
+				elem.setLen(parser.doubleValue());
 				break;
 			case 4:
 				/* nPhases (see below) */
 				break;
 			case 5:
-				elem.setR1(parser.makeDouble());
+				elem.setR1(parser.doubleValue());
 				break;
 			case 6:
-				elem.setX1(parser.makeDouble());
+				elem.setX1(parser.doubleValue());
 				break;
 			case 7:
-				elem.setR0(parser.makeDouble());
+				elem.setR0(parser.doubleValue());
 				break;
 			case 8:
-				elem.setX0(parser.makeDouble());
+				elem.setX0(parser.doubleValue());
 				break;
 			case 9:
-				elem.setC1(parser.makeDouble() * 1.0e-9);  // convert from nano to farads
+				elem.setC1(parser.doubleValue() * 1.0e-9);  // convert from nano to farads
 				break;
 			case 10:
-				elem.setC0(parser.makeDouble() * 1.0e-9);
+				elem.setC0(parser.doubleValue() * 1.0e-9);
 				break;
 			case 11:
 				doRmatrix();
@@ -313,13 +313,13 @@ public class Line extends PDClass {
 				elem.setSwitch(Util.interpretYesNo(param));
 				break;
 			case 15:
-				elem.setRg(parser.makeDouble());
+				elem.setRg(parser.doubleValue());
 				break;
 			case 16:
-				elem.setXg(parser.makeDouble());
+				elem.setXg(parser.doubleValue());
 				break;
 			case 17:
-				elem.setRho(parser.makeDouble());
+				elem.setRho(parser.doubleValue());
 				elem.setRhoSpecified(true);
 				break;
 			case 18:
@@ -364,9 +364,9 @@ public class Line extends PDClass {
 				elem.setGeometrySpecified(false);
 				break;
 			case 4:  /* Change the number of phases ... only valid if symComponentsModel=true */
-				if (elem.getNumPhases() != parser.makeInteger())
+				if (elem.getNumPhases() != parser.integerValue())
 					if (!elem.isGeometrySpecified() && elem.isSymComponentsModel()) {  // ignore change of nPhases if geometry used
-						elem.setNumPhases(parser.makeInteger());
+						elem.setNumPhases(parser.integerValue());
 						elem.setNumConds(elem.getNumPhases());  // force reallocation of terminal info
 						elem.setYOrder(elem.getNumTerms() * elem.getNumConds());
 						/*al.setYprimInvalid(true);*/  // now set below
@@ -453,7 +453,7 @@ public class Line extends PDClass {
 			}
 
 			paramName = parser.getNextParam();
-			param = parser.makeString();
+			param = parser.stringValue();
 		}
 
 		//if (elem.isSymComponentsChanged()) elem.recalcElementData();

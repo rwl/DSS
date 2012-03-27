@@ -216,7 +216,7 @@ public class EnergyMeter extends MeterClass {
 
 		int paramPointer = -1;
 		String paramName = parser.getNextParam();
-		String param = parser.makeString();
+		String param = parser.stringValue();
 
 		while (param.length() > 0) {
 			if (paramName.length() == 0) {
@@ -237,7 +237,7 @@ public class EnergyMeter extends MeterClass {
 				elem.setElementName(param.toLowerCase());
 				break;
 			case 1:
-				elem.setMeteredTerminalIdx(parser.makeInteger() - 1);
+				elem.setMeteredTerminalIdx(parser.integerValue() - 1);
 				break;
 			case 2:  /* Actions */
 				switch (param.toLowerCase().charAt(0)) {
@@ -265,10 +265,10 @@ public class EnergyMeter extends MeterClass {
 				processOptions(param);
 				break;
 			case 4:
-				elem.setMaxZoneKVANorm(parser.makeDouble());
+				elem.setMaxZoneKVANorm(parser.doubleValue());
 				break;
 			case 5:
-				elem.setMaxZoneKVAEmerg(parser.makeDouble());
+				elem.setMaxZoneKVAEmerg(parser.doubleValue());
 				break;
 			case 6:
 				parser.parseAsVector(elem.getNumPhases(), elem.getSensorCurrent());  // inits to zero
@@ -328,7 +328,7 @@ public class EnergyMeter extends MeterClass {
 			}
 
 			paramName = parser.getNextParam();
-			param = parser.makeString();
+			param = parser.stringValue();
 		}
 
 		if (doRecalc)
@@ -556,14 +556,14 @@ public class EnergyMeter extends MeterClass {
 	private void processOptions(String opts) {
 		String s2 = " ";
 
-		DSS.auxParser.setCmdBuffer(opts);  // load up aux parser
+		DSS.auxParser.setCommand(opts);  // load up aux parser
 
 		EnergyMeterObj elem = activeEnergyMeterObj;
 
 		/* Loop until no more options found */
 		while (s2.length() > 0) {
 			DSS.auxParser.getNextParam();  // ignore any parameter name not expecting any
-			s2 = DSS.auxParser.makeString().toLowerCase();
+			s2 = DSS.auxParser.stringValue().toLowerCase();
 			if (s2.length() > 0) {
 				switch (s2.charAt(0)) {
 				case 'e':

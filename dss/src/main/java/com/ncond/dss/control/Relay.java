@@ -146,7 +146,7 @@ public class Relay extends ControlClass {
 
 		int paramPointer = -1;
 		String paramName = parser.getNextParam();
-		String param = parser.makeString();
+		String param = parser.stringValue();
 
 		while (param.length() > 0) {
 			if (paramName.length() == 0) {
@@ -172,13 +172,13 @@ public class Relay extends ControlClass {
 					elem.setMonitoredElementName(param.toLowerCase());
 					break;
 				case 1:
-					elem.setMonitoredElementTerminalIdx(parser.makeInteger() - 1);
+					elem.setMonitoredElementTerminalIdx(parser.integerValue() - 1);
 					break;
 				case 2:
 					elem.setElementName(param.toLowerCase());
 					break;
 				case 3:
-					elem.setElementTerminalIdx(parser.makeInteger() - 1);
+					elem.setElementTerminalIdx(parser.integerValue() - 1);
 					break;
 				case 4:
 					elem.interpretRelayType(param);
@@ -190,22 +190,22 @@ public class Relay extends ControlClass {
 					elem.setGroundCurve(getTccCurve(param));
 					break;
 				case 7:
-					elem.setPhaseTrip(parser.makeDouble());
+					elem.setPhaseTrip(parser.doubleValue());
 					break;
 				case 8:
-					elem.setGroundTrip(parser.makeDouble());
+					elem.setGroundTrip(parser.doubleValue());
 					break;
 				case 9:
-					elem.setPhaseInst(parser.makeDouble());
+					elem.setPhaseInst(parser.doubleValue());
 					break;
 				case 10:
-					elem.setGroundInst(parser.makeDouble());
+					elem.setGroundInst(parser.doubleValue());
 					break;
 				case 11:
-					elem.setResetTime(parser.makeDouble());
+					elem.setResetTime(parser.doubleValue());
 					break;
 				case 12:
-					elem.setNumReclose(parser.makeInteger() - 1);  // one less than number of shots
+					elem.setNumReclose(parser.integerValue() - 1);  // one less than number of shots
 					break;
 				case 13:
 					if (param.equalsIgnoreCase("none")) {
@@ -221,10 +221,10 @@ public class Relay extends ControlClass {
 					elem.setUVCurve(getTccCurve(param));
 					break;
 				case 16:
-					elem.setKVBase(parser.makeDouble());
+					elem.setKVBase(parser.doubleValue());
 					break;
 				case 17:
-					elem.setBreakerTime(parser.makeDouble());
+					elem.setBreakerTime(parser.doubleValue());
 					break;
 				case 18:
 					elem.interpretRelayAction(param);
@@ -233,31 +233,31 @@ public class Relay extends ControlClass {
 					elem.setMonitorVariable(param.toLowerCase());  // for PC elements
 					break;
 				case 20:
-					elem.setPctPickup46(parser.makeDouble());
+					elem.setPctPickup46(parser.doubleValue());
 					break;
 				case 21:
-					elem.setIsqt46(parser.makeDouble());
+					elem.setIsqt46(parser.doubleValue());
 					break;
 				case 22:
-					elem.setBaseAmps46(parser.makeDouble());
+					elem.setBaseAmps46(parser.doubleValue());
 					break;
 				case 23:
-					elem.setDelayTime(parser.makeDouble());
+					elem.setDelayTime(parser.doubleValue());
 					break;
 				case 24:
-					elem.setPctPickup47(parser.makeDouble());
+					elem.setPctPickup47(parser.doubleValue());
 					break;
 				case 25:
-					elem.setOverTrip(parser.makeDouble());
+					elem.setOverTrip(parser.doubleValue());
 					break;
 				case 26:
-					elem.setUnderTrip(parser.makeDouble());
+					elem.setUnderTrip(parser.doubleValue());
 					break;
 				case 27:
-					elem.setTDPhase(parser.makeDouble());
+					elem.setTDPhase(parser.doubleValue());
 					break;
 				case 28:
-					elem.setTDGround(parser.makeDouble());
+					elem.setTDGround(parser.doubleValue());
 					break;
 				default:
 					// inherited parameters
@@ -284,7 +284,7 @@ public class Relay extends ControlClass {
 						elem.setPropertyValue(13, "(5.0)");
 						break;
 					}
-					DSS.auxParser.setCmdBuffer(elem.getPropertyValue(13));
+					DSS.auxParser.setCommand(elem.getPropertyValue(13));
 					paramName = DSS.auxParser.getNextParam();
 					elem.setNumReclose(DSS.auxParser.parseAsVector(4, elem.getRecloseIntervals()));
 					break;
@@ -292,7 +292,7 @@ public class Relay extends ControlClass {
 			}
 
 			paramName = parser.getNextParam();
-			param = parser.makeString();
+			param = parser.stringValue();
 		}
 
 		elem.recalcElementData();

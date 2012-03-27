@@ -243,7 +243,7 @@ public class DSSClassDefs {
 		switch (classRef) {
 		case 0:
 			DSS.doSimpleMsg("Error: Object class \"" + objType + "\" not found." +
-					DSS.CRLF + Parser.getInstance().getCmdBuffer(), 903);
+					DSS.CRLF + Parser.getInstance().getCommand(), 903);
 			return false;
 		default:
 			DSS.lastClassReferenced = classRef;

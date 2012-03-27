@@ -151,7 +151,7 @@ public class RegControl extends ControlClass {
 
 		int paramPointer = -1;
 		String paramName = parser.getNextParam();
-		String param = parser.makeString();
+		String param = parser.stringValue();
 
 		while (param.length() > 0) {
 			if (paramName.length() == 0) {
@@ -172,64 +172,64 @@ public class RegControl extends ControlClass {
 				elem.setElementName("Transformer." + param.toLowerCase());
 				break;
 			case 1:
-				elem.setElementTerminalIdx(parser.makeInteger() - 1);
+				elem.setElementTerminalIdx(parser.integerValue() - 1);
 				break;
 			case 2:
-				elem.setVreg(parser.makeDouble());
+				elem.setVreg(parser.doubleValue());
 				break;
 			case 3:
-				elem.setBandwidth(parser.makeDouble());
+				elem.setBandwidth(parser.doubleValue());
 				break;
 			case 4:
-				elem.setPTRatio(parser.makeDouble());
+				elem.setPTRatio(parser.doubleValue());
 				break;
 			case 5:
-				elem.setCTRating(parser.makeDouble());
+				elem.setCTRating(parser.doubleValue());
 				break;
 			case 6:
-				elem.setR(parser.makeDouble());
+				elem.setR(parser.doubleValue());
 				break;
 			case 7:
-				elem.setX(parser.makeDouble());
+				elem.setX(parser.doubleValue());
 				break;
 			case 8:
 				elem.setRegulatedBus(param);
 				break;
 			case 9:
-				elem.setTimeDelay(parser.makeDouble());
+				elem.setTimeDelay(parser.doubleValue());
 				break;
 			case 10:
 				elem.setReversible(Util.interpretYesNo(param));
 				break;
 			case 11:
-				elem.setRevVreg(parser.makeDouble());
+				elem.setRevVreg(parser.doubleValue());
 				break;
 			case 12:
-				elem.setRevBandwidth(parser.makeDouble());
+				elem.setRevBandwidth(parser.doubleValue());
 				break;
 			case 13:
-				elem.setRevR(parser.makeDouble());
+				elem.setRevR(parser.doubleValue());
 				break;
 			case 14:
-				elem.setRevX(parser.makeDouble());
+				elem.setRevX(parser.doubleValue());
 				break;
 			case 15:
-				elem.setTapDelay(parser.makeDouble());
+				elem.setTapDelay(parser.doubleValue());
 				break;
 			case 16:
 				elem.setDebugTrace(Util.interpretYesNo(param));
 				break;
 			case 17:
-				elem.setTapLimitPerChange(Math.max(0, parser.makeInteger()));
+				elem.setTapLimitPerChange(Math.max(0, parser.integerValue()));
 				break;
 			case 18:
 				elem.setInverseTime(Util.interpretYesNo(param));
 				break;
 			case 19:
-				elem.setTapWindingIdx(parser.makeInteger() - 1);
+				elem.setTapWindingIdx(parser.integerValue() - 1);
 				break;
 			case 20:
-				elem.setVLimit(parser.makeDouble());
+				elem.setVLimit(parser.doubleValue());
 				if (elem.getVLimit() > 0.0) {
 					elem.setVLimitActive(true);
 				} else {
@@ -242,14 +242,14 @@ public class RegControl extends ControlClass {
 				} else if (Util.compareTextShortest(param, "min") == 0) {
 					elem.setPTPhaseIdx(MINPHASE);
 				} else {
-					elem.setPTPhaseIdx(Math.max(0, parser.makeInteger() - 1));
+					elem.setPTPhaseIdx(Math.max(0, parser.integerValue() - 1));
 				}
 				break;
 			case 22:
-				elem.setKWRevPowerThreshold(parser.makeDouble());
+				elem.setKWRevPowerThreshold(parser.doubleValue());
 				break;
 			case 23:
-				elem.setRevDelay(parser.makeDouble());
+				elem.setRevDelay(parser.doubleValue());
 				break;
 			case 24:
 				elem.setReverseNeutral(Util.interpretYesNo(param));
@@ -290,7 +290,7 @@ public class RegControl extends ControlClass {
 			}
 
 			paramName = parser.getNextParam();
-			param = parser.makeString();
+			param = parser.stringValue();
 		}
 
 		elem.recalcElementData();

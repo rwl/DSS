@@ -365,7 +365,7 @@ public class CapacitorObj extends PDElement {
 				break;
 			}
 
-			Parser.getInstance().setCmdBuffer(s);
+			Parser.getInstance().setCommand(s);
 			edit();
 		}
 

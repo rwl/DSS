@@ -1813,7 +1813,7 @@ public class ShowResults {
 		try {
 			fileName = Util.stripExtension(fileName);
 			paramName = parser.getNextParam();
-			param = parser.makeString();
+			param = parser.stringValue();
 
 			fileName = fileName + "_" + param + ".txt";
 
@@ -1873,7 +1873,7 @@ public class ShowResults {
 					}
 				}
 			} else {
-				DSS.doSimpleMsg("Meter name not specified."+ DSS.CRLF + parser.getCmdBuffer(), 221);
+				DSS.doSimpleMsg("Meter name not specified."+ DSS.CRLF + parser.getCommand(), 221);
 			}
 
 			pw.close();
@@ -1882,7 +1882,7 @@ public class ShowResults {
 			DSS.doSimpleMsg("Error encountered showing meter zones: " + e.getMessage(), -1);
 		} finally {
 			paramName = parser.getNextParam();
-			param = parser.makeString();
+			param = parser.stringValue();
 
 			switch (param.length()) {
 			case 0:

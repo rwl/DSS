@@ -343,7 +343,7 @@ public class ExecOptions {
 		// Continue parsing command line
 		int paramPointer = -1;
 		String paramName = parser.getNextParam();
-		String param = parser.makeString();
+		String param = parser.stringValue();
 
 		while (param.length() > 0) {
 			if (paramName.length() == 0) {
@@ -366,7 +366,7 @@ public class ExecOptions {
 				Executive.getInstance().setRecorderOn(Util.interpretYesNo(param));
 				break;
 			case 72:
-				DSS.defaultBaseFreq = parser.makeDouble();
+				DSS.defaultBaseFreq = parser.doubleValue();
 				break;
 			default:
 				DSS.doSimpleMsg("You must create a new circuit object first: \"new circuit.mycktname\" to execute this Set command.", 301);
@@ -375,7 +375,7 @@ public class ExecOptions {
 			}
 
 			paramName = parser.getNextParam();
-			param = parser.makeString();
+			param = parser.stringValue();
 		}
 
 		return success;
@@ -398,7 +398,7 @@ public class ExecOptions {
 		// continue parsing command line
 		int paramPointer = -1;
 		String paramName = parser.getNextParam();
-		String param = parser.makeString();
+		String param = parser.stringValue();
 
 		while (param.length() > 0) {
 			if (paramName.length() == 0) {
@@ -420,17 +420,17 @@ public class ExecOptions {
 				DSS.setObject(param);
 				break;
 			case 2:
-				ckt.getSolution().setIntHour(parser.makeInteger());
+				ckt.getSolution().setIntHour(parser.integerValue());
 				break;
 			case 3:
-				ckt.getSolution().getDynaVars().t = parser.makeDouble();
+				ckt.getSolution().getDynaVars().t = parser.doubleValue();
 				break;
 			case 4:
-				ckt.getSolution().setYear(parser.makeInteger());
+				ckt.getSolution().setYear(parser.integerValue());
 				ckt.setDefaultGrowthFactor(Math.pow(ckt.getDefaultGrowthRate(), ckt.getSolution().getYear() - 1));
 				break;
 			case 5:
-				ckt.getSolution().setFrequency(parser.makeDouble());
+				ckt.getSolution().setFrequency(parser.doubleValue());
 				break;
 			case 6:
 				ckt.getSolution().getDynaVars().h = Util.interpretTimeStepSize(param);
@@ -445,7 +445,7 @@ public class ExecOptions {
 				ckt.getSolution().setRandomType( Util.interpretRandom(param) );
 				break;
 			case 9:
-				ckt.getSolution().setNumberOfTimes(parser.makeInteger());
+				ckt.getSolution().setNumberOfTimes(parser.integerValue());
 				break;
 			case 10:
 				ExecHelper.setTime();
@@ -457,35 +457,35 @@ public class ExecOptions {
 				DSS.defaultEditor = param;  // 'Editor='
 				break;
 			case 15:
-				ckt.getSolution().setConvergenceTolerance(parser.makeDouble());
+				ckt.getSolution().setConvergenceTolerance(parser.doubleValue());
 				break;
 			case 16:
-				ckt.getSolution().setMaxIterations(parser.makeInteger());
+				ckt.getSolution().setMaxIterations(parser.integerValue());
 				break;
 			case 18:
 				ckt.getSolution().setDefaultLoadModel(Util.interpretLoadModel(param)); // for reverting to last on specified
 				ckt.getSolution().setLoadModel(ckt.getSolution().getDefaultLoadModel());
 				break;
 			case 19:
-				ckt.setLoadMultiplier(parser.makeDouble());  // set using loadMultiplier property
+				ckt.setLoadMultiplier(parser.doubleValue());  // set using loadMultiplier property
 				break;
 			case 20:
-				ckt.setNormalMinVolts(parser.makeDouble());
+				ckt.setNormalMinVolts(parser.doubleValue());
 				break;
 			case 21:
-				ckt.setNormalMaxVolts(parser.makeDouble());
+				ckt.setNormalMaxVolts(parser.doubleValue());
 				break;
 			case 22:
-				ckt.setEmergMinVolts(parser.makeDouble());
+				ckt.setEmergMinVolts(parser.doubleValue());
 				break;
 			case 23:
-				ckt.setEmergMaxVolts(parser.makeDouble());
+				ckt.setEmergMaxVolts(parser.doubleValue());
 				break;
 			case 24:
-				ckt.getDefaultDailyShapeObj().setMean(parser.makeDouble() / 100.0);
+				ckt.getDefaultDailyShapeObj().setMean(parser.doubleValue() / 100.0);
 				break;
 			case 25:
-				ckt.getDefaultDailyShapeObj().setStdDev(parser.makeDouble() / 100.0);
+				ckt.getDefaultDailyShapeObj().setStdDev(parser.doubleValue() / 100.0);
 				break;
 			case 26:
 				ckt.setLoadDurCurve(param);
@@ -494,17 +494,17 @@ public class ExecOptions {
 					DSS.doSimpleMsg("Load-duration curve not found.", 131);
 				break;
 			case 27:
-				ckt.setDefaultGrowthRate(1.0 + parser.makeDouble() / 100.0);
+				ckt.setDefaultGrowthRate(1.0 + parser.doubleValue() / 100.0);
 				ckt.setDefaultGrowthFactor( Math.pow(ckt.getDefaultGrowthRate(), ckt.getSolution().getYear() - 1) );
 				break;
 			case 28:
-				ckt.getAutoAddObj().setGenKW(parser.makeDouble());
+				ckt.getAutoAddObj().setGenKW(parser.doubleValue());
 				break;
 			case 29:
-				ckt.getAutoAddObj().setGenPF(parser.makeDouble());
+				ckt.getAutoAddObj().setGenPF(parser.doubleValue());
 				break;
 			case 30:
-				ckt.getAutoAddObj().setCapKVAr(parser.makeDouble());
+				ckt.getAutoAddObj().setCapKVAr(parser.doubleValue());
 				break;
 			case 31:
 				ckt.getAutoAddObj().setAddType(Util.interpretAddType(param));
@@ -516,10 +516,10 @@ public class ExecOptions {
 				ckt.setZonesLocked(Util.interpretYesNo(param));
 				break;
 			case 34:
-				ckt.setUEWeight(parser.makeDouble());
+				ckt.setUEWeight(parser.doubleValue());
 				break;
 			case 35:
-				ckt.setLossWeight(parser.makeDouble());
+				ckt.setLossWeight(parser.doubleValue());
 				break;
 			case 36:
 				numRegs = new int[1];
@@ -551,7 +551,7 @@ public class ExecOptions {
 				ckt.getControlQueue().setTrace(Util.interpretYesNo(param));
 				break;
 			case 44:
-				ckt.setGenMultiplier(parser.makeDouble());
+				ckt.setGenMultiplier(parser.doubleValue());
 				break;
 			case 45:
 				testLoadShapeObj = (LoadShapeObj) DSS.loadShapeClass.find(param);
@@ -564,13 +564,13 @@ public class ExecOptions {
 					ckt.setDefaultYearlyShapeObj(testLoadShapeObj);
 				break;
 			case 47:
-				ExecHelper.doSetAllocationFactors(parser.makeDouble());
+				ExecHelper.doSetAllocationFactors(parser.doubleValue());
 				break;
 			case 48:
 				ckt.setPositiveSequence(Util.interpretCktModel(param));
 				break;
 			case 49:
-				ckt.setPriceSignal(parser.makeDouble());
+				ckt.setPriceSignal(parser.doubleValue());
 				break;
 			case 50:
 				ckt.setPriceCurve(param);
@@ -581,19 +581,19 @@ public class ExecOptions {
 			case 51:
 				if (ckt.getActiveCktElement() != null) {
 					CktElement elem = ckt.getActiveCktElement();
-					elem.setActiveTerminalIdx(parser.makeInteger());
+					elem.setActiveTerminalIdx(parser.integerValue());
 					DSS.setActiveBus(Util.stripExtension(elem.getBus(elem.getActiveTerminalIdx())));  // bus connected to terminal
 				}
 				break;
 			case 52:
-				ckt.setFundamental(parser.makeDouble());  // set base frequency for system (used henceforth)
-				ckt.getSolution().setFrequency(parser.makeDouble());
+				ckt.setFundamental(parser.doubleValue());  // set base frequency for system (used henceforth)
+				ckt.getSolution().setFrequency(parser.doubleValue());
 				break;
 			case 53:
 				ExecHelper.doHarmonicsList(param);
 				break;
 			case 54:
-				ckt.getSolution().setMaxControlIterations(parser.makeInteger());
+				ckt.getSolution().setMaxControlIterations(parser.integerValue());
 				break;
 			case 55:
 				ret = DSS.setActiveBus(param);  // see DSS globals
@@ -611,20 +611,20 @@ public class ExecOptions {
 				DSS.energyMeterClass.setSaveDemandInterval(Util.interpretYesNo(param));
 				break;
 			case 60:
-				ckt.setPctNormalFactor(parser.makeDouble());
+				ckt.setPctNormalFactor(parser.doubleValue());
 				ExecHelper.doSetNormal(ckt.getPctNormalFactor());
 				break;
 			case 61:
 				DSS.energyMeterClass.setDIVerbose(Util.interpretYesNo(param));
 				break;
 			case 62:
-				ckt.setCaseName(parser.makeString());
+				ckt.setCaseName(parser.stringValue());
 				break;
 			case 63:
-				ckt.setNodeMarkerCode(parser.makeInteger());
+				ckt.setNodeMarkerCode(parser.integerValue());
 				break;
 			case 64:
-				ckt.setNodeMarkerWidth(parser.makeInteger());
+				ckt.setNodeMarkerWidth(parser.integerValue());
 				break;
 			case 65:
 				ckt.setLogEvents(Util.interpretYesNo(param));
@@ -639,36 +639,36 @@ public class ExecOptions {
 				DSS.energyMeterClass.setDoVoltageExceptionReport(Util.interpretYesNo(param));
 				break;
 			case 69:
-				ExecHelper.doSetCFactors(parser.makeDouble());
+				ExecHelper.doSetCFactors(parser.doubleValue());
 				break;
 			case 70:
 				DSS.autoShowExport = Util.interpretYesNo(param);
 				break;
 			case 71:
-				DSS.maxAllocationIterations = parser.makeInteger();
+				DSS.maxAllocationIterations = parser.integerValue();
 				break;
 			case 72:
-				DSS.defaultBaseFreq = parser.makeDouble();
-				ckt.setFundamental(parser.makeDouble());  // set base frequency for system (used henceforth)
-				ckt.getSolution().setFrequency(parser.makeDouble());
+				DSS.defaultBaseFreq = parser.doubleValue();
+				ckt.setFundamental(parser.doubleValue());  // set base frequency for system (used henceforth)
+				ckt.getSolution().setFrequency(parser.doubleValue());
 				break;
 			case 73:
 				ckt.setMarkSwitches(Util.interpretYesNo(param));
 				break;
 			case 74:
-				ckt.setSwitchMarkerCode(parser.makeInteger());
+				ckt.setSwitchMarkerCode(parser.integerValue());
 				break;
 			case 75:
-				DSS.daisySize = parser.makeDouble();
+				DSS.daisySize = parser.doubleValue();
 				break;
 			case 76:
 				ckt.setMarkTransformers(Util.interpretYesNo(param));
 				break;
 			case 77:
-				ckt.setTransMarkerCode(parser.makeInteger());
+				ckt.setTransMarkerCode(parser.integerValue());
 				break;
 			case 78:
-				ckt.setTransMarkerSize(parser.makeInteger());
+				ckt.setTransMarkerSize(parser.integerValue());
 				break;
 			case 79:
 				ckt.setActiveLoadShapeClass(Util.interpretLoadShapeClass(param));
@@ -694,7 +694,7 @@ public class ExecOptions {
 			}
 
 			paramName = parser.getNextParam();
-			param = parser.makeString();
+			param = parser.stringValue();
 		}
 
 		if (solveOption == 1)
@@ -716,7 +716,7 @@ public class ExecOptions {
 
 			// continue parsing command line
 			String paramName = Parser.getInstance().getNextParam();
-			String param = Parser.getInstance().makeString();
+			String param = Parser.getInstance().stringValue();
 
 			// there will be no named parameters in this command and the params
 			// themselves will be the parameter name to return
@@ -1063,7 +1063,7 @@ public class ExecOptions {
 				}
 
 				paramName = Parser.getInstance().getNextParam();
-				param = Parser.getInstance().makeString();
+				param = Parser.getInstance().stringValue();
 			}
 
 		} catch (Exception e) {

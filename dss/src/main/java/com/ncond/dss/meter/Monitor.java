@@ -101,7 +101,7 @@ public class Monitor extends MeterClass {
 
 		int paramPointer = -1;
 		String paramName = parser.getNextParam();
-		String param = parser.makeString();
+		String param = parser.stringValue();
 
 		while (param.length() > 0) {
 			if (paramName.length() == 0) {
@@ -122,10 +122,10 @@ public class Monitor extends MeterClass {
 				elem.setElementName(param.toLowerCase());
 				break;
 			case 1:
-				elem.setMeteredTerminalIdx(parser.makeInteger() - 1);
+				elem.setMeteredTerminalIdx(parser.integerValue() - 1);
 				break;
 			case 2:
-				elem.setMode(parser.makeInteger());
+				elem.setMode(parser.integerValue());
 				break;
 			case 3:
 				switch (param.toLowerCase().charAt(0)) {
@@ -159,7 +159,7 @@ public class Monitor extends MeterClass {
 			}
 
 			paramName = parser.getNextParam();
-			param = parser.makeString();
+			param = parser.stringValue();
 		}
 
 		elem.recalcElementData();

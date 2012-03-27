@@ -54,7 +54,7 @@ abstract public class PCClass extends CktElementClass {
 
 			switch (paramPointer) {
 			case 0:
-				elem.setSpectrum(Parser.getInstance().makeString());
+				elem.setSpectrum(Parser.getInstance().stringValue());
 				break;
 			default:
 				super.classEdit(activePCObj, paramPointer - numPCClassProps);

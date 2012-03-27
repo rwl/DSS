@@ -452,12 +452,12 @@ public class ExecCommands {
 
 			/* Load up the parser and process the first parameter only */
 			lastCmdLine = cmdLine;
-			parser.setCmdBuffer(lastCmdLine);  // load up command parser
+			parser.setCommand(lastCmdLine);  // load up command parser
 			DSS.lastCommandWasCompile = false;
 
 			paramPointer = -1;
 			paramName = parser.getNextParam();
-			param = parser.makeString();
+			param = parser.stringValue();
 			if (param.length() == 0) return;  // skip blank line
 
 			// check for command verb or property value
@@ -535,7 +535,7 @@ public class ExecCommands {
 				break;
 			case 71:
 				paramName = parser.getNextParam();
-				param = parser.makeString();
+				param = parser.stringValue();
 
 				if (!new File(param).exists())  // try relative to cwd
 					param = new File(DSS.currentDirectory, param).getAbsolutePath();
@@ -567,7 +567,7 @@ public class ExecCommands {
 
 				/* If a command or no text before the = sign, then error */
 				if (paramName.length() == 0 || paramName.equalsIgnoreCase("command")) {
-					DSS.doSimpleMsg("Unknown command: \"" + param + "\" "+ DSS.CRLF + parser.getCmdBuffer(), 302);
+					DSS.doSimpleMsg("Unknown command: \"" + param + "\" "+ DSS.CRLF + parser.getCommand(), 302);
 					DSS.cmdResult = 1;
 				} else {
 					ExecHelper.parseObjName(paramName, objName, propName);
@@ -576,7 +576,7 @@ public class ExecCommands {
 					if (DSS.activeDSSObject != null) {
 						// rebuild command line and pass to editor
 						// use quotes to ensure first parameter is interpreted ok after rebuild
-						parser.setCmdBuffer(propName[0].toString() + "=\"" + param + "\" " + parser.getRemainder());
+						parser.setCommand(propName[0].toString() + "=\"" + param + "\" " + parser.getRemainder());
 						DSS.activeDSSClass.edit();
 					}
 				}
@@ -861,7 +861,7 @@ public class ExecCommands {
 		}
 		catch (Exception e) {
 			DSS.doErrorMsg("Exception raised while processing DSS command:" +
-					DSS.CRLF + parser.getCmdBuffer(),
+					DSS.CRLF + parser.getCommand(),
 					e.getMessage(),
 					"Error in command string or circuit data.", 303);
 			e.printStackTrace();

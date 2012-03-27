@@ -83,10 +83,10 @@ public class DSSCompletor {
 
 		List<String> keys = new ArrayList<String>();
 		List<String> values = new ArrayList<String>();
-		parser.setCmdBuffer(buffer);
+		parser.setCommand(buffer);
 		while (true) {
 			key = parser.getNextParam();
-			value = parser.makeString();
+			value = parser.stringValue();
 			if (key.length() == 0 && value.length() == 0) break;
 			keys.add(key.toLowerCase());
 			values.add(value.toLowerCase());

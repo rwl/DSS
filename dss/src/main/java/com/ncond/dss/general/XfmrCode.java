@@ -160,13 +160,13 @@ public class XfmrCode extends DSSClass {
 	private void interpretWindings(String s, WdgParmChoice which) {
 		String str;
 
-		DSS.auxParser.setCmdBuffer(s);
+		DSS.auxParser.setCommand(s);
 		XfmrCodeObj elem = activeXfmrCodeObj;
 
 		for (int i = 0; i < elem.getNumWindings(); i++) {
 			elem.setActiveWindingIdx(i);
 			DSS.auxParser.getNextParam();  // ignore any parameter name not expecting any
-			str = DSS.auxParser.makeString();
+			str = DSS.auxParser.stringValue();
 
 			if (str.length() > 0) {
 				switch (which) {
@@ -174,16 +174,16 @@ public class XfmrCode extends DSSClass {
 					elem.getWinding(elem.getActiveWindingIdx()).setConnection(Util.interpretConnection(str));
 					break;
 				case KV:
-					elem.getWinding(elem.getActiveWindingIdx()).setKVLL(DSS.auxParser.makeDouble());
+					elem.getWinding(elem.getActiveWindingIdx()).setKVLL(DSS.auxParser.doubleValue());
 					break;
 				case KVA:
-					elem.getWinding(elem.getActiveWindingIdx()).setKVA(DSS.auxParser.makeDouble());
+					elem.getWinding(elem.getActiveWindingIdx()).setKVA(DSS.auxParser.doubleValue());
 					break;
 				case R:
-					elem.getWinding(elem.getActiveWindingIdx()).setRpu(0.01 * DSS.auxParser.makeDouble());
+					elem.getWinding(elem.getActiveWindingIdx()).setRpu(0.01 * DSS.auxParser.doubleValue());
 					break;
 				case TAP:
-					elem.getWinding(elem.getActiveWindingIdx()).setPuTap(DSS.auxParser.makeDouble());
+					elem.getWinding(elem.getActiveWindingIdx()).setPuTap(DSS.auxParser.doubleValue());
 					break;
 				}
 			}
@@ -201,7 +201,7 @@ public class XfmrCode extends DSSClass {
 
 		int paramPointer = -1;
 		String paramName = parser.getNextParam();
-		String param = parser.makeString();
+		String param = parser.stringValue();
 
 		while (param.length() > 0) {
 			if (paramName.length() == 0) {
@@ -219,34 +219,34 @@ public class XfmrCode extends DSSClass {
 						elem.getName() + "\"", 110);
 				break;
 			case 0:
-				elem.setNPhases(parser.makeInteger());
+				elem.setNPhases(parser.integerValue());
 				break;
 			case 1:
-				elem.setNumWindings(parser.makeInteger());  // reallocate stuff if bigger
+				elem.setNumWindings(parser.integerValue());  // reallocate stuff if bigger
 				break;
 			case 2:
-				elem.setActiveWindingIdx(parser.makeInteger() - 1);
+				elem.setActiveWindingIdx(parser.integerValue() - 1);
 				break;
 			case 3:
 				elem.getWinding(elem.getActiveWindingIdx()).setConnection(Util.interpretConnection(param));
 				break;
 			case 4:
-				elem.getWinding(elem.getActiveWindingIdx()).setKVLL(parser.makeDouble());
+				elem.getWinding(elem.getActiveWindingIdx()).setKVLL(parser.doubleValue());
 				break;
 			case 5:
-				elem.getWinding(elem.getActiveWindingIdx()).setKVA(parser.makeDouble());
+				elem.getWinding(elem.getActiveWindingIdx()).setKVA(parser.doubleValue());
 				break;
 			case 6:
-				elem.getWinding(elem.getActiveWindingIdx()).setPuTap(parser.makeDouble());
+				elem.getWinding(elem.getActiveWindingIdx()).setPuTap(parser.doubleValue());
 				break;
 			case 7:
-				elem.getWinding(elem.getActiveWindingIdx()).setRpu(parser.makeDouble() * 0.01);  // %R
+				elem.getWinding(elem.getActiveWindingIdx()).setRpu(parser.doubleValue() * 0.01);  // %R
 				break;
 			case 8:
-				elem.getWinding(elem.getActiveWindingIdx()).setRNeut(parser.makeDouble());
+				elem.getWinding(elem.getActiveWindingIdx()).setRNeut(parser.doubleValue());
 				break;
 			case 9:
-				elem.getWinding(elem.getActiveWindingIdx()).setXNeut(parser.makeDouble());
+				elem.getWinding(elem.getActiveWindingIdx()).setXNeut(parser.doubleValue());
 				break;
 			case 10:
 				interpretWindings(param, WdgParmChoice.CONN);
@@ -261,58 +261,58 @@ public class XfmrCode extends DSSClass {
 				interpretWindings(param, WdgParmChoice.TAP);
 				break;
 			case 14:
-				elem.setXHL(parser.makeDouble() * 0.01);
+				elem.setXHL(parser.doubleValue() * 0.01);
 				break;
 			case 15:
-				elem.setXHT(parser.makeDouble() * 0.01);
+				elem.setXHT(parser.doubleValue() * 0.01);
 				break;
 			case 16:
-				elem.setXLT(parser.makeDouble() * 0.01);
+				elem.setXLT(parser.doubleValue() * 0.01);
 				break;
 			case 17:
 				parser.parseAsVector(((elem.getNumWindings() - 1) * elem.getNumWindings() / 2), elem.getXSC());
 				break;
 			case 18:
-				elem.setThermalTimeConst(parser.makeDouble());
+				elem.setThermalTimeConst(parser.doubleValue());
 				break;
 			case 19:
-				elem.setNThermal(parser.makeDouble());
+				elem.setNThermal(parser.doubleValue());
 				break;
 			case 20:
-				elem.setMThermal(parser.makeDouble());
+				elem.setMThermal(parser.doubleValue());
 				break;
 			case 21:
-				elem.setLRise(parser.makeDouble());
+				elem.setLRise(parser.doubleValue());
 				break;
 			case 22:
-				elem.setHSRise(parser.makeDouble());
+				elem.setHSRise(parser.doubleValue());
 				break;
 			case 23:
-				elem.setPctLoadLoss(parser.makeDouble());
+				elem.setPctLoadLoss(parser.doubleValue());
 				break;
 			case 24:
-				elem.setPctNoLoadLoss(parser.makeDouble());
+				elem.setPctNoLoadLoss(parser.doubleValue());
 				break;
 			case 25:
-				elem.setNormMaxHKVA(parser.makeDouble());
+				elem.setNormMaxHKVA(parser.doubleValue());
 				break;
 			case 26:
-				elem.setEmergMaxHKVA(parser.makeDouble());
+				elem.setEmergMaxHKVA(parser.doubleValue());
 				break;
 			case 27:
-				elem.getWinding(elem.getActiveWindingIdx()).setMaxTap(parser.makeDouble());
+				elem.getWinding(elem.getActiveWindingIdx()).setMaxTap(parser.doubleValue());
 				break;
 			case 28:
-				elem.getWinding(elem.getActiveWindingIdx()).setMinTap(parser.makeDouble());
+				elem.getWinding(elem.getActiveWindingIdx()).setMinTap(parser.doubleValue());
 				break;
 			case 29:
-				elem.getWinding(elem.getActiveWindingIdx()).setNumTaps(parser.makeInteger());
+				elem.getWinding(elem.getActiveWindingIdx()).setNumTaps(parser.integerValue());
 				break;
 			case 30:
-				elem.setPctImag(parser.makeDouble());
+				elem.setPctImag(parser.doubleValue());
 				break;
 			case 31:
-				elem.setPpmFloatFactor(parser.makeDouble() * 1.0e-6);
+				elem.setPpmFloatFactor(parser.doubleValue() * 1.0e-6);
 				break;
 			case 32:
 				interpretWindings(param, WdgParmChoice.R);
@@ -362,7 +362,7 @@ public class XfmrCode extends DSSClass {
 			}
 			/* advance to next property on input line */
 			paramName = parser.getNextParam();
-			param = parser.makeString();
+			param = parser.stringValue();
 		}
 
 		if (updateXsc) {

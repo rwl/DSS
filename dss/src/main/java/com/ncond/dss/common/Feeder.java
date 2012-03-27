@@ -85,7 +85,7 @@ public class Feeder extends PCClass {
 
 		int paramPointer = -1;
 		String paramName = Parser.getInstance().getNextParam();
-		String param = Parser.getInstance().makeString();
+		String param = Parser.getInstance().stringValue();
 		while (param.length() > 0) {
 			if (paramName.length() == 0) {
 				paramPointer += 1;
@@ -107,7 +107,7 @@ public class Feeder extends PCClass {
 			}
 
 			paramName = Parser.getInstance().getNextParam();
-			param     = Parser.getInstance().makeString();
+			param     = Parser.getInstance().stringValue();
 		}
 
 		activeFeederObj.recalcElementData();

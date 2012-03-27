@@ -161,7 +161,7 @@ public class ShowOptions {
 		Circuit ckt = DSS.activeCircuit;
 
 		parser.getNextParam();
-		String param = parser.makeString().toLowerCase();
+		String param = parser.stringValue().toLowerCase();
 		int paramPointer = showCommands.getCommand(param);
 
 		if (paramPointer == -1) paramPointer = 12;  // voltages
@@ -211,7 +211,7 @@ public class ShowOptions {
 			showOptionCode = 0;
 			showResid = false;
 			parser.getNextParam();  // look for residual
-			param = parser.makeString().toUpperCase();
+			param = parser.stringValue().toUpperCase();
 			// logic handles show curr y|n|t elements or show curr elements
 			if (param.length() > 0) {
 				switch (param.charAt(0)) {
@@ -229,7 +229,7 @@ public class ShowOptions {
 					break;
 				}
 				parser.getNextParam();  // look for another param
-				param = parser.makeString().toUpperCase();
+				param = parser.stringValue().toUpperCase();
 				if (param.length() > 0) {
 					switch (param.charAt(0)) {
 					case 'E':
@@ -253,7 +253,7 @@ public class ShowOptions {
 			break;
 		case 4:
 			parser.getNextParam();  // look for another param
-			param = parser.makeString().toLowerCase();
+			param = parser.stringValue().toLowerCase();
 			ShowResults.showElements(DSS.dataDirectory + DSS.circuitName_ + "Elements.txt", param);
 			break;
 		case 5:
@@ -270,18 +270,18 @@ public class ShowOptions {
 			break;
 		case 9:  // show monitor
 			parser.getNextParam();
-			param = parser.makeString();
+			param = parser.stringValue();
 			if (param.length() > 0) {
 				mon = (MonitorObj) DSS.monitorClass.find(param);
 				if (mon != null) {
 					mon.translateToCSV(true);
 				} else {
 					DSS.doSimpleMsg("Monitor \"" + param + "\" not found." +
-							DSS.CRLF + parser.getCmdBuffer(), 248);
+							DSS.CRLF + parser.getCommand(), 248);
 				}
 			} else {
 				DSS.doSimpleMsg("Monitor name not specified." + DSS.CRLF +
-						parser.getCmdBuffer(), 249);
+						parser.getCommand(), 249);
 			}
 			break;
 		case 10:
@@ -292,7 +292,7 @@ public class ShowOptions {
 			MVAOpt = 0;
 			fileName = "Power";
 			parser.getNextParam();
-			param = parser.makeString().toLowerCase();
+			param = parser.stringValue().toLowerCase();
 			if (param.length() > 0) {
 				switch (param.charAt(0)) {
 				case 'm':
@@ -304,7 +304,7 @@ public class ShowOptions {
 				}
 			}
 			parser.getNextParam();
-			param = parser.makeString().toLowerCase();
+			param = parser.stringValue().toLowerCase();
 			if (param.length() > 0)
 				if (param.charAt(0) == 'e')
 					showOptionCode = 1;
@@ -327,7 +327,7 @@ public class ShowOptions {
 
 			/* Check for LL or LN option */
 			parser.getNextParam();
-			param = parser.makeString();
+			param = parser.stringValue();
 
 			fileName = "VLN";
 			if (param.length() > 0) {
@@ -338,7 +338,7 @@ public class ShowOptions {
 			}
 			/* Check for seq | nodes | elements */
 			parser.getNextParam();
-			param = parser.makeString().toUpperCase();
+			param = parser.stringValue().toUpperCase();
 			if (param.length() > 0) {
 				switch (param.charAt(0)) {
 				case 'N':
@@ -367,7 +367,7 @@ public class ShowOptions {
 			break;
 		case 16:
 			parser.getNextParam();
-			param = parser.makeString();
+			param = parser.stringValue();
 			if (param.length() > 0) {
 				ShowResults.showUnserved(DSS.dataDirectory + DSS.circuitName_ + "Unserved.txt", true);
 			} else {
@@ -393,14 +393,14 @@ public class ShowOptions {
 			showOptionCode = 0;
 			MVAOpt = 0;
 			parser.getNextParam();  // get bus name
-			busName = parser.makeString();
+			busName = parser.stringValue();
 			if (busName.length() > 0) {
 				fileName = busName;
 			} else {
 				fileName = "BusPower";
 			}
 			parser.getNextParam();
-			param = parser.makeString().toLowerCase();
+			param = parser.stringValue().toLowerCase();
 			if (param.length() > 0) {
 				switch (param.charAt(0)) {
 				case 'm':
@@ -412,7 +412,7 @@ public class ShowOptions {
 				}
 			}
 			parser.getNextParam();
-			param = parser.makeString().toLowerCase();
+			param = parser.stringValue().toLowerCase();
 
 			if (param.length() > 0)
 				if (param.charAt(0) == 'e')
@@ -438,14 +438,14 @@ public class ShowOptions {
 			units = LineUnits.KFT; // 'kft'; // default
 			rhoLine = 100.0;
 			parser.getNextParam();
-			if (parser.makeString().length() > 0)
-				freq = parser.makeDouble();
+			if (parser.stringValue().length() > 0)
+				freq = parser.doubleValue();
 			parser.getNextParam();
-			if (parser.makeString().length() > 0)
-				units = LineUnits.interpretUnitsCode(parser.makeString());
+			if (parser.stringValue().length() > 0)
+				units = LineUnits.interpretUnitsCode(parser.stringValue());
 			parser.getNextParam();
-			if (parser.makeString().length() > 0)
-				rhoLine = parser.makeDouble();
+			if (parser.stringValue().length() > 0)
+				rhoLine = parser.doubleValue();
 			ShowResults.showLineConstants(DSS.dataDirectory + DSS.circuitName_ +
 						"LineConstants.txt", freq, units, rhoLine);
 			break;

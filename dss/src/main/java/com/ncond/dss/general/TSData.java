@@ -69,7 +69,7 @@ public class TSData extends CableData {
 
 		int paramPointer = -1;
 		String paramName = parser.getNextParam();
-		String param = parser.makeString();
+		String param = parser.stringValue();
 
 		while (param.length() > 0) {
 			if (paramName.length() == 0) {
@@ -87,13 +87,13 @@ public class TSData extends CableData {
 						getClassName() +"."+ elem.getName() + "\"", 101);
 				break;
 			case 0:
-				elem.setDiaShield(parser.makeDouble());
+				elem.setDiaShield(parser.doubleValue());
 				break;
 			case 1:
-				elem.setTapeLayer(parser.makeDouble());
+				elem.setTapeLayer(parser.doubleValue());
 				break;
 			case 2:
-				elem.setTapeLap(parser.makeDouble());
+				elem.setTapeLap(parser.doubleValue());
 				break;
 			default:
 				// Inherited parameters
@@ -118,7 +118,7 @@ public class TSData extends CableData {
 			}
 
 			paramName = parser.getNextParam();
-			param = parser.makeString();
+			param = parser.stringValue();
 		}
 
 		return 0;

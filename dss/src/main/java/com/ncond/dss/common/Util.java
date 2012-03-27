@@ -527,9 +527,9 @@ public class Util {
 
 		Parser parser = DSS.auxParser;
 
-		parser.setCmdBuffer(s);
+		parser.setCommand(s);
 		String parmName = parser.getNextParam();
-		String param = parser.makeString();
+		String param = parser.stringValue();
 		int result = maxValues;  // default return value
 
 		/* Syntax can be either a list of numeric values or a file specification: File= ... */
@@ -547,14 +547,14 @@ public class Util {
 
 			// look for other options  (may be in either order)
 			parmName = parser.getNextParam();
-			param = parser.makeString();
+			param = parser.stringValue();
 			while (param.length() > 0) {
 				if (Util.compareTextShortest(parmName, "column") == 0)
-					csvColumn = parser.makeInteger();
+					csvColumn = parser.integerValue();
 				if (Util.compareTextShortest(parmName, "header") == 0)
 					csvHeader = Util.interpretYesNo(param);
 				parmName = parser.getNextParam();
-				param = parser.makeString();
+				param = parser.stringValue();
 			}
 
 			// load the list from a file
@@ -567,10 +567,10 @@ public class Util {
 				for (int i = 0; i < maxValues; i++) {
 					try {
 						if ((inputLine = br.readLine()) != null) {
-							parser.setCmdBuffer(inputLine);
+							parser.setCommand(inputLine);
 							for (iskip = 0; iskip < csvColumn; iskip++) {
 								parmName = parser.getNextParam();
-								resultArray[i] = parser.makeDouble();
+								resultArray[i] = parser.doubleValue();
 							}
 						} else {
 							result = i;  // this will be different if less found
@@ -599,7 +599,7 @@ public class Util {
 		} else {
 			// parse list of values off input string
 			for (int i = 0; i < maxValues; i++) {
-				resultArray[i] = parser.makeDouble();  // fills array with zeros if we run out of numbers
+				resultArray[i] = parser.doubleValue();  // fills array with zeros if we run out of numbers
 				parser.getNextParam();
 			}
 		}
@@ -618,9 +618,9 @@ public class Util {
 
 		Parser parser = DSS.auxParser;
 
-		parser.setCmdBuffer(s);
+		parser.setCommand(s);
 		parmName = parser.getNextParam();
-		param = parser.makeString();
+		param = parser.stringValue();
 		int result = maxValues;  // default return value
 
 		/* Syntax can be either a list of numeric values or a file specification: File= ... */
@@ -656,7 +656,7 @@ public class Util {
 
 		} else {  // parse list of values off input string
 			for (int i = 0; i < maxValues; i++) {
-				resultArray[i] = parser.makeInteger();  // fills array with zeros if we run out of numbers
+				resultArray[i] = parser.integerValue();  // fills array with zeros if we run out of numbers
 				parser.getNextParam();
 			}
 		}
@@ -729,9 +729,9 @@ public class Util {
 		size = 0;
 		resultArray = new String[maxSize];  // throw away any previous allocation
 
-		parser.setCmdBuffer(s);
+		parser.setCommand(s);
 		parmName = parser.getNextParam();
-		param = parser.makeString();
+		param = parser.stringValue();
 
 		/* Syntax can be either a list of string values or a file specification:  File= ... */
 		if (parmName.equalsIgnoreCase("file")) {
@@ -766,7 +766,7 @@ public class Util {
 				}
 				resultArray[size] = param;
 				parmName = parser.getNextParam();
-				param = parser.makeString();
+				param = parser.stringValue();
 			}
 		}
 
@@ -788,9 +788,9 @@ public class Util {
 		// throw away any previous allocation
 		resultList.clear();
 
-		parser.setCmdBuffer(s);
+		parser.setCommand(s);
 		paramName = parser.getNextParam();
-		param = parser.makeString();
+		param = parser.stringValue();
 
 		/* Syntax can be either a list of string values or a file specification:  File= ... */
 
@@ -801,9 +801,9 @@ public class Util {
 				br = new BufferedReader(fr);
 
 				while ((param = br.readLine()) != null) {
-					parser.setCmdBuffer(param);
+					parser.setCommand(param);
 					paramName = parser.getNextParam();
-					nextParam = parser.makeString();
+					nextParam = parser.stringValue();
 					if (nextParam.length() > 0)  // ignore blank lines in file
 						resultList.add(nextParam);
 				}
@@ -817,7 +817,7 @@ public class Util {
 			while (param != "") {
 				resultList.add(param);
 				paramName = parser.getNextParam();
-				param = parser.makeString();
+				param = parser.stringValue();
 			}
 		}
 	}
@@ -947,11 +947,11 @@ public class Util {
 		Parser parser = DSS.auxParser;
 
 		// parse the line once to get the count of tokens on string
-		parser.setCmdBuffer(s);
+		parser.setCommand(s);
 		count[0] = 0;
 		while (param.length() > 0) {
 			parser.getNextParam();
-			param = parser.makeString();
+			param = parser.stringValue();
 			if (param.length() > 0) count[0]++;
 		}
 
@@ -959,10 +959,10 @@ public class Util {
 		iarray = resizeArray(iarray, count[0]);
 
 		// parse again for real
-		parser.setCmdBuffer(s);
+		parser.setCommand(s);
 		for (int i = 0; i < count[0]; i++) {
 			parser.getNextParam();
-			iarray[i] = parser.makeInteger();
+			iarray[i] = parser.integerValue();
 		}
 
 		return iarray;
@@ -1602,11 +1602,11 @@ public class Util {
 		try {
 			/* Scan once to set field lengths */
 			while ((line = br.readLine()) != null) {
-				parser.setCmdBuffer(line);  // load the parser
+				parser.setCommand(line);  // load the parser
 				fieldNum = 0;
 				while (fieldLen > 0) {
 					parser.getNextParam();
-					field = parser.makeString();
+					field = parser.stringValue();
 					fieldLen = field.length();
 					if (field.indexOf(' ') >= 0)
 						fieldLen = fieldLen + 2;
@@ -1627,11 +1627,11 @@ public class Util {
 			br.reset();
 
 			while ((line = br.readLine()) != null) {
-				parser.setCmdBuffer(line);  // load the parser
+				parser.setCommand(line);  // load the parser
 				fieldNum = 0;
 				while (fieldLen > 0) {
 					parser.getNextParam();
-					field = parser.makeString();
+					field = parser.stringValue();
 					if (field.indexOf(' ') >= 0)
 						field = "\"" + field + "\"";  // add quotes if a space in field
 					fieldLen = field.length();
@@ -2070,7 +2070,7 @@ public class Util {
 		PDElement line = fromLine;
 		while (line != null) {
 			if ((line.getNumPhases() == nPhases) || (nPhases == 0)) {
-				Parser.getInstance().setCmdBuffer(editStr);
+				Parser.getInstance().setCommand(editStr);
 				line.edit();  // uses parser
 			}
 			if (line.equals(toLine))
@@ -2412,7 +2412,7 @@ public class Util {
 						break;
 					}
 				}
-				parser.setCmdBuffer(s);
+				parser.setCommand(s);
 				cktElem.edit();
 			}
 		}
@@ -2493,7 +2493,7 @@ public class Util {
 					if (cktElem.hasControl()) {
 						ctrlElem = cktElem.getControlElement();
 						if (ctrlElem != null) {
-							parser.setCmdBuffer(String.format("transformer=%s",
+							parser.setCommand(String.format("transformer=%s",
 									cktElem.getName()));
 							ctrlElem.edit();
 						}
@@ -2509,7 +2509,7 @@ public class Util {
 		/* Run the control update scripts now that everything is renamed */
 		for (i = 0; i < controlUpDatePtrs.size() - 1; i++) {
 			CktElement cktElem = controlUpDatePtrs.get(i);
-			parser.setCmdBuffer( controlUpDateStrings.get(i) );
+			parser.setCommand( controlUpDateStrings.get(i) );
 			cktElem.edit();
 		}
 

@@ -139,7 +139,7 @@ public class Recloser extends ControlClass {
 
 		int paramPointer = -1;
 		String paramName = parser.getNextParam();
-		String param = parser.makeString();
+		String param = parser.stringValue();
 
 		while (param.length() > 0) {
 			if (paramName.length() == 0) {
@@ -160,16 +160,16 @@ public class Recloser extends ControlClass {
 				elem.setMonitoredElementName(param.toLowerCase());
 				break;
 			case 1:
-				elem.setMonitoredElementTerminalIdx(parser.makeInteger() - 1);
+				elem.setMonitoredElementTerminalIdx(parser.integerValue() - 1);
 				break;
 			case 2:
 				elem.setElementName(param.toLowerCase());
 				break;
 			case 3:
-				elem.setElementTerminalIdx(parser.makeInteger() - 1);
+				elem.setElementTerminalIdx(parser.integerValue() - 1);
 				break;
 			case 4:
-				elem.setNumFast(parser.makeInteger());
+				elem.setNumFast(parser.integerValue());
 				break;
 			case 5:
 				elem.setPhaseFast(getTCC_Curve(param));
@@ -184,43 +184,43 @@ public class Recloser extends ControlClass {
 				elem.setGroundDelayed(getTCC_Curve(param));
 				break;
 			case 9:
-				elem.setPhaseTrip(parser.makeDouble());
+				elem.setPhaseTrip(parser.doubleValue());
 				break;
 			case 10:
-				elem.setGroundTrip(parser.makeDouble());
+				elem.setGroundTrip(parser.doubleValue());
 				break;
 			case 11:
-				elem.setPhaseInst(parser.makeDouble());
+				elem.setPhaseInst(parser.doubleValue());
 				break;
 			case 12:
-				elem.setGroundInst(parser.makeDouble());
+				elem.setGroundInst(parser.doubleValue());
 				break;
 			case 13:
-				elem.setResetTime(parser.makeDouble());
+				elem.setResetTime(parser.doubleValue());
 				break;
 			case 14:
-				elem.setNumReclose(parser.makeInteger() - 1);  // one less than number of shots
+				elem.setNumReclose(parser.integerValue() - 1);  // one less than number of shots
 				break;
 			case 15:
 				elem.setNumReclose(parser.parseAsVector(4, elem.getRecloseIntervals()));  // max of 4 allowed
 				break;
 			case 16:
-				elem.setDelayTime(parser.makeDouble());
+				elem.setDelayTime(parser.doubleValue());
 				break;
 			case 17:
 				elem.interpretRecloserAction(param);
 				break;
 			case 18:
-				elem.setTDPhFast(parser.makeDouble());
+				elem.setTDPhFast(parser.doubleValue());
 				break;
 			case 19:
-				elem.setTDGrFast(parser.makeDouble());
+				elem.setTDGrFast(parser.doubleValue());
 				break;
 			case 20:
-				elem.setTDPhDelayed(parser.makeDouble());
+				elem.setTDPhDelayed(parser.doubleValue());
 				break;
 			case 21:
-				elem.setTDGrDelayed(parser.makeDouble());
+				elem.setTDGrDelayed(parser.doubleValue());
 				break;
 			default:
 				// inherited parameters
@@ -239,7 +239,7 @@ public class Recloser extends ControlClass {
 			}
 
 			paramName = parser.getNextParam();
-			param = parser.makeString();
+			param = parser.stringValue();
 		}
 
 		elem.recalcElementData();

@@ -59,19 +59,19 @@ abstract public class PDClass extends CktElementClass {
 
 			switch (paramPointer) {
 			case 0:
-				elem.setNormAmps(parser.makeDouble());
+				elem.setNormAmps(parser.doubleValue());
 				break;
 			case 1:
-				elem.setEmergAmps(parser.makeDouble());
+				elem.setEmergAmps(parser.doubleValue());
 				break;
 			case 2:
-				elem.setFaultRate(parser.makeDouble());
+				elem.setFaultRate(parser.doubleValue());
 				break;
 			case 3:
-				elem.setPctPerm(parser.makeDouble());
+				elem.setPctPerm(parser.doubleValue());
 				break;
 			case 4:
-				elem.setHrsToRepair(parser.makeDouble());
+				elem.setHrsToRepair(parser.doubleValue());
 				break;
 			default:
 				super.classEdit(activePDObj, paramPointer - numPDClassProps);

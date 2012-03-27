@@ -127,7 +127,7 @@ public class GrowthShape extends DSSClass {
 
 		int paramPointer = -1;
 		String paramName = parser.getNextParam();
-		String param = parser.makeString();
+		String param = parser.stringValue();
 
 		while (param.length() > 0) {
 			if (paramName.length() == 0) {
@@ -144,7 +144,7 @@ public class GrowthShape extends DSSClass {
 				DSS.doSimpleMsg("Unknown parameter \"" + paramName + "\" for Object \"" + getClassName() +"."+ getClassName() + "\"", 600);
 				break;
 			case 0:
-				elem.setNpts(parser.makeInteger());
+				elem.setNpts(parser.integerValue());
 				break;
 			case 1:
 				elem.setYear( Util.resizeArray(elem.getYear(), elem.getNpts()) );
@@ -177,7 +177,7 @@ public class GrowthShape extends DSSClass {
 			}
 
 			paramName = parser.getNextParam();
-			param = parser.makeString();
+			param = parser.stringValue();
 		}
 
 		elem.reCalcYearMult();
@@ -257,11 +257,11 @@ public class GrowthShape extends DSSClass {
 			while (((s = br.readLine()) != null) && i < elem.getNpts()) {
 				// use aux parser to allow flexible formats
 				parser = DSS.auxParser;
-				parser.setCmdBuffer(s);
+				parser.setCommand(s);
 				parser.getNextParam();
-				elem.getYear()[i] = parser.makeInteger();
+				elem.getYear()[i] = parser.integerValue();
 				parser.getNextParam();
-				elem.getMultiplier()[i] = parser.makeDouble();
+				elem.getMultiplier()[i] = parser.doubleValue();
 				i += 1;
 			}
 

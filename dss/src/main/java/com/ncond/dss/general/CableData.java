@@ -52,16 +52,16 @@ public class CableData extends ConductorData {
 			elem = (CableDataObj) activeObj;
 			switch (paramPointer) {
 			case 0:
-				elem.setEpsR(parser.makeDouble());
+				elem.setEpsR(parser.doubleValue());
 				break;
 			case 1:
-				elem.setInsLayer(parser.makeDouble());
+				elem.setInsLayer(parser.doubleValue());
 				break;
 			case 2:
-				elem.setDiaIns(parser.makeDouble());
+				elem.setDiaIns(parser.doubleValue());
 				break;
 			case 3:
-				elem.setDiaCable(parser.makeDouble());
+				elem.setDiaCable(parser.doubleValue());
 				break;
 			default:
 				super.classEdit(activeObj, paramPointer - numCableClassProps);

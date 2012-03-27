@@ -76,7 +76,7 @@ public class SwtControl extends ControlClass {
 
 		int paramPointer = -1;
 		String paramName = parser.getNextParam();
-		String param = parser.makeString();
+		String param = parser.stringValue();
 
 		while (param.length() > 0) {
 			if (paramName.length() == 0) {
@@ -97,7 +97,7 @@ public class SwtControl extends ControlClass {
 				elem.setElementName(param.toLowerCase());
 				break;
 			case 1:
-				elem.setElementTerminalIdx(parser.makeInteger() - 1);
+				elem.setElementTerminalIdx(parser.integerValue() - 1);
 				break;
 			case 2:
 				elem.interpretSwitchAction(param);
@@ -106,7 +106,7 @@ public class SwtControl extends ControlClass {
 				elem.setLocked( Util.interpretYesNo(param) );
 				break;
 			case 4:
-				elem.setTimeDelay(parser.makeDouble());
+				elem.setTimeDelay(parser.doubleValue());
 				break;
 			default:
 				// inherited parameters
@@ -115,7 +115,7 @@ public class SwtControl extends ControlClass {
 			}
 
 			paramName = parser.getNextParam();
-			param = parser.makeString();
+			param = parser.stringValue();
 		}
 
 		elem.recalcElementData();

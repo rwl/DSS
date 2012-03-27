@@ -116,7 +116,7 @@ public class LineGeometry extends DSSClass {
 
 		int paramPointer = -1;
 		String paramName = parser.getNextParam();
-		String param = parser.makeString();
+		String param = parser.stringValue();
 
 		while (param.length() > 0) {
 			if (paramName.length() == 0) {
@@ -134,13 +134,13 @@ public class LineGeometry extends DSSClass {
 						getClassName() + "." + elem.getName() + "\"", 10101);
 				break;
 			case 0:
-				elem.setNConds(parser.makeInteger());  // use property value to force reallocations
+				elem.setNConds(parser.integerValue());  // use property value to force reallocations
 				break;
 			case 1:
-				elem.nPhases = parser.makeInteger();
+				elem.nPhases = parser.integerValue();
 				break;
 			case 2:
-				elem.setActiveCondIdx(parser.makeInteger() - 1);
+				elem.setActiveCondIdx(parser.integerValue() - 1);
 				break;
 			case 3:
 				elem.setCondName(elem.getActiveCondIdx(), param);
@@ -148,26 +148,26 @@ public class LineGeometry extends DSSClass {
 					elem.changeLineConstantsType(ConductorChoice.OVERHEAD);
 				break;
 			case 4:
-				elem.setXcoord(elem.getActiveCondIdx(), parser.makeDouble());
+				elem.setXcoord(elem.getActiveCondIdx(), parser.doubleValue());
 				break;
 			case 5:
-				elem.setYcoord(elem.getActiveCondIdx(), parser.makeDouble());
+				elem.setYcoord(elem.getActiveCondIdx(), parser.doubleValue());
 				break;
 			case 6:
 				elem.setUnit(elem.getActiveCondIdx(), LineUnits.interpretUnitsCode(param));
 				elem.setLastUnit(elem.getUnit(elem.getActiveCondIdx()));
 				break;
 			case 7:
-				elem.setNormAmps(parser.makeDouble());
+				elem.setNormAmps(parser.doubleValue());
 				break;
 			case 8:
-				elem.setEmergAmps(parser.makeDouble());
+				elem.setEmergAmps(parser.doubleValue());
 				break;
 			case 9:
 				elem.setReduce(Util.interpretYesNo(param));
 				break;
 			case 10:
-				elem.setSpacingType(parser.makeString());
+				elem.setSpacingType(parser.stringValue());
 				if (DSS.lineSpacingClass.setActive(elem.getSpacingType())) {
 					LineSpacing.activeLineSpacingObj = (LineSpacingObj) DSS.lineSpacingClass.getActiveObj();
 
@@ -215,10 +215,10 @@ public class LineGeometry extends DSSClass {
 					}
 				}
 
-				DSS.auxParser.setCmdBuffer(parser.makeString());
+				DSS.auxParser.setCommand(parser.stringValue());
 				for (int i = istart; i < istop; i++) {
 					DSS.auxParser.getNextParam();  // ignore any parameter name  not expecting any
-					elem.setCondName(i, DSS.auxParser.makeString());
+					elem.setCondName(i, DSS.auxParser.stringValue());
 
 			                if (paramPointer == 14) {
 			                	DSS.CNDataClass.setCode(elem.getCondName(i));
@@ -262,7 +262,7 @@ public class LineGeometry extends DSSClass {
 			case 2:
 				if (elem.getActiveCondIdx() < 0 || elem.getActiveCondIdx() >= elem.nConds)
 					DSS.doSimpleMsg("Illegal cond= specification in line geometry:" +
-							DSS.CRLF + parser.getCmdBuffer(), 10102);
+							DSS.CRLF + parser.getCommand(), 10102);
 				break;
 			case 3:
 			case 12:
@@ -312,7 +312,7 @@ public class LineGeometry extends DSSClass {
 			}
 
 			paramName = parser.getNextParam();
-			param = parser.makeString();
+			param = parser.stringValue();
 		}
 		return 0;
 	}

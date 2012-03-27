@@ -930,7 +930,7 @@ public class TransformerObj extends PDElement {
 			for (iW = 0; iW < numWindings; iW++) {
 				onPhase1 = false;
 				/* Load up auxiliary parser */
-				DSS.auxParser.setCmdBuffer(getBus(iW));
+				DSS.auxParser.setCommand(getBus(iW));
 				DSS.auxParser.getNextParam();
 				s = DSS.auxParser.parseAsBusName(n, nodes);
 				if (n[0] == 0) onPhase1 = true;
@@ -972,7 +972,7 @@ public class TransformerObj extends PDElement {
 
 		s = s + " normHkVA=" + String.format(" %-.5g %-.5g", normMaxHKVA / nPhases, emergMaxHKVA / nPhases);
 
-		Parser.getInstance().setCmdBuffer(s);
+		Parser.getInstance().setCommand(s);
 		edit();
 
 		super.makePosSequence();

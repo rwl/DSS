@@ -370,7 +370,7 @@ public class Storage extends PCClass {
 
 		int paramPointer = -1;
 		String paramName = parser.getNextParam();  // parse next property off the command line
-		String param = parser.makeString();        // put the string value of the property value in local memory for faster access
+		String param = parser.stringValue();        // put the string value of the property value in local memory for faster access
 		while (param.length() > 0) {
 
 			if (paramName.length() == 0) {
@@ -392,22 +392,22 @@ public class Storage extends PCClass {
 					DSS.doSimpleMsg("Unknown parameter \"" + paramName + "\" for object \"" + getClassName() +"."+ as.getName() + "\"", 561);
 					break;
 				case 0:
-					as.setNumPhases(parser.makeInteger());  // num phases
+					as.setNumPhases(parser.integerValue());  // num phases
 					break;
 				case 1:
 					as.setBus(0, param);
 					break;
 				case KV:
-					as.setPresentKV(parser.makeDouble());
+					as.setPresentKV(parser.doubleValue());
 					break;
 				case KW:
-					as.setKWOut(parser.makeDouble());
+					as.setKWOut(parser.doubleValue());
 					break;
 				case PF:
-					as.PFNominal = parser.makeDouble();
+					as.PFNominal = parser.doubleValue();
 					break;
 				case MODEL:
-					as.setVoltageModel(parser.makeInteger());
+					as.setVoltageModel(parser.integerValue());
 					break;
 				case YEARLY:
 					as.setYearlyShape(param);
@@ -422,82 +422,82 @@ public class Storage extends PCClass {
 					as.setDispatchMode(interpretDispMode(param));
 					break;
 				case IDLE_KVAR:
-					as.setPctIdleKVAr(parser.makeDouble());
+					as.setPctIdleKVAr(parser.doubleValue());
 					break;
 				case CONNECTION:
 					interpretConnection(param);
 					break;
 				case KVAR:
-					as.setPresentKVAr(parser.makeDouble());
+					as.setPresentKVAr(parser.doubleValue());
 					break;
 				case PCTR:
-					as.setPctR(parser.makeDouble());
+					as.setPctR(parser.doubleValue());
 					break;
 				case PCTX:
-					as.setPctX(parser.makeDouble());
+					as.setPctX(parser.doubleValue());
 					break;
 				case IDLE_KW:
-					as.setPctIdleKW(parser.makeDouble());
+					as.setPctIdleKW(parser.doubleValue());
 					break;
 				case CLASS:
-					as.setStorageClass(parser.makeInteger());
+					as.setStorageClass(parser.integerValue());
 					break;
 				case DISP_OUT_TRIG:
-					as.setDischargeTrigger(parser.makeDouble());
+					as.setDischargeTrigger(parser.doubleValue());
 					break;
 				case DISP_IN_TRIG:
-					as.setChargeTrigger(parser.makeDouble());
+					as.setChargeTrigger(parser.doubleValue());
 					break;
 				case CHARGE_EFF:
-					as.setPctChargeEff(parser.makeDouble());
+					as.setPctChargeEff(parser.doubleValue());
 					break;
 				case DISCHARGE_EFF:
-					as.setPctDischargeEff(parser.makeDouble());
+					as.setPctDischargeEff(parser.doubleValue());
 					break;
 				case PCT_KW_OUT:
-					as.setPctKWOut(parser.makeDouble());
+					as.setPctKWOut(parser.doubleValue());
 					break;
 				case VMIN_PU:
-					as.setVMinPU(parser.makeDouble());
+					as.setVMinPU(parser.doubleValue());
 					break;
 				case VMAX_PU:
-					as.setVMaxPU(parser.makeDouble());
+					as.setVMaxPU(parser.doubleValue());
 					break;
 				case STATE:
 					as.setStorageState(as.interpretState(param));
 					break;
 				case KVA:
-					as.setKVARating(parser.makeDouble());
+					as.setKVARating(parser.doubleValue());
 					break;
 				case KW_RATED:
-					as.setKWRating(parser.makeDouble());
+					as.setKWRating(parser.doubleValue());
 					break;
 				case KWH_RATED:
-					as.setKWhRating(parser.makeDouble());
+					as.setKWhRating(parser.doubleValue());
 					break;
 				case KWH_STORED:
-					as.setKWhStored(parser.makeDouble());
+					as.setKWhStored(parser.doubleValue());
 					break;
 				case PCT_RESERVE:
-					as.setPctReserve(parser.makeDouble());
+					as.setPctReserve(parser.doubleValue());
 					break;
 				case USER_MODEL:
-					as.getUserModel().setName(parser.makeString());  // connect to user written models
+					as.getUserModel().setName(parser.stringValue());  // connect to user written models
 					break;
 				case USER_DATA:
-					as.getUserModel().edit(parser.makeString());  // send edit string to user model
+					as.getUserModel().edit(parser.stringValue());  // send edit string to user model
 					break;
 				case DEBUG_TRACE:
 					as.setDebugTrace(Util.interpretYesNo(param));
 					break;
 				case PCT_KW_IN:
-					as.setPctKWIn(parser.makeDouble());
+					as.setPctKWIn(parser.doubleValue());
 					break;
 				case PCT_STORED:
-					as.setKWhStored(parser.makeDouble() * 0.01 * as.getKWhRating());
+					as.setKWhStored(parser.doubleValue() * 0.01 * as.getKWhRating());
 					break;
 				case CHARGE_TIME:
-					as.setChargeTime(parser.makeDouble());
+					as.setChargeTime(parser.doubleValue());
 					break;
 				default:
 					// inherited parameters
@@ -574,7 +574,7 @@ public class Storage extends PCClass {
 			}
 
 			paramName = parser.getNextParam();
-			param = parser.makeString();
+			param = parser.stringValue();
 		}
 
 		as.recalcElementData();

@@ -149,7 +149,7 @@ public class VSource extends PCClass {
 
 		int paramPointer = -1;
 		String paramName = parser.getNextParam();
-		String param = parser.makeString();
+		String param = parser.stringValue();
 
 		while (param.length() > 0) {
 			if (paramName.length() == 0) {
@@ -170,50 +170,50 @@ public class VSource extends PCClass {
 				vSourceSetBus1(param);  // special handling of bus 1
 				break;
 			case 1:
-				elem.setKVBase(parser.makeDouble());  // baseKV
+				elem.setKVBase(parser.doubleValue());  // baseKV
 				break;
 			case 2:
-				elem.setPerUnit(parser.makeDouble());  // pu
+				elem.setPerUnit(parser.doubleValue());  // pu
 				break;
 			case 3:
-				elem.setAngle(parser.makeDouble());  // ang
+				elem.setAngle(parser.doubleValue());  // ang
 				break;
 			case 4:
-				elem.setSrcFrequency(parser.makeDouble());  // freq
+				elem.setSrcFrequency(parser.doubleValue());  // freq
 				break;
 			case 5:
-				elem.setNumPhases(parser.makeInteger());  // num phases
+				elem.setNumPhases(parser.integerValue());  // num phases
 				elem.setNumConds(elem.getNumPhases());  // force reallocation of terminal info
 				break;
 			case 6:
-				elem.setMVAsc3(parser.makeDouble());  // MVAsc3
+				elem.setMVAsc3(parser.doubleValue());  // MVAsc3
 				break;
 			case 7:
-				elem.setMVAsc1(parser.makeDouble());  // MVAsc1
+				elem.setMVAsc1(parser.doubleValue());  // MVAsc1
 				break;
 			case 8:
-				elem.setX1R1(parser.makeDouble());  // X1/R1
+				elem.setX1R1(parser.doubleValue());  // X1/R1
 				break;
 			case 9:
-				elem.setX0R0(parser.makeDouble());  // X0/R0
+				elem.setX0R0(parser.doubleValue());  // X0/R0
 				break;
 			case 10:
-				elem.setIsc3(parser.makeDouble());
+				elem.setIsc3(parser.doubleValue());
 				break;
 			case 11:
-				elem.setIsc1(parser.makeDouble());
+				elem.setIsc1(parser.doubleValue());
 				break;
 			case 12:
-				elem.setR1(parser.makeDouble());
+				elem.setR1(parser.doubleValue());
 				break;
 			case 13:
-				elem.setX1(parser.makeDouble());
+				elem.setX1(parser.doubleValue());
 				break;
 			case 14:
-				elem.setR0(parser.makeDouble());
+				elem.setR0(parser.doubleValue());
 				break;
 			case 15:
-				elem.setX0(parser.makeDouble());
+				elem.setX0(parser.doubleValue());
 				break;
 			case 16:
 				switch (param.toUpperCase().charAt(0)) {
@@ -284,7 +284,7 @@ public class VSource extends PCClass {
 			}
 
 			paramName = parser.getNextParam();
-			param = parser.makeString();
+			param = parser.stringValue();
 		}
 
 		elem.recalcElementData();

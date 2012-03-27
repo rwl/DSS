@@ -82,7 +82,7 @@ public class GenDispatcher extends ControlClass {
 
 		int paramPointer = -1;
 		String paramName = parser.getNextParam();
-		String param = parser.makeString();
+		String param = parser.stringValue();
 
 		while (param.length() > 0) {
 			if (paramName.length() == 0) {
@@ -103,16 +103,16 @@ public class GenDispatcher extends ControlClass {
 				elem.setElementName(param.toLowerCase());
 				break;
 			case 1:
-				elem.setElementTerminalIdx(parser.makeInteger() - 1);
+				elem.setElementTerminalIdx(parser.integerValue() - 1);
 				break;
 			case 2:
-				elem.setKWLimit(parser.makeDouble());
+				elem.setKWLimit(parser.doubleValue());
 				break;
 			case 3:
-				elem.setKWBand(parser.makeDouble());
+				elem.setKWBand(parser.doubleValue());
 				break;
 			case 4:
-				elem.setKVArLimit(parser.makeDouble());
+				elem.setKVArLimit(parser.doubleValue());
 				break;
 			case 5:
 				Util.interpretStringListArray(param, elem.getGeneratorNames());
@@ -145,7 +145,7 @@ public class GenDispatcher extends ControlClass {
 			}
 
 			paramName = parser.getNextParam();
-			param = parser.makeString();
+			param = parser.stringValue();
 		}
 		elem.recalcElementData();
 

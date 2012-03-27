@@ -226,7 +226,7 @@ public class StorageController extends ControlClass {
 
 		int paramPointer = -1;
 		String paramName = parser.getNextParam();
-		String param = parser.makeString();
+		String param = parser.stringValue();
 
 		while (param.length() > 0) {
 			if (paramName.length() == 0) {
@@ -247,19 +247,19 @@ public class StorageController extends ControlClass {
 				elem.setElementName(param.toLowerCase());
 				break;
 			case StorageController.TERMINAL:
-				elem.setElementTerminalIdx(parser.makeInteger() - 1);
+				elem.setElementTerminalIdx(parser.integerValue() - 1);
 				break;
 			case StorageController.KW_TARGET:
-				elem.setKWTarget(parser.makeDouble());
+				elem.setKWTarget(parser.doubleValue());
 				break;
 			case StorageController.KW_BAND:
-				elem.setPctkWBand(parser.makeDouble());
+				elem.setPctkWBand(parser.doubleValue());
 				break;
 			case StorageController.PF_TARGET:
-				elem.setPFTarget( Util.convertPFToPFRange2(parser.makeDouble()) );
+				elem.setPFTarget( Util.convertPFToPFRange2(parser.doubleValue()) );
 				break;
 			case StorageController.PF_BAND:
-				elem.setPFBand(parser.makeDouble());
+				elem.setPFBand(parser.doubleValue());
 				break;
 			case StorageController.ELEMENT_LIST:
 				Util.interpretStringListArray(param, elem.getStorageNameList());
@@ -278,22 +278,22 @@ public class StorageController extends ControlClass {
 				elem.setChargeMode(elem.interpretMode(MODE_CHARGE, param));
 				break;
 			case StorageController.TIME_DISCHARGE_TRIGGER:
-				elem.setDischargeTriggerTime(parser.makeDouble());
+				elem.setDischargeTriggerTime(parser.doubleValue());
 				break;
 			case StorageController.TIME_CHARGE_TRIGGER:
-				elem.setChargeTriggerTime(parser.makeDouble());
+				elem.setChargeTriggerTime(parser.doubleValue());
 				break;
 			case StorageController.RATE_KW:
-				elem.setPctKWRate(parser.makeDouble());
+				elem.setPctKWRate(parser.doubleValue());
 				break;
 			case StorageController.RATE_KVAR:
-				elem.setPctKVArRate(parser.makeDouble());
+				elem.setPctKVArRate(parser.doubleValue());
 				break;
 			case StorageController.RATE_CHARGE:
-				elem.setPctChargeRate(parser.makeDouble());
+				elem.setPctChargeRate(parser.doubleValue());
 				break;
 			case StorageController.RESERVE:
-				elem.setPctFleetReserve(parser.makeDouble());
+				elem.setPctFleetReserve(parser.doubleValue());
 				break;
 			case StorageController.KWH_TOTAL:
 				// do nothing (read only)
@@ -328,19 +328,19 @@ public class StorageController extends ControlClass {
 				elem.setDispatchVars(Util.interpretYesNo(param));
 				break;
 			case StorageController.INHIBIT_TIME:
-				elem.setInhibitHrs( Math.max(1, parser.makeInteger()) );  // >= 1
+				elem.setInhibitHrs( Math.max(1, parser.integerValue()) );  // >= 1
 				break;
 			case StorageController.T_UP_RAMP:
-				elem.setUpRampTime(parser.makeDouble());
+				elem.setUpRampTime(parser.doubleValue());
 				break;
 			case StorageController.T_FLAT:
-				elem.setFlatTime(parser.makeDouble());
+				elem.setFlatTime(parser.doubleValue());
 				break;
 			case StorageController.T_DN_RAMP:
-				elem.setDnRampTime(parser.makeDouble());
+				elem.setDnRampTime(parser.doubleValue());
 				break;
 			case StorageController.KW_THRESHOLD:
-				elem.setKWThreshold(parser.makeDouble());
+				elem.setKWThreshold(parser.doubleValue());
 				break;
 			default:
 				// inherited parameters
@@ -393,7 +393,7 @@ public class StorageController extends ControlClass {
 			}
 
 			paramName = parser.getNextParam();
-			param = parser.makeString();
+			param = parser.stringValue();
 		}
 		elem.recalcElementData();
 

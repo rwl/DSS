@@ -67,19 +67,19 @@ public class LineSpacing extends DSSClass {
 	private void interpretArray(String s, SpcParmChoice which) {
 		String ss;
 
-		DSS.auxParser.setCmdBuffer(s);
+		DSS.auxParser.setCommand(s);
 		LineSpacingObj elem = activeLineSpacingObj;
 
 		for (int i = 0; i < elem.getNWires(); i++) {
 			DSS.auxParser.getNextParam();  // ignore any parameter name not expecting any
-			ss = DSS.auxParser.makeString();
+			ss = DSS.auxParser.stringValue();
 			if (ss.length() > 0) {
 				switch (which) {
 				case X:
-					elem.setXCoord(i, DSS.auxParser.makeDouble());
+					elem.setXCoord(i, DSS.auxParser.doubleValue());
 					break;
 				case H:
-					elem.setYCoord(i, DSS.auxParser.makeDouble());
+					elem.setYCoord(i, DSS.auxParser.doubleValue());
 					break;
 				}
 			}
@@ -98,7 +98,7 @@ public class LineSpacing extends DSSClass {
 
 		int paramPointer = -1;
 		String paramName = parser.getNextParam();
-		String param = parser.makeString();
+		String param = parser.stringValue();
 
 		while (param.length() > 0) {
 			if (paramName.length() == 0) {
@@ -116,10 +116,10 @@ public class LineSpacing extends DSSClass {
 						getClassName() + "." + elem.getName() + "\"", 10101);
 				break;
 			case 0:
-				elem.setNWires(parser.makeInteger());  // forces reallocations
+				elem.setNWires(parser.integerValue());  // forces reallocations
 				break;
 			case 1:
-				elem.setNPhases(parser.makeInteger());
+				elem.setNPhases(parser.integerValue());
 				break;
 			case 2:
 				interpretArray(param, SpcParmChoice.X);
@@ -147,7 +147,7 @@ public class LineSpacing extends DSSClass {
 			}
 
 			paramName = parser.getNextParam();
-			param = parser.makeString();
+			param = parser.stringValue();
 		}
 
 		return 0;

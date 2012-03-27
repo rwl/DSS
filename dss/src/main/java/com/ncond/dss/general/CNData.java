@@ -72,7 +72,7 @@ public class CNData extends CableData {
 
 		int paramPointer = -1;
 		String paramName = parser.getNextParam();
-		String param = parser.makeString();
+		String param = parser.stringValue();
 
 		while (param.length() > 0) {
 			if (paramName.length() == 0) {
@@ -90,16 +90,16 @@ public class CNData extends CableData {
 						getClassName() +"."+ getClassName() + "\"", 101);
 				break;
 			case 0:
-				elem.setKStrand(parser.makeInteger());
+				elem.setKStrand(parser.integerValue());
 				break;
 			case 1:
-				elem.setDiaStrand(parser.makeDouble());
+				elem.setDiaStrand(parser.doubleValue());
 				break;
 			case 2:
-				elem.setGmrStrand(parser.makeDouble());
+				elem.setGmrStrand(parser.doubleValue());
 				break;
 			case 3:
-				elem.setRStrand(parser.makeDouble());
+				elem.setRStrand(parser.doubleValue());
 				break;
 			default:
 				// inherited parameters
@@ -132,7 +132,7 @@ public class CNData extends CableData {
 			}
 
 			paramName = parser.getNextParam();
-			param = parser.makeString();
+			param = parser.stringValue();
 		}
 
 		return 0;

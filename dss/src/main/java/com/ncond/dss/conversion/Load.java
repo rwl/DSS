@@ -294,7 +294,7 @@ public class Load extends PCClass {
 
 		int paramPointer = -1;
 		String paramName = parser.getNextParam();
-		String param = parser.makeString();
+		String param = parser.stringValue();
 
 		while (param.length() > 0) {
 			if (paramName.length() == 0) {
@@ -312,22 +312,22 @@ public class Load extends PCClass {
 						getClassName() +"."+ elem.getName() + "\"", 580);
 				break;
 			case 0:
-				elem.setNumPhases(parser.makeInteger()); // num phases
+				elem.setNumPhases(parser.integerValue()); // num phases
 				break;
 			case 1:
 				elem.setBus(0, param);
 				break;
 			case 2:
-				elem.setKVLoadBase(parser.makeDouble());
+				elem.setKVLoadBase(parser.doubleValue());
 				break;
 			case 3:
-				elem.setKWBase(parser.makeDouble());
+				elem.setKWBase(parser.doubleValue());
 				break;
 			case 4:
-				elem.setPFNominal(parser.makeDouble());
+				elem.setPFNominal(parser.doubleValue());
 				break;
 			case 5:
-				elem.setLoadModel(LoadModel.values()[parser.makeInteger() - 1]);
+				elem.setLoadModel(LoadModel.values()[parser.integerValue() - 1]);
 				break;
 			case 6:
 				elem.setYearlyShape(param);
@@ -345,13 +345,13 @@ public class Load extends PCClass {
 				interpretConnection(param);
 				break;
 			case 11:
-				elem.setKVArBase(parser.makeDouble());
+				elem.setKVArBase(parser.doubleValue());
 				break;
 			case 12:
-				elem.setRNeut(parser.makeDouble());
+				elem.setRNeut(parser.doubleValue());
 				break;
 			case 13:
-				elem.setXNeut(parser.makeDouble());
+				elem.setXNeut(parser.doubleValue());
 				break;
 			case 14:
 				switch (param.toLowerCase().charAt(0)) {
@@ -369,55 +369,55 @@ public class Load extends PCClass {
 					break;
 				}
 			case 15:
-				elem.setLoadClass(parser.makeInteger());
+				elem.setLoadClass(parser.integerValue());
 				break;
 			case 16:
-				elem.setVMinPU(parser.makeDouble());
+				elem.setVMinPU(parser.doubleValue());
 				break;
 			case 17:
-				elem.setVMaxPU(parser.makeDouble());
+				elem.setVMaxPU(parser.doubleValue());
 				break;
 			case 18:
-				elem.setVMinNormal(parser.makeDouble());
+				elem.setVMinNormal(parser.doubleValue());
 				break;
 			case 19:
-				elem.setVMinEmerg(parser.makeDouble());
+				elem.setVMinEmerg(parser.doubleValue());
 				break;
 			case 20:
-				elem.setConnectedKVA(parser.makeDouble());
+				elem.setConnectedKVA(parser.doubleValue());
 				break;
 			case 21:
-				elem.setKVAAllocationFactor(parser.makeDouble());
+				elem.setKVAAllocationFactor(parser.doubleValue());
 				break;
 			case 22:
-				elem.setKVABase(parser.makeDouble());
+				elem.setKVABase(parser.doubleValue());
 				break;
 			case 23:
-				elem.setPuMean(parser.makeDouble() / 100.0);
+				elem.setPuMean(parser.doubleValue() / 100.0);
 				break;
 			case 24:
-				elem.setPuStdDev(parser.makeDouble() / 100.0);
+				elem.setPuStdDev(parser.doubleValue() / 100.0);
 				break;
 			case 25:
-				elem.setCVRwattFactor(parser.makeDouble());
+				elem.setCVRwattFactor(parser.doubleValue());
 				break;
 			case 26:
-				elem.setCVRvarFactor(parser.makeDouble());
+				elem.setCVRvarFactor(parser.doubleValue());
 				break;
 			case 27:
-				elem.setKWh(parser.makeDouble());
+				elem.setKWh(parser.doubleValue());
 				break;
 			case 28:
-				elem.setKWhDays(parser.makeDouble());
+				elem.setKWhDays(parser.doubleValue());
 				break;
 			case 29:
-				elem.setCFactor(parser.makeDouble());
+				elem.setCFactor(parser.doubleValue());
 				break;
 			case 30:
 				elem.setCVRShape(param);
 				break;
 			case 31:
-				elem.setNumCustomers(parser.makeInteger());
+				elem.setNumCustomers(parser.integerValue());
 				break;
 			case 32:
 				elem.setZIPVSize(7);
@@ -485,7 +485,7 @@ public class Load extends PCClass {
 			}
 
 			paramName = parser.getNextParam();
-			param = parser.makeString();
+			param = parser.stringValue();
 		}
 
 		elem.recalcElementData();

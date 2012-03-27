@@ -182,7 +182,7 @@ public class Reactor extends PDClass {
 
 		int paramPointer = -1;
 		String paramName = parser.getNextParam();
-		String param = parser.makeString();
+		String param = parser.stringValue();
 
 		while (param.length() > 0) {
 			if (paramName.length() == 0) {
@@ -209,10 +209,10 @@ public class Reactor extends PDClass {
 				/*elem.setNPhases(parser.makeInteger());*/  // see below
 				break;
 			case 3:
-				elem.setKVArRating(parser.makeDouble());
+				elem.setKVArRating(parser.doubleValue());
 				break;
 			case 4:
-				elem.setKVRating(parser.makeDouble());
+				elem.setKVRating(parser.doubleValue());
 				break;
 			case 5:
 				interpretConnection(param);
@@ -227,13 +227,13 @@ public class Reactor extends PDClass {
 				elem.setParallel(Util.interpretYesNo(param));
 				break;
 			case 9:
-				elem.setR(parser.makeDouble());
+				elem.setR(parser.doubleValue());
 				break;
 			case 10:
-				elem.setX(parser.makeDouble());
+				elem.setX(parser.doubleValue());
 				break;
 			case 11:
-				elem.setRp(parser.makeDouble());
+				elem.setRp(parser.doubleValue());
 				break;
 			default:
 				// inherited property edits
@@ -252,8 +252,8 @@ public class Reactor extends PDClass {
 					elem.setShunt(false);
 				break;
 			case 2:
-				if (elem.getNumPhases() != parser.makeInteger()) {
-					elem.setNumPhases(parser.makeInteger());
+				if (elem.getNumPhases() != parser.integerValue()) {
+					elem.setNumPhases(parser.integerValue());
 					elem.setNumConds(elem.getNumPhases());  // force reallocation of terminal info
 					elem.setYOrder(elem.getNumTerms() * elem.getNumConds());
 				}
@@ -278,7 +278,7 @@ public class Reactor extends PDClass {
 				elem.setYPrimInvalid(true);
 
 			paramName = parser.getNextParam();
-			param = parser.makeString();
+			param = parser.stringValue();
 		}
 
 		elem.recalcElementData();

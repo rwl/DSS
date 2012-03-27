@@ -54,7 +54,7 @@ public class Parser {
 		return AuxParserHolder.INSTANCE;
 	}
 
-	public void setCmdBuffer(final String value) {
+	public void setCommand(final String value) {
 		cmdBuffer = value + " ";  // add some white space at end to get last param
 		position[0] = 0;
 		skipWhiteSpace(cmdBuffer, position);  // position at first non whitespace character
@@ -226,7 +226,7 @@ public class Parser {
 			try {
 				while (tokenBuffer.length() > 0) {
 					numNodes[0] += 1;
-					nodeArray[numNodes[0] - 1] = makeInteger();
+					nodeArray[numNodes[0] - 1] = integerValue();
 					if (convertError) nodeArray[numNodes[0] - 1] = -1;  // indicate an error
 					tokenBuffer = getToken(nodeBuffer, nodeBufferPos);
 				}
@@ -266,7 +266,7 @@ public class Parser {
 			while (tokenBuffer.length() > 0) {
 				numElements += 1;
 				if (numElements <= expectedSize)
-					vectorBuffer[numElements - 1] = makeDouble();
+					vectorBuffer[numElements - 1] = doubleValue();
 				if (lastDelimiter == matrixRowTerminator) break;
 				tokenBuffer = getToken(parseBuffer, parseBufferPos);
 			}
@@ -346,12 +346,12 @@ public class Parser {
 		return jj * expectedOrder + ii;
 	}
 
-	public String makeString() {
+	public String stringValue() {
 		if (autoIncrement) getNextParam();
 		return tokenBuffer;
 	}
 
-	public int makeInteger() {
+	public int integerValue() {
 		// hex integers must be preceeded by "$"
 		int result = 0;
 		double tmp = 0;
@@ -399,7 +399,7 @@ public class Parser {
 		return result;
 	}
 
-	public double makeDouble() {
+	public double doubleValue() {
 		int[] code = new int[1];
 		double dbl = 0;
 
@@ -580,7 +580,7 @@ public class Parser {
 		this.delimChars = delimChars;
 	}
 
-	public String getCmdBuffer() {
+	public String getCommand() {
 		return cmdBuffer;
 	}
 

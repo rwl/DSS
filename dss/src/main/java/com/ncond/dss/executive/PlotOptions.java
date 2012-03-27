@@ -139,7 +139,7 @@ public class PlotOptions {
 		/* Get next parameter on command line */
 		int paramPointer = -1;
 		String paramName = parser.getNextParam().toUpperCase();
-		String param = parser.makeString().toUpperCase();
+		String param = parser.stringValue().toUpperCase();
 
 		while (param.length() > 0) {
 			/* Interpret parameter */
@@ -236,12 +236,12 @@ public class PlotOptions {
 					break;
 				default:
 					plot.setQuantity(PlotQuantity.NONE);
-					plot.setValueIndex(parser.makeInteger());
+					plot.setValueIndex(parser.integerValue());
 					break;
 				}
 				break;
 			case 2:
-				plot.setMaxScale(parser.makeDouble());
+				plot.setMaxScale(parser.doubleValue());
 				if (plot.getMaxScale() > 0.0)
 					plot.setMaxScaleIsSpecified(true);  // Indicate the user wants a particular value
 				break;
@@ -252,7 +252,7 @@ public class PlotOptions {
 				plot.setLabels(Util.interpretYesNo(param));
 				break;
 			case 5:
-				plot.setObjectName(parser.makeString());
+				plot.setObjectName(parser.stringValue());
 				break;
 			case 6:
 				plot.setShowLoops(Util.interpretYesNo(param));
@@ -260,10 +260,10 @@ public class PlotOptions {
 					plot.setPlotType(PlotType.METER_ZONES);
 				break;
 			case 7:
-				plot.setTriColorMax(parser.makeDouble());
+				plot.setTriColorMax(parser.doubleValue());
 				break;
 			case 8:
-				plot.setTriColorMid(parser.makeDouble());
+				plot.setTriColorMid(parser.doubleValue());
 				break;
 			case 9:
 				plot.setColor1(Util.interpretColor(param));
@@ -297,7 +297,7 @@ public class PlotOptions {
 				plot.setShowSubs( Util.interpretYesNo(param) );
 				break;
 			case 15:
-				plot.setMaxLineThickness( parser.makeInteger() );
+				plot.setMaxLineThickness( parser.integerValue() );
 				break;
 			case 16:
 				Util.interpretStringListArray(param, plot.getDaisyBusList());  // read in Bus list
@@ -327,7 +327,7 @@ public class PlotOptions {
 			}
 
 			paramName = parser.getNextParam().toUpperCase();
-			param = parser.makeString().toUpperCase();
+			param = parser.stringValue().toUpperCase();
 		}
 
 		if (ckt.isSolved())

@@ -133,7 +133,7 @@ public class CapControl extends ControlClass {
 
 		int paramPointer = -1;
 		String paramName = parser.getNextParam();
-		String param = parser.makeString();
+		String param = parser.stringValue();
 		while (param.length() > 0) {
 			if (paramName.length() == 0) {
 				paramPointer += 1;
@@ -153,7 +153,7 @@ public class CapControl extends ControlClass {
 				elem.setElementName(param.toLowerCase());
 				break;
 			case 1:
-				elem.setElementTerminalIdx(parser.makeInteger());
+				elem.setElementTerminalIdx(parser.integerValue());
 				break;
 			case 2:
 				elem.setCapacitorName("capacitor." + param);
@@ -185,34 +185,34 @@ public class CapControl extends ControlClass {
 				}
 				break;
 			case 4:
-				elem.setPTRatio(parser.makeDouble());
+				elem.setPTRatio(parser.doubleValue());
 				break;
 			case 5:
-				elem.setCTRatio(parser.makeDouble());
+				elem.setCTRatio(parser.doubleValue());
 				break;
 			case 6:
-				elem.setOnValue(parser.makeDouble());
+				elem.setOnValue(parser.doubleValue());
 				break;
 			case 7:
-				elem.setOffValue(parser.makeDouble());
+				elem.setOffValue(parser.doubleValue());
 				break;
 			case 8:
-				elem.setOnDelay(parser.makeDouble());
+				elem.setOnDelay(parser.doubleValue());
 				break;
 			case 9:
 				elem.setVOverride(Util.interpretYesNo(param));
 				break;
 			case 10:
-				elem.setVMax(parser.makeDouble());
+				elem.setVMax(parser.doubleValue());
 				break;
 			case 11:
-				elem.setVMin(parser.makeDouble());
+				elem.setVMin(parser.doubleValue());
 				break;
 			case 12:
-				elem.setOffDelay(parser.makeDouble());
+				elem.setOffDelay(parser.doubleValue());
 				break;
 			case 13:
-				elem.setDeadTime(parser.makeDouble());
+				elem.setDeadTime(parser.doubleValue());
 				break;
 			case 14:
 				if (Util.compareTextShortest(param, "avg") == 0) {
@@ -222,7 +222,7 @@ public class CapControl extends ControlClass {
 				} else if (Util.compareTextShortest(param, "min") == 0) {
 					elem.setCTPhaseIdx(CapControl.MINPHASE);
 				} else {
-					elem.setCTPhaseIdx(Math.max(0, parser.makeInteger() - 1));
+					elem.setCTPhaseIdx(Math.max(0, parser.integerValue() - 1));
 				}
 				break;
 			case 15:
@@ -233,7 +233,7 @@ public class CapControl extends ControlClass {
 				} else if (Util.compareTextShortest(param, "min") == 0) {
 					elem.setPTPhaseIdx(CapControl.MINPHASE);
 				} else {
-					elem.setPTPhaseIdx(Math.max(0, parser.makeInteger() - 1));
+					elem.setPTPhaseIdx(Math.max(0, parser.integerValue() - 1));
 				}
 				break;
 			case 16:
@@ -294,7 +294,7 @@ public class CapControl extends ControlClass {
 			}
 
 			paramName = parser.getNextParam();
-			param = parser.makeString();
+			param = parser.stringValue();
 		}
 
 		elem.recalcElementData();

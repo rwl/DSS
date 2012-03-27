@@ -191,7 +191,7 @@ public class Capacitor extends PDClass {
 
 		int paramPointer = -1;
 		String paramName = parser.getNextParam();
-		String param = parser.makeString();
+		String param = parser.stringValue();
 
 		while (param.length() > 0) {
 			if (paramName.length() == 0) {
@@ -221,7 +221,7 @@ public class Capacitor extends PDClass {
 				Util.interpretDblArray(param, elem.getNumSteps(), elem.getKVArRating());
 				break;
 			case 4:
-				elem.setKVRating(parser.makeDouble());
+				elem.setKVRating(parser.doubleValue());
 				break;
 			case 5:
 				interpretConnection(param);
@@ -242,7 +242,7 @@ public class Capacitor extends PDClass {
 				elem.processHarmonicSpec(param);
 				break;
 			case 11:
-				elem.setNumSteps(parser.makeInteger());
+				elem.setNumSteps(parser.integerValue());
 				break;
 			case 12:
 				elem.processStatesSpec(param);
@@ -264,8 +264,8 @@ public class Capacitor extends PDClass {
 					elem.setShunt(false);
 				break;
 			case 2:
-				if (elem.getNumPhases() != parser.makeInteger()) {
-					elem.setNumPhases(parser.makeInteger());
+				if (elem.getNumPhases() != parser.integerValue()) {
+					elem.setNumPhases(parser.integerValue());
 					elem.setNumConds(elem.getNumPhases());  // force reallocation of terminal info
 					elem.setYOrder(elem.getNumTerms() * elem.getNumConds());
 				}
@@ -306,7 +306,7 @@ public class Capacitor extends PDClass {
 			}
 
 			paramName = parser.getNextParam();
-			param = parser.makeString();
+			param = parser.stringValue();
 		}
 
 		elem.recalcElementData();

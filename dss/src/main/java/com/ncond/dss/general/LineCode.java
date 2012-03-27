@@ -220,7 +220,7 @@ public class LineCode extends DSSClass {
 
 		int paramPointer = -1;
 		String paramName = parser.getNextParam();
-		String param = parser.makeString();
+		String param = parser.stringValue();
 
 		while (param.length() > 0) {
 			if (paramName.length() == 0) {
@@ -238,25 +238,25 @@ public class LineCode extends DSSClass {
 						getClassName() +"."+ getClassName() + "\"", 101);
 				break;
 			case 0:
-				activeLineCodeObj.setNPhases(parser.makeInteger());  // use property value to force reallocations
+				activeLineCodeObj.setNPhases(parser.integerValue());  // use property value to force reallocations
 				break;
 			case 1:
-				setZ1Z0(1, parser.makeDouble());  // R1
+				setZ1Z0(1, parser.doubleValue());  // R1
 				break;
 			case 2:
-				setZ1Z0(2, parser.makeDouble());  // X0
+				setZ1Z0(2, parser.doubleValue());  // X0
 				break;
 			case 3:
-				setZ1Z0(3, parser.makeDouble());  // R1
+				setZ1Z0(3, parser.doubleValue());  // R1
 				break;
 			case 4:
-				setZ1Z0(4, parser.makeDouble());  // X0
+				setZ1Z0(4, parser.doubleValue());  // X0
 				break;
 			case 5:
-				setZ1Z0(5, parser.makeDouble() * 1.0e-9);  // C1   // convert from nano to farads
+				setZ1Z0(5, parser.doubleValue() * 1.0e-9);  // C1   // convert from nano to farads
 				break;
 			case 6:
-				setZ1Z0(6, parser.makeDouble() * 1.0e-9);  // C0
+				setZ1Z0(6, parser.doubleValue() * 1.0e-9);  // C0
 				break;
 			case 7:
 				setUnits(param);
@@ -271,37 +271,37 @@ public class LineCode extends DSSClass {
 				doMatrix(3);
 				break;
 			case 11:
-				activeLineCodeObj.setBaseFrequency(parser.makeDouble());
+				activeLineCodeObj.setBaseFrequency(parser.doubleValue());
 				break;
 			case 12:
-				activeLineCodeObj.setNormAmps(parser.makeDouble());
+				activeLineCodeObj.setNormAmps(parser.doubleValue());
 				break;
 			case 13:
-				activeLineCodeObj.setEmergAmps(parser.makeDouble());
+				activeLineCodeObj.setEmergAmps(parser.doubleValue());
 				break;
 			case 14:
-				activeLineCodeObj.setFaultRate(parser.makeDouble());
+				activeLineCodeObj.setFaultRate(parser.doubleValue());
 				break;
 			case 15:
-				activeLineCodeObj.setPctPerm(parser.makeDouble());
+				activeLineCodeObj.setPctPerm(parser.doubleValue());
 				break;
 			case 16:
-				activeLineCodeObj.setHrsToRepair(parser.makeDouble());
+				activeLineCodeObj.setHrsToRepair(parser.doubleValue());
 				break;
 			case 17:
 				activeLineCodeObj.setReduceByKron(Util.interpretYesNo(param));
 				break;
 			case 18:
-				activeLineCodeObj.setRg(parser.makeDouble());
+				activeLineCodeObj.setRg(parser.doubleValue());
 				break;
 			case 19:
-				activeLineCodeObj.setXg(parser.makeDouble());
+				activeLineCodeObj.setXg(parser.doubleValue());
 				break;
 			case 20:
-				activeLineCodeObj.setRho(parser.makeDouble());
+				activeLineCodeObj.setRho(parser.doubleValue());
 				break;
 			case 21:
-				activeLineCodeObj.setNeutralConductor(parser.makeInteger());
+				activeLineCodeObj.setNeutralConductor(parser.integerValue());
 				break;
 			default:
 				classEdit(activeLineCodeObj, paramPointer - LineCode.NumPropsThisClass);
@@ -325,7 +325,7 @@ public class LineCode extends DSSClass {
 			}
 
 			paramName = parser.getNextParam();
-			param = parser.makeString();
+			param = parser.stringValue();
 		}
 
 		if (activeLineCodeObj.isSymComponentsModel())

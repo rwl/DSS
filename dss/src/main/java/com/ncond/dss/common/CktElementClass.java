@@ -34,10 +34,10 @@ abstract public class CktElementClass extends DSSClass {
 			CktElement cktElem = (CktElement) activeCktElemObj;
 			switch (paramPointer) {
 			case 0:
-				cktElem.setBaseFrequency(parser.makeDouble());
+				cktElem.setBaseFrequency(parser.doubleValue());
 				break;
 			case 1:
-				cktElem.setEnabled(Util.interpretYesNo(parser.makeString()));
+				cktElem.setEnabled(Util.interpretYesNo(parser.stringValue()));
 				break;
 			default:
 				super.classEdit(activeCktElemObj, paramPointer - numCktElemClassProps);

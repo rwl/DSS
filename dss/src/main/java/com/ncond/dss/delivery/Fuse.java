@@ -111,7 +111,7 @@ public class Fuse extends ControlClass {
 
 		int paramPointer = -1;
 		String paramName = parser.getNextParam();
-		String param = parser.makeString();
+		String param = parser.stringValue();
 
 		while (param.length() > 0) {
 			if (paramName.length() == 0) {
@@ -132,22 +132,22 @@ public class Fuse extends ControlClass {
 				elem.setMonitoredElementName(param.toLowerCase());
 				break;
 			case 1:
-				elem.setMonitoredElementTerminalIdx(parser.makeInteger() - 1);
+				elem.setMonitoredElementTerminalIdx(parser.integerValue() - 1);
 				break;
 			case 2:
 				elem.setElementName(param.toLowerCase());
 				break;
 			case 3:
-				elem.setElementTerminalIdx(parser.makeInteger() - 1);
+				elem.setElementTerminalIdx(parser.integerValue() - 1);
 				break;
 			case 4:
 				elem.setFuseCurve(getTccCurve(param));
 				break;
 			case 5:
-				elem.setRatedCurrent(parser.makeDouble());
+				elem.setRatedCurrent(parser.doubleValue());
 				break;
 			case 6:
-				elem.setDelayTime(parser.makeDouble());
+				elem.setDelayTime(parser.doubleValue());
 				break;
 			case 7:
 				elem.interpretFuseAction(param);
@@ -169,7 +169,7 @@ public class Fuse extends ControlClass {
 			}
 
 			paramName = parser.getNextParam();
-			param = parser.makeString();
+			param = parser.stringValue();
 		}
 
 		elem.recalcElementData();

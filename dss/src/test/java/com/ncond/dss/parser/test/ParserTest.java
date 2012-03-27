@@ -20,7 +20,7 @@ public class ParserTest extends TestCase {
 		String param;
 
 		cmdString = "like=lin2 length=1.7";
-		parser.setCmdBuffer(cmdString);
+		parser.setCommand(cmdString);
 
 		param = parser.getNextParam();
 		assertEquals("like", param);
@@ -37,7 +37,7 @@ public class ParserTest extends TestCase {
 		String name;
 
 		cmdString = "BusName ";
-		parser.setCmdBuffer(cmdString);
+		parser.setCommand(cmdString);
 		parser.getNextParam();
 
 		nodes = new int[3];
@@ -56,7 +56,7 @@ public class ParserTest extends TestCase {
 		String name;
 
 		cmdString = "BusName.1.2.3 ";
-		parser.setCmdBuffer(cmdString);
+		parser.setCommand(cmdString);
 		parser.getNextParam();
 
 		nodes = new int[4];
@@ -76,7 +76,7 @@ public class ParserTest extends TestCase {
 		double[] vector;
 
 		cmdString = "[115, 6.6, 22]";
-		parser.setCmdBuffer(cmdString);
+		parser.setCommand(cmdString);
 		parser.getNextParam();
 
 		vector = new double[4];
@@ -94,7 +94,7 @@ public class ParserTest extends TestCase {
 		double[] vector;
 
 		cmdString = "{1.2 .3 .3 2}";
-		parser.setCmdBuffer(cmdString);
+		parser.setCommand(cmdString);
 		parser.getNextParam();
 
 		vector = new double[4];
@@ -112,7 +112,7 @@ public class ParserTest extends TestCase {
 		double[] matrix;
 
 		cmdString = "{1.2, .3 | 1.2, 3}";
-		parser.setCmdBuffer(cmdString);
+		parser.setCommand(cmdString);
 		parser.getNextParam();
 
 		matrix = new double[5];
@@ -129,7 +129,7 @@ public class ParserTest extends TestCase {
 		double[] matrix;
 
 		cmdString = "[1.2 .4 .3 | .3 1.2 3 | .3 .3 1.2]";
-		parser.setCmdBuffer(cmdString);
+		parser.setCommand(cmdString);
 		parser.getNextParam();
 
 		matrix = new double[10];
@@ -147,7 +147,7 @@ public class ParserTest extends TestCase {
 		double[] matrix;
 
 		cmdString = "[1.2 | .4 1.2 | .3 .3 1.2]";
-		parser.setCmdBuffer(cmdString);
+		parser.setCommand(cmdString);
 		parser.getNextParam();
 
 		matrix = new double[10];
@@ -168,14 +168,14 @@ public class ParserTest extends TestCase {
 		String value;
 
 		cmdString = "bus1=b142, like=lin2";
-		parser.setCmdBuffer(cmdString);
+		parser.setCommand(cmdString);
 
 		parser.getNextParam();
-		value = parser.makeString();
+		value = parser.stringValue();
 		assertEquals("b142", value);
 
 		parser.getNextParam();
-		value = parser.makeString();
+		value = parser.stringValue();
 		assertEquals("lin2", value);
 	}
 
@@ -183,18 +183,18 @@ public class ParserTest extends TestCase {
 		int value;
 
 		cmdString = "6  year=5, 6.0";
-		parser.setCmdBuffer(cmdString);
+		parser.setCommand(cmdString);
 
 		parser.getNextParam();
-		value = parser.makeInteger();
+		value = parser.integerValue();
 		assertEquals(6, value);
 
 		parser.getNextParam();
-		value = parser.makeInteger();
+		value = parser.integerValue();
 		assertEquals(5, value);
 
 		parser.getNextParam();
-		value = parser.makeInteger();
+		value = parser.integerValue();
 		assertEquals(6, value);
 
 	}
@@ -203,18 +203,18 @@ public class ParserTest extends TestCase {
 		double value;
 
 		cmdString = "6,  mult=10.0 -5e06";
-		parser.setCmdBuffer(cmdString);
+		parser.setCommand(cmdString);
 
 		parser.getNextParam();
-		value = parser.makeDouble();
+		value = parser.doubleValue();
 		assertEquals(6.0, value, delta);
 
 		parser.getNextParam();
-		value = parser.makeDouble();
+		value = parser.doubleValue();
 		assertEquals(10.0, value, delta);
 
 		parser.getNextParam();
-		value = parser.makeInteger();
+		value = parser.integerValue();
 		assertEquals(-5e6, value, delta);
 	}
 
@@ -222,7 +222,7 @@ public class ParserTest extends TestCase {
 		String remainder;
 
 		cmdString = "new line.Lin2 Bs1 Bs2";
-		parser.setCmdBuffer(cmdString);
+		parser.setCommand(cmdString);
 
 		parser.getNextParam();
 		parser.getNextParam();

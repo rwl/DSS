@@ -72,34 +72,34 @@ abstract public class ConductorData extends DSSClass {
 
 			switch (paramPointer) {
 			case 0:
-				elem.setRdc(parser.makeDouble());
+				elem.setRdc(parser.doubleValue());
 				break;
 			case 1:
-				elem.setR60(parser.makeDouble());
+				elem.setR60(parser.doubleValue());
 				break;
 			case 2:
-				elem.setResistanceUnits( LineUnits.interpretUnitsCode(parser.makeString()) );
+				elem.setResistanceUnits( LineUnits.interpretUnitsCode(parser.stringValue()) );
 				break;
 			case 3:
-				elem.setGmr60(parser.makeDouble());
+				elem.setGmr60(parser.doubleValue());
 				break;
 			case 4:
-				elem.setGmrUnits( LineUnits.interpretUnitsCode(parser.makeString()) );
+				elem.setGmrUnits( LineUnits.interpretUnitsCode(parser.stringValue()) );
 				break;
 			case 5:
-				elem.setRadius(parser.makeDouble());
+				elem.setRadius(parser.doubleValue());
 				break;
 			case 6:
-				elem.setRadiusUnits( LineUnits.interpretUnitsCode(parser.makeString()) );
+				elem.setRadiusUnits( LineUnits.interpretUnitsCode(parser.stringValue()) );
 				break;
 			case 7:
-				elem.setNormAmps(parser.makeDouble());
+				elem.setNormAmps(parser.doubleValue());
 				break;
 			case 8:
-				elem.setEmergAmps(parser.makeDouble());
+				elem.setEmergAmps(parser.doubleValue());
 				break;
 			case 9:
-				elem.setRadius(parser.makeDouble() / 2.0);
+				elem.setRadius(parser.doubleValue() / 2.0);
 				break;
 			default:
 				super.classEdit(activeObj, paramPointer - numConductorClassProps);

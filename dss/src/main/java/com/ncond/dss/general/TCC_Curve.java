@@ -83,7 +83,7 @@ public class TCC_Curve extends DSSClass {
 
 		int paramPointer = -1;
 		String paramName = parser.getNextParam();
-		String param = parser.makeString();
+		String param = parser.stringValue();
 
 		while (param.length() > 0) {
 			if (paramName.length() == 0) {
@@ -101,7 +101,7 @@ public class TCC_Curve extends DSSClass {
 						getClassName() + "." + elem.getName() + "\"", 420);
 				break;
 			case 0:
-				elem.setNpts(parser.makeInteger());
+				elem.setNpts(parser.integerValue());
 				break;
 			case 1:
 				Util.interpretDblArray(param, elem.getNpts(), elem.getCValues());
@@ -129,7 +129,7 @@ public class TCC_Curve extends DSSClass {
 			}
 
 			paramName = parser.getNextParam();
-			param = parser.makeString();
+			param = parser.stringValue();
 		}
 
 		return 0;

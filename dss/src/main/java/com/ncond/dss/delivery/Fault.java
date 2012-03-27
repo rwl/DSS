@@ -132,7 +132,7 @@ public class Fault extends PDClass {
 
 		int paramPointer = -1;
 		String paramName = parser.getNextParam();
-		String param = parser.makeString();
+		String param = parser.stringValue();
 
 		while (param.length() > 0) {
 			if (paramName.length() == 0) {
@@ -159,7 +159,7 @@ public class Fault extends PDClass {
 				//elem.setNumPhases(parser.makeInteger());  // see below
 				break;
 			case 3:
-				elem.setG(parser.makeDouble());
+				elem.setG(parser.doubleValue());
 				if (elem.getG() != 0.0) {
 					elem.setG(1.0 / elem.getG());
 				} else {
@@ -167,19 +167,19 @@ public class Fault extends PDClass {
 				}
 				break;
 			case 4:
-				elem.setStdDev(parser.makeDouble() * 0.01);
+				elem.setStdDev(parser.doubleValue() * 0.01);
 				break;
 			case 5:
 				doGmatrix();
 				break;
 			case 6:
-				elem.setOnTime(parser.makeDouble());
+				elem.setOnTime(parser.doubleValue());
 				break;
 			case 7:
 				elem.setTemporary(Util.interpretYesNo(param));
 				break;
 			case 8:
-				elem.setMinAmps(parser.makeDouble());
+				elem.setMinAmps(parser.doubleValue());
 				break;
 			default:
 				// inherited
@@ -197,8 +197,8 @@ public class Fault extends PDClass {
 					elem.setShunt(false);
 				break;
 			case 2:
-				if (elem.getNumPhases() != parser.makeInteger()) {
-					elem.setNumPhases(parser.makeInteger());
+				if (elem.getNumPhases() != parser.integerValue()) {
+					elem.setNumPhases(parser.integerValue());
 					elem.setNumConds(elem.getNumPhases());  // force reallocation of terminal info
 					DSS.activeCircuit.setBusNameRedefined(true);  // set global flag to signal circuit to rebuild bus defs
 				}
@@ -225,7 +225,7 @@ public class Fault extends PDClass {
 			}
 
 			paramName = parser.getNextParam();
-			param = parser.makeString();
+			param = parser.stringValue();
 		}
 
 		elem.recalcElementData();
