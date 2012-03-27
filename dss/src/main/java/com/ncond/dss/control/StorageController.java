@@ -420,7 +420,7 @@ public class StorageController extends ControlClass {
 			elem.setKWThreshold(other.getKWThreshold());
 			elem.setPctkWBand(other.getPctkWBand());
 			elem.setPFTarget(other.getPFTarget());
-			elem.setPFBand(other.getPFBand());
+			elem.PFBand = other.PFBand;
 			elem.setHalfPFBand(other.getHalfPFBand());
 
 			elem.getStorageNameList().clear();

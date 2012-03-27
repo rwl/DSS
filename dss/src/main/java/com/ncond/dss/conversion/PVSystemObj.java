@@ -134,7 +134,7 @@ public class PVSystemObj extends PCElement {
 
 	private int FClass;
 	private PVSystemModel voltageModel;  // variation with voltage
-	private double PFNominal;
+	protected double PFNominal;
 
 	private double[] registers = new double[PVSystem.NumPVSystemRegisters];
 	private double[] derivatives = new double[PVSystem.NumPVSystemRegisters];

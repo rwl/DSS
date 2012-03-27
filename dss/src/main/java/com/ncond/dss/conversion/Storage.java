@@ -404,7 +404,7 @@ public class Storage extends PCClass {
 					as.setKWOut(parser.makeDouble());
 					break;
 				case PF:
-					as.setPowerFactor(parser.makeDouble());
+					as.PFNominal = parser.makeDouble();
 					break;
 				case MODEL:
 					as.setVoltageModel(parser.makeInteger());
@@ -610,7 +610,7 @@ public class Storage extends PCClass {
 			as.setKWOut(otherStorageObj.getKWOut());
 			as.setKVArOut(otherStorageObj.getKVArOut());
 			as.setPNominalPerPhase(otherStorageObj.getPNominalPerPhase());
-			as.setPowerFactor(otherStorageObj.getPowerFactor());
+			as.PFNominal = otherStorageObj.PFNominal;
 			as.setQNominalPerPhase(otherStorageObj.getQNominalPerPhase());
 			as.setConnection(otherStorageObj.getConnection());
 			as.setYearlyShape(otherStorageObj.getYearlyShape());

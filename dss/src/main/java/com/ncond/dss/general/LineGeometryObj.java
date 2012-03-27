@@ -41,7 +41,7 @@ public class LineGeometryObj extends DSSObject {
 	private boolean dataChanged;
 	private boolean reduce;
 	private int activeCondIdx;
-	private String spacingType;
+	protected String spacingType;
 
 	private LineConstants lineData;
 
@@ -424,7 +424,7 @@ public class LineGeometryObj extends DSSObject {
 		ConductorChoice newPhaseChoice;
 
 		nConds = spc.getNWires();  // allocates
-		setNPhases(spc.getNPhases());
+		nPhases = spc.getNPhases();
 		spacingType = spc.getName();
 		if (nConds > nPhases) reduce = true;
 

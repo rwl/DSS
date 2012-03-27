@@ -92,8 +92,8 @@ public class LineConstants {
 		Zmatrix = new CMatrix(numConds);
 		YcMatrix = new CMatrix(numConds);
 
-		setFrequency(-1.0);  // not computed
-		setRhoEarth(100.0);  // default value
+		frequency = -1.0;  // not computed
+		rhoEarth = 100.0;  // default value
 		rhoChanged= true;
 
 		Zreduced = null;

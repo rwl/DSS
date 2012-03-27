@@ -67,7 +67,7 @@ public class FeederObj extends PCElement {
 			rootElement = (CktElement) branchList.getFirst();
 
 			setNumPhases( rootElement.getNumPhases() );  // take care of allocating terminal stuff
-			setNumConds( rootElement.getNumConds() );
+			nConds = rootElement.getNumConds();
 			setNumTerms(1);
 			YOrder = nTerms * nConds;
 

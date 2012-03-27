@@ -361,7 +361,7 @@ public class PVSystem extends PCClass {
 				case PF:
 					elem.setPFSpecified(true);
 					elem.setKVArSpecified(false);
-					elem.setPowerFactor(parser.makeDouble());
+					elem.PFNominal = parser.makeDouble();
 					break;
 				case MODEL:
 					elem.setVoltageModel(PVSystemModel.values()[parser.makeInteger() - 1]);
@@ -536,7 +536,7 @@ public class PVSystem extends PCClass {
 			elem.setKWOut(other.getKWOut());
 			elem.setKVArOut(other.getKVArOut());
 			elem.setPNominalPerPhase(other.getPNominalPerPhase());
-			elem.setPowerFactor(other.getPowerFactor());
+			elem.PFNominal = other.PFNominal;
 			elem.setQNominalPerPhase(other.getQNominalPerPhase());
 			elem.setConnection(other.getConnection());
 			elem.setYearlyShape(other.getYearlyShape());

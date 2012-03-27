@@ -34,8 +34,8 @@ public class LoadObj extends PCElement {
 	/** For all types of allocation */
 	private double allocationFactor;
 	/** For connected kVA specification */
-	private double kVAAllocationFactor;
-	private double connectedkVA;
+	protected double kVAAllocationFactor;
+	protected double connectedkVA;
 	private double kWh;
 	private double kWhDays;
 	/** For kWh billed spec */
@@ -132,7 +132,7 @@ public class LoadObj extends PCElement {
 		setName(sourceName.toLowerCase());
 		objType = parClass.getClassType();
 
-		setNumPhases(3);
+		nPhases = 3;
 		nConds = 4;  // defaults to wye so it has a 4th conductor
 		YOrder = 0;  // to trigger an initial allocation
 		setNumTerms(1);  // forces allocations
@@ -1289,10 +1289,10 @@ public class LoadObj extends PCElement {
 		allocationFactor = value;
 		switch (loadSpecType) {
 		case XFKVA_ALLOCATIONFACTOR_PF:
-			setKVAAllocationFactor(value);
+			kVAAllocationFactor = value;
 			break;
 		case KWH_KWHDAYS24_CFACTOR_PF:
-			setCFactor(value);
+			CFactor = value;
 			break;
 		}
 		computeAllocatedLoad();  // update kWBase

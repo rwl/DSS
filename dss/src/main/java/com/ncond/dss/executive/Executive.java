@@ -45,8 +45,8 @@ public class Executive {
 		ExecCommands.lastCmdLine = "";
 		ExecCommands.redirFile = "";
 
-		setRecorderOn(false);
-		this.recorderFile = "";
+		recorderOn = false;
+		recorderFile = "";
 
 		//DSSGlobals.getInstance().readDSS_Registry();
 

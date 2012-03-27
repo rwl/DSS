@@ -471,9 +471,9 @@ public class CapacitorObj extends PDElement {
 		double w, freqMultiple;
 		boolean hasZl;
 
-		setYPrimFreq(DSS.activeCircuit.getSolution().getFrequency());
-		freqMultiple = getYPrimFreq() / getBaseFrequency();
-		w = DSS.TWO_PI * getYPrimFreq();
+		YPrimFreq = DSS.activeCircuit.getSolution().getFrequency();
+		freqMultiple = YPrimFreq / getBaseFrequency();
+		w = DSS.TWO_PI * YPrimFreq;
 
 		hasZl = (R[iStep] + Math.abs(XL[iStep])) > 0.0;
 

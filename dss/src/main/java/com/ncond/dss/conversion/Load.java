@@ -541,13 +541,13 @@ public class Load extends PCClass {
 			//elem.setSpectrumObj(other.getSpectrumObj());
 			elem.setLoadClass(other.getLoadClass());
 			elem.setNumCustomers(other.getNumCustomers());
-			elem.setLoadModel(other.getLoadModel());
+			elem.loadModel = other.loadModel;
 			elem.setFixed(other.isFixed());
 			elem.setExemptFromLDCurve(other.isExemptFromLDCurve());
-			elem.setKVAAllocationFactor(other.getKVAAllocationFactor());
-			elem.setConnectedKVA(other.getConnectedkVA());
-			elem.setCVRwattFactor(other.getCVRwattFactor());
-			elem.setCVRvarFactor(other.getCVRvarFactor());
+			elem.kVAAllocationFactor = other.kVAAllocationFactor;
+			elem.connectedkVA = other.connectedkVA;
+			elem.CVRwattFactor = other.CVRwattFactor;
+			elem.CVRvarFactor = other.CVRvarFactor;
 			elem.setShapeIsActual(other.shapeIsActual());
 
 			elem.setZIPVSize(other.getNZIPV());

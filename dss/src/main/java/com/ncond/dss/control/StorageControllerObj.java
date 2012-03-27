@@ -42,7 +42,7 @@ public class StorageControllerObj extends ControlElem {
 	private double kWTarget, kWThreshold, pctkWBand, halfKWBand, totalWeight;
 	private double PFTarget;  // range on this is 0..2 where 1..2 is leading
 	private double halfPFBand;
-	private double PFBand;
+	protected double PFBand;
 	private double kWNeeded;
 	private int fleetSize;
 	private StorageState fleetState;
@@ -115,7 +115,7 @@ public class StorageControllerObj extends ControlElem {
 		totalWeight = 1.0;
 		halfKWBand = pctkWBand / 200.0 * kWTarget;
 		PFTarget = 0.96;
-		setPFBand(0.04);
+		PFBand = 0.04;
 		halfPFBand = PFBand / 2.0;
 		kWNeeded = 0.0;
 

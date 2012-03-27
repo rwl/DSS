@@ -256,8 +256,8 @@ public class LineGeometry extends DSSClass {
 			/* Set defaults */
 			switch (paramPointer) {
 			case 1:
-				if (elem.getNPhases() > elem.nConds)
-					elem.setNPhases(elem.nConds);
+				if (elem.nPhases > elem.nConds)
+					elem.nPhases = elem.nConds;
 				break;
 			case 2:
 				if (elem.getActiveCondIdx() < 0 || elem.getActiveCondIdx() >= elem.nConds)
@@ -329,8 +329,8 @@ public class LineGeometry extends DSSClass {
 
 			elem.setPhaseChoice(other.getPhaseChoice());
 			elem.setNConds(other.getNWires());  // allocates
-			elem.setNPhases(other.getNPhases());
-			elem.setSpacingType(other.getSpacingType());
+			elem.nPhases = other.getNPhases();
+			elem.spacingType = other.getSpacingType();
 			for (i = 0; i < elem.nConds; i++)
 				elem.setCondName(i, other.getCondName(i));
 			for (i = 0; i < elem.nConds; i++)
