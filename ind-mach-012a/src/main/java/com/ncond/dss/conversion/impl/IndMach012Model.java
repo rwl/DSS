@@ -323,7 +323,7 @@ public class IndMach012Model extends GenUserModelImpl {
 
 		int paramPointer = -1;
 		String paramName = modelParser.getNextParam();
-		String param = modelParser.makeString();
+		String param = modelParser.stringValue();
 		while (param.length() > 0) {
 			if (paramName.length() == 0) {
 				if (Util.compareTextShortest(param, "help") == 0) {
@@ -337,28 +337,28 @@ public class IndMach012Model extends GenUserModelImpl {
 
 			switch (paramPointer) {
 			case 0:
-				puRs = modelParser.makeDouble();
+				puRs = modelParser.doubleValue();
 				break;
 			case 1:
-				puXs = modelParser.makeDouble();
+				puXs = modelParser.doubleValue();
 				break;
 			case 2:
-				puRr = modelParser.makeDouble();
+				puRr = modelParser.doubleValue();
 				break;
 			case 3:
-				puXr = modelParser.makeDouble();
+				puXr = modelParser.doubleValue();
 				break;
 			case 4:
-				puXm = modelParser.makeDouble();
+				puXm = modelParser.doubleValue();
 				break;
 			case 5:
-				setSlip(modelParser.makeDouble());
+				setSlip(modelParser.doubleValue());
 				break;
 			case 6:
-				maxSlip = modelParser.makeDouble();
+				maxSlip = modelParser.doubleValue();
 				break;
 			case 7:
-				interpretOption(modelParser.makeString());
+				interpretOption(modelParser.stringValue());
 				break;
 			case 8:
 				doHelpCmd();     // whatever the option, do help
@@ -366,7 +366,7 @@ public class IndMach012Model extends GenUserModelImpl {
 			}
 
 			paramName = modelParser.getNextParam();
-			param = modelParser.makeString();
+			param = modelParser.stringValue();
 		}
 
 		reCalcElementData();
