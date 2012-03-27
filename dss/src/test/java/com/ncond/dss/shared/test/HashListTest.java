@@ -38,6 +38,14 @@ public class HashListTest extends TestCase {
 		idx = hl.find("June");
 
 		assertEquals(5, idx);
+
+		idx = hl.find("foo");
+
+		assertEquals(-1, idx);
+
+		idx = hl.find("");
+
+		assertEquals(-1, idx);
 	}
 
 	public void testFindNext() {
