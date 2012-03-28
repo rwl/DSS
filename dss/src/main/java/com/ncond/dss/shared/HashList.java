@@ -191,7 +191,12 @@ public class HashList {
 		if (s.length() > 0) {
 			test1 = s.toLowerCase();
 			for (int i = 0; i < numElements; i++) {
-				test2 = stringArray[i].substring(0, test1.length());
+				if (test1.length() < stringArray[i].length()) {
+					test2 = stringArray[i].substring(0, test1.length());
+				} else {
+					test2 = stringArray[i];
+				}
+
 				if (test1.equalsIgnoreCase(test2)) {
 					idx = i;
 					break;

@@ -149,7 +149,9 @@ public class Executive {
 	}
 
 	public void writeToRecorderFile(String s) {
-		new PrintWriter(recorderFileWriter).println(s);
+		PrintWriter pw = new PrintWriter(recorderFileWriter);
+		pw.println(s);
+		pw.close();
 	}
 
 }

@@ -64,8 +64,13 @@ public class HashListTest extends TestCase {
 		int idx;
 
 		idx = hl.findAbbrev("Dec");
-
 		assertEquals(11, idx);
+
+		idx = hl.findAbbrev("foo");
+		assertEquals(-1, idx);
+
+		idx = hl.findAbbrev("foobarbazfoobarbaz");
+		assertEquals(-1, idx);
 	}
 
 	public void testGet() {
