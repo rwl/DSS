@@ -1,8 +1,6 @@
 package com.ncond.dss.executive.test;
 
 import com.ncond.dss.common.DSS;
-import com.ncond.dss.executive.ExecCommands;
-import com.ncond.dss.executive.ExecOptions;
 import com.ncond.dss.executive.Executive;
 import com.ncond.dss.general.LoadShapeObj;
 
@@ -10,7 +8,7 @@ import junit.framework.TestCase;
 
 public class ExecutiveTest extends TestCase {
 
-	public void testGetInstance() {
+	/*public void testGetInstance() {
 		Executive exec = Executive.getInstance();
 
 		assertNotNull(ExecCommands.commandList);
@@ -27,7 +25,7 @@ public class ExecutiveTest extends TestCase {
 		assertEquals("", ExecCommands.redirFile);
 
 		assertFalse(exec.isRecorderOn());
-	}
+	}*/
 
 	public void testCreateDefaultDSSItems() {
 		int n;

@@ -556,7 +556,7 @@ public class ExecCommands {
 				break;
 			default:
 				if (DSS.activeCircuit == null)
-					DSS.doSimpleMsg("You must create a new circuit object first: \"new circuit.mycktname\" to execute this command.", 301);
+					DSS.doSimpleMsg("You must create a circuit to execute this command: " + cmdLine, 301);
 				break;
 			}
 
@@ -572,11 +572,11 @@ public class ExecCommands {
 				} else {
 					ExecHelper.parseObjName(paramName, objName, propName);
 					if (objName[0].length() > 0)
-						DSS.setObject(objName[0].toString());  // set active element
+						DSS.setObject(objName[0]);  // set active element
 					if (DSS.activeDSSObject != null) {
 						// rebuild command line and pass to editor
 						// use quotes to ensure first parameter is interpreted ok after rebuild
-						parser.setCommand(propName[0].toString() + "=\"" + param + "\" " + parser.getRemainder());
+						parser.setCommand(propName[0] + "=\"" + param + "\" " + parser.getRemainder());
 						DSS.activeDSSClass.edit();
 					}
 				}

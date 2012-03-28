@@ -478,8 +478,7 @@ public class Parser {
 		}
 
 		// prepare for next trip
-		tokenBuffer = parseBuffer.substring(parseBufferPos[0],
-				parseBuffer.length() + parseBufferPos[0]);
+		tokenBuffer = parseBuffer.substring(parseBufferPos[0]);
 
 		return rpnCalc.getX();
 	}
@@ -491,9 +490,9 @@ public class Parser {
 		/* First try to make a valid number. If that fails, check for RPN command */
 		try {
 			number = Double.parseDouble(tokenBuffer);
-			error = 1;
-		} catch (NumberFormatException e) {
 			error = 0;
+		} catch (NumberFormatException e) {
+			error = 1;  // index of first invalid character
 		}
 
 		if (error == 0) {

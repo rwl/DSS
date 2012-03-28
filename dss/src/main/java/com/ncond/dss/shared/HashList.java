@@ -116,6 +116,10 @@ public class HashList {
 		stringArray = Util.resizeArray(stringArray, numElementsAllocated);
 	}
 
+	/**
+	 * @param s
+	 * @return zero based index of new entry
+	 */
 	public int add(String s) {
 		int hashValue;
 		String ss;
@@ -138,7 +142,7 @@ public class HashList {
 
 		listArray[hashValue].idx[listArray[hashValue].nElem - 1] = numElements - 1;
 
-		return numElements;
+		return numElements - 1;
 	}
 
 	/**

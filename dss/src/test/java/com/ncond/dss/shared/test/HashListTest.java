@@ -24,6 +24,11 @@ public class HashListTest extends TestCase {
 		super.setUp();
 	}
 
+	public void testAdd() {
+		int idx = hl.add("January");
+		assertEquals(24, idx);
+	}
+
 	public void testListSize() {
 		assertEquals(24, hl.listSize());
 	}

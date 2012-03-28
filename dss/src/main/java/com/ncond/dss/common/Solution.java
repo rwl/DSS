@@ -60,8 +60,6 @@ public class Solution extends DSSClass {
 	@Override
 	public int edit() {
 		activeSolutionObj = DSS.activeCircuit.getSolution();
-
-		// This is all we do here now...
 		activeSolutionObj.solve();
 		return 0;
 	}

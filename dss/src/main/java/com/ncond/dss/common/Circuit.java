@@ -361,7 +361,7 @@ public class Circuit extends NamedObject {
 		int ref, nodeRef;
 
 		if (busName.length() == 0) {  // error in busname
-			DSS.doErrorMsg("DSSCircuit.addBus", "BusName for object \"" + activeCktElement.getName() + "\" is null.",
+			DSS.doErrorMsg("DSSCircuit.addBus", "Bus name for object \"" + activeCktElement.getName() + "\" is null.",
 					"Error in definition of object.", 424);
 			for (int i = 0; i < activeCktElement.getNumConds(); i++)
 				nodeBuffer[i] = 0;
@@ -404,10 +404,10 @@ public class Circuit extends NamedObject {
 		return activeCktElement;
 	}
 
-	public void setBusNameRedefined(boolean value) {
-		busNameRedefined = value;
+	public void setBusNameRedefined(boolean redefined) {
+		busNameRedefined = redefined;
 
-		if (value) {
+		if (redefined) {
 			// force rebuilding of system Y if bus def has changed
 			solution.setSystemYChanged(true);
 			// so controls will know buses redefined
@@ -446,7 +446,7 @@ public class Circuit extends NamedObject {
 	}
 
 	public double getLoadMultiplier() {
-		return 0.0;
+		return loadMultiplier;
 	}
 
 	private void saveBusInfo() {
@@ -868,7 +868,7 @@ public class Circuit extends NamedObject {
 				nodeBuffer[i] = i + 1;  // set up buffer with defaults
 
 			// default all other conductors to a ground connection
-			// uf user wants them ungrounded, must be specified explicitly!
+			// if user wants them ungrounded, must be specified explicitly!
 			for (i = np; i < ncond; i++)
 				nodeBuffer[i] = 0;
 
@@ -907,8 +907,9 @@ public class Circuit extends NamedObject {
 	 * Redo all bus lists and node lists.
 	 */
 	public void reProcessBusDefs() {
-		if (logEvents)
-			Util.logThisEvent("Reprocessing bus definitions");
+		CktElement cktElementSave;
+
+		if (logEvents) Util.logThisEvent("Reprocessing bus definitions");
 
 		abortBusProcess = false;
 		saveBusInfo();  // so we don't have to keep re-doing this
@@ -922,7 +923,7 @@ public class Circuit extends NamedObject {
 		numNodes = 0;
 
 		// now redo all enabled circuit elements
-		CktElement cktElementSave = activeCktElement;
+		cktElementSave = activeCktElement;
 		for (int i = 0; i < cktElements.size(); i++) {
 			setActiveCktElement( cktElements.get(i) );
 			if (activeCktElement.isEnabled()) processBusDefs();

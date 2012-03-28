@@ -176,6 +176,7 @@ public class SolutionObj extends DSSObject {
 	 * Main solution dispatch.
 	 */
 	public void solve() {
+		double rate;
 		Circuit ckt = DSS.activeCircuit;
 
 		ckt.setSolved(false);
@@ -186,8 +187,8 @@ public class SolutionObj extends DSSObject {
 		/* Check of some special conditions that must be met before executing solutions */
 
 		if (ckt.getEmergMinVolts() >= ckt.getNormalMinVolts()) {
-			DSS.doSimpleMsg("Error: Emergency Min Voltage Must Be Less Than Normal Min Voltage!" +
-					DSS.CRLF + "Solution Not Executed.", 480);
+			DSS.doSimpleMsg("Emergency min voltage must be less than normal min voltage!" +
+					DSS.CRLF + "Solution not executed.", 480);
 			return;
 		}
 
@@ -203,12 +204,13 @@ public class SolutionObj extends DSSObject {
 
 			switch (year) {
 			case 0:
-				ckt.setDefaultGrowthFactor(1.0);
+				rate = 1.0;
 				break;
 			default:
-				ckt.setDefaultGrowthFactor(Math.pow(ckt.getDefaultGrowthRate(), (year - 1)));
+				rate = Math.pow(ckt.getDefaultGrowthRate(), (year - 1));
 				break;
 			}
+			ckt.setDefaultGrowthFactor(rate);
 
 			/* checkFaultStatus();  ???? needed here?? */
 
@@ -699,10 +701,10 @@ public class SolutionObj extends DSSObject {
 
 	public void snapShotInit() {
 		setGeneratorDispRef();
-		controlIteration   = 0;
+		controlIteration = 0;
 		controlActionsDone = false;
 		mostIterationsDone = 0;
-		loadsNeedUpdating  = true;  // force the loads to update at least once
+		loadsNeedUpdating = true;  // force the loads to update at least once
 	}
 
 	/**

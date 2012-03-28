@@ -346,8 +346,8 @@ abstract public class CktElement extends DSSObject {
 	}
 
 	/**
-	 * Set NodeRef array for fast solution with intrinsics.
-	 * Also allocates VTemp & ITemp.
+	 * Set nodeRef array for fast solution with intrinsics.
+	 * Also allocates Vtemp & Itemp.
 	 */
 	public void setNodeRef(int iTerm, int[] nodeRefArray) {
 		int size, size2;
@@ -356,8 +356,8 @@ abstract public class CktElement extends DSSObject {
 		size = YOrder;
 		size2 = nConds;  // size for one terminal
 		nodeRef = Util.resizeArray(nodeRef, size);  // doesn't do anything if already properly allocated
-		System.arraycopy(nodeRefArray[0], 0, nodeRef[(iTerm - 1) * nConds + 1] - 1, 0, size2);  // FIXME: check zero based indexing
-		System.arraycopy(nodeRefArray[0], 0, terminals[iTerm].getTermNodeRef(0) - 1, 0, size2);  // copy in terminals as well
+		System.arraycopy(nodeRefArray, 0, nodeRef, iTerm * nConds, size2);
+		System.arraycopy(nodeRefArray, 0, terminals[iTerm].termNodeRef, 0, size2);  // copy in terminals as well
 
 		// allocate temp array used to hold voltages and currents for calcs
 		VTerminal = Util.resizeArray(VTerminal, YOrder);

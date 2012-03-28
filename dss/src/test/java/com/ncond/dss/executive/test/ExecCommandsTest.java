@@ -29,15 +29,15 @@ public class ExecCommandsTest extends TestCase {
 		exec.createDefaultDSSItems();
 	}
 
-//	@Override
-//	protected void tearDown() throws Exception {
-//		super.tearDown();
-//		exec.clear();
-//	}
-//
-//	protected void createCircuit() {
-//		exec.setCommand("new circuit.ckt1");
-//	}
+	@Override
+	protected void tearDown() throws Exception {
+		super.tearDown();
+		exec.clear();
+	}
+
+	protected void createCircuit() {
+		exec.setCommand("new circuit.ckt1");
+	}
 
 	protected void process(String cmd) {
 		ExecCommands.processCommand(cmd);
@@ -69,7 +69,25 @@ public class ExecCommandsTest extends TestCase {
 	public void testEdit() {
 		VSourceObj vsource;
 
-		process("new circuit.ckt13");
+		createCircuit();
+		vsource = (VSourceObj) DSSClassDefs.getDSSClass("VSource").find("source");
+
+		process("edit object=VSource.source basekv=220 bus1=b9");
+		assertEquals(220.0, vsource.getKVBase(), delta);
+		assertEquals("b9", vsource.getBus(0));
+
+		process("VSource.source.bus1=b6");
+		assertEquals("b6", vsource.getBus(0));
+
+		DSS.setObject("VSource.source");
+		process("pu=1.1");
+		assertEquals(1.1, vsource.getPerUnit(), delta);
+	}
+
+	public void testMore() {
+		VSourceObj vsource;
+
+		createCircuit();
 
 		vsource = (VSourceObj) DSSClassDefs.getDSSClass("VSource").find("source");
 
@@ -97,11 +115,12 @@ public class ExecCommandsTest extends TestCase {
 		DSSObject obj;
 		CktElement elem;
 
+		createCircuit();
+
 		process("select growthshape.default");
 
 		obj = DSS.activeDSSObject;
 		assertEquals("default", obj.getName());
-
 
 		process("new Line.line1 phases=3 bus1=b1 bus2=b2");
 
@@ -113,6 +132,31 @@ public class ExecCommandsTest extends TestCase {
 		process("select object=Line.line1 terminal=2");
 
 		assertEquals(1, elem.getActiveTerminalIdx());
+	}
+
+	/*public void testSave() {
+		String path;
+		File dir;
+
+		dir = Files.createTempDir();
+		path = dir.getAbsolutePath();
+
+		createCircuit();
+
+		process("save class=meters dir=" + path);
+		assertTrue(new File(dir, "meters.dss").exists());
+
+		process("save class=circuit");
+
+		process("save class=voltages");
+
+		process("save class=VSource");
+	}*/
+
+	public void testSolve() {
+		createCircuit();
+//		process("solve");
+//		assertTrue(DSS.activeCircuit.isSolved());
 	}
 
 	public void testCompile() {

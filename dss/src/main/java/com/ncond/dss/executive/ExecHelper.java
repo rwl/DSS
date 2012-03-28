@@ -139,8 +139,8 @@ public class ExecHelper {
 	 * edit type=xxxx name=xxxx editstring
 	 */
 	public static int doEditCmd() {
-		String[] objType = new String[0];
-		String[] objName = new String[0];
+		String[] objType = new String[1];
+		String[] objName = new String[1];
 		int success = 0;
 
 		getObjClassAndName(objType, objName);
@@ -1022,7 +1022,7 @@ public class ExecHelper {
 				objName[0] = fullName.substring(0, dotpos1);
 				break;
 			default:
-				objName[0] = fullName.substring(0, dotpos1 + dotpos2);
+				objName[0] = fullName.substring(0, dotpos1 + dotpos2 + 1);
 				propName[0] = propName[0].substring(dotpos2 + 1, propName[0].length());
 				break;
 			}

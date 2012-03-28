@@ -369,7 +369,8 @@ public class ExecOptions {
 				DSS.defaultBaseFreq = parser.doubleValue();
 				break;
 			default:
-				DSS.doSimpleMsg("You must create a new circuit object first: \"new circuit.mycktname\" to execute this Set command.", 301);
+				DSS.doSimpleMsg("You must create a circuit to execute this \"set\" command: " +
+						parser.getCommand(), 301);
 				success = false;  // indicate that we could not process all set command
 				break;
 			}
