@@ -23,14 +23,25 @@ import com.ncond.dss.general.LoadShapeObj;
 import com.ncond.dss.general.SpectrumObj;
 import com.ncond.dss.parser.Parser;
 import com.ncond.dss.shared.CMatrix;
-import com.ncond.dss.shared.ComplexUtil;
-import com.ncond.dss.shared.MathUtil;
+
+import static com.ncond.dss.shared.MathUtil.quasiLognormal;
+import static com.ncond.dss.shared.MathUtil.gauss;
+
+import static com.ncond.dss.shared.ComplexUtil.divide;
+import static com.ncond.dss.shared.ComplexUtil.invert;
 
 import static com.ncond.dss.common.Util.rotatePhasorDeg;
 import static com.ncond.dss.common.Util.rotatePhasorRad;
 import static com.ncond.dss.common.Util.getLoadModel;
 import static com.ncond.dss.common.Util.resizeArray;
 import static com.ncond.dss.common.Util.getSolutionModeID;
+
+import static java.lang.Math.abs;
+import static java.lang.Math.pow;
+import static java.lang.Math.random;
+import static java.lang.Math.sqrt;
+
+import static java.lang.String.format;
 
 
 /**
@@ -260,9 +271,9 @@ public class StorageObj extends PCElement {
 		setPropertyValue(0, "3");         // "phases";
 		setPropertyValue(1, getBus(0));   // "bus1";
 
-		setPropertyValue(Storage.KV, String.format("%g", kVStorageBase));
-		setPropertyValue(Storage.KW, String.format("%g", kWOut));
-		setPropertyValue(Storage.PF, String.format("%g", PFNominal));
+		setPropertyValue(Storage.KV, format("%g", kVStorageBase));
+		setPropertyValue(Storage.KW, format("%g", kWOut));
+		setPropertyValue(Storage.PF, format("%g", PFNominal));
 		setPropertyValue(Storage.MODEL, "1");
 		setPropertyValue(Storage.YEARLY, "");
 		setPropertyValue(Storage.DAILY, "");
@@ -270,10 +281,10 @@ public class StorageObj extends PCElement {
 		setPropertyValue(Storage.DISP_MODE, "Default");
 		setPropertyValue(Storage.IDLE_KVAR, "0");
 		setPropertyValue(Storage.CONNECTION, "wye");
-		setPropertyValue(Storage.KVAR, String.format("%g", getPresentKVAr()));
+		setPropertyValue(Storage.KVAR, format("%g", getPresentKVAr()));
 
-		setPropertyValue(Storage.PCTR, String.format("%g", pctR));
-		setPropertyValue(Storage.PCTX, String.format("%g", pctX));
+		setPropertyValue(Storage.PCTR, format("%g", pctR));
+		setPropertyValue(Storage.PCTX, format("%g", pctX));
 
 		setPropertyValue(Storage.IDLE_KW, "1");  // percent
 		setPropertyValue(Storage.CLASS, "1");    // "class"
@@ -287,13 +298,13 @@ public class StorageObj extends PCElement {
 		setPropertyValue(Storage.VMIN_PU, "0.90");
 		setPropertyValue(Storage.VMAX_PU, "1.10");
 		setPropertyValue(Storage.STATE, "IDLING");
-		setPropertyValue(Storage.KVA, String.format("%g", kVARating));
-		setPropertyValue(Storage.KW_RATED, String.format("%g", kWRating));
-		setPropertyValue(Storage.KWH_RATED, String.format("%g", kWhRating));
-		setPropertyValue(Storage.KWH_STORED, String.format("%g", kWhStored));
-		setPropertyValue(Storage.PCT_STORED, String.format("%g", kWhStored / kWhRating * 100.0));
-		setPropertyValue(Storage.PCT_RESERVE, String.format("%g", pctReserve));
-		setPropertyValue(Storage.CHARGE_TIME, String.format("%g", chargeTime));
+		setPropertyValue(Storage.KVA, format("%g", kVARating));
+		setPropertyValue(Storage.KW_RATED, format("%g", kWRating));
+		setPropertyValue(Storage.KWH_RATED, format("%g", kWhRating));
+		setPropertyValue(Storage.KWH_STORED, format("%g", kWhStored));
+		setPropertyValue(Storage.PCT_STORED, format("%g", kWhStored / kWhRating * 100.0));
+		setPropertyValue(Storage.PCT_RESERVE, format("%g", pctReserve));
+		setPropertyValue(Storage.CHARGE_TIME, format("%g", chargeTime));
 
 		setPropertyValue(Storage.USER_MODEL, "");  // UserModel
 		setPropertyValue(Storage.USER_DATA, "");  // UserData
@@ -322,13 +333,13 @@ public class StorageObj extends PCElement {
 
 		switch (index) {
 		case Storage.KV:
-			return String.format("%.6g", kVStorageBase);
+			return format("%.6g", kVStorageBase);
 		case Storage.KW:
-			return String.format("%.6g", kWOut);
+			return format("%.6g", kWOut);
 		case Storage.PF:
-			return String.format("%.6g", PFNominal);
+			return format("%.6g", PFNominal);
 		case Storage.MODEL:
-			return String.format("%d", voltageModel);
+			return format("%d", voltageModel);
 		case Storage.YEARLY:
 			return yearlyShape;
 		case Storage.DAILY:
@@ -338,54 +349,54 @@ public class StorageObj extends PCElement {
 		case Storage.DISP_MODE:
 			return returnDispMode(dispatchMode);
 		case Storage.IDLE_KVAR:
-			return String.format("%.6g", pctIdleKVAr);
+			return format("%.6g", pctIdleKVAr);
 		//case Storage.propCONNECTION:;
 		case Storage.KVAR:
-			return String.format("%.6g", kVArOut);
+			return format("%.6g", kVArOut);
 		case Storage.PCTR:
-			return String.format("%.6g", pctR);
+			return format("%.6g", pctR);
 		case Storage.PCTX:
-			return String.format("%.6g", pctX);
+			return format("%.6g", pctX);
 		case Storage.IDLE_KW:
-			return String.format("%.6g", pctIdleKW);
+			return format("%.6g", pctIdleKW);
 		//case Storage.propCLASS      = 17;
 		case Storage.DISP_OUT_TRIG:
-			return String.format("%.6g", dischargeTrigger);
+			return format("%.6g", dischargeTrigger);
 		case Storage.DISP_IN_TRIG:
-			return String.format("%.6g", chargeTrigger);
+			return format("%.6g", chargeTrigger);
 		case Storage.CHARGE_EFF:
-			return String.format("%.6g", pctChargeEff);
+			return format("%.6g", pctChargeEff);
 		case Storage.DISCHARGE_EFF:
-			return String.format("%.6g", pctDischargeEff);
+			return format("%.6g", pctDischargeEff);
 		case Storage.PCT_KW_OUT:
-			return String.format("%.6g", pctKWout);
+			return format("%.6g", pctKWout);
 		case Storage.VMIN_PU:
-			return String.format("%.6g", VMinPU);
+			return format("%.6g", VMinPU);
 		case Storage.VMAX_PU:
-			return String.format("%.6g", VMaxPU);
+			return format("%.6g", VMaxPU);
 		case Storage.STATE:
 			return decodeState();
 		case Storage.KVA:
-			return String.format("%.6g", kVARating);
+			return format("%.6g", kVARating);
 		case Storage.KW_RATED:
-			return String.format("%.6g", kWRating);
+			return format("%.6g", kWRating);
 		case Storage.KWH_RATED:
-			return String.format("%.6g", kWhRating);
+			return format("%.6g", kWhRating);
 		case Storage.KWH_STORED:
-			return String.format("%.6g", kWhStored);
+			return format("%.6g", kWhStored);
 		case Storage.PCT_RESERVE:
-			return String.format("%.6g", pctReserve);
+			return format("%.6g", pctReserve);
 		case Storage.USER_MODEL:
 			return userModel.getName();
 		case Storage.USER_DATA:
 			return "(" + super.getPropertyValue(index) + ")";
 		//case Storage.propDEBUGTRACE = 33;
 		case Storage.PCT_KW_IN:
-			return String.format("%.6g", pctKWIn);
+			return format("%.6g", pctKWIn);
 		case Storage.PCT_STORED:
-			return String.format("%.6g", kWhStored / kWhRating * 100.0);
+			return format("%.6g", kWhStored / kWhRating * 100.0);
 		case Storage.CHARGE_TIME:
-			return String.format("%.6g", chargeTime);
+			return format("%.6g", chargeTime);
 		default:  // take the generic handler
 			return super.getPropertyValue(index);
 		}
@@ -400,13 +411,13 @@ public class StorageObj extends PCElement {
 			randomMult = 1.0;
 			break;
 		case GAUSSIAN:
-			randomMult = MathUtil.gauss(yearlyShapeObj.getMean(), yearlyShapeObj.getStdDev());
+			randomMult = gauss(yearlyShapeObj.getMean(), yearlyShapeObj.getStdDev());
 			break;
 		case UNIFORM:
-			randomMult = Math.random();  // number between 0 and 1.0
+			randomMult = random();  // number between 0 and 1.0
 			break;
 		case LOGNORMAL:
-			randomMult = MathUtil.quasiLognormal(yearlyShapeObj.getMean());
+			randomMult = quasiLognormal(yearlyShapeObj.getMean());
 			break;
 		}
 	}
@@ -562,10 +573,10 @@ public class StorageObj extends PCElement {
 				} else {
 					QNominalPerPhase = 0.0;
 				}
-				Yeq = ComplexUtil.divide(new Complex(
+				Yeq = divide(new Complex(
 					PNominalPerPhase,
 					-QNominalPerPhase
-				), Math.pow(VBase, 2));  // VBase must be L-N for 3-phase
+				), pow(VBase, 2));  // VBase must be L-N for 3-phase
 				Yeq95  = Yeq;
 				Yeq105 = Yeq;
 			} else {
@@ -578,19 +589,19 @@ public class StorageObj extends PCElement {
 					break;
 				default:
 					/* Yeq no longer used for anything other than this calculation of Yeq95, Yeq105 */
-					Yeq = ComplexUtil.divide(new Complex(
+					Yeq = divide(new Complex(
 						PNominalPerPhase,
 						-QNominalPerPhase
-					), Math.pow(VBase, 2));  // VBase must be L-N for 3-phase
+					), pow(VBase, 2));  // VBase must be L-N for 3-phase
 
 					if (VMinPU != 0.0) {
-						Yeq95 = ComplexUtil.divide(Yeq, Math.pow(VMinPU, 2));   // at 95% voltage
+						Yeq95 = divide(Yeq, pow(VMinPU, 2));   // at 95% voltage
 					} else {
 						Yeq95 = Yeq;  // always a constant Z model
 					}
 
 					if (VMaxPU != 0.0) {
-						Yeq105 = ComplexUtil.divide(Yeq, Math.pow(VMaxPU, 2));  // at 105% voltage
+						Yeq105 = divide(Yeq, pow(VMaxPU, 2));  // at 105% voltage
 					} else {
 						Yeq105 = Yeq;
 					}
@@ -615,8 +626,8 @@ public class StorageObj extends PCElement {
 		kVArBase = 1000.0 * kVArOut / nPhases;  // remember this for follow mode
 
 		// values in ohms for Thevenin equivalents
-		RThev = pctR * 0.01 * Math.pow(getPresentKV(), 2) / kVARating * 1000.0;
-		XThev = pctX * 0.01 * Math.pow(getPresentKV(), 2) / kVARating * 1000.0;
+		RThev = pctR * 0.01 * pow(getPresentKV(), 2) / kVARating * 1000.0;
+		XThev = pctX * 0.01 * pow(getPresentKV(), 2) / kVARating * 1000.0;
 
 		// efficiencies
 		chargeEff = pctChargeEff * 0.01;
@@ -625,9 +636,9 @@ public class StorageObj extends PCElement {
 		YeqIdling = new Complex(
 			pctIdleKW,
 			pctIdleKVAr
-		).multiply(kWRating * 10.0 / Math.pow(VBase, 2) / nPhases);  // 10.0 = 1000/100 = kW->W/pct
+		).multiply(kWRating * 10.0 / pow(VBase, 2) / nPhases);  // 10.0 = 1000/100 = kW->W/pct
 		YeqDischarge = new Complex(
-			kWRating * 1000.0 / Math.pow(VBase, 2) / nPhases,
+			kWRating * 1000.0 / pow(VBase, 2) / nPhases,
 			0.0
 		);
 
@@ -689,7 +700,7 @@ public class StorageObj extends PCElement {
 			}
 
 			if (connection == Connection.DELTA)
-				Y = ComplexUtil.divide(Y, 3.0);  // convert to delta impedance
+				Y = divide(Y, 3.0);  // convert to delta impedance
 
 			Y = new Complex(Y.getReal(), Y.getImaginary() / freqMultiplier);
 			Yij = Y.negate();
@@ -741,7 +752,7 @@ public class StorageObj extends PCElement {
 				break;
 
 			case DELTA:
-				Y = ComplexUtil.divide(Y, 3.0);  // convert to delta impedance
+				Y = divide(Y, 3.0);  // convert to delta impedance
 				Yij = Y.negate();
 				for (i = 0; i < nPhases; i++) {
 					j = i + 1;
@@ -828,7 +839,7 @@ public class StorageObj extends PCElement {
 				// check to see if it is time to turn the charge cycle on If it is not already on
 				if (!(getState() == StorageState.CHARGING)) {
 					if (chargeTime > 0.0) {
-						if (Math.abs(normalizeToTOD(sol.getIntHour(), sol.getDynaVars().t) - chargeTime) < sol.getDynaVars().h / 3600.0)
+						if (abs(normalizeToTOD(sol.getIntHour(), sol.getDynaVars().t) - chargeTime) < sol.getDynaVars().h / 3600.0)
 							setStorageState(StorageState.CHARGING);
 					}
 				}
@@ -917,7 +928,7 @@ public class StorageObj extends PCElement {
 					pw.print(getVTerminal(i).abs() + ", ");
 				for (i = 0; i < numVariables(); i++)
 					pw.printf("%-.g, ", getVariable(i));
-				//pw.print(VThevMag + ", " + storeVARs.theta * 180.0 / Math.PI);
+				//pw.print(VThevMag + ", " + storeVARs.theta * 180.0 / PI);
 				pw.println();
 				pw.close();
 				fw.close();
@@ -972,9 +983,9 @@ public class StorageObj extends PCElement {
 				case DELTA:
 					Vmag = Vmag / DSS.SQRT3;  // L-N magnitude
 					if (Vmag <= VBase95) {
-						curr = ComplexUtil.divide(Yeq95, 3.0).multiply(V);   // below 95% use an impedance model
+						curr = divide(Yeq95, 3.0).multiply(V);   // below 95% use an impedance model
 					} else if (Vmag > VBase105) {
-						curr = ComplexUtil.divide(Yeq105, 3.0).multiply(V);  // above 105% use an impedance model
+						curr = divide(Yeq105, 3.0).multiply(V);  // above 105% use an impedance model
 					} else {
 						curr = new Complex(
 							PNominalPerPhase,
@@ -1005,7 +1016,7 @@ public class StorageObj extends PCElement {
 		if (connection == Connection.WYE) {
 			Yeq2 = Yeq;
 		} else {
-			Yeq2 = ComplexUtil.divide(Yeq, 3.0);
+			Yeq2 = divide(Yeq, 3.0);
 		}
 
 		for (int i = 0; i < nPhases; i++) {
@@ -1258,7 +1269,7 @@ public class StorageObj extends PCElement {
 				}
 				integrate            (regKWh,    S.getReal(), sol.getIntervalHrs());   // accumulate the power
 				integrate            (regKVArh,  S.getImaginary(), sol.getIntervalHrs());
-				setDragHandRegister  (regMaxKW,  Math.abs(S.getReal()));
+				setDragHandRegister  (regMaxKW,  abs(S.getReal()));
 				setDragHandRegister  (regMaxKVA, SMag);
 				integrate            (regHours,  hourValue, sol.getIntervalHrs());  // accumulate hours in operation
 				integrate            (regPrice,  S.getReal() * ckt.getPriceSignal(), sol.getIntervalHrs());  // accumulate hours in operation
@@ -1309,11 +1320,11 @@ public class StorageObj extends PCElement {
 	public double getKWTotalLosses() {
 		switch (getState()) {
 		case CHARGING:
-			return Math.abs(getPower(0).getReal() * (100.0 - pctChargeEff) / 100000.0) + pctChargeEff * getKWIdlingLosses() / 100.0;  // kW
+			return abs(getPower(0).getReal() * (100.0 - pctChargeEff) / 100000.0) + pctChargeEff * getKWIdlingLosses() / 100.0;  // kW
 		case IDLING:
 			return getKWIdlingLosses();
 		case DISCHARGING:
-			return Math.abs(getPower(0).getReal() * (100.0 - pctDischargeEff) / 100000.0) + (2.0 - pctChargeEff / 100.0) * getKWIdlingLosses();  // kW
+			return abs(getPower(0).getReal() * (100.0 - pctDischargeEff) / 100000.0) + (2.0 - pctChargeEff / 100.0) * getKWIdlingLosses();  // kW
 		}
 		return 0;
 	}
@@ -1373,7 +1384,7 @@ public class StorageObj extends PCElement {
 		setYPrimInvalid(true);  // force rebuild of YPrims
 		storageFundamental = sol.getFrequency();  // whatever the frequency is when we enter here
 
-		Yeq = ComplexUtil.invert(new Complex(RThev, XThev));  // used for current calcs; always L-N
+		Yeq = invert(new Complex(RThev, XThev));  // used for current calcs; always L-N
 
 		/* Compute reference Thevinen voltage from phase 1 current */
 
@@ -1578,10 +1589,10 @@ public class StorageObj extends PCElement {
 			V = kVStorageBase;
 		}
 
-		s = s + String.format(" kV=%-.5g", V);
+		s = s + format(" kV=%-.5g", V);
 
 		if (nPhases > 1)
-			s = s + String.format(" kWrating=%-.5g  PF=%-.5g", kWRating / nPhases, PFNominal);
+			s = s + format(" kWrating=%-.5g  PF=%-.5g", kWRating / nPhases, PFNominal);
 
 		Parser.getInstance().setCommand(s);
 		edit();
@@ -1605,7 +1616,7 @@ public class StorageObj extends PCElement {
 	public void setPctKVArOut(double value) {
 		pctKVArOut = value;
 		// force recompute of target PF and requested kVAr
-		setPresentKVAr(kWRating * Math.sqrt(1.0 / Math.pow(PFNominal, 2) - 1.0) * pctKVArOut / 100.0);
+		setPresentKVAr(kWRating * sqrt(1.0 / pow(PFNominal, 2) - 1.0) * pctKVArOut / 100.0);
 	}
 
 	public void setPctKWOut(double value) {
@@ -1643,7 +1654,7 @@ public class StorageObj extends PCElement {
 		kVArRequested = value;
 
 		/* Requested kVA output */
-		kVA_Gen = Math.sqrt(Math.pow(kWOut, 2) + Math.pow(kVArOut, 2)) ;
+		kVA_Gen = sqrt(pow(kWOut, 2) + pow(kVArOut, 2)) ;
 
 		if (kVA_Gen > kVARating)
 			kVA_Gen = kVARating;  // limit kVA to rated value
@@ -1674,7 +1685,7 @@ public class StorageObj extends PCElement {
 		kVArOut = 0.0;
 		// keep kVAr nominal up to date with kW and PF
 		if (PFNominal != 0.0) {
-			kVArOut = kWOut * Math.sqrt(1.0 / Math.pow(PFNominal, 2) - 1.0);
+			kVArOut = kWOut * sqrt(1.0 / pow(PFNominal, 2) - 1.0);
 			if (PFNominal < 0.0) kVArOut = -kVArOut;
 		}
 	}

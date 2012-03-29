@@ -14,6 +14,8 @@ import com.ncond.dss.shared.CommandList;
 import static com.ncond.dss.common.Util.interpretDblArray;
 import static com.ncond.dss.common.Util.resizeArray;
 
+import static java.lang.Math.log;
+
 
 public class TCC_Curve extends DSSClass {
 
@@ -71,7 +73,7 @@ public class TCC_Curve extends DSSClass {
 
 	private void calcLogPoints(double[] X, double[] logX, int n) {
 		for (int i = 0; i < n; i++)
-			logX[i] = X[i] > 0.0 ? Math.log(X[i]) : Math.log(0.001);
+			logX[i] = X[i] > 0.0 ? log(X[i]) : log(0.001);
 	}
 
 	@Override

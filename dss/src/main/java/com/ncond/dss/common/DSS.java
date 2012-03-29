@@ -37,6 +37,11 @@ import com.ncond.dss.meter.Sensor;
 import com.ncond.dss.parser.Parser;
 import com.ncond.dss.shared.HashList;
 
+import static java.lang.Math.sqrt;
+
+import static java.lang.String.format;
+
+
 public class DSS {
 
 	public static final String SEPARATOR = File.separator;
@@ -51,8 +56,8 @@ public class DSS {
 
 	/* 120-degree shift constant */
 	public static final Complex CALPHA = new Complex(-0.5, -0.866025);
-	public static final double SQRT2 = Math.sqrt(2.0);
-	public static final double SQRT3 = Math.sqrt(3.0);
+	public static final double SQRT2 = sqrt(2.0);
+	public static final double SQRT3 = sqrt(3.0);
 	public static final double InvSQRT3 = 1.0 / SQRT3;
 	public static final double InvSQRT3x1000 = InvSQRT3 * 1000.0;
 
@@ -146,7 +151,7 @@ public class DSS {
 	public static HashList classNames;
 
 	public static void doErrorMsg(String s, String emsg, String probCause, int errNum) {
-		String msg = String.format("Error %d reported from DSS function: ", errNum) +
+		String msg = format("Error %d reported from DSS function: ", errNum) +
 			s + CRLF + "Error description: " + CRLF + emsg + CRLF +
 			"Probable cause: " + CRLF + probCause;
 
@@ -168,10 +173,10 @@ public class DSS {
 	public static void doSimpleMsg(String s, int errNum) {
 		if (!noFormsAllowed) {
 			if (inRedirect) {
-				int rc = forms.messageDlg(String.format("(%d) %s%s", errNum, CRLF, s), false);
+				int rc = forms.messageDlg(format("(%d) %s%s", errNum, CRLF, s), false);
 				if (rc == -1) redirectAbort = true;
 			} else {
-				forms.infoMessageDlg(String.format("(%d) %s%s", errNum, CRLF, s));
+				forms.infoMessageDlg(format("(%d) %s%s", errNum, CRLF, s));
 			}
 		}
 

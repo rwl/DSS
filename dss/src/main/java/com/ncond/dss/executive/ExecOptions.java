@@ -35,6 +35,10 @@ import static com.ncond.dss.common.Util.interpretEarthModel;
 import static com.ncond.dss.common.Util.interpretControlMode;
 import static com.ncond.dss.common.Util.getSolutionModeID;
 
+import static java.lang.Math.pow;
+
+import static java.lang.String.format;
+
 
 public class ExecOptions {
 
@@ -449,7 +453,7 @@ public class ExecOptions {
 				break;
 			case 4:
 				ckt.getSolution().setYear(parser.integerValue());
-				ckt.setDefaultGrowthFactor(Math.pow(ckt.getDefaultGrowthRate(), ckt.getSolution().getYear() - 1));
+				ckt.setDefaultGrowthFactor(pow(ckt.getDefaultGrowthRate(), ckt.getSolution().getYear() - 1));
 				break;
 			case 5:
 				ckt.getSolution().setFrequency(parser.doubleValue());
@@ -517,7 +521,7 @@ public class ExecOptions {
 				break;
 			case 27:
 				ckt.setDefaultGrowthRate(1.0 + parser.doubleValue() / 100.0);
-				ckt.setDefaultGrowthFactor( Math.pow(ckt.getDefaultGrowthRate(), ckt.getSolution().getYear() - 1) );
+				ckt.setDefaultGrowthFactor( pow(ckt.getDefaultGrowthRate(), ckt.getSolution().getYear() - 1) );
 				break;
 			case 28:
 				ckt.getAutoAddObj().setGenKW(parser.doubleValue());
@@ -764,19 +768,19 @@ public class ExecOptions {
 					DSS.appendGlobalResult(String.valueOf(ckt.getSolution().getIntHour()));
 					break;
 				case 3:
-					DSS.appendGlobalResult(String.format("%g", ckt.getSolution().getDynaVars().t));
+					DSS.appendGlobalResult(format("%g", ckt.getSolution().getDynaVars().t));
 					break;
 				case 4:
 					DSS.appendGlobalResult(String.valueOf(ckt.getSolution().getYear()));
 					break;
 				case 5:
-					DSS.appendGlobalResult(String.format("%g", ckt.getSolution().getFrequency()));
+					DSS.appendGlobalResult(format("%g", ckt.getSolution().getFrequency()));
 					break;
 				case 6:
-					DSS.appendGlobalResult(String.format("%g", ckt.getSolution().getDynaVars().h));
+					DSS.appendGlobalResult(format("%g", ckt.getSolution().getDynaVars().h));
 					break;
 				case 17:
-					DSS.appendGlobalResult(String.format("%g", ckt.getSolution().getDynaVars().h));
+					DSS.appendGlobalResult(format("%g", ckt.getSolution().getDynaVars().h));
 					break;
 				case 7:
 					DSS.appendGlobalResult(getSolutionModeID());
@@ -788,7 +792,7 @@ public class ExecOptions {
 					DSS.appendGlobalResult(String.valueOf(ckt.getSolution().getNumberOfTimes()));
 					break;
 				case 10:
-					DSS.appendGlobalResult(String.format("[ %d, %g ]", String.valueOf(ckt.getSolution().getIntHour()), ckt.getSolution().getDynaVars().t));
+					DSS.appendGlobalResult(format("[ %d, %g ]", String.valueOf(ckt.getSolution().getIntHour()), ckt.getSolution().getDynaVars().t));
 					break;
 				case 13:
 					DSS.appendGlobalResult(ckt.getName());
@@ -797,7 +801,7 @@ public class ExecOptions {
 					DSS.appendGlobalResult(DSS.defaultEditor);
 					break;
 				case 15:
-					DSS.appendGlobalResult(String.format("%g", ckt.getSolution().getConvergenceTolerance()));
+					DSS.appendGlobalResult(format("%g", ckt.getSolution().getConvergenceTolerance()));
 					break;
 				case 16:
 					DSS.appendGlobalResult(String.valueOf(ckt.getSolution().getMaxIterations()));
@@ -806,40 +810,40 @@ public class ExecOptions {
 					DSS.appendGlobalResult(getLoadModel());
 					break;
 				case 19:
-					DSS.appendGlobalResult(String.format("%g", ckt.getLoadMultiplier()));
+					DSS.appendGlobalResult(format("%g", ckt.getLoadMultiplier()));
 					break;
 				case 20:
-					DSS.appendGlobalResult(String.format("%g", ckt.getNormalMinVolts()));
+					DSS.appendGlobalResult(format("%g", ckt.getNormalMinVolts()));
 					break;
 				case 21:
-					DSS.appendGlobalResult(String.format("%g", ckt.getNormalMaxVolts()));
+					DSS.appendGlobalResult(format("%g", ckt.getNormalMaxVolts()));
 					break;
 				case 22:
-					DSS.appendGlobalResult(String.format("%g", ckt.getEmergMinVolts()));
+					DSS.appendGlobalResult(format("%g", ckt.getEmergMinVolts()));
 					break;
 				case 23:
-					DSS.appendGlobalResult(String.format("%g", ckt.getEmergMaxVolts()));
+					DSS.appendGlobalResult(format("%g", ckt.getEmergMaxVolts()));
 					break;
 				case 24:
-					DSS.appendGlobalResult(String.format("%g", ckt.getDefaultDailyShapeObj().getMean() * 100.0));
+					DSS.appendGlobalResult(format("%g", ckt.getDefaultDailyShapeObj().getMean() * 100.0));
 					break;
 				case 25:
-					DSS.appendGlobalResult(String.format("%g", ckt.getDefaultDailyShapeObj().getStdDev() * 100.0));
+					DSS.appendGlobalResult(format("%g", ckt.getDefaultDailyShapeObj().getStdDev() * 100.0));
 					break;
 				case 26:
 					DSS.appendGlobalResult(ckt.getLoadDurCurve());
 					break;
 				case 27:
-					DSS.appendGlobalResult(String.format("%g", (ckt.getDefaultGrowthRate() - 1.0) * 100.0));
+					DSS.appendGlobalResult(format("%g", (ckt.getDefaultGrowthRate() - 1.0) * 100.0));
 					break;
 				case 28:
-					DSS.appendGlobalResult(String.format("%g", ckt.getAutoAddObj().getGenKW()));
+					DSS.appendGlobalResult(format("%g", ckt.getAutoAddObj().getGenKW()));
 					break;
 				case 29:
-					DSS.appendGlobalResult(String.format("%g", ckt.getAutoAddObj().getGenPF()));
+					DSS.appendGlobalResult(format("%g", ckt.getAutoAddObj().getGenPF()));
 					break;
 				case 30:
-					DSS.appendGlobalResult(String.format("%g", ckt.getAutoAddObj().getCapKVAr()));
+					DSS.appendGlobalResult(format("%g", ckt.getAutoAddObj().getCapKVAr()));
 					break;
 				case 31:
 					switch (ckt.getAutoAddObj().getAddType()) {
@@ -866,10 +870,10 @@ public class ExecOptions {
 					}
 					break;
 				case 34:
-					DSS.appendGlobalResult(String.format("%g", ckt.getUEWeight()));
+					DSS.appendGlobalResult(format("%g", ckt.getUEWeight()));
 					break;
 				case 35:
-					DSS.appendGlobalResult(String.format("%g", ckt.getLossWeight()));
+					DSS.appendGlobalResult(format("%g", ckt.getLossWeight()));
 					break;
 				case 36:
 					DSS.appendGlobalResult(intArrayToString(ckt.getUERegs(), ckt.getNumUERegs()));
@@ -880,7 +884,7 @@ public class ExecOptions {
 				case 38:
 					DSS.globalResult = "(";
 					for (double vBase : ckt.getLegalVoltageBases())
-						DSS.globalResult += String.format("%g, ", vBase);
+						DSS.globalResult += format("%g, ", vBase);
 					DSS.globalResult += ")";
 					break;
 				case 39:
@@ -915,7 +919,7 @@ public class ExecOptions {
 					}
 					break;
 				case 44:
-					DSS.appendGlobalResult(String.format("%g", ckt.getGenMultiplier()));
+					DSS.appendGlobalResult(format("%g", ckt.getGenMultiplier()));
 					break;
 				case 45:
 					DSS.appendGlobalResult(ckt.getDefaultDailyShapeObj().getName());
@@ -934,23 +938,23 @@ public class ExecOptions {
 					}
 					break;
 				case 49:
-					DSS.appendGlobalResult(String.format("%g", ckt.getPriceSignal()));
+					DSS.appendGlobalResult(format("%g", ckt.getPriceSignal()));
 					break;
 				case 50:
 					DSS.appendGlobalResult(ckt.getPriceCurve());
 					break;
 				case 51:
-					DSS.appendGlobalResult(String.format("%d", ckt.getActiveCktElement().getActiveTerminalIdx()));
+					DSS.appendGlobalResult(format("%d", ckt.getActiveCktElement().getActiveTerminalIdx()));
 					break;
 				case 52:
-					DSS.appendGlobalResult(String.format("%g", ckt.getFundamental()));
+					DSS.appendGlobalResult(format("%g", ckt.getFundamental()));
 					break;
 				case 53:
 					if (ckt.getSolution().isDoAllHarmonics()) {
 						DSS.appendGlobalResult("ALL");
 					} else {
 						for (int i = 0; i < ckt.getSolution().getHarmonicListSize(); i++)
-							DSS.appendGlobalResult(String.format("%g", ckt.getSolution().getHarmonicList()[i]));
+							DSS.appendGlobalResult(format("%g", ckt.getSolution().getHarmonicList()[i]));
 					}
 					break;
 				case 54:
@@ -978,7 +982,7 @@ public class ExecOptions {
 					}
 					break;
 				case 60:
-					DSS.appendGlobalResult(String.format("%-.g", ckt.getPctNormalFactor()));
+					DSS.appendGlobalResult(format("%-.g", ckt.getPctNormalFactor()));
 					break;
 				case 61:
 					if (DSS.energyMeterClass.isDI_Verbose()) {
@@ -991,10 +995,10 @@ public class ExecOptions {
 					DSS.appendGlobalResult(ckt.getCaseName());
 					break;
 				case 63:
-					DSS.appendGlobalResult(String.format("%d", ckt.getNodeMarkerCode()));
+					DSS.appendGlobalResult(format("%d", ckt.getNodeMarkerCode()));
 					break;
 				case 64:
-					DSS.appendGlobalResult(String.format("%d", ckt.getNodeMarkerWidth()));
+					DSS.appendGlobalResult(format("%d", ckt.getNodeMarkerWidth()));
 					break;
 				case 65:
 					if (ckt.isLogEvents()) {
@@ -1035,10 +1039,10 @@ public class ExecOptions {
 					}
 					break;
 				case 71:
-					DSS.appendGlobalResult(String.format("%d", DSS.maxAllocationIterations)) ;
+					DSS.appendGlobalResult(format("%d", DSS.maxAllocationIterations)) ;
 					break;
 				case 72:
-					DSS.appendGlobalResult(String.format("%d", DSS.defaultBaseFreq));
+					DSS.appendGlobalResult(format("%d", DSS.defaultBaseFreq));
 					break;
 				case 73:
 					if (ckt.isMarkSwitches()) {
@@ -1048,10 +1052,10 @@ public class ExecOptions {
 					}
 					break;
 				case 74:
-					DSS.appendGlobalResult(String.format("%d", ckt.getSwitchMarkerCode()));
+					DSS.appendGlobalResult(format("%d", ckt.getSwitchMarkerCode()));
 					break;
 				case 75:
-					DSS.appendGlobalResult(String.format("%-.6g", DSS.daisySize));
+					DSS.appendGlobalResult(format("%-.6g", DSS.daisySize));
 					break;
 				case 76:
 					if (ckt.isMarkTransformers()) {
@@ -1061,10 +1065,10 @@ public class ExecOptions {
 					}
 					break;
 				case 77:
-					DSS.appendGlobalResult(String.format("%d", ckt.getTransMarkerCode()));
+					DSS.appendGlobalResult(format("%d", ckt.getTransMarkerCode()));
 					break;
 				case 78:
-					DSS.appendGlobalResult(String.format("%d", ckt.getTransMarkerSize()));
+					DSS.appendGlobalResult(format("%d", ckt.getTransMarkerSize()));
 					break;
 				case 79:
 					DSS.appendGlobalResult(getActiveLoadShapeClass());

@@ -16,10 +16,15 @@ import com.ncond.dss.common.SolutionObj;
 import com.ncond.dss.general.SpectrumObj;
 import com.ncond.dss.parser.Parser;
 import com.ncond.dss.shared.CMatrix;
-import com.ncond.dss.shared.ComplexUtil;
+
+import static com.ncond.dss.shared.ComplexUtil.polarDeg2Complex;
 
 import static com.ncond.dss.common.Util.rotatePhasorDeg;
 import static com.ncond.dss.common.Util.resizeArray;
+
+import static java.lang.Math.abs;
+
+import static java.lang.String.format;
 
 
 /**
@@ -112,8 +117,8 @@ public class ISourceObj extends PCElement {
 				curr = getSpectrumObj().getMult(srcHarmonic).multiply(amps);  // base current for this harmonic
 				curr = rotatePhasorDeg(curr, srcHarmonic, angle);
 			} else {
-				if (Math.abs(sol.getFrequency() - srcFrequency) < DSS.EPSILON2) {
-					curr = ComplexUtil.polarDeg2Complex(amps, angle);
+				if (abs(sol.getFrequency() - srcFrequency) < DSS.EPSILON2) {
+					curr = polarDeg2Complex(amps, angle);
 				} else {
 					curr = Complex.ZERO;
 				}
@@ -217,7 +222,7 @@ public class ISourceObj extends PCElement {
 		setPropertyValue(0, getBus(0));
 		setPropertyValue(1, "0");
 		setPropertyValue(2, "0");
-		setPropertyValue(3, String.format("%-.6g", srcFrequency));
+		setPropertyValue(3, format("%-.6g", srcFrequency));
 		setPropertyValue(4, "3");
 		setPropertyValue(5, "pos");
 		setPropertyValue(6, "pos");

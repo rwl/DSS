@@ -7,7 +7,13 @@ package com.ncond.dss.general;
 
 import com.ncond.dss.shared.CMatrix;
 import com.ncond.dss.shared.LineUnits;
-import com.ncond.dss.shared.MathUtil;
+
+import static com.ncond.dss.shared.MathUtil.sqr;
+
+import static java.lang.Math.sqrt;
+
+import static java.lang.String.format;
+
 
 public class CableConstants extends LineConstants {
 
@@ -57,7 +63,7 @@ public class CableConstants extends LineConstants {
 		for (i = 0; i < getNumConds(); i++)
 			if (Y[i] >= 0.0) {
 				same = true;
-				errorMessage[0] += String.format("Cable %d height must be < 0. ", i);
+				errorMessage[0] += format("Cable %d height must be < 0. ", i);
 				return same;
 			}
 
@@ -67,10 +73,10 @@ public class CableConstants extends LineConstants {
 			for (j = i + 1; j < getNumConds(); j++) {
 				Rj = (j < getNPhases()) ? radius[j] : 0.5 * diaCable[j];
 
-				dij = Math.sqrt(MathUtil.sqr(X[i] - X[j]) + MathUtil.sqr(Y[i] - Y[j]));
+				dij = sqrt(sqr(X[i] - X[j]) + sqr(Y[i] - Y[j]));
 				if (dij < (Ri + Rj)) {
 					same = true;
-					errorMessage[0] += String.format("Cable conductors %d and %d occupy the same space.", i, j);
+					errorMessage[0] += format("Cable conductors %d and %d occupy the same space.", i, j);
 					return same;
 				}
 			}

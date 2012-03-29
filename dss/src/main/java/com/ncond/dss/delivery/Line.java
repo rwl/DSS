@@ -19,6 +19,9 @@ import com.ncond.dss.shared.LineUnits;
 import static com.ncond.dss.common.Util.interpretYesNo;
 import static com.ncond.dss.common.Util.interpretEarthModel;
 
+import static java.lang.Math.sqrt;
+import static java.lang.Math.log;
+
 
 public class Line extends PDClass {
 
@@ -417,7 +420,7 @@ public class Line extends PDClass {
 				break;
 			case 16:
 			case 17:
-				elem.setKXg(elem.getXg() / Math.log(658.5 * Math.sqrt(elem.getRho() / elem.getBaseFrequency())));
+				elem.setKXg(elem.getXg() / log(658.5 * sqrt(elem.getRho() / elem.getBaseFrequency())));
 				break;
 			case 18:
 				elem.setGeometrySpecified(true);

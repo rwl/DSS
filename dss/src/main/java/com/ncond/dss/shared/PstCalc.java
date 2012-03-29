@@ -5,6 +5,12 @@
  */
 package com.ncond.dss.shared;
 
+import static java.lang.Math.max;
+import static java.lang.Math.min;
+import static java.lang.Math.pow;
+import static java.lang.Math.sqrt;
+
+
 public class PstCalc {
 
 	private static final int MAXBINS = 50000;
@@ -133,7 +139,7 @@ public class PstCalc {
 		P50s = (sb(0.700, bins1) + sb(0.500, bins1) + sb(0.200, bins1)) / 3.0;
 
 		// this is the Pst
-		return Math.sqrt(0.0314  *P01 + 0.0525 * P1s + 0.0657 * P3s + 0.28 * P10s + 0.08 * P50s);
+		return sqrt(0.0314  *P01 + 0.0525 * P1s + 0.0657 * P3s + 0.28 * P10s + 0.08 * P50s);
 	}
 
 	/**
@@ -194,8 +200,8 @@ public class PstCalc {
 		// coefficients for weighting filter
 		WA2 = 4.0 * K * W1 * W3 * W4 / (tStep * tStep);
 		WB2 = 2.0 * K * W1 * W2 * W3 * W4 / tStep;
-		WC2 = 16.0 * W2 / Math.pow(tStep, 4);
-		WD2 = 8.0 * W2 * (2.0 * Lambda + W3 + W4) / Math.pow(tStep, 3);
+		WC2 = 16.0 * W2 / pow(tStep, 4);
+		WD2 = 8.0 * W2 * (2.0 * Lambda + W3 + W4) / pow(tStep, 3);
 		WE2 = 4.0 * W2 * (W3 * W4 + W1 * W1 + 2.0 * Lambda * (W3 + W4)) / (tStep * tStep);
 		WF2 = 2.0 * W2 * (2.0 * Lambda * W3 * W4 + W1 * W1 * (W3 + W4)) / tStep;
 		WG2 = W2 * W3 * W4 * W1 * W1;
@@ -326,8 +332,8 @@ public class PstCalc {
 		tStep = 1.0 / (16.0 * fBase);  // time step for each cycle, fixed to 16 samples/cycle
 
 		pstTimeMax = npts * deltaT;  // - 6.0 ;  //use the entire data set sent to calculate the flicker
-		pstTime = Math.min(600.0, pstTimeMax);
-		numPstIntervals = Math.max(1, (int) (pstTimeMax / pstTime));  // at least one interval
+		pstTime = min(600.0, pstTimeMax);
+		numPstIntervals = max(1, (int) (pstTimeMax / pstTime));  // at least one interval
 
 		if (pstResult[0] != null) pstResult[0] = null;
 		pstResult[0] = new double[numPstIntervals];  // allocate result array
@@ -366,7 +372,7 @@ public class PstCalc {
 				////////////// this starts the Pst calculations //////////////
 				if (time >= pstStartTime) {
 					pstTimer = pstTimer + tStep;
-					max_flicker = Math.max(max_flicker, X10[0]);
+					max_flicker = max(max_flicker, X10[0]);
 					gatherBins(X10[0], bins0);
 
 					if (pstTimer >= pstTime) {

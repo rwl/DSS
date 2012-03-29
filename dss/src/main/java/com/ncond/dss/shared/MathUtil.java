@@ -7,6 +7,13 @@ package com.ncond.dss.shared;
 
 import org.apache.commons.math.complex.Complex;
 
+import static java.lang.Math.pow;
+import static java.lang.Math.abs;
+import static java.lang.Math.exp;
+import static java.lang.Math.max;
+import static java.lang.Math.random;
+import static java.lang.Math.sqrt;
+
 
 public abstract class MathUtil {
 
@@ -16,7 +23,7 @@ public abstract class MathUtil {
 //	private static final CMatrix ClarkeF = getClarkeF(3);
 //	private static final CMatrix ClarkeR = getClarkeR(3);
 
-//	private static final double SIN2PI3 = Math.sin(2.0 * Math.PI / 3.0);
+//	private static final double SIN2PI3 = sin(2.0 * PI / 3.0);
 
 	private static CMatrix getAMatrix(int order) {
 		CMatrix Amat = new CMatrix(order);
@@ -134,7 +141,7 @@ public abstract class MathUtil {
 		for (M = 0; M < L; M++) {
 			for (LL = 0; LL < L; LL++) {
 				if (LT[LL] != 1) {
-					RMY = Math.abs(A[index(LL, LL)]) - Math.abs(T1);
+					RMY = abs(A[index(LL, LL)]) - abs(T1);
 					if (RMY > 0.0) {
 						T1 = A[index(LL, LL)];
 						k = LL;
@@ -143,7 +150,7 @@ public abstract class MathUtil {
 			}
 
 			/* Error Check. If RMY ends up zero, matrix is non-inversible */
-			RMY = Math.abs(T1);
+			RMY = abs(T1);
 			if (RMY == 0.0) {
 				error[0] = 2;
 				return;
@@ -216,7 +223,7 @@ public abstract class MathUtil {
 	public static double gauss(double mean, double stdDev) {
 		double A = 0.0;
 
-		for (int i = 0; i < 12; i++) A += Math.random();
+		for (int i = 0; i < 12; i++) A += random();
 
 		return (A - 6.0) * stdDev + mean;
 	}
@@ -226,7 +233,7 @@ public abstract class MathUtil {
 	 * from 0 to Mean and the remainder from Mean to infinity.
 	 */
 	public static double quasiLognormal(double mean) {
-		return Math.exp(gauss(0.0, 1.0)) * mean;
+		return exp(gauss(0.0, 1.0)) * mean;
 	}
 
 	public static double sum(double[] data, int count) {
@@ -248,8 +255,8 @@ public abstract class MathUtil {
 		mean[0] = sum(data, (nData)) / nData;
 		s = 0;  // sum differences from the mean, for greater accuracy
 		for (int i = 0; i < nData; i++)
-			s = s + Math.pow(mean[0] - data[i], 2);
-		stdDev[0] = Math.sqrt(s / (nData - 1));
+			s = s + pow(mean[0] - data[i], 2);
+		stdDev[0] = sqrt(s / (nData - 1));
 	}
 
 	public static void curveMeanAndStdDev(double[] pY, double[] pX, int N, double[] mean, double[] stdDev) {
@@ -274,7 +281,7 @@ public abstract class MathUtil {
 			s += 0.5 * (dy1 * dy1 + dy2 * dy2) * (pX[i + 1] - pX[i]);
 		}
 
-		stdDev[0] = Math.sqrt(s / (pX[N] - pX[0]));
+		stdDev[0] = sqrt(s / (pX[N] - pX[0]));
 	}
 
 	/**
@@ -282,7 +289,7 @@ public abstract class MathUtil {
 	 */
 	public static Complex parallelZ(Complex Z1, Complex Z2) {
 		Complex denom = Z1.add(Z2) ;
-		if ((Math.abs(denom.getReal()) > 0.0) || (Math.abs(denom.getImaginary()) > 0.0)) {
+		if ((abs(denom.getReal()) > 0.0) || (abs(denom.getImaginary()) > 0.0)) {
 			return Z1.multiply(Z2).divide(denom);
 		} else {  /* Error */
 			return Complex.ZERO;
@@ -310,9 +317,9 @@ public abstract class MathUtil {
 		while (i <= maxTerm && sizeSqr > epsilonSqr) {
 			term = zSQR25.multiply(term);
 			i += 1;
-			term = ComplexUtil.divide(term, Math.pow(i, 2));
+			term = ComplexUtil.divide(term, pow(i, 2));
 			result = result.add(term);  // sum = sum + term
-			sizeSqr = Math.pow(term.getReal(), 2) + Math.pow(term.getImaginary(), 2);
+			sizeSqr = pow(term.getReal(), 2) + pow(term.getImaginary(), 2);
 		}
 
 		return result;
@@ -336,7 +343,7 @@ public abstract class MathUtil {
 
 		maxDiff = 0.0;
 		for (i = 0; i < 3; i++) {
-			maxDiff = Math.max(maxDiff, Math.abs(Vmag[i] - Vavg));
+			maxDiff = max(maxDiff, abs(Vmag[i] - Vavg));
 		}
 
 		if (Vavg != 0.0) {
@@ -350,7 +357,7 @@ public abstract class MathUtil {
 		double xr;
 		if (a.getReal() != 0.0) {
 			xr = a.getImaginary() / a.getReal();
-			if (Math.abs(xr) > 9999.0) xr = 9999.0;
+			if (abs(xr) > 9999.0) xr = 9999.0;
 		} else{
 			xr = 9999.0;;
 		}
@@ -358,7 +365,7 @@ public abstract class MathUtil {
 	}
 
 	public static double sqr(double a) {
-		return Math.pow(a, 2);
+		return pow(a, 2);
 	}
 
 }

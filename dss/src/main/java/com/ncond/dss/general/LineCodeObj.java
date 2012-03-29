@@ -15,6 +15,9 @@ import com.ncond.dss.common.DSSClass;
 import com.ncond.dss.shared.CMatrix;
 import com.ncond.dss.shared.LineUnits;
 
+import static java.lang.String.format;
+
+
 /**
  * A general DSS object used by all circuits as a reference for obtaining line
  * impedances.
@@ -87,7 +90,7 @@ public class LineCodeObj extends DSSObject {
 		StringBuilder sb = new StringBuilder("[");
 		for (int i = 0; i < nPhases; i++) {
 			for (int j = 0; j < nPhases; j++)
-				sb.append(String.format("%12.8f ", Z.get(i, j).getReal()));
+				sb.append(format("%12.8f ", Z.get(i, j).getReal()));
 			if (i < nPhases - 1) sb.append("|");
 		}
 		sb.append("]");
@@ -98,7 +101,7 @@ public class LineCodeObj extends DSSObject {
 		StringBuilder sb = new StringBuilder("[");
 		for (int i = 0; i < nPhases; i++) {
 			for (int j = 0; j < nPhases; j++)
-				sb.append(String.format("%12.8f ", Z.get(i, j).getImaginary()));
+				sb.append(format("%12.8f ", Z.get(i, j).getImaginary()));
 			if (i < nPhases - 1) sb.append("|");
 		}
 		sb.append("]");
@@ -109,7 +112,7 @@ public class LineCodeObj extends DSSObject {
 		StringBuilder sb = new StringBuilder("[");
 		for (int i = 0; i < nPhases; i++) {
 			for (int j = 0; j < nPhases; j++)
-				sb.append(String.format("%12.8f ", Yc.get(i, j).getImaginary() / DSS.TWO_PI / baseFrequency * 1.e9));
+				sb.append(format("%12.8f ", Yc.get(i, j).getImaginary() / DSS.TWO_PI / baseFrequency * 1.e9));
 			if (i < nPhases - 1)
 				sb.append("|");
 		}
@@ -212,7 +215,7 @@ public class LineCodeObj extends DSSObject {
 		for (i = 11; i < 21; i++)
 			pw.println("~ " + parentClass.getPropertyName(i) + "=" + propertyValues[i]);
 
-		pw.println(String.format("~ %s=%d", parentClass.getPropertyName(22), neutralConductor));
+		pw.println(format("~ %s=%d", parentClass.getPropertyName(22), neutralConductor));
 
 		pw.close();
 	}
@@ -221,19 +224,19 @@ public class LineCodeObj extends DSSObject {
 	public String getPropertyValue(int index) {
 		switch (index) {
 		case 0:
-			return String.format("%d", nPhases);
+			return format("%d", nPhases);
 		case 1:
-			return symComponentsModel ? String.format("%.5g", R1) : "----";
+			return symComponentsModel ? format("%.5g", R1) : "----";
 		case 2:
-			return symComponentsModel ? String.format("%.5g", X1) : "----";
+			return symComponentsModel ? format("%.5g", X1) : "----";
 		case 3:
-			return symComponentsModel ? String.format("%.5g", R0) : "----";
+			return symComponentsModel ? format("%.5g", R0) : "----";
 		case 4:
-			return symComponentsModel ? String.format("%.5g", X0) : "----";
+			return symComponentsModel ? format("%.5g", X0) : "----";
 		case 5:
-			return symComponentsModel ? String.format("%.5g", C1 * 1.0e9) : "----";
+			return symComponentsModel ? format("%.5g", C1 * 1.0e9) : "----";
 		case 6:
-			return symComponentsModel ? String.format("%.5g", C0 * 1.0e9) : "----";
+			return symComponentsModel ? format("%.5g", C0 * 1.0e9) : "----";
 		case 7:
 			return LineUnits.lineUnitsStr(units);
 		case 8:
@@ -243,15 +246,15 @@ public class LineCodeObj extends DSSObject {
 		case 10:
 			return getCMatrix();
 		case 11:
-			return String.format("%.g", DSS.defaultBaseFreq);  // "baseFreq";
+			return format("%.g", DSS.defaultBaseFreq);  // "baseFreq";
 		case 17:
 			return reduceByKron ? "Y" : "N";
 		case 18:
-			return String.format("%.5g", Rg);
+			return format("%.5g", Rg);
 		case 19:
-			return String.format("%.5g", Xg);
+			return format("%.5g", Xg);
 		case 20:
-			return String.format("%.5g", rho);
+			return format("%.5g", rho);
 		case 21:
 			return String.valueOf(neutralConductor);
 		default:
@@ -272,7 +275,7 @@ public class LineCodeObj extends DSSObject {
 		setPropertyValue(8, "");  // "rmatrix"
 		setPropertyValue(9, "");  // "xmatrix"
 		setPropertyValue(10, "");  // "cmatrix"
-		setPropertyValue(11, String.format("%6.1f", DSS.defaultBaseFreq));  // "baseFreq"
+		setPropertyValue(11, format("%6.1f", DSS.defaultBaseFreq));  // "baseFreq"
 		setPropertyValue(12, "400");  // "normamps"
 		setPropertyValue(13, "600");  // "emergamps"
 		setPropertyValue(14, "0.1");  // "faultrate"
@@ -300,7 +303,7 @@ public class LineCodeObj extends DSSObject {
 				Yc.invert();  // Vn = 0 not In
 				newYc = Yc.kron(neutralConductor);
 			} catch (Exception e) {
-				DSS.doSimpleMsg(String.format("Kron reduction failed: LineCode.%s. Attempting to eliminate neutral conductor %d.",
+				DSS.doSimpleMsg(format("Kron reduction failed: LineCode.%s. Attempting to eliminate neutral conductor %d.",
 						getName(), neutralConductor), 103);
 			}
 
@@ -318,13 +321,13 @@ public class LineCodeObj extends DSSObject {
 				reduceByKron = false;
 
 				/* Change property values to reflect Kron reduction for save circuit function */
-				setPropertyValue(0, String.format("%d", nPhases));
+				setPropertyValue(0, format("%d", nPhases));
 				setPropertyValue(8, getRMatrix());
 				setPropertyValue(9, getXMatrix());
 				setPropertyValue(10, getCMatrix());
 
 			} else {
-				DSS.doSimpleMsg(String.format("Kron reduction failed: LineCode.%s. Attempting to eliminate neutral conductor %d.",
+				DSS.doSimpleMsg(format("Kron reduction failed: LineCode.%s. Attempting to eliminate neutral conductor %d.",
 						getName(), neutralConductor), 103);
 			}
 

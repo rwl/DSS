@@ -27,6 +27,9 @@ import static com.ncond.dss.common.Util.interpretAndAllocStrArray;
 import static com.ncond.dss.common.Util.interpretYesNo;
 import static com.ncond.dss.common.Util.fullName;
 
+import static java.lang.Math.max;
+import static java.lang.Math.min;
+
 
 public class EnergyMeter extends MeterClass {
 
@@ -824,8 +827,8 @@ public class EnergyMeter extends MeterClass {
 				for (j = 0; j < bus.getNumNodesThisBus(); j++) {
 					VmagPU = ckt.getSolution().getNodeV(bus.getRef(j)).abs() / bus.getKVBase() * 0.001;
 					if (VmagPU > 0.1) {  // ignore neutral buses
-						underVMin = Math.min(underVMin, VmagPU);
-						overVMax = Math.max(overVMax, VmagPU);
+						underVMin = min(underVMin, VmagPU);
+						overVMax = max(overVMax, VmagPU);
 						if (VmagPU < ckt.getNormalMinVolts()) {
 							underCount += 1;
 							break;  /* next i */

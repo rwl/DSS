@@ -15,6 +15,8 @@ import com.ncond.dss.shared.LineUnits;
 
 import static com.ncond.dss.common.Util.checkForBlanks;
 
+import static java.lang.String.format;
+
 
 /**
  * The LineGeometry object is a general DSS object used by all circuits
@@ -110,7 +112,7 @@ public class LineGeometryObj extends DSSObject {
 
 		switch (index) {
 		case 2:
-			val = String.format("%d", activeCondIdx);
+			val = format("%d", activeCondIdx);
 			break;
 		case 3:
 		case 12:
@@ -118,10 +120,10 @@ public class LineGeometryObj extends DSSObject {
 			val = condNames[activeCondIdx];
 			break;
 		case 4:
-			val = String.format("%g", X[activeCondIdx]);
+			val = format("%g", X[activeCondIdx]);
 			break;
 		case 5:
-			val = String.format("%g", Y[activeCondIdx]);
+			val = format("%g", Y[activeCondIdx]);
 			break;
 		case 6:
 			val = LineUnits.lineUnitsStr(units[activeCondIdx]);
@@ -269,10 +271,10 @@ public class LineGeometryObj extends DSSObject {
 				// do nothing
 				break;
 			case 7:
-				f.println(String.format("~ normamps=%.4g", normAmps));
+				f.println(format("~ normamps=%.4g", normAmps));
 				break;
 			case 8:
-				f.println(String.format("~ emergamps=%.4g", emergAmps));
+				f.println(format("~ emergamps=%.4g", emergAmps));
 				break;
 			case 9:
 				if (reduce) f.println("~ reduce=Yes");

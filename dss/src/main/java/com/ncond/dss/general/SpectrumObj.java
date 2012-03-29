@@ -12,9 +12,16 @@ import org.apache.commons.math.complex.Complex;
 
 import com.ncond.dss.common.DSS;
 import com.ncond.dss.common.DSSClass;
-import com.ncond.dss.shared.ComplexUtil;
+
+import static com.ncond.dss.shared.ComplexUtil.degArg;
+import static com.ncond.dss.shared.ComplexUtil.polarDeg2Complex;
 
 import static com.ncond.dss.common.Util.resizeArray;
+
+import static java.lang.Math.round;
+import static java.lang.Math.abs;
+
+import static java.lang.String.format;
 
 
 /**
@@ -86,7 +93,7 @@ public class SpectrumObj extends DSSObject {
 			for (i = 0; i < numHarm; i++) {
 				pw.printf("%g, ", harmArray[i]);
 				pw.printf("%g, %g, ", multArray[i].getReal(), multArray[i].getImaginary());
-				pw.printf("%g, %g", multArray[i].abs(), ComplexUtil.degArg( multArray[i] ));
+				pw.printf("%g, %g", multArray[i].abs(), degArg( multArray[i] ));
 				pw.println();
 			}
 		}
@@ -97,7 +104,7 @@ public class SpectrumObj extends DSSObject {
 	public Complex getMult(double h) {
 		/* Search list for harmonic (nearest 0.01 harmonic) and return multiplier */
 		for (int i = 0; i < numHarm; i++)
-			if (Math.abs(h - harmArray[i]) < 0.01)
+			if (abs(h - harmArray[i]) < 0.01)
 				return multArray[i];
 
 		/* None found, return zero */
@@ -126,15 +133,15 @@ public class SpectrumObj extends DSSObject {
 			break;
 		case 1:
 			for (i = 0; i < numHarm; i++)
-				result = result + String.format("%g, ", harmArray[i]);
+				result = result + format("%g, ", harmArray[i]);
 			break;
 		case 2:
 			for (i = 0; i < numHarm; i++)
-				result = result + String.format("%g, ", puMagArray[i] * 100.0);
+				result = result + format("%g, ", puMagArray[i] * 100.0);
 			break;
 		case 3:
 			for (i = 0; i < numHarm; i++)
-				result = result + String.format("%g, ", angleArray[i]);
+				result = result + format("%g, ", angleArray[i]);
 			break;
 		default:
 			result = super.getPropertyValue(index);
@@ -173,7 +180,7 @@ public class SpectrumObj extends DSSObject {
 		try {
 			fundAngle = 0.0;
 			for (i = 0; i < numHarm; i++) {
-				if (Math.round(harmArray[i]) == 1) {
+				if (round(harmArray[i]) == 1) {
 					fundAngle = angleArray[i];
 					break;
 				}
@@ -181,7 +188,7 @@ public class SpectrumObj extends DSSObject {
 
 			multArray = resizeArray(multArray, numHarm);
 			for (i = 0; i < numHarm; i++)
-				multArray[i] = ComplexUtil.polarDeg2Complex(puMagArray[i], (angleArray[i] - harmArray[i] * fundAngle));
+				multArray[i] = polarDeg2Complex(puMagArray[i], (angleArray[i] - harmArray[i] * fundAngle));
 		} catch (Exception e) {
 			DSS.doSimpleMsg("Exception while computing spectrum." + getName() + ". Check definition. Aborting", 655);
 			if (DSS.inRedirect) DSS.redirectAbort = true;

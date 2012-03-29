@@ -26,6 +26,14 @@ import static com.ncond.dss.common.Util.appendToEventLog;
 import static com.ncond.dss.common.Util.getCktElementIndex;
 import static com.ncond.dss.common.Util.resizeArray;
 
+import static java.lang.Math.abs;
+import static java.lang.Math.min;
+import static java.lang.Math.pow;
+import static java.lang.Math.signum;
+import static java.lang.Math.sqrt;
+
+import static java.lang.String.format;
+
 
 public class VVControlObj extends ControlElem {
 
@@ -248,12 +256,12 @@ public class VVControlObj extends ControlElem {
 
 					// the var 'head-room' available on the inverter given its rating
 					// and present kW output
-					if (Math.abs(PpresentGenOutput) > kVA_Rating * 1000.0) {
+					if (abs(PpresentGenOutput) > kVA_Rating * 1000.0) {
 						Qheadroom = 0.0;
 					} else {
-						Qheadroom = Math.sqrt(Math.pow(kVA_Rating * 1000.0, 2) - Math.pow(PpresentGenOutput, 2));
+						Qheadroom = sqrt(pow(kVA_Rating * 1000.0, 2) - pow(PpresentGenOutput, 2));
 					}
-					QDeliver = Math.min(Math.abs(kVAr_FullOutput * 1000.0), Math.abs(Qheadroom));
+					QDeliver = min(abs(kVAr_FullOutput * 1000.0), abs(Qheadroom));
 
 					QDeliver = QDeliver * QdesiredPU;
 					deltaQ = QDeliver - QOldDeliver;
@@ -264,11 +272,11 @@ public class VVControlObj extends ControlElem {
 
 					if (QNew != QpresentGenOutput) {
 						gen = (GeneratorObj) generators.get(i);
-						genKVAr = Math.signum(QNew) * Math.min( Math.abs(kVAr_Limit * 1000.0), Math.abs(QNew) ) / 1000.0;
+						genKVAr = signum(QNew) * min( abs(kVAr_Limit * 1000.0), abs(QNew) ) / 1000.0;
 						if (genKVAr != gen.getKVArBase()) gen.setPresentKVAr(genKVAr);
 					}
 					appendToEventLog("VoltVarControl." + getName(),
-						String.format("**Set var output level to**, kvar= %.5g", genKVAr));
+						format("**Set var output level to**, kvar= %.5g", genKVAr));
 				}
 			}
 			QOldDeliver = QNew;
@@ -299,15 +307,15 @@ public class VVControlObj extends ControlElem {
 		if (listSize > 0 && vvc_CurveSize > 0) {
 			//if (presentHour != sol.getDblHour()) {
 			//	DSS.writeDLLDebugFile(getName() + ',' +
-			//		String.format("%-.5g", sol.getDblHour()) + ',' +
-			//		String.format("%-.5g", QPresentGenOutput) + ',' +
-			//		String.format("%-.5g", QDeliver) + ',' +
-			//		String.format("%-.5g", QNew) + ',' +
-			//		String.format("%-.5g", gen.getPresentkvar() * 1000.0) + ',' +
-			//		String.format("%-.5g", QOldDeliver) + ',' +
-			//		String.format("%-.5g", PPresentGenOutput) + ',' +
-			//		String.format("%-.5g", VAvgPu) + ',' +
-			//		String.format("%-.5g", VAvgPuPrior));
+			//		format("%-.5g", sol.getDblHour()) + ',' +
+			//		format("%-.5g", QPresentGenOutput) + ',' +
+			//		format("%-.5g", QDeliver) + ',' +
+			//		format("%-.5g", QNew) + ',' +
+			//		format("%-.5g", gen.getPresentkvar() * 1000.0) + ',' +
+			//		format("%-.5g", QOldDeliver) + ',' +
+			//		format("%-.5g", PPresentGenOutput) + ',' +
+			//		format("%-.5g", VAvgPu) + ',' +
+			//		format("%-.5g", VAvgPuPrior));
 			//	presentHour = sol.dblHour;
 			//}
 
@@ -326,14 +334,14 @@ public class VVControlObj extends ControlElem {
 
 			timeDelay = delay;
 			// if (sol.getControlIteration() < sol.getMaxControlIterations()) {
-			if ((Math.abs(VAvgPu - VAvgPuPrior) > deltaVTolerance) || (Math.abs(Math.abs(QDeliver) - Math.abs(QNew)) > 0.5)) {
+			if ((abs(VAvgPu - VAvgPuPrior) > deltaVTolerance) || (abs(abs(QDeliver) - abs(QNew)) > 0.5)) {
 				setPendingChange(CHANGEVARLEVEL);
 
 				// sol.setLoadsNeedUpdating(true);  // force recalc of power parms
 				controlActionHandle = ckt.getControlQueue().push(sol.getIntHour(),
 						sol.getDynaVars().t + timeDelay, pendingChange, 0, this);
 				appendToEventLog("VoltVarControl." + getName(),
-						String.format("**Ready to change var output**, Vavgpu= %.5g sec,", VAvgPu));
+						format("**Ready to change var output**, Vavgpu= %.5g sec,", VAvgPu));
 			} else {
 				ckt.getControlQueue().delete(controlActionHandle);
 				appendToEventLog("VoltVarControl." + getName(), "**DONE**");
@@ -374,41 +382,41 @@ public class VVControlObj extends ControlElem {
 		case 0:
 			return monitoredElement.getDisplayName();
 		case 1:
-			return String.format("%-d", elementTerminalIdx);
+			return format("%-d", elementTerminalIdx);
 		case 2:
-			return String.format("%-.3g", vvc_VMaxPU);
+			return format("%-.3g", vvc_VMaxPU);
 		case 3:
-			return String.format("%-.3g", vvc_VMinPU);
+			return format("%-.3g", vvc_VMinPU);
 		case 4:
-			return String.format("%-.3g", kVA_Rating);
+			return format("%-.3g", kVA_Rating);
 		case 5:
-			return String.format("%-.3g", kW_Rating);
+			return format("%-.3g", kW_Rating);
 		case 6:
-			return String.format("%-.3g", kVAr_FullOutput);
+			return format("%-.3g", kVAr_FullOutput);
 		case 7:
-			return String.format("%-.3g", pf);
+			return format("%-.3g", pf);
 		case 8:
-			return String.format("%-.3g", delay);
+			return format("%-.3g", delay);
 		case 9:
-			return String.format("%-.3g", delayOff);
+			return format("%-.3g", delayOff);
 		case 10:
-			return String.format("%-.3g", kW_RampRate);
+			return format("%-.3g", kW_RampRate);
 		case 11:
-			return String.format("%-.3g", kVAr_RampRate);
+			return format("%-.3g", kVAr_RampRate);
 		case 12:
-			return String.format("%-.3g", kW_Limit);
+			return format("%-.3g", kW_Limit);
 		case 13:
-			return String.format("%-.3g", kVAr_Limit);
+			return format("%-.3g", kVAr_Limit);
 		case 14:
 			return returnGensList();
 		case 15:
 			return returnWeightsList();
 		case 16:
-			return String.format("%-d", vvc_CurveSize);
+			return format("%-d", vvc_CurveSize);
 		case 17:
 			return returnVVCurve();
 		case 18:
-			return String.format("%-.3g", deltaQFactor);
+			return format("%-.3g", deltaQFactor);
 		default:
 			// take the generic handler
 			return super.getPropertyValue(index);
@@ -472,9 +480,9 @@ public class VVControlObj extends ControlElem {
 		if (listSize == 0) return "";
 
 		StringBuilder sb = new StringBuilder("[");
-		sb.append(String.format("%-.6g", weights[0]));
+		sb.append(format("%-.6g", weights[0]));
 		for (int i = 1; i < listSize; i++)
-			sb.append(String.format(", %-.6g", weights[i]));
+			sb.append(format(", %-.6g", weights[i]));
 
 		sb.append("]");  // terminate the array
 
@@ -485,12 +493,12 @@ public class VVControlObj extends ControlElem {
 		if (vvc_CurveSize == 0) return "";
 
 		StringBuilder sb = new StringBuilder("[{");
-		sb.append(String.format("%-.3g,", vvc_Curve.getXValue(0)));
-		sb.append(String.format("%-.3g", vvc_Curve.getYValue(0)));
+		sb.append(format("%-.3g,", vvc_Curve.getXValue(0)));
+		sb.append(format("%-.3g", vvc_Curve.getYValue(0)));
 		sb.append("},");
 		for (int i = 1; i < vvc_CurveSize; i++) {
-			sb.append(String.format("{ %-.3g,", vvc_Curve.getXValue(i)));
-			sb.append(String.format("%-.3g", vvc_Curve.getYValue(i)));
+			sb.append(format("{ %-.3g,", vvc_Curve.getXValue(i)));
+			sb.append(format("%-.3g", vvc_Curve.getYValue(i)));
 			sb.append("},");
 		}
 		sb.append("]");

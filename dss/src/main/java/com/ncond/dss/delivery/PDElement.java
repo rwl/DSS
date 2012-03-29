@@ -14,6 +14,9 @@ import com.ncond.dss.common.DSSClassDefs;
 import com.ncond.dss.common.SolutionObj;
 import com.ncond.dss.meter.MeterElement;
 
+import static java.lang.String.format;
+
+
 @SuppressWarnings("unused")
 abstract public class PDElement extends CktElement {
 
@@ -84,7 +87,7 @@ abstract public class PDElement extends CktElement {
 			result = Complex.ZERO;
 		}
 		/* **********DEBUG CODE: Use DLL Debug file  *** */
-		/* ****    WriteDLLDebugFile(String.format("%s.%s: Terminal=%u Factor=%.7g kW=%.7g kvar=%.7g Normamps=%.7g Overload_EEN=%.7g Result=%.7g +j %.7g ",
+		/* ****    WriteDLLDebugFile(format("%s.%s: Terminal=%u Factor=%.7g kW=%.7g kvar=%.7g Normamps=%.7g Overload_EEN=%.7g Result=%.7g +j %.7g ",
 			ParentClass.getName(), getName(), ActiveTerminalIdx, Factor, kVA.re, kVA.im, NormAmps, Overload_EEN, Result.re, Result.im));
 		*/
 

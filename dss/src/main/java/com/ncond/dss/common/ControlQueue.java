@@ -14,6 +14,9 @@ import java.util.List;
 import com.ncond.dss.control.ControlAction;
 import com.ncond.dss.control.ControlElem;
 
+import static java.lang.String.format;
+
+
 public class ControlQueue {
 
 	public static class TimeRec {
@@ -95,7 +98,7 @@ public class ControlQueue {
 
 		if (debugTrace) {
 			writeTraceRecord(owner.getName(), code, owner.getTraceParameter(),
-					String.format("Handle %d pushed onto stack", ctrlHandle));
+					format("Handle %d pushed onto stack", ctrlHandle));
 		}
 
 		return ctrlHandle;
@@ -138,7 +141,7 @@ public class ControlQueue {
 			while (pElem != null) {
 				if (debugTrace) {
 					writeTraceRecord(pElem.getName(), code[0], pElem.getTraceParameter(),
-							String.format("Pop Handle %d Do Nearest Action", hdl));
+							format("Pop Handle %d Do Nearest Action", hdl));
 				}
 				pElem.doPendingAction(code[0], proxyHdl[0]);
 				result = true;
@@ -189,7 +192,7 @@ public class ControlQueue {
 		if (debugTrace) {
 			s = popped ? "by Pop function" : "by control device";
 			writeTraceRecord(pElem.getName(), action.actionCode, pElem.getTraceParameter(),
-					String.format("Handle %d deleted from queue %s", action.actionHandle, s));
+					format("Handle %d deleted from queue %s", action.actionHandle, s));
 		}
 		actionList.remove(i);
 	}
@@ -209,7 +212,7 @@ public class ControlQueue {
 			while (pElem != null) {
 				if (debugTrace) {
 					writeTraceRecord(pElem.getName(), code[0], pElem.getTraceParameter(),
-							String.format("Pop handle %d do action", hdl));
+							format("Pop handle %d do action", hdl));
 				}
 				pElem.doPendingAction(code[0], proxyHdl[0]);
 				result = true;

@@ -10,6 +10,9 @@ import java.io.PrintWriter;
 
 import com.ncond.dss.common.DSSClass;
 
+import static java.lang.String.format;
+
+
 public class CableDataObj extends ConductorDataObj {
 
 	private double epsR;
@@ -40,16 +43,16 @@ public class CableDataObj extends ConductorDataObj {
 			pw.print("~ " + getParentClass().getPropertyName(i) + "=");
 			switch (i) {
 			case 0:
-				pw.println(String.format("%.3g", epsR));
+				pw.println(format("%.3g", epsR));
 				break;
 			case 1:
-				pw.println(String.format("%.6g", insLayer));
+				pw.println(format("%.6g", insLayer));
 				break;
 			case 2:
-				pw.println(String.format("%.6g", diaIns));
+				pw.println(format("%.6g", diaIns));
 				break;
 			case 3:
-				pw.println(String.format("%.6g", diaCable));
+				pw.println(format("%.6g", diaCable));
 				break;
 			}
 		}

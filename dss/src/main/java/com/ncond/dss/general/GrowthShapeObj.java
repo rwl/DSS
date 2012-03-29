@@ -12,6 +12,8 @@ import com.ncond.dss.common.DSSClass;
 
 import static com.ncond.dss.common.Util.resizeArray;
 
+import static java.lang.String.format;
+
 
 public class GrowthShapeObj extends DSSObject {
 
@@ -129,11 +131,11 @@ public class GrowthShapeObj extends DSSObject {
 		switch (index) {
 		case 1:
 			for (i = 0; i < npts; i++)
-				val += String.format("%-d, ", year[i]);
+				val += format("%-d, ", year[i]);
 			break;
 		case 2:
 			for (i = 0; i < npts; i++)
-				val += String.format("%g, ", multiplier[i]);
+				val += format("%g, ", multiplier[i]);
 			break;
 		default:
 			val = super.getPropertyValue(index);

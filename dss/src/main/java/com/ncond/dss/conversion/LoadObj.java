@@ -22,11 +22,25 @@ import com.ncond.dss.general.LoadShapeObj;
 import com.ncond.dss.general.SpectrumObj;
 import com.ncond.dss.parser.Parser;
 import com.ncond.dss.shared.CMatrix;
-import com.ncond.dss.shared.ComplexUtil;
-import com.ncond.dss.shared.MathUtil;
+
+import static com.ncond.dss.shared.MathUtil.quasiLognormal;
+import static com.ncond.dss.shared.MathUtil.gauss;
+
+import static com.ncond.dss.shared.ComplexUtil.divide;
+import static com.ncond.dss.shared.ComplexUtil.degArg;
+import static com.ncond.dss.shared.ComplexUtil.invert;
 
 import static com.ncond.dss.common.Util.rotatePhasorDeg;
 import static com.ncond.dss.common.Util.resizeArray;
+
+import static java.lang.Math.abs;
+import static java.lang.Math.exp;
+import static java.lang.Math.pow;
+import static java.lang.Math.random;
+import static java.lang.Math.signum;
+import static java.lang.Math.sqrt;
+
+import static java.lang.String.format;
 
 
 public class LoadObj extends PCElement {
@@ -221,19 +235,19 @@ public class LoadObj extends PCElement {
 			break;
 		case GAUSSIAN:
 			if (yearlyShapeObj != null) {
-				randomMult = MathUtil.gauss(yearlyShapeObj.getMean(), yearlyShapeObj.getStdDev());
+				randomMult = gauss(yearlyShapeObj.getMean(), yearlyShapeObj.getStdDev());
 			} else {
-				randomMult = MathUtil.gauss(puMean, puStdDev);
+				randomMult = gauss(puMean, puStdDev);
 			}
 			break;
 		case UNIFORM:
-			randomMult = Math.random();  // number between 0 and 1.0
+			randomMult = random();  // number between 0 and 1.0
 			break;
 		case LOGNORMAL:
 			if (yearlyShapeObj != null) {
-				randomMult = MathUtil.quasiLognormal(yearlyShapeObj.getMean());
+				randomMult = quasiLognormal(yearlyShapeObj.getMean());
 			} else {
-				randomMult = MathUtil.quasiLognormal(puMean);
+				randomMult = quasiLognormal(puMean);
 			}
 			break;
 		}
@@ -395,15 +409,15 @@ public class LoadObj extends PCElement {
 			varNominal = 1000.0 * kVArBase * factor * shapeFactor.getImaginary() / nPhases;
 		}
 
-		Yeq = ComplexUtil.divide(new Complex(WNominal, -varNominal), Math.pow(VBase, 2) );
+		Yeq = divide(new Complex(WNominal, -varNominal), pow(VBase, 2) );
 		if (VMinPU != 0.0) {
-			Yeq95 = ComplexUtil.divide(Yeq, Math.pow(VMinPU, 2));  // at 95% voltage
+			Yeq95 = divide(Yeq, pow(VMinPU, 2));  // at 95% voltage
 		} else {
 			Yeq95 = Complex.ZERO;
 		}
 
 		if (VMaxPU != 0.0) {
-			Yeq105 = ComplexUtil.divide(Yeq, Math.pow(VMaxPU, 2));  // at 105% voltage
+			Yeq105 = divide(Yeq, pow(VMaxPU, 2));  // at 105% voltage
 		} else {
 			Yeq105 = Yeq;
 		}
@@ -418,35 +432,35 @@ public class LoadObj extends PCElement {
 
 		switch (loadSpecType) {
 		case KW_PF:
-			kVArBase = kWBase * Math.sqrt(1.0 / Math.pow(PFNominal, 2) - 1.0);
+			kVArBase = kWBase * sqrt(1.0 / pow(PFNominal, 2) - 1.0);
 			if (PFNominal < 0.0)
 				kVArBase = -kVArBase;
-			kVABase = Math.sqrt(Math.pow(kWBase, 2) + Math.pow(kVArBase, 2));
+			kVABase = sqrt(pow(kWBase, 2) + pow(kVArBase, 2));
 			break;
 		case KW_KVAR:  /* need to set PFNominal */
-			kVABase = Math.sqrt(Math.pow(kWBase, 2) + Math.pow(kVArBase, 2));
+			kVABase = sqrt(pow(kWBase, 2) + pow(kVArBase, 2));
 			if (kVABase > 0.0) {
 				PFNominal = kWBase / kVABase;
 				/* If kW and kvar are different signs, PF is negative */
 				if (kVArBase != 0.0)
-					PFNominal = PFNominal * Math.signum(kWBase * kVArBase);
+					PFNominal = PFNominal * signum(kWBase * kVArBase);
 			} else {
 				// leave it as it is
 			}
 			break;
 		case KVA_PF:
-			kWBase   = kVABase * Math.abs(PFNominal);
-			kVArBase = kWBase * Math.sqrt(1.0 / Math.pow(PFNominal, 2) - 1.0);
+			kWBase   = kVABase * abs(PFNominal);
+			kVArBase = kWBase * sqrt(1.0 / pow(PFNominal, 2) - 1.0);
 			if (PFNominal < 0.0)
 				kVArBase = -kVArBase;
 			break;
 		case XFKVA_ALLOCATIONFACTOR_PF:
 		case KWH_KWHDAYS24_CFACTOR_PF:
 			if (PFChanged) {  // recompute kVAr base
-				kVArBase = kWBase * Math.sqrt(1.0 / Math.pow(PFNominal, 2) - 1.0);
+				kVArBase = kWBase * sqrt(1.0 / pow(PFNominal, 2) - 1.0);
 				if (PFNominal < 0.0)
 					kVArBase = -kVArBase;
-				kVABase = Math.sqrt(Math.pow(kWBase, 2) + Math.pow(kVArBase, 2));
+				kVABase = sqrt(pow(kWBase, 2) + pow(kVArBase, 2));
 			}
 			break;
 		}
@@ -488,11 +502,11 @@ public class LoadObj extends PCElement {
 		} else if ((RNeut == 0.0) && (XNeut == 0.0)) {  // solidly grounded
 			Yneut = new Complex(1.0e6, 0.0);  // 1 microohm resistor
 		} else {
-			Yneut = ComplexUtil.invert(new Complex(RNeut, XNeut));
+			Yneut = invert(new Complex(RNeut, XNeut));
 		}
 
 		varBase = 1000.0 * kVArBase / nPhases;
-		YQFixed = -varBase / Math.pow(VBase, 2);
+		YQFixed = -varBase / pow(VBase, 2);
 
 		setInjCurrent(resizeArray(getInjCurrent(), YOrder));
 
@@ -723,7 +737,7 @@ public class LoadObj extends PCElement {
 			curr = new Complex(
 				WNominal,
 				varNominal
-			).divide( ComplexUtil.divide(V, V.abs()).multiply(VBase) ).conjugate();
+			).divide( divide(V, V.abs()).multiply(VBase) ).conjugate();
 
 			putCurrInTerminalArray(getITerminal(), curr.negate(), i);  // put into terminal array taking into account connection
 			setITerminalUpdated(true);
@@ -757,7 +771,7 @@ public class LoadObj extends PCElement {
 				currI = new Complex(
 					WNominal * ZIPV[1],
 					varNominal * ZIPV[4]
-				).divide(ComplexUtil.divide(V, V.abs()).multiply(VBase)).conjugate();
+				).divide(divide(V, V.abs()).multiply(VBase)).conjugate();
 
 				currP = new Complex(
 					WNominal * ZIPV[2],
@@ -770,7 +784,7 @@ public class LoadObj extends PCElement {
 			// low-voltage drop-out
 			if (ZIPV[6] > 0.0) {
 				vx = 500.0 * (VMag / VBase - ZIPV[6]);
-				evx = Math.exp(2 * vx);
+				evx = exp(2 * vx);
 				yv = 0.5 * (1 + (evx - 1) / (evx + 1));
 				curr = curr.multiply(yv);
 			}
@@ -805,7 +819,7 @@ public class LoadObj extends PCElement {
 				// linear factor adjustment does not converge for some reason while power adjust does easily
 				// WattFactor = (1.0 + FCVRwattFactor*(Vmag/VBase - 1.0));
 				if (CVRwattFactor != 1.0) {
-					wattFactor = Math.pow(Vratio, CVRwattFactor);
+					wattFactor = pow(Vratio, CVRwattFactor);
 				} else {
 					wattFactor = Vratio;  // old value (in error): 1.0;
 				}
@@ -819,29 +833,29 @@ public class LoadObj extends PCElement {
 				if (CVRvarFactor == 2.0) {  /* Check for easy, quick ones first */
 					CVar = new Complex(0.0, Yeq.getImaginary()).multiply(V);  // 2 is same as constant impedance
 				} else if (CVRvarFactor == 3.0) {
-					varFactor = Math.pow(Vratio, 3);
-					/*writeDLLDebugFile(String.format("%s, V=%.6g +j %.6g", getName(), V.getReal(), V.getImaginary()));*/
+					varFactor = pow(Vratio, 3);
+					/*writeDLLDebugFile(format("%s, V=%.6g +j %.6g", getName(), V.getReal(), V.getImaginary()));*/
 					CVar = new Complex(
 						0.0,
 						varNominal * varFactor
 					).divide(V).conjugate();
 				} else {
 					/* Other VAr factor code here if not squared or cubed */
-					varFactor = Math.pow(Vratio, CVRvarFactor);
+					varFactor = pow(Vratio, CVRvarFactor);
 					CVar = new Complex(
 						0.0,
 						varNominal * varFactor
 					).divide(V).conjugate();
 				}
 				curr = curr.add(CVar);  // add in Q component of current
-				/*writeDLLDebugFile(String.format("%s, %d, %-.5g, %-.5g, %-.5g, %-.5g, %-.5g, %-.5g, %-.5g, %-.5g ",
+				/*writeDLLDebugFile(format("%s, %d, %-.5g, %-.5g, %-.5g, %-.5g, %-.5g, %-.5g, %-.5g, %-.5g ",
 				 *getName(), i, Vmag, VRatio, WNominal, WattFactor, varNominal, VarFactor, Curr.abs(), V.multiply(Curr.conjugate()).getReal()));*/
 				putCurrInTerminalArray(getITerminal(), curr.negate(), i);  // put into terminal array taking into account connection
 				setITerminalUpdated(true);
 				putCurrInTerminalArray(getInjCurrent(), curr, i);  // put into terminal array taking into account connection
 			}
 		} catch (Exception e) {
-			DSS.doSimpleMsg(String.format("Error in Load.%s: %s ", getName(), e.getMessage()), 5871);
+			DSS.doSimpleMsg(format("Error in Load.%s: %s ", getName(), e.getMessage()), 5871);
 		}
 	}
 
@@ -1337,15 +1351,15 @@ public class LoadObj extends PCElement {
 		switch (loadSpecType) {
 		case XFKVA_ALLOCATIONFACTOR_PF:
 			if (connectedkVA > 0.0) {
-				kWBase = connectedkVA * kVAAllocationFactor * Math.abs(PFNominal);
-				kVArBase = kWBase * Math.sqrt(1.0 / Math.pow(PFNominal, 2) - 1.0);
+				kWBase = connectedkVA * kVAAllocationFactor * abs(PFNominal);
+				kVArBase = kWBase * sqrt(1.0 / pow(PFNominal, 2) - 1.0);
 				if (PFNominal < 0.0) kVArBase = -kVArBase;
 			}
 			break;
 		case KWH_KWHDAYS24_CFACTOR_PF:
 			avgKW = kWh / (kWhDays * 24);
 			kWBase = avgKW * CFactor;
-			kVArBase = kWBase * Math.sqrt(1.0 / Math.pow(PFNominal, 2) - 1.0);
+			kVArBase = kWBase * sqrt(1.0 / pow(PFNominal, 2) - 1.0);
 			if (PFNominal < 0.0) kVArBase = -kVArBase;
 			break;
 		}
@@ -1372,7 +1386,7 @@ public class LoadObj extends PCElement {
 		 */
 		for (int i = 0; i < nPhases; i++) {
 			harmMag[i] = currents[i].abs();
-			harmAng[i] = ComplexUtil.degArg(currents[i]);
+			harmAng[i] = degArg(currents[i]);
 		}
 	}
 
@@ -1431,13 +1445,13 @@ public class LoadObj extends PCElement {
 			V = kVLoadBase;
 		}
 
-		s = s + String.format(" kV=%-.5g", V);
+		s = s + format(" kV=%-.5g", V);
 
 		// divide the load by no. phases
 		if (nPhases > 1) {
-			s = s + String.format(" kW=%-.5g  kvar=%-.5g", kWBase / nPhases, kVArBase / nPhases);
+			s = s + format(" kW=%-.5g  kvar=%-.5g", kWBase / nPhases, kVArBase / nPhases);
 			if (connectedkVA > 0.0) {
-				s = s + String.format(" xfkVA=%-.5g  ", connectedkVA / nPhases);
+				s = s + format(" xfkVA=%-.5g  ", connectedkVA / nPhases);
 			}
 		}
 
@@ -1453,11 +1467,11 @@ public class LoadObj extends PCElement {
 		case 1:
 			return getBus(0);
 		case 2:
-			return String.format("%g", kVLoadBase);
+			return format("%g", kVLoadBase);
 		case 3:
-			return String.format("%g", kWBase);
+			return format("%g", kWBase);
 		case 4:
-			return String.format("%-.3g", PFNominal);
+			return format("%-.3g", PFNominal);
 		case 6:
 			return yearlyShape;
 		case 7:
@@ -1465,17 +1479,17 @@ public class LoadObj extends PCElement {
 		case 8:
 			return dutyShape;
 		case 11:
-			return String.format("%-.3g", kVArBase);
+			return format("%-.3g", kVArBase);
 		case 21:
-			return String.format("%-.3g", kVAAllocationFactor);
+			return format("%-.3g", kVAAllocationFactor);
 		case 22:
-			return String.format("%g", kVABase);
+			return format("%g", kVABase);
 		case 29:
-			return String.format("%-.3g", CFactor);
+			return format("%-.3g", CFactor);
 		case 32:
 			String result = "";
 			for (int i = 0; i < nZIPV; i++)
-				result = result + String.format(" %g", ZIPV[i]);
+				result = result + format(" %g", ZIPV[i]);
 			return result;
 		default:
 			return super.getPropertyValue(index);

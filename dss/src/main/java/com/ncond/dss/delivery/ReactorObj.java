@@ -16,10 +16,16 @@ import com.ncond.dss.common.SolutionObj;
 import com.ncond.dss.common.types.Connection;
 import com.ncond.dss.parser.Parser;
 import com.ncond.dss.shared.CMatrix;
-import com.ncond.dss.shared.ComplexUtil;
-import com.ncond.dss.shared.MathUtil;
+
+import static com.ncond.dss.shared.MathUtil.ETKInvert;
+
+import static com.ncond.dss.shared.ComplexUtil.invert;
 
 import static com.ncond.dss.common.Util.resizeArray;
+
+import static java.lang.Math.pow;
+
+import static java.lang.String.format;
 
 
 /**
@@ -98,7 +104,7 @@ public class ReactorObj extends PDElement {
 
 		kVArRating = 100.0;
 		kVRating = 12.47;
-		X = Math.pow(kVRating, 2) * 1000.0 / kVArRating;
+		X = pow(kVRating, 2) * 1000.0 / kVArRating;
 		R = 0.0;
 		Rp = 0.0;  // indicates it has not been set to a proper value
 		isParallel = false;
@@ -141,7 +147,7 @@ public class ReactorObj extends PDElement {
 				}
 				break;
 			}
-			X = Math.pow(phaseKV, 2) * 1000.0 / kVArPerPhase;
+			X = pow(phaseKV, 2) * 1000.0 / kVArPerPhase;
 			/* Leave r as specified */
 			setNormAmps(kVArPerPhase / phaseKV);
 			setEmergAmps(getNormAmps() * 1.35);
@@ -166,7 +172,7 @@ public class ReactorObj extends PDElement {
 			/* Copy rMatrix to gMatrix and invert */
 			for (i = 0; i < nPhases * nPhases; i++)
 				Gmatrix[i] = Rmatrix[i];
-			MathUtil.ETKInvert(Rmatrix, nPhases, checkError);
+			ETKInvert(Rmatrix, nPhases, checkError);
 			if (checkError[0] > 0) {
 				DSS.doSimpleMsg("Error inverting R matrix for Reactor." +
 						getName() + " - G is zeroed.", 232);
@@ -177,7 +183,7 @@ public class ReactorObj extends PDElement {
 			/* Copy xMatrix to bMatrix and invert */
 			for (i = 0; i < nPhases * nPhases; i++) {
 				Bmatrix[i] = -Xmatrix[i];
-				MathUtil.ETKInvert(Bmatrix, nPhases, checkError);
+				ETKInvert(Bmatrix, nPhases, checkError);
 				if (checkError[0] > 0) {
 					DSS.doSimpleMsg("Error inverting X matrix for Reactor." +
 							getName() + " - B is zeroed.", 233);
@@ -219,7 +225,7 @@ public class ReactorObj extends PDElement {
 		case KVAR:
 		case Z:  /* Some form of r and x specified */
 			// adjust for frequency
-			value = ComplexUtil.invert(new Complex(R, X * freqMultiplier));
+			value = invert(new Complex(R, X * freqMultiplier));
 			// add in rP value if specified
 			if (RpSpecified)
 				value = value.add(new Complex(Gp, 0.0));
@@ -365,7 +371,7 @@ public class ReactorObj extends PDElement {
 			for (int i = 0; i < nPhases; i++) {
 				Complex V = sol.getNodeV(nodeRef[i]);
 				noload = noload.add(new Complex(
-					(Math.pow(V.getReal(), 2) + Math.pow(V.getImaginary(), 2)) / Rp,
+					(pow(V.getReal(), 2) + pow(V.getImaginary(), 2)) / Rp,
 					0.0
 				));  // V^2/Rp
 			}
@@ -397,7 +403,7 @@ public class ReactorObj extends PDElement {
 		setPropertyValue(7, "");
 		setPropertyValue(8, "no");  // parallel
 		setPropertyValue(9, "0");  // r series
-		setPropertyValue(10, String.format("%-.6g", X));
+		setPropertyValue(10, format("%-.6g", X));
 		setPropertyValue(11, "0");  // Rp
 
 		super.initPropertyValues(Reactor.NumPropsThisClass - 1);
@@ -428,7 +434,7 @@ public class ReactorObj extends PDElement {
 					phaseKV = kVRating;
 				}
 
-				s = "phases=1 " + String.format(" kV=%-.5g kvar=%-.5g", phaseKV, kVArPerPhase);
+				s = "phases=1 " + format(" kV=%-.5g kvar=%-.5g", phaseKV, kVArPerPhase);
 				/* Leave r as specified */
 				break;
 			case Z:
@@ -447,7 +453,7 @@ public class ReactorObj extends PDElement {
 						Rm = Rm + Rmatrix[i * nPhases + j];
 				Rm = Rm / (nPhases * (nPhases - 1.0) / 2.0);
 
-				s = s + String.format(" R=%-.5g", (Rs - Rm));
+				s = s + format(" R=%-.5g", (Rs - Rm));
 
 				// x1
 				Rs = 0.0;   // avg self
@@ -460,7 +466,7 @@ public class ReactorObj extends PDElement {
 						Rm = Rm + Xmatrix[i * nPhases + j];
 				Rm = Rm / (nPhases * (nPhases - 1.0) / 2.0);
 
-				s = s + String.format(" X=%-.5g", (Rs - Rm));
+				s = s + format(" X=%-.5g", (Rs - Rm));
 				break;
 			}
 

@@ -15,6 +15,8 @@ import com.ncond.dss.common.exceptions.SolverProblem;
 import com.ncond.dss.common.types.BuildOption;
 import com.ncond.dss.common.types.YPrimType;
 
+import static java.lang.String.format;
+
 
 public class YMatrix {
 
@@ -200,7 +202,7 @@ public class YMatrix {
 			Y.getMatrixElement(i, i, c);
 			if (c[0].abs() == 0.0) {
 				nb = ckt.getMapNodeToBus(i + 1);
-				sb.append(String.format("%sZero diagonal for bus %s, node %d",
+				sb.append(format("%sZero diagonal for bus %s, node %d",
 					DSS.CRLF, ckt.getBusList().get(nb.busRef), nb.nodeNum));
 			}
 		}
@@ -209,14 +211,14 @@ public class YMatrix {
 		sCol = Y.getSingularCol();  // returns a 0-based node number
 		if (sCol >= 0) {
 			nb = ckt.getMapNodeToBus(sCol + 1);
-			sb.append(String.format("%sMatrix singularity at bus %s, node %d",
+			sb.append(format("%sMatrix singularity at bus %s, node %d",
 				DSS.CRLF, ckt.getBusList().get(nb.busRef), sCol));
 		}
 
 		cliques = new int[ckt.getNumNodes()];
 		nIslands = Y.findIslands(ckt.getNumNodes(), cliques);
 		if (nIslands > 1) {
-			sb.append(String.format("%sFound %d electrical islands:", DSS.CRLF, nIslands));
+			sb.append(format("%sFound %d electrical islands:", DSS.CRLF, nIslands));
 			for (int i = 0; i < nIslands; i++) {
 				count = 0;
 				first = 0;
@@ -228,7 +230,7 @@ public class YMatrix {
 					}
 				}
 				nb = ckt.getMapNodeToBus((int) first + 1);
-				sb.append(String.format("%s  #%d has %d nodes, including bus %s (node %d)",
+				sb.append(format("%s  #%d has %d nodes, including bus %s (node %d)",
 					DSS.CRLF, i+1, count, ckt.getBusList().get(nb.busRef - 1), first + 1));
 			}
 		}

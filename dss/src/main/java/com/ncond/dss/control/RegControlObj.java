@@ -19,11 +19,19 @@ import com.ncond.dss.common.DSSClass;
 import com.ncond.dss.common.SolutionObj;
 import com.ncond.dss.common.types.Connection;
 import com.ncond.dss.delivery.TransformerObj;
-import com.ncond.dss.shared.ComplexUtil;
+
+import static com.ncond.dss.shared.ComplexUtil.divide;
 
 import static com.ncond.dss.common.Util.appendToEventLog;
 import static com.ncond.dss.common.Util.getCktElementIndex;
 import static com.ncond.dss.common.Util.resizeArray;
+
+import static java.lang.Math.abs;
+import static java.lang.Math.round;
+import static java.lang.Math.min;
+
+import static java.lang.String.format;
+
 
 /**
  * A control element that is connected to a terminal of another
@@ -204,7 +212,7 @@ public class RegControlObj extends ControlElem {
 					controlledPhaseIdx = i;
 				}
 			}
-			Vctrl = ComplexUtil.divide(VBuffer[controlledPhaseIdx], PTRatio);
+			Vctrl = divide(VBuffer[controlledPhaseIdx], PTRatio);
 			break;
 		case RegControl.MINPHASE:
 			controlledPhaseIdx = 0;
@@ -215,11 +223,11 @@ public class RegControlObj extends ControlElem {
 					controlledPhaseIdx = i;
 				}
 			}
-			Vctrl = ComplexUtil.divide(VBuffer[controlledPhaseIdx], PTRatio);
+			Vctrl = divide(VBuffer[controlledPhaseIdx], PTRatio);
 			break;
 		default:
 			/* Just use one phase because that's what most controls do. */
-			Vctrl = ComplexUtil.divide(VBuffer[PTPhaseIdx], PTRatio);
+			Vctrl = divide(VBuffer[PTPhaseIdx], PTRatio);
 			controlledPhaseIdx = PTPhaseIdx;
 			break;
 		}
@@ -261,7 +269,7 @@ public class RegControlObj extends ControlElem {
 		int numTaps;
 		double result;
 
-		numTaps = (int) (0.7 * Math.abs(proposedChange) / increment);
+		numTaps = (int) (0.7 * abs(proposedChange) / increment);
 
 		if (numTaps == 0) numTaps = 1;
 
@@ -298,7 +306,7 @@ public class RegControlObj extends ControlElem {
 			proposedChange = proposedChange + increment;
 		}
 
-		if (Math.abs(proposedChange) < 0.9 * increment)
+		if (abs(proposedChange) < 0.9 * increment)
 			proposedChange = 0.0;
 
 		return result;
@@ -318,7 +326,7 @@ public class RegControlObj extends ControlElem {
 		switch (code) {
 		case RegControl.ACTION_TAPCHANGE:
 			if (debugTrace) {
-				regWriteDebugRecord(String.format("+++ %.6g s: Handling tapChange = %.8g",
+				regWriteDebugRecord(format("+++ %.6g s: Handling tapChange = %.8g",
 						ckt.getSolution().getDynaVars().t, pendingTapChange));
 			}
 
@@ -334,7 +342,7 @@ public class RegControlObj extends ControlElem {
 					elem.setPresentTap(tapWindingIdx, elem.getPresentTap(tapWindingIdx) + tapChangeToMake);
 					if (showEventLog) {
 						appendToEventLog("Regulator." + getControlledElement().getName(),
-							String.format("Changed %d taps to %-.6g.", lastChange, elem.getPresentTap(tapWindingIdx)));
+							format("Changed %d taps to %-.6g.", lastChange, elem.getPresentTap(tapWindingIdx)));
 					}
 					setPendingTapChange(0.0);  // reset to no change; program will determine if another needed
 					armed = false;
@@ -353,10 +361,10 @@ public class RegControlObj extends ControlElem {
 					elem.setPresentTap(tapWindingIdx, elem.getPresentTap(tapWindingIdx) + tapChangeToMake);
 					if (showEventLog) {
 						appendToEventLog("Regulator." + getControlledElement().getName(),
-							String.format(" Changed %d tap to %-.6g.", lastChange, elem.getPresentTap(tapWindingIdx)));
+							format(" Changed %d tap to %-.6g.", lastChange, elem.getPresentTap(tapWindingIdx)));
 					}
 					if (debugTrace) {
-						regWriteDebugRecord(String.format("--- Regulator.%s Changed %d tap to %-.6g.",
+						regWriteDebugRecord(format("--- Regulator.%s Changed %d tap to %-.6g.",
 							elem.getControlElement().getName(), lastChange, elem.getPresentTap(tapWindingIdx)));
 					}
 
@@ -371,7 +379,7 @@ public class RegControlObj extends ControlElem {
 		case RegControl.ACTION_REVERSE:
 			// toggle reverse mode flag
 			if (debugTrace) {
-				regWriteDebugRecord(String.format("Handling Reverse Action, ReversePending=%s, InReverseMode=%s",
+				regWriteDebugRecord(format("Handling Reverse Action, ReversePending=%s, InReverseMode=%s",
 						String.valueOf(reversePending), String.valueOf(inReverseMode)));
 			}
 			if (reversePending) {  // check to see if action has reset
@@ -410,7 +418,7 @@ public class RegControlObj extends ControlElem {
 
 						if (fwdPower < -revPowerThreshold) {
 							if (debugTrace)
-								regWriteDebugRecord(String.format("Pushing Reverse Action, FwdPower=%.8g", fwdPower));
+								regWriteDebugRecord(format("Pushing Reverse Action, FwdPower=%.8g", fwdPower));
 							reversePending = true;
 							ckt.getControlQueue().push(ckt.getSolution().getIntHour(),
 							ckt.getSolution().getDynaVars().t + revDelay,
@@ -425,7 +433,7 @@ public class RegControlObj extends ControlElem {
 						fwdPower = -controlledTransformer.getPower(elementTerminalIdx).getReal();  // Watts
 						if (fwdPower > revPowerThreshold) {
 							if (debugTrace)
-								regWriteDebugRecord(String.format("Pushing Reverse Action to switch back, FwdPower=%.8g", fwdPower));
+								regWriteDebugRecord(format("Pushing Reverse Action to switch back, FwdPower=%.8g", fwdPower));
 							reversePending = true;
 							ckt.getControlQueue().push(ckt.getSolution().getIntHour(),
 							ckt.getSolution().getDynaVars().t + revDelay,
@@ -440,12 +448,12 @@ public class RegControlObj extends ControlElem {
 					if (reverseNeutral) {
 						if (!armed) {
 							setPendingTapChange(0.0);
-							if (Math.abs(controlledTransformer.getPresentTap(tapWindingIdx) - 1.0) > DSS.EPSILON) {
+							if (abs(controlledTransformer.getPresentTap(tapWindingIdx) - 1.0) > DSS.EPSILON) {
 								increment = controlledTransformer.getTapIncrement(tapWindingIdx);
-								setPendingTapChange(Math.round((1.0 - controlledTransformer.getPresentTap(tapWindingIdx)) / increment) * increment);
+								setPendingTapChange(round((1.0 - controlledTransformer.getPresentTap(tapWindingIdx)) / increment) * increment);
 								if ((pendingTapChange != 0.0) && (!armed)) {
 									if (debugTrace)
-										regWriteDebugRecord(String.format("*** %.6g s: Pushing TapChange = %.8g, delay= %.8g",
+										regWriteDebugRecord(format("*** %.6g s: Pushing TapChange = %.8g, delay= %.8g",
 									ckt.getSolution().getDynaVars().t,
 									pendingTapChange, tapDelay));
 									ckt.getControlQueue().push(ckt.getSolution().getIntHour(),
@@ -486,7 +494,7 @@ public class RegControlObj extends ControlElem {
 		if (VLimitActive) {
 			if (usingRegulatedBus) {
 				controlledTransformer.getWindingVoltages(elementTerminalIdx, VBuffer);
-				VLocalBus = ComplexUtil.divide(VBuffer[1], PTRatio).abs();
+				VLocalBus = divide(VBuffer[1], PTRatio).abs();
 			} else {
 				VLocalBus = VControl.abs();
 			}
@@ -498,7 +506,7 @@ public class RegControlObj extends ControlElem {
 		if ((!usingRegulatedBus) && LDCActive) {
 			getControlledElement().getCurrents(cBuffer);
 
-			ILDC = ComplexUtil.divide(cBuffer[getControlledElement().getNumConds() * (elementTerminalIdx+1) + controlledPhaseIdx], CTRating);  // TODO check zero based indexing
+			ILDC = divide(cBuffer[getControlledElement().getNumConds() * (elementTerminalIdx+1) + controlledPhaseIdx], CTRating);  // TODO check zero based indexing
 			if (inReverseMode) {
 				VLDC  = new Complex(revR, revX).multiply(ILDC);
 			} else {
@@ -510,7 +518,7 @@ public class RegControlObj extends ControlElem {
 		Vactual = VControl.abs();
 
 		// check for out of band voltage
-		tapChangeIsNeeded = Math.abs(Vreg - Vactual) > bandwidth / 2.0;
+		tapChangeIsNeeded = abs(Vreg - Vactual) > bandwidth / 2.0;
 
 		if (VLimitActive) {
 			if (VLocalBus > VLimit) tapChangeIsNeeded = true;
@@ -524,7 +532,7 @@ public class RegControlObj extends ControlElem {
 			}
 			boostNeeded = Vboost * PTRatio / controlledTransformer.getBaseVoltage(elementTerminalIdx);  // per unit winding boost needed
 			increment = controlledTransformer.getTapIncrement(tapWindingIdx);
-			setPendingTapChange(Math.round(boostNeeded / increment) * increment);  // make sure it is an even increment
+			setPendingTapChange(round(boostNeeded / increment) * increment);  // make sure it is an even increment
 
 			/* If tap is another winding or in reverse mode, it has to move
 			 * the other way to accomplish the change */
@@ -714,7 +722,7 @@ public class RegControlObj extends ControlElem {
 
 	private double computeTimeDelay(double Vavg) {
 		if (inverseTime) {
-			return timeDelay / Math.min(10.0, (2.0 * Math.abs(Vreg - Vavg) / bandwidth));
+			return timeDelay / min(10.0, (2.0 * abs(Vreg - Vavg) / bandwidth));
 		} else {
 			return timeDelay;
 		}

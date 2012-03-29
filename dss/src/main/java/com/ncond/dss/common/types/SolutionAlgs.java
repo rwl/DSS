@@ -20,10 +20,20 @@ import com.ncond.dss.conversion.VSourceObj;
 import com.ncond.dss.delivery.Fault;
 import com.ncond.dss.delivery.FaultObj;
 import com.ncond.dss.general.SpectrumObj;
-import com.ncond.dss.shared.MathUtil;
+
+import static com.ncond.dss.shared.MathUtil.quasiLognormal;
+import static com.ncond.dss.shared.MathUtil.gauss;
 
 import static com.ncond.dss.common.Util.resizeArray;
 import static com.ncond.dss.common.Util.retrieveSavedVoltages;
+
+import static java.lang.Math.max;
+import static java.lang.Math.abs;
+import static java.lang.Math.random;
+import static java.lang.Math.round;
+
+import static java.lang.String.format;
+
 
 /**
  * Solution algorithms.
@@ -65,7 +75,7 @@ public class SolutionAlgs {
 			sol.setIntervalHrs(sol.getDynaVars().h / 3600.0);  // needed for energy meters and storage elements
 			if (!DSS.DIFilesAreOpen)
 				DSS.energyMeterClass.openAllDIFiles();  // open demand interval files, if desired, creates DI_Totals
-			twoPct = Math.max(sol.getNumberOfTimes() / 50, 1);
+			twoPct = max(sol.getNumberOfTimes() / 50, 1);
 			for (int n = 0; n < sol.getNumberOfTimes(); n++) {
 				if (!DSS.solutionAbort) {
 					sol.incrementTime();
@@ -196,7 +206,7 @@ public class SolutionAlgs {
 
 		//t = 0.0;
 		//DSS.getMonitorClass().resetAll();
-		int twoPct = Math.max(1, sol.getNumberOfTimes() / 50);
+		int twoPct = max(1, sol.getNumberOfTimes() / 50);
 		try {
 			sol.setIntervalHrs(sol.getDynaVars().h / 3600.0);  // needed for energy meters and storage devices
 			for (int n = 0; n < sol.getNumberOfTimes(); n++)
@@ -359,7 +369,7 @@ public class SolutionAlgs {
 			//DSS.getMonitorClass().resetAll();
 			//DSS.energyMeterClass.resetAll();
 			sol.setIntervalHrs(sol.getDynaVars().h / 3600.0);  // needed for energy meters and storage devices
-			int nDaily = (int) Math.round(24.0 / sol.getIntervalHrs());
+			int nDaily = (int) round(24.0 / sol.getIntervalHrs());
 
 			if (!DSS.DIFilesAreOpen)
 				DSS.energyMeterClass.openAllDIFiles();  // open demand interval files, if desired
@@ -374,10 +384,10 @@ public class SolutionAlgs {
 					// always set loadMultiplier with prop in case matrix must be rebuilt
 					switch (sol.getRandomType()) {
 					case UNIFORM:
-						ckt.setLoadMultiplier(Math.random());  // number between 0 and 1
+						ckt.setLoadMultiplier(random());  // number between 0 and 1
 						break;
 					case GAUSSIAN:
-						ckt.setLoadMultiplier(MathUtil.gauss(ckt.getDefaultDailyShapeObj().getMean(),
+						ckt.setLoadMultiplier(gauss(ckt.getDefaultDailyShapeObj().getMean(),
 								ckt.getDefaultDailyShapeObj().getStdDev()));
 						break;
 					}
@@ -444,14 +454,14 @@ public class SolutionAlgs {
 					// always set loadMultiplier with prop in case matrix must be rebuilt
 					switch (sol.getRandomType()) {
 					case UNIFORM:
-						ckt.setLoadMultiplier(Math.random());  // number between 0 and 1
+						ckt.setLoadMultiplier(random());  // number between 0 and 1
 						break;
 					case GAUSSIAN:
-						ckt.setLoadMultiplier(MathUtil.gauss(ckt.getDefaultDailyShapeObj().getMean(),
+						ckt.setLoadMultiplier(gauss(ckt.getDefaultDailyShapeObj().getMean(),
 								ckt.getDefaultDailyShapeObj().getStdDev()));
 						break;
 					case LOGNORMAL:
-						ckt.setLoadMultiplier(MathUtil.quasiLognormal(ckt.getDefaultDailyShapeObj().getMean()));
+						ckt.setLoadMultiplier(quasiLognormal(ckt.getDefaultDailyShapeObj().getMean()));
 						break;
 					}
 
@@ -501,14 +511,14 @@ public class SolutionAlgs {
 			//DSS.getMonitorClass().resetAll();
 			//DSS.energyMeterClass.resetAll();
 
-			int nDaily = (int) Math.round(24.0 / sol.getDynaVars().h * 3600.0);
+			int nDaily = (int) round(24.0 / sol.getDynaVars().h * 3600.0);
 
 			if (!DSS.DIFilesAreOpen)
 				DSS.energyMeterClass.openAllDIFiles();  // open demand interval files, if desired
 
 			DSS.forms.progressCaption("Load-Duration Mode 1 Solution.");
 
-			// (set in solve method) ckt.setDefaultGrowthFactor(Math.pow(ckt.getDefaultGrowthRate(), (sol.getYear() - 1)));
+			// (set in solve method) ckt.setDefaultGrowthFactor(pow(ckt.getDefaultGrowthRate(), (sol.getYear() - 1)));
 
 			sol.setIntHour(0);
 			for (int i = 0; i < nDaily; i++) {
@@ -580,7 +590,7 @@ public class SolutionAlgs {
 		if (!DSS.DIFilesAreOpen)
 			DSS.energyMeterClass.openAllDIFiles();  // open demand interval files, if desired
 
-		// (set in solve method) ckt.setDefaultGrowthFactor(Math.pow(ckt.getDefaultGrowthRate(), (sol.getYear() - 1)));
+		// (set in solve method) ckt.setDefaultGrowthFactor(pow(ckt.getDefaultGrowthRate(), (sol.getYear() - 1)));
 
 		try {
 			if (DSS.solutionAbort) {
@@ -623,7 +633,7 @@ public class SolutionAlgs {
 		Circuit ckt = DSS.activeCircuit;
 
 		int numFaults = ckt.getFaults().size();
-		whichOne = ((int) Math.random() * numFaults) + 1;
+		whichOne = ((int) random() * numFaults) + 1;
 		if (whichOne > numFaults) whichOne = numFaults;
 
 		for (int i = 0; i < numFaults; i++) {
@@ -808,7 +818,7 @@ public class SolutionAlgs {
 
 		for (int i = 0; i < numFreq[0]; i++) {
 			/* Allow a little tolerance (0.1 hz) for the frequency for round off error */
-			if (Math.abs(f - freqList[i]) < 0.1)
+			if (abs(f - freqList[i]) < 0.1)
 				return;  // already in list, nothing to do
 		}
 
@@ -933,10 +943,10 @@ public class SolutionAlgs {
 
 			for (int i = 0; i < nFreq[0]; i++) {
 				sol.setFrequency(frequencyList[i]);
-				if (Math.abs(sol.getHarmonic() - 1.0) > DSS.EPSILON) {  // Skip fundamental
+				if (abs(sol.getHarmonic() - 1.0) > DSS.EPSILON) {  // Skip fundamental
 					DSS.forms.progressCaption("Solving at frequency = " +
-							String.format("%g", sol.getFrequency()));
-					DSS.forms.showPctProgress((int) Math.round((100.0 * i) / nFreq[0]));
+							format("%g", sol.getFrequency()));
+					DSS.forms.showPctProgress((int) round((100.0 * i) / nFreq[0]));
 					sol.solveDirect();
 					DSS.monitorClass.sampleAll();
 					// storage devices are assumed to stay the same since there is no time variation in this mode

@@ -43,6 +43,9 @@ import com.ncond.dss.parser.Parser;
 import com.ncond.dss.shared.CktTree;
 import com.ncond.dss.shared.HashList;
 
+import static java.lang.String.format;
+
+
 public class Circuit extends NamedObject {
 
 	public class CktElementDef {
@@ -779,7 +782,7 @@ public class Circuit extends NamedObject {
 						break;
 					}
 				}
-				currDir = dir + String.format("%.3d", i);
+				currDir = dir + format("%.3d", i);
 			}
 		} else {
 			File F = new File(dir);

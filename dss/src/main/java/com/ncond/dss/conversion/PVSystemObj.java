@@ -25,39 +25,27 @@ import com.ncond.dss.general.TempShapeObj;
 import com.ncond.dss.general.XYCurveObj;
 import com.ncond.dss.parser.Parser;
 import com.ncond.dss.shared.CMatrix;
-import com.ncond.dss.shared.ComplexUtil;
-import com.ncond.dss.shared.MathUtil;
 
-import static com.ncond.dss.common.Util.appendToEventLog;
-import static com.ncond.dss.common.Util.compareTextShortest;
-import static com.ncond.dss.common.Util.parseObjectClassandName;
-import static com.ncond.dss.common.Util.clearEventLog;
-import static com.ncond.dss.common.Util.extractFileDir;
+import static com.ncond.dss.shared.MathUtil.sqr;
+import static com.ncond.dss.shared.MathUtil.quasiLognormal;
+import static com.ncond.dss.shared.MathUtil.gauss;
+
+import static com.ncond.dss.shared.ComplexUtil.divide;
+import static com.ncond.dss.shared.ComplexUtil.polarDeg2Complex;
+import static com.ncond.dss.shared.ComplexUtil.invert;
+
 import static com.ncond.dss.common.Util.rotatePhasorDeg;
 import static com.ncond.dss.common.Util.rotatePhasorRad;
-import static com.ncond.dss.common.Util.fireOffEditor;
-import static com.ncond.dss.common.Util.dumpAllocationFactors;
-import static com.ncond.dss.common.Util.stripExtension;
-import static com.ncond.dss.common.Util.doResetFaults;
-import static com.ncond.dss.common.Util.doResetControls;
-import static com.ncond.dss.common.Util.doResetKeepList;
-import static com.ncond.dss.common.Util.powerFactor;
-import static com.ncond.dss.common.Util.getCktElementIndex;
-import static com.ncond.dss.common.Util.getControlModeID;
-import static com.ncond.dss.common.Util.convertPFToPFRange2;
-import static com.ncond.dss.common.Util.interpretStringListArray;
-import static com.ncond.dss.common.Util.getMinPUVoltage;
-import static com.ncond.dss.common.Util.convertPFRange2ToPF;
-import static com.ncond.dss.common.Util.getTotalPowerFromSources;
-import static com.ncond.dss.common.Util.goForwardAndRephase;
-import static com.ncond.dss.common.Util.interpretDblArray;
-import static com.ncond.dss.common.Util.interpretYesNo;
-import static com.ncond.dss.common.Util.strReal;
 import static com.ncond.dss.common.Util.getLoadModel;
 import static com.ncond.dss.common.Util.resizeArray;
-import static com.ncond.dss.common.Util.rewriteAlignedFile;
-import static com.ncond.dss.common.Util.stripClassName;
 import static com.ncond.dss.common.Util.getSolutionModeID;
+
+import static java.lang.Math.abs;
+import static java.lang.Math.random;
+import static java.lang.Math.signum;
+import static java.lang.Math.sqrt;
+
+import static java.lang.String.format;
 
 
 /**
@@ -259,9 +247,9 @@ public class PVSystemObj extends PCElement {
 		setPropertyValue(0, "3");         // "phases";
 		setPropertyValue(1, getBus(0));   // "bus1";
 
-		setPropertyValue(PVSystem.KV, String.format("%g", kVPVSystemBase));
-		setPropertyValue(PVSystem.IRRADIANCE, String.format("%g", irradiance));
-		setPropertyValue(PVSystem.PF, String.format("%g", PFNominal));
+		setPropertyValue(PVSystem.KV, format("%g", kVPVSystemBase));
+		setPropertyValue(PVSystem.IRRADIANCE, format("%g", irradiance));
+		setPropertyValue(PVSystem.PF, format("%g", PFNominal));
 		setPropertyValue(PVSystem.MODEL, "1");
 		setPropertyValue(PVSystem.YEARLY, "");
 		setPropertyValue(PVSystem.DAILY, "");
@@ -270,23 +258,23 @@ public class PVSystemObj extends PCElement {
 		setPropertyValue(PVSystem.T_DAILY, "");
 		setPropertyValue(PVSystem.T_DUTY, "");
 		setPropertyValue(PVSystem.CONNECTION, "wye");
-		setPropertyValue(PVSystem.KVAR, String.format("%g", getPresentKVAr()));
+		setPropertyValue(PVSystem.KVAR, format("%g", getPresentKVAr()));
 
-		setPropertyValue(PVSystem.PCTR, String.format("%g", pctR));
-		setPropertyValue(PVSystem.PCTX, String.format("%g", pctX));
+		setPropertyValue(PVSystem.PCTR, format("%g", pctR));
+		setPropertyValue(PVSystem.PCTX, format("%g", pctX));
 
 		setPropertyValue(PVSystem.CLASS, "1"); //"class"
 
 		setPropertyValue(PVSystem.INV_EFF_CURVE, "");
-		setPropertyValue(PVSystem.TEMP, String.format("%g", temperature));
-		setPropertyValue(PVSystem.PMPP, String.format("%g", Pmpp));
+		setPropertyValue(PVSystem.TEMP, format("%g", temperature));
+		setPropertyValue(PVSystem.PMPP, format("%g", Pmpp));
 		setPropertyValue(PVSystem.P_T_CURVE, "");
 		setPropertyValue(PVSystem.CUT_IN, "20");
 		setPropertyValue(PVSystem.CUT_OUT, "20");
 
 		setPropertyValue(PVSystem.VMIN_PU, "0.90");
 		setPropertyValue(PVSystem.VMAX_PU, "1.10");
-		setPropertyValue(PVSystem.KVA, String.format("%g", kVARating));
+		setPropertyValue(PVSystem.KVA, format("%g", kVARating));
 
 		setPropertyValue(PVSystem.USER_MODEL, "");  // UserModel
 		setPropertyValue(PVSystem.USER_DATA, "");   // UserData
@@ -298,10 +286,10 @@ public class PVSystemObj extends PCElement {
 	@Override
 	public String getPropertyValue(int index) {
 		switch (index) {
-		case PVSystem.KV         : return String.format("%.6g", kVPVSystemBase);
-		case PVSystem.IRRADIANCE : return String.format("%.6g", irradiance);
-		case PVSystem.PF         : return String.format("%.6g", PFNominal);
-		case PVSystem.MODEL      : return String.format("%d",   voltageModel);
+		case PVSystem.KV         : return format("%.6g", kVPVSystemBase);
+		case PVSystem.IRRADIANCE : return format("%.6g", irradiance);
+		case PVSystem.PF         : return format("%.6g", PFNominal);
+		case PVSystem.MODEL      : return format("%d",   voltageModel);
 		case PVSystem.YEARLY     : return yearlyShape;
 		case PVSystem.DAILY      : return dailyShape;
 		case PVSystem.DUTY       : return dutyShape;
@@ -311,19 +299,19 @@ public class PVSystemObj extends PCElement {
 		case PVSystem.T_DUTY      : return dutyTShape;
 
 		/*case PVSystem.propCONNECTION :;*/
-		case PVSystem.KVAR       : return String.format("%.6g", kVArOut);
-		case PVSystem.PCTR       : return String.format("%.6g", pctR);
-		case PVSystem.PCTX       : return String.format("%.6g", pctX);
+		case PVSystem.KVAR       : return format("%.6g", kVArOut);
+		case PVSystem.PCTR       : return format("%.6g", pctR);
+		case PVSystem.PCTX       : return format("%.6g", pctX);
 		/*case PVSystem.propCLASS      = 17;*/
 		case PVSystem.INV_EFF_CURVE: return inverterCurve;
-		case PVSystem.TEMP       : return String.format("%.6g", temperature);
-		case PVSystem.PMPP       : return String.format("%.6g", Pmpp);
+		case PVSystem.TEMP       : return format("%.6g", temperature);
+		case PVSystem.PMPP       : return format("%.6g", Pmpp);
 		case PVSystem.P_T_CURVE  : return powerTempCurve;
-		case PVSystem.CUT_IN      : return String.format("%.6g", pctCutIn);
-		case PVSystem.CUT_OUT     : return String.format("%.6g", pctCutOut);
-		case PVSystem.VMIN_PU     : return String.format("%.6g", VMinPU);
-		case PVSystem.VMAX_PU     : return String.format("%.6g", VMaxPU);
-		case PVSystem.KVA        : return String.format("%.6g", kVARating);
+		case PVSystem.CUT_IN      : return format("%.6g", pctCutIn);
+		case PVSystem.CUT_OUT     : return format("%.6g", pctCutOut);
+		case PVSystem.VMIN_PU     : return format("%.6g", VMinPU);
+		case PVSystem.VMAX_PU     : return format("%.6g", VMaxPU);
+		case PVSystem.KVA        : return format("%.6g", kVARating);
 
 		case PVSystem.USER_MODEL  : return userModel.getName();
 		case PVSystem.USER_DATA   : return "(" + super.getPropertyValue(index) + ")";
@@ -343,13 +331,13 @@ public class PVSystemObj extends PCElement {
 			randomMult = 1.0;
 			break;
 		case GAUSSIAN:
-			randomMult = MathUtil.gauss(yearlyShapeObj.getMean(), yearlyShapeObj.getStdDev());
+			randomMult = gauss(yearlyShapeObj.getMean(), yearlyShapeObj.getStdDev());
 			break;
 		case UNIFORM:
-			randomMult = Math.random();  // number between 0 and 1.0
+			randomMult = random();  // number between 0 and 1.0
 			break;
 		case LOGNORMAL:
-			randomMult = MathUtil.quasiLognormal(yearlyShapeObj.getMean());
+			randomMult = quasiLognormal(yearlyShapeObj.getMean());
 			break;
 		}
 	}
@@ -465,19 +453,19 @@ public class PVSystemObj extends PCElement {
 				break;
 
 			default:
-				Yeq = ComplexUtil.divide(new Complex(
+				Yeq = divide(new Complex(
 					PNominalPerPhase,
 					-QNominalPerPhase
-				), MathUtil.sqr(VBase) );  // VBase must be L-N for 3-phase
+				), sqr(VBase) );  // VBase must be L-N for 3-phase
 
 				if (VMinPU != 0.0) {
-					Yeq95 = ComplexUtil.divide(Yeq, MathUtil.sqr(VMinPU));  // at 95% voltage
+					Yeq95 = divide(Yeq, sqr(VMinPU));  // at 95% voltage
 				} else {
 					Yeq95 = Yeq; // Always a constant Z model
 				}
 
 				if (VMaxPU != 0.0) {
-					Yeq105 = ComplexUtil.divide(Yeq, MathUtil.sqr(VMaxPU));  // at 105% voltage
+					Yeq105 = divide(Yeq, sqr(VMaxPU));  // at 105% voltage
 				} else {
 					Yeq105 = Yeq;
 				}
@@ -495,8 +483,8 @@ public class PVSystemObj extends PCElement {
 		varBase = 1000.0 * kVArOut / nPhases;
 
 		// values in ohms for Thevenin equivalents
-		RThev = pctR * 0.01 * MathUtil.sqr(getPresentKV()) / kVARating * 1000.0;
-		XThev = pctX * 0.01 * MathUtil.sqr(getPresentKV()) / kVARating * 1000.0;
+		RThev = pctR * 0.01 * sqr(getPresentKV()) / kVARating * 1000.0;
+		XThev = pctX * 0.01 * sqr(getPresentKV()) / kVARating * 1000.0;
 
 		cutInKW  = pctCutIn  * kVARating / 100.0;
 		cutOutKW = pctCutOut * kVARating / 100.0;
@@ -556,7 +544,7 @@ public class PVSystemObj extends PCElement {
 			Y = Yeq;  // L-N value computed in initialization routines
 
 			if (connection == Connection.DELTA)
-				Y = ComplexUtil.divide(Y, 3.0);  // convert to delta impedance
+				Y = divide(Y, 3.0);  // convert to delta impedance
 			Y = new Complex(Y.getReal(), Y.getImaginary() / freqMultiplier);
 			Yij = Y.negate();
 			for (i = 0; i < nPhases; i++) {
@@ -594,7 +582,7 @@ public class PVSystemObj extends PCElement {
 				}
 				break;
 			case DELTA:
-				Y   = ComplexUtil.divide(Y, 3.0);  // convert to delta impedance
+				Y   = divide(Y, 3.0);  // convert to delta impedance
 				Yij = Y.negate();
 				for (i = 0; i < nPhases; i++) {
 					j = i + 1;
@@ -634,7 +622,7 @@ public class PVSystemObj extends PCElement {
 			if (PFNominal == 1.0) {
 				kVArOut = 0.0;
 			} else {
-				kVArOut = kWOut * Math.sqrt(1.0 / MathUtil.sqr(PFNominal) - 1.0) * Math.signum(PFNominal);
+				kVArOut = kWOut * sqrt(1.0 / sqr(PFNominal) - 1.0) * signum(PFNominal);
 				// if PF is negative, make sure kVAr has opposite sign of kW
 				// kW will always be positive
 			}
@@ -643,13 +631,13 @@ public class PVSystemObj extends PCElement {
 		}
 
 		// limit kVAr so that kVA of inverter is not exceeded
-		kVA_Gen = Math.sqrt(MathUtil.sqr(kWOut) + MathUtil.sqr(kVArOut));
+		kVA_Gen = sqrt(sqr(kWOut) + sqr(kVArOut));
 		if (kVA_Gen > kVARating) {
 			if (kWOut > kVARating) {
 				kWOut   = kVARating;
 				kVArOut = 0.0;
 			} else {
-				kVArOut = Math.sqrt(MathUtil.sqr(kVARating) - MathUtil.sqr(kW_Out)) * Math.signum(kVArOut);
+				kVArOut = sqrt(sqr(kVARating) - sqr(kW_Out)) * signum(kVArOut);
 			}
 		}
 	}
@@ -781,9 +769,9 @@ public class PVSystemObj extends PCElement {
 			case DELTA:
 				VMag = VMag / DSS.SQRT3;  // L-N magnitude
 				if (VMag <= VBase95) {
-					curr = ComplexUtil.divide(Yeq95, 3.0).multiply(V);   // below 95% use an impedance model
+					curr = divide(Yeq95, 3.0).multiply(V);   // below 95% use an impedance model
 				} else if (VMag > VBase105) {
-					curr = ComplexUtil.divide(Yeq105, 3.0).multiply(V);  // above 105% use an impedance model
+					curr = divide(Yeq105, 3.0).multiply(V);  // above 105% use an impedance model
 				} else {
 					curr = new Complex(
 						PNominalPerPhase,
@@ -813,7 +801,7 @@ public class PVSystemObj extends PCElement {
 		if (connection == Connection.WYE) {
 			Yeq2 = Yeq;
 		} else {
-			Yeq2 = ComplexUtil.divide(Yeq, 3.0);
+			Yeq2 = divide(Yeq, 3.0);
 		}
 
 		for (i = 0; i < getNumPhases(); i++) {
@@ -1062,7 +1050,7 @@ public class PVSystemObj extends PCElement {
 				}
 				integrate            (regKWh,    S.getReal(), sol.getIntervalHrs());   // accumulate the power
 				integrate            (regKVArh,  S.getImaginary(), sol.getIntervalHrs());
-				setDragHandRegister  (regMaxKW,  Math.abs(S.getReal()));
+				setDragHandRegister  (regMaxKW,  abs(S.getReal()));
 				setDragHandRegister  (regMaxKVA, Smag);
 				integrate            (regHours,  hourValue, sol.getIntervalHrs());  // accumulate hours in operation
 				integrate            (regPrice,  S.getReal() * ckt.getPriceSignal(), sol.getIntervalHrs());  // accumulate hours in operation
@@ -1131,7 +1119,7 @@ public class PVSystemObj extends PCElement {
 		setYPrimInvalid(true);  // force rebuild of YPrims
 		PVSystemFundamental = sol.getFrequency();  // whatever the frequency is when we enter here
 
-		Yeq = ComplexUtil.invert(new Complex(RThev, XThev));  // used for current calcs; always L-N
+		Yeq = invert(new Complex(RThev, XThev));  // used for current calcs; always L-N
 
 		/* Compute reference Thevinen voltage from phase 1 current */
 
@@ -1295,10 +1283,10 @@ public class PVSystemObj extends PCElement {
 			V = kVPVSystemBase;
 		}
 
-		s = s + String.format(" kV=%-.5g", V);
+		s = s + format(" kV=%-.5g", V);
 
 		if (nPhases > 1)
-			s = s + String.format(" kva=%-.5g  PF=%-.5g", kVARating / nPhases, PFNominal);
+			s = s + format(" kva=%-.5g  PF=%-.5g", kVARating / nPhases, PFNominal);
 
 		Parser.getInstance().setCommand(s);
 		edit();

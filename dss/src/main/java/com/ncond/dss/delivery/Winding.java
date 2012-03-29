@@ -8,6 +8,9 @@ package com.ncond.dss.delivery;
 import com.ncond.dss.common.DSS;
 import com.ncond.dss.common.types.Connection;
 
+import static java.lang.Math.pow;
+
+
 public class Winding {
 
 	private Connection connection;
@@ -43,7 +46,7 @@ public class Winding {
 	}
 
 	public void computeAntiFloatAdder(double PPM_Factor, double VABase1ph) {
-		Y_PPM = -PPM_Factor / (Math.pow(Vbase, 2) / VABase1ph);
+		Y_PPM = -PPM_Factor / (pow(Vbase, 2) / VABase1ph);
 	}
 
 	public Connection getConnection() {

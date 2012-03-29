@@ -29,9 +29,24 @@ import com.ncond.dss.parser.Parser;
 import com.ncond.dss.shared.CMatrix;
 import com.ncond.dss.shared.CktTree;
 import com.ncond.dss.shared.CktTreeNode;
-import com.ncond.dss.shared.ComplexUtil;
 import com.ncond.dss.shared.LineUnits;
-import com.ncond.dss.shared.MathUtil;
+
+import static com.ncond.dss.shared.MathUtil.phase2SymComp;
+import static com.ncond.dss.shared.MathUtil.getXR;
+
+import static com.ncond.dss.shared.ComplexUtil.degArg;
+import static com.ncond.dss.shared.ComplexUtil.complexToPolarDeg;
+import static com.ncond.dss.shared.ComplexUtil.divide;
+import static com.ncond.dss.shared.ComplexUtil.invert;
+
+import static java.lang.Math.max;
+import static java.lang.Math.abs;
+import static java.lang.Math.min;
+import static java.lang.Math.round;
+import static java.lang.Math.sqrt;
+
+import static java.lang.String.format;
+
 
 public class ShowResults {
 
@@ -46,7 +61,7 @@ public class ShowResults {
 		Circuit ckt = DSS.activeCircuit;
 		maxBusNameLength = 4;
 		for (int i = 0; i < ckt.getNumBuses(); i++)
-			maxBusNameLength = Math.max(maxBusNameLength, ckt.getBusList().get(i).length());
+			maxBusNameLength = max(maxBusNameLength, ckt.getBusList().get(i).length());
 	}
 
 	private static void setMaxDeviceNameLength() {
@@ -57,7 +72,7 @@ public class ShowResults {
 		for (int i = 0; i < ckt.getNumDevices(); i++) {
 			devName = ckt.getDeviceList().get(i);
 			devClassName = ((DSSClass) DSS.DSSClassList.get( ckt.getDeviceRef()[i].cktElementClass )).getClassName();
-			maxDeviceNameLength = Math.max(maxDeviceNameLength, devName.length() + devClassName.length() + 1);
+			maxDeviceNameLength = max(maxDeviceNameLength, devName.length() + devClassName.length() + 1);
 		}
 	}
 
@@ -81,9 +96,9 @@ public class ShowResults {
 					if (k >= 3) k = 0;
 					VLL[j] = Vph[j].subtract(Vph[k]);
 				}
-				MathUtil.phase2SymComp(VLL, V012);
+				phase2SymComp(VLL, V012);
 			} else {
-				MathUtil.phase2SymComp(Vph, V012);
+				phase2SymComp(Vph, V012);
 			}
 
 			V0 = V012[0].abs();
@@ -157,7 +172,7 @@ public class ShowResults {
 			}
 			pw.printf("%s %2d %10.5g /_ %6.1f %9.5g %9.3f",
 				bName.toUpperCase(), ckt.getBus(i).getNum(j), Vmag,
-				ComplexUtil.degArg(V), Vpu, ckt.getBus(i).getKVBase() * DSS.SQRT3);
+				degArg(V), Vpu, ckt.getBus(i).getKVBase() * DSS.SQRT3);
 			pw.println();
 		}
 	}
@@ -193,7 +208,7 @@ public class ShowResults {
 				}
 				if (LL) Vpu = Vpu / DSS.SQRT3;
 				pw.printf("%s  (%3d) %4d    %13.5g (%8.4g) /_ %6.1f", busName.toUpperCase(),
-						nref, i,Vmag, Vpu, ComplexUtil.degArg(V));
+						nref, i,Vmag, Vpu, degArg(V));
 				pw.println();
 			}
 			if (j < nTerm - 1)
@@ -235,7 +250,7 @@ public class ShowResults {
 					}
 				}
 				pw.printf("%s,  %4d,    %12.5g, %12.5g, %12.5g, %6.1f",
-					elemName, i, V1.abs(), Vmag, ckt.getBus(bref1).getKVBase(), ComplexUtil.degArg(V1));
+					elemName, i, V1.abs(), Vmag, ckt.getBus(bref1).getKVBase(), degArg(V1));
 				pw.println();
 			}
 		}
@@ -348,7 +363,7 @@ public class ShowResults {
 				Cmag = Iph[i].abs();
 				if (Cmag > Cmax[0]) Cmax[0] = Cmag;
 			}
-			MathUtil.phase2SymComp(Iph, I012);
+			phase2SymComp(Iph, I012);
 			I0[0] = I012[0].abs();
 			I1[0] = I012[1].abs();
 			I2[0] = I012[2].abs();
@@ -409,11 +424,11 @@ public class ShowResults {
 					Ctotal = Ctotal.add(cBuffer[k]);
 				pw.printf("%s  %4d    %13.5g /_ %6.1f",
 					fromBus.toUpperCase(), Util.getNodeNum(elem.getNodeRef(k)),
-					cBuffer[k].abs(), ComplexUtil.degArg(cBuffer[k]));
+					cBuffer[k].abs(), degArg(cBuffer[k]));
 				pw.println();
 			}
 			if (showResidual && (elem.getNumPhases() > 1)) {
-				residPolar = ComplexUtil.complexToPolarDeg(Ctotal.negate());
+				residPolar = complexToPolarDeg(Ctotal.negate());
 				pw.printf("%s Resid    %13.5g /_ %6.1f",
 					fromBus.toUpperCase(), residPolar[0], residPolar[1]);
 				pw.println();
@@ -624,7 +639,7 @@ public class ShowResults {
 
 						for (j = 0; j < nTerm; j++) {
 							pw.print(Util.pad(Util.fullName(elem), maxDeviceNameLength + 2) + j + 1);
-							for (i = 0; i < Math.min(3, elem.getNumPhases()); i++) {
+							for (i = 0; i < min(3, elem.getNumPhases()); i++) {
 								k = j * nCond + i;
 								nref = elem.getNodeRef(k);
 								V = ckt.getSolution().getNodeV(nref);
@@ -632,8 +647,8 @@ public class ShowResults {
 								Vph[i] = V;
 							}
 							if (elem.getNumPhases() >= 3) {
-								MathUtil.phase2SymComp(Iph, I012);
-								MathUtil.phase2SymComp(Vph, V012);
+								phase2SymComp(Iph, I012);
+								phase2SymComp(Vph, V012);
 							} else {
 								// handle single phase and pos seq models
 								V012[0] = Complex.ZERO;
@@ -673,7 +688,7 @@ public class ShowResults {
 
 						for (j = 0; j < nTerm; j++) {
 							pw.print(Util.pad( Util.fullName(elem), maxDeviceNameLength + 2) + j + 1);
-							for (i = 0; i < Math.min(3, elem.getNumPhases()); i++) {
+							for (i = 0; i < min(3, elem.getNumPhases()); i++) {
 								k = j * nCond + i;
 								nref = elem.getNodeRef(k);
 								V = ckt.getSolution().getNodeV(nref);
@@ -682,8 +697,8 @@ public class ShowResults {
 							}
 
 							if (elem.getNumPhases() >= 3) {
-								MathUtil.phase2SymComp(Iph, I012);
-								MathUtil.phase2SymComp(Vph, V012);
+								phase2SymComp(Iph, I012);
+								phase2SymComp(Vph, V012);
 							} else {  // handle single phase and pos seq models
 								V012[0] = Complex.ZERO;
 								I012[0] = Complex.ZERO;
@@ -733,7 +748,7 @@ public class ShowResults {
 
 						for (j = 0; j < nTerm; j++) {
 							pw.print(Util.pad(Util.fullName(elem), maxDeviceNameLength + 2) + j + 1);
-							for (i = 0; i < Math.min(3, elem.getNumPhases()); i++) {
+							for (i = 0; i < min(3, elem.getNumPhases()); i++) {
 								k = j * nCond + i;
 								nref = elem.getNodeRef(k);
 								V = ckt.getSolution().getNodeV(nref);
@@ -742,8 +757,8 @@ public class ShowResults {
 							}
 
 							if (elem.getNumPhases() >= 3) {
-								MathUtil.phase2SymComp(Iph, I012);
-								MathUtil.phase2SymComp(Vph, V012);
+								phase2SymComp(Iph, I012);
+								phase2SymComp(Vph, V012);
 							} else {  // handle single phase and pos seq models
 								V012[0] = Complex.ZERO;
 								I012[0] = Complex.ZERO;
@@ -951,7 +966,7 @@ public class ShowResults {
 		cktElem.getCurrents(cBuffer);
 
 		pw.print(Util.pad(Util.fullName(cktElem), maxDeviceNameLength + 2) + j + 1);
-		for (i = 0; i < Math.min(cktElem.getNumPhases(), 3); i++) {
+		for (i = 0; i < min(cktElem.getNumPhases(), 3); i++) {
 			k = j * nCond + i;
 			nref = cktElem.getNodeRef(k);
 			V = ckt.getSolution().getNodeV(nref);
@@ -960,8 +975,8 @@ public class ShowResults {
 		}
 
 		if (cktElem.getNumPhases() >= 3) {
-			MathUtil.phase2SymComp(Iph, I012);
-			MathUtil.phase2SymComp(Vph, V012);
+			phase2SymComp(Iph, I012);
+			phase2SymComp(Vph, V012);
 		} else {  // handle single phase and pos seq models
 			V012[0] = Complex.ZERO;
 			I012[0] = Complex.ZERO;
@@ -1350,7 +1365,7 @@ public class ShowResults {
 					if (i > 0) pw.print(", ");
 					pw.print(currMag);
 					if (currMag > 0.0) {
-						pw.print(", " + MathUtil.getXR(bus.getVBus(i).divide(bus.getBusCurrent(i))));
+						pw.print(", " + getXR(bus.getVBus(i).divide(bus.getBusCurrent(i))));
 					} else {
 						pw.print(",   N/A");
 					}
@@ -1792,7 +1807,7 @@ public class ShowResults {
 	 * Assumes 0 is 1.0 per unit tap.
 	 */
 	private static int tapPosition(TransformerObj xfmr, int iWind) {
-		return (int) Math.round((xfmr.getPresentTap(iWind) - 1.0) / xfmr.getTapIncrement(iWind));
+		return (int) round((xfmr.getPresentTap(iWind) - 1.0) / xfmr.getTapIncrement(iWind));
 	}
 
 	public static void showMeterZone(String fileName) {
@@ -1939,7 +1954,7 @@ public class ShowResults {
 									Cmag = Iph[i].abs();
 									if (Cmag > Cmax) Cmax = Cmag;
 								}
-								MathUtil.phase2SymComp(Iph, I012);
+								phase2SymComp(Iph, I012);
 								I0 = I012[0].abs();
 								I1 = I012[1].abs();
 								I2 = I012[2].abs();
@@ -2084,7 +2099,7 @@ public class ShowResults {
 
 					pw.printf("%10.5f, ", kLosses.getReal());
 					if ((termPower.getReal() > 0.0) && (kLosses.getReal() > 0.0009)) {
-						pw.print(kLosses.getReal() / Math.abs(termPower.getReal()) * 100.0);
+						pw.print(kLosses.getReal() / abs(termPower.getReal()) * 100.0);
 					} else {
 						pw.print(Complex.ZERO.getReal());
 					}
@@ -2108,10 +2123,10 @@ public class ShowResults {
 			loadPower = loadPower.multiply(0.001);
 
 			pw.println();
-			pw.println(Util.pad("Total load power = ", 30) + Math.abs(loadPower.getReal()) + " kW");
+			pw.println(Util.pad("Total load power = ", 30) + abs(loadPower.getReal()) + " kW");
 			pw.print(Util.pad("Percent losses for circuit = ", 30));
 			if (loadPower.getReal() != 0.0)
-				pw.println(Math.abs(totalLosses.getReal() / loadPower.getReal()) * 100.0 + " %");
+				pw.println(abs(totalLosses.getReal() / loadPower.getReal()) * 100.0 + " %");
 
 			pw.close();
 			fw.close();
@@ -2145,7 +2160,7 @@ public class ShowResults {
 					pw.println("Element: " + elem.getParentClass().getClassName() + "." + elem.getName());
 					pw.println("No. of variables: " + elem.numVariables());
 					for (i = 0; i < elem.numVariables(); i++)
-						pw.println("  " + elem.variableName(i) + " = " + String.format("%-.6g", elem.getVariable(i)));
+						pw.println("  " + elem.variableName(i) + " = " + format("%-.6g", elem.getVariable(i)));
 					pw.println();
 				}
 			}
@@ -2496,11 +2511,11 @@ public class ShowResults {
 			}
 
 			nLoops = nLoops / 2;  // TODO, see if parallel lines also counted twice
-			pw.println(String.format("%d level(s) deep", nLevels));
-			pw.println(String.format("%d loops", nLoops));
-			pw.println(String.format("%d parallel PD elements", nParallel));
-			pw.println(String.format("%d isolated PD components", nIsolated));
-			pw.println(String.format("%d controlled switches", nSwitches));
+			pw.println(format("%d level(s) deep", nLevels));
+			pw.println(format("%d loops", nLoops));
+			pw.println(format("%d parallel PD elements", nParallel));
+			pw.println(format("%d isolated PD components", nIsolated));
+			pw.println(format("%d controlled switches", nSwitches));
 
 			pw.close();
 			fw.close();
@@ -2550,7 +2565,7 @@ public class ShowResults {
 			pw = new PrintWriter(fw);
 
 			pw.println("Line constants");
-			pw.println(String.format("Frequency = %.6g Hz, earth resistivity = %.6g ohm-m", freq, rho));
+			pw.println(format("Frequency = %.6g Hz, earth resistivity = %.6g ohm-m", freq, rho));
 			pw.println("Earth model = " + Util.getEarthModel(DSS.defaultEarthModel));
 			pw.println();
 
@@ -2558,7 +2573,7 @@ public class ShowResults {
 			fw2 = new FileWriter(lineCodesFileNm);
 			pw2 = new PrintWriter(fw2);
 
-			pw2.println(String.format("!--- Frequency = %.6g Hz, earth resistivity = %.6g ohm-m", freq, rho));
+			pw2.println(format("!--- Frequency = %.6g Hz, earth resistivity = %.6g ohm-m", freq, rho));
 			pw2.println("!--- Earth model = " + Util.getEarthModel(DSS.defaultEarthModel));
 
 			Line.lineGeometryClass = (LineGeometry) DSS.DSSClassList.get(DSS.classNames.find("LineGeometry"));
@@ -2684,16 +2699,16 @@ public class ShowResults {
 						for (j = 0; j < i; j++)
 							Zm = Zm.add( Z.get(i, j) );
 
-					Z1 = ComplexUtil.divide(Zs.subtract(Zm), 3.0);
-					Z0 = ComplexUtil.divide(Zm.multiply(2.0).add(Zs), 3.0);
+					Z1 = divide(Zs.subtract(Zm), 3.0);
+					Z0 = divide(Zm.multiply(2.0).add(Zs), 3.0);
 
 					w = freq * DSS.TWO_PI / 1000.0;
 
 					pw.println();
 					pw.println("Z1, ohms per " + LineUnits.lineUnitsStr(units) +
-						String.format(" = %.6g + j %.6g (L1 = %.6g mH) ", Z1.getReal(), Z1.getImaginary(), Z1.getImaginary() / w));
+						format(" = %.6g + j %.6g (L1 = %.6g mH) ", Z1.getReal(), Z1.getImaginary(), Z1.getImaginary() / w));
 					pw.println("Z0, ohms per " + LineUnits.lineUnitsStr(units) +
-						String.format(" = %.6g + j %.6g (L0 = %.6g mH) ", Z0.getReal(), Z0.getImaginary(), Z0.getImaginary() / w));
+						format(" = %.6g + j %.6g (L0 = %.6g mH) ", Z0.getReal(), Z0.getImaginary(), Z0.getImaginary() / w));
 					pw.println();
 
 					/* Compute common mode series impedance */
@@ -2702,7 +2717,7 @@ public class ShowResults {
 					for (i = 0; i < 3; i++)
 						for (j = 0; j < 3; j++)
 							Ycm = Ycm.add(Z.get(i, j));
-					Xcm = ComplexUtil.invert(Ycm).getImaginary();
+					Xcm = invert(Ycm).getImaginary();
 
 					w = freq * DSS.TWO_PI /1.e9;
 					/* Capacitance */
@@ -2722,26 +2737,26 @@ public class ShowResults {
 							Ycm = Ycm.add(Yc.get(i, j));
 					CCM = Ycm.getImaginary() / w;
 
-					pw.println("C1, nF per " + LineUnits.lineUnitsStr(units) + String.format(" = %.6g", C1));
-					pw.println("C0, nF per " + LineUnits.lineUnitsStr(units) + String.format(" = %.6g", C0));
+					pw.println("C1, nF per " + LineUnits.lineUnitsStr(units) + format(" = %.6g", C1));
+					pw.println("C0, nF per " + LineUnits.lineUnitsStr(units) + format(" = %.6g", C0));
 					pw.println();
 
 					w = freq * DSS.TWO_PI;
 					pw.println("Surge Impedance:");
-					pw.printf("  Positive sequence = %.6g ohms", Math.sqrt(Z1.getImaginary() / w / (C1 * 1.0e-9)));
+					pw.printf("  Positive sequence = %.6g ohms", sqrt(Z1.getImaginary() / w / (C1 * 1.0e-9)));
 					pw.println();
-					pw.printf("  Zero sequence     = %.6g ohms", Math.sqrt(Z0.getImaginary() / w / (C0 * 1.0e-9)));
+					pw.printf("  Zero sequence     = %.6g ohms", sqrt(Z0.getImaginary() / w / (C0 * 1.0e-9)));
 					pw.println();
-					pw.printf("  Common Mode       = %.6g ohms", Math.sqrt(Xcm / w / (CCM * 1.0e-9)));
+					pw.printf("  Common Mode       = %.6g ohms", sqrt(Xcm / w / (CCM * 1.0e-9)));
 					pw.println();
 					pw.println();
 
 					pw.println("Propagation velocity (percent of speed of light):");
 					pw.printf("  Positive sequence = %.6g ",
-						1.0 / (Math.sqrt(Z1.getImaginary() / w * (C1 * 1.0e-9))) / 299792458.0 / LineUnits.toPerMeter(units) * 100.0);
+						1.0 / (sqrt(Z1.getImaginary() / w * (C1 * 1.0e-9))) / 299792458.0 / LineUnits.toPerMeter(units) * 100.0);
 					pw.println();
 					pw.printf("  Zero sequence     = %.6g ",
-						1.0 / (Math.sqrt(Z0.getImaginary() / w * (C0 * 1.0e-9))) / 299792458.0 / LineUnits.toPerMeter(units) * 100.0);
+						1.0 / (sqrt(Z0.getImaginary() / w * (C0 * 1.0e-9))) / 299792458.0 / LineUnits.toPerMeter(units) * 100.0);
 					pw.println();
 					pw.println();
 				}
@@ -2936,9 +2951,9 @@ public class ShowResults {
 			nRef = 0;  // ground bus
 			dTemp = sol.getCurrent(nRef).abs();
 			if ((maxNodeCurrent[nRef] == 0.0) || (maxNodeCurrent[nRef] == dTemp)) {
-				pctError = String.format("%10.1f", 0.0);
+				pctError = format("%10.1f", 0.0);
 			} else {
-				pctError = String.format("%10.6f", dTemp / maxNodeCurrent[nRef] * 100.0);
+				pctError = format("%10.6f", dTemp / maxNodeCurrent[nRef] * 100.0);
 			}
 			bName = Util.pad("\"System ground\"", maxBusNameLength);
 			pw.printf("%s, %2d, %10.5f,       %s, %10.5f",
@@ -2950,9 +2965,9 @@ public class ShowResults {
 					nRef = ckt.getBus(i).getRef(j);
 					dTemp = sol.getCurrent(nRef).abs();
 					if ((maxNodeCurrent[nRef] == 0.0) || (maxNodeCurrent[nRef] == dTemp)) {
-						pctError = String.format("%10.1f", 0.0);
+						pctError = format("%10.1f", 0.0);
 					} else {
-						pctError = String.format("%10.6f", dTemp / maxNodeCurrent[nRef] * 100.0);
+						pctError = format("%10.6f", dTemp / maxNodeCurrent[nRef] * 100.0);
 					}
 					if (j == 0) {
 						bName = Util.padDots(Util.encloseQuotes(ckt.getBusList().get(i)), maxBusNameLength);
@@ -3002,7 +3017,7 @@ public class ShowResults {
 				busName = ckt.getBusList().get(load.getTerminal(0).getBusRef() - 1);
 				if (bus.getKVBase() != 0.0) {
 					if ((load.getNumPhases() == 1) && (load.getConnection() == Connection.WYE)) {
-						if (Math.abs(load.getKVLoadBase() - bus.getKVBase()) > 0.10 * bus.getKVBase()) {
+						if (abs(load.getKVLoadBase() - bus.getKVBase()) > 0.10 * bus.getKVBase()) {
 							pw.printf("!!!!! Voltage base mismatch, Load.%s.kV=%.6g, Bus %s LN kvBase = %.6g",
 								load.getName(), load.getKVLoadBase(), load.getBus(0), bus.getKVBase());
 							pw.println();
@@ -3013,7 +3028,7 @@ public class ShowResults {
 						}
 					} else {
 						busKV = bus.getKVBase() * DSS.SQRT3;
-						if (Math.abs(load.getKVLoadBase() - busKV) > 0.10 * busKV) {
+						if (abs(load.getKVLoadBase() - busKV) > 0.10 * busKV) {
 							pw.printf("!!!!! Voltage Base Mismatch, Load.%s.kV=%.6g, Bus %s kvBase = %.6g",
 								load.getName(), load.getKVLoadBase(), load.getBus(0), busKV);
 							pw.printf("!setkvbase %s kVLL=%.6g", busName, load.getKVLoadBase());
@@ -3039,7 +3054,7 @@ public class ShowResults {
 				busName = ckt.getBusList().get(gen.getTerminal(0).getBusRef() - 1);
 				if (bus.getKVBase() != 0.0) {
 					if ((gen.getNumPhases() == 1) && (gen.getConnection() == Connection.WYE)) {
-						if (Math.abs(gen.getGenVars().kVGeneratorBase - bus.getKVBase()) > 0.10 * bus.getKVBase()) {
+						if (abs(gen.getGenVars().kVGeneratorBase - bus.getKVBase()) > 0.10 * bus.getKVBase()) {
 							pw.printf("!!! Voltage Base Mismatch, Generator.%s.kV=%.6g, Bus %s LN kvBase = %.6g",
 								gen.getName(), gen.getGenVars().kVGeneratorBase, gen.getBus(1), bus.getKVBase());
 							pw.println();
@@ -3050,7 +3065,7 @@ public class ShowResults {
 						}
 					} else {
 						busKV = bus.getKVBase() * DSS.SQRT3;
-						if (Math.abs(gen.getGenVars().kVGeneratorBase - busKV) > 0.10 * busKV) {
+						if (abs(gen.getGenVars().kVGeneratorBase - busKV) > 0.10 * busKV) {
 							pw.printf("!!! Voltage Base Mismatch, Generator.%s.kV=%.6g, Bus %s kvBase = %.6g",
 								gen.getName(), gen.getGenVars().kVGeneratorBase, gen.getBus(1), busKV);
 							pw.printf("!setkvbase %s kVLL=%.6g", busName, gen.getGenVars().kVGeneratorBase);

@@ -21,8 +21,11 @@ import com.ncond.dss.common.DSSClassDefs;
 import com.ncond.dss.common.SolutionObj;
 import com.ncond.dss.conversion.PCElement;
 import com.ncond.dss.delivery.TransformerObj;
-import com.ncond.dss.shared.ComplexUtil;
-import com.ncond.dss.shared.MathUtil;
+
+import static com.ncond.dss.shared.MathUtil.calcKPowers;
+import static com.ncond.dss.shared.MathUtil.phase2SymComp;
+
+import static com.ncond.dss.shared.ComplexUtil.asArray;
 
 import static com.ncond.dss.common.Util.residual;
 import static com.ncond.dss.common.Util.residualPolar;
@@ -31,6 +34,8 @@ import static com.ncond.dss.common.Util.getCktElementIndex;
 import static com.ncond.dss.common.Util.fireOffEditor;
 import static com.ncond.dss.common.Util.mulArray;
 import static com.ncond.dss.common.Util.resizeArray;
+
+import static java.lang.String.format;
 
 
 /**
@@ -330,7 +335,7 @@ public class MonitorObj extends MeterElement {
 						//for (i = 0; i < numVI; i++) recordSize += 1;
 						//if (includeResidual) recordSize += 2;
 						for (i = 0; i < numVI; i++) {
-							strBuffer.append(String.format("|V|%d (volts)", i));
+							strBuffer.append(format("|V|%d (volts)", i));
 							strBuffer.append(", ");
 						}
 						if (includeResidual) {
@@ -611,8 +616,8 @@ public class MonitorObj extends MeterElement {
 
 		if (((mode & Monitor.SEQUENCEMASK) > 0) && nPhases == 3) {
 			// convert to symmetrical components
-			MathUtil.phase2SymComp(voltageBuffer, V012);
-			MathUtil.phase2SymComp(currentBuffer[offset + 1], I012);
+			phase2SymComp(voltageBuffer, V012);
+			phase2SymComp(currentBuffer[offset + 1], I012);
 
 			numVI = 3;
 			isSequence = true;
@@ -646,7 +651,7 @@ public class MonitorObj extends MeterElement {
 			break;
 
 		case 1:  // convert voltage buffer to power kW, kVAr or mag/angle
-			MathUtil.calcKPowers(voltageBuffer, voltageBuffer, currentBuffer[offset + 1], numVI);
+			calcKPowers(voltageBuffer, voltageBuffer, currentBuffer[offset + 1], numVI);
 			if (isSequence || DSS.activeCircuit.isPositiveSequence())
 				mulArray(voltageBuffer, 3.0, numVI);  // convert to total power
 			if (Ppolar)
@@ -723,10 +728,10 @@ public class MonitorObj extends MeterElement {
 			addDblsToBuffer(voltageBuffer[1].getReal(), numVI * 2);
 			if (!isPower) {
 				if (includeResidual)
-					addDblsToBuffer(ComplexUtil.asArray( residualVolt ), 2);
+					addDblsToBuffer(asArray( residualVolt ), 2);
 				addDblsToBuffer(currentBuffer[offset + 1].getReal(), numVI * 2);
 				if (includeResidual)
-					addDblsToBuffer(ComplexUtil.asArray( residualCurr ), 2);
+					addDblsToBuffer(asArray( residualCurr ), 2);
 			}
 			break;
 		}
@@ -805,7 +810,7 @@ public class MonitorObj extends MeterElement {
 //			FBuffer.write(hr);  // hours
 			bw.write(", " + s);  // sec
 			for (i = 0; i < recordSize; i++)
-				bw.write(", " + String.format("%-.6g", sngBuffer[i]));
+				bw.write(", " + format("%-.6g", sngBuffer[i]));
 			bw.newLine();
 
 			closeMonitorStream();

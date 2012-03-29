@@ -29,8 +29,16 @@ import com.ncond.dss.conversion.GeneratorObj;
 import com.ncond.dss.conversion.PCElement;
 import com.ncond.dss.delivery.FaultObj;
 import com.ncond.dss.general.DSSObject;
-import com.ncond.dss.shared.ComplexUtil;
 import com.ncond.dss.shared.DynamicsRec;
+
+import static com.ncond.dss.shared.ComplexUtil.degArg;
+
+import static java.lang.Math.max;
+import static java.lang.Math.abs;
+import static java.lang.Math.pow;
+
+import static java.lang.String.format;
+
 
 public class SolutionObj extends DSSObject {
 
@@ -206,7 +214,7 @@ public class SolutionObj extends DSSObject {
 				rate = 1.0;
 				break;
 			default:
-				rate = Math.pow(ckt.getDefaultGrowthRate(), (year - 1));
+				rate = pow(ckt.getDefaultGrowthRate(), (year - 1));
 				break;
 			}
 			ckt.setDefaultGrowthFactor(rate);
@@ -293,15 +301,15 @@ public class SolutionObj extends DSSObject {
 
 			/* If base specified, use it; otherwise go on present magnitude */
 			if (nodeVBase[i] > 0.0) {
-				errorSaved[i] = Math.abs(Vmag - VMagSaved[i]) / nodeVBase[i];
+				errorSaved[i] = abs(Vmag - VMagSaved[i]) / nodeVBase[i];
 			} else {
 				if (Vmag != 0.0)
-					errorSaved[i] = Math.abs(1.0 - VMagSaved[i] / Vmag);
+					errorSaved[i] = abs(1.0 - VMagSaved[i] / Vmag);
 			}
 
 			VMagSaved[i] = Vmag;  // for next go-'round
 
-			maxError = Math.max(maxError, errorSaved[i]);  // update max error
+			maxError = max(maxError, errorSaved[i]);  // update max error
 		}
 
 		/* $IFDEF debugtrace
@@ -880,30 +888,30 @@ public class SolutionObj extends DSSObject {
 		pw.println("set controlMode=" + Util.getControlModeID());
 		pw.println("set random=" + Util.getRandomModeID());
 		pw.println("set hour=" + intHour);
-		pw.println("set sec=" + String.format("%g", dynaVars.t));
+		pw.println("set sec=" + format("%g", dynaVars.t));
 		pw.println("set year=" + year);
-		pw.println("set frequency=" + String.format("%g", frequency));
-		pw.println("set stepsize=" + String.format("%g", dynaVars.h));
+		pw.println("set frequency=" + format("%g", frequency));
+		pw.println("set stepsize=" + format("%g", dynaVars.h));
 		pw.println("set number=" + numberOfTimes);
 		pw.println("set circuit=" + ckt.getName());
 		pw.println("set editor=" + DSS.defaultEditor);
-		pw.println("set tolerance=" + String.format("%g", convergenceTolerance));
+		pw.println("set tolerance=" + format("%g", convergenceTolerance));
 		pw.println("set maxiter=" + maxIterations);
 		pw.println("set loadmodel=" + getLoadModel());
 
-		pw.println("set loadmult=" + String.format("%g", ckt.getLoadMultiplier()));
-		pw.println("set normVminPU=" + String.format("%g", ckt.getNormalMinVolts()));
-		pw.println("set normVmaxPU=" + String.format("%g", ckt.getNormalMaxVolts()));
-		pw.println("set emergVminPU=" + String.format("%g", ckt.getEmergMinVolts()));
-		pw.println("set emergVmaxPU=" + String.format("%g", ckt.getEmergMaxVolts()));
-		pw.println("set %mean=" + String.format("%-.4g", ckt.getDefaultDailyShapeObj().getMean() * 100.0));
-		pw.println("set %stddev=" + String.format("%-.4g", ckt.getDefaultDailyShapeObj().getStdDev() * 100.0));
+		pw.println("set loadmult=" + format("%g", ckt.getLoadMultiplier()));
+		pw.println("set normVminPU=" + format("%g", ckt.getNormalMinVolts()));
+		pw.println("set normVmaxPU=" + format("%g", ckt.getNormalMaxVolts()));
+		pw.println("set emergVminPU=" + format("%g", ckt.getEmergMinVolts()));
+		pw.println("set emergVmaxPU=" + format("%g", ckt.getEmergMaxVolts()));
+		pw.println("set %mean=" + format("%-.4g", ckt.getDefaultDailyShapeObj().getMean() * 100.0));
+		pw.println("set %stddev=" + format("%-.4g", ckt.getDefaultDailyShapeObj().getStdDev() * 100.0));
 		pw.println("set LDCurve=" + ckt.getLoadDurCurve());  // load duration curve
-		pw.println("set %growth=" + String.format("%-.4g", ((ckt.getDefaultGrowthRate() - 1.0) * 100.0)));  // default growth rate
+		pw.println("set %growth=" + format("%-.4g", ((ckt.getDefaultGrowthRate() - 1.0) * 100.0)));  // default growth rate
 		autoAdd = ckt.getAutoAddObj();
-		pw.println("set genkw=" + String.format("%g", autoAdd.getGenKW()));
-		pw.println("set genpf=" + String.format("%g", autoAdd.getGenPF()));
-		pw.println("set capkvar=" + String.format("%g", autoAdd.getCapKVAr()));
+		pw.println("set genkw=" + format("%g", autoAdd.getGenKW()));
+		pw.println("set genpf=" + format("%g", autoAdd.getGenPF()));
+		pw.println("set capkvar=" + format("%g", autoAdd.getCapKVAr()));
 		pw.print("set addtype=");
 		switch (autoAdd.getAddType()) {
 		case GEN:
@@ -938,9 +946,9 @@ public class SolutionObj extends DSSObject {
 		}
 		pw.print("set trapezoidal=");
 		pw.println(ckt.isTrapezoidalIntegration() ? "yes" : "no");
-		pw.println("set genmult=" + String.format("%g", ckt.getGenMultiplier()));
+		pw.println("set genmult=" + format("%g", ckt.getGenMultiplier()));
 
-		pw.println("set basefrequency=" + String.format("%g", ckt.getFundamental()));
+		pw.println("set basefrequency=" + format("%g", ckt.getFundamental()));
 
 		pw.print("set harmonics=(");  // changes the default voltage base rules
 		if (doAllHarmonics) {
@@ -1356,7 +1364,7 @@ public class SolutionObj extends DSSObject {
 				for (j = 0; j < ckt.getBus(i).getNumNodesThisBus(); j++) {
 					V = getNodeV(ckt.getBus(i).getRef(j));
 					pw.println(busName + ", " + ckt.getBus(i).getNum(j) +
-						String.format(", %-.7g, %-.7g", V.abs(), ComplexUtil.degArg(V)));
+						format(", %-.7g, %-.7g", V.abs(), degArg(V)));
 				}
 			}
 

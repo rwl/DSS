@@ -18,6 +18,8 @@ import com.ncond.dss.shared.CommandList;
 import static com.ncond.dss.common.Util.interpretDblArray;
 import static com.ncond.dss.common.Util.resizeArray;
 
+import static java.lang.Math.round;
+
 
 /**
  * A general DSS object used by all circuits as a reference for obtaining yearly
@@ -155,7 +157,7 @@ public class GrowthShape extends DSSClass {
 				interpretDblArray(param, elem.getNpts(), YrBuffer);
 
 				for (int i = 0; i < elem.getNpts(); i++)
-					elem.getYear()[i] = (int) Math.round(YrBuffer[i]);
+					elem.getYear()[i] = (int) round(YrBuffer[i]);
 
 				elem.setBaseYear(elem.getYear()[0]);
 				YrBuffer = null;
@@ -303,7 +305,7 @@ public class GrowthShape extends DSSClass {
 				}
 				y = Double.parseDouble(parts[0]);
 				m = Double.parseDouble(parts[1]);
-				elem.getYear()[i] = (int) Math.round(y);
+				elem.getYear()[i] = (int) round(y);
 				elem.getMultiplier()[i] = m;
 				i += 1;
 			}

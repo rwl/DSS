@@ -13,6 +13,10 @@ import com.ncond.dss.shared.CommandList;
 import static com.ncond.dss.common.Util.compareTextShortest;
 import static com.ncond.dss.common.Util.interpretYesNo;
 
+import static java.lang.Math.max;
+
+import static java.lang.String.format;
+
 
 public class CapControl extends ControlClass {
 
@@ -182,7 +186,7 @@ public class CapControl extends ControlClass {
 					elem.setControlType(CapControlType.SRP);
 					break;
 				default:
-					DSS.doSimpleMsg(String.format("Unrecognized CapControl type: \"%s\" (CapControl.%s)",
+					DSS.doSimpleMsg(format("Unrecognized CapControl type: \"%s\" (CapControl.%s)",
 							param, elem.getName()), 352);
 					break;
 				}
@@ -225,7 +229,7 @@ public class CapControl extends ControlClass {
 				} else if (compareTextShortest(param, "min") == 0) {
 					elem.setCTPhaseIdx(CapControl.MINPHASE);
 				} else {
-					elem.setCTPhaseIdx(Math.max(0, parser.integerValue() - 1));
+					elem.setCTPhaseIdx(max(0, parser.integerValue() - 1));
 				}
 				break;
 			case 15:
@@ -236,7 +240,7 @@ public class CapControl extends ControlClass {
 				} else if (compareTextShortest(param, "min") == 0) {
 					elem.setPTPhaseIdx(CapControl.MINPHASE);
 				} else {
-					elem.setPTPhaseIdx(Math.max(0, parser.integerValue() - 1));
+					elem.setPTPhaseIdx(max(0, parser.integerValue() - 1));
 				}
 				break;
 			case 16:
@@ -281,14 +285,14 @@ public class CapControl extends ControlClass {
 					break;
 				case 14:
 					if (elem.getCTPhaseIdx() >= elem.getNumPhases()) {
-						DSS.doSimpleMsg(String.format("Error: Monitored phase(%d) must be less than or equal to number of phases(%d). ",
+						DSS.doSimpleMsg(format("Error: Monitored phase(%d) must be less than or equal to number of phases(%d). ",
 							elem.getCTPhaseIdx() + 1, elem.getNumPhases()), 35302);
 						elem.setCTPhaseIdx(0);
 					}
 					break;
 				case 15:
 					if (elem.getPTPhaseIdx() >= elem.getNumPhases()) {
-						DSS.doSimpleMsg(String.format("Error: Monitored phase(%d) must be less than or equal to number of phases(%d). ",
+						DSS.doSimpleMsg(format("Error: Monitored phase(%d) must be less than or equal to number of phases(%d). ",
 								elem.getPTPhaseIdx() + 1, elem.getNumPhases()), 35303);
 						elem.setPTPhaseIdx(0);
 					}

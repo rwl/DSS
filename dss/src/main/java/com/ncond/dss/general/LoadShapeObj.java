@@ -13,9 +13,17 @@ import org.apache.commons.math.complex.Complex;
 
 import com.ncond.dss.common.DSS;
 import com.ncond.dss.common.DSSClass;
-import com.ncond.dss.shared.MathUtil;
+
+import static com.ncond.dss.shared.MathUtil.meanAndStdDev;
+import static com.ncond.dss.shared.MathUtil.curveMeanAndStdDev;
 
 import static com.ncond.dss.common.Util.iMaxAbsdblArrayValue;
+
+import static java.lang.Math.max;
+import static java.lang.Math.abs;
+import static java.lang.Math.round;
+
+import static java.lang.String.format;
 
 
 /**
@@ -138,7 +146,7 @@ public class LoadShapeObj extends DSSObject {
 				}
 			} else {
 				if (interval > 0.0) {
-					index = (int) Math.round(hr / interval);
+					index = (int) round(hr / interval);
 					if (index > numPoints)
 						index = index % numPoints;  // wrap around using remainder
 					if (index == 0)
@@ -163,7 +171,7 @@ public class LoadShapeObj extends DSSObject {
 						lastValueAccessed = 1;  // start over from beginning
 
 					for (int i = lastValueAccessed + 1; i < numPoints; i++) {
-						if (Math.abs(hours[i] - hr) < 0.00001) {  // if close to an actual point, just use it.
+						if (abs(hours[i] - hr) < 0.00001) {  // if close to an actual point, just use it.
 							mult[0] = PMultipliers[i];
 							if (QMultipliers != null) {
 								mult[1] = QMultipliers[i];
@@ -209,9 +217,9 @@ public class LoadShapeObj extends DSSObject {
 		int i;
 		if (numPoints > 0) {
 			if (maxMult <= 0.0) {
-				maxMult = Math.abs(multipliers[0]);
+				maxMult = abs(multipliers[0]);
 				for (i = 1; i < numPoints; i++)
-					maxMult = Math.max(maxMult, Math.abs(multipliers[i]));
+					maxMult = max(maxMult, abs(multipliers[i]));
 			}
 
 			if (maxMult == 0.0) maxMult = 1.0;  // avoid divide by zero
@@ -237,14 +245,14 @@ public class LoadShapeObj extends DSSObject {
 	public void calcMeanAndStdDev() {
 		if (numPoints > 0) {
 			if (interval > 0.0) {
-				MathUtil.meanAndStdDev(PMultipliers, numPoints, mean, stdDev);
+				meanAndStdDev(PMultipliers, numPoints, mean, stdDev);
 			} else {
-				MathUtil.curveMeanAndStdDev(PMultipliers, hours, numPoints, mean, stdDev);
+				curveMeanAndStdDev(PMultipliers, hours, numPoints, mean, stdDev);
 			}
 		}
 
-		setPropertyValue(4, String.format("%.8g", mean[0]));
-		setPropertyValue(5, String.format("%.8g", stdDev[0]));
+		setPropertyValue(4, format("%.8g", mean[0]));
+		setPropertyValue(5, format("%.8g", stdDev[0]));
 
 		stdDevCalculated = true;
 		/* No action is taken on Q multipliers */
@@ -342,28 +350,28 @@ public class LoadShapeObj extends DSSObject {
 
 		switch (index) {
 		case 1:
-			val = String.format("%.8g", interval);
+			val = format("%.8g", interval);
 			break;
 		case 2:
 			for (int i = 0; i < numPoints; i++)
-				val = val + String.format("%g, ", PMultipliers[i]);
+				val = val + format("%g, ", PMultipliers[i]);
 			break;
 		case 3:
 			if (hours != null)
 				for (int i = 0; i < numPoints; i++)
-					val = val + String.format("%g, ", hours[i]);
+					val = val + format("%g, ", hours[i]);
 			break;
 		case 4:
-			val = String.format("%.8g", mean[0]);
+			val = format("%.8g", mean[0]);
 			break;
 		case 5:
-			val = String.format("%.8g", stdDev[0]);
+			val = format("%.8g", stdDev[0]);
 			break;
 		case 10:
 			if (QMultipliers != null) {
 				val = "(";
 				for (int i = 0; i < numPoints; i++)
-					val = val + String.format("%g,", QMultipliers[i]);
+					val = val + format("%g,", QMultipliers[i]);
 				val = val + ")";
 			}
 			break;
@@ -371,22 +379,22 @@ public class LoadShapeObj extends DSSObject {
 			val = useActual ? "Yes" : "No";
 			break;
 		case 12:
-			val = String.format("%.8g", maxP);
+			val = format("%.8g", maxP);
 			break;
 		case 13:
-			val = String.format("%.8g", maxQ);
+			val = format("%.8g", maxQ);
 			break;
 		case 14:
-			val = String.format("%.8g", interval * 3600.0);
+			val = format("%.8g", interval * 3600.0);
 			break;
 		case 15:
-			val = String.format("%.8g", interval * 60.0);
+			val = format("%.8g", interval * 60.0);
 			break;
 		case 17:
-			val = String.format("%.8g", baseP);
+			val = format("%.8g", baseP);
 			break;
 		case 18:
-			val = String.format("%.8g", baseQ);
+			val = format("%.8g", baseQ);
 			break;
 		default:
 			val = super.getPropertyValue(index);
@@ -432,7 +440,7 @@ public class LoadShapeObj extends DSSObject {
 
 		if (PMultipliers != null) {
 			try {
-				fileName = String.format("%s_P.dbl", getName());
+				fileName = format("%s_P.dbl", getName());
 				pw = new PrintWriter(fileName);
 
 				for (i = 0; i < numPoints; i++)
@@ -443,7 +451,7 @@ public class LoadShapeObj extends DSSObject {
 
 				pw.close();
 
-				fileName = String.format("%s_Q.dbl", getName());
+				fileName = format("%s_Q.dbl", getName());
 				pw = new PrintWriter(fileName);
 
 				for (i = 0; i < numPoints; i++)

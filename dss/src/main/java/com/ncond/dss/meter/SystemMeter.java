@@ -18,6 +18,8 @@ import com.ncond.dss.common.SolutionObj;
 
 import static com.ncond.dss.common.Util.getTotalPowerFromSources;
 
+import static java.lang.Math.max;
+
 
 public class SystemMeter {
 
@@ -170,8 +172,8 @@ public class SystemMeter {
 		integrate(kWh, cPower.getReal(), dkWh);
 		integrate(kVArh, cPower.getImaginary(), dkVArh);
 
-		peakKW  = Math.max(cPower.getReal(), peakKW);
-		peakKVA = Math.max(cPower.abs(), peakKVA);
+		peakKW  = max(cPower.getReal(), peakKW);
+		peakKVA = max(cPower.abs(), peakKVA);
 
 		/* Get total circuit losses */
 		cLosses = DSS.activeCircuit.getLosses();  // PD elements except shunts
@@ -180,7 +182,7 @@ public class SystemMeter {
 		integrate(losses_kWh, cLosses.getReal(), dLosses_kWh);
 		integrate(losses_kVArh, cLosses.getImaginary(), dlosses_kVArh);
 
-		peakLossesKW = Math.max(cLosses.getReal(), peakLossesKW);
+		peakLossesKW = max(cLosses.getReal(), peakLossesKW);
 
 		firstSampleAfterReset = false;
 		if (thisMeterDIFileIsOpen) writeDemandIntervalData();

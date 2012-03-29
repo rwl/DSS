@@ -15,6 +15,8 @@ import static com.ncond.dss.common.Util.stripExtension;
 import static com.ncond.dss.common.Util.interpretDblArray;
 import static com.ncond.dss.common.Util.resizeArray;
 
+import static java.lang.Math.abs;
+
 
 public class Capacitor extends PDClass {
 
@@ -289,7 +291,7 @@ public class Capacitor extends PDClass {
 				for (int i = 0; i < elem.getNumSteps(); i++) {
 					if (elem.getXL()[i] != 0.0)
 						if (elem.getR()[i] == 0.0)
-							elem.getR()[i] = Math.abs(elem.getXL()[i]) / 1000.0;  // put in something so it doesn't fail
+							elem.getR()[i] = abs(elem.getXL()[i]) / 1000.0;  // put in something so it doesn't fail
 				}
 				elem.setDoHarmonicRecalc(false);  // XL is specified
 				break;

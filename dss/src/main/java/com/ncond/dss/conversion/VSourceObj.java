@@ -16,11 +16,21 @@ import com.ncond.dss.common.SolutionObj;
 import com.ncond.dss.general.SpectrumObj;
 import com.ncond.dss.parser.Parser;
 import com.ncond.dss.shared.CMatrix;
-import com.ncond.dss.shared.ComplexUtil;
-import com.ncond.dss.shared.MathUtil;
+
+import static com.ncond.dss.shared.MathUtil.sqr;
+
+import static com.ncond.dss.shared.ComplexUtil.polarDeg2Complex;
 
 import static com.ncond.dss.common.Util.rotatePhasorDeg;
 import static com.ncond.dss.common.Util.resizeArray;
+
+import static java.lang.Math.PI;
+import static java.lang.Math.abs;
+import static java.lang.Math.round;
+import static java.lang.Math.sin;
+import static java.lang.Math.sqrt;
+
+import static java.lang.String.format;
 
 
 public class VSourceObj extends PCElement {
@@ -108,8 +118,8 @@ public class VSourceObj extends PCElement {
 		/* Calculate the short circuit impedance and make all other spec types agree */
 		switch (ZspecType) {
 		case MVASC:
-			X1 = MathUtil.sqr(kVBase) / MVAsc3 / Math.sqrt(1.0 + 1.0 / MathUtil.sqr(X1R1));
-			Xs = MathUtil.sqr(kVBase) / MVAsc1 / Math.sqrt(1.0 + 1.0 / MathUtil.sqr(X0R0));  // approx
+			X1 = sqr(kVBase) / MVAsc3 / sqrt(1.0 + 1.0 / sqr(X1R1));
+			Xs = sqr(kVBase) / MVAsc1 / sqrt(1.0 + 1.0 / sqr(X0R0));  // approx
 			R1 = X1 / X1R1;
 			Xm = Xs - X1;
 			X0 = (Xs + 2.0 * Xm);
@@ -125,8 +135,8 @@ public class VSourceObj extends PCElement {
 		case ISC:
 			MVAsc3 = DSS.SQRT3 * kVBase * Isc3 / 1000.0;
 			MVAsc1 = factor * kVBase * Isc1 / 1000.0;
-			X1 = MathUtil.sqr(kVBase) / MVAsc3 / Math.sqrt(1.0 + 1.0 / MathUtil.sqr(X1R1));
-			Xs = MathUtil.sqr(kVBase) / MVAsc1 / Math.sqrt(1.0 + 1.0 / MathUtil.sqr(X0R0));  // approx
+			X1 = sqr(kVBase) / MVAsc3 / sqrt(1.0 + 1.0 / sqr(X1R1));
+			Xs = sqr(kVBase) / MVAsc1 / sqrt(1.0 + 1.0 / sqr(X0R0));  // approx
 			R1 = X1 / X1R1;
 			Xm = Xs - X1;
 			X0 = (Xs + 2.0 * Xm);
@@ -175,7 +185,7 @@ public class VSourceObj extends PCElement {
 			Vmag = kVBase * perUnit * 1000.0;
 			break;
 		default:
-			Vmag = kVBase * perUnit * 1000.0 / 2.0 / Math.sin((180.0 / nPhases) * Math.PI / 180.0);
+			Vmag = kVBase * perUnit * 1000.0 / 2.0 / sin((180.0 / nPhases) * PI / 180.0);
 			break;
 		}
 
@@ -266,7 +276,7 @@ public class VSourceObj extends PCElement {
 				Vmag = kVBase * perUnit * 1000.0;
 				break;
 			default:
-				Vmag = kVBase * perUnit * 1000.0 / 2.0 / Math.sin((180.0 / nPhases) * Math.PI / 180.0);
+				Vmag = kVBase * perUnit * 1000.0 / 2.0 / sin((180.0 / nPhases) * PI / 180.0);
 				break;
 			}
 
@@ -292,20 +302,20 @@ public class VSourceObj extends PCElement {
 				}
 			} else {
 
-				if (Math.abs(sol.getFrequency() - srcFrequency) > DSS.EPSILON2)
+				if (abs(sol.getFrequency() - srcFrequency) > DSS.EPSILON2)
 					Vmag = 0.0;  // solution frequency and source frequency don't match
 
 				/* NOTE: RE-uses VTerminal space */
 				for (i = 0; i < nPhases; i++) {
 					switch (sequenceType) {
 					case NONE:
-						VTerminal[i] = ComplexUtil.polarDeg2Complex(Vmag, (360.0 + angle + i * 360.0/nPhases));  // neg seq
+						VTerminal[i] = polarDeg2Complex(Vmag, (360.0 + angle + i * 360.0/nPhases));  // neg seq
 						break;
 					case ZERO:
-						VTerminal[i] = ComplexUtil.polarDeg2Complex(Vmag, (360.0 + angle));  // all the same for zero sequence
+						VTerminal[i] = polarDeg2Complex(Vmag, (360.0 + angle));  // all the same for zero sequence
 						break;
 					default:
-						VTerminal[i] = ComplexUtil.polarDeg2Complex(Vmag, (360.0 + angle - i * 360.0 / nPhases));
+						VTerminal[i] = polarDeg2Complex(Vmag, (360.0 + angle - i * 360.0 / nPhases));
 						break;
 					}
 					VTerminal[i + nPhases] = Complex.ZERO;  // see comments in getInjCurrents
@@ -398,7 +408,7 @@ public class VSourceObj extends PCElement {
 		setPropertyValue(1, "115");
 		setPropertyValue(2, "1");
 		setPropertyValue(3, "0");
-		setPropertyValue(4, String.format("%d", Math.round(DSS.defaultBaseFreq)));
+		setPropertyValue(4, format("%d", round(DSS.defaultBaseFreq)));
 		setPropertyValue(5, "3");
 		setPropertyValue(6, "2000");
 		setPropertyValue(7, "2100");
@@ -423,21 +433,21 @@ public class VSourceObj extends PCElement {
 		case 0:
 			return getBus(0);
 		case 6:
-			return String.format("%-.5g", MVAsc3);
+			return format("%-.5g", MVAsc3);
 		case 7:
-			return String.format("%-.5g", MVAsc1);
+			return format("%-.5g", MVAsc1);
 		case 10:
-			return String.format("%-.5g", Isc3);
+			return format("%-.5g", Isc3);
 		case 11:
-			return String.format("%-.5g", Isc1);
+			return format("%-.5g", Isc1);
 		case 12:
-			return String.format("%-.5g", R1);
+			return format("%-.5g", R1);
 		case 13:
-			return String.format("%-.5g", X1);
+			return format("%-.5g", X1);
 		case 14:
-			return String.format("%-.5g", R0);
+			return format("%-.5g", R0);
 		case 15:
-			return String.format("%-.5g", X0);
+			return format("%-.5g", X0);
 		case 18:
 			return getBus(1);
 		default:
@@ -451,9 +461,9 @@ public class VSourceObj extends PCElement {
 	@Override
 	public void makePosSequence() {
 		String s = "phases=1 ";
-		s = s + String.format("basekV=%-.5g ", kVBase / DSS.SQRT3);
-		s = s + String.format("r1=%-.5g ", R1);
-		s = s + String.format("x1=%-.5g ", X1);
+		s = s + format("basekV=%-.5g ", kVBase / DSS.SQRT3);
+		s = s + format("r1=%-.5g ", R1);
+		s = s + format("x1=%-.5g ", X1);
 
 		Parser.getInstance().setCommand(s);
 		edit();

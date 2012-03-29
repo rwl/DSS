@@ -33,8 +33,16 @@ import com.ncond.dss.meter.EnergyMeter;
 import com.ncond.dss.meter.EnergyMeterObj;
 import com.ncond.dss.meter.SensorObj;
 import com.ncond.dss.shared.CMatrix;
-import com.ncond.dss.shared.ComplexUtil;
-import com.ncond.dss.shared.MathUtil;
+
+import static com.ncond.dss.shared.MathUtil.phase2SymComp;
+import static com.ncond.dss.shared.MathUtil.pctNemaUnbalance;
+
+import static com.ncond.dss.shared.ComplexUtil.degArg;
+
+import static java.lang.Math.max;
+import static java.lang.Math.abs;
+import static java.lang.Math.min;
+
 
 public class ExportResults {
 
@@ -84,13 +92,13 @@ public class ExportResults {
 						Vph[j] = sol.getNodeV(bus.getRef(bus.findIdx(j + 1)));
 					}
 
-					MathUtil.phase2SymComp(Vph, V012);
+					phase2SymComp(Vph, V012);
 
 					V0 = V012[0].abs();
 					V1 = V012[1].abs();
 					V2 = V012[2].abs();
 
-					V_NEMA = MathUtil.pctNemaUnbalance(Vph);
+					V_NEMA = pctNemaUnbalance(Vph);
 				}
 
 				if (bus.getKVBase() != 0.0) {
@@ -150,7 +158,7 @@ public class ExportResults {
 		maxNumNodes = 0;
 		for (i = 0; i < ckt.getNumBuses(); i++) {
 			bus = ckt.getBus(i);
-			maxNumNodes = Math.max(maxNumNodes, bus.getNumNodesThisBus());
+			maxNumNodes = max(maxNumNodes, bus.getNumNodesThisBus());
 		}
 
 		try {
@@ -183,7 +191,7 @@ public class ExportResults {
 					}
 
 					pw.printf(", %d, %10.6g, %6.1f, %9.5g",
-							bus.getNum(nodeIdx), Vmag, ComplexUtil.degArg(volts), Vpu);
+							bus.getNum(nodeIdx), Vmag, degArg(volts), Vpu);
 				}
 				for (j = bus.getNumNodesThisBus(); j < maxNumNodes; j++)
 					pw.printf(", %d, %10.6g, %6.1f, %9.5g", 0, 0, 0, 0);  // zero fill row
@@ -216,12 +224,12 @@ public class ExportResults {
 				Iph[i] = cBuffer[k];
 			}
 
-			MathUtil.phase2SymComp(Iph, I012);
+			phase2SymComp(Iph, I012);
 			I0 = I012[0].abs();
 			I1 = I012[1].abs();
 			I2 = I012[2].abs();
 
-			I_NEMA = MathUtil.pctNemaUnbalance(Iph);
+			I_NEMA = pctNemaUnbalance(Iph);
 		} else {
 			I0 = 0.0;
 			I1 = 0.0;
@@ -336,12 +344,12 @@ public class ExportResults {
 			for (i = 0; i < pElem.getNumConds(); i++) {
 				k += 1;
 				c = cBuffer[k];
-				pw.printf(", %10.6g, %8.2f", c.abs(), ComplexUtil.degArg(c));
+				pw.printf(", %10.6g, %8.2f", c.abs(), degArg(c));
 				Iresid = Iresid.add(c);
 			}
 			for (i = pElem.getNumConds(); i < condWidth; i++)
 				pw.printf(", %10.6g, %8.2f", 0.0, 0.0);
-			pw.printf(", %10.6g, %8.2f", Iresid.abs(), ComplexUtil.degArg(Iresid));
+			pw.printf(", %10.6g, %8.2f", Iresid.abs(), degArg(Iresid));
 		}
 
 		/* Filler if no. terms less than termwidth */
@@ -496,14 +504,14 @@ public class ExportResults {
 							S = PDElem.getExcessKVANorm(0);
 							if (opt == 1) S = S.multiply(0.001);
 
-							pw.print(sep + Math.abs(S.getReal()));
-							pw.print(sep + Math.abs(S.getImaginary()));
+							pw.print(sep + abs(S.getReal()));
+							pw.print(sep + abs(S.getImaginary()));
 
 							S = PDElem.getExcessKVAEmerg(0);
 							if (opt == 1) S = S.multiply(0.001);
 
-							pw.print(sep + Math.abs(S.getReal()));
-							pw.print(sep + Math.abs(S.getImaginary()));
+							pw.print(sep + abs(S.getReal()));
+							pw.print(sep + abs(S.getImaginary()));
 						}
 						pw.println();
 					}
@@ -692,8 +700,8 @@ public class ExportResults {
 							Vph[i] = volts;
 						}
 						if (PDElem.getNumPhases() >= 3) {
-							MathUtil.phase2SymComp(Iph, I012);
-							MathUtil.phase2SymComp(Vph, V012);
+							phase2SymComp(Iph, I012);
+							phase2SymComp(Vph, V012);
 						} else {
 							V012[0] = Complex.ZERO;
 							I012[0] = Complex.ZERO;
@@ -726,13 +734,13 @@ public class ExportResults {
 						if (j == 0) {
 							S = PDElem.getExcessKVANorm(0);
 							if (opt == 1) S = S.multiply(0.001);
-							pw.print(sep + Math.abs(S.getReal()));
-							pw.print(sep + Math.abs(S.getImaginary()));
+							pw.print(sep + abs(S.getReal()));
+							pw.print(sep + abs(S.getImaginary()));
 
 							S = PDElem.getExcessKVAEmerg(0);
 							if (opt == 1) S = S.multiply(0.001);
-							pw.print(sep + Math.abs(S.getReal()));
-							pw.print(sep + Math.abs(S.getImaginary()));
+							pw.print(sep + abs(S.getReal()));
+							pw.print(sep + abs(S.getImaginary()));
 						}
 						pw.println();
 					}
@@ -756,8 +764,8 @@ public class ExportResults {
 							Vph[i] = volts;
 						}
 						if (PCElem.getNumPhases() >= 3) {
-							MathUtil.phase2SymComp(Iph, I012);
-							MathUtil.phase2SymComp(Vph, V012);
+							phase2SymComp(Iph, I012);
+							phase2SymComp(Vph, V012);
 						} else {
 							V012[0] = Complex.ZERO;
 							I012[0] = Complex.ZERO;
@@ -940,7 +948,7 @@ public class ExportResults {
 
 					/* Percent error */
 					for (i = 0; i < mtr.getNumPhases(); i++)
-						tmp[i] = (1.0 - tmp[i] / Math.max(0.001, mtr.getSensorCurrent(i))) * 100.0;
+						tmp[i] = (1.0 - tmp[i] / max(0.001, mtr.getSensorCurrent(i))) * 100.0;
 					for (i = 0; i < 3; i++)
 						pw.printf(", %.6g", tmp[i]);
 
@@ -983,7 +991,7 @@ public class ExportResults {
 
 					/* Percent error */
 					for (i = 0; i < sensor.getNumPhases(); i++)
-						tmp[i] = (1.0 - tmp[i] / Math.max(0.001, sensor.getSensorCurrent(i))) * 100.0;
+						tmp[i] = (1.0 - tmp[i] / max(0.001, sensor.getSensorCurrent(i))) * 100.0;
 					for (i = 0; i < 3; i++)
 						pw.printf(", %.6g", tmp[i]);
 
@@ -1003,7 +1011,7 @@ public class ExportResults {
 
 					/* Percent error */
 					for (i = 0; i < sensor.getNumPhases(); i++)
-						tmp[i] = (1.0 - tmp[i] / Math.max(0.001, sensor.getSensorVoltage(i))) * 100.0;
+						tmp[i] = (1.0 - tmp[i] / max(0.001, sensor.getSensorVoltage(i))) * 100.0;
 					for (i = 0; i < 3; i++)
 						pw.printf(", %.6g", tmp[i]);
 
@@ -1412,13 +1420,13 @@ public class ExportResults {
 
 						for (j = 0; j < 1; j++) {  // only for terminal 1
 							Cmax = 0.0;
-							for (i = 0; i < Math.min(elem.getNumPhases(), 3); i++) {  // check only first 3 phases
+							for (i = 0; i < min(elem.getNumPhases(), 3); i++) {  // check only first 3 phases
 								Iph[i] = cBuffer[j * nCond + i];
-								Cmax = Math.max(Cmax, Iph[i].abs());
+								Cmax = max(Cmax, Iph[i].abs());
 							}
 							if (elem.getNumPhases() >= 3) {
 								// report symmetrical component currents for
-								MathUtil.phase2SymComp(Iph, I012);
+								phase2SymComp(Iph, I012);
 								I0 = I012[0].abs();  // get abs values to report
 								I1 = I012[1].abs();
 								I2 = I012[2].abs();

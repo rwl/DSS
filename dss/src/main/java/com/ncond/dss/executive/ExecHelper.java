@@ -53,9 +53,11 @@ import com.ncond.dss.parser.Parser;
 import com.ncond.dss.plot.DSSGraphDeclarations;
 import com.ncond.dss.plot.DSSPlot;
 import com.ncond.dss.shared.CommandList;
-import com.ncond.dss.shared.ComplexUtil;
-import com.ncond.dss.shared.MathUtil;
 import com.ncond.dss.shared.PstCalc;
+
+import static com.ncond.dss.shared.MathUtil.phase2SymComp;
+
+import static com.ncond.dss.shared.ComplexUtil.degArg;
 
 import static com.ncond.dss.common.Util.expandFileName;
 import static com.ncond.dss.common.Util.compareTextShortest;
@@ -87,6 +89,15 @@ import static com.ncond.dss.common.Util.resizeArray;
 import static com.ncond.dss.common.Util.rewriteAlignedFile;
 import static com.ncond.dss.common.Util.stripClassName;
 import static com.ncond.dss.common.Util.traceAndEdit;
+
+import static java.lang.Math.round;
+import static java.lang.Math.cos;
+import static java.lang.Math.max;
+import static java.lang.Math.min;
+import static java.lang.Math.sin;
+
+import static java.lang.String.format;
+
 
 public class ExecHelper {
 
@@ -791,7 +802,7 @@ public class ExecHelper {
 
 		SolutionObj solution = DSS.activeCircuit.getSolution();
 
-		solution.setIntHour((int) Math.round(timeArray[0]));
+		solution.setIntHour((int) round(timeArray[0]));
 		solution.getDynaVars().t = timeArray[1];
 		solution.updateDblHour();
 	}
@@ -960,7 +971,7 @@ public class ExecHelper {
 						if (reacElement.isEnabled())
 							DSS.activeCircuit.getBus(reacElement.getTerminal(0).getBusRef() - 1).setKeep(true);
 					} catch (Exception e) {
-						DSS.doSimpleMsg(String.format("%s %s reactor=%s Bus No.=%d ", e.getMessage(), DSS.CRLF,
+						DSS.doSimpleMsg(format("%s %s reactor=%s Bus No.=%d ", e.getMessage(), DSS.CRLF,
 							reacElement.getName(), reacElement.getNodeRef(0)), 9999);
 					}
 				}
@@ -1376,7 +1387,7 @@ public class ExecHelper {
 		if (DSS.activeCircuit != null) {
 			DSS.globalResult = "";
 			lossValue = DSS.activeCircuit.getLosses();
-			DSS.globalResult = String.format("%10.5g, %10.5g",
+			DSS.globalResult = format("%10.5g, %10.5g",
 					lossValue.getReal() * 0.001,
 					lossValue.getImaginary() * 0.001);
 		} else {
@@ -1398,8 +1409,8 @@ public class ExecHelper {
 			cBuffer = new Complex[nValues];
 			elem.getCurrents(cBuffer);
 			for (int i = 0; i < nValues; i++) {
-				DSS.globalResult += String.format("%10.5g, %6.1f,",
-					cBuffer[i].abs(), ComplexUtil.degArg(cBuffer[i]));
+				DSS.globalResult += format("%10.5g, %6.1f,",
+					cBuffer[i].abs(), degArg(cBuffer[i]));
 			}
 		} else {
 			DSS.globalResult = "No active circuit";
@@ -1416,7 +1427,7 @@ public class ExecHelper {
 			if (ckt.getActiveCktElement() != null) {
 				DSS.globalResult = "";
 				lossValue = ckt.getActiveCktElement().getLosses();
-				DSS.globalResult = String.format("%10.5g, %10.5g",
+				DSS.globalResult = format("%10.5g, %10.5g",
 						lossValue.getReal() * 0.001,
 						lossValue.getImaginary() * 0.001);
 			}
@@ -1444,7 +1455,7 @@ public class ExecHelper {
 			DSS.globalResult = "";
 			elem.getPhaseLosses(nValues, cBuffer);
 			for (int i = 0; i < nValues[0]; i++) {
-				DSS.globalResult += String.format("%10.5g, %10.5g,",
+				DSS.globalResult += format("%10.5g, %10.5g,",
 						cBuffer[i].getReal() * 0.001,
 						cBuffer[i].getImaginary() * 0.001);
 			}
@@ -1469,7 +1480,7 @@ public class ExecHelper {
 			cBuffer = new Complex[nValues];
 			elem.getPhasePower(cBuffer);
 			for (int i = 0; i < nValues; i++) {
-				DSS.globalResult += String.format("%10.5g, %10.5g,",
+				DSS.globalResult += format("%10.5g, %10.5g,",
 						cBuffer[i].getReal() * 0.001,
 						cBuffer[i].getImaginary() * 0.001);
 			}
@@ -1509,9 +1520,9 @@ public class ExecHelper {
 						k = j * elem.getNumConds();
 						for (i = 0; i < 3; i++)
 							Iph[i] = cBuffer[k + i];
-						MathUtil.phase2SymComp(Iph, I012);
+						phase2SymComp(Iph, I012);
 						for (i = 0; i < 3; i++)
-							DSS.globalResult += String.format("%10.5g, ", I012[i].abs());
+							DSS.globalResult += format("%10.5g, ", I012[i].abs());
 					}
 				}
 			}
@@ -1555,11 +1566,11 @@ public class ExecHelper {
 							Vph[i] = ckt.getSolution().getNodeV(elem.getTerminal(j).getTermNodeRef(i));
 						for (i = 0; i < 3; i++)
 							Iph[i] = cBuffer[k + i];
-						MathUtil.phase2SymComp(Iph, I012);
-						MathUtil.phase2SymComp(Vph, V012);
+						phase2SymComp(Iph, I012);
+						phase2SymComp(Vph, V012);
 						for (i = 0; i < 3; i++)
 							S = V012[i].multiply(I012[i].conjugate());
-						DSS.globalResult += String.format("%10.5g, %10.5g,",
+						DSS.globalResult += format("%10.5g, %10.5g,",
 							S.getReal() * 0.003, S.getImaginary() * 0.003);  // 3-phase kW conversion
 					}
 				}
@@ -1604,10 +1615,10 @@ public class ExecHelper {
 								for (i = 0; i < 3; i++)
 									Vph[i] = ckt.getSolution().getNodeV(elem.getNodeRef(i + k));
 
-								MathUtil.phase2SymComp(Vph, V012);  // compute symmetrical components
+								phase2SymComp(Vph, V012);  // compute symmetrical components
 
 								for (i = 0; i < 3; i++)
-									DSS.globalResult += String.format("%10.5g, ", V012[i].abs());
+									DSS.globalResult += format("%10.5g, ", V012[i].abs());
 							}
 						}
 					} catch (Exception e) {
@@ -1648,11 +1659,11 @@ public class ExecHelper {
 					Vmag = volts.abs();
 					if (perUnit && (activeBus.getKVBase() > 0.0)) {
 						Vmag = Vmag * 0.001 / activeBus.getKVBase();
-						DSS.globalResult += String.format("%10.5g, %6.1f, ",
-								Vmag, ComplexUtil.degArg( volts ));
+						DSS.globalResult += format("%10.5g, %6.1f, ",
+								Vmag, degArg( volts ));
 					} else {
-						DSS.globalResult += String.format("%10.5g, %6.1f, ",
-								Vmag, ComplexUtil.degArg( volts ));
+						DSS.globalResult += format("%10.5g, %6.1f, ",
+								Vmag, degArg( volts ));
 					}
 				}
 			} else {
@@ -1687,7 +1698,7 @@ public class ExecHelper {
 						} else {
 							Z = activeBus.getYsc().get(i, j);
 						}
-						DSS.globalResult += String.format("%-.5g, %-.5g,   ",
+						DSS.globalResult += format("%-.5g, %-.5g,   ",
 								Z.getReal(), Z.getImaginary());
 					}
 				}
@@ -1716,11 +1727,11 @@ public class ExecHelper {
 				DSS.globalResult = "";
 				if (activeBus.getZsc() == null) {
 					Z = activeBus.getZsc1();
-					DSS.globalResult += String.format("Z1, %-.5g, %-.5g, ",
+					DSS.globalResult += format("Z1, %-.5g, %-.5g, ",
 							Z.getReal(), Z.getImaginary()) + DSS.CRLF;
 
 					Z = activeBus.getZsc0();
-					DSS.globalResult += String.format("Z0, %-.5g, %-.5g, ",
+					DSS.globalResult += format("Z0, %-.5g, %-.5g, ",
 							Z.getReal(), Z.getImaginary());
 				}
 			} else {
@@ -1827,7 +1838,7 @@ public class ExecHelper {
 			ckt.totalizeMeters();
 			// now export to global result
 			for (int i = 0; i < EnergyMeterObj.NumEMRegisters; i++)
-				DSS.appendGlobalResult(String.format("%-.6g", DSS.activeCircuit.getRegisterTotals()[i]));
+				DSS.appendGlobalResult(format("%-.6g", DSS.activeCircuit.getRegisterTotals()[i]));
 		}
 
 		return 0;
@@ -1875,10 +1886,10 @@ public class ExecHelper {
 		}
 
 		if (ckt.computeCapacity()) {  // totalizes energy meters at end
-			DSS.globalResult = String.format("%-.6g",
+			DSS.globalResult = format("%-.6g",
 				ckt.getRegisterTotals()[3] + ckt.getRegisterTotals()[19]);  // peak kW in meters
 
-			DSS.appendGlobalResult(String.format("%-.6g", ckt.getLoadMultiplier()));
+			DSS.appendGlobalResult(format("%-.6g", ckt.getLoadMultiplier()));
 		}
 
 		return 0;
@@ -1933,7 +1944,7 @@ public class ExecHelper {
 			case DSSClassDefs.PC_ELEMENT:
 				elem = (PCElement) ckt.getActiveCktElement();
 				for (int i = 0; i < elem.numVariables(); i++)
-					DSS.appendGlobalResult(String.format("%-.6g", elem.getVariable(i)));
+					DSS.appendGlobalResult(format("%-.6g", elem.getVariable(i)));
 				break;
 			default:
 				DSS.appendGlobalResult("null");
@@ -1994,7 +2005,7 @@ public class ExecHelper {
 			}
 
 			if ((varIndex >= 0) && (varIndex < elem.numVariables())) {
-				DSS.globalResult = String.format("%.8g", elem.getVariable(varIndex));
+				DSS.globalResult = format("%.8g", elem.getVariable(varIndex));
 			} else {
 				DSS.globalResult = "";   // invalid var name or index
 			}
@@ -2262,7 +2273,7 @@ public class ExecHelper {
 			Parser.getInstance().getNextParam();
 			angle = Parser.getInstance().doubleValue() * DSS.PI / 180.0;   // deg to rad
 
-			a = new Complex(Math.cos(angle), Math.sin(angle));
+			a = new Complex(cos(angle), sin(angle));
 			xmin =  1.0e50;
 			xmax = -1.0e50;
 			ymin =  1.0e50;
@@ -2270,10 +2281,10 @@ public class ExecHelper {
 			for (i = 0; i < ckt.getNumBuses(); i++) {
 				if (ckt.getBus(i).isCoordDefined()) {
 					bus = ckt.getBus(i);
-					xmax = Math.max(xmax, bus.getX());
-					xmin = Math.min(xmin, bus.getX());
-					ymax = Math.max(ymax, bus.getY());
-					ymin = Math.min(ymin, bus.getY());
+					xmax = max(xmax, bus.getX());
+					xmin = min(xmin, bus.getX());
+					ymax = max(ymax, bus.getY());
+					ymin = min(ymin, bus.getY());
 				}
 			}
 
@@ -2327,7 +2338,7 @@ public class ExecHelper {
 									if (Vmag != 0.0) {
 										pw.println(busName + "." + node + ", " + (diff / Vmag * 100.0) + ", %");
 									} else {
-										pw.println(busName + "." + node + ", " + String.format("%-.5g", diff) + ", Volts");
+										pw.println(busName + "." + node + ", " + format("%-.5g", diff) + ", Volts");
 									}
 								}
 							}
@@ -2368,10 +2379,10 @@ public class ExecHelper {
 		}
 		s.append("Solution Mode = " + getSolutionModeID() + CRLF);
 		s.append("Number = " + String.valueOf(ckt.getSolution().getNumberOfTimes()) + CRLF);
-		s.append("Load Mult = " + String.format("%5.3f", ckt.getLoadMultiplier()) + CRLF);
-		s.append("Devices = " + String.format("%d", ckt.getNumDevices()) + CRLF);
-		s.append("Buses = " + String.format("%d", ckt.getNumBuses()) + CRLF);
-		s.append("Nodes = " + String.format("%d", ckt.getNumNodes()) + CRLF);
+		s.append("Load Mult = " + format("%5.3f", ckt.getLoadMultiplier()) + CRLF);
+		s.append("Devices = " + format("%d", ckt.getNumDevices()) + CRLF);
+		s.append("Buses = " + format("%d", ckt.getNumBuses()) + CRLF);
+		s.append("Nodes = " + format("%d", ckt.getNumNodes()) + CRLF);
 		s.append("Control Mode =" + getControlModeID() + CRLF);
 		s.append("Total Iterations = " + String.valueOf(ckt.getSolution().getIteration()) + CRLF);
 		s.append("Control Iterations = " + String.valueOf(ckt.getSolution().getControlIteration()) + CRLF);
@@ -2380,22 +2391,22 @@ public class ExecHelper {
 		s.append(" - Circuit Summary -" + CRLF);
 		s.append(" " + CRLF);
 		if (ckt != null) {
-			s.append(String.format("Year = %d ", ckt.getSolution().getYear()) + CRLF);
-			s.append(String.format("Hour = %d ", ckt.getSolution().getIntHour()) + CRLF);
-			s.append("Max pu. voltage = " + String.format("%-.5g ", getMaxPUVoltage()) + CRLF);
-			s.append("Min pu. voltage = " + String.format("%-.5g ", getMinPUVoltage(true)) + CRLF);
+			s.append(format("Year = %d ", ckt.getSolution().getYear()) + CRLF);
+			s.append(format("Hour = %d ", ckt.getSolution().getIntHour()) + CRLF);
+			s.append("Max pu. voltage = " + format("%-.5g ", getMaxPUVoltage()) + CRLF);
+			s.append("Min pu. voltage = " + format("%-.5g ", getMinPUVoltage(true)) + CRLF);
 			cPower = getTotalPowerFromSources().multiply(0.000001);  // MVA
-			s.append(String.format("Total Active Power:   %-.6g MW", cPower.getReal()) + CRLF);
-			s.append(String.format("Total Reactive Power: %-.6g Mvar", cPower.getImaginary()) + CRLF);
+			s.append(format("Total Active Power:   %-.6g MW", cPower.getReal()) + CRLF);
+			s.append(format("Total Reactive Power: %-.6g Mvar", cPower.getImaginary()) + CRLF);
 			cLosses = ckt.getLosses().multiply(0.000001);
 			if (cPower.getReal() != 0.0) {
-				s.append(String.format("Total Active Losses:   %-.6g MW, (%-.4g %%)",
+				s.append(format("Total Active Losses:   %-.6g MW, (%-.4g %%)",
 					cLosses.getReal(), (cLosses.getReal() / cPower.getReal() * 100.0)) + CRLF);
 			} else {
 				s.append("Total Active Losses:   ****** MW, (**** %%)" + CRLF);
 			}
-			s.append(String.format("Total Reactive Losses: %-.6g Mvar", cLosses.getImaginary()) + CRLF);
-			s.append(String.format("Frequency = %g Hz", ckt.getSolution().getFrequency()) + CRLF);
+			s.append(format("Total Reactive Losses: %-.6g Mvar", cLosses.getImaginary()) + CRLF);
+			s.append(format("Frequency = %g Hz", ckt.getSolution().getFrequency()) + CRLF);
 			s.append("Mode = " + getSolutionModeID() + CRLF);
 			s.append("Control Mode = " + getControlModeID() + CRLF);
 			s.append("Load Model = " + getLoadModel() + CRLF);
@@ -2516,7 +2527,7 @@ public class ExecHelper {
 				numRegs = parser.parseAsVector(EnergyMeterObj.NumEMRegisters, dRegisters);
 				iRegisters = new int[numRegs];
 				for (int i = 0; i < numRegs; i++)
-					iRegisters[i] = (int) Math.round(dRegisters[i]);
+					iRegisters[i] = (int) round(dRegisters[i]);
 				break;
 			case 3:
 				peakDay = interpretYesNo(param);
@@ -2662,7 +2673,7 @@ public class ExecHelper {
 					nRegs = Parser.getInstance().parseAsVector(EnergyMeterObj.NumEMRegisters, dRegisters);
 					iRegisters = new int[nRegs];
 					for (int i = 0; i < nRegs; i++)
-						iRegisters[i] = (int) Math.round(dRegisters[i]);
+						iRegisters[i] = (int) round(dRegisters[i]);
 					break;
 				case 2:
 					whichFile = param;
@@ -2909,7 +2920,7 @@ public class ExecHelper {
 		}
 
 		// append myEditString onto the end of the edit string to change the linecode or geometry
-		editString = String.format("%s %s", editString, myEditString);
+		editString = format("%s %s", editString, myEditString);
 
 		switch (traceDirection) {
 		case 1:
@@ -3158,7 +3169,7 @@ public class ExecHelper {
 		if (iBusIdx >= 0) {
 			b1ref = ckt.getBus(iBusIdx).find(nodeBuffer[0]);
 		} else {
-			DSS.doSimpleMsg(String.format("Bus %s not found.", sBusName), 28709);
+			DSS.doSimpleMsg(format("Bus %s not found.", sBusName), 28709);
 			return 0;
 		}
 
@@ -3172,15 +3183,15 @@ public class ExecHelper {
 		if (iBusIdx > 0) {
 			b2ref = ckt.getBus(iBusIdx).find(nodeBuffer[0]);
 		} else {
-			DSS.doSimpleMsg(String.format("Bus %s not found.", sBusName), 28710);
+			DSS.doSimpleMsg(format("Bus %s not found.", sBusName), 28710);
 			return 0;
 		}
 
 		V2 = ckt.getSolution().getNodeV(b2ref);
 
 		VNodeDiff = V1.subtract(V2);
-		DSS.globalResult = String.format("%.7g, V,    %.7g, deg  ",
-			VNodeDiff.abs(), ComplexUtil.degArg(VNodeDiff));
+		DSS.globalResult = format("%.7g, V,    %.7g, deg  ",
+			VNodeDiff.abs(), degArg(VNodeDiff));
 
 		return 0;
 	}
@@ -3350,7 +3361,7 @@ public class ExecHelper {
 				break;
 			case 3:
 				double f = DSS.activeCircuit.getSolution().getFrequency();
-				cyclesPerSample = (int) Math.round(f * parser.doubleValue());
+				cyclesPerSample = (int) round(f * parser.doubleValue());
 				break;
 			case 4:
 				freq = parser.doubleValue();
@@ -3371,7 +3382,7 @@ public class ExecHelper {
 			// put resulting pst array in the result string
 			s = "";
 			for (i = 0; i < nPst; i++) {
-				s = s + String.format("%.8g, ", pstArray[i]);
+				s = s + format("%.8g, ", pstArray[i]);
 			}
 			DSS.globalResult = s;
 		} else {

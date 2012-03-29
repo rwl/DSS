@@ -14,6 +14,13 @@ import com.ncond.dss.common.types.YPrimType;
 import com.ncond.dss.general.DSSObject;
 import com.ncond.dss.shared.CMatrix;
 
+import static java.lang.Math.max;
+import static java.lang.Math.pow;
+import static java.lang.Math.sqrt;
+
+import static java.lang.String.format;
+
+
 abstract public class CktElement extends DSSObject {
 
 	private String[] busNames;
@@ -175,7 +182,7 @@ abstract public class CktElement extends DSSObject {
 	public void setNumConds(int value) {
 		// check for an almost certain programming error
 		if (value <= 0) {
-			DSS.doSimpleMsg(String.format("Invalid number of terminals (%d) for \"%s.%s\"",
+			DSS.doSimpleMsg(format("Invalid number of terminals (%d) for \"%s.%s\"",
 					value, parentClass.getClassName(), getName()), 749);
 			return;
 		}
@@ -205,7 +212,7 @@ abstract public class CktElement extends DSSObject {
 
 		// check for an almost certain programming error
 		if (value <= 0) {
-			DSS.doSimpleMsg(String.format("Invalid number of terminals (%d) for \"%s.%s\"",
+			DSS.doSimpleMsg(format("Invalid number of terminals (%d) for \"%s.%s\"",
 					value, parentClass.getClassName(), getName()), 749);
 			return;
 		}
@@ -216,7 +223,7 @@ abstract public class CktElement extends DSSObject {
 
 			/* Sanity check */
 			if (nConds > 101) {
-				DSS.doSimpleMsg(String.format("Warning: Number of conductors is very large (%d) for circuit element: \"%s.%s." +
+				DSS.doSimpleMsg(format("Warning: Number of conductors is very large (%d) for circuit element: \"%s.%s." +
 						"Possible error in specifying the number of phases for element.",
 						nConds, parentClass.getClassName(), getName()), 750);
 			}
@@ -407,7 +414,7 @@ abstract public class CktElement extends DSSObject {
 			// set global flag to signal circuit to rebuild bus defs
 			DSS.activeCircuit.setBusNameRedefined(true);
 		} else {
-			DSS.doSimpleMsg(String.format("Attempt to set bus name for non-existent" +
+			DSS.doSimpleMsg(format("Attempt to set bus name for non-existent" +
 				" circuit element terminal(%d): \"%s\"", i, name), 7541);
 		}
 	}
@@ -452,9 +459,9 @@ abstract public class CktElement extends DSSObject {
 		double max = 0.0;
 		if (enabled) {
 			for (int i = 0; i < nPhases; i++)
-				max = Math.max(max, Math.pow(ITerminal[i].getReal(), 2) + Math.pow(ITerminal[i].getImaginary(), 2));
+				max = max(max, pow(ITerminal[i].getReal(), 2) + pow(ITerminal[i].getImaginary(), 2));
 		}
-		return Math.sqrt(max);  // just do the sqrt once and save a little time
+		return sqrt(max);  // just do the sqrt once and save a little time
 	}
 
 	/**
@@ -724,7 +731,7 @@ abstract public class CktElement extends DSSObject {
 
 	@Override
 	public void initPropertyValues(int arrayOffset) {
-		setPropertyValue(arrayOffset + 1, String.format("%g", baseFrequency));  // base freq
+		setPropertyValue(arrayOffset + 1, format("%g", baseFrequency));  // base freq
 		setPropertyValue(arrayOffset + 2, "true");  // enabled
 
 		enabledProperty = arrayOffset + 2;  // keep track of this

@@ -10,6 +10,12 @@ import java.io.PrintWriter;
 
 import com.ncond.dss.common.DSSClass;
 
+import static java.lang.Math.exp;
+import static java.lang.Math.log;
+
+import static java.lang.String.format;
+
+
 /**
  * Nominally, a time-current curve, but also used for volt-time curves.
  *
@@ -72,8 +78,8 @@ public class TCC_CurveObj extends DSSObject {
 						return time;
 					} else if (cValues[i] > cValue) {  // log-log interpolation
 						lastValueAccessed = i - 1;
-						logTest = cValue > 0.0 ? Math.log(cValue) : Math.log(0.001);
-						time = Math.exp(logT[lastValueAccessed] +
+						logTest = cValue > 0.0 ? log(cValue) : log(0.001);
+						time = exp(logT[lastValueAccessed] +
 							(logTest - logC[lastValueAccessed]) / (logC[i] - logC[lastValueAccessed]) *
 							(logT[i] - logT[lastValueAccessed]));
 						return time;
@@ -189,11 +195,11 @@ public class TCC_CurveObj extends DSSObject {
 		switch (index) {
 		case 1:
 			for (i = 0; i < npts; i++)
-				result += String.format("%g, ", cValues[i]);
+				result += format("%g, ", cValues[i]);
 			break;
 		case 2:
 			for (i = 0; i < npts; i++)
-				result += String.format("%g, ", tValues[i]);
+				result += format("%g, ", tValues[i]);
 			break;
 		default:
 			result = super.getPropertyValue(index);

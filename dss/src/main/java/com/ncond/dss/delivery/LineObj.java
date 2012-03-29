@@ -27,11 +27,23 @@ import com.ncond.dss.general.LineSpacingObj;
 import com.ncond.dss.general.WireDataObj;
 import com.ncond.dss.parser.Parser;
 import com.ncond.dss.shared.CMatrix;
-import com.ncond.dss.shared.ComplexUtil;
 import com.ncond.dss.shared.LineUnits;
-import com.ncond.dss.shared.MathUtil;
+
+import static com.ncond.dss.shared.MathUtil.parallelZ;
+import static com.ncond.dss.shared.MathUtil.phase2SymComp;
+
+import static com.ncond.dss.shared.ComplexUtil.divide;
+import static com.ncond.dss.shared.ComplexUtil.invert;
 
 import static com.ncond.dss.common.Util.stripExtension;
+
+import static java.lang.Math.cos;
+import static java.lang.Math.exp;
+import static java.lang.Math.log;
+import static java.lang.Math.sin;
+import static java.lang.Math.sqrt;
+
+import static java.lang.String.format;
 
 
 public class LineObj extends PDElement {
@@ -100,7 +112,7 @@ public class LineObj extends PDElement {
 		Rg = 0.01805;  // ohms per 1000 ft
 		Xg = 0.155081;
 		rho = 100.0;
-		kXg = Xg / Math.log(658.5 * Math.sqrt(rho / baseFrequency));
+		kXg = Xg / log(658.5 * sqrt(rho / baseFrequency));
 		rhoSpecified = false;
 		capSpecified = false;
 
@@ -169,7 +181,7 @@ public class LineObj extends PDElement {
 			Rg = elem.getRg();
 			Xg = elem.getXg();
 			rho = elem.getRho();
-			kXg = Xg / Math.log(658.5 * Math.sqrt(rho / baseFrequency));
+			kXg = Xg / log(658.5 * sqrt(rho / baseFrequency));
 
 			lineCodeUnits = elem.getUnits();
 			lineCodeSpecified = true;
@@ -237,15 +249,15 @@ public class LineObj extends PDElement {
 				gammaL = Zs.multiply(Ys).sqrt();
 				gammaL = gammaL.multiply(len);
 				expP = new Complex(
-					Math.cos(gammaL.getImaginary()),
-					Math.sin(gammaL.getImaginary())
-				).multiply(Math.exp(gammaL.getReal()));
+					cos(gammaL.getImaginary()),
+					sin(gammaL.getImaginary())
+				).multiply(exp(gammaL.getReal()));
 				exp2P = new Complex(
-					Math.cos(0.5 * gammaL.getImaginary()),
-					Math.sin(0.5 * gammaL.getImaginary())
-				).multiply(Math.exp(0.5 * gammaL.getReal()));
-				expM = ComplexUtil.invert(expP);
-				exp2M = ComplexUtil.invert(exp2P);
+					cos(0.5 * gammaL.getImaginary()),
+					sin(0.5 * gammaL.getImaginary())
+				).multiply(exp(0.5 * gammaL.getReal()));
+				expM = invert(expP);
+				exp2M = invert(exp2P);
 				sinhGL = expP.subtract(expM).multiply(0.5);
 				tanh2GL = exp2P.subtract(exp2M).divide(exp2P.add(exp2M));
 				Zm = Zs.multiply(len).multiply(sinhGL).divide(gammaL);
@@ -332,7 +344,7 @@ public class LineObj extends PDElement {
 			// Correct the impedances for length and frequency
 			// Rg increases with frequency
 			// Xg modified by ln of sqrt(1/f)
-			XgMod = (Xg != 0.0) ? 0.5 * kXg * Math.log(freqMult) : 0.0;
+			XgMod = (Xg != 0.0) ? 0.5 * kXg * log(freqMult) : 0.0;
 
 			for (int i = 0; i < norder[0] * norder[0]; i++) {
 				ZinvValues[i] = new Complex(
@@ -382,7 +394,7 @@ public class LineObj extends PDElement {
 			k = 0;
 			for (int j = 0; j < getNumPhases(); j++) {
 				for (int i = 0; i < getNumPhases(); i++) {
-					value = ComplexUtil.divide(Yvalues[k], 2.0);  // half at each end ...
+					value = divide(Yvalues[k], 2.0);  // half at each end ...
 					YPrimShunt.add(i, j, value);
 					YPrimShunt.add(i + getNumPhases(), j + getNumPhases(), value);
 					k += 1;  // assume matrix in col order (1,1  2,1  3,1 ...)
@@ -483,49 +495,49 @@ public class LineObj extends PDElement {
 			val = getBus(1);
 			break;
 		case 3:
-			val = String.format("%-.7g", len);
+			val = format("%-.7g", len);
 			break;
 		case 4:
-			val = String.format("%d", nPhases);
+			val = format("%d", nPhases);
 			break;
 		case 5:
 			if (symComponentsModel) {
-				val = String.format("%-.7g", R1 / unitsConvert);
+				val = format("%-.7g", R1 / unitsConvert);
 			} else {
 				val = "----";
 			}
 			break;
 		case 6:
 			if (symComponentsModel) {
-				val = String.format("%-.7g", X1 / unitsConvert);
+				val = format("%-.7g", X1 / unitsConvert);
 			} else {
 				val = "----";
 			}
 			break;
 		case 7:
 			if (symComponentsModel) {
-				val = String.format("%-.7g", R0 / unitsConvert);
+				val = format("%-.7g", R0 / unitsConvert);
 			} else {
 				val = "----";
 			}
 			break;
 		case 8:
 			if (symComponentsModel) {
-				val = String.format("%-.7g", X0 / unitsConvert);
+				val = format("%-.7g", X0 / unitsConvert);
 			} else {
 				val = "----";
 			}
 			break;
 		case 9:
 			if (symComponentsModel) {
-				val = String.format("%-.7g", C1 * 1.0e9 / unitsConvert);
+				val = format("%-.7g", C1 * 1.0e9 / unitsConvert);
 			} else {
 				val = "----";
 			}
 			break;
 		case 10:
 			if (symComponentsModel) {
-				val = String.format("%-.7g", C0 * 1.0e9 / unitsConvert);
+				val = format("%-.7g", C0 * 1.0e9 / unitsConvert);
 			} else {
 				val = "----";
 			}
@@ -535,9 +547,9 @@ public class LineObj extends PDElement {
 				for (j = 0; j < i; j++) {
 					// report in per unit length in length units
 					if (geometrySpecified || spacingSpecified) {
-						val = val + String.format("%-.7g", Z.get(i, j).getReal() / len) + " ";
+						val = val + format("%-.7g", Z.get(i, j).getReal() / len) + " ";
 					} else {
-						val = val + String.format("%-.7g", Z.get(i, j).getReal() / unitsConvert) + " ";
+						val = val + format("%-.7g", Z.get(i, j).getReal() / unitsConvert) + " ";
 					}
 					if (i < nConds - 1)
 						val = val + "|";
@@ -549,9 +561,9 @@ public class LineObj extends PDElement {
 				for (j = 0; j < i; j++) {
 					// X matrix
 					if (geometrySpecified || spacingSpecified) {
-						val = val + String.format("%-.7g", Z.get(i, j).getImaginary() / len) + " ";
+						val = val + format("%-.7g", Z.get(i, j).getImaginary() / len) + " ";
 					} else {
-						val = val + String.format("%-.7g", Z.get(i, j).getImaginary() / unitsConvert) + " ";
+						val = val + format("%-.7g", Z.get(i, j).getImaginary() / unitsConvert) + " ";
 					}
 				}
 				if (i < nConds - 1)
@@ -563,9 +575,9 @@ public class LineObj extends PDElement {
 			for (i = 0; i < nConds; i++) {
 				for (j = 0; j < i; j++) {
 					if (geometrySpecified || spacingSpecified) {
-						val = val + String.format("%-.7g", Yc.get(i, j).getImaginary() / factor / len) + " ";
+						val = val + format("%-.7g", Yc.get(i, j).getImaginary() / factor / len) + " ";
 					} else {
-						val = val + String.format("%-.7g", Yc.get(i, j).getImaginary() / factor / unitsConvert) + " ";
+						val = val + format("%-.7g", Yc.get(i, j).getImaginary() / factor / unitsConvert) + " ";
 					}
 				}
 				if (i < nConds - 1)
@@ -580,13 +592,13 @@ public class LineObj extends PDElement {
 			}
 			break;
 		case 15:
-			val = String.format("%g", Rg);
+			val = format("%g", Rg);
 			break;
 		case 16:
-			val = String.format("%g", Xg);
+			val = format("%g", Xg);
 			break;
 		case 17:
-			val = String.format("%g", rho);
+			val = format("%g", rho);
 			break;
 		case 22:
 			val = Util.getEarthModel(earthModel);
@@ -626,8 +638,8 @@ public class LineObj extends PDElement {
 				k = i * nPhases + 1;
 				for (int j = 0; j < 3; j++)
 					Vph[j] = DSS.activeCircuit.getSolution().getNodeV(nodeRef[k + j]);
-				MathUtil.phase2SymComp(Vph, V012);
-				MathUtil.phase2SymComp(ITerminal[k], I012);
+				phase2SymComp(Vph, V012);
+				phase2SymComp(ITerminal[k], I012);
 				posSeqLosses = posSeqLosses.add(V012[1].multiply(I012[1].conjugate()));
 				negSeqLosses = negSeqLosses.add(V012[2].multiply(I012[2].conjugate()));  // accumulate both line modes
 				zeroSeqLosses = zeroSeqLosses.add(V012[0].multiply(I012[0].conjugate()));
@@ -701,12 +713,12 @@ public class LineObj extends PDElement {
 					ZS = Complex.ZERO;
 					for (i = 0; i < nPhases; i++)
 						ZS = ZS.add(Z.get(i, i));
-					ZS = ComplexUtil.divide(ZS, nPhases);
+					ZS = divide(ZS, nPhases);
 					Zm = Complex.ZERO;
 					for (i = 0; i < nPhases - 1; i++)
 						for (j = i + 1; j < nPhases; j++)
 							Zm = Zm.add(Z.get(i, j));
-					Zm = ComplexUtil.divide(Zm, nPhases * (nPhases - 1.0) / 2.0);
+					Zm = divide(Zm, nPhases * (nPhases - 1.0) / 2.0);
 					Z1 = ZS.subtract(Zm);
 
 					// do same for capacitances
@@ -719,10 +731,10 @@ public class LineObj extends PDElement {
 							Cm = Cm + Yc.get(i, j).getImaginary();
 					C1New = (Cs - Cm) / DSS.TWO_PI / baseFrequency/ (nPhases * (nPhases - 1.0) / 2.0) * 1.0e9; // nanofarads
 				}
-				s = String.format(" R1=%-.5g  %-.5g  C1=%-.5g phases=1", Z1.getReal(), Z1.getImaginary(), C1New);
+				s = format(" R1=%-.5g  %-.5g  C1=%-.5g phases=1", Z1.getReal(), Z1.getImaginary(), C1New);
 			}
 			// conductor current ratings
-			s = s + String.format(" normAmps=%-.5g  %-.5g", getNormAmps(), getEmergAmps());
+			s = s + format(" normAmps=%-.5g  %-.5g", getNormAmps(), getEmergAmps());
 			Parser.getInstance().setCommand(s);
 			edit();
 		}
@@ -834,12 +846,12 @@ public class LineObj extends PDElement {
 				/*------------------ Sym Component Model ---------------------*/
 				if (series) {
 					// ohms per unit length of this line length units
-					s = " R1=" + String.format("%g", (R1 * lenSelf + otherLine.getR1() * lenOther) / totalLen);
-					s = s + String.format(" %g", (X1 * lenSelf + otherLine.getX1() * lenOther) / totalLen);
-					s = s + String.format(" %g", (R0 * lenSelf + otherLine.getR0() * lenOther) / totalLen);
-					s = s + String.format(" %g", (X0 * lenSelf + otherLine.getX0() * lenOther) / totalLen);
-					s = s + String.format(" %g", (C1 * lenSelf + otherLine.getC1() * lenOther) / totalLen * 1.0e9);
-					s = s + String.format(" %g", (C0 * lenSelf + otherLine.getC0() * lenOther) / totalLen * 1.0e9);
+					s = " R1=" + format("%g", (R1 * lenSelf + otherLine.getR1() * lenOther) / totalLen);
+					s = s + format(" %g", (X1 * lenSelf + otherLine.getX1() * lenOther) / totalLen);
+					s = s + format(" %g", (R0 * lenSelf + otherLine.getR0() * lenOther) / totalLen);
+					s = s + format(" %g", (X0 * lenSelf + otherLine.getX0() * lenOther) / totalLen);
+					s = s + format(" %g", (C1 * lenSelf + otherLine.getC1() * lenOther) / totalLen * 1.0e9);
+					s = s + format(" %g", (C0 * lenSelf + otherLine.getC0() * lenOther) / totalLen * 1.0e9);
 				} else {
 					/* Parallel */
 					if (isSwitch) {
@@ -848,15 +860,15 @@ public class LineObj extends PDElement {
 						s = " switch=yes";  /* This will take care of setting Z's */
 					} else {
 						/* ********* Will This work with length multiplier? did it ever work? ************************* */
-						newZ = MathUtil.parallelZ(
+						newZ = parallelZ(
 							new Complex(R1 * len, X1 * len),
 							new Complex(otherLine.getR1() * otherLine.getLen(), otherLine.getX1() * otherLine.getLen()));
-						s = " R1=" + String.format("%g %g ", newZ.getReal(), newZ.getImaginary());
-						newZ = MathUtil.parallelZ(new Complex(R0 * len, X0 * len),
+						s = " R1=" + format("%g %g ", newZ.getReal(), newZ.getImaginary());
+						newZ = parallelZ(new Complex(R0 * len, X0 * len),
 								new Complex(otherLine.getR0() * otherLine.getLen(), otherLine.getX0() * otherLine.getLen()));
-						s = " R0=" + String.format("%g %g ", newZ.getReal(), newZ.getImaginary());
-						s = s + String.format(" %g", (C1 * len + otherLine.getC1() * otherLine.getLen()) / totalLen * 1.0e9);
-						s = s + String.format(" %g", (C0 * len + otherLine.getC0() * otherLine.getLen()) / totalLen * 1.0e9);
+						s = " R0=" + format("%g %g ", newZ.getReal(), newZ.getImaginary());
+						s = s + format(" %g", (C1 * len + otherLine.getC1() * otherLine.getLen()) / totalLen * 1.0e9);
+						s = s + format(" %g", (C0 * len + otherLine.getC0() * otherLine.getLen()) / totalLen * 1.0e9);
 					}
 				}
 				Parser.getInstance().setCommand(s);   // this reset the length units
@@ -877,7 +889,7 @@ public class LineObj extends PDElement {
 
 					// Z <= (Z1 + Z2) / TotalLen to get equiv ohms per unit length
 					for (i = 0; i < order1[0] * order1[0]; i++)
-						values1[i] = ComplexUtil.divide(values1[i].multiply(lenSelf).add(values2[i].multiply(lenOther)), totalLen);
+						values1[i] = divide(values1[i].multiply(lenSelf).add(values2[i].multiply(lenOther)), totalLen);
 
 					// merge Yc matrices
 					values1 = Yc.asArray(order1);
@@ -887,20 +899,20 @@ public class LineObj extends PDElement {
 						return success;  // lines not same size for some reason
 
 					for (i = 0; i < order1[0] * order1[0]; i++)
-						values1[i] = ComplexUtil.divide(values1[i].multiply(lenSelf).add( values2[i].multiply(lenOther) ), totalLen);
+						values1[i] = divide(values1[i].multiply(lenSelf).add( values2[i].multiply(lenOther) ), totalLen);
 
 					/* R matrix */
 					s = "Rmatrix=[";
 					for (i = 0; i < 3; i++) {
 						for (j = 0; j < i; j++)
-							s = s + String.format(" %g", Z.get(i, j).getReal());
+							s = s + format(" %g", Z.get(i, j).getReal());
 						s = s + " | ";
 					}
 					s = s + "] Xmatrix=[";
 					/* X matrix */
 					for (i = 0; i < 3; i++) {
 						for (j = 0; j < i; j++)
-							s = s + String.format(" %g", Z.get(i, j).getImaginary());
+							s = s + format(" %g", Z.get(i, j).getImaginary());
 						s = s + " | ";
 					}
 					s = s + "]";
@@ -912,7 +924,7 @@ public class LineObj extends PDElement {
 					s = "Cmatrix=[";
 					for (i = 0; i < 3; i++) {
 						for (j = 0; j < i; j++)
-							s = s + String.format(" %g", (Yc.get(i, j).getImaginary() / wnano));  // convert from mhos to nanofs
+							s = s + format(" %g", (Yc.get(i, j).getImaginary() / wnano));  // convert from mhos to nanofs
 						s = s + " | ";
 					}
 					s = s + "] ";
@@ -921,7 +933,7 @@ public class LineObj extends PDElement {
 				}
 			}  // matrix definition
 
-			Parser.getInstance().setCommand(String.format(" length=%g units=%s", totalLen, LineUnits.lineUnitsStr(lenUnitsSaved)));
+			Parser.getInstance().setCommand(format(" length=%g units=%s", totalLen, LineUnits.lineUnitsStr(lenUnitsSaved)));
 			edit();
 
 			otherLine.setEnabled(false);  // disable the other line
@@ -1168,11 +1180,11 @@ public class LineObj extends PDElement {
 	}
 
 	private void updatePDProperties() {
-		setPropertyValue(Line.NumPropsThisClass + 0, String.format("%g", getNormAmps()));
-		setPropertyValue(Line.NumPropsThisClass + 1, String.format("%g", getEmergAmps()));
-		setPropertyValue(Line.NumPropsThisClass + 2, String.format("%g", getFaultRate()));
-		setPropertyValue(Line.NumPropsThisClass + 3, String.format("%g", getPctPerm()));
-		setPropertyValue(Line.NumPropsThisClass + 4, String.format("%g", getHrsToRepair()));
+		setPropertyValue(Line.NumPropsThisClass + 0, format("%g", getNormAmps()));
+		setPropertyValue(Line.NumPropsThisClass + 1, format("%g", getEmergAmps()));
+		setPropertyValue(Line.NumPropsThisClass + 2, format("%g", getFaultRate()));
+		setPropertyValue(Line.NumPropsThisClass + 3, format("%g", getPctPerm()));
+		setPropertyValue(Line.NumPropsThisClass + 4, format("%g", getHrsToRepair()));
 	}
 
 	@Override

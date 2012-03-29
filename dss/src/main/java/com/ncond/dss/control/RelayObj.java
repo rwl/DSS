@@ -17,11 +17,18 @@ import com.ncond.dss.common.DSSClass;
 import com.ncond.dss.common.DSSClassDefs;
 import com.ncond.dss.conversion.PCElement;
 import com.ncond.dss.general.TCC_CurveObj;
-import com.ncond.dss.shared.MathUtil;
+
+import static com.ncond.dss.shared.MathUtil.phase2SymComp;
 
 import static com.ncond.dss.common.Util.appendToEventLog;
 import static com.ncond.dss.common.Util.getCktElementIndex;
 import static com.ncond.dss.common.Util.resizeArray;
+
+import static java.lang.Math.abs;
+import static java.lang.Math.min;
+import static java.lang.Math.pow;
+
+import static java.lang.String.format;
 
 
 /**
@@ -421,7 +428,7 @@ public class RelayObj extends ControlElem {
 			} else {
 				StringBuffer sb = new StringBuffer("(");
 				for (int i = 0; i < numReclose; i++)
-					sb.append(String.format("%g, " , recloseIntervals[i]));
+					sb.append(format("%g, " , recloseIntervals[i]));
 				sb.append(")");
 				val = sb.toString();
 			}
@@ -539,7 +546,7 @@ public class RelayObj extends ControlElem {
 			break;
 		}
 
-		setPropertyValue(23, String.format("%-.g", delayTime));
+		setPropertyValue(23, format("%-.g", delayTime));
 	}
 
 	/**
@@ -584,7 +591,7 @@ public class RelayObj extends ControlElem {
 		monitoredElement.setActiveTerminalIdx(monitoredElementTerminalIdx);
 		monitoredElement.getCurrents(cBuffer);
 		offset = (monitoredElementTerminalIdx + 1) * monitoredElement.getNumConds();  // offset for active terminal
-		MathUtil.phase2SymComp(cBuffer[offset + 1], I012);
+		phase2SymComp(cBuffer[offset + 1], I012);
 		negSeqCurrentMag = I012[2].abs();
 		if (negSeqCurrentMag >= pickupAmps46) {
 			if (!armedForOpen) {  // push the trip operation and arm to trip
@@ -593,7 +600,7 @@ public class RelayObj extends ControlElem {
 				if (delayTime > 0.0) {
 					tripTime = delayTime;
 				} else {
-					tripTime = isqt46 / Math.pow(negSeqCurrentMag / baseAmps46, 2);  // sec
+					tripTime = isqt46 / pow(negSeqCurrentMag / baseAmps46, 2);  // sec
 				}
 				lastEventHandle = ckt.getControlQueue().push(ckt.getSolution().getIntHour(),
 						ckt.getSolution().getDynaVars().t + tripTime + breakerTime,
@@ -673,7 +680,7 @@ public class RelayObj extends ControlElem {
 							timeTest = TDPhase * phaseCurve.getTCCTime(cMag / phaseTrip);
 						}
 						if (timeTest > 0.0) {
-							phaseTime = (phaseTime < 0.0) ? timeTest : Math.min(phaseTime, timeTest);
+							phaseTime = (phaseTime < 0.0) ? timeTest : min(phaseTime, timeTest);
 						}
 					}
 				}
@@ -682,7 +689,7 @@ public class RelayObj extends ControlElem {
 			// if phaseTime > 0 then we have a phase trip
 			if (phaseTime > 0.0) {
 				phaseTarget = true;
-				tripTime = (tripTime > 0.0) ? Math.min(tripTime, phaseTime) : phaseTime;
+				tripTime = (tripTime > 0.0) ? min(tripTime, phaseTime) : phaseTime;
 			}
 
 			if (tripTime > 0.0) {
@@ -724,7 +731,7 @@ public class RelayObj extends ControlElem {
 		//MonitoredElement.ActiveTerminalIdx = MonitoredElementTerminal;
 		S = monitoredElement.getPower(monitoredElementTerminalIdx);
 		if (S.getReal() < 0.0) {
-			if (Math.abs(S.getReal()) > phaseInst * 1000.0) {
+			if (abs(S.getReal()) > phaseInst * 1000.0) {
 				if (!armedForOpen) {  // push the trip operation and arm to trip
 					relayTarget = "Rev P";
 					lastEventHandle = ckt.getControlQueue().push(ckt.getSolution().getIntHour(),
@@ -788,7 +795,7 @@ public class RelayObj extends ControlElem {
 				// If UVTime > 0 then we have a UV trip
 				if (UVTime > 0.0) {
 					if (tripTime > 0.0) {
-						tripTime = Math.min(tripTime, UVTime);  // min of UV or OV time
+						tripTime = min(tripTime, UVTime);  // min of UV or OV time
 					} else {
 						tripTime = UVTime;
 					}
@@ -857,7 +864,7 @@ public class RelayObj extends ControlElem {
 		Complex[] V012 = new Complex[3];
 
 		monitoredElement.getTermVoltages(monitoredElementTerminalIdx, cBuffer);
-		MathUtil.phase2SymComp(cBuffer, V012);  // phase to symmetrical components
+		phase2SymComp(cBuffer, V012);  // phase to symmetrical components
 		negSeqVoltageMag = V012[2].abs();
 
 		if (negSeqVoltageMag >= pickupVolts47) {

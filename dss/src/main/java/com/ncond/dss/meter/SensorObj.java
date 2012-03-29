@@ -17,6 +17,8 @@ import com.ncond.dss.common.types.Connection;
 import static com.ncond.dss.common.Util.getCktElementIndex;
 import static com.ncond.dss.common.Util.resizeArray;
 
+import static java.lang.Math.pow;
+
 
 /**
  * Sensor compares voltages and currents. Power quantities are converted to
@@ -221,7 +223,7 @@ public class SensorObj extends MeterElement {
 
 		if (ISpecified)
 			for (i = 0; i < nPhases; i++)
-				result = result + Math.pow(calculatedCurrent[i].getReal(), 2) + Math.pow(calculatedCurrent[i].getImaginary(), 2) - Math.pow(sensorCurrent[i], 2);
+				result = result + pow(calculatedCurrent[i].getReal(), 2) + pow(calculatedCurrent[i].getImaginary(), 2) - pow(sensorCurrent[i], 2);
 
 		result = result * weight;
 
@@ -237,7 +239,7 @@ public class SensorObj extends MeterElement {
 
 		if (VSpecified)
 			for (i = 0; i < nPhases; i++)
-				result = result + Math.pow(calculatedVoltage[i].getReal(), 2) + Math.pow(calculatedVoltage[i].getImaginary(), 2) - Math.pow(sensorVoltage[i], 2);
+				result = result + pow(calculatedVoltage[i].getReal(), 2) + pow(calculatedVoltage[i].getImaginary(), 2) - pow(sensorVoltage[i], 2);
 
 		result = result * weight;
 

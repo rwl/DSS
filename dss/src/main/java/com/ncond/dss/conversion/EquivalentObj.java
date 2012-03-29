@@ -16,10 +16,18 @@ import com.ncond.dss.common.SolutionObj;
 import com.ncond.dss.general.SpectrumObj;
 import com.ncond.dss.parser.Parser;
 import com.ncond.dss.shared.CMatrix;
-import com.ncond.dss.shared.ComplexUtil;
+
+import static com.ncond.dss.shared.ComplexUtil.divide;
+import static com.ncond.dss.shared.ComplexUtil.polarDeg2Complex;
 
 import static com.ncond.dss.common.Util.rotatePhasorDeg;
 import static com.ncond.dss.common.Util.resizeArray;
+
+import static java.lang.Math.PI;
+import static java.lang.Math.pow;
+import static java.lang.Math.sin;
+
+import static java.lang.String.format;
 
 
 public class EquivalentObj extends PCElement {
@@ -91,11 +99,11 @@ public class EquivalentObj extends PCElement {
 		for (i = 0; i < nTerms; i++) {
 			for (j = 0; j < nTerms; j++) {
 				indx = idx(i, j);
-				Zs = ComplexUtil.divide(new Complex(
+				Zs = divide(new Complex(
 					2.0 * R1[indx] + R0[indx],
 					2.0 * X1[indx] + X0[indx]
 				), 3.0);
-				Zm = ComplexUtil.divide(new Complex(
+				Zm = divide(new Complex(
 					R0[indx] - R1[indx],
 					X0[indx] - X1[indx]
 				), 3.0);
@@ -123,7 +131,7 @@ public class EquivalentObj extends PCElement {
 			Vmag = kVBase * perUnit * 1000.0;
 			break;
 		default:
-			Vmag = kVBase * perUnit * 1000.0 / 2.0 / Math.sin((180.0 / nPhases) * Math.PI / 180.0);
+			Vmag = kVBase * perUnit * 1000.0 / 2.0 / sin((180.0 / nPhases) * PI / 180.0);
 			break;
 		}
 
@@ -208,7 +216,7 @@ public class EquivalentObj extends PCElement {
 				Vmag = kVBase * perUnit * 1000.0;
 				break;
 			default:
-				Vmag = kVBase * perUnit * 1000.0 / 2.0 / Math.sin((180.0 / nPhases) * Math.PI / 180.0);
+				Vmag = kVBase * perUnit * 1000.0 / 2.0 / sin((180.0 / nPhases) * PI / 180.0);
 				break;
 			}
 
@@ -224,7 +232,7 @@ public class EquivalentObj extends PCElement {
 				}
 			} else {
 				for (i = 0; i < nPhases; i++)
-					VTerminal[i] = ComplexUtil.polarDeg2Complex(Vmag, (360.0 + angle - i * 360.0 / nPhases));
+					VTerminal[i] = polarDeg2Complex(Vmag, (360.0 + angle - i * 360.0 / nPhases));
 			}
 
 		} catch (Exception e) {
@@ -335,9 +343,9 @@ public class EquivalentObj extends PCElement {
 		String s;
 
 		s = "phases=1 ";
-		s = s + String.format("basekV=%-.5g ", kVBase / DSS.SQRT3);
-		s = s + String.format("r1=%-.5g ", R1);
-		s = s + String.format("x1=%-.5g ", X1);
+		s = s + format("basekV=%-.5g ", kVBase / DSS.SQRT3);
+		s = s + format("r1=%-.5g ", R1);
+		s = s + format("x1=%-.5g ", X1);
 
 		Parser.getInstance().setCommand(s);
 		edit();
@@ -361,10 +369,10 @@ public class EquivalentObj extends PCElement {
 	}
 
 	private void reallocRX() {
-		R1 = resizeArray(R1, (int) Math.pow(nTerms, 2));
-		X1 = resizeArray(X1, (int) Math.pow(nTerms, 2));
-		R0 = resizeArray(R0, (int) Math.pow(nTerms, 2));
-		X0 = resizeArray(X0, (int) Math.pow(nTerms, 2));
+		R1 = resizeArray(R1, (int) pow(nTerms, 2));
+		X1 = resizeArray(X1, (int) pow(nTerms, 2));
+		R0 = resizeArray(R0, (int) pow(nTerms, 2));
+		X0 = resizeArray(X0, (int) pow(nTerms, 2));
 	}
 
 	public double getKVBase() {

@@ -15,7 +15,8 @@ import com.ncond.dss.common.DSSClass;
 import com.ncond.dss.common.types.Connection;
 import com.ncond.dss.parser.Parser;
 import com.ncond.dss.shared.CMatrix;
-import com.ncond.dss.shared.ComplexUtil;
+
+import static com.ncond.dss.shared.ComplexUtil.invert;
 
 import static com.ncond.dss.common.Util.initDblArray;
 import static com.ncond.dss.common.Util.getDSSArray;
@@ -23,6 +24,11 @@ import static com.ncond.dss.common.Util.interpretDblArray;
 import static com.ncond.dss.common.Util.strReal;
 import static com.ncond.dss.common.Util.resizeArray;
 import static com.ncond.dss.common.Util.interpretIntArray;
+
+import static java.lang.Math.abs;
+import static java.lang.Math.pow;
+
+import static java.lang.String.format;
 
 
 /**
@@ -114,7 +120,7 @@ public class CapacitorObj extends PDElement {
 
 		kVRating = 12.47;
 		initDblArray(numSteps, C,
-			1.0 / (DSS.TWO_PI * baseFrequency * Math.pow(kVRating, 2) * 1000.0 / kVArRating[0]));
+			1.0 / (DSS.TWO_PI * baseFrequency * pow(kVRating, 2) * 1000.0 / kVArRating[0]));
 
 		connection = Connection.WYE;
 		specType = CapacitorSpecType.KVAR;
@@ -162,7 +168,7 @@ public class CapacitorObj extends PDElement {
 			}
 
 			for (i = 0; i < numSteps; i++)
-				C[i] = 1.0 / (w * Math.pow(phaseKV, 2) * 1000.0 / (kVArRating[0] / nPhases));
+				C[i] = 1.0 / (w * pow(phaseKV, 2) * 1000.0 / (kVArRating[0] / nPhases));
 
 			for (i = 0; i < numSteps; i++)
 				totalKVAr = totalKVAr + kVArRating[i];
@@ -185,7 +191,7 @@ public class CapacitorObj extends PDElement {
 				break;
 			}
 			for (i = 0; i < numSteps; i++)
-				totalKVAr = totalKVAr + w * C[i] * Math.pow(phaseKV, 2) / 1000.0;
+				totalKVAr = totalKVAr + w * C[i] * pow(phaseKV, 2) / 1000.0;
 			break;
 		case CMATRIX:
 			// nothing to do
@@ -195,7 +201,7 @@ public class CapacitorObj extends PDElement {
 		if (doHarmonicRecalc)  // if harmonic specified, compute filter reactance
 			for (i = 0; i < numSteps; i++) {
 				if (harm[i] != 0.0) {
-					XL[i] = (1.0 / (w * C[i])) / Math.pow(harm[i], 2);
+					XL[i] = (1.0 / (w * C[i])) / pow(harm[i], 2);
 				} else {
 					XL[i] = 0.0;  // assume 0 harmonic means no filter
 				}
@@ -340,11 +346,11 @@ public class CapacitorObj extends PDElement {
 					phaseKV = getKVRating();
 				}
 
-				s = "phases=1 " + String.format(" kV=%-.5g kvar=(", phaseKV);
+				s = "phases=1 " + format(" kV=%-.5g kvar=(", phaseKV);
 
 				for (i = 0; i < getNumSteps(); i++) {
 					kVArPerPhase = kVArRating[i] / nPhases;
-					s = s + String.format(" %-.5g", kVArPerPhase);
+					s = s + format(" %-.5g", kVArPerPhase);
 				}
 
 				s = s + ")";
@@ -368,7 +374,7 @@ public class CapacitorObj extends PDElement {
 						Cm = Cm + Cmatrix[i * nPhases + j];
 				Cm = Cm / (nPhases * (nPhases - 1.0) / 2.0);
 
-				s = s + String.format(" Cuf=%-.5g", Cs - Cm);
+				s = s + format(" Cuf=%-.5g", Cs - Cm);
 				break;
 			}
 
@@ -482,7 +488,7 @@ public class CapacitorObj extends PDElement {
 		freqMultiple = YPrimFreq / getBaseFrequency();
 		w = DSS.TWO_PI * YPrimFreq;
 
-		hasZl = (R[iStep] + Math.abs(XL[iStep])) > 0.0;
+		hasZl = (R[iStep] + abs(XL[iStep])) > 0.0;
 
 		if (hasZl) Zl = new Complex(R[iStep], XL[iStep] * freqMultiple);
 
@@ -504,7 +510,7 @@ public class CapacitorObj extends PDElement {
 				break;
 			default:  // wye
 				if (hasZl) {  // add in ZL
-					value = ComplexUtil.invert(Zl.add(ComplexUtil.invert( value )));
+					value = invert(Zl.add(invert( value )));
 				}
 				value2 = value.negate();
 				for (i = 0; i < nPhases; i++) {
@@ -531,7 +537,7 @@ public class CapacitorObj extends PDElement {
 				break;
 			default:  // wye
 				if (hasZl) {  // add in ZL
-					value = ComplexUtil.invert(Zl.add(ComplexUtil.invert( value )));
+					value = invert(Zl.add(invert( value )));
 				}
 				value2 = value.negate();
 				for (i = 0; i < nPhases; i++) {

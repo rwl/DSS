@@ -22,6 +22,8 @@ import static com.ncond.dss.common.Util.appendToEventLog;
 import static com.ncond.dss.common.Util.getCktElementIndex;
 import static com.ncond.dss.common.Util.resizeArray;
 
+import static java.lang.Math.min;
+
 
 /**
  * A control element that is connected to a terminal of a
@@ -79,13 +81,13 @@ public class FuseObj extends ControlElem {
 
 		ratedCurrent = 1.0;
 
-		for (i = 0; i < Math.min(Fuse.FUSEMAXDIM, getNumPhases()); i++)
+		for (i = 0; i < min(Fuse.FUSEMAXDIM, getNumPhases()); i++)
 			presentState[i] = ControlAction.CLOSE;
 
-		for (i = 0; i < Math.min(Fuse.FUSEMAXDIM, getNumPhases()); i++)
+		for (i = 0; i < min(Fuse.FUSEMAXDIM, getNumPhases()); i++)
 			readyToBlow[i] = false;
 
-		for (i = 0; i < Math.min(Fuse.FUSEMAXDIM, getNumPhases()); i++)
+		for (i = 0; i < min(Fuse.FUSEMAXDIM, getNumPhases()); i++)
 			hAction[i] = 0;
 
 		cBuffer = null;  // complex buffer
@@ -130,7 +132,7 @@ public class FuseObj extends ControlElem {
 			setControlledElement(DSS.activeCircuit.getCktElements().get(devIndex));
 			getControlledElement().setActiveTerminalIdx(elementTerminalIdx);  // make the 1st terminal active
 
-			for (i = 0; i < Math.min(Fuse.FUSEMAXDIM, getControlledElement().getNumPhases()); i++) {
+			for (i = 0; i < min(Fuse.FUSEMAXDIM, getControlledElement().getNumPhases()); i++) {
 				if (getControlledElement().isConductorClosed(i)) {  // check state of i-th phase of active terminal
 					presentState[i] = ControlAction.CLOSE;
 				} else {
@@ -140,7 +142,7 @@ public class FuseObj extends ControlElem {
 			for (i = 0; i < getControlledElement().getNumPhases(); i++)
 				hAction[i] = 0;
 
-			for (i = 0; i < Math.min(Fuse.FUSEMAXDIM, getControlledElement().getNumPhases()); i++)
+			for (i = 0; i < min(Fuse.FUSEMAXDIM, getControlledElement().getNumPhases()); i++)
 				readyToBlow[i] = false;
 		} else {
 			setControlledElement(null);  // element not found
@@ -228,7 +230,7 @@ public class FuseObj extends ControlElem {
 		getControlledElement().setActiveTerminalIdx(elementTerminalIdx);
 		monitoredElement.getCurrents(cBuffer);
 
-		for (int i = 0; i < Math.min(Fuse.FUSEMAXDIM, monitoredElement.getNumPhases()); i++) {
+		for (int i = 0; i < min(Fuse.FUSEMAXDIM, monitoredElement.getNumPhases()); i++) {
 			if (getControlledElement().isConductorClosed(i)) {  // check state of phases of active terminal
 				presentState[i] = ControlAction.CLOSE;
 			} else {
@@ -286,11 +288,11 @@ public class FuseObj extends ControlElem {
 		CktElement elem = getControlledElement();
 
 		if (elem != null) {
-			for (i = 0; i < Math.min(Fuse.FUSEMAXDIM, elem.getNumPhases()); i++)
+			for (i = 0; i < min(Fuse.FUSEMAXDIM, elem.getNumPhases()); i++)
 				presentState[i] = ControlAction.CLOSE;
-			for (i = 0; i < Math.min(Fuse.FUSEMAXDIM, elem.getNumPhases()); i++)
+			for (i = 0; i < min(Fuse.FUSEMAXDIM, elem.getNumPhases()); i++)
 				readyToBlow[i] = false;
-			for (i = 0; i < Math.min(Fuse.FUSEMAXDIM, elem.getNumPhases()); i++)
+			for (i = 0; i < min(Fuse.FUSEMAXDIM, elem.getNumPhases()); i++)
 				hAction[i] = 0;
 			elem.setActiveTerminalIdx(elementTerminalIdx);  // set active terminal
 			elem.setConductorClosed(0, true);  // close all phases of active terminal

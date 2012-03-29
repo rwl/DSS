@@ -13,6 +13,12 @@ import com.ncond.dss.common.DSS;
 
 import static com.ncond.dss.common.Util.resizeArray;
 
+import static java.lang.Math.sqrt;
+import static java.lang.Math.abs;
+import static java.lang.Math.round;
+
+import static java.lang.String.format;
+
 
 /**
  * This Hash list module is designed to make searches on arrays of strings more
@@ -68,7 +74,7 @@ public class HashList {
 		initialAllocation = nelements;
 		stringArray = new String[numElements];
 
-		numLists = (int) Math.round(Math.sqrt(nelements));
+		numLists = (int) round(sqrt(nelements));
 		int elementsPerList = nelements / numLists + 1;
 		allocationInc = elementsPerList;
 		if (numLists < 1) numLists = 1;  // make sure at least one list
@@ -109,7 +115,7 @@ public class HashList {
 
 	private int hash(String s) {
 		int hashValue = s.hashCode();
-		return Math.abs(hashValue % numLists);  // FIXME: negative modulus
+		return abs(hashValue % numLists);  // FIXME: negative modulus
 	}
 
 	/** Makes the linear string list larger. */
@@ -233,7 +239,7 @@ public class HashList {
 
 		if (newSize > numElementsAllocated) {
 			newStringArray = new String[newSize];
-			newNumLists = (int) Math.round( Math.sqrt(newSize) );
+			newNumLists = (int) round( sqrt(newSize) );
 			elementsPerList = newSize / newNumLists + 1;
 			if (newNumLists < 1) newNumLists = 1;  // make sure at least one list
 			newListArray = new SubList[newNumLists];
@@ -281,7 +287,7 @@ public class HashList {
 			pw.println();
 			pw.println("Hash List Distribution");
 			for (int i = 0; i < numLists; i++)
-				pw.println(String.format("List = %d, Number of elements = %d", i, listArray[i].nElem));
+				pw.println(format("List = %d, Number of elements = %d", i, listArray[i].nElem));
 			pw.println();
 
 			for (int i = 0; i < numLists; i++) {

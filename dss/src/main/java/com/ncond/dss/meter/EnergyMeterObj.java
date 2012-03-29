@@ -38,6 +38,14 @@ import static com.ncond.dss.common.Util.isLineElement;
 import static com.ncond.dss.common.Util.isTransformerElement;
 import static com.ncond.dss.common.Util.writeActiveDSSObject;
 
+import static java.lang.Math.abs;
+import static java.lang.Math.max;
+import static java.lang.Math.min;
+import static java.lang.Math.pow;
+import static java.lang.Math.sqrt;
+
+import static java.lang.String.format;
+
 
 /**
  * This class of device accumulates the energy of the voltage and current in
@@ -497,8 +505,8 @@ public class EnergyMeterObj extends MeterElement {
 			/* ------------------------ Local Zone Only ------------------------- */
 			/* ------------------------------------------------------------------ */
 			pdElem = (PDElement) meteredElement;
-			maxExcessKWNorm  = Math.abs(pdElem.getExcessKVANorm(meteredTerminalIdx).getReal());
-			maxExcessKWEmerg = Math.abs(pdElem.getExcessKVAEmerg(meteredTerminalIdx).getReal());
+			maxExcessKWNorm  = abs(pdElem.getExcessKVANorm(meteredTerminalIdx).getReal());
+			maxExcessKWEmerg = abs(pdElem.getExcessKVAEmerg(meteredTerminalIdx).getReal());
 		} else {
 			/* -------------------------------------------------------------- */
 			/* --------Cyle Through Entire Zone Setting EEN/UE -------------- */
@@ -507,8 +515,8 @@ public class EnergyMeterObj extends MeterElement {
 				pdElem.setActiveTerminalIdx(branchList.getPresentBranch().getFromTerminalIdx());
 
 				// invoking this property sets the Overload_UE flag in the PD element
-				EEN = Math.abs(pdElem.getExcessKVANorm(pdElem.getActiveTerminalIdx()).getReal());
-				UE = Math.abs(pdElem.getExcessKVAEmerg(pdElem.getActiveTerminalIdx()).getReal());
+				EEN = abs(pdElem.getExcessKVANorm(pdElem.getActiveTerminalIdx()).getReal());
+				UE = abs(pdElem.getExcessKVAEmerg(pdElem.getActiveTerminalIdx()).getReal());
 
 				/* For radial circuits just keep the maximum overload; for mesh, add them up */
 				if (zoneIsRadial) {
@@ -524,8 +532,8 @@ public class EnergyMeterObj extends MeterElement {
 				// use the larger of the two factors
 				parent = (PDElement) branchList.getParent();
 				if (parent != null) {
-					pdElem.setOverloadEEN(Math.max(pdElem.getOverloadEEN(), parent.getOverloadEEN()));
-					pdElem.setOverloadUE(Math.max(pdElem.getOverloadUE(), parent.getOverloadUE()));
+					pdElem.setOverloadEEN(max(pdElem.getOverloadEEN(), parent.getOverloadEEN()));
+					pdElem.setOverloadUE(max(pdElem.getOverloadUE(), parent.getOverloadUE()));
 				}
 
 				// mark loads (not generators) by the degree of overload if the meter's zone is to be considered radial
@@ -657,8 +665,8 @@ public class EnergyMeterObj extends MeterElement {
 								j = ckt.getBus(fbr).getNum(i) - 1;
 								if (j >= 0 && j < 3) {
 									puV = ckt.getSolution().getNodeV(ckt.getBus(fbr).getRef(i)).abs() / ckt.getBus(fbr).getKVBase();
-									VPhaseMax[jiIndex(j, vbi)] = Math.max(VPhaseMax[jiIndex(j, vbi)], puV);
-									VPhaseMin[jiIndex(j, vbi)] = Math.min(VPhaseMin[jiIndex(j, vbi)], puV);
+									VPhaseMax[jiIndex(j, vbi)] = max(VPhaseMax[jiIndex(j, vbi)], puV);
+									VPhaseMin[jiIndex(j, vbi)] = min(VPhaseMin[jiIndex(j, vbi)], puV);
 									VPhaseAccum[jiIndex(j, vbi)] = VPhaseAccum[jiIndex(j, vbi)] + puV;
 									VPhaseAccumCount[jiIndex(j, vbi)] += 1;  // keep track of counts for average
 								}
@@ -705,17 +713,17 @@ public class EnergyMeterObj extends MeterElement {
 		integrate(EnergyMeter.REG_ZONE_KVARH, totalZoneKVAr[0], deltaHrs);
 		integrate(EnergyMeter.REG_GEN_KWH,    totalGenKW[0],    deltaHrs);
 		integrate(EnergyMeter.REG_GEN_KVARH,  totalGenKVAr[0],  deltaHrs);
-		genKVA  = Math.sqrt(Math.pow(totalGenKVAr[0], 2)  + Math.pow(totalGenKW[0], 2));
-		loadKVA = Math.sqrt(Math.pow(totalZoneKVAr[0], 2) + Math.pow(totalZoneKW[0], 2));
+		genKVA  = sqrt(pow(totalGenKVAr[0], 2)  + pow(totalGenKW[0], 2));
+		loadKVA = sqrt(pow(totalZoneKVAr[0], 2) + pow(totalZoneKW[0], 2));
 
 		/* ------------------------------------------------------------------ */
 		/* ---------------   Set Drag Hand Registers  ----------------------- */
 		/* ------------------------------------------------------------------ */
 
-		setDragHandRegister(EnergyMeter.REG_LOSSES_MAX_KW,      Math.abs(totalLosses.getReal()));
-		setDragHandRegister(EnergyMeter.REG_LOSSES_MAX_KVAR,    Math.abs(totalLosses.getImaginary()));
-		setDragHandRegister(EnergyMeter.REG_MAX_LOAD_LOSSES,    Math.abs(totalLoadLosses.getReal()));
-		setDragHandRegister(EnergyMeter.REG_MAX_NO_LOAD_LOSSES, Math.abs(totalNoLoadLosses.getReal()));
+		setDragHandRegister(EnergyMeter.REG_LOSSES_MAX_KW,      abs(totalLosses.getReal()));
+		setDragHandRegister(EnergyMeter.REG_LOSSES_MAX_KVAR,    abs(totalLosses.getImaginary()));
+		setDragHandRegister(EnergyMeter.REG_MAX_LOAD_LOSSES,    abs(totalLoadLosses.getReal()));
+		setDragHandRegister(EnergyMeter.REG_MAX_NO_LOAD_LOSSES, abs(totalNoLoadLosses.getReal()));
 		setDragHandRegister(EnergyMeter.REG_ZONE_MAX_KW,        totalZoneKW[0]);
 		setDragHandRegister(EnergyMeter.REG_ZONE_MAX_KVA,       loadKVA);
 		/* Max total generator registers */
@@ -736,7 +744,7 @@ public class EnergyMeterObj extends MeterElement {
 		if (maxZoneKVANorm > 0.0) {
 			if (S_LocalKVA == 0.0) S_LocalKVA = maxZoneKVANorm;
 			integrate(EnergyMeter.REG_OVERLOAD_KWH_NORM,
-				Math.max(0.0, (zoneKW * (1.0 - maxZoneKVANorm / S_LocalKVA))), deltaHrs);
+				max(0.0, (zoneKW * (1.0 - maxZoneKVANorm / S_LocalKVA))), deltaHrs);
 		} else {
 			integrate(EnergyMeter.REG_OVERLOAD_KWH_NORM, maxExcessKWNorm, deltaHrs);
 		}
@@ -744,7 +752,7 @@ public class EnergyMeterObj extends MeterElement {
 		if (maxZoneKVAEmerg > 0.0) {
 			if (S_LocalKVA == 0.0) S_LocalKVA = maxZoneKVAEmerg;
 			integrate(EnergyMeter.REG_OVERLOAD_KWH_EMERG,
-				Math.max(0.0, (zoneKW * (1.0 - maxZoneKVAEmerg / S_LocalKVA))), deltaHrs);
+				max(0.0, (zoneKW * (1.0 - maxZoneKVAEmerg / S_LocalKVA))), deltaHrs);
 		} else {
 			integrate(EnergyMeter.REG_OVERLOAD_KWH_EMERG, maxExcessKWEmerg,  deltaHrs);
 		}
@@ -1115,7 +1123,7 @@ public class EnergyMeterObj extends MeterElement {
 		Bus bus = DSS.activeCircuit.getBus(busRef - 1);
 
 		for (int i = 0; i < VBaseCount; i++) {
-			if (Math.abs(1.0 - bus.getKVBase() / VBaseList[i]) < 0.01) {  // < 1% difference
+			if (abs(1.0 - bus.getKVBase() / VBaseList[i]) < 0.01) {  // < 1% difference
 				return i;
 			}
 		}
@@ -1483,7 +1491,7 @@ public class EnergyMeterObj extends MeterElement {
 							loadElem = (LoadObj) shuntElem;
 							if (loadElem.getHasBeenAllocated()) {
 								/* Manually set the allocation factor so it shows up */
-								Parser.getInstance().setCommand("allocationfactor=" + String.format("%-.4g", loadElem.getAllocationFactor()));
+								Parser.getInstance().setCommand("allocationfactor=" + format("%-.4g", loadElem.getAllocationFactor()));
 								loadElem.edit();
 							}
 							ckt.setActiveCktElement(shuntElem);  // reset in case edit mangles it
@@ -1697,26 +1705,26 @@ public class EnergyMeterObj extends MeterElement {
 		for (i = 0; i < maxVBaseCount; i++) {
 			if (VBaseList[i] > 0.0) {
 				Vbase = VBaseList[i] * DSS.SQRT3;
-				registerNames[i + EnergyMeter.REG_VBASE_START] = String.format("%.3g kV Losses", Vbase);
-				registerNames[i + 1 * maxVBaseCount + EnergyMeter.REG_VBASE_START] = String.format("%.3g kV Line Loss", Vbase);
-				registerNames[i + 2 * maxVBaseCount + EnergyMeter.REG_VBASE_START] = String.format("%.3g kV Load Loss", Vbase);
-				registerNames[i + 3 * maxVBaseCount + EnergyMeter.REG_VBASE_START] = String.format("%.3g kV No Load Loss", Vbase);
-				registerNames[i + 4 * maxVBaseCount + EnergyMeter.REG_VBASE_START] = String.format("%.3g kV Load Energy", Vbase);
+				registerNames[i + EnergyMeter.REG_VBASE_START] = format("%.3g kV Losses", Vbase);
+				registerNames[i + 1 * maxVBaseCount + EnergyMeter.REG_VBASE_START] = format("%.3g kV Line Loss", Vbase);
+				registerNames[i + 2 * maxVBaseCount + EnergyMeter.REG_VBASE_START] = format("%.3g kV Load Loss", Vbase);
+				registerNames[i + 3 * maxVBaseCount + EnergyMeter.REG_VBASE_START] = format("%.3g kV No Load Loss", Vbase);
+				registerNames[i + 4 * maxVBaseCount + EnergyMeter.REG_VBASE_START] = format("%.3g kV Load Energy", Vbase);
 			} else {
-				registerNames[i + EnergyMeter.REG_VBASE_START] = String.format("Aux%d", ireg);
+				registerNames[i + EnergyMeter.REG_VBASE_START] = format("Aux%d", ireg);
 				ireg += 1;
-				registerNames[i + 1 * maxVBaseCount + EnergyMeter.REG_VBASE_START] = String.format("Aux%d", ireg);
+				registerNames[i + 1 * maxVBaseCount + EnergyMeter.REG_VBASE_START] = format("Aux%d", ireg);
 				ireg += 1;
-				registerNames[i + 2 * maxVBaseCount + EnergyMeter.REG_VBASE_START] = String.format("Aux%d", ireg);
+				registerNames[i + 2 * maxVBaseCount + EnergyMeter.REG_VBASE_START] = format("Aux%d", ireg);
 				ireg += 1;
-				registerNames[i + 3 * maxVBaseCount + EnergyMeter.REG_VBASE_START] = String.format("Aux%d", ireg);
+				registerNames[i + 3 * maxVBaseCount + EnergyMeter.REG_VBASE_START] = format("Aux%d", ireg);
 				ireg += 1;
-				registerNames[i + 4 * maxVBaseCount + EnergyMeter.REG_VBASE_START] = String.format("Aux%d", ireg);
+				registerNames[i + 4 * maxVBaseCount + EnergyMeter.REG_VBASE_START] = format("Aux%d", ireg);
 				ireg += 1;
 			}
 		}
 		for (i = EnergyMeter.REG_VBASE_START + 5; i < EnergyMeter.NUM_EM_REGISTERS; i++) {
-			registerNames[i] = String.format("Aux%d", ireg);
+			registerNames[i] = format("Aux%d", ireg);
 			ireg += 1;
 		}
 	}

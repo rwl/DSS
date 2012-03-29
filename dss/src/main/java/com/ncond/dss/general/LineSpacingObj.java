@@ -11,6 +11,9 @@ import java.io.PrintWriter;
 import com.ncond.dss.common.DSSClass;
 import com.ncond.dss.shared.LineUnits;
 
+import static java.lang.String.format;
+
+
 public class LineSpacingObj extends DSSObject {
 
 	private int nConds;
@@ -53,9 +56,9 @@ public class LineSpacingObj extends DSSObject {
 		// FIXME use StringBuffer
 		String r = "[";
 		if (n > 0)
-			r = r + String.format("%g", pf[0]);
+			r = r + format("%g", pf[0]);
 		for (int i = 1; i < n; i++)
-			r = r + String.format(",%g", pf[i]);
+			r = r + format(",%g", pf[i]);
 		return r + "]";
 	}
 

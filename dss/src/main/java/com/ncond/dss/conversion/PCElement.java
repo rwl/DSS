@@ -17,6 +17,9 @@ import com.ncond.dss.common.SolutionObj;
 import com.ncond.dss.general.SpectrumObj;
 import com.ncond.dss.meter.MeterElement;
 
+import static java.lang.String.format;
+
+
 public abstract class PCElement extends CktElement {
 
 	private boolean ITerminalUpdated;
@@ -178,7 +181,7 @@ public abstract class PCElement extends CktElement {
 			f.println("! Variables");
 			for (int i = 0; i < numVariables(); i++) {
 				f.println("! " + i + ": " + variableName(i) + " = " +
-						String.format("%-.5g", getVariable(i)));
+						format("%-.5g", getVariable(i)));
 			}
 		}
 	}

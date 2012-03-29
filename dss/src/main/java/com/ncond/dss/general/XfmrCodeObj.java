@@ -16,6 +16,8 @@ import com.ncond.dss.delivery.Winding;
 
 import static com.ncond.dss.common.Util.resizeArray;
 
+import static java.lang.String.format;
+
 
 public class XfmrCodeObj extends DSSObject {
 
@@ -239,22 +241,22 @@ public class XfmrCodeObj extends DSSObject {
 			}
 			break;
 		case 4:
-			result = String.format("%.7g", windings[activeWindingIdx].getKVLL());
+			result = format("%.7g", windings[activeWindingIdx].getKVLL());
 			break;
 		case 5:
-			result = String.format("%.7g", windings[activeWindingIdx].getKVA());
+			result = format("%.7g", windings[activeWindingIdx].getKVA());
 			break;
 		case 6:
-			result = String.format("%.7g", windings[activeWindingIdx].getPuTap());
+			result = format("%.7g", windings[activeWindingIdx].getPuTap());
 			break;
 		case 7:
-			result = String.format("%.7g", windings[activeWindingIdx].getRpu() * 100.0);   // %R
+			result = format("%.7g", windings[activeWindingIdx].getRpu() * 100.0);   // %R
 			break;
 		case 8:
-			result = String.format("%.7g", windings[activeWindingIdx].getRNeut());
+			result = format("%.7g", windings[activeWindingIdx].getRNeut());
 			break;
 		case 9:
-			result = String.format("%.7g", windings[activeWindingIdx].getXNeut());
+			result = format("%.7g", windings[activeWindingIdx].getXNeut());
 			break;
 		case 10:
 			for (int i = 0; i < numWindings; i++)
@@ -269,37 +271,37 @@ public class XfmrCodeObj extends DSSObject {
 			break;
 		case 11:
 			for (int i = 0; i < numWindings; i++)
-				result += String.format("%.7g, ", windings[i].getKVLL());
+				result += format("%.7g, ", windings[i].getKVLL());
 			break;
 		case 12:
 			for (int i = 0; i < numWindings; i++)
-				result += String.format("%.7g, ", windings[i].getKVA());
+				result += format("%.7g, ", windings[i].getKVA());
 			break;
 		case 13:
 			for (int i = 0; i < numWindings; i++)
-				result += String.format("%.7g, ", windings[i].getPuTap());
+				result += format("%.7g, ", windings[i].getPuTap());
 			break;
 		case 17:
 			for (int i = 0; i < (numWindings - 1) * numWindings / 2; i++)
-				result += String.format("%g, ", XSC[i] * 100.0);
+				result += format("%g, ", XSC[i] * 100.0);
 		case 23:
-			result = String.format("%.7g", pctLoadLoss);
+			result = format("%.7g", pctLoadLoss);
 			break;
 		case 24:
-			result = String.format("%.7g", pctNoLoadLoss);
+			result = format("%.7g", pctNoLoadLoss);
 			break;
 		case 27:
-			result = String.format("%.7g", windings[activeWindingIdx].getMaxTap());
+			result = format("%.7g", windings[activeWindingIdx].getMaxTap());
 			break;
 		case 28:
-			result = String.format("%.7g", windings[activeWindingIdx].getMinTap());
+			result = format("%.7g", windings[activeWindingIdx].getMinTap());
 			break;
 		case 29:
-			result = String.format("%-d", windings[activeWindingIdx].getNumTaps());
+			result = format("%-d", windings[activeWindingIdx].getNumTaps());
 			break;
 		case 32:
 			for (int i = 0; i < numWindings; i++)
-				result += String.format("%.7g, ", windings[i].getRpu() * 100.0);
+				result += format("%.7g, ", windings[i].getRpu() * 100.0);
 			break;
 		default:
 			result = super.getPropertyValue(index);

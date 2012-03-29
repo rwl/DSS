@@ -10,6 +10,11 @@ import java.io.PrintWriter;
 
 import com.ncond.dss.common.DSSClass;
 
+import static java.lang.Math.abs;
+
+import static java.lang.String.format;
+
+
 /**
  * The XYcurve object is a general DSS object used by all circuit elements
  * as a reference for obtaining yearly, daily, and other Temperature shapes.
@@ -84,7 +89,7 @@ public class XYCurveObj extends DSSObject {
 
 				// in the middle of the arrays
 				for (int i = lastValueAccessed; i < numPoints; i++) {
-					if (Math.abs(XValues[i] - X) < 0.00001) {  // if close to an actual point, just use it
+					if (abs(XValues[i] - X) < 0.00001) {  // if close to an actual point, just use it
 						val = YValues[i];
 						lastValueAccessed = i;
 						return val;
@@ -168,7 +173,7 @@ public class XYCurveObj extends DSSObject {
 		case 1:
 			if ((XValues != null) && (YValues != null)) {
 				for (int i = 0; i < numPoints; i++)
-					result = result + String.format("%.8g, %.8g ", XValues[i], YValues[i]);
+					result = result + format("%.8g, %.8g ", XValues[i], YValues[i]);
 			} else {
 				result = "0, 0";
 			}
@@ -176,7 +181,7 @@ public class XYCurveObj extends DSSObject {
 		case 2:
 			if (YValues != null) {
 				for (int i = 0; i < numPoints; i++)
-					result = result + String.format("%g, ", YValues[i]);
+					result = result + format("%g, ", YValues[i]);
 			} else {
 				result = "0";
 			}
@@ -184,16 +189,16 @@ public class XYCurveObj extends DSSObject {
 		case 3:
 			if (XValues != null) {
 				for (int i = 0; i < numPoints; i++)
-					result = result + String.format("%g, ", XValues[i]);
+					result = result + format("%g, ", XValues[i]);
 			} else {
 				result = "0";
 			}
 			break;
 		case 7:
-			result = String.format("%.8g", getXValue(Y));
+			result = format("%.8g", getXValue(Y));
 			break;
 		case 8:
-			result = String.format("%.8g", getYValue(X));
+			result = format("%.8g", getYValue(X));
 			break;
 		default:
 			result = super.getPropertyValue(index);
@@ -240,7 +245,7 @@ public class XYCurveObj extends DSSObject {
 				}
 
 				for (int i = lastValueAccessed; i < numPoints; i++) {
-					if (Math.abs(YValues[i] - Y) < 0.00001) {  // if close to an actual point, just use it.
+					if (abs(YValues[i] - Y) < 0.00001) {  // if close to an actual point, just use it.
 						val = XValues[i];
 						lastValueAccessed = i;
 						return val;

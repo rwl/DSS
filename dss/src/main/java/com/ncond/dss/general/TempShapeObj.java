@@ -11,7 +11,15 @@ import java.io.PrintWriter;
 
 import com.ncond.dss.common.DSS;
 import com.ncond.dss.common.DSSClass;
-import com.ncond.dss.shared.MathUtil;
+
+import static com.ncond.dss.shared.MathUtil.meanAndStdDev;
+import static com.ncond.dss.shared.MathUtil.curveMeanAndStdDev;
+
+import static java.lang.Math.abs;
+import static java.lang.Math.round;
+
+import static java.lang.String.format;
+
 
 /**
  * The TShape object is a general DSS object used by all circuits
@@ -98,7 +106,7 @@ public class TempShapeObj extends DSSObject {
 				t = tempValues[0];
 			} else {
 				if (interval > 0.0) {
-					index = (int) Math.round(hr / interval) - 1;
+					index = (int) round(hr / interval) - 1;
 					if (index >= numPoints)
 						index = index % numPoints;  // wrap around using remainder
 					if (index == -1)
@@ -120,7 +128,7 @@ public class TempShapeObj extends DSSObject {
 						lastValueAccessed = 0;  // start over from beginning
 
 					for (i = lastValueAccessed + 1; i < numPoints; i++) {
-						if (Math.abs(hours[i] - hr) < 0.00001) {  // if close to an actual point, just use it
+						if (abs(hours[i] - hr) < 0.00001) {  // if close to an actual point, just use it
 							t = tempValues[i];
 							lastValueAccessed = i;
 							return t;
@@ -145,14 +153,14 @@ public class TempShapeObj extends DSSObject {
 	private void calcMeanAndStdDev() {
 		if (numPoints > 0) {
 			if (interval > 0.0) {
-				MathUtil.meanAndStdDev(tempValues, numPoints, mean, stdDev);
+				meanAndStdDev(tempValues, numPoints, mean, stdDev);
 			} else {
-				MathUtil.curveMeanAndStdDev(tempValues, hours, numPoints, mean, stdDev);
+				curveMeanAndStdDev(tempValues, hours, numPoints, mean, stdDev);
 			}
 		}
 
-		setPropertyValue(4, String.format("%.8g", mean[0]));
-		setPropertyValue(5, String.format("%.8g", stdDev[0]));
+		setPropertyValue(4, format("%.8g", mean[0]));
+		setPropertyValue(5, format("%.8g", stdDev[0]));
 
 		stdDevCalculated = true;
 	}
@@ -233,28 +241,28 @@ public class TempShapeObj extends DSSObject {
 
 		switch (index) {
 		case 1:
-			val = String.format("%.8g", interval);
+			val = format("%.8g", interval);
 			break;
 		case 2:
 			for (int i = 0; i < numPoints; i++)
-				val = val + String.format("%g, " , tempValues[i]);
+				val = val + format("%g, " , tempValues[i]);
 			break;
 		case 3:
 			if (hours != null)
 				for (int i = 0; i < numPoints; i++)
-					val = val + String.format("%g, ", hours[i]);
+					val = val + format("%g, ", hours[i]);
 			break;
 		case 4:
-			val = String.format("%.8g", mean[0]);
+			val = format("%.8g", mean[0]);
 			break;
 		case 5:
-			val = String.format("%.8g", stdDev[0]);
+			val = format("%.8g", stdDev[0]);
 			break;
 		case 9:
-			val = String.format("%.8g", interval * 3600.0);
+			val = format("%.8g", interval * 3600.0);
 			break;
 		case 10:
-			val = String.format("%.8g", interval * 60.0);
+			val = format("%.8g", interval * 60.0);
 			break;
 		default:
 			val = super.getPropertyValue(index);
@@ -296,7 +304,7 @@ public class TempShapeObj extends DSSObject {
 
 		if (tempValues != null) {
 			try {
-				fileName = String.format("%s.dbl", getName());
+				fileName = format("%s.dbl", getName());
 				pw = new PrintWriter(fileName);
 
 				for (i = 0; i < numPoints; i++)

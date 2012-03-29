@@ -7,6 +7,9 @@ package com.ncond.dss.parser;
 
 import com.ncond.dss.common.DSS;
 
+import static java.lang.Math.round;
+
+
 public class Parser {
 
 	private static final char COMMENT_CHAR = '!';
@@ -365,7 +368,7 @@ public class Parser {
 		} else {
 			if (isQuotedString) {
 				tmp = interpretRPNString(code);
-				result = (int) Math.round(tmp);
+				result = (int) round(tmp);
 			} else {
 				try {
 					result = Integer.valueOf(tokenBuffer);  // try direct conversion to integer
@@ -391,7 +394,7 @@ public class Parser {
 					DSS.forms.messageDlg("Integer number conversion error for string: \"" +
 							tokenBuffer + "\"", true);
 				} else {
-					result = (int) Math.round(tmp);
+					result = (int) round(tmp);
 				}
 			}
 		}

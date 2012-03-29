@@ -17,10 +17,16 @@ import com.ncond.dss.common.types.Connection;
 import com.ncond.dss.general.XfmrCodeObj;
 import com.ncond.dss.parser.Parser;
 import com.ncond.dss.shared.CMatrix;
-import com.ncond.dss.shared.ComplexUtil;
+
+import static com.ncond.dss.shared.ComplexUtil.invert;
 
 import static com.ncond.dss.common.Util.checkForBlanks;
 import static com.ncond.dss.common.Util.resizeArray;
+
+import static java.lang.Math.PI;
+import static java.lang.Math.sin;
+
+import static java.lang.String.format;
 
 
 @SuppressWarnings("unused")
@@ -255,7 +261,7 @@ public class TransformerObj extends PDElement {
 				Vfactor = windings[0].getVbase() * 0.001 / DSS.SQRT3;
 				break;
 			default:
-				Vfactor = windings[0].getVbase() * 0.001 * 0.5 / Math.sin(Math.PI / nPhases);
+				Vfactor = windings[0].getVbase() * 0.001 * 0.5 / sin(PI / nPhases);
 				break;
 			}
 			break;
@@ -727,22 +733,22 @@ public class TransformerObj extends PDElement {
 			}
 			break;
 		case 5:
-			val = String.format("%.7g", windings[activeWindingIdx].getKVLL());
+			val = format("%.7g", windings[activeWindingIdx].getKVLL());
 			break;
 		case 6:
-			val = String.format("%.7g", windings[activeWindingIdx].getKVA());
+			val = format("%.7g", windings[activeWindingIdx].getKVA());
 			break;
 		case 7:
-			val = String.format("%.7g", windings[activeWindingIdx].getPuTap());
+			val = format("%.7g", windings[activeWindingIdx].getPuTap());
 			break;
 		case 8:
-			val = String.format("%.7g", windings[activeWindingIdx].getRpu() * 100.0);  // %R
+			val = format("%.7g", windings[activeWindingIdx].getRpu() * 100.0);  // %R
 			break;
 		case 9:
-			val = String.format("%.7g", windings[activeWindingIdx].getRNeut());
+			val = format("%.7g", windings[activeWindingIdx].getRNeut());
 			break;
 		case 10:
-			val = String.format("%.7g", windings[activeWindingIdx].getXNeut());
+			val = format("%.7g", windings[activeWindingIdx].getXNeut());
 			break;
 		case 11:
 			for (i = 0; i < numWindings; i++)
@@ -761,53 +767,53 @@ public class TransformerObj extends PDElement {
 			break;
 		case 13:
 			for (i = 0; i < numWindings; i++)
-				val = val + String.format("%.7g, ", windings[i].getKVLL());
+				val = val + format("%.7g, ", windings[i].getKVLL());
 			break;
 		case 14:
 			for (i = 0; i < numWindings; i++)
-				val = val + String.format("%.7g, ", windings[i].getKVA());
+				val = val + format("%.7g, ", windings[i].getKVA());
 			break;
 		case 15:
 			for (i = 0; i < numWindings; i++)
-				val = val + String.format("%.7g, ", windings[i].getPuTap());  // interpretAllTaps(Param);
+				val = val + format("%.7g, ", windings[i].getPuTap());  // interpretAllTaps(Param);
 			break;
 		case 16:
-			val = String.format("%.7g", XHL * 100.0);
+			val = format("%.7g", XHL * 100.0);
 			break;
 		case 17:
-			val = String.format("%.7g", XHT * 100.0);
+			val = format("%.7g", XHT * 100.0);
 			break;
 		case 18:
-			val = String.format("%.7g", XLT * 100.0);
+			val = format("%.7g", XLT * 100.0);
 			break;
 		case 19:
 			for (i = 0; i < (numWindings - 1) * numWindings / 2; i++)
-				val = val + String.format("%g, ", XSC[i] * 100.0);// Parser.ParseAsVector(((NumWindings - 1)*NumWindings div 2), Xsc);
+				val = val + format("%g, ", XSC[i] * 100.0);// Parser.ParseAsVector(((NumWindings - 1)*NumWindings div 2), Xsc);
 			break;
 		case 25:
-			val = String.format("%.7g", pctLoadLoss);
+			val = format("%.7g", pctLoadLoss);
 			break;
 		case 26:
-			val = String.format("%.7g", pctNoLoadLoss);
+			val = format("%.7g", pctNoLoadLoss);
 			break;
 		case 30:
-			val = String.format("%.7g", windings[activeWindingIdx].getMaxTap());
+			val = format("%.7g", windings[activeWindingIdx].getMaxTap());
 			break;
 		case 31:
-			val = String.format("%.7g", windings[activeWindingIdx].getMinTap());
+			val = format("%.7g", windings[activeWindingIdx].getMinTap());
 			break;
 		case 32:
-			val = String.format("%-d", windings[activeWindingIdx].getNumTaps());
+			val = format("%-d", windings[activeWindingIdx].getNumTaps());
 			break;
 		case 34:
-			val = String.format("%.7g", pctImag);
+			val = format("%.7g", pctImag);
 			break;
 		case 35:
-			val = String.format("%.7g", ppmFloatFactor / 1.0e-6);
+			val = format("%.7g", ppmFloatFactor / 1.0e-6);
 			break;
 		case 36:
 			for (i = 0; i < numWindings; i++)
-				val = val + String.format("%.7g, ", windings[i].getRpu() * 100.0);
+				val = val + format("%.7g, ", windings[i].getRpu() * 100.0);
 			break;
 
 		default:
@@ -818,10 +824,10 @@ public class TransformerObj extends PDElement {
 		// Overrides
 		switch (index = Transformer.NumPropsThisClass) {
 		case 0:
-			val = String.format("%-.5g", getNormAmps());   // normAmps
+			val = format("%-.5g", getNormAmps());   // normAmps
 			break;
 		case 1:
-			val = String.format("%-.5g", getEmergAmps());  // emergAmps
+			val = format("%-.5g", getEmergAmps());  // emergAmps
 			break;
 		}
 
@@ -870,8 +876,8 @@ public class TransformerObj extends PDElement {
 		setPropertyValue(22, ".8");
 		setPropertyValue(23, "65");
 		setPropertyValue(24, "15");
-		setPropertyValue(25, String.format("%.7g", pctLoadLoss));
-		setPropertyValue(26, String.format("%.7g", pctNoLoadLoss));  // defaults to zero
+		setPropertyValue(25, format("%.7g", pctLoadLoss));
+		setPropertyValue(26, format("%.7g", pctNoLoadLoss));  // defaults to zero
 		setPropertyValue(27, "");
 		setPropertyValue(28, "");
 		setPropertyValue(29, "n");  // =y/n
@@ -960,20 +966,20 @@ public class TransformerObj extends PDElement {
 		for (i = 0; i < numWindings; i++) {
 			w = windings[i];
 			if (nPhases > 1 || w.getConnection() != Connection.WYE) {
-				s = s + String.format(" %-.5g", w.getKVLL() / DSS.SQRT3);
+				s = s + format(" %-.5g", w.getKVLL() / DSS.SQRT3);
 			} else {
-				s = s + String.format(" %-.5g", w.getKVLL());
+				s = s + format(" %-.5g", w.getKVLL());
 			}
 		}
 		s = s + ")  kVAs=(";
 
 		for (i = 0; i < numWindings; i++) {
 			w = windings[i];
-			s = s + String.format(" %-.5g", w.getKVA() / nPhases);
+			s = s + format(" %-.5g", w.getKVA() / nPhases);
 		}
 		s = s + ")";
 
-		s = s + " normHkVA=" + String.format(" %-.5g %-.5g", normMaxHKVA / nPhases, emergMaxHKVA / nPhases);
+		s = s + " normHkVA=" + format(" %-.5g %-.5g", normMaxHKVA / nPhases, emergMaxHKVA / nPhases);
 
 		Parser.getInstance().setCommand(s);
 		edit();
@@ -998,7 +1004,7 @@ public class TransformerObj extends PDElement {
 						value = new Complex(1000000, 0);
 				} else {
 					// 1 microohm resistor
-					value = ComplexUtil.invert(new Complex(w.getRNeut(), w.getXNeut() * freqMultiplier));
+					value = invert(new Complex(w.getRNeut(), w.getXNeut() * freqMultiplier));
 				}
 				j = i * nConds;
 				YPrimSeries.add(j, j, value);

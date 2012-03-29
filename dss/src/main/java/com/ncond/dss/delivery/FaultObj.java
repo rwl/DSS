@@ -17,10 +17,16 @@ import com.ncond.dss.common.types.ControlMode;
 import com.ncond.dss.common.types.SolutionMode;
 import com.ncond.dss.parser.Parser;
 import com.ncond.dss.shared.CMatrix;
-import com.ncond.dss.shared.MathUtil;
+
+import static com.ncond.dss.shared.MathUtil.quasiLognormal;
+import static com.ncond.dss.shared.MathUtil.gauss;
 
 import static com.ncond.dss.common.Util.appendToEventLog;
 import static com.ncond.dss.common.Util.presentTimeInSec;
+
+import static java.lang.Math.random;
+
+import static java.lang.String.format;
 
 
 /**
@@ -111,13 +117,13 @@ public class FaultObj extends PDElement {
 
 		switch (sol.getRandomType()) {
 		case GAUSSIAN:
-			randomMult = MathUtil.gauss(1.0, stdDev);
+			randomMult = gauss(1.0, stdDev);
 			break;
 		case UNIFORM:
-			randomMult = Math.random();
+			randomMult = random();
 			break;
 		case LOGNORMAL:
-			randomMult = MathUtil.quasiLognormal(1.0);
+			randomMult = quasiLognormal(1.0);
 			break;
 		default:
 			randomMult = 1.0;
@@ -315,7 +321,7 @@ public class FaultObj extends PDElement {
 			if (GMatrix != null) {
 				for (int i = 0; i < nPhases; i++) {
 					for (int j = 0; j < i; j++)
-						sb.append(String.format("%g ", GMatrix[i * nPhases + j]));
+						sb.append(format("%g ", GMatrix[i * nPhases + j]));
 					if (i < nPhases - 1)
 						sb.append("|");
 				}

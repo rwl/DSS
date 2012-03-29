@@ -19,7 +19,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.math.complex.Complex;
-import org.apache.commons.math.complex.ComplexUtils;
 
 import com.ncond.dss.common.Bus.NodeBus;
 import com.ncond.dss.common.Circuit.CktElementDef;
@@ -49,8 +48,21 @@ import com.ncond.dss.general.DSSObject;
 import com.ncond.dss.meter.EnergyMeterObj;
 import com.ncond.dss.parser.Parser;
 import com.ncond.dss.shared.CMatrix;
-import com.ncond.dss.shared.ComplexUtil;
 import com.ncond.dss.shared.HashList;
+
+import static org.apache.commons.math.complex.ComplexUtils.polar2Complex;
+
+import static com.ncond.dss.shared.ComplexUtil.degArg;
+
+import static java.lang.Math.max;
+import static java.lang.Math.abs;
+import static java.lang.Math.min;
+import static java.lang.Math.random;
+import static java.lang.Math.round;
+import static java.lang.Math.toRadians;
+
+import static java.lang.String.format;
+
 
 public class Util {
 
@@ -84,7 +96,7 @@ public class Util {
 		boolean[] newArray = new boolean[newSize];
 		if (oldArray == null) return newArray;
 		int oldSize = oldArray.length;
-		int length = Math.min(oldSize, newSize);
+		int length = min(oldSize, newSize);
 		if (length > 0) System.arraycopy(oldArray, 0, newArray, 0, length);
 		return newArray;
 	}
@@ -93,7 +105,7 @@ public class Util {
 		int[] newArray = new int[newSize];
 		if (oldArray == null) return newArray;
 		int oldSize = oldArray.length;
-		int length = Math.min(oldSize, newSize);
+		int length = min(oldSize, newSize);
 		if (length > 0) System.arraycopy(oldArray, 0, newArray, 0, length);
 		return newArray;
 	}
@@ -102,7 +114,7 @@ public class Util {
 		double[] newArray = new double[newSize];
 		if (oldArray == null) return newArray;
 		int oldSize = oldArray.length;
-		int length = Math.min(oldSize, newSize);
+		int length = min(oldSize, newSize);
 		if (length > 0) System.arraycopy(oldArray, 0, newArray, 0, length);
 		return newArray;
 	}
@@ -111,7 +123,7 @@ public class Util {
 		String[] newArray = new String[newSize];
 		if (oldArray == null) return newArray;
 		int oldSize = oldArray.length;
-		int length = Math.min(oldSize, newSize);
+		int length = min(oldSize, newSize);
 		if (length > 0) System.arraycopy(oldArray, 0, newArray, 0, length);
 		return newArray;
 	}
@@ -120,7 +132,7 @@ public class Util {
 		Complex[] newArray = new Complex[newSize];
 		if (oldArray == null) return newArray;
 		int oldSize = oldArray.length;
-		int length = Math.min(oldSize, newSize);
+		int length = min(oldSize, newSize);
 		if (length > 0) System.arraycopy(oldArray, 0, newArray, 0, length);
 		return newArray;
 	}
@@ -129,7 +141,7 @@ public class Util {
 		DSSObject[] newArray = new DSSObject[newSize];
 		if (oldArray == null) return newArray;
 		int oldSize = oldArray.length;
-		int length = Math.min(oldSize, newSize);
+		int length = min(oldSize, newSize);
 		if (length > 0) System.arraycopy(oldArray, 0, newArray, 0, length);
 		return newArray;
 	}
@@ -138,7 +150,7 @@ public class Util {
 		CktElementDef[] newArray = new CktElementDef[newSize];
 		if (oldArray == null) return newArray;
 		int oldSize = oldArray.length;
-		int length = Math.min(oldSize, newSize);
+		int length = min(oldSize, newSize);
 		if (length > 0) System.arraycopy(oldArray, 0, newArray, 0, length);
 		return newArray;
 	}
@@ -147,7 +159,7 @@ public class Util {
 		Bus[] newArray = new Bus[newSize];
 		if (oldArray == null) return newArray;
 		int oldSize = oldArray.length;
-		int length = Math.min(oldSize, newSize);
+		int length = min(oldSize, newSize);
 		if (length > 0) System.arraycopy(oldArray, 0, newArray, 0, length);
 		return newArray;
 	}
@@ -156,7 +168,7 @@ public class Util {
 		NodeBus[] newArray = new NodeBus[newSize];
 		if (oldArray == null) return newArray;
 		int oldSize = oldArray.length;
-		int length = Math.min(oldSize, newSize);
+		int length = min(oldSize, newSize);
 		if (length > 0) System.arraycopy(oldArray, 0, newArray, 0, length);
 		return newArray;
 	}
@@ -165,7 +177,7 @@ public class Util {
 		Terminal[] newArray = new Terminal[newSize];
 		if (oldArray == null) oldArray = newArray;
 		int oldSize = oldArray.length;
-		int length = Math.min(oldSize, newSize);
+		int length = min(oldSize, newSize);
 		if (length > 0) System.arraycopy(oldArray, 0, newArray, 0, length);
 		return newArray;
 	}
@@ -174,7 +186,7 @@ public class Util {
 		Winding[] newArray = new Winding[newSize];
 		if (oldArray == null) return newArray;
 		int oldSize = oldArray.length;
-		int length = Math.min(oldSize, newSize);
+		int length = min(oldSize, newSize);
 		if (length > 0) System.arraycopy(oldArray, 0, newArray, 0, length);
 		return newArray;
 	}
@@ -265,9 +277,9 @@ public class Util {
 	public static String dblArrayToString(double[] dblarray, int count) {
 		if (count > 0) {
 			StringBuilder sb = new StringBuilder();
-			sb.append(String.format("[%.10g", dblarray[0]));
+			sb.append(format("[%.10g", dblarray[0]));
 			for (int i = 1; i < count; i++) {
-				sb.append(String.format(", %.10g", dblarray[i]));
+				sb.append(format(", %.10g", dblarray[i]));
 			}
 			sb.append("]");
 			return sb.toString();
@@ -282,10 +294,10 @@ public class Util {
 	public static String cmplxArrayToString(Complex[] cpxarray, int count) {
 		if (count > 0) {
 			StringBuilder sb = new StringBuilder();
-			sb.append(String.format("[%.10g +j %.10g",
+			sb.append(format("[%.10g +j %.10g",
 				cpxarray[0].getReal(), cpxarray[0].getImaginary()));
 			for (int i = 1; i < count; i++) {
-				sb.append(String.format(", %.10g +j %.10g",
+				sb.append(format(", %.10g +j %.10g",
 					cpxarray[i].getReal(), cpxarray[i].getImaginary()));
 			}
 			sb.append("]");
@@ -538,7 +550,7 @@ public class Util {
 			csvFileName = param.equals("%%result%%") ? DSS.lastResultFile : param;
 
 			if (!new File(csvFileName).exists()) {
-				DSS.doSimpleMsg(String.format("CSV file \"%s\" does not exist", csvFileName), 70401);
+				DSS.doSimpleMsg(format("CSV file \"%s\" does not exist", csvFileName), 70401);
 				return result;
 			}
 
@@ -577,7 +589,7 @@ public class Util {
 							break;
 						}
 					} catch (Exception e) {
-						DSS.doSimpleMsg(String.format("Error reading %d-th numeric array value from file: \"%s\" Error is:",
+						DSS.doSimpleMsg(format("Error reading %d-th numeric array value from file: \"%s\" Error is:",
 								i, param, e.getMessage()), 705);
 						result = i;
 						break;
@@ -640,7 +652,7 @@ public class Util {
 							break;
 						}
 					} catch (Exception e) {
-						DSS.doSimpleMsg(String.format("Error trying to read numeric array values from file: \"" +
+						DSS.doSimpleMsg(format("Error trying to read numeric array values from file: \"" +
 								param + "\"  Error is: " + e.getMessage()), 706);
 						result = i;
 						break;
@@ -1042,8 +1054,8 @@ public class Util {
 
 	public static String strReal(double value, int numDecimals) {
 		try {
-			String fmt = String.format("%%.%df", numDecimals);
-			return String.format(fmt, value);
+			String fmt = format("%%.%df", numDecimals);
+			return format(fmt, value);
 		} catch (Exception e) {
 			return "*****";
 		}
@@ -1061,11 +1073,11 @@ public class Util {
 				switch (load.getLoadSpecType()) {
 				case XFKVA_ALLOCATIONFACTOR_PF:
 					pw.println("Load." + load.getName() + ".allocationFactor=" +
-						String.format("%-.5g", load.getKVAAllocationFactor()));
+						format("%-.5g", load.getKVAAllocationFactor()));
 					break;
 				case KWH_KWHDAYS24_CFACTOR_PF:
 					pw.println("Load." + load.getName() + ".CFactor=" +
-						String.format("%-.5g", load.getCFactor()));
+						format("%-.5g", load.getCFactor()));
 					break;
 				}
 			}
@@ -1130,7 +1142,7 @@ public class Util {
 		double minDiff = 1.e50;  // big number
 
 		while (testKV != 0.0) {
-			diff = Math.abs(1.0 - kV / testKV);  // get per unit difference
+			diff = abs(1.0 - kV / testKV);  // get per unit difference
 			if (diff < minDiff) {
 				minDiff = diff;
 				result = testKV;
@@ -1179,7 +1191,7 @@ public class Util {
 			br = new BufferedReader(fr);
 
 			dNumNodes = Double.parseDouble(br.readLine());
-			if (ckt.getNumNodes() == Math.round(dNumNodes)) {
+			if (ckt.getNumNodes() == round(dNumNodes)) {
 				for (int i = 1; i <= ckt.getNumNodes(); i++) {
 					inputLine = br.readLine();
 					parts = inputLine.split("\\s");
@@ -1268,11 +1280,11 @@ public class Util {
 	 * Rotate a phasor by an angle and harmonic.
 	 */
 	public static Complex rotatePhasorDeg(Complex phasor, double h, double angleDeg) {
-		return phasor.multiply(ComplexUtils.polar2Complex(1.0, Math.toRadians(h * angleDeg)));
+		return phasor.multiply(polar2Complex(1.0, toRadians(h * angleDeg)));
 	}
 
 	public static Complex rotatePhasorRad(Complex phasor, double h, double angleRad) {
-		return phasor.multiply(ComplexUtils.polar2Complex(1.0, h * angleRad));
+		return phasor.multiply(polar2Complex(1.0, h * angleRad));
 	}
 
 	private static double pfSign(Complex S) {
@@ -1289,8 +1301,8 @@ public class Util {
 		for (int i = 0; i < n; i++) {
 			mag = buffer[i].abs();
 			if (mag > 0.0) {
-				pf = pfSign(buffer[i]) * Math.abs(buffer[i].getReal()) / mag;
-				if (pf < 0.0) pf = 2.0 - Math.abs(pf);
+				pf = pfSign(buffer[i]) * abs(buffer[i].getReal()) / mag;
+				if (pf < 0.0) pf = 2.0 - abs(pf);
 			} else {
 				pf = 1.0;  // for zero power
 			}
@@ -1302,7 +1314,7 @@ public class Util {
 		for (int i = 0; i < n; i++) {
 			buffer[i] = new Complex(
 				buffer[i].abs(),
-				ComplexUtil.degArg(buffer[i])
+				degArg(buffer[i])
 			);
 		}
 	}
@@ -1325,7 +1337,7 @@ public class Util {
 	 */
 	public static Complex residualPolar(Object p, int nph) {
 		Complex x = residual(p, nph);
-		return new Complex(x.abs(), ComplexUtil.degArg(x));
+		return new Complex(x.abs(), degArg(x));
 	}
 
 	private static double sign(double x) {
@@ -1334,7 +1346,7 @@ public class Util {
 
 	public static double powerFactor(Complex S) {
 		if (S.getReal() != 0.0 && S.getImaginary() != 0.0) {
-			return sign(S.getReal() * S.getImaginary()) * Math.abs(S.getReal()) / S.abs();
+			return sign(S.getReal() * S.getImaginary()) * abs(S.getReal()) / S.abs();
 		} else {
 			return 1.0;
 		}
@@ -1363,7 +1375,7 @@ public class Util {
 		try {
 			DSS.eventStrings.clear();
 		} catch (Exception e) {
-			DSS.doSimpleMsg(String.format("Exception clearing event log: %s, eventStrings=%s",
+			DSS.doSimpleMsg(format("Exception clearing event log: %s, eventStrings=%s",
 					e.getMessage(), DSS.eventStrings.toString()), 7151);
 		}
 	}
@@ -1371,14 +1383,14 @@ public class Util {
 	public static void logThisEvent(String eventName) {
 		SolutionObj sol = DSS.activeCircuit.getSolution();
 
-		DSS.eventStrings.add(String.format("Hour=%d, Sec=%-.8g, Iteration=%d, ControlIter=%d, Event=%s",
+		DSS.eventStrings.add(format("Hour=%d, Sec=%-.8g, Iteration=%d, ControlIter=%d, Event=%s",
 				sol.getIntHour(), sol.getDynaVars().t, sol.getIteration(), sol.getControlIteration(), eventName));
 	}
 
 	public static void appendToEventLog(String opDev, String action) {
 		SolutionObj sol = DSS.activeCircuit.getSolution();
 
-		String S = String.format("Hour=%d, Sec=%-.5g, ControlIter=%d, Element=%s, Action=%s",
+		String S = format("Hour=%d, Sec=%-.5g, ControlIter=%d, Element=%s, Action=%s",
 				sol.getIntHour(), sol.getDynaVars().t, sol.getControlIteration(), opDev, action.toUpperCase());
 
 		DSS.eventStrings.add(S);
@@ -1696,7 +1708,7 @@ public class Util {
 				for (j = 0; j < bus.getNumNodesThisBus(); j++) {
 					ref = bus.getRef(j);
 					if (ref > 0)
-						max = Math.max(max, ckt.getSolution().getNodeV(ref).abs() / bus.getKVBase());
+						max = max(max, ckt.getSolution().getNodeV(ref).abs() / bus.getKVBase());
 				}
 			}
 		}
@@ -1722,11 +1734,11 @@ public class Util {
 						VMagPU = ckt.getSolution().getNodeV(ref).abs() / bus.getKVBase();
 						if (ignoreNeutrals) {
 							if (VMagPU > 100.0) {  // 0.1 pu
-								min = Math.min(min, VMagPU);  // only check buses greater than 10%
+								min = min(min, VMagPU);  // only check buses greater than 10%
 								minFound = true;
 							}
 						} else {
-							min = Math.min(min, VMagPU);
+							min = min(min, VMagPU);
 							minFound = true;
 						}
 					}
@@ -1760,7 +1772,7 @@ public class Util {
 		DSSClass loadClass = DSSClassDefs.getDSSClass("load");
 		count = loadClass.getElementList().size();
 
-		kWEach = kW / Math.max(1.0, Math.round(count));
+		kWEach = kW / max(1.0, round(count));
 		if (ckt.isPositiveSequence())
 			kWEach = kWEach / 3.0;
 
@@ -1807,7 +1819,7 @@ public class Util {
 			if (load.isEnabled()) {
 				pw.printf("new generator.DG_%d  bus1=%s", i, load.getBus(0));
 				pw.printf(" phases=%d kV=%g", load.getNumPhases(), load.getKVLoadBase());
-				pw.printf(" kW=%g", kWEach * Math.random() * 2.0);
+				pw.printf(" kW=%g", kWEach * random() * 2.0);
 				pw.printf(" pf=%-.3g", pf);
 				pw.print(" model=1");
 				pw.println();
@@ -1925,7 +1937,7 @@ public class Util {
 			pw = new PrintWriter(fw);
 
 			pw.println("! Created with distribute command:");
-			pw.println(String.format("! distribute kW=%-.6g pf=%-.6g how=%s skip=%d file=%s", kW, pf, how, skip, fname));
+			pw.println(format("! distribute kW=%-.6g pf=%-.6g how=%s skip=%d file=%s", kW, pf, how, skip, fname));
 			pw.println();
 			//pw.println("set allowduplicates=yes");
 			if (how == null) how = Distribution.PROPORTIONAL;
@@ -1987,7 +1999,7 @@ public class Util {
 	public static String getDSSArray(int n, double[] dbls) {
 		StringBuilder sb = new StringBuilder("(");
 		for (int i = 0; i < n; i++)
-			sb.append(String.format(" %-.5g", dbls[i]));
+			sb.append(format(" %-.5g", dbls[i]));
 		sb.append(")");
 		return sb.toString();
 	}
@@ -1995,7 +2007,7 @@ public class Util {
 	public static String getDSSArray(int n, int[] ints) {
 		StringBuilder sb = new StringBuilder("(");
 		for (int i = 0; i < n; i++)
-			sb.append(String.format(" %-.d", ints[i]));
+			sb.append(format(" %-.d", ints[i]));
 		sb.append(")");
 		return sb.toString();
 	}
@@ -2003,7 +2015,7 @@ public class Util {
 	public static String getDSSArray(int n, boolean[] a) {
 		StringBuilder sb = new StringBuilder("(");
 		for (int i = 0; i < n; i++)
-			sb.append(String.format(" %-.d", a[i] ? 1 : 0));
+			sb.append(format(" %-.d", a[i] ? 1 : 0));
 		sb.append(")");
 		return sb.toString();
 	}
@@ -2027,7 +2039,7 @@ public class Util {
 		Circuit ckt = DSS.activeCircuit;
 		int size = 0;
 		for (int i = 0; i < ckt.getNumDevices(); i++)
-			size = Math.max(size, ckt.getCktElements().get(i).getYOrder());
+			size = max(size, ckt.getCktElements().get(i).getYOrder());
 		return size;
 	}
 
@@ -2127,8 +2139,8 @@ public class Util {
 				/* Lines */
 				if (isLineElement(elem)) {
 					for (i = 0; i < elem.getNumTerms(); i++) {
-						s = s + String.format(" bus%d=%s%s", i+1, stripExtension(elem.getBus(i)), phaseString);
-						//Parser.getInstance().setCmdString(String.format("bus$d=%s%s", i+1, stripExtension(pPDelem.getBus(i)), phaseString));
+						s = s + format(" bus%d=%s%s", i+1, stripExtension(elem.getBus(i)), phaseString);
+						//Parser.getInstance().setCmdString(format("bus$d=%s%s", i+1, stripExtension(pPDelem.getBus(i)), phaseString));
 						//elem.edit();
 					}
 
@@ -2147,11 +2159,11 @@ public class Util {
 						/* 1st terminal only */
 						i = 0;
 						s = "edit " + shunt.getParentClass().getClassName() + "." + shunt.getName();
-						s = s + String.format(" bus%d=%s%s", i+1, stripExtension(shunt.getBus(i)), phaseString);
+						s = s + format(" bus%d=%s%s", i+1, stripExtension(shunt.getBus(i)), phaseString);
 						if (editStr.length() > 0)
 							s = s + "  " + editStr;
 						pw.println(s);
-						//Parser.getInstance().setCmdString(String.format("bus$d=%s%s", i+1, stripExtension(pShuntObject.getBus(0)), phaseString));
+						//Parser.getInstance().setCmdString(format("bus$d=%s%s", i+1, stripExtension(pShuntObject.getBus(0)), phaseString));
 						//shunt.edit();
 						shunt = (CktElement) meter.getBranchList().getNextObject();
 					}
@@ -2166,9 +2178,9 @@ public class Util {
 					 * Then we'll cycle forward until the lexical level is less or we're done
 					 */
 					xfmrLevel = meter.getBranchList().getLevel();
-					s = s + String.format(" wdg=1 bus=%s%s  %s", stripExtension(elem.getBus(0)), phaseString, editStr);
+					s = s + format(" wdg=1 bus=%s%s  %s", stripExtension(elem.getBus(0)), phaseString, editStr);
 					if (!transStop)
-						s = s + String.format(" wdg=2 bus=%s%s  %s", stripExtension(elem.getBus(1)), phaseString, editStr);
+						s = s + format(" wdg=2 bus=%s%s  %s", stripExtension(elem.getBus(1)), phaseString, editStr);
 					pw.println(s);
 
 					/* Be default go forward in the tree until we bounce back up to a line section above the transformer */
@@ -2198,7 +2210,7 @@ public class Util {
 
 		double max = dbls[0];
 		for (int i = 1; i < npts; i++)
-			max = Math.max(max, dbls[i]);
+			max = max(max, dbls[i]);
 
 		return max;
 	}
@@ -2210,10 +2222,10 @@ public class Util {
 		if (npts == 0) return -1;
 
 		int idx = 0;
-		double maxValue = Math.abs(dbls[0]);
+		double maxValue = abs(dbls[0]);
 		for (int i = 1; i < npts; i++)
-			if (Math.abs(dbls[i]) > maxValue) {
-				maxValue = Math.abs(dbls[i]);
+			if (abs(dbls[i]) > maxValue) {
+				maxValue = abs(dbls[i]);
 				idx = i;  // save index
 			}
 		return idx;
@@ -2334,14 +2346,14 @@ public class Util {
 		DSS.setObject(oldName);  // set object active
 		DSSObject obj = DSS.activeDSSObject;
 
-		return String.format("%s.%s%d",
+		return format("%s.%s%d",
 				obj.getParentClass().getClassName(),
 				obj.getParentClass().getClassName().substring(0, 3),
 				obj.getClassIndex());
 	}
 
 	private static void renameCktElem(CktElement elem) {
-		elem.setName(String.format("%s%d",
+		elem.setName(format("%s%d",
 			elem.getParentClass().getClassName().substring(0, 3),
 			elem.getClassIndex()));
 		// make a new device list corresponding to the CktElements list
@@ -2379,7 +2391,7 @@ public class Util {
 
 		/* Rename buses */
 		for (i = 0; i < ckt.getBusList().listSize(); i++)
-			tempBusList.add(String.format("B_%d", i));
+			tempBusList.add(format("B_%d", i));
 
 		ckt.setBusList(null);
 		ckt.setBusList(tempBusList);  // reassign
@@ -2401,14 +2413,14 @@ public class Util {
 						nodes = oldBusName.substring(dotpos);
 					}
 					bref = cktElem.getTerminal(i).getBusRef();
-					newBusName = String.format("B_%d%s", bref, nodes);
+					newBusName = format("B_%d%s", bref, nodes);
 					// check for transformer because that will be an exception
 					switch (cktElem.getObjType() & DSSClassDefs.CLASSMASK) {
 					case DSSClassDefs.XFMR_ELEMENT:
-						s = s + String.format("wdg=%d bus=%s ", i, newBusName);
+						s = s + format("wdg=%d bus=%s ", i, newBusName);
 						break;
 					default:
-						s = s + String.format("bus%d=%s ", i, newBusName);
+						s = s + format("bus%d=%s ", i, newBusName);
 						break;
 					}
 				}
@@ -2429,9 +2441,9 @@ public class Util {
 		for (CktElement cktElem : ckt.getCktElements()) {
 			switch (cktElem.getObjType() & DSSClassDefs.CLASSMASK) {
 			case DSSClassDefs.CAP_CONTROL:
-				s = String.format("element=%s ",
+				s = format("element=%s ",
 						makeNewCktElemName(cktElem.getPropertyValue(0)));
-				controlUpDateStrings.add(s + String.format("capacitor=%s ",
+				controlUpDateStrings.add(s + format("capacitor=%s ",
 						makeNewCktElemName("capacitor." + cktElem.getPropertyValue(2)).substring(10, 99)));
 				controlUpDatePtrs.add(cktElem);
 				break;
@@ -2439,38 +2451,38 @@ public class Util {
 				// handled below
 				break;
 			case DSSClassDefs.RELAY_CONTROL:
-				s = String.format("monitoredObj=%s ",
+				s = format("monitoredObj=%s ",
 						makeNewCktElemName(cktElem.getPropertyValue(0)));
-				controlUpDateStrings.add(s + String.format("switchedObj=%s ",
+				controlUpDateStrings.add(s + format("switchedObj=%s ",
 						makeNewCktElemName(cktElem.getPropertyValue(2))));
 				controlUpDatePtrs.add(cktElem);
 				break;
 			case DSSClassDefs.RECLOSER_CONTROL:
-				s = String.format("monitoredObj=%s ",
+				s = format("monitoredObj=%s ",
 						makeNewCktElemName(cktElem.getPropertyValue(0)));
-				controlUpDateStrings.add(s + String.format("switchedObj=%s ",
+				controlUpDateStrings.add(s + format("switchedObj=%s ",
 						makeNewCktElemName(cktElem.getPropertyValue(2))));
 				controlUpDatePtrs.add(cktElem);
 				break;
 			case DSSClassDefs.FUSE_CONTROL:
-				s = String.format("monitoredObj=%s ",
+				s = format("monitoredObj=%s ",
 						makeNewCktElemName(cktElem.getPropertyValue(0)));
-				controlUpDateStrings.add(s + String.format("switchedObj=%s ",
+				controlUpDateStrings.add(s + format("switchedObj=%s ",
 						makeNewCktElemName(cktElem.getPropertyValue(2))));
 				controlUpDatePtrs.add(cktElem);
 				break;
 			case DSSClassDefs.GEN_CONTROL:
-				controlUpDateStrings.add(String.format("element=%s ",
+				controlUpDateStrings.add(format("element=%s ",
 						makeNewCktElemName(cktElem.getPropertyValue(0))));
 				controlUpDatePtrs.add(cktElem);
 				break;
 			case DSSClassDefs.STORAGE_CONTROL:
-				controlUpDateStrings.add (String.format("element=%s ",
+				controlUpDateStrings.add (format("element=%s ",
 						makeNewCktElemName(cktElem.getPropertyValue(0))));
 				controlUpDatePtrs.add(cktElem);
 				break;
 			case DSSClassDefs.SWT_CONTROL:
-				controlUpDateStrings.add (String.format("switchedObj=%s ",
+				controlUpDateStrings.add (format("switchedObj=%s ",
 						makeNewCktElemName(cktElem.getPropertyValue(0))));
 				controlUpDatePtrs.add(cktElem);
 				break;
@@ -2493,7 +2505,7 @@ public class Util {
 					if (cktElem.hasControl()) {
 						ctrlElem = cktElem.getControlElement();
 						if (ctrlElem != null) {
-							parser.setCommand(String.format("transformer=%s",
+							parser.setCommand(format("transformer=%s",
 									cktElem.getName()));
 							ctrlElem.edit();
 						}

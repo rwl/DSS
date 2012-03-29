@@ -26,6 +26,12 @@ import com.ncond.dss.executive.Executive;
 import com.ncond.dss.meter.EnergyMeterObj;
 import com.ncond.dss.shared.HashList;
 
+import static java.lang.Math.sqrt;
+import static java.lang.Math.pow;
+
+import static java.lang.String.format;
+
+
 /**
  * Unit for processing the AutoAdd solution functions.
  *
@@ -334,7 +340,7 @@ public class AutoAdd {
 			}
 
 			if (genPF != 0.0) {
-				genKVAr = testGenKW * Math.sqrt(1.0 / Math.pow(genPF, 2) - 1.0);
+				genKVAr = testGenKW * sqrt(1.0 / pow(genPF, 2) - 1.0);
 				if (genPF < 0.0)
 					genKVAr = -genKVAr;
 			} else {  // Someone specified 0.0 PF
@@ -351,7 +357,7 @@ public class AutoAdd {
 			progressMax = busIdxListSize;
 			progressCount = 0;
 
-			DSS.forms.progressFormCaption(String.format("Testing %d buses. Please Wait... ", busIdxListSize));
+			DSS.forms.progressFormCaption(format("Testing %d buses. Please Wait... ", busIdxListSize));
 			DSS.forms.showPctProgress(0);
 
 			for (int i = 0; i < busIdxListSize; i++) {
@@ -363,7 +369,7 @@ public class AutoAdd {
 
 					//DSSGlobals.forms.progressFormCaption("Testing bus" + TestBus);
 					if ((progressCount % 20 == 0) || (i == busIdxListSize)) {
-						DSS.forms.progressFormCaption(String.format("Testing bus %d/%d. ", i, busIdxListSize));
+						DSS.forms.progressFormCaption(format("Testing bus %d/%d. ", i, busIdxListSize));
 						DSS.forms.showPctProgress((100 * progressCount) / progressMax);
 					}
 
@@ -433,10 +439,10 @@ public class AutoAdd {
 				commandString = "new, generator." + getUniqueGenName() +
 						", bus1=\"" + ckt.getBusList().get(minLossBus) +
 						"\", phases=" + minBusPhases +
-						", kv="+ String.format("%g", kVrat) +
-						", kw=" + String.format("%g", testGenKW) +
-						", " + String.format("%5.2f", genPF) +
-						String.format("! Factor =  %g (%-.3g, %-.3g)",
+						", kv="+ format("%g", kVrat) +
+						", kw=" + format("%g", testGenKW) +
+						", " + format("%5.2f", genPF) +
+						format("! Factor =  %g (%-.3g, %-.3g)",
 								maxLossImproveFactor,
 								ckt.getLossWeight(),
 								ckt.getUEWeight());
@@ -450,7 +456,7 @@ public class AutoAdd {
 
 			// return location of added generator
 			DSS.globalResult = ckt.getBusList().get(minLossBus) +
-					String.format(", %g", maxLossImproveFactor);
+					format(", %g", maxLossImproveFactor);
 
 			DSS.forms.progressHide();
 
@@ -545,8 +551,8 @@ public class AutoAdd {
 				commandString = "new, capacitor." + getUniqueCapName() +
 						", bus1=\"" + ckt.getBusList().get(minLossBus) +
 						"\", phases=" + minBusPhases +
-						", kvar=" + String.format("%g", testCapKVAr) +
-						", kv=" + String.format("%g", kVrat);
+						", kvar=" + format("%g", testCapKVAr) +
+						", kv=" + format("%g", kVrat);
 				exec.setCommand(commandString);  // defines capacitor
 
 				// append this command to 'DSSAutoAddedCapacitors.txt'

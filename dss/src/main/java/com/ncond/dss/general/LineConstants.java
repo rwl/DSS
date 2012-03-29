@@ -9,9 +9,25 @@ import org.apache.commons.math.complex.Complex;
 
 import com.ncond.dss.common.DSS;
 import com.ncond.dss.shared.CMatrix;
-import com.ncond.dss.shared.ComplexUtil;
 import com.ncond.dss.shared.LineUnits;
-import com.ncond.dss.shared.MathUtil;
+
+import static com.ncond.dss.shared.MathUtil.besselI0;
+import static com.ncond.dss.shared.MathUtil.sqr;
+
+import static com.ncond.dss.shared.ComplexUtil.invert;
+
+import static java.lang.Math.sqrt;
+import static java.lang.Math.PI;
+import static java.lang.Math.abs;
+import static java.lang.Math.acos;
+import static java.lang.Math.cos;
+import static java.lang.Math.exp;
+import static java.lang.Math.log;
+import static java.lang.Math.pow;
+import static java.lang.Math.sin;
+
+import static java.lang.String.format;
+
 
 /**
  * This class returns a matrix ordered by phases first then remaining conductors.
@@ -41,12 +57,12 @@ public class LineConstants {
 	public static final double TWO_PI = DSS.TWO_PI;
 
 	public static final Complex CDOUBLEONE = new Complex(1, 1);
-	public static final double B1 = 1.0 / (3.0 * Math.sqrt(2.0));;
+	public static final double B1 = 1.0 / (3.0 * sqrt(2.0));;
 	public static final double B2 = 1.0 / 16.0;
 	public static final double B3 = B1 / 3.0 / 5.0;
 	public static final double B4 = B2 / 4.0 / 6.0;
-	public static final double D2 = B2 * Math.PI / 4.0;
-	public static final double D4 = B4 * Math.PI / 4.0;
+	public static final double D2 = B2 * PI / 4.0;
+	public static final double D4 = B4 * PI / 4.0;
 	public static final double C2 = 1.3659315;
 	public static final double C4 = C2 + 1.0 / 4.0 + 1.0 / 6.0;
 
@@ -136,9 +152,9 @@ public class LineConstants {
 			Zi = getZint(i);
 			if (powerFreq) {  // for less than 1 kHz, use published GMR
 				Zi = new Complex(Zi.getReal(), 0.0);
-				Zspacing = Lfactor.multiply(Math.log(1.0 / GMR[i]));  // use GMR
+				Zspacing = Lfactor.multiply(log(1.0 / GMR[i]));  // use GMR
 			} else {
-				Zspacing = Lfactor.multiply(Math.log(1.0 / radius[i]));
+				Zspacing = Lfactor.multiply(log(1.0 / radius[i]));
 			}
 
 			Zmatrix.set(i, i, Zi.add(Zspacing.add(getZe(i, i))));
@@ -148,8 +164,8 @@ public class LineConstants {
 
 		for (i = 0; i < numConds; i++) {
 			for (j = 0; j < i; j++) {
-				dij = Math.sqrt(Math.pow(X[i] - X[j], 2) + Math.pow(Y[i] - Y[j], 2));
-				Zmatrix.setSym(i, j, Lfactor.multiply( Math.log(1.0 / dij) ).add(getZe(i, j)));
+				dij = sqrt(pow(X[i] - X[j], 2) + pow(Y[i] - Y[j], 2));
+				Zmatrix.setSym(i, j, Lfactor.multiply( log(1.0 / dij) ).add(getZe(i, j)));
 			}
 		}
 
@@ -160,13 +176,13 @@ public class LineConstants {
 		/* Construct P matrix and then invert */
 
 		for (i = 0; i < numConds; i++)
-			YcMatrix.set(i, i, new Complex(0.0, Pfactor * Math.log(2.0 * Y[i] / radius[i])));
+			YcMatrix.set(i, i, new Complex(0.0, Pfactor * log(2.0 * Y[i] / radius[i])));
 
 		for (i = 0; i < numConds; i++) {
 			for (j = 0; j < i; j++) {
-				dij = Math.sqrt(Math.pow(X[i] - X[j], 2) + Math.pow(Y[i] - Y[j], 2));
-				dijp = Math.sqrt(Math.pow(X[i] - X[j], 2) + Math.pow(Y[i] + Y[j], 2));  // distance to image j
-				YcMatrix.setSym(i, j, new Complex(0.0, Pfactor * Math.log(dijp / dij)));
+				dij = sqrt(pow(X[i] - X[j], 2) + pow(Y[i] - Y[j], 2));
+				dijp = sqrt(pow(X[i] - X[j], 2) + pow(Y[i] + Y[j], 2));  // distance to image j
+				YcMatrix.setSym(i, j, new Complex(0.0, Pfactor * log(dijp / dij)));
 			}
 		}
 
@@ -190,7 +206,7 @@ public class LineConstants {
 		for (i = 0; i < numConds; i++) {
 			if (Y[i] <= 0.0) {
 				same = true;
-				errorMessage[0] += String.format("Conductor %d height must be  > 0. ", i);
+				errorMessage[0] += format("Conductor %d height must be  > 0. ", i);
 				return same;
 			}
 		}
@@ -198,10 +214,10 @@ public class LineConstants {
 		/* Check for overlapping conductors */
 		for (i = 0; i < numConds; i++) {
 			for (j = i + 1; j < numConds; j++) {
-				dij = Math.sqrt(MathUtil.sqr(X[i] - X[j]) + MathUtil.sqr(Y[i] - Y[j]));
+				dij = sqrt(sqr(X[i] - X[j]) + sqr(Y[i] - Y[j]));
 				if (dij < (radius[i] + radius[j])) {
 					same = true;
-					errorMessage[0] += String.format("Conductors %d and %d occupy the same space.", i, j);
+					errorMessage[0] += format("Conductors %d and %d occupy the same space.", i, j);
 					return same;
 				}
 			}
@@ -270,12 +286,12 @@ public class LineConstants {
 		double mij , thetaij, Dij, Yi, Yj, re, im;
 		double term1, term2, term3, term4, term5;
 
-		Yi = Math.abs(Y[i]);
-		Yj = Math.abs(Y[j]);
+		Yi = abs(Y[i]);
+		Yj = abs(Y[j]);
 
 		switch (DSS.activeEarthModel) {
 		case SIMPLECARSON:
-			Ze = new Complex(w * MU0 / 8.0, (w * MU0 / TWO_PI) * Math.log(658.5 * Math.sqrt(rhoEarth / frequency)));
+			Ze = new Complex(w * MU0 / 8.0, (w * MU0 / TWO_PI) * log(658.5 * sqrt(rhoEarth / frequency)));
 			break;
 		case FULLCARSON:
 			/* notation from Tleis book Power System Modelling and Fault Analysis */
@@ -283,35 +299,35 @@ public class LineConstants {
 				thetaij = 0.0;
 				Dij = 2.0 * Yi;
 			} else {
-				Dij = Math.sqrt(Math.pow((Yi + Yj) + Math.pow(X[i] - X[j], 2), 2));
-				thetaij = Math.acos((Yi + Yj) / Dij);
+				Dij = sqrt(pow((Yi + Yj) + pow(X[i] - X[j], 2), 2));
+				thetaij = acos((Yi + Yj) / Dij);
 			}
-			mij = 2.8099e-3 * Dij * Math.sqrt(frequency / rhoEarth);
+			mij = 2.8099e-3 * Dij * sqrt(frequency / rhoEarth);
 
-			re = Math.PI / 8.0 - B1 * mij * Math.cos(thetaij) +
-				B2 * Math.pow(mij, 2) * (Math.log(Math.exp(C2) / mij) * Math.cos(2.0 * thetaij) + thetaij * Math.sin(2.0 * thetaij)) +
-				B3 * mij * mij * mij * Math.cos(3.0 * thetaij) - D4 * mij * mij * mij * mij * Math.cos(4.0 * thetaij);
+			re = PI / 8.0 - B1 * mij * cos(thetaij) +
+				B2 * pow(mij, 2) * (log(exp(C2) / mij) * cos(2.0 * thetaij) + thetaij * sin(2.0 * thetaij)) +
+				B3 * mij * mij * mij * cos(3.0 * thetaij) - D4 * mij * mij * mij * mij * cos(4.0 * thetaij);
 
-			term1 = 0.5 * Math.log(1.85138 / mij);
-			term2 = B1 * mij * Math.cos(thetaij);
-			term3 = -D2 * Math.pow(mij, 2) * Math.cos(2.0 * thetaij);
-			term4 = B3 * mij * mij * mij * Math.cos(3.0 * thetaij);
-			term5 = -B4 * mij * mij * mij * mij * (Math.log(Math.exp(C4) / mij) * Math.cos(4.0 * thetaij) + thetaij * Math.sin(4.0 * thetaij));
+			term1 = 0.5 * log(1.85138 / mij);
+			term2 = B1 * mij * cos(thetaij);
+			term3 = -D2 * pow(mij, 2) * cos(2.0 * thetaij);
+			term4 = B3 * mij * mij * mij * cos(3.0 * thetaij);
+			term5 = -B4 * mij * mij * mij * mij * (log(exp(C4) / mij) * cos(4.0 * thetaij) + thetaij * sin(4.0 * thetaij));
 			im = term1 + term2 + term3 + term4 + term5;
 			Ze = new Complex(re, im);
-			Ze = new Complex(Ze.getReal(), Ze.getImaginary() + 0.5 * Math.log(Dij));  // correction term to work with DSS structure
+			Ze = new Complex(Ze.getReal(), Ze.getImaginary() + 0.5 * log(Dij));  // correction term to work with DSS structure
 
-			Ze = Ze.multiply(w * MU0 / Math.PI);
+			Ze = Ze.multiply(w * MU0 / PI);
 			break;
 
 		case DERI:
 			if (i != j) {
-				hterm = new Complex(Yi + Yj, 0.0).add( ComplexUtil.invert(me).multiply(2.0) );
+				hterm = new Complex(Yi + Yj, 0.0).add( invert(me).multiply(2.0) );
 				xterm = new Complex(X[i] - X[j], 0.0);
 				lnArg = hterm.multiply(hterm).add(xterm.multiply(xterm)).sqrt();
 				Ze = new Complex(0.0, w * MU0 / TWO_PI).multiply(lnArg.log());
 			} else {
-				hterm = new Complex(Yi, 0.0).add( ComplexUtil.invert(me) );
+				hterm = new Complex(Yi, 0.0).add( invert(me) );
 				Ze = new Complex(0.0, w * MU0 / TWO_PI).multiply( hterm.multiply(2.0).log() );
 			}
 			break;
@@ -328,20 +344,20 @@ public class LineConstants {
 
 		switch (DSS.activeEarthModel) {
 		case SIMPLECARSON:
-			Zi = new Complex(Rac[i], w * MU0/ (8 * Math.PI));
+			Zi = new Complex(Rac[i], w * MU0/ (8 * PI));
 			break;
 		case FULLCARSON:  // no skin effect
-			Zi = new Complex(Rac[i], w * MU0 / (8 * Math.PI));
+			Zi = new Complex(Rac[i], w * MU0 / (8 * PI));
 			break;
 		case DERI:  // with skin effect model
 			/* Assume round conductor */
-			alpha = CDOUBLEONE.multiply(Math.sqrt(frequency * MU0 / Rdc[i]));
+			alpha = CDOUBLEONE.multiply(sqrt(frequency * MU0 / Rdc[i]));
 			if (alpha.abs() > 35.0) {
 				I0I1 = Complex.ONE;
 			} else {
-				I0I1 = MathUtil.besselI0(alpha).divide(MathUtil.besselI0(alpha));
+				I0I1 = besselI0(alpha).divide(besselI0(alpha));
 			}
-			Zi = CDOUBLEONE.multiply(I0I1).multiply(Math.sqrt(Rdc[i] * frequency * MU0) / 2.0);
+			Zi = CDOUBLEONE.multiply(I0I1).multiply(sqrt(Rdc[i] * frequency * MU0) / 2.0);
 			break;
 		}
 

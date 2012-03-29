@@ -8,12 +8,17 @@ package com.ncond.dss.shared;
 import org.apache.commons.math.complex.Complex;
 import org.apache.commons.math.complex.ComplexUtils;
 
+import static java.lang.Math.cos;
+import static java.lang.Math.sin;
+import static java.lang.Math.PI;
+
+
 public class ComplexUtil {
 
 	private ComplexUtil() {}
 
 	public static Complex pclx(double magn, double angle) {
-		return new Complex(magn * Math.cos(angle), magn * Math.sin(angle));
+		return new Complex(magn * cos(angle), magn * sin(angle));
 	}
 
 	/**
@@ -42,7 +47,7 @@ public class ComplexUtil {
 
 	public static double degArg(Complex c) {
 		double arg = c.getArgument();
-		return arg * 180.0 / Math.PI;
+		return arg * 180.0 / PI;
 	}
 
 	public static double[] asArray(Complex c) {

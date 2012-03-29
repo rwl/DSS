@@ -17,6 +17,8 @@ import static com.ncond.dss.common.Util.interpretDblArray;
 import static com.ncond.dss.common.Util.interpretYesNo;
 import static com.ncond.dss.common.Util.resizeArray;
 
+import static java.lang.Math.max;
+
 
 public class StorageController extends ControlClass {
 
@@ -334,7 +336,7 @@ public class StorageController extends ControlClass {
 				elem.setDispatchVars(interpretYesNo(param));
 				break;
 			case StorageController.INHIBIT_TIME:
-				elem.setInhibitHrs( Math.max(1, parser.integerValue()) );  // >= 1
+				elem.setInhibitHrs( max(1, parser.integerValue()) );  // >= 1
 				break;
 			case StorageController.T_UP_RAMP:
 				elem.setUpRampTime(parser.doubleValue());

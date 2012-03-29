@@ -22,6 +22,12 @@ import static com.ncond.dss.common.Util.appendToEventLog;
 import static com.ncond.dss.common.Util.getCktElementIndex;
 import static com.ncond.dss.common.Util.resizeArray;
 
+import static java.lang.Math.max;
+import static java.lang.Math.abs;
+import static java.lang.Math.min;
+
+import static java.lang.String.format;
+
 
 /**
  * A control element that is connected to a terminal of another
@@ -184,7 +190,7 @@ public class CapControlObj extends ControlElem {
 		if (VOverrideBusSpecified) {
 			VOverrideBusIndex = ckt.getBusList().find(VOverrideBusName);
 			if (VOverrideBusIndex == -1) {
-				DSS.doSimpleMsg(String.format("CapControl.%s: Voltage override Bus \"%s\" not found. " +
+				DSS.doSimpleMsg(format("CapControl.%s: Voltage override Bus \"%s\" not found. " +
 						"Did you wait until buses were defined? Reverting to default.",
 						getName(), VOverrideBusName), 10361);
 				VOverrideBusSpecified = false;
@@ -243,13 +249,13 @@ public class CapControlObj extends ControlElem {
 		case CapControl.MAXPHASE:
 			controlCurrent = 0.0;  // get max of all phases
 			for (i = condOffset; i < nPhases + condOffset; i++)
-				controlCurrent = Math.max(controlCurrent, cBuffer[i].abs());
+				controlCurrent = max(controlCurrent, cBuffer[i].abs());
 			controlCurrent = controlCurrent / CTRatio;
 			break;
 		case CapControl.MINPHASE:
 			controlCurrent = 1.0e50;  // get min of all phases
 			for (i = condOffset; i < nPhases + condOffset; i++)
-				controlCurrent = Math.min(controlCurrent, cBuffer[i].abs());
+				controlCurrent = min(controlCurrent, cBuffer[i].abs());
 			controlCurrent = controlCurrent / CTRatio;
 			break;
 		default:
@@ -398,13 +404,13 @@ public class CapControlObj extends ControlElem {
 		case CapControl.MAXPHASE:
 			controlVoltage = 0.0;
 			for (i = 0; i < monitoredElement.getNumPhases(); i++)
-				controlVoltage = Math.max(controlVoltage, cBuffer[i].abs());
+				controlVoltage = max(controlVoltage, cBuffer[i].abs());
 			controlVoltage = controlVoltage / PTRatio;
 			break;
 		case CapControl.MINPHASE:
 			controlVoltage = 1.0e50;
 			for (i = 0; i < monitoredElement.getNumPhases(); i++)
-				controlVoltage = Math.min(controlVoltage, cBuffer[i].abs());
+				controlVoltage = min(controlVoltage, cBuffer[i].abs());
 			controlVoltage = controlVoltage / PTRatio;
 			break;
 		default:
@@ -438,7 +444,7 @@ public class CapControlObj extends ControlElem {
 		double pf;
 		double Sabs = S.abs();
 
-		pf = (Sabs != 0.0) ? Math.abs(S.getReal()) / Sabs : 1.0;  // default to unity
+		pf = (Sabs != 0.0) ? abs(S.getReal()) / Sabs : 1.0;  // default to unity
 
 		if (S.getImaginary() < 0.0) pf = 2.0 - pf;
 
@@ -485,7 +491,7 @@ public class CapControlObj extends ControlElem {
 						VOverrideEvent = true;
 						if (showEventLog)
 							appendToEventLog("Capacitor." + getControlledElement().getName(),
-									String.format("Low voltage override: %.8g V", Vtest));
+									format("Low voltage override: %.8g V", Vtest));
 					}
 					break;
 				case CLOSE:
@@ -495,7 +501,7 @@ public class CapControlObj extends ControlElem {
 						VOverrideEvent = true;
 						if (showEventLog)
 							appendToEventLog("Capacitor." + getControlledElement().getName(),
-									String.format("High voltage override: %.8g V", Vtest));
+									format("High voltage override: %.8g V", Vtest));
 					}
 					break;
 				}
@@ -725,7 +731,7 @@ public class CapControlObj extends ControlElem {
 			if (pendingChange == ControlAction.CLOSE) {
 				if ((sol.getDynaVars().t + sol.getIntHour() * 3600.0 - lastOpenTime) < deadTime) {  // delay the close operation
 					/* Added ONDelay to deadTime so that all caps do not close back in at same time */
-					timeDelay = Math.max(onDelay,
+					timeDelay = max(onDelay,
 						(deadTime + onDelay) - (sol.getDynaVars().t + sol.getIntHour() * 3600.0 - lastOpenTime));
 				} else {
 					timeDelay = onDelay;
@@ -738,7 +744,7 @@ public class CapControlObj extends ControlElem {
 			armed = true;
 			if (showEventLog)
 				appendToEventLog("Capacitor." + getControlledElement().getName(),
-					String.format("**Armed**, Delay= %.5g sec", timeDelay));
+					format("**Armed**, Delay= %.5g sec", timeDelay));
 		}
 
 		if (armed && pendingChange == ControlAction.NONE) {

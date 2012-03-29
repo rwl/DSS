@@ -23,6 +23,10 @@ import com.ncond.dss.conversion.GeneratorObj;
 import static com.ncond.dss.common.Util.getCktElementIndex;
 import static com.ncond.dss.common.Util.resizeArray;
 
+import static java.lang.Math.max;
+import static java.lang.Math.abs;
+
+
 /**
  * A control element that is connected to a terminal of
  * another circuit element and sends dispatch kW signals to a set of generators
@@ -168,12 +172,12 @@ public class GenDispatcherObj extends ControlElem {
 			genKWChanged = false;
 			genKVArChanged = false;
 
-			if (Math.abs(Pdiff) > halfKWBand) {  // redispatch generators
+			if (abs(Pdiff) > halfKWBand) {  // redispatch generators
 				// Pdiff is kW needed to get back into band
 				for (i = 0; i < listSize; i++) {
 					gen = generators.get(i);
 					// compute new dispatch value for this generator ...
-					genKW = Math.max(1.0, (gen.getKWBase() + Pdiff * (weights[i] / totalWeight)));
+					genKW = max(1.0, (gen.getKWBase() + Pdiff * (weights[i] / totalWeight)));
 					if (genKW != gen.getKWBase()) {
 						gen.setKWBase(genKW);
 						genKWChanged = true;
@@ -181,12 +185,12 @@ public class GenDispatcherObj extends ControlElem {
 				}
 			}
 
-			if (Math.abs(Qdiff) > halfKWBand) {  // redispatch generators
+			if (abs(Qdiff) > halfKWBand) {  // redispatch generators
 				// QDiff is kVAr needed to get back into band
 				for (i = 0; i < listSize; i++) {
 					gen = generators.get(i);
 					// compute new dispatch value for this generator ...
-					genKVAr = Math.max(0.0, (gen.getKVArBase() + Qdiff * (weights[i] / totalWeight)));
+					genKVAr = max(0.0, (gen.getKVArBase() + Qdiff * (weights[i] / totalWeight)));
 					if (genKVAr != gen.getKVArBase()) {
 						gen.setKVArBase(genKVAr);
 						genKVArChanged = true;

@@ -18,6 +18,8 @@ import com.ncond.dss.shared.CommandList;
 import static com.ncond.dss.common.Util.compareTextShortest;
 import static com.ncond.dss.common.Util.interpretYesNo;
 
+import static java.lang.Math.max;
+
 
 public class RegControl extends ControlClass {
 
@@ -223,7 +225,7 @@ public class RegControl extends ControlClass {
 				elem.setDebugTrace(interpretYesNo(param));
 				break;
 			case 17:
-				elem.setTapLimitPerChange(Math.max(0, parser.integerValue()));
+				elem.setTapLimitPerChange(max(0, parser.integerValue()));
 				break;
 			case 18:
 				elem.setInverseTime(interpretYesNo(param));
@@ -245,7 +247,7 @@ public class RegControl extends ControlClass {
 				} else if (compareTextShortest(param, "min") == 0) {
 					elem.setPTPhaseIdx(MINPHASE);
 				} else {
-					elem.setPTPhaseIdx(Math.max(0, parser.integerValue() - 1));
+					elem.setPTPhaseIdx(max(0, parser.integerValue() - 1));
 				}
 				break;
 			case 22:

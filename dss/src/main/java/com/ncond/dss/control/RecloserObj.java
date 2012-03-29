@@ -20,6 +20,10 @@ import static com.ncond.dss.common.Util.appendToEventLog;
 import static com.ncond.dss.common.Util.getCktElementIndex;
 import static com.ncond.dss.common.Util.resizeArray;
 
+import static java.lang.Math.min;
+
+import static java.lang.String.format;
+
 
 /**
  * A control element that is connected to a terminal of a
@@ -348,7 +352,7 @@ public class RecloserObj extends ControlElem {
 							if (phaseTime < 0.0) {
 								phaseTime = timeTest;
 							} else {
-								phaseTime = Math.min(phaseTime, timeTest);
+								phaseTime = min(phaseTime, timeTest);
 							}
 						}
 					}
@@ -359,7 +363,7 @@ public class RecloserObj extends ControlElem {
 			if (phaseTime > 0.0) {
 				phaseTarget = true;
 				if (tripTime > 0.0) {
-					tripTime = Math.min(tripTime, phaseTime);
+					tripTime = min(tripTime, phaseTime);
 				} else {
 					tripTime = phaseTime;
 				}
@@ -415,7 +419,7 @@ public class RecloserObj extends ControlElem {
 		case 15:
 			StringBuffer sb = new StringBuffer("(");
 			for (int i = 0; i < numReclose; i++)
-				sb.append(String.format("%g, ", recloseIntervals[i]));
+				sb.append(format("%g, ", recloseIntervals[i]));
 			sb.append(")");
 			val = sb.toString();
 			break;
