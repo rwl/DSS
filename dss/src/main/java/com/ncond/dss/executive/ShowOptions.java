@@ -9,11 +9,13 @@ import com.ncond.dss.common.Circuit;
 import com.ncond.dss.common.CktElement;
 import com.ncond.dss.common.DSS;
 import com.ncond.dss.common.ShowResults;
-import com.ncond.dss.common.Util;
 import com.ncond.dss.meter.MonitorObj;
 import com.ncond.dss.parser.Parser;
 import com.ncond.dss.shared.CommandList;
 import com.ncond.dss.shared.LineUnits;
+
+import static com.ncond.dss.common.Util.fireOffEditor;
+
 
 public class ShowOptions {
 
@@ -201,8 +203,8 @@ public class ShowOptions {
 
 		switch (paramPointer) {
 		case 0:  // autoadded
-			Util.fireOffEditor(DSS.dataDirectory + DSS.circuitName_ + "AutoAddedGenerators.txt");
-			Util.fireOffEditor(DSS.dataDirectory + DSS.circuitName_ + "AutoAddedCapacitors.txt");
+			fireOffEditor(DSS.dataDirectory + DSS.circuitName_ + "AutoAddedGenerators.txt");
+			fireOffEditor(DSS.dataDirectory + DSS.circuitName_ + "AutoAddedCapacitors.txt");
 			break;
 		case 1:
 			ShowResults.showBuses(DSS.dataDirectory + DSS.circuitName_ + "Buses.txt");
@@ -476,7 +478,7 @@ public class ShowOptions {
 			ShowResults.showDeltaV(DSS.dataDirectory + DSS.circuitName_ + "DeltaV.txt");
 			break;
 		case 31:
-			Util.fireOffEditor(DSS.queryLogFileName);
+			fireOffEditor(DSS.queryLogFileName);
 			break;
 		}
 

@@ -7,9 +7,11 @@ package com.ncond.dss.meter;
 
 import com.ncond.dss.common.DSS;
 import com.ncond.dss.common.DSSClassDefs;
-import com.ncond.dss.common.Util;
 import com.ncond.dss.parser.Parser;
 import com.ncond.dss.shared.CommandList;
+
+import static com.ncond.dss.common.Util.interpretYesNo;
+
 
 public class Monitor extends MeterClass {
 
@@ -144,13 +146,13 @@ public class Monitor extends MeterClass {
 				}
 				break;
 			case 4:
-				elem.setIncludeResidual(Util.interpretYesNo(param));
+				elem.setIncludeResidual(interpretYesNo(param));
 				break;
 			case 5:
-				elem.setVIpolar(Util.interpretYesNo(param));
+				elem.setVIpolar(interpretYesNo(param));
 				break;
 			case 6:
-				elem.setPpolar(Util.interpretYesNo(param));
+				elem.setPpolar(interpretYesNo(param));
 				break;
 			default:
 				// Inherited parameters

@@ -8,10 +8,12 @@ package com.ncond.dss.general;
 import com.ncond.dss.common.DSS;
 import com.ncond.dss.common.DSSClass;
 import com.ncond.dss.common.DSSClassDefs;
-import com.ncond.dss.common.Util;
 import com.ncond.dss.parser.Parser;
 import com.ncond.dss.shared.CommandList;
 import com.ncond.dss.shared.LineUnits;
+
+import static com.ncond.dss.common.Util.interpretYesNo;
+
 
 public class LineGeometry extends DSSClass {
 
@@ -164,7 +166,7 @@ public class LineGeometry extends DSSClass {
 				elem.setEmergAmps(parser.doubleValue());
 				break;
 			case 9:
-				elem.setReduce(Util.interpretYesNo(param));
+				elem.setReduce(interpretYesNo(param));
 				break;
 			case 10:
 				elem.setSpacingType(parser.stringValue());

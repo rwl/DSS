@@ -15,7 +15,9 @@ import org.apache.commons.math.complex.Complex;
 import com.ncond.dss.common.Circuit;
 import com.ncond.dss.common.DSS;
 import com.ncond.dss.common.SolutionObj;
-import com.ncond.dss.common.Util;
+
+import static com.ncond.dss.common.Util.getTotalPowerFromSources;
+
 
 public class SystemMeter {
 
@@ -163,7 +165,7 @@ public class SystemMeter {
 	 * Get total system energy out of the sources.
 	 */
 	public void takeSample() {
-		cPower = Util.getTotalPowerFromSources().multiply(0.001);  // convert to kW
+		cPower = getTotalPowerFromSources().multiply(0.001);  // convert to kW
 
 		integrate(kWh, cPower.getReal(), dkWh);
 		integrate(kVArh, cPower.getImaginary(), dkVArh);

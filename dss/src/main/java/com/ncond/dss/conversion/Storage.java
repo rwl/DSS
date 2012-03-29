@@ -13,12 +13,14 @@ import org.apache.commons.math.complex.Complex;
 
 import com.ncond.dss.common.DSS;
 import com.ncond.dss.common.DSSClassDefs;
-import com.ncond.dss.common.Util;
 import com.ncond.dss.common.types.Connection;
 import com.ncond.dss.common.types.Randomization;
 import com.ncond.dss.general.LoadShapeObj;
 import com.ncond.dss.parser.Parser;
 import com.ncond.dss.shared.CommandList;
+
+import static com.ncond.dss.common.Util.interpretYesNo;
+
 
 public class Storage extends PCClass {
 
@@ -488,7 +490,7 @@ public class Storage extends PCClass {
 					as.getUserModel().edit(parser.stringValue());  // send edit string to user model
 					break;
 				case DEBUG_TRACE:
-					as.setDebugTrace(Util.interpretYesNo(param));
+					as.setDebugTrace(interpretYesNo(param));
 					break;
 				case PCT_KW_IN:
 					as.setPctKWIn(parser.doubleValue());

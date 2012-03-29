@@ -12,7 +12,10 @@ import org.apache.commons.math.complex.Complex;
 
 import com.ncond.dss.common.DSS;
 import com.ncond.dss.common.DSSClass;
-import com.ncond.dss.common.Util;
+
+import static com.ncond.dss.common.Util.appendToEventLog;
+import static com.ncond.dss.common.Util.getCktElementIndex;
+
 
 public class SwtControlObj extends ControlElem {
 
@@ -41,7 +44,7 @@ public class SwtControlObj extends ControlElem {
 
 	@Override
 	public void recalcElementData() {
-		int devIndex = Util.getCktElementIndex(elementName);
+		int devIndex = getCktElementIndex(elementName);
 
 		if (devIndex >= 0) {
 			setControlledElement(DSS.activeCircuit.getCktElements().get(devIndex));
@@ -106,11 +109,11 @@ public class SwtControlObj extends ControlElem {
 
 			if (code == ControlAction.OPEN.code() && presentState == ControlAction.CLOSE) {
 				getControlledElement().setConductorClosed(-1, false);  // open all phases of active terminal
-				Util.appendToEventLog("SwtControl."+getName(), "Opened");
+				appendToEventLog("SwtControl."+getName(), "Opened");
 			}
 			if (code == ControlAction.CLOSE.code() && presentState == ControlAction.OPEN) {
 				getControlledElement().setConductorClosed(-1, true);  // close all phases of active terminal
-				Util.appendToEventLog("SwtControl."+getName(), "Closed");
+				appendToEventLog("SwtControl."+getName(), "Closed");
 			}
 		}
 	}

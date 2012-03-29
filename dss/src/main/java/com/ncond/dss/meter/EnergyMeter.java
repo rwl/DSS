@@ -16,13 +16,17 @@ import com.ncond.dss.common.Circuit;
 import com.ncond.dss.common.CktElement;
 import com.ncond.dss.common.DSS;
 import com.ncond.dss.common.DSSClassDefs;
-import com.ncond.dss.common.Util;
 import com.ncond.dss.conversion.Generator;
 import com.ncond.dss.conversion.PCElement;
 import com.ncond.dss.delivery.PDElement;
 import com.ncond.dss.parser.Parser;
 import com.ncond.dss.shared.CktTree;
 import com.ncond.dss.shared.CommandList;
+
+import static com.ncond.dss.common.Util.interpretAndAllocStrArray;
+import static com.ncond.dss.common.Util.interpretYesNo;
+import static com.ncond.dss.common.Util.fullName;
+
 
 public class EnergyMeter extends MeterClass {
 
@@ -274,34 +278,34 @@ public class EnergyMeter extends MeterClass {
 				parser.parseAsVector(elem.getNumPhases(), elem.getSensorCurrent());  // inits to zero
 				break;
 			case 7:
-				Util.interpretAndAllocStrArray(param, elem.getDefinedZoneListSize(), elem.getDefinedZoneList());
+				interpretAndAllocStrArray(param, elem.getDefinedZoneListSize(), elem.getDefinedZoneList());
 				break;
 			case 8:
-				elem.setLocalOnly(Util.interpretYesNo(param));
+				elem.setLocalOnly(interpretYesNo(param));
 				break;
 			case 9:
 				interpretRegisterMaskArray(elem.getTotalsMask());
 				break;
 			case 10:
-				elem.setLosses(Util.interpretYesNo(param));
+				elem.setLosses(interpretYesNo(param));
 				break;
 			case 11:
-				elem.setLineLosses(Util.interpretYesNo(param));
+				elem.setLineLosses(interpretYesNo(param));
 				break;
 			case 12:
-				elem.setXfmrLosses(Util.interpretYesNo(param));
+				elem.setXfmrLosses(interpretYesNo(param));
 				break;
 			case 13:
-				elem.setSeqLosses(Util.interpretYesNo(param));
+				elem.setSeqLosses(interpretYesNo(param));
 				break;
 			case 14:
-				elem.setThreePhaseLosses(Util.interpretYesNo(param));
+				elem.setThreePhaseLosses(interpretYesNo(param));
 				break;
 			case 15:
-				elem.setVBaseLosses(Util.interpretYesNo(param));
+				elem.setVBaseLosses(interpretYesNo(param));
 				break;
 			case 16:
-				elem.setPhaseVoltageReport(Util.interpretYesNo(param));
+				elem.setPhaseVoltageReport(interpretYesNo(param));
 				break;
 			/* case 10: aem.setHasFeeder(Utilities.interpretYesNo(Param)); break;*/
 			default:
@@ -676,7 +680,7 @@ public class EnergyMeter extends MeterClass {
 					Cmax = elem.maxTerminalOneIMag();  // for now, check only terminal 1 for overloads
 					if (Cmax > elem.getNormAmps() || Cmax > elem.getEmergAmps()) {
 						pw.printf("%-.6g,", ckt.getSolution().getDblHour());
-						pw.printf(" %s, %-.4g, %-.4g,", Util.fullName(elem), elem.getNormAmps(), elem.getEmergAmps());
+						pw.printf(" %s, %-.4g, %-.4g,", fullName(elem), elem.getNormAmps(), elem.getEmergAmps());
 						if (elem.getNormAmps() > 0.0) {
 							pw.printf(" %-.7g,", Cmax / elem.getNormAmps() * 100.0);
 						} else {

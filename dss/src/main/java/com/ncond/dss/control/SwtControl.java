@@ -7,9 +7,11 @@ package com.ncond.dss.control;
 
 import com.ncond.dss.common.DSS;
 import com.ncond.dss.common.DSSClassDefs;
-import com.ncond.dss.common.Util;
 import com.ncond.dss.parser.Parser;
 import com.ncond.dss.shared.CommandList;
+
+import static com.ncond.dss.common.Util.interpretYesNo;
+
 
 public class SwtControl extends ControlClass {
 
@@ -103,7 +105,7 @@ public class SwtControl extends ControlClass {
 				elem.interpretSwitchAction(param);
 				break;
 			case 3:
-				elem.setLocked( Util.interpretYesNo(param) );
+				elem.setLocked( interpretYesNo(param) );
 				break;
 			case 4:
 				elem.setTimeDelay(parser.doubleValue());

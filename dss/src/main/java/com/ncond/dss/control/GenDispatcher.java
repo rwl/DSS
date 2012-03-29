@@ -7,9 +7,13 @@ package com.ncond.dss.control;
 
 import com.ncond.dss.common.DSS;
 import com.ncond.dss.common.DSSClassDefs;
-import com.ncond.dss.common.Util;
 import com.ncond.dss.parser.Parser;
 import com.ncond.dss.shared.CommandList;
+
+import static com.ncond.dss.common.Util.interpretStringListArray;
+import static com.ncond.dss.common.Util.interpretDblArray;
+import static com.ncond.dss.common.Util.resizeArray;
+
 
 public class GenDispatcher extends ControlClass {
 
@@ -115,14 +119,14 @@ public class GenDispatcher extends ControlClass {
 				elem.setKVArLimit(parser.doubleValue());
 				break;
 			case 5:
-				Util.interpretStringListArray(param, elem.getGeneratorNames());
+				interpretStringListArray(param, elem.getGeneratorNames());
 				break;
 			case 6:
 				elem.setListSize(elem.getGeneratorNames().size());
 				if (elem.getListSize() > 0) {
-					elem.setWeights(Util.resizeArray(elem.getWeights(), elem.getListSize()));
+					elem.setWeights(resizeArray(elem.getWeights(), elem.getListSize()));
 
-					Util.interpretDblArray(param, elem.getListSize(), elem.getWeights());
+					interpretDblArray(param, elem.getListSize(), elem.getWeights());
 				}
 				break;
 			default:
@@ -138,7 +142,7 @@ public class GenDispatcher extends ControlClass {
 			case 5:  // levelize the list
 				elem.getGenerators().clear();  // clear this for resetting on first sample
 				elem.setListSize(elem.getGeneratorNames().size());
-				elem.setWeights( Util.resizeArray(elem.getWeights(), elem.getListSize()) );
+				elem.setWeights( resizeArray(elem.getWeights(), elem.getListSize()) );
 				for (int i = 0; i < elem.getListSize(); i++)
 					elem.getWeights()[i] = 1.0;
 				break;

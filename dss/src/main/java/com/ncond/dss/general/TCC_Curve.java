@@ -8,9 +8,12 @@ package com.ncond.dss.general;
 import com.ncond.dss.common.DSS;
 import com.ncond.dss.common.DSSClass;
 import com.ncond.dss.common.DSSClassDefs;
-import com.ncond.dss.common.Util;
 import com.ncond.dss.parser.Parser;
 import com.ncond.dss.shared.CommandList;
+
+import static com.ncond.dss.common.Util.interpretDblArray;
+import static com.ncond.dss.common.Util.resizeArray;
+
 
 public class TCC_Curve extends DSSClass {
 
@@ -104,10 +107,10 @@ public class TCC_Curve extends DSSClass {
 				elem.setNpts(parser.integerValue());
 				break;
 			case 1:
-				Util.interpretDblArray(param, elem.getNpts(), elem.getCValues());
+				interpretDblArray(param, elem.getNpts(), elem.getCValues());
 				break;
 			case 2:
-				Util.interpretDblArray(param, elem.getNpts(), elem.getTValues());
+				interpretDblArray(param, elem.getNpts(), elem.getTValues());
 				break;
 			default:
 				// inherited parameters
@@ -117,10 +120,10 @@ public class TCC_Curve extends DSSClass {
 
 			switch (paramPointer) {
 			case 0:  // reallocate arrays to correspond to npts
-				elem.setCValues(Util.resizeArray(elem.getCValues(), elem.getNpts()));
-				elem.setLogC(Util.resizeArray(elem.getLogC(), elem.getNpts()));
-				elem.setTValues(Util.resizeArray(elem.getTValues(), elem.getNpts()));
-				elem.setLogT(Util.resizeArray(elem.getLogT(), elem.getNpts()));
+				elem.setCValues(resizeArray(elem.getCValues(), elem.getNpts()));
+				elem.setLogC(resizeArray(elem.getLogC(), elem.getNpts()));
+				elem.setTValues(resizeArray(elem.getTValues(), elem.getNpts()));
+				elem.setLogT(resizeArray(elem.getLogT(), elem.getNpts()));
 				break;
 			case 1:
 			case 2:
@@ -145,10 +148,10 @@ public class TCC_Curve extends DSSClass {
 		if (other != null) {
 			TCC_CurveObj elem = activeTCC_CurveObj;
 			elem.setNpts(other.getNpts());
-			elem.setCValues( Util.resizeArray(elem.getCValues(), elem.getNpts()) );
-			elem.setLogC( Util.resizeArray(elem.getLogC(), elem.getNpts()) );
-			elem.setTValues( Util.resizeArray(elem.getTValues(), elem.getNpts()) );
-			elem.setLogT( Util.resizeArray(elem.getLogT(), elem.getNpts()) );
+			elem.setCValues( resizeArray(elem.getCValues(), elem.getNpts()) );
+			elem.setLogC( resizeArray(elem.getLogC(), elem.getNpts()) );
+			elem.setTValues( resizeArray(elem.getTValues(), elem.getNpts()) );
+			elem.setLogT( resizeArray(elem.getLogT(), elem.getNpts()) );
 			for (i = 0; i < elem.getNpts(); i++)
 				elem.getCValues()[i] = other.getCValues()[i];
 			for (i = 0; i < elem.getNpts(); i++)

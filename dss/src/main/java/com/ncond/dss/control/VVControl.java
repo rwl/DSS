@@ -8,10 +8,14 @@ package com.ncond.dss.control;
 import com.ncond.dss.common.DSS;
 import com.ncond.dss.common.DSSClass;
 import com.ncond.dss.common.DSSClassDefs;
-import com.ncond.dss.common.Util;
 import com.ncond.dss.general.XYCurveObj;
 import com.ncond.dss.parser.Parser;
 import com.ncond.dss.shared.CommandList;
+
+import static com.ncond.dss.common.Util.interpretStringListArray;
+import static com.ncond.dss.common.Util.interpretDblArray;
+import static com.ncond.dss.common.Util.resizeArray;
+
 
 /**
  * A VVCControl is a control element that is connected to a terminal of another
@@ -208,13 +212,13 @@ public class VVControl extends ControlClass {
 				break;
 
 			case 14:
-				Util.interpretStringListArray(param, elem.getGeneratorNames());
+				interpretStringListArray(param, elem.getGeneratorNames());
 				break;
 			case 15:
 				elem.setListSize(elem.getGeneratorNames().size());
 				if (elem.getListSize() > 0) {
-					Util.resizeArray(elem.getWeights(), elem.getListSize());
-					Util.interpretDblArray(param, elem.getListSize(), elem.getWeights());
+					resizeArray(elem.getWeights(), elem.getListSize());
+					interpretDblArray(param, elem.getListSize(), elem.getWeights());
 				}
 				break;
 			case 16:
@@ -237,7 +241,7 @@ public class VVControl extends ControlClass {
 				// re-alloc based on
 				elem.getGenerators().clear();  // clear this for resetting on first sample
 				elem.setListSize(elem.getGeneratorNames().size());
-				Util.resizeArray(elem.getWeights(), elem.getListSize());
+				resizeArray(elem.getWeights(), elem.getListSize());
 				for (int i = 0; i < elem.getListSize(); i++)
 					elem.getWeights()[i] = 1.0;
 			case 17:

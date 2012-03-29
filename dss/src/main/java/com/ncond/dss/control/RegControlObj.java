@@ -17,10 +17,13 @@ import com.ncond.dss.common.Circuit;
 import com.ncond.dss.common.DSS;
 import com.ncond.dss.common.DSSClass;
 import com.ncond.dss.common.SolutionObj;
-import com.ncond.dss.common.Util;
 import com.ncond.dss.common.types.Connection;
 import com.ncond.dss.delivery.TransformerObj;
 import com.ncond.dss.shared.ComplexUtil;
+
+import static com.ncond.dss.common.Util.appendToEventLog;
+import static com.ncond.dss.common.Util.getCktElementIndex;
+import static com.ncond.dss.common.Util.resizeArray;
 
 /**
  * A control element that is connected to a terminal of another
@@ -126,7 +129,7 @@ public class RegControlObj extends ControlElem {
 
 		usingRegulatedBus = regulatedBus.length() > 0;
 
-		int devIndex = Util.getCktElementIndex(elementName);
+		int devIndex = getCktElementIndex(elementName);
 		if (devIndex >= 0) {
 			// RegControled element must already exist
 			setControlledElement(DSS.activeCircuit.getCktElements().get(devIndex));
@@ -158,8 +161,8 @@ public class RegControlObj extends ControlElem {
 					}
 
 					// buffer to hold regulator voltages
-					VBuffer = Util.resizeArray(VBuffer, getControlledElement().getNumPhases());
-					cBuffer = Util.resizeArray(cBuffer, getControlledElement().getYOrder());
+					VBuffer = resizeArray(VBuffer, getControlledElement().getNumPhases());
+					cBuffer = resizeArray(cBuffer, getControlledElement().getYOrder());
 				}
 			} else {
 				setControlledElement(null);  // we get here if element not found
@@ -330,7 +333,7 @@ public class RegControlObj extends ControlElem {
 					if (debugTrace) regWriteTraceRecord(tapChangeToMake);
 					elem.setPresentTap(tapWindingIdx, elem.getPresentTap(tapWindingIdx) + tapChangeToMake);
 					if (showEventLog) {
-						Util.appendToEventLog("Regulator." + getControlledElement().getName(),
+						appendToEventLog("Regulator." + getControlledElement().getName(),
 							String.format("Changed %d taps to %-.6g.", lastChange, elem.getPresentTap(tapWindingIdx)));
 					}
 					setPendingTapChange(0.0);  // reset to no change; program will determine if another needed
@@ -349,7 +352,7 @@ public class RegControlObj extends ControlElem {
 					if (debugTrace) regWriteTraceRecord(tapChangeToMake);
 					elem.setPresentTap(tapWindingIdx, elem.getPresentTap(tapWindingIdx) + tapChangeToMake);
 					if (showEventLog) {
-						Util.appendToEventLog("Regulator." + getControlledElement().getName(),
+						appendToEventLog("Regulator." + getControlledElement().getName(),
 							String.format(" Changed %d tap to %-.6g.", lastChange, elem.getPresentTap(tapWindingIdx)));
 					}
 					if (debugTrace) {
@@ -701,8 +704,8 @@ public class RegControlObj extends ControlElem {
 				} else {
 					setBus(0, getControlledElement().getBus(elementTerminalIdx));
 					// buffer to hold regulator voltages
-					VBuffer = Util.resizeArray(VBuffer, getControlledElement().getNumPhases());
-					cBuffer = Util.resizeArray(cBuffer, getControlledElement().getYOrder());
+					VBuffer = resizeArray(VBuffer, getControlledElement().getNumPhases());
+					cBuffer = resizeArray(cBuffer, getControlledElement().getYOrder());
 				}
 			}
 		}

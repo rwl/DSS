@@ -9,7 +9,9 @@ import java.io.OutputStream;
 import java.io.PrintWriter;
 
 import com.ncond.dss.common.DSSClass;
-import com.ncond.dss.common.Util;
+
+import static com.ncond.dss.common.Util.checkForBlanks;
+
 
 abstract public class DSSObject extends NamedObject {
 
@@ -93,7 +95,7 @@ abstract public class DSSObject extends NamedObject {
 		while (iProp >= 0) {
 			pc = parentClass;
 			f.print(" " + pc.getPropertyName(pc.getRevPropertyIdxMap(iProp)));
-			f.print("=" + Util.checkForBlanks( propertyValues[iProp] ));
+			f.print("=" + checkForBlanks( propertyValues[iProp] ));
 			iProp = getNextPropertySet(iProp);
 		}
 	}

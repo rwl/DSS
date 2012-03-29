@@ -7,12 +7,17 @@ package com.ncond.dss.executive;
 
 import com.ncond.dss.common.Circuit;
 import com.ncond.dss.common.DSS;
-import com.ncond.dss.common.Util;
 import com.ncond.dss.parser.Parser;
 import com.ncond.dss.plot.DSSPlot;
 import com.ncond.dss.plot.PlotQuantity;
 import com.ncond.dss.plot.PlotType;
 import com.ncond.dss.shared.CommandList;
+
+import static com.ncond.dss.common.Util.interpretColor;
+import static com.ncond.dss.common.Util.compareTextShortest;
+import static com.ncond.dss.common.Util.interpretStringListArray;
+import static com.ncond.dss.common.Util.interpretYesNo;
+
 
 public class PlotOptions {
 
@@ -160,7 +165,7 @@ public class PlotOptions {
 				case 'M':
 				case 'P':
 				case 'Z':
-					if (Util.compareTextShortest("pri", param) != 0) {  // allow price shape
+					if (compareTextShortest("pri", param) != 0) {  // allow price shape
 						if (ckt == null) {
 							DSS.doSimpleMsg("No circuit created.", 24731);
 							return 0;
@@ -195,7 +200,7 @@ public class PlotOptions {
 					plot.setPlotType(PlotType.MONITOR_PLOT);
 					break;
 				case 'P':
-					if (Util.compareTextShortest("pro", param) == 0) {
+					if (compareTextShortest("pro", param) == 0) {
 						plot.setPlotType(PlotType.PROFILE);
 					} else {
 						plot.setPlotType(PlotType.PRICE_SHAPE);
@@ -246,16 +251,16 @@ public class PlotOptions {
 					plot.setMaxScaleIsSpecified(true);  // Indicate the user wants a particular value
 				break;
 			case 3:
-				plot.setDots(Util.interpretYesNo(param));
+				plot.setDots(interpretYesNo(param));
 				break;
 			case 4:
-				plot.setLabels(Util.interpretYesNo(param));
+				plot.setLabels(interpretYesNo(param));
 				break;
 			case 5:
 				plot.setObjectName(parser.stringValue());
 				break;
 			case 6:
-				plot.setShowLoops(Util.interpretYesNo(param));
+				plot.setShowLoops(interpretYesNo(param));
 				if (plot.isShowLoops())
 					plot.setPlotType(PlotType.METER_ZONES);
 				break;
@@ -266,13 +271,13 @@ public class PlotOptions {
 				plot.setTriColorMid(parser.doubleValue());
 				break;
 			case 9:
-				plot.setColor1(Util.interpretColor(param));
+				plot.setColor1(interpretColor(param));
 				break;
 			case 10:
-				plot.setColor2(Util.interpretColor(param));
+				plot.setColor2(interpretColor(param));
 				break;
 			case 11:
-				plot.setColor3(Util.interpretColor(param));
+				plot.setColor3(interpretColor(param));
 				break;
 			case 12:  // channel definitions for plot monitor
 				numChannels = parser.parseAsVector(51, dblBuffer);  // allow up to 50 channels
@@ -294,13 +299,13 @@ public class PlotOptions {
 				}
 				break;
 			case 14:
-				plot.setShowSubs( Util.interpretYesNo(param) );
+				plot.setShowSubs( interpretYesNo(param) );
 				break;
 			case 15:
 				plot.setMaxLineThickness( parser.integerValue() );
 				break;
 			case 16:
-				Util.interpretStringListArray(param, plot.getDaisyBusList());  // read in Bus list
+				interpretStringListArray(param, plot.getDaisyBusList());  // read in Bus list
 				break;
 			/*case 17:
 				plot.setMinScale(parser.makeDouble());

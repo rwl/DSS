@@ -13,12 +13,14 @@ import org.apache.commons.math.complex.Complex;
 import com.ncond.dss.common.DSS;
 import com.ncond.dss.common.DSSClass;
 import com.ncond.dss.common.SolutionObj;
-import com.ncond.dss.common.Util;
 import com.ncond.dss.common.types.Connection;
 import com.ncond.dss.parser.Parser;
 import com.ncond.dss.shared.CMatrix;
 import com.ncond.dss.shared.ComplexUtil;
 import com.ncond.dss.shared.MathUtil;
+
+import static com.ncond.dss.common.Util.resizeArray;
+
 
 /**
  * Uses same rules as Capacitor and Fault for connections
@@ -158,8 +160,8 @@ public class ReactorObj extends PDElement {
 		}
 
 		if (isParallel && specType == ReactorSpecType.ZMATRIX) {
-			Gmatrix = Util.resizeArray(Gmatrix, nPhases * nPhases);
-			Bmatrix = Util.resizeArray(Bmatrix, nPhases * nPhases);
+			Gmatrix = resizeArray(Gmatrix, nPhases * nPhases);
+			Bmatrix = resizeArray(Bmatrix, nPhases * nPhases);
 
 			/* Copy rMatrix to gMatrix and invert */
 			for (i = 0; i < nPhases * nPhases; i++)

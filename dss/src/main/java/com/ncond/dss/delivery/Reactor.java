@@ -7,10 +7,14 @@ package com.ncond.dss.delivery;
 
 import com.ncond.dss.common.DSS;
 import com.ncond.dss.common.DSSClassDefs;
-import com.ncond.dss.common.Util;
 import com.ncond.dss.common.types.Connection;
 import com.ncond.dss.parser.Parser;
 import com.ncond.dss.shared.CommandList;
+
+import static com.ncond.dss.common.Util.stripExtension;
+import static com.ncond.dss.common.Util.interpretYesNo;
+import static com.ncond.dss.common.Util.resizeArray;
+
 
 public class Reactor extends PDClass {
 
@@ -92,7 +96,7 @@ public class Reactor extends PDClass {
 		int orderFound = Parser.getInstance().parseAsSymMatrix(elem.getNumPhases(), matBuffer);
 
 		if (orderFound > 0) {  // Parse was successful Else don't change Matrix
-			matrix = Util.resizeArray(matrix, elem.getNumPhases() * elem.getNumPhases());
+			matrix = resizeArray(matrix, elem.getNumPhases() * elem.getNumPhases());
 			for (int j = 0; j < elem.getNumPhases() * elem.getNumPhases(); j++)
 				matrix[j] = matBuffer[j];
 
@@ -224,7 +228,7 @@ public class Reactor extends PDClass {
 				doMatrix(elem.getXmatrix());
 				break;
 			case 8:
-				elem.setParallel(Util.interpretYesNo(param));
+				elem.setParallel(interpretYesNo(param));
 				break;
 			case 9:
 				elem.setR(parser.doubleValue());
@@ -248,7 +252,7 @@ public class Reactor extends PDClass {
 				elem.getPrpSequence()[1] = 0;            // reset this for save function
 				break;
 			case 1:
-				if (!Util.stripExtension(elem.getBus(0)).equalsIgnoreCase(Util.stripExtension(elem.getBus(1))))
+				if (!stripExtension(elem.getBus(0)).equalsIgnoreCase(stripExtension(elem.getBus(1))))
 					elem.setShunt(false);
 				break;
 			case 2:
@@ -318,7 +322,7 @@ public class Reactor extends PDClass {
 			if (other.getRmatrix() == null) {
 				elem.setRmatrix(new double[0]);
 			} else {
-				elem.setRmatrix((double[]) Util.resizeArray(elem.getRmatrix(), elem.getNumPhases() * elem.getNumPhases()));
+				elem.setRmatrix((double[]) resizeArray(elem.getRmatrix(), elem.getNumPhases() * elem.getNumPhases()));
 				for (i = 0; i < elem.getNumPhases() * elem.getNumPhases(); i++)
 					elem.getRmatrix()[i] = other.getRmatrix()[i];
 			}
@@ -326,7 +330,7 @@ public class Reactor extends PDClass {
 			if (other.getXmatrix() == null) {
 				elem.setXmatrix(new double[0]);
 			} else {
-				elem.setXmatrix((double[]) Util.resizeArray(elem.getXmatrix(), elem.getNumPhases() * elem.getNumPhases()));
+				elem.setXmatrix((double[]) resizeArray(elem.getXmatrix(), elem.getNumPhases() * elem.getNumPhases()));
 				for (i = 0; i < elem.getNumPhases() * elem.getNumPhases(); i++)
 					elem.getXmatrix()[i] = other.getXmatrix()[i];
 			}

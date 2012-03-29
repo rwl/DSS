@@ -18,8 +18,10 @@ import com.ncond.dss.common.DSS;
 import com.ncond.dss.common.DSSClass;
 import com.ncond.dss.common.DSSClassDefs;
 import com.ncond.dss.common.SolutionObj;
-import com.ncond.dss.common.Util;
 import com.ncond.dss.conversion.GeneratorObj;
+
+import static com.ncond.dss.common.Util.getCktElementIndex;
+import static com.ncond.dss.common.Util.resizeArray;
 
 /**
  * A control element that is connected to a terminal of
@@ -70,7 +72,7 @@ public class GenDispatcherObj extends ControlElem {
 	@Override
 	public void recalcElementData() {
 		/* Check for existence of monitored element */
-		int devIndex = Util.getCktElementIndex(elementName);
+		int devIndex = getCktElementIndex(elementName);
 
 		if (devIndex >= 0) {
 			monitoredElement = DSS.activeCircuit.getCktElements().get(devIndex);
@@ -240,7 +242,7 @@ public class GenDispatcherObj extends ControlElem {
 
 			/* Allocate uniform weights */
 			listSize = generators.size();
-			weights = Util.resizeArray(weights, listSize);
+			weights = resizeArray(weights, listSize);
 			for (i = 0; i < listSize; i++) weights[i] = 1.0;
 		}
 

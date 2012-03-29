@@ -8,12 +8,16 @@ package com.ncond.dss.executive;
 import com.ncond.dss.common.Circuit;
 import com.ncond.dss.common.DSS;
 import com.ncond.dss.common.ExportResults;
-import com.ncond.dss.common.Util;
 import com.ncond.dss.common.types.CIMProfileChoice;
 import com.ncond.dss.common.types.ProfilePlot;
 import com.ncond.dss.meter.MonitorObj;
 import com.ncond.dss.parser.Parser;
 import com.ncond.dss.shared.CommandList;
+
+import static com.ncond.dss.common.Util.compareTextShortest;
+import static com.ncond.dss.common.Util.fireOffEditor;
+import static com.ncond.dss.common.Util.dumpAllocationFactors;
+
 
 public class ExportOptions {
 
@@ -174,17 +178,17 @@ public class ExportOptions {
 			parser.getNextParam();
 			parm2 = parser.stringValue();
 			phasesToPlot = ProfilePlot.THREEPH.phs();  // the default
-			if (Util.compareTextShortest(parm2, "default") == 0) {
+			if (compareTextShortest(parm2, "default") == 0) {
 				phasesToPlot = ProfilePlot.THREEPH.phs();
-			} else if (Util.compareTextShortest(parm2, "all") == 0) {
+			} else if (compareTextShortest(parm2, "all") == 0) {
 				phasesToPlot = ProfilePlot.ALL.phs();
-			} else if (Util.compareTextShortest(parm2, "primary") == 0) {
+			} else if (compareTextShortest(parm2, "primary") == 0) {
 				phasesToPlot = ProfilePlot.ALLPRI.phs();
-			} else if (Util.compareTextShortest(parm2, "ll3ph") == 0) {
+			} else if (compareTextShortest(parm2, "ll3ph") == 0) {
 				phasesToPlot = ProfilePlot.LL.phs();
-			} else if (Util.compareTextShortest(parm2, "llall") == 0) {
+			} else if (compareTextShortest(parm2, "llall") == 0) {
 				phasesToPlot = ProfilePlot.LLALL.phs();
-			} else if (Util.compareTextShortest(parm2, "llprimary") == 0) {
+			} else if (compareTextShortest(parm2, "llprimary") == 0) {
 				phasesToPlot = ProfilePlot.LLPRI.phs();
 			} else if (parm2.length() == 1) {
 				phasesToPlot = parser.integerValue();
@@ -288,13 +292,13 @@ public class ExportOptions {
 		case 30: ExportResults.exportCDPSM(fileName, CIMProfileChoice.STATE_VARIABLES); break;
 		case 31: ExportResults.exportProfile(fileName, phasesToPlot); break;
 		case 32: ExportResults.exportEventLog(fileName); break;
-		case 33: Util.dumpAllocationFactors(fileName); break;
+		case 33: dumpAllocationFactors(fileName); break;
 		default: ExportResults.exportVoltages(fileName); break;
 		}
 
 		DSS.inShowResults = false;
 
-		if (DSS.autoShowExport) Util.fireOffEditor(fileName);
+		if (DSS.autoShowExport) fireOffEditor(fileName);
 
 		return 0;
 	}

@@ -13,11 +13,14 @@ import org.apache.commons.math.complex.Complex;
 import com.ncond.dss.common.DSS;
 import com.ncond.dss.common.DSSClass;
 import com.ncond.dss.common.SolutionObj;
-import com.ncond.dss.common.Util;
 import com.ncond.dss.general.SpectrumObj;
 import com.ncond.dss.parser.Parser;
 import com.ncond.dss.shared.CMatrix;
 import com.ncond.dss.shared.ComplexUtil;
+
+import static com.ncond.dss.common.Util.rotatePhasorDeg;
+import static com.ncond.dss.common.Util.resizeArray;
+
 
 /**
  * Ideal current source.
@@ -72,7 +75,7 @@ public class ISourceObj extends PCElement {
 				"\" for device ISource." + getName() + " not found.", 333);
 		}
 
-		setInjCurrent( Util.resizeArray(getInjCurrent(), YOrder) );
+		setInjCurrent(resizeArray(getInjCurrent(), YOrder));
 	}
 
 	@Override
@@ -107,7 +110,7 @@ public class ISourceObj extends PCElement {
 			if (sol.isHarmonicModel()) {
 				srcHarmonic = sol.getFrequency() / srcFrequency;
 				curr = getSpectrumObj().getMult(srcHarmonic).multiply(amps);  // base current for this harmonic
-				curr = Util.rotatePhasorDeg(curr, srcHarmonic, angle);
+				curr = rotatePhasorDeg(curr, srcHarmonic, angle);
 			} else {
 				if (Math.abs(sol.getFrequency() - srcFrequency) < DSS.EPSILON2) {
 					curr = ComplexUtil.polarDeg2Complex(amps, angle);
@@ -165,26 +168,26 @@ public class ISourceObj extends PCElement {
 				if (sol.isHarmonicModel()) {
 					switch (scanType) {
 					case POS:
-						baseCurr = Util.rotatePhasorDeg(baseCurr, 1.0, -getPhaseShift());  // maintain positive sequence for ISource
+						baseCurr = rotatePhasorDeg(baseCurr, 1.0, -getPhaseShift());  // maintain positive sequence for ISource
 						break;
 					case ZERO:
 						// do not rotate for zero sequence
 						break;
 					default:
-						baseCurr = Util.rotatePhasorDeg(baseCurr, sol.getHarmonic(), -getPhaseShift());  // rotate by frequency
+						baseCurr = rotatePhasorDeg(baseCurr, sol.getHarmonic(), -getPhaseShift());  // rotate by frequency
 						/* Harmonic 1 will be pos; 2 is neg; 3 is zero, and so on. */
 						break;
 					}
 				} else {
 					switch (sequenceType) {
 					case NONE:
-						baseCurr = Util.rotatePhasorDeg(baseCurr, 1.0, phaseShift);  // neg seq
+						baseCurr = rotatePhasorDeg(baseCurr, 1.0, phaseShift);  // neg seq
 						break;
 					case ZERO:
 						// do not rotate for zero sequence
 						break;
 					default:
-						baseCurr = Util.rotatePhasorDeg(baseCurr, 1.0, -phaseShift);  // maintain pos seq
+						baseCurr = rotatePhasorDeg(baseCurr, 1.0, -phaseShift);  // maintain pos seq
 						break;
 					}
 				}

@@ -13,8 +13,10 @@ import org.apache.commons.math.complex.Complex;
 
 import com.ncond.dss.common.DSS;
 import com.ncond.dss.common.DSSClass;
-import com.ncond.dss.common.Util;
 import com.ncond.dss.shared.MathUtil;
+
+import static com.ncond.dss.common.Util.iMaxAbsdblArrayValue;
+
 
 /**
  * A general DSS object used by all circuits as a reference for obtaining
@@ -463,7 +465,7 @@ public class LoadShapeObj extends DSSObject {
 	}
 
 	protected void setMaxPandQ() {
-		iMaxP = Util.iMaxAbsdblArrayValue(numPoints, PMultipliers);
+		iMaxP = iMaxAbsdblArrayValue(numPoints, PMultipliers);
 
 		if (iMaxP >= 0) {
 			maxP = PMultipliers[iMaxP];

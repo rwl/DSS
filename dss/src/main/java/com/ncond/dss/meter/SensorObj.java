@@ -12,8 +12,11 @@ import org.apache.commons.math.complex.Complex;
 
 import com.ncond.dss.common.DSS;
 import com.ncond.dss.common.DSSClass;
-import com.ncond.dss.common.Util;
 import com.ncond.dss.common.types.Connection;
+
+import static com.ncond.dss.common.Util.getCktElementIndex;
+import static com.ncond.dss.common.Util.resizeArray;
+
 
 /**
  * Sensor compares voltages and currents. Power quantities are converted to
@@ -67,7 +70,7 @@ public class SensorObj extends MeterElement {
 	public void recalcElementData() {
 
 		validSensor = false;
-		int devIndex = Util.getCktElementIndex(elementName);
+		int devIndex = getCktElementIndex(elementName);
 		if (devIndex >= 0) {  // sensored element must already exist
 			meteredElement = DSS.activeCircuit.getCktElements().get(devIndex);
 
@@ -267,8 +270,8 @@ public class SensorObj extends MeterElement {
 	}
 
 	private void allocateSensorObjArrays() {
-		sensorKW = Util.resizeArray(sensorKW, nPhases);
-		sensorKVAr = Util.resizeArray(sensorKVAr, nPhases);
+		sensorKW = resizeArray(sensorKW, nPhases);
+		sensorKVAr = resizeArray(sensorKVAr, nPhases);
 		allocateSensorArrays();
 	}
 

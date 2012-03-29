@@ -5,18 +5,20 @@
  */
 package com.ncond.dss.delivery;
 
-
 import org.apache.commons.math.complex.Complex;
 
 import com.ncond.dss.common.DSS;
 import com.ncond.dss.common.DSSClassDefs;
-import com.ncond.dss.common.Util;
 import com.ncond.dss.general.LineCode;
 import com.ncond.dss.general.LineGeometry;
 import com.ncond.dss.parser.Parser;
 import com.ncond.dss.shared.CMatrix;
 import com.ncond.dss.shared.CommandList;
 import com.ncond.dss.shared.LineUnits;
+
+import static com.ncond.dss.common.Util.interpretYesNo;
+import static com.ncond.dss.common.Util.interpretEarthModel;
+
 
 public class Line extends PDClass {
 
@@ -310,7 +312,7 @@ public class Line extends PDClass {
 				doCmatrix();
 				break;
 			case 14:
-				elem.setSwitch(Util.interpretYesNo(param));
+				elem.setSwitch(interpretYesNo(param));
 				break;
 			case 15:
 				elem.setRg(parser.doubleValue());
@@ -341,7 +343,7 @@ public class Line extends PDClass {
 				elem.fetchWireList(param);
 				break;
 			case 22:
-				elem.setEarthModel(Util.interpretEarthModel(param));
+				elem.setEarthModel(interpretEarthModel(param));
 				break;
 			case 23:
 				elem.fetchCNCableList(param);

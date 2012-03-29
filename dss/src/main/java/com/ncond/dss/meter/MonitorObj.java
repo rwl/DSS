@@ -19,11 +19,19 @@ import com.ncond.dss.common.DSS;
 import com.ncond.dss.common.DSSClass;
 import com.ncond.dss.common.DSSClassDefs;
 import com.ncond.dss.common.SolutionObj;
-import com.ncond.dss.common.Util;
 import com.ncond.dss.conversion.PCElement;
 import com.ncond.dss.delivery.TransformerObj;
 import com.ncond.dss.shared.ComplexUtil;
 import com.ncond.dss.shared.MathUtil;
+
+import static com.ncond.dss.common.Util.residual;
+import static com.ncond.dss.common.Util.residualPolar;
+import static com.ncond.dss.common.Util.convertComplexArrayToPolar;
+import static com.ncond.dss.common.Util.getCktElementIndex;
+import static com.ncond.dss.common.Util.fireOffEditor;
+import static com.ncond.dss.common.Util.mulArray;
+import static com.ncond.dss.common.Util.resizeArray;
+
 
 /**
  * A monitor is a circuit element that is connected to a terminal of another
@@ -166,7 +174,7 @@ public class MonitorObj extends MeterElement {
 	public void recalcElementData() {
 		validMonitor = false;
 
-		int idx = Util.getCktElementIndex(elementName);
+		int idx = getCktElementIndex(elementName);
 
 		if (idx >= 0) {  // monitored element must already exist
 			meteredElement = (CktElement) DSS.activeCircuit.getCktElements().get(idx);
@@ -205,11 +213,11 @@ public class MonitorObj extends MeterElement {
 				switch (mode & Monitor.MODEMASK) {
 				case 3:
 					numStateVars = ((PCElement) meteredElement).numVariables();
-					stateBuffer = Util.resizeArray(stateBuffer, numStateVars);
+					stateBuffer = resizeArray(stateBuffer, numStateVars);
 					break;
 				default:
-					currentBuffer = Util.resizeArray(currentBuffer, meteredElement.getYOrder());
-					voltageBuffer = Util.resizeArray(voltageBuffer, meteredElement.getNumConds());
+					currentBuffer = resizeArray(currentBuffer, meteredElement.getYOrder());
+					voltageBuffer = resizeArray(voltageBuffer, meteredElement.getNumConds());
 					break;
 				}
 
@@ -237,11 +245,11 @@ public class MonitorObj extends MeterElement {
 			switch (mode & Monitor.MODEMASK) {
 			case 3:
 				numStateVars = ((PCElement) meteredElement).numVariables();
-				stateBuffer = (double[]) Util.resizeArray(stateBuffer, numStateVars);
+				stateBuffer = (double[]) resizeArray(stateBuffer, numStateVars);
 				break;
 			default:
-				currentBuffer = Util.resizeArray(currentBuffer, meteredElement.getYOrder());
-				voltageBuffer = Util.resizeArray(voltageBuffer, meteredElement.getNumConds());
+				currentBuffer = resizeArray(currentBuffer, meteredElement.getYOrder());
+				voltageBuffer = resizeArray(voltageBuffer, meteredElement.getNumConds());
 				break;
 			}
 			clearMonitorStream();
@@ -624,25 +632,25 @@ public class MonitorObj extends MeterElement {
 			isPower = false;
 			if (includeResidual) {
 				if (VIpolar) {
-					residualVolt = Util.residualPolar(voltageBuffer[0], nPhases);
-					residualCurr = Util.residualPolar(currentBuffer[offset + 1], nPhases);  // TODO Check zero based indexing
+					residualVolt = residualPolar(voltageBuffer[0], nPhases);
+					residualCurr = residualPolar(currentBuffer[offset + 1], nPhases);  // TODO Check zero based indexing
 				} else {
-					residualVolt = Util.residual(voltageBuffer[0], nPhases);
-					residualCurr = Util.residual(currentBuffer[offset + 1], nPhases);  // TODO Check zero based indexing
+					residualVolt = residual(voltageBuffer[0], nPhases);
+					residualCurr = residual(currentBuffer[offset + 1], nPhases);  // TODO Check zero based indexing
 				}
 			}
 			if (VIpolar) {
-				Util.convertComplexArrayToPolar(voltageBuffer, numVI);
-				Util.convertComplexArrayToPolar(currentBuffer, numVI * meteredElement.getNumTerms());  // get all of current buffer
+				convertComplexArrayToPolar(voltageBuffer, numVI);
+				convertComplexArrayToPolar(currentBuffer, numVI * meteredElement.getNumTerms());  // get all of current buffer
 			}
 			break;
 
 		case 1:  // convert voltage buffer to power kW, kVAr or mag/angle
 			MathUtil.calcKPowers(voltageBuffer, voltageBuffer, currentBuffer[offset + 1], numVI);
 			if (isSequence || DSS.activeCircuit.isPositiveSequence())
-				Util.mulArray(voltageBuffer, 3.0, numVI);  // convert to total power
+				mulArray(voltageBuffer, 3.0, numVI);  // convert to total power
 			if (Ppolar)
-				Util.convertComplexArrayToPolar(voltageBuffer, numVI);
+				convertComplexArrayToPolar(voltageBuffer, numVI);
 			isPower = true;
 			break;
 		}
@@ -807,7 +815,7 @@ public class MonitorObj extends MeterElement {
 			DSS.doSimpleMsg("Error writing CSV file \""+csvName+"\" " +DSS.CRLF + e.getMessage(), 673);
 		}
 
-		if (show) Util.fireOffEditor(csvName);
+		if (show) fireOffEditor(csvName);
 
 		DSS.globalResult = csvName;
 	}

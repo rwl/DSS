@@ -15,10 +15,14 @@ import com.ncond.dss.common.CktElement;
 import com.ncond.dss.common.DSS;
 import com.ncond.dss.common.DSSClass;
 import com.ncond.dss.common.DSSClassDefs;
-import com.ncond.dss.common.Util;
 import com.ncond.dss.conversion.PCElement;
 import com.ncond.dss.general.TCC_CurveObj;
 import com.ncond.dss.shared.MathUtil;
+
+import static com.ncond.dss.common.Util.appendToEventLog;
+import static com.ncond.dss.common.Util.getCktElementIndex;
+import static com.ncond.dss.common.Util.resizeArray;
+
 
 /**
  * A control element that is connected to a terminal of a
@@ -131,7 +135,7 @@ public class RelayObj extends ControlElem {
 		numReclose = 3;
 		recloseIntervals = null;
 
-		recloseIntervals = Util.resizeArray(recloseIntervals, 4);  // fixed allocation of 4
+		recloseIntervals = resizeArray(recloseIntervals, 4);  // fixed allocation of 4
 		recloseIntervals[0] = 0.5;
 		recloseIntervals[1] = 2.0;
 		recloseIntervals[2] = 2.0;
@@ -168,7 +172,7 @@ public class RelayObj extends ControlElem {
 
 	@Override
 	public void recalcElementData() {
-		int devIndex = Util.getCktElementIndex(monitoredElementName);
+		int devIndex = getCktElementIndex(monitoredElementName);
 
 		if (devIndex >= 0) {
 			monitoredElement = DSS.activeCircuit.getCktElements().get(devIndex);
@@ -182,7 +186,7 @@ public class RelayObj extends ControlElem {
 				setBus(0, monitoredElement.getBus(monitoredElementTerminalIdx));
 
 				// allocate a buffer big enough to hold everything from the monitored element
-				cBuffer = Util.resizeArray(cBuffer, monitoredElement.getYOrder());
+				cBuffer = resizeArray(cBuffer, monitoredElement.getYOrder());
 				condOffset = (monitoredElementTerminalIdx + 1) * monitoredElement.getNumConds();  // for speedy sampling
 
 				switch (controlType) {
@@ -202,7 +206,7 @@ public class RelayObj extends ControlElem {
 		}
 
 		/* Check for existence of controlled element */
-		devIndex = Util.getCktElementIndex(elementName);
+		devIndex = getCktElementIndex(elementName);
 
 		if (devIndex >= 0) {
 			// both CktElement and monitored element must already exist
@@ -252,7 +256,7 @@ public class RelayObj extends ControlElem {
 			setNumConds(nPhases);
 			setBus(0, monitoredElement.getBus(elementTerminalIdx));
 			// allocate a buffer big enough to hold everything from the monitored element
-			cBuffer = Util.resizeArray(cBuffer, monitoredElement.getYOrder());
+			cBuffer = resizeArray(cBuffer, monitoredElement.getYOrder());
 			condOffset = elementTerminalIdx * monitoredElement.getNumConds();  // for speedy sampling
 		}
 
@@ -302,14 +306,14 @@ public class RelayObj extends ControlElem {
 
 					if (operationCount > numReclose) {
 						lockedOut = true;
-						Util.appendToEventLog("Relay." + getName(),
+						appendToEventLog("Relay." + getName(),
 							"Opened on " + relayTarget + " & Locked Out ");
 					}
 				} else {
-					Util.appendToEventLog("Relay." + getName(), "Opened");
+					appendToEventLog("Relay." + getName(), "Opened");
 				}
-				if (phaseTarget) Util.appendToEventLog(" ", "Phase Target");
-				if (groundTarget) Util.appendToEventLog(" ", "Ground Target");
+				if (phaseTarget) appendToEventLog(" ", "Phase Target");
+				if (groundTarget) appendToEventLog(" ", "Ground Target");
 				armedForOpen = false;
 				break;
 			}
@@ -319,7 +323,7 @@ public class RelayObj extends ControlElem {
 				if (armedForClose && !lockedOut) {
 					getControlledElement().setConductorClosed(-1, true);  // close all phases of active terminal
 					operationCount += 1;
-					Util.appendToEventLog("Relay." + getName(), "Closed");
+					appendToEventLog("Relay." + getName(), "Closed");
 					armedForClose = false;
 				}
 				break;

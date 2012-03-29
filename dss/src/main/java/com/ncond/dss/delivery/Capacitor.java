@@ -7,10 +7,14 @@ package com.ncond.dss.delivery;
 
 import com.ncond.dss.common.DSS;
 import com.ncond.dss.common.DSSClassDefs;
-import com.ncond.dss.common.Util;
 import com.ncond.dss.common.types.Connection;
 import com.ncond.dss.parser.Parser;
 import com.ncond.dss.shared.CommandList;
+
+import static com.ncond.dss.common.Util.stripExtension;
+import static com.ncond.dss.common.Util.interpretDblArray;
+import static com.ncond.dss.common.Util.resizeArray;
+
 
 public class Capacitor extends PDClass {
 
@@ -102,7 +106,7 @@ public class Capacitor extends PDClass {
 		orderFound = Parser.getInstance().parseAsSymMatrix(elem.getNumPhases(), matBuffer);
 
 		if (orderFound > 0) {  // parse was successful
-			elem.setCmatrix(Util.resizeArray(elem.getCmatrix(), elem.getNumPhases() * elem.getNumPhases()));
+			elem.setCmatrix(resizeArray(elem.getCmatrix(), elem.getNumPhases() * elem.getNumPhases()));
 			for (j = 0; j < elem.getNumPhases() * elem.getNumPhases(); j++)
 				elem.getCmatrix()[j] = 1.0e-6 * matBuffer[j];
 		}
@@ -218,7 +222,7 @@ public class Capacitor extends PDClass {
 				//elem.setNumPhases(parser.makeInteger());  // see below
 				break;
 			case 3:
-				Util.interpretDblArray(param, elem.getNumSteps(), elem.getKVArRating());
+				interpretDblArray(param, elem.getNumSteps(), elem.getKVArRating());
 				break;
 			case 4:
 				elem.setKVRating(parser.doubleValue());
@@ -230,13 +234,13 @@ public class Capacitor extends PDClass {
 				doCmatrix();
 				break;
 			case 7:
-				Util.interpretDblArray(param, elem.getNumSteps(), elem.getC());
+				interpretDblArray(param, elem.getNumSteps(), elem.getC());
 				break;
 			case 8:
-				Util.interpretDblArray(param, elem.getNumSteps(), elem.getR());
+				interpretDblArray(param, elem.getNumSteps(), elem.getR());
 				break;
 			case 9:
-				Util.interpretDblArray(param, elem.getNumSteps(), elem.getXL());
+				interpretDblArray(param, elem.getNumSteps(), elem.getXL());
 				break;
 			case 10:
 				elem.processHarmonicSpec(param);
@@ -260,7 +264,7 @@ public class Capacitor extends PDClass {
 				elem.getPrpSequence()[1] = 0;  // reset this for save function
 				break;
 			case 1:
-				if (!Util.stripExtension(elem.getBus(0)).equalsIgnoreCase(Util.stripExtension(elem.getBus(1))))
+				if (!stripExtension(elem.getBus(0)).equalsIgnoreCase(stripExtension(elem.getBus(1))))
 					elem.setShunt(false);
 				break;
 			case 2:
@@ -351,7 +355,7 @@ public class Capacitor extends PDClass {
 			if (other.getCmatrix() == null) {
 				elem.setCmatrix(new double[0]);
 			} else {
-				elem.setCmatrix((double[]) Util.resizeArray(elem.getCmatrix(), elem.getNumPhases() * elem.getNumPhases()));
+				elem.setCmatrix((double[]) resizeArray(elem.getCmatrix(), elem.getNumPhases() * elem.getNumPhases()));
 				for (int i = 0; i < elem.getNumPhases() * elem.getNumPhases(); i++)
 					elem.getCmatrix()[i] = other.getCmatrix()[i];
 			}

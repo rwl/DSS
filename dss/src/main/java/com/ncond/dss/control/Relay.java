@@ -8,10 +8,12 @@ package com.ncond.dss.control;
 import com.ncond.dss.common.DSS;
 import com.ncond.dss.common.DSSClass;
 import com.ncond.dss.common.DSSClassDefs;
-import com.ncond.dss.common.Util;
 import com.ncond.dss.general.TCC_CurveObj;
 import com.ncond.dss.parser.Parser;
 import com.ncond.dss.shared.CommandList;
+
+import static com.ncond.dss.common.Util.resizeArray;
+
 
 public class Relay extends ControlClass {
 
@@ -334,7 +336,7 @@ public class Relay extends ControlClass {
 			elem.setDelayTime(other.getDelayTime());
 			elem.setBreakerTime(other.getBreakerTime());
 
-			elem.setRecloseIntervals( Util.resizeArray(elem.getRecloseIntervals(), 4) );  // always make a max of 4
+			elem.setRecloseIntervals( resizeArray(elem.getRecloseIntervals(), 4) );  // always make a max of 4
 			for (int i = 0; i < elem.getNumReclose(); i++)
 				elem.getRecloseIntervals()[i] = other.getRecloseIntervals()[i];
 

@@ -11,7 +11,6 @@ import com.ncond.dss.common.Bus;
 import com.ncond.dss.common.Circuit;
 import com.ncond.dss.common.DSS;
 import com.ncond.dss.common.SolutionObj;
-import com.ncond.dss.common.Util;
 import com.ncond.dss.common.exceptions.ControlProblem;
 import com.ncond.dss.common.exceptions.SolverError;
 import com.ncond.dss.common.exceptions.SolverProblem;
@@ -22,6 +21,9 @@ import com.ncond.dss.delivery.Fault;
 import com.ncond.dss.delivery.FaultObj;
 import com.ncond.dss.general.SpectrumObj;
 import com.ncond.dss.shared.MathUtil;
+
+import static com.ncond.dss.common.Util.resizeArray;
+import static com.ncond.dss.common.Util.retrieveSavedVoltages;
 
 /**
  * Solution algorithms.
@@ -814,7 +816,7 @@ public class SolutionAlgs {
 		numFreq[0]++;
 		if (numFreq[0] > maxFreq) {
 			maxFreq += 20;
-			freqList = Util.resizeArray(freqList, maxFreq);
+			freqList = resizeArray(freqList, maxFreq);
 		}
 
 		/* let's add it in ascending order */
@@ -856,7 +858,7 @@ public class SolutionAlgs {
 		/* Accumulate all unique frequencies */
 		maxFreq = 20;    // initial list size
 		numFreq[0] = 0;
-		freqList = Util.resizeArray(freqList, maxFreq);
+		freqList = resizeArray(freqList, maxFreq);
 
 		Circuit ckt = DSS.activeCircuit;
 
@@ -912,7 +914,7 @@ public class SolutionAlgs {
 		try {
 			if (sol.getFrequency() != ckt.getFundamental()) {  // last solution was something other than fundamental
 				sol.setFrequency(ckt.getFundamental());
-				if (!Util.retrieveSavedVoltages())
+				if (!retrieveSavedVoltages())
 					return 0;  /* Get saved fundamental frequency solution */
 			}
 
@@ -922,7 +924,7 @@ public class SolutionAlgs {
 			if (sol.isDoAllHarmonics()) {
 				collectAllFrequencies(frequencyList, nFreq);  // allocates frequencyList
 			} else {
-				frequencyList = Util.resizeArray(frequencyList, sol.getHarmonicListSize());
+				frequencyList = resizeArray(frequencyList, sol.getHarmonicListSize());
 				nFreq[0] = sol.getHarmonicListSize();
 				for (int i = 0; i < nFreq[0]; i++) {
 					frequencyList[i] = ckt.getFundamental() * sol.getHarmonic(i);

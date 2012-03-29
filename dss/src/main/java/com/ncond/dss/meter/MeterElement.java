@@ -10,7 +10,9 @@ import org.apache.commons.math.complex.Complex;
 import com.ncond.dss.common.CktElement;
 import com.ncond.dss.common.DSSClass;
 import com.ncond.dss.common.DSSClassDefs;
-import com.ncond.dss.common.Util;
+
+import static com.ncond.dss.common.Util.resizeArray;
+
 
 abstract public class MeterElement extends CktElement {
 
@@ -47,12 +49,12 @@ abstract public class MeterElement extends CktElement {
 
 	public void allocateSensorArrays() {
 		if (meteredElement != null)
-			calculatedCurrent = Util.resizeArray(calculatedCurrent, meteredElement.getYOrder());
+			calculatedCurrent = resizeArray(calculatedCurrent, meteredElement.getYOrder());
 		if (meteredElement != null)
-			calculatedVoltage = Util.resizeArray(calculatedVoltage, meteredElement.getYOrder());
-		sensorCurrent = Util.resizeArray(sensorCurrent, nPhases);
-		sensorVoltage = Util.resizeArray(sensorVoltage, nPhases);
-		phsAllocationFactor = Util.resizeArray(phsAllocationFactor, nPhases);
+			calculatedVoltage = resizeArray(calculatedVoltage, meteredElement.getYOrder());
+		sensorCurrent = resizeArray(sensorCurrent, nPhases);
+		sensorVoltage = resizeArray(sensorVoltage, nPhases);
+		phsAllocationFactor = resizeArray(phsAllocationFactor, nPhases);
 	}
 
 	public void calcAllocationFactors() {

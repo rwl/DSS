@@ -12,11 +12,18 @@ import org.apache.commons.math.complex.Complex;
 
 import com.ncond.dss.common.DSS;
 import com.ncond.dss.common.DSSClass;
-import com.ncond.dss.common.Util;
 import com.ncond.dss.common.types.Connection;
 import com.ncond.dss.parser.Parser;
 import com.ncond.dss.shared.CMatrix;
 import com.ncond.dss.shared.ComplexUtil;
+
+import static com.ncond.dss.common.Util.initDblArray;
+import static com.ncond.dss.common.Util.getDSSArray;
+import static com.ncond.dss.common.Util.interpretDblArray;
+import static com.ncond.dss.common.Util.strReal;
+import static com.ncond.dss.common.Util.resizeArray;
+import static com.ncond.dss.common.Util.interpretIntArray;
+
 
 /**
  * Basic capacitor.
@@ -98,15 +105,15 @@ public class CapacitorObj extends PDElement {
 		setNumSteps(1);  // initial allocation for the arrays, too
 		lastStepInService = numSteps - 1;
 
-		Util.initDblArray(numSteps, R, 0.0);
-		Util.initDblArray(numSteps, XL, 0.0);
-		Util.initDblArray(numSteps, harm, 0.0);
-		Util.initDblArray(numSteps, kVArRating, 1200.0);
+		initDblArray(numSteps, R, 0.0);
+		initDblArray(numSteps, XL, 0.0);
+		initDblArray(numSteps, harm, 0.0);
+		initDblArray(numSteps, kVArRating, 1200.0);
 
 		states[0] = true;
 
 		kVRating = 12.47;
-		Util.initDblArray(numSteps, C,
+		initDblArray(numSteps, C,
 			1.0 / (DSS.TWO_PI * baseFrequency * Math.pow(kVRating, 2) * 1000.0 / kVArRating[0]));
 
 		connection = Connection.WYE;
@@ -310,11 +317,11 @@ public class CapacitorObj extends PDElement {
 		super.initPropertyValues(Capacitor.NumPropsThisClass - 1);
 
 		// override inherited properties
-		setPropertyValue(Capacitor.NumPropsThisClass + 0, Util.strReal(getNormAmps(), 0));
-		setPropertyValue(Capacitor.NumPropsThisClass + 1, Util.strReal(getEmergAmps(), 0));
-		setPropertyValue(Capacitor.NumPropsThisClass + 2, Util.strReal(getFaultRate(), 0));
-		setPropertyValue(Capacitor.NumPropsThisClass + 3, Util.strReal(getPctPerm(), 0));
-		setPropertyValue(Capacitor.NumPropsThisClass + 4, Util.strReal(getHrsToRepair(), 0));
+		setPropertyValue(Capacitor.NumPropsThisClass + 0, strReal(getNormAmps(), 0));
+		setPropertyValue(Capacitor.NumPropsThisClass + 1, strReal(getEmergAmps(), 0));
+		setPropertyValue(Capacitor.NumPropsThisClass + 2, strReal(getFaultRate(), 0));
+		setPropertyValue(Capacitor.NumPropsThisClass + 3, strReal(getPctPerm(), 0));
+		setPropertyValue(Capacitor.NumPropsThisClass + 4, strReal(getHrsToRepair(), 0));
 		clearPropSeqArray();
 	}
 
@@ -393,12 +400,12 @@ public class CapacitorObj extends PDElement {
 			}
 
 			// reallocate arrays (must be initialized to nil for first call)
-			C = Util.resizeArray(C, value);
-			XL = Util.resizeArray(XL, value);
-			kVArRating = Util.resizeArray(kVArRating, value);
-			R = Util.resizeArray(R, value);
-			harm = Util.resizeArray(harm, value);
-			states = Util.resizeArray(states, value);
+			C = resizeArray(C, value);
+			XL = resizeArray(XL, value);
+			kVArRating = resizeArray(kVArRating, value);
+			R = resizeArray(R, value);
+			harm = resizeArray(harm, value);
+			states = resizeArray(states, value);
 
 			// special case for numSteps=1
 
@@ -445,12 +452,12 @@ public class CapacitorObj extends PDElement {
 	}
 
 	protected void processHarmonicSpec(String param) {
-		Util.interpretDblArray(param, numSteps, getHarm());
+		interpretDblArray(param, numSteps, getHarm());
 		setDoHarmonicRecalc(true);
 	}
 
 	protected void processStatesSpec(String param) {
-		Util.interpretIntArray(param, numSteps, states);
+		interpretIntArray(param, numSteps, states);
 
 		lastStepInService = -1;
 
@@ -596,25 +603,25 @@ public class CapacitorObj extends PDElement {
 			val = getBus(1);
 			break;
 		case 3:
-			val = Util.getDSSArray(numSteps, kVArRating);
+			val = getDSSArray(numSteps, kVArRating);
 			break;
 		case 7:
 			temp = new double[numSteps];
 			for (int i = 0; i < numSteps; i++)
 				temp[i] = C[i] * 1.0e6;  // to microfarads
-			val = Util.getDSSArray(getNumSteps(), temp);
+			val = getDSSArray(getNumSteps(), temp);
 			break;
 		case 8:
-			val = Util.getDSSArray(getNumSteps(), R);
+			val = getDSSArray(getNumSteps(), R);
 			break;
 		case 10:
-			val = Util.getDSSArray(getNumSteps(), XL);
+			val = getDSSArray(getNumSteps(), XL);
 			break;
 		case 11:
-			val = Util.getDSSArray(getNumSteps(), harm);
+			val = getDSSArray(getNumSteps(), harm);
 			break;
 		case 12:
-			val = Util.getDSSArray(getNumSteps(), states);
+			val = getDSSArray(getNumSteps(), states);
 			break;
 		default:
 			val = super.getPropertyValue(index);

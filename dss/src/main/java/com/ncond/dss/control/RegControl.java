@@ -12,9 +12,12 @@ import java.io.IOException;
 
 import com.ncond.dss.common.DSS;
 import com.ncond.dss.common.DSSClassDefs;
-import com.ncond.dss.common.Util;
 import com.ncond.dss.parser.Parser;
 import com.ncond.dss.shared.CommandList;
+
+import static com.ncond.dss.common.Util.compareTextShortest;
+import static com.ncond.dss.common.Util.interpretYesNo;
+
 
 public class RegControl extends ControlClass {
 
@@ -199,7 +202,7 @@ public class RegControl extends ControlClass {
 				elem.setTimeDelay(parser.doubleValue());
 				break;
 			case 10:
-				elem.setReversible(Util.interpretYesNo(param));
+				elem.setReversible(interpretYesNo(param));
 				break;
 			case 11:
 				elem.setRevVreg(parser.doubleValue());
@@ -217,13 +220,13 @@ public class RegControl extends ControlClass {
 				elem.setTapDelay(parser.doubleValue());
 				break;
 			case 16:
-				elem.setDebugTrace(Util.interpretYesNo(param));
+				elem.setDebugTrace(interpretYesNo(param));
 				break;
 			case 17:
 				elem.setTapLimitPerChange(Math.max(0, parser.integerValue()));
 				break;
 			case 18:
-				elem.setInverseTime(Util.interpretYesNo(param));
+				elem.setInverseTime(interpretYesNo(param));
 				break;
 			case 19:
 				elem.setTapWindingIdx(parser.integerValue() - 1);
@@ -237,9 +240,9 @@ public class RegControl extends ControlClass {
 				}
 				break;
 			case 21:
-				if (Util.compareTextShortest(param, "max") == 0) {
+				if (compareTextShortest(param, "max") == 0) {
 					elem.setPTPhaseIdx(MAXPHASE);
-				} else if (Util.compareTextShortest(param, "min") == 0) {
+				} else if (compareTextShortest(param, "min") == 0) {
 					elem.setPTPhaseIdx(MINPHASE);
 				} else {
 					elem.setPTPhaseIdx(Math.max(0, parser.integerValue() - 1));
@@ -252,10 +255,10 @@ public class RegControl extends ControlClass {
 				elem.setRevDelay(parser.doubleValue());
 				break;
 			case 24:
-				elem.setReverseNeutral(Util.interpretYesNo(param));
+				elem.setReverseNeutral(interpretYesNo(param));
 				break;
 			case 25:
-				elem.setShowEventLog(Util.interpretYesNo(param));
+				elem.setShowEventLog(interpretYesNo(param));
 			default:
 				// inherited parameters
 				classEdit(activeRegControlObj, paramPointer - NumPropsThisClass);

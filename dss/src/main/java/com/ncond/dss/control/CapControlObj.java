@@ -16,8 +16,12 @@ import com.ncond.dss.common.CktElement;
 import com.ncond.dss.common.DSS;
 import com.ncond.dss.common.DSSClass;
 import com.ncond.dss.common.SolutionObj;
-import com.ncond.dss.common.Util;
 import com.ncond.dss.delivery.CapacitorObj;
+
+import static com.ncond.dss.common.Util.appendToEventLog;
+import static com.ncond.dss.common.Util.getCktElementIndex;
+import static com.ncond.dss.common.Util.resizeArray;
+
 
 /**
  * A control element that is connected to a terminal of another
@@ -125,7 +129,7 @@ public class CapControlObj extends ControlElem {
 
 		/* Check for existence of capacitor */
 
-		int devIndex = Util.getCktElementIndex(capacitorName);
+		int devIndex = getCktElementIndex(capacitorName);
 		if (devIndex >= 0) {
 			// both capacitor and monitored element must already exist
 			setControlledElement(ckt.getCktElements().get(devIndex));
@@ -156,7 +160,7 @@ public class CapControlObj extends ControlElem {
 
 		/* Check for existence of monitored element */
 
-		devIndex = Util.getCktElementIndex(elementName);
+		devIndex = getCktElementIndex(elementName);
 		if (devIndex >= 0) {
 			monitoredElement = ckt.getCktElements().get(devIndex);
 			if (elementTerminalIdx >= monitoredElement.getNumTerms()) {
@@ -167,7 +171,7 @@ public class CapControlObj extends ControlElem {
 				setBus(0, monitoredElement.getBus(elementTerminalIdx));
 
 				// allocate a buffer big enough to hold everything from the monitored element
-				cBuffer = Util.resizeArray(cBuffer, monitoredElement.getYOrder());
+				cBuffer = resizeArray(cBuffer, monitoredElement.getYOrder());
 
 				condOffset = (elementTerminalIdx + 1) * monitoredElement.getNumConds();  // for speedy sampling
 			}
@@ -203,7 +207,7 @@ public class CapControlObj extends ControlElem {
 			setBus(0, monitoredElement.getBus(elementTerminalIdx));
 
 			// allocate a buffer big enough to hold everything from the monitored element
-			cBuffer = Util.resizeArray(cBuffer, monitoredElement.getYOrder());
+			cBuffer = resizeArray(cBuffer, monitoredElement.getYOrder());
 
 			condOffset = (elementTerminalIdx + 1) * monitoredElement.getNumConds();  // for speedy sampling
 		}
@@ -332,7 +336,7 @@ public class CapControlObj extends ControlElem {
 					getControlledElement().setConductorClosed(0, false);  // open all phases of active terminal
 
 					if (showEventLog)
-						Util.appendToEventLog("Capacitor." + getControlledElement().getName(), "**Opened**");
+						appendToEventLog("Capacitor." + getControlledElement().getName(), "**Opened**");
 
 					presentState = ControlAction.OPEN;
 
@@ -345,10 +349,10 @@ public class CapControlObj extends ControlElem {
 						presentState = ControlAction.OPEN;
 						getControlledElement().setConductorClosed(0, false);  // open all phases of active terminal
 						if (showEventLog)
-							Util.appendToEventLog("Capacitor." + getControlledElement().getName(), "**Opened**");
+							appendToEventLog("Capacitor." + getControlledElement().getName(), "**Opened**");
 					} else {
 						if (showEventLog)
-							Util.appendToEventLog("Capacitor." + getControlledElement().getName(), "**Step Down**");
+							appendToEventLog("Capacitor." + getControlledElement().getName(), "**Step Down**");
 					}
 				break;
 			}
@@ -357,13 +361,13 @@ public class CapControlObj extends ControlElem {
 			if (presentState == ControlAction.OPEN) {
 				getControlledElement().setConductorClosed(0, true);  // close all phases of active terminal
 				if (showEventLog)
-					Util.appendToEventLog("Capacitor." + getControlledElement().getName(), "**Closed**");
+					appendToEventLog("Capacitor." + getControlledElement().getName(), "**Closed**");
 				presentState = ControlAction.CLOSE;
 				controlledCapacitor.addStep();
 			} else {
 				if (controlledCapacitor.addStep()) {
 					if (showEventLog)
-						Util.appendToEventLog("Capacitor." + getControlledElement().getName(), "**Step Up**");
+						appendToEventLog("Capacitor." + getControlledElement().getName(), "**Step Up**");
 				}
 			}
 			break;
@@ -480,7 +484,7 @@ public class CapControlObj extends ControlElem {
 						shouldSwitch = true;
 						VOverrideEvent = true;
 						if (showEventLog)
-							Util.appendToEventLog("Capacitor." + getControlledElement().getName(),
+							appendToEventLog("Capacitor." + getControlledElement().getName(),
 									String.format("Low voltage override: %.8g V", Vtest));
 					}
 					break;
@@ -490,7 +494,7 @@ public class CapControlObj extends ControlElem {
 						shouldSwitch = true;
 						VOverrideEvent = true;
 						if (showEventLog)
-							Util.appendToEventLog("Capacitor." + getControlledElement().getName(),
+							appendToEventLog("Capacitor." + getControlledElement().getName(),
 									String.format("High voltage override: %.8g V", Vtest));
 					}
 					break;
@@ -733,7 +737,7 @@ public class CapControlObj extends ControlElem {
 				sol.getDynaVars().t + timeDelay , pendingChange, 0, this);
 			armed = true;
 			if (showEventLog)
-				Util.appendToEventLog("Capacitor." + getControlledElement().getName(),
+				appendToEventLog("Capacitor." + getControlledElement().getName(),
 					String.format("**Armed**, Delay= %.5g sec", timeDelay));
 		}
 
@@ -741,7 +745,7 @@ public class CapControlObj extends ControlElem {
 			ckt.getControlQueue().delete(controlActionHandle);
 			armed = false;
 			if (showEventLog)
-				Util.appendToEventLog("Capacitor." + getControlledElement().getName(), "**Reset**");
+				appendToEventLog("Capacitor." + getControlledElement().getName(), "**Reset**");
 		}
 	}
 

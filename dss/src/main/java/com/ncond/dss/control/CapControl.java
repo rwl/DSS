@@ -7,9 +7,12 @@ package com.ncond.dss.control;
 
 import com.ncond.dss.common.DSS;
 import com.ncond.dss.common.DSSClassDefs;
-import com.ncond.dss.common.Util;
 import com.ncond.dss.parser.Parser;
 import com.ncond.dss.shared.CommandList;
+
+import static com.ncond.dss.common.Util.compareTextShortest;
+import static com.ncond.dss.common.Util.interpretYesNo;
+
 
 public class CapControl extends ControlClass {
 
@@ -200,7 +203,7 @@ public class CapControl extends ControlClass {
 				elem.setOnDelay(parser.doubleValue());
 				break;
 			case 9:
-				elem.setVOverride(Util.interpretYesNo(param));
+				elem.setVOverride(interpretYesNo(param));
 				break;
 			case 10:
 				elem.setVMax(parser.doubleValue());
@@ -215,22 +218,22 @@ public class CapControl extends ControlClass {
 				elem.setDeadTime(parser.doubleValue());
 				break;
 			case 14:
-				if (Util.compareTextShortest(param, "avg") == 0) {
+				if (compareTextShortest(param, "avg") == 0) {
 					elem.setCTPhaseIdx(CapControl.AVGPHASES);
-				} else if (Util.compareTextShortest(param, "max") == 0) {
+				} else if (compareTextShortest(param, "max") == 0) {
 					elem.setCTPhaseIdx(CapControl.MAXPHASE);
-				} else if (Util.compareTextShortest(param, "min") == 0) {
+				} else if (compareTextShortest(param, "min") == 0) {
 					elem.setCTPhaseIdx(CapControl.MINPHASE);
 				} else {
 					elem.setCTPhaseIdx(Math.max(0, parser.integerValue() - 1));
 				}
 				break;
 			case 15:
-				if (Util.compareTextShortest(param, "avg") == 0) {
+				if (compareTextShortest(param, "avg") == 0) {
 					elem.setPTPhaseIdx(CapControl.AVGPHASES);
-				} else if (Util.compareTextShortest(param, "max") == 0) {
+				} else if (compareTextShortest(param, "max") == 0) {
 					elem.setPTPhaseIdx(CapControl.MAXPHASE);
-				} else if (Util.compareTextShortest(param, "min") == 0) {
+				} else if (compareTextShortest(param, "min") == 0) {
 					elem.setPTPhaseIdx(CapControl.MINPHASE);
 				} else {
 					elem.setPTPhaseIdx(Math.max(0, parser.integerValue() - 1));
@@ -240,7 +243,7 @@ public class CapControl extends ControlClass {
 				elem.setVOverrideBusSpecified(true);
 				elem.setVOverrideBusName(param);
 			case 17:
-				elem.setShowEventLog(Util.interpretYesNo(param));
+				elem.setShowEventLog(interpretYesNo(param));
 			default:
 				// inherited parameters
 				classEdit(elem, paramPointer - CapControl.NumPropsThisClass);

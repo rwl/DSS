@@ -13,11 +13,14 @@ import org.apache.commons.math.complex.Complex;
 import com.ncond.dss.common.DSS;
 import com.ncond.dss.common.DSSClass;
 import com.ncond.dss.common.SolutionObj;
-import com.ncond.dss.common.Util;
 import com.ncond.dss.general.SpectrumObj;
 import com.ncond.dss.parser.Parser;
 import com.ncond.dss.shared.CMatrix;
 import com.ncond.dss.shared.ComplexUtil;
+
+import static com.ncond.dss.common.Util.rotatePhasorDeg;
+import static com.ncond.dss.common.Util.resizeArray;
+
 
 public class EquivalentObj extends PCElement {
 
@@ -129,7 +132,7 @@ public class EquivalentObj extends PCElement {
 			DSS.doSimpleMsg("Spectrum object \"" + getSpectrum() +
 				"\" for device equivalent." + getName() + " not found.", 802);
 
-		setInjCurrent(Util.resizeArray(getInjCurrent(), YOrder));
+		setInjCurrent(resizeArray(getInjCurrent(), YOrder));
 
 		needToDoRecalc = false;
 	}
@@ -212,11 +215,11 @@ public class EquivalentObj extends PCElement {
 			if (sol.isHarmonicModel()) {
 				equivHarm = sol.getFrequency() / equivFrequency;
 				Vharm = getSpectrumObj().getMult(equivHarm).multiply(Vmag);  // base voltage for this harmonic
-				Vharm = Util.rotatePhasorDeg(Vharm, equivHarm, angle);  // rotate for phase 1 shift
+				Vharm = rotatePhasorDeg(Vharm, equivHarm, angle);  // rotate for phase 1 shift
 				for (i = 0; i < nPhases; i++) {
 					VTerminal[i] = Vharm;
 					if (i < nPhases - 1) {
-						Vharm = Util.rotatePhasorDeg(Vharm, equivHarm, -360.0 / nPhases);
+						Vharm = rotatePhasorDeg(Vharm, equivHarm, -360.0 / nPhases);
 					}
 				}
 			} else {
@@ -358,10 +361,10 @@ public class EquivalentObj extends PCElement {
 	}
 
 	private void reallocRX() {
-		R1 = Util.resizeArray(R1, (int) Math.pow(nTerms, 2));
-		X1 = Util.resizeArray(X1, (int) Math.pow(nTerms, 2));
-		R0 = Util.resizeArray(R0, (int) Math.pow(nTerms, 2));
-		X0 = Util.resizeArray(X0, (int) Math.pow(nTerms, 2));
+		R1 = resizeArray(R1, (int) Math.pow(nTerms, 2));
+		X1 = resizeArray(X1, (int) Math.pow(nTerms, 2));
+		R0 = resizeArray(R0, (int) Math.pow(nTerms, 2));
+		X0 = resizeArray(X0, (int) Math.pow(nTerms, 2));
 	}
 
 	public double getKVBase() {

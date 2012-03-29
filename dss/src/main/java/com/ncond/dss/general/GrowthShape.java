@@ -12,9 +12,12 @@ import java.io.IOException;
 import com.ncond.dss.common.DSS;
 import com.ncond.dss.common.DSSClass;
 import com.ncond.dss.common.DSSClassDefs;
-import com.ncond.dss.common.Util;
 import com.ncond.dss.parser.Parser;
 import com.ncond.dss.shared.CommandList;
+
+import static com.ncond.dss.common.Util.interpretDblArray;
+import static com.ncond.dss.common.Util.resizeArray;
+
 
 /**
  * A general DSS object used by all circuits as a reference for obtaining yearly
@@ -147,9 +150,9 @@ public class GrowthShape extends DSSClass {
 				elem.setNpts(parser.integerValue());
 				break;
 			case 1:
-				elem.setYear( Util.resizeArray(elem.getYear(), elem.getNpts()) );
+				elem.setYear( resizeArray(elem.getYear(), elem.getNpts()) );
 				YrBuffer = new double[elem.getNpts()];
-				Util.interpretDblArray(param, elem.getNpts(), YrBuffer);
+				interpretDblArray(param, elem.getNpts(), YrBuffer);
 
 				for (int i = 0; i < elem.getNpts(); i++)
 					elem.getYear()[i] = (int) Math.round(YrBuffer[i]);
@@ -158,8 +161,8 @@ public class GrowthShape extends DSSClass {
 				YrBuffer = null;
 				break;
 			case 2:
-				elem.setMultiplier(Util.resizeArray(elem.getMultiplier(), elem.getNpts()));
-				Util.interpretDblArray(param, elem.getNpts(), elem.getMultiplier());
+				elem.setMultiplier(resizeArray(elem.getMultiplier(), elem.getNpts()));
+				interpretDblArray(param, elem.getNpts(), elem.getMultiplier());
 				break;
 			case 3:
 				doCSVFile(param);
@@ -195,10 +198,10 @@ public class GrowthShape extends DSSClass {
 		if (other != null) {
 			elem = activeGrowthShapeObj;
 			elem.setNpts(other.getNpts());
-			elem.setMultiplier(Util.resizeArray(elem.getMultiplier(), elem.getNpts()));
+			elem.setMultiplier(resizeArray(elem.getMultiplier(), elem.getNpts()));
 			for (int i = 0; i < elem.getNpts(); i++)
 				elem.getMultiplier()[i] = other.getMultiplier()[i];
-			elem.setYear( Util.resizeArray(elem.getYear(), elem.getNpts()) );
+			elem.setYear( resizeArray(elem.getYear(), elem.getNpts()) );
 			for (int i = 0; i < elem.getNpts(); i++)
 				elem.getYear()[i] = other.getYear()[i];
 			for (int i = 0; i < elem.getParentClass().getNumProperties(); i++)
