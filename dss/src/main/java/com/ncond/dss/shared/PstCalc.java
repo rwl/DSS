@@ -103,8 +103,8 @@ public class PstCalc {
 	private static void zeroOutBins() {
 		int n;
 
-		for (n = 0; n < number_bins - 1; n++) bins0[n] = 0.0;
-		for (n = 0; n < number_bins - 1; n++) bins1[n] = 0.0;
+		for (n = 0; n < number_bins; n++) bins0[n] = 0.0;
+		for (n = 0; n < number_bins; n++) bins1[n] = 0.0;
 	}
 
 	/**
@@ -117,12 +117,12 @@ public class PstCalc {
 		double P01, P1s, P3s, P10s, P50s;
 
 		num_pts = 0;
-		for (n = 0; n < number_bins - 1; n++) {
+		for (n = 0; n < number_bins; n++) {
 			num_pts = num_pts + bins0[n];
 			bins1[n] = num_pts;
 		}
 
-		for (n = 0; n < number_bins - 1; n++) {
+		for (n = 0; n < number_bins; n++) {
 			bins1[n] = bins1[n] / num_pts;
 		}
 

@@ -500,7 +500,7 @@ abstract public class CktElement extends DSSObject {
 
 			// sum complex power going into all conductors of all terminals
 			for (k = 0; k < YOrder; k++) {
-				n = nodeRef[k];  // one based
+				n = nodeRef[k];
 				if (n > 0) {
 					loss = sol.getNodeV(n).multiply( ITerminal[k].conjugate() );
 					if (DSS.activeCircuit.isPositiveSequence())
@@ -691,7 +691,7 @@ abstract public class CktElement extends DSSObject {
 			computeITerminal();
 
 			for (int i = 0; i < YOrder; i++)
-				sol.setCurrent(nodeRef[i] - 1, sol.getCurrent(nodeRef[i] - 1).add(ITerminal[i]));
+				sol.setCurrent(nodeRef[i], sol.getCurrent(nodeRef[i]).add(ITerminal[i]));
 		}
 	}
 

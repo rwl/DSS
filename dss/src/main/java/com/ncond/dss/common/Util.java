@@ -1180,7 +1180,7 @@ public class Util {
 
 			dNumNodes = Double.parseDouble(br.readLine());
 			if (ckt.getNumNodes() == Math.round(dNumNodes)) {
-				for (int i = 0; i < ckt.getNumNodes(); i++) {
+				for (int i = 1; i <= ckt.getNumNodes(); i++) {
 					inputLine = br.readLine();
 					parts = inputLine.split("\\s");
 					sol.getNodeV()[i] = new Complex(

@@ -73,7 +73,7 @@ public class ExportResults {
 					V_NEMA = 0.0;
 					if ((bus.getNumNodesThisBus() == 1) && ckt.isPositiveSequence()) {
 						nref = bus.getRef(0);  // first node
-						Vph[0] = ckt.getSolution().getNodeV(nref - 1);
+						Vph[0] = ckt.getSolution().getNodeV(nref);
 						V1 = Vph[0].abs();
 					} else {
 						V1 = 0.0;
@@ -81,7 +81,7 @@ public class ExportResults {
 				} else {
 					for (j = 0; j < 3; j++) {
 						// first nodes named 1, 2, 3
-						Vph[j] = sol.getNodeV(bus.getRef(bus.findIdx(j + 1)) - 1);
+						Vph[j] = sol.getNodeV(bus.getRef(bus.findIdx(j + 1)));
 					}
 
 					MathUtil.phase2SymComp(Vph, V012);

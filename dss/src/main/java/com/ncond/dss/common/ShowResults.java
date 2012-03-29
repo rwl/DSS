@@ -2916,8 +2916,8 @@ public class ShowResults {
 						cTemp = elem.getITerminal(i);
 						nRef = elem.getNodeRef(i);
 						sol.setCurrent(nRef, sol.getCurrent(nRef).add(cTemp));  // nodeRef = 0 is OK
-						if (cTemp.abs() > maxNodeCurrent[nRef - 1])
-							maxNodeCurrent[nRef - 1] = cTemp.abs();
+						if (cTemp.abs() > maxNodeCurrent[nRef])
+							maxNodeCurrent[nRef] = cTemp.abs();
 					}
 				}
 			}
@@ -2935,24 +2935,24 @@ public class ShowResults {
 
 			nRef = 0;  // ground bus
 			dTemp = sol.getCurrent(nRef).abs();
-			if ((maxNodeCurrent[nRef - 1] == 0.0) || (maxNodeCurrent[nRef = 1] == dTemp)) {
+			if ((maxNodeCurrent[nRef] == 0.0) || (maxNodeCurrent[nRef] == dTemp)) {
 				pctError = String.format("%10.1f", 0.0);
 			} else {
-				pctError = String.format("%10.6f", dTemp / maxNodeCurrent[nRef - 1] * 100.0);
+				pctError = String.format("%10.6f", dTemp / maxNodeCurrent[nRef] * 100.0);
 			}
 			bName = Util.pad("\"System ground\"", maxBusNameLength);
 			pw.printf("%s, %2d, %10.5f,       %s, %10.5f",
-				bName, nRef, dTemp, pctError, maxNodeCurrent[nRef - 1]);
+				bName, nRef, dTemp, pctError, maxNodeCurrent[nRef]);
 			pw.println();
 
 			for (i = 0; i < ckt.getNumBuses(); i++) {
 				for (j = 0; j < ckt.getBus(i).getNumNodesThisBus(); j++) {
 					nRef = ckt.getBus(i).getRef(j);
 					dTemp = sol.getCurrent(nRef).abs();
-					if ((maxNodeCurrent[nRef - 1] == 0.0) || (maxNodeCurrent[nRef - 1] == dTemp)) {
+					if ((maxNodeCurrent[nRef] == 0.0) || (maxNodeCurrent[nRef] == dTemp)) {
 						pctError = String.format("%10.1f", 0.0);
 					} else {
-						pctError = String.format("%10.6f", dTemp / maxNodeCurrent[nRef - 1] * 100.0);
+						pctError = String.format("%10.6f", dTemp / maxNodeCurrent[nRef] * 100.0);
 					}
 					if (j == 0) {
 						bName = Util.padDots(Util.encloseQuotes(ckt.getBusList().get(i)), maxBusNameLength);
@@ -2960,7 +2960,7 @@ public class ShowResults {
 						bName = Util.pad("\"   -\"", maxBusNameLength);
 					}
 					pw.printf("%s, %2d, %10.5f,       %s, %10.5f",
-						bName, ckt.getBus(i).getNum(j), dTemp, pctError, maxNodeCurrent[nRef - 1]);
+						bName, ckt.getBus(i).getNum(j), dTemp, pctError, maxNodeCurrent[nRef]);
 					pw.println();
 				}
 			}

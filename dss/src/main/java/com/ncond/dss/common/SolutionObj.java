@@ -288,7 +288,7 @@ public class SolutionObj extends DSSObject {
 		// base convergence on voltage magnitude
 
 		maxError = 0.0;
-		for (int i = 0; i < ckt.getNumNodes(); i++) {
+		for (int i = 1; i <= ckt.getNumNodes(); i++) {
 			Vmag = nodeV[i].abs();
 
 			/* If base specified, use it; otherwise go on present magnitude */
@@ -565,7 +565,7 @@ public class SolutionObj extends DSSObject {
 			loadsNeedUpdating = false;
 
 			// compute new guess at voltages
-			for (int i = 0; i < ckt.getNumNodes(); i++) {  // 0 node is always 0
+			for (int i = 1; i <= ckt.getNumNodes(); i++) {  // 0 node is always 0
 				nodeV[i] = new Complex(
 					nodeV[i].getReal() - dV[i].getReal(),
 					nodeV[i].getImaginary() - dV[i].getImaginary()
@@ -835,7 +835,7 @@ public class SolutionObj extends DSSObject {
 	}
 
 	private void zeroInjCurr() {
-		for (int i = 0; i < DSS.activeCircuit.getNumNodes(); i++)
+		for (int i = 0; i <= DSS.activeCircuit.getNumNodes(); i++)
 			currents[i] = Complex.ZERO;
 	}
 
@@ -1461,7 +1461,7 @@ public class SolutionObj extends DSSObject {
 	 * @return complex node voltage
 	 */
 	public Complex getNodeV(int nref) {
-		return nodeV[nref - 1];
+		return nodeV[nref];
 	}
 
 	public Complex[] getNodeV() {
@@ -1473,7 +1473,7 @@ public class SolutionObj extends DSSObject {
 	 * @return complex current
 	 */
 	public Complex getCurrent(int nref) {
-		return currents[nref - 1];
+		return currents[nref];
 	}
 
 	/**
@@ -1481,7 +1481,7 @@ public class SolutionObj extends DSSObject {
 	 * @param current complex current
 	 */
 	public void setCurrent(int nref, Complex current) {
-		currents[nref - 1] = current;
+		currents[nref] = current;
 	}
 
 	public SolutionMode getMode() {

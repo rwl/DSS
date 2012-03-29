@@ -1130,7 +1130,7 @@ public class GeneratorObj extends PCElement {
 				case INVERTER:  // simple inverter model
 					// positive sequence contribution to ITerminal
 					// assume inverter stays in phase with pos seq voltage
-					calcVThevDynMod7(V012[0]);
+					calcVThevDynMod7(V012[1]);
 
 	                                // positive sequence contribution to ITerminal
 					I012[1] = V012[1].subtract(VThev).divide(Zthev);
@@ -1168,43 +1168,43 @@ public class GeneratorObj extends PCElement {
 			break;
 		}
 
-		if (genModel == GeneratorModel.USER_MODEL && userModel.exists()) {  // auto selects model
-			/* We have total currents in Itemp */
-			userModel.calc(VTerminal, ITerminal);  // returns terminal currents in iTerminal
-		} else {
-			/* No user model, use default Thevinen equivalent */
-			switch (nPhases) {
-			case 1:
-				calcVThevDyn();  // update for latest phase angle
-
-				getITerminal()[0] = getVTerminal(0).subtract(VThev).subtract(getVTerminal(1)).divide(new Complex(0.0, genVars.Xdp));
-				getITerminal()[1] = getITerminal(0).negate();
-
-				break;
-			case 3:
-				MathUtil.phase2SymComp(VTerminal, V012);
-
-				// positive sequence contribution to iTerminal
-				calcVThevDyn();  // update for latest phase angle
-
-				// positive sequence contribution to iTerminal
-				I012[1] = V012[1].subtract(VThev).divide(new Complex(0.0, genVars.Xdp));
-				I012[2] = V012[2].divide(new Complex(0.0, genVars.Xdpp));
-				if (connection == Connection.DELTA) {
-					I012[0] = Complex.ZERO;
-				} else {
-					I012[0] = V012[0].divide(new Complex(0.0, genVars.Xdpp));
-				}
-				MathUtil.symComp2Phase(getITerminal(), I012);  // convert back to phase components
-
-				// neutral current
-				if (connection == Connection.WYE)
-					getITerminal()[nConds] = I012[0].multiply(3.0).negate();
-				break;
-			default:
-				break;
-			}
-		}
+//		if (genModel == GeneratorModel.USER_MODEL && userModel.exists()) {  // auto selects model
+//			/* We have total currents in Itemp */
+//			userModel.calc(VTerminal, ITerminal);  // returns terminal currents in iTerminal
+//		} else {
+//			/* No user model, use default Thevinen equivalent */
+//			switch (nPhases) {
+//			case 1:
+//				calcVThevDyn();  // update for latest phase angle
+//
+//				getITerminal()[0] = getVTerminal(0).subtract(VThev).subtract(getVTerminal(1)).divide(new Complex(0.0, genVars.Xdp));
+//				getITerminal()[1] = getITerminal(0).negate();
+//
+//				break;
+//			case 3:
+//				MathUtil.phase2SymComp(VTerminal, V012);
+//
+//				// positive sequence contribution to iTerminal
+//				calcVThevDyn();  // update for latest phase angle
+//
+//				// positive sequence contribution to iTerminal
+//				I012[1] = V012[1].subtract(VThev).divide(new Complex(0.0, genVars.Xdp));
+//				I012[2] = V012[2].divide(new Complex(0.0, genVars.Xdpp));
+//				if (connection == Connection.DELTA) {
+//					I012[0] = Complex.ZERO;
+//				} else {
+//					I012[0] = V012[0].divide(new Complex(0.0, genVars.Xdpp));
+//				}
+//				MathUtil.symComp2Phase(getITerminal(), I012);  // convert back to phase components
+//
+//				// neutral current
+//				if (connection == Connection.WYE)
+//					getITerminal()[nConds] = I012[0].multiply(3.0).negate();
+//				break;
+//			default:
+//				break;
+//			}
+//		}
 
 		setITerminalUpdated(true);
 
@@ -1622,7 +1622,7 @@ public class GeneratorObj extends PCElement {
 
 			switch (connection) {
 			case WYE:  /* Wye - neutral is explicit */
-				Va = sol.getNodeV(nodeRef[0]).subtract( sol.getNodeV(nodeRef[nConds]) );
+				Va = sol.getNodeV(nodeRef[0]).subtract( sol.getNodeV(nodeRef[nConds - 1]) );
 				break;
 			case DELTA:  /* Delta -- assume neutral is at zero */
 				Va = sol.getNodeV(nodeRef[0]);
