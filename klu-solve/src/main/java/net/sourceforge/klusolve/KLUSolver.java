@@ -25,7 +25,7 @@ import edu.ufl.cise.klu.common.KLU_numeric;
 import edu.ufl.cise.klu.common.KLU_symbolic;
 
 
-public class KLUSystem extends CSparseSystem {
+public class KLUSolver extends CSparseSolver {
 
 	private static KLU_common common;
 	private static boolean common_init = false;

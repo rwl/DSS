@@ -26,7 +26,7 @@ import static edu.emory.mathcs.csparsej.tdcomplex.DZcs_transpose.cs_transpose;
 //import static edu.emory.mathcs.csparsej.tdcomplex.DZcs_print.cs_print;
 
 
-public class CSparseSystem implements ISystem {
+public class CSparseSolver implements ISolver {
 
 	protected DZcsa acx;
 
@@ -47,11 +47,11 @@ public class CSparseSystem implements ISystem {
 
 	protected boolean bFactored;      // system has been factored
 
-	public CSparseSystem() {
+	public CSparseSolver() {
 		initDefaults();
 	}
 
-	public CSparseSystem(int nBus, int nV, int nI) {
+	public CSparseSolver(int nBus, int nV, int nI) {
 		initDefaults();
 		initialize(nBus, nV, nI);
 	}
@@ -70,15 +70,6 @@ public class CSparseSystem implements ISystem {
 	}
 
 	public void clear() {
-		if (Y22 != null) Y22 = null;
-
-		if (T22 != null) T22 = null;
-
-		if (acx != null) acx = null;
-
-		if (numeric != null) numeric = null;
-		if (symbolic != null) symbolic = null;
-
 		zero_indices();
 		null_pointers();
 	}
@@ -133,20 +124,26 @@ public class CSparseSystem implements ISystem {
 		return 1;
 	}
 
-	public int solveSystem(DZcsa acxX, DZcsa acxB) {
+	public int solveSystem(double[] acxX, double[] acxB) {
 		int rc = 0;
 		int i;
+		double[] a;
 
 		acx.set(0, cs_czero());
 
 		for (i = 0; i < m_nBus; i++) {
-			acx.set(i + 1, acxB.get(i));
+			acx.set(i + 1, new double[] {
+					acxB[(2 * i)],
+					acxB[(2 * i) + 1]
+			});
 		}
 
 		solve(acx);
 
 		for (i = 0; i < m_nBus; i++) {
-			acxX.set(i, acx.get(i + 1));
+			a = acx.get(i + 1);
+			acxX[(2 * i)] = a[0];
+			acxX[(2 * i) + 1] = a[1];
 		}
 
 		return rc;
@@ -165,11 +162,11 @@ public class CSparseSystem implements ISystem {
 
 		m_nBus = m_nX = nBus;
 
-		if (m_nX > 0) {
+		if (m_nX > 0)
 			T22 = cs_spalloc (m_nX, m_nX, 2 * m_nX, true, true);
-		}
-		if (acx != null) acx = null;
+
 		acx = new DZcsa (m_nBus + 1);
+
 		return 0;
 	}
 
@@ -506,28 +503,31 @@ public class CSparseSystem implements ISystem {
 	 * @param pMat
 	 * @return
 	 */
-	public int addPrimitiveMatrix(int nOrder, int[] pNodes, int node_offset, DZcsa pMat) {
+	public int addPrimitiveMatrix(int nOrder, int[] pNodes, double[] pMat) {
 		int i, j, idRow, idCol, idVal;
 		double re, im;
 
 		// check the node numbers
 		for (i = 0; i < nOrder; i++) {
-			if (pNodes[node_offset + i] > m_nBus) return 0;
+			if (pNodes[i] > m_nBus) return 0;
 		}
 
 		// add the matrix transposed
 		for (i = 0; i < nOrder; i++) {
-			if (pNodes[node_offset + i] < 1) continue; // skip ground
+			if (pNodes[i] < 1) continue; // skip ground
 			idVal = i;
-			idRow = pNodes[node_offset + i] - 1;  // convert to zero-based
+			idRow = pNodes[i] - 1;  // convert to zero-based
 			for (j = 0; j < nOrder; j++) {
-				if (pNodes[node_offset + j] != 0) {
-					idCol = pNodes[node_offset + j] - 1;
-					re = pMat.get(idVal)[0];
-					im = pMat.get(idVal)[0];
+				if (pNodes[j] != 0) {
+					idCol = pNodes[j] - 1;
+					re = pMat[(2 * idVal)];
+					im = pMat[(2 * idVal) + 1];
 					if (re != 0.0 || im != 0.0) {
 						// stuff this value into the correct partition, transposed
-						cs_entry (T22, idCol, idRow, pMat.get(idVal));
+						cs_entry (T22, idCol, idRow, new double[] {
+								pMat[(2 * idVal)],
+								pMat[(2 * idVal) + 1]
+						});
 					}
 				}
 				// always step through values, even if we don't use them
@@ -548,7 +548,7 @@ public class CSparseSystem implements ISystem {
 	 * @return 1 for success, 0 for a size mismatch
 	 */
 	public int getCompressedMatrix(int nColP, int nNZ, int[] pColP,
-			int[] pRowIdx, DZcsa pMat) {
+			int[] pRowIdx, double[] pMat) {
 		int rc = 0;
 
 		if (T22 != null) factor();
@@ -563,7 +563,7 @@ public class CSparseSystem implements ISystem {
 		return rc;
 	}
 
-	public int getTripletMatrix(int nNZ, int[] pRows, int[] pCols, DZcsa pMat) {
+	public int getTripletMatrix(int nNZ, int[] pRows, int[] pCols, double[] pMat) {
 		int rc = 0;
 
 		if (T22 != null) factor();

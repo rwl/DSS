@@ -18,6 +18,7 @@ import com.ncond.dss.general.SpectrumObj;
 import com.ncond.dss.parser.Parser;
 import com.ncond.dss.shared.CMatrix;
 import com.ncond.dss.shared.ComplexUtil;
+import com.ncond.dss.shared.MathUtil;
 
 public class VSourceObj extends PCElement {
 
@@ -94,7 +95,7 @@ public class VSourceObj extends PCElement {
 		Z  = new CMatrix(nPhases);
 		Zinv = new CMatrix(nPhases);
 
-		factor = nPhases == 1 ? 1.0 : DSS.SQRT3;
+		factor = (nPhases == 1) ? 1.0 : DSS.SQRT3;
 
 		Rs = 0.0;
 		Rm = 0.0;
@@ -104,8 +105,8 @@ public class VSourceObj extends PCElement {
 		/* Calculate the short circuit impedance and make all other spec types agree */
 		switch (ZspecType) {
 		case MVASC:
-			X1 = Math.pow(kVBase, 2) / MVAsc3 / Math.sqrt(1.0 + 1.0 / Math.pow(X1R1, 2));
-			Xs = Math.pow(kVBase, 2) / MVAsc1 / Math.sqrt(1.0 + 1.0 / Math.pow(X0R0, 2));  // approx
+			X1 = MathUtil.sqr(kVBase) / MVAsc3 / Math.sqrt(1.0 + 1.0 / MathUtil.sqr(X1R1));
+			Xs = MathUtil.sqr(kVBase) / MVAsc1 / Math.sqrt(1.0 + 1.0 / MathUtil.sqr(X0R0));  // approx
 			R1 = X1 / X1R1;
 			Xm = Xs - X1;
 			X0 = (Xs + 2.0 * Xm);
@@ -121,8 +122,8 @@ public class VSourceObj extends PCElement {
 		case ISC:
 			MVAsc3 = DSS.SQRT3 * kVBase * Isc3 / 1000.0;
 			MVAsc1 = factor * kVBase * Isc1 / 1000.0;
-			X1 = Math.pow(kVBase, 2) / MVAsc3 / Math.sqrt(1.0 + 1.0 / Math.pow(X1R1, 2));
-			Xs = Math.pow(kVBase, 2) / MVAsc1 / Math.sqrt(1.0 + 1.0 / Math.pow(X0R0, 2));  // approx
+			X1 = MathUtil.sqr(kVBase) / MVAsc3 / Math.sqrt(1.0 + 1.0 / MathUtil.sqr(X1R1));
+			Xs = MathUtil.sqr(kVBase) / MVAsc1 / Math.sqrt(1.0 + 1.0 / MathUtil.sqr(X0R0));  // approx
 			R1 = X1 / X1R1;
 			Xm = Xs - X1;
 			X0 = (Xs + 2.0 * Xm);
@@ -161,7 +162,7 @@ public class VSourceObj extends PCElement {
 
 		for (i = 0; i < nPhases; i++) {
 			Z.set(i, i, Zs);
-			for (j = 0; j < i - 1; j++) {
+			for (j = 0; j < i; j++) {
 				Z.setSym(i, j, Zm);
 			}
 		}

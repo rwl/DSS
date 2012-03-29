@@ -2682,7 +2682,7 @@ public class ShowResults {
 					for (i = 0; i < 3; i++)
 						Zs = Zs.add( Z.get(i, i) );
 					for (i = 0; i < 3; i++)
-						for (j = 0; j < i - 1; j++)
+						for (j = 0; j < i; j++)
 							Zm = Zm.add( Z.get(i, j) );
 
 					Z1 = ComplexUtil.divide(Zs.subtract(Zm), 3.0);
@@ -2710,7 +2710,7 @@ public class ShowResults {
 					for (i = 0; i < 3; i++)
 						Cs = Cs + Yc.get(i, i).getImaginary();
 					for (i = 0; i < 3; i++)
-						for (j = 0; j < i - 1; j++)
+						for (j = 0; j < i; j++)
 							Cm = Cm + Yc.get(i, j).getImaginary();
 
 					C1 = (Cs - Cm) / 3.0 / w;  // nF

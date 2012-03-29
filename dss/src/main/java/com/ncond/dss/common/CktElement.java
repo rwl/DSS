@@ -100,9 +100,9 @@ abstract public class CktElement extends DSSObject {
 		baseFrequency = DSS.activeCircuit.getFundamental();
 	}
 
-	public void setYPrimInvalid(boolean value) {
-		YPrimInvalid = value;
-		if (value) {
+	public void setYPrimInvalid(boolean invalid) {
+		YPrimInvalid = invalid;
+		if (invalid) {
 			// if this device is in the circuit, then we have to rebuild Y on a change in Yprim
 			if (enabled) DSS.activeCircuit.getSolution().setSystemYChanged(true);
 		}
@@ -633,9 +633,9 @@ abstract public class CktElement extends DSSObject {
 	}
 
 	private void doYPrimCalcs(CMatrix YMatrix) {
-		int i, j, k = 0, ii, jj, elimRow;
+		int i, j, k, ii, jj, elimRow;
 		Complex Ynn, Yij, Yin, Ynj;
-		int[] rowEliminated = null;
+		boolean[] rowEliminated = null;
 		boolean elementOpen = false;
 
 		/*
@@ -647,7 +647,7 @@ abstract public class CktElement extends DSSObject {
 			for (j = 0; j < nConds; j++) {
 				if (!terminals[i].getConductor(j).isClosed()) {
 					if (!elementOpen) {
-						rowEliminated = new int[YOrder];
+						rowEliminated = new boolean[YOrder];
 						elementOpen = true;
 					}
 					// first do Kron reduction
@@ -655,12 +655,12 @@ abstract public class CktElement extends DSSObject {
 					Ynn = YMatrix.get(elimRow, elimRow);
 					if (Ynn.abs() == 0.0)
 						Ynn = new Complex(DSS.EPSILON, Ynn.getImaginary());
-					rowEliminated[elimRow] = 1;
+					rowEliminated[elimRow] = true;
 					for (ii = 0; ii < YOrder; ii++) {
-						if (rowEliminated[ii] == 0) {
+						if (!rowEliminated[ii]) {
 							Yin = YMatrix.get(ii, elimRow);
 							for (jj = 0; jj < YOrder; jj++) {
-								if (rowEliminated[jj] == 0) {
+								if (!rowEliminated[jj]) {
 									Yij = YMatrix.get(ii, jj);
 									Ynj = YMatrix.get(elimRow, jj);
 									YMatrix.setSym(ii, jj, Yij.subtract( Yin.multiply(Ynj).divide(Ynn) ));

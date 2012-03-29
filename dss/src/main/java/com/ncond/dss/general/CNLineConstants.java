@@ -88,7 +88,7 @@ public class CNLineConstants extends CableConstants {
 
 		// mutual impedances - between CN cores and bare neutrals
 		for (i = 0; i < getNumConds(); i++) {
-			for (j = 0; j < i - 1; j++) {
+			for (j = 0; j < i; j++) {
 				dij = Math.sqrt(MathUtil.sqr(X[i] - X[j]) + MathUtil.sqr(Y[i] - Y[j]));
 				Zmat.setSym(i, j, Lfactor.multiply(Math.log(1.0 / dij)).add(getZe(i, j)));
 			}
@@ -97,7 +97,7 @@ public class CNLineConstants extends CableConstants {
 		// mutual impedances - CN to other CN, cores, and bare neutrals
 		for (i = 0; i < getNPhases(); i++) {
 			idxi = i + getNumConds();
-			for (j = 0; j < i - 1; j++) {  // CN to other CN
+			for (j = 0; j < i; j++) {  // CN to other CN
 				idxj = j + getNumConds();
 				dij = Math.sqrt(MathUtil.sqr(X[i] - X[j]) + MathUtil.sqr(Y[i] - Y[j]));
 				Zmat.setSym(idxi, idxj, Lfactor.multiply(Math.log(1.0 / dij)).add(getZe(i, j)));

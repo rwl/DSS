@@ -196,39 +196,39 @@ public class CMatrix {
 	 * Inverts the matrix
 	 */
 	public void invert() {
-		int j, K, L, LL, m, i;
+		int j, k, l, ll, m, i;
 		int[] LT;
 		double RMY;
 		Complex T1;
 		Complex[] A;
 
-		L = nOrder;
+		l = nOrder;
 		invertError = 0;
 
 		A = values;  /* Assign pointer to something we can use */
 
 		/* Allocate LT */
 		try {
-			LT = new int[L];
+			LT = new int[l];
 		} catch (OutOfMemoryError e) {
 			invertError = 1;
 			return;
 		}
 
 		/* Zero LT */
-		for (j = 0; j < L; j++) LT[j] = 0;
+		for (j = 0; j < l; j++) LT[j] = 0;
 
 		T1 = Complex.ZERO;
-		K = 0;
+		k = 0;
 
 		/* M Loop */
-		for (m = 0; m < L; m++) {
-			for (LL = 0; LL < L; LL++) {
-				if (LT[LL] != 1) {
-					RMY = A[ index(LL, LL) ].abs() - T1.abs();  // Will this work??
+		for (m = 0; m < l; m++) {
+			for (ll = 0; ll < l; ll++) {
+				if (LT[ll] != 1) {
+					RMY = A[ idx(ll, ll) ].abs() - T1.abs();  // will this work??
 					if (RMY > 0) {
-						T1 = A[ index(LL, LL) ];
-						K = LL;
+						T1 = A[ idx(ll, ll) ];
+						k = ll;
 					}
 				}
 			}
@@ -241,36 +241,36 @@ public class CMatrix {
 			}
 
 			T1 = Complex.ZERO;
-			LT[K] = 1;
-			for (i = 0; i < L; i++) {
-				if (i != K) {
-					for (j = 0; j < L; j++) {
-						if (j != K) {
-							A[index(i, j)] = A[index(i, j)].subtract(A[index(i, K)].multiply(A[index(K, j)]).divide(A[index(K, K)]));
+			LT[k] = 1;
+			for (i = 0; i < l; i++) {
+				if (i != k) {
+					for (j = 0; j < l; j++) {
+						if (j != k) {
+							A[idx(i, j)] = A[idx(i, j)].subtract(A[idx(i, k)].multiply(A[idx(k, j)]).divide(A[idx(k, k)]));
 						}
 					}
 				}
 			}
 
-			// Invert and negate k, k element
-			A[index(K, K)] = Complex.ONE.divide(A[index(K, K)]).negate();
+			// invert and negate k, k element
+			A[idx(k, k)] = ComplexUtil.invert(A[idx(k, k)]).negate();
 
-			for (i = 0; i < L; i++) {
-				if (i != K) {
-					A[index(i, K)] = A[index(i, K)].multiply(A[index(K, K)]);
-					A[index(K, i)] = A[index(K, i)].multiply(A[index(K, K)]);
+			for (i = 0; i < l; i++) {
+				if (i != k) {
+					A[idx(i, k)] = A[idx(i, k)].multiply(A[idx(k, k)]);
+					A[idx(k, i)] = A[idx(k, i)].multiply(A[idx(k, k)]);
 				}
 			}
 		}  // m loop
 
-		for (j = 0; j < L; j++)
-			for (K = 0; K < L; K++)
-				A[ index(j, K) ] = A[ index(j, K) ].negate();
+		for (j = 0; j < l; j++)
+			for (k = 0; k < l; k++)
+				A[ idx(j, k) ] = A[ idx(j, k) ].negate();
 
 		LT = null;
 	}
 
-	private int index(int i, int j) {
+	private int idx(int i, int j) {
 		return j * nOrder + i;
 	}
 

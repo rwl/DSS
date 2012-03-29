@@ -2,7 +2,7 @@ package net.sourceforge.klusolve;
 
 import edu.emory.mathcs.csparsej.tdcomplex.DZcs_common.DZcsa;
 
-public interface ISystem {
+public interface ISolver {
 
 	void initDefaults();
 
@@ -10,7 +10,7 @@ public interface ISystem {
 
 	int factorSystem();
 
-	int solveSystem(DZcsa acxX, DZcsa acxB);
+	int solveSystem(double[] acxX, double[] acxB);
 
 	/**
 	 * This resets and reinitializes the sparse matrix, nI = nBus
@@ -110,7 +110,7 @@ public interface ISystem {
 	 * @param pMat
 	 * @return
 	 */
-	int addPrimitiveMatrix(int nOrder, int[] pNodes, int node_offset, DZcsa pMat);
+	int addPrimitiveMatrix(int nOrder, int[] pNodes, double[] pMat);
 
 	/**
 	 * Return in compressed triplet form.
@@ -122,9 +122,9 @@ public interface ISystem {
 	 * @param pMat
 	 * @return 1 for success, 0 for a size mismatch
 	 */
-	int getCompressedMatrix(int nColP, int nNZ, int[] pColP, int[] pRowIdx, DZcsa pMat);
+	int getCompressedMatrix(int nColP, int nNZ, int[] pColP, int[] pRowIdx, double[] pMat);
 
-	int getTripletMatrix(int nNZ, int[] pRows, int[] pCols, DZcsa pMat);
+	int getTripletMatrix(int nNZ, int[] pRows, int[] pCols, double[] pMat);
 
 	boolean isFactored();
 
