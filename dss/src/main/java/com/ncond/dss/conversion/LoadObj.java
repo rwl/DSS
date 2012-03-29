@@ -14,6 +14,7 @@ import com.ncond.dss.common.Circuit;
 import com.ncond.dss.common.DSS;
 import com.ncond.dss.common.DSSClass;
 import com.ncond.dss.common.SolutionObj;
+import com.ncond.dss.common.Util;
 import com.ncond.dss.common.types.Connection;
 import com.ncond.dss.common.types.SolutionLoadModel;
 import com.ncond.dss.common.types.Randomization;
@@ -24,10 +25,6 @@ import com.ncond.dss.parser.Parser;
 import com.ncond.dss.shared.CMatrix;
 import com.ncond.dss.shared.ComplexUtil;
 import com.ncond.dss.shared.MathUtil;
-
-import static com.ncond.dss.common.Util.rotatePhasorDeg;
-import static com.ncond.dss.common.Util.resizeArray;
-
 
 public class LoadObj extends PCElement {
 
@@ -211,7 +208,7 @@ public class LoadObj extends PCElement {
 
 	protected void setZIPVSize(int n) {
 		nZIPV = n;
-		ZIPV = resizeArray(ZIPV, nZIPV);
+		ZIPV = Util.resizeArray(ZIPV, nZIPV);
 	}
 
 	public void randomize(Randomization opt) {
@@ -494,7 +491,7 @@ public class LoadObj extends PCElement {
 		varBase = 1000.0 * kVArBase / nPhases;
 		YQFixed = -varBase / Math.pow(VBase, 2);
 
-		setInjCurrent(resizeArray(getInjCurrent(), YOrder));
+		setInjCurrent(Util.resizeArray(getInjCurrent(), YOrder));
 
 		setPFChanged(false);
 	}
@@ -940,7 +937,7 @@ public class LoadObj extends PCElement {
 		mult = getSpectrumObj().getMult(loadHarmonic);
 		for (int i = 0; i < nPhases; i++) {
 			curr = mult.multiply(harmMag[i]);  // get base harmonic magnitude
-			curr = rotatePhasorDeg(curr, loadHarmonic, harmAng[i]);  // time shift by fundamental
+			curr = Util.rotatePhasorDeg(curr, loadHarmonic, harmAng[i]);  // time shift by fundamental
 			putCurrInTerminalArray(getInjCurrent(), curr, i);  // put into terminal array taking into account connection
 			putCurrInTerminalArray(getITerminal(), curr.negate(), i);  // put into terminal array taking into account connection
 			setITerminalUpdated(true);
@@ -1359,8 +1356,8 @@ public class LoadObj extends PCElement {
 		Complex[] currents;
 
 		/* Make sure there's enough memory */
-		harmMag = resizeArray(harmMag, nPhases);
-		harmAng = resizeArray(harmAng, nPhases);
+		harmMag = Util.resizeArray(harmMag, nPhases);
+		harmAng = Util.resizeArray(harmAng, nPhases);
 		currents = new Complex[YOrder];  // to hold currents
 
 		loadFundamental = DSS.activeCircuit.getSolution().getFrequency();

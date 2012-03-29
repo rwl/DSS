@@ -5,8 +5,7 @@
  */
 package com.ncond.dss.shared;
 
-import static com.ncond.dss.common.Util.resizeArray;
-
+import com.ncond.dss.common.Util;
 
 public class ZoneEndsList {
 
@@ -24,7 +23,7 @@ public class ZoneEndsList {
 	public void add(CktTreeNode node, int endBusRef) {
 		numEnds += 1;
 		endNodeList.add(node);
-		endBuses = resizeArray(endBuses, numEnds);
+		endBuses = Util.resizeArray(endBuses, numEnds);
 		endBuses[numEnds - 1] = endBusRef;
 	}
 

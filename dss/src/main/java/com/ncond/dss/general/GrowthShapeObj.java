@@ -9,9 +9,7 @@ import java.io.OutputStream;
 import java.io.PrintWriter;
 
 import com.ncond.dss.common.DSSClass;
-
-import static com.ncond.dss.common.Util.resizeArray;
-
+import com.ncond.dss.common.Util;
 
 public class GrowthShapeObj extends DSSObject {
 
@@ -58,7 +56,7 @@ public class GrowthShapeObj extends DSSObject {
 			if (index >= 0) {  // returns 1.0 for base year or any year previous
 				if (index >= nYears) {  // make some more space
 					nYears = index + 10;
-					yearMult = resizeArray(yearMult, nYears);
+					yearMult = Util.resizeArray(yearMult, nYears);
 					reCalcYearMult();
 				}
 				mult = yearMult[index];

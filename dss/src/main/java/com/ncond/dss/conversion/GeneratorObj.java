@@ -18,6 +18,7 @@ import com.ncond.dss.common.Circuit;
 import com.ncond.dss.common.DSS;
 import com.ncond.dss.common.DSSClass;
 import com.ncond.dss.common.SolutionObj;
+import com.ncond.dss.common.Util;
 import com.ncond.dss.common.types.Connection;
 import com.ncond.dss.common.types.SolutionLoadModel;
 import com.ncond.dss.common.types.Randomization;
@@ -28,38 +29,6 @@ import com.ncond.dss.shared.CMatrix;
 import com.ncond.dss.shared.ComplexUtil;
 import com.ncond.dss.shared.GeneratorVars;
 import com.ncond.dss.shared.MathUtil;
-
-import static com.ncond.dss.common.Util.appendToEventLog;
-import static com.ncond.dss.common.Util.compareTextShortest;
-import static com.ncond.dss.common.Util.parseObjectClassandName;
-import static com.ncond.dss.common.Util.clearEventLog;
-import static com.ncond.dss.common.Util.extractFileDir;
-import static com.ncond.dss.common.Util.rotatePhasorDeg;
-import static com.ncond.dss.common.Util.rotatePhasorRad;
-import static com.ncond.dss.common.Util.fireOffEditor;
-import static com.ncond.dss.common.Util.dumpAllocationFactors;
-import static com.ncond.dss.common.Util.stripExtension;
-import static com.ncond.dss.common.Util.doResetFaults;
-import static com.ncond.dss.common.Util.doResetControls;
-import static com.ncond.dss.common.Util.doResetKeepList;
-import static com.ncond.dss.common.Util.powerFactor;
-import static com.ncond.dss.common.Util.getCktElementIndex;
-import static com.ncond.dss.common.Util.getControlModeID;
-import static com.ncond.dss.common.Util.convertPFToPFRange2;
-import static com.ncond.dss.common.Util.interpretStringListArray;
-import static com.ncond.dss.common.Util.getMinPUVoltage;
-import static com.ncond.dss.common.Util.convertPFRange2ToPF;
-import static com.ncond.dss.common.Util.getTotalPowerFromSources;
-import static com.ncond.dss.common.Util.goForwardAndRephase;
-import static com.ncond.dss.common.Util.interpretDblArray;
-import static com.ncond.dss.common.Util.interpretYesNo;
-import static com.ncond.dss.common.Util.strReal;
-import static com.ncond.dss.common.Util.getLoadModel;
-import static com.ncond.dss.common.Util.resizeArray;
-import static com.ncond.dss.common.Util.rewriteAlignedFile;
-import static com.ncond.dss.common.Util.stripClassName;
-import static com.ncond.dss.common.Util.getSolutionModeID;
-
 
 /**
  * The generator is essentially a negative load that can be dispatched.
@@ -583,7 +552,7 @@ public class GeneratorObj extends PCElement {
 		dQdV = dQdVSaved;  // for model = 3
 		deltaQMax = (varMax - varMin) * 0.10;  // limit to 10% of range
 
-		setInjCurrent(resizeArray(getInjCurrent(), YOrder));
+		setInjCurrent(Util.resizeArray(getInjCurrent(), YOrder));
 
 		/* Update any user-written models */
 		if (userModel.exists()) userModel.updateModel();
@@ -740,8 +709,8 @@ public class GeneratorObj extends PCElement {
 					sol.getDynaVars().t,
 					sol.getIteration(),
 					ckt.getLoadMultiplier());
-				pw.print(getSolutionModeID() + ", " +
-					getLoadModel() + ", " +
+				pw.print(Util.getSolutionModeID() + ", " +
+					Util.getLoadModel() + ", " +
 					genModel + ", " +
 					dQdV + ", " +
 					(Vavg * 0.001732 / genVars.kVGeneratorBase) + ", " +
@@ -1267,12 +1236,12 @@ public class GeneratorObj extends PCElement {
 		genHarmonic = sol.getFrequency() / genFundamental;
 
 		e = getSpectrumObj().getMult(genHarmonic).multiply(VThevHarm);  // get base harmonic magnitude
-		e = rotatePhasorRad(e, genHarmonic, thetaHarm);  // time shift by fundamental frequency phase shift
+		e = Util.rotatePhasorRad(e, genHarmonic, thetaHarm);  // time shift by fundamental frequency phase shift
 
 		for (i = 0; i < nPhases; i++) {
 			cBuffer[i] = e;
 			if (i < nPhases)
-				e = rotatePhasorDeg(e, genHarmonic, -120.0);  // assume 3-phase generator
+				e = Util.rotatePhasorDeg(e, genHarmonic, -120.0);  // assume 3-phase generator
 		}
 
 		/* Handle wye connection */
@@ -1689,8 +1658,8 @@ public class GeneratorObj extends PCElement {
 		setPropertyValue(15, "variable"); //"status"  fixed or variable
 		setPropertyValue(16, "1"); //"class"
 		setPropertyValue(17, "1.0");
-		setPropertyValue(18, strReal(kVArMax, 3));
-		setPropertyValue(19, strReal(kVArMin, 3));
+		setPropertyValue(18, Util.strReal(kVArMax, 3));
+		setPropertyValue(19, Util.strReal(kVArMin, 3));
 		setPropertyValue(20, "0.1");
 		setPropertyValue(21, "no");
 		setPropertyValue(22, "0.90");

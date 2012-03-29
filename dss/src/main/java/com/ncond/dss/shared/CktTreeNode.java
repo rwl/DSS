@@ -5,10 +5,8 @@
  */
 package com.ncond.dss.shared;
 
+import com.ncond.dss.common.Util;
 import com.ncond.dss.general.DSSObject;
-
-import static com.ncond.dss.common.Util.resizeArray;
-
 
 public class CktTreeNode {
 
@@ -109,7 +107,7 @@ public class CktTreeNode {
 
 	public void setToBusReference(int value) {
 		numToBuses += 1;
-		toBusList = resizeArray(toBusList, numToBuses);
+		toBusList = Util.resizeArray(toBusList, numToBuses);
 		toBusList[numToBuses] = value;
 	}
 

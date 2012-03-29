@@ -12,13 +12,9 @@ import java.io.IOException;
 import com.ncond.dss.common.DSS;
 import com.ncond.dss.common.DSSClass;
 import com.ncond.dss.common.DSSClassDefs;
+import com.ncond.dss.common.Util;
 import com.ncond.dss.parser.Parser;
 import com.ncond.dss.shared.CommandList;
-
-import static com.ncond.dss.common.Util.interpretDblArray;
-import static com.ncond.dss.common.Util.interpretYesNo;
-import static com.ncond.dss.common.Util.resizeArray;
-
 
 public class LoadShape extends DSSClass {
 
@@ -170,13 +166,13 @@ public class LoadShape extends DSSClass {
 				elem.setInterval(parser.doubleValue());
 				break;
 			case 2:
-				elem.setPMultipliers(resizeArray(elem.getPMultipliers(), elem.getNumPoints()));
+				elem.setPMultipliers(Util.resizeArray(elem.getPMultipliers(), elem.getNumPoints()));
 				// allow possible resetting (to a lower value) of num points when specifying multipliers not hours
-				elem.setNumPoints(interpretDblArray(param, elem.getNumPoints(), elem.getPMultipliers()));
+				elem.setNumPoints(Util.interpretDblArray(param, elem.getNumPoints(), elem.getPMultipliers()));
 				break;
 			case 3:
-				elem.setHours(resizeArray(elem.getHours(), elem.getNumPoints()));
-				interpretDblArray(param, elem.getNumPoints(), elem.getHours());
+				elem.setHours(Util.resizeArray(elem.getHours(), elem.getNumPoints()));
+				Util.interpretDblArray(param, elem.getNumPoints(), elem.getHours());
 				elem.setInterval(0.0);
 				break;
 			case 4:
@@ -208,11 +204,11 @@ public class LoadShape extends DSSClass {
 				}
 				break;
 			case 10:
-				elem.setQMultipliers(resizeArray(elem.getQMultipliers(), elem.getNumPoints()));
-				interpretDblArray(param, elem.getNumPoints(), elem.getQMultipliers());
+				elem.setQMultipliers(Util.resizeArray(elem.getQMultipliers(), elem.getNumPoints()));
+				Util.interpretDblArray(param, elem.getNumPoints(), elem.getQMultipliers());
 				break;
 			case 11:
-				elem.setUseActual(interpretYesNo(param));
+				elem.setUseActual(Util.interpretYesNo(param));
 				break;
 			case 12:
 				elem.setMaxP(parser.doubleValue());
@@ -283,20 +279,20 @@ public class LoadShape extends DSSClass {
 
 			elem.setNumPoints(other.getNumPoints());
 			elem.setInterval(other.getInterval());
-			elem.setPMultipliers(resizeArray(elem.getPMultipliers(), elem.getNumPoints()));
+			elem.setPMultipliers(Util.resizeArray(elem.getPMultipliers(), elem.getNumPoints()));
 			for (int i = 0; i < elem.getNumPoints(); i++)
 				elem.setPMultiplier(i, other.getPMultiplier(i));
 
 			if (other.getQMultipliers() != null)
-				elem.setQMultipliers(resizeArray(elem.getQMultipliers(), elem.getNumPoints()));
-			elem.setQMultipliers( resizeArray(elem.getQMultipliers(), elem.getNumPoints()) );
+				elem.setQMultipliers(Util.resizeArray(elem.getQMultipliers(), elem.getNumPoints()));
+			elem.setQMultipliers( Util.resizeArray(elem.getQMultipliers(), elem.getNumPoints()) );
 			for (int i = 0; i < elem.getNumPoints(); i++)
 				elem.setQMultiplier(i, other.getQMultiplier(i));
 
 			if (elem.getInterval() > 0.0) {
 				elem.setHours(new double[0]);
 			} else {
-				elem.setHours( resizeArray(elem.getHours(), elem.getNumPoints()) );
+				elem.setHours( Util.resizeArray(elem.getHours(), elem.getNumPoints()) );
 				for (int i = 0; i < elem.getNumPoints(); i++)
 					elem.setHour(i, other.getHour(i));
 			}
@@ -362,10 +358,10 @@ public class LoadShape extends DSSClass {
 
 			LoadShapeObj elem = activeLoadShapeObj;
 
-			elem.setPMultipliers(resizeArray(elem.getPMultipliers(), elem.getNumPoints()));
+			elem.setPMultipliers(Util.resizeArray(elem.getPMultipliers(), elem.getNumPoints()));
 
 			if (elem.getInterval() == 0.0)
-				elem.setHours(resizeArray(elem.getHours(), elem.getNumPoints()));
+				elem.setHours(Util.resizeArray(elem.getHours(), elem.getNumPoints()));
 
 			int i = 0;
 			while (((s = br.readLine()) != null) && i < elem.getNumPoints()) {
@@ -409,10 +405,10 @@ public class LoadShape extends DSSClass {
 			fr = new FileReader(fileName);
 			br = new BufferedReader(fr);
 
-			elem.setPMultipliers(resizeArray(elem.getPMultipliers(), elem.getNumPoints()));
+			elem.setPMultipliers(Util.resizeArray(elem.getPMultipliers(), elem.getNumPoints()));
 
 			if (elem.getInterval() == 0.0)
-				elem.setHours(resizeArray(elem.getHours(), elem.getNumPoints()));
+				elem.setHours(Util.resizeArray(elem.getHours(), elem.getNumPoints()));
 
 			i = 0;
 			s = "";

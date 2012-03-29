@@ -27,6 +27,7 @@ import com.ncond.dss.common.DSSClass;
 import com.ncond.dss.common.DSSClassDefs;
 import com.ncond.dss.common.Solution;
 import com.ncond.dss.common.SolutionObj;
+import com.ncond.dss.common.Util;
 import com.ncond.dss.common.exceptions.SolverError;
 import com.ncond.dss.common.types.Connection;
 import com.ncond.dss.common.types.Distribution;
@@ -56,37 +57,6 @@ import com.ncond.dss.shared.CommandList;
 import com.ncond.dss.shared.ComplexUtil;
 import com.ncond.dss.shared.MathUtil;
 import com.ncond.dss.shared.PstCalc;
-
-import static com.ncond.dss.common.Util.expandFileName;
-import static com.ncond.dss.common.Util.compareTextShortest;
-import static com.ncond.dss.common.Util.parseObjectClassandName;
-import static com.ncond.dss.common.Util.clearEventLog;
-import static com.ncond.dss.common.Util.extractFileDir;
-import static com.ncond.dss.common.Util.writeClassFile;
-import static com.ncond.dss.common.Util.dumpAllDSSCommands;
-import static com.ncond.dss.common.Util.fireOffEditor;
-import static com.ncond.dss.common.Util.dumpAllocationFactors;
-import static com.ncond.dss.common.Util.stripExtension;
-import static com.ncond.dss.common.Util.doResetFaults;
-import static com.ncond.dss.common.Util.doResetControls;
-import static com.ncond.dss.common.Util.doResetKeepList;
-import static com.ncond.dss.common.Util.doShellCmd;
-import static com.ncond.dss.common.Util.getCktElementIndex;
-import static com.ncond.dss.common.Util.getControlModeID;
-import static com.ncond.dss.common.Util.getLoadModel;
-import static com.ncond.dss.common.Util.getMaxPUVoltage;
-import static com.ncond.dss.common.Util.getMinPUVoltage;
-import static com.ncond.dss.common.Util.getSolutionModeID;
-import static com.ncond.dss.common.Util.getTotalPowerFromSources;
-import static com.ncond.dss.common.Util.goForwardAndRephase;
-import static com.ncond.dss.common.Util.interpretDblArray;
-import static com.ncond.dss.common.Util.interpretYesNo;
-import static com.ncond.dss.common.Util.isPathBetween;
-import static com.ncond.dss.common.Util.makeDistributedGenerators;
-import static com.ncond.dss.common.Util.resizeArray;
-import static com.ncond.dss.common.Util.rewriteAlignedFile;
-import static com.ncond.dss.common.Util.stripClassName;
-import static com.ncond.dss.common.Util.traceAndEdit;
 
 public class ExecHelper {
 
@@ -119,14 +89,14 @@ public class ExecHelper {
 		paramName = parser.getNextParam().toLowerCase();
 		param = parser.stringValue();
 		if (paramName.length() > 0) {  // if specified, must be object or an abbreviation.
-			if (compareTextShortest(paramName, "object") != 0) {
+			if (Util.compareTextShortest(paramName, "object") != 0) {
 				DSS.doSimpleMsg("object=class.name expected as first parameter in command." +
 						DSS.CRLF + parser.getCommand(), 240);
 				return;
 			}
 		}
 
-		parseObjectClassandName(param, objClass, objName);
+		Util.parseObjectClassandName(param, objClass, objName);
 	}
 
 	/**
@@ -154,7 +124,7 @@ public class ExecHelper {
 
 		if (objClass[0].equalsIgnoreCase("circuit")) {
 			DSS.makeNewCircuit(objName[0]);
-			clearEventLog();  // start the event log in the current directory
+			Util.clearEventLog();  // start the event log in the current directory
 		} else {
 			// everything else must be a circuit element or DSS object
 			handle = addObject(objClass[0], objName[0]);
@@ -245,7 +215,7 @@ public class ExecHelper {
 
 		// get next parm and try to interpret as a file name
 		Parser.getInstance().getNextParam();
-		ExecCommands.redirFile = expandFileName(Parser.getInstance().stringValue());
+		ExecCommands.redirFile = Util.expandFileName(Parser.getInstance().stringValue());
 
 		if (!ExecCommands.redirFile.equals("")) {
 			saveDir = DSS.currentDirectory;
@@ -274,7 +244,7 @@ public class ExecHelper {
 
 			try {
 				// change directory to path specified by file in case that loads in more files
-				currDir = extractFileDir(ExecCommands.redirFile);
+				currDir = Util.extractFileDir(ExecCommands.redirFile);
 				DSS.currentDirectory = currDir;
 				if (isCompile) DSS.setDataPath(currDir);
 
@@ -436,7 +406,7 @@ public class ExecHelper {
 
 		DSS.inShowResults = true;
 
-		if (objClass.length() == 0 || compareTextShortest(objClass, "meters") == 0) {
+		if (objClass.length() == 0 || Util.compareTextShortest(objClass, "meters") == 0) {
 			// save monitors and meters
 			for (MonitorObj mon : ckt.getMonitors()) {
 				mon.save();
@@ -447,11 +417,11 @@ public class ExecHelper {
 			return result;
 		}
 
-		if (compareTextShortest(objClass, "circuit") == 0) {
+		if (Util.compareTextShortest(objClass, "circuit") == 0) {
 			if (!ckt.save(saveDir)) result = 1;
 			return result;
 		}
-		if (compareTextShortest(objClass, "voltages") == 0) {
+		if (Util.compareTextShortest(objClass, "voltages") == 0) {
 			ckt.getSolution().saveVoltages();
 			return result;
 		}
@@ -470,7 +440,7 @@ public class ExecHelper {
 				}
 				saveFile = saveDir + DSS.SEPARATOR + saveFile;
 			}
-			writeClassFile(cls, saveFile, false);  // just write the class with no checks
+			Util.writeClassFile(cls, saveFile, false);  // just write the class with no checks
 		}
 
 		DSS.lastResultFile = saveFile;
@@ -662,8 +632,8 @@ public class ExecHelper {
 		if (param.length() > 0) {
 			if (param.equalsIgnoreCase("commands")) {
 				if (!DSS.noFormsAllowed) {
-					dumpAllDSSCommands(fileName);
-					fireOffEditor(fileName);
+					Util.dumpAllDSSCommands(fileName);
+					Util.fireOffEditor(fileName);
 					return result;
 				}
 			}
@@ -673,7 +643,7 @@ public class ExecHelper {
 				if (!DSS.noFormsAllowed) {
 					fileName = DSS.dataDirectory + "BusHashList.txt";
 					ckt.getBusList().dumpToFile(fileName);
-					fireOffEditor(fileName);
+					Util.fireOffEditor(fileName);
 					return result;
 				}
 			}
@@ -683,15 +653,15 @@ public class ExecHelper {
 				if (!DSS.noFormsAllowed) {
 					fileName = DSS.dataDirectory + "DeviceHashList.txt";
 					ckt.getDeviceList().dumpToFile(fileName);
-					fireOffEditor(fileName);
+					Util.fireOffEditor(fileName);
 					return result;
 				}
 			}
 
 			if (param.toLowerCase().startsWith("alloc")) {
 				fileName = DSS.dataDirectory + "AllocationFactors.txt";
-				dumpAllocationFactors(fileName);
-				fireOffEditor(fileName);
+				Util.dumpAllocationFactors(fileName);
+				Util.fireOffEditor(fileName);
 				return result;
 			}
 
@@ -779,7 +749,7 @@ public class ExecHelper {
 			DSS.doSimpleMsg("Error writing property dump.", -1);
 		}
 
-		fireOffEditor(DSS.dataDirectory + DSS.circuitName_ + "PropertyDump.txt");
+		Util.fireOffEditor(DSS.dataDirectory + DSS.circuitName_ + "PropertyDump.txt");
 
 		return result;
 	}
@@ -843,7 +813,7 @@ public class ExecHelper {
 
 			ckt.getActiveCktElement().setActiveTerminalIdx(terminal);
 			ckt.getActiveCktElement().setConductorClosed(conductor, false);
-			DSS.setActiveBus(stripExtension(ckt.getActiveCktElement().getBus(ckt.getActiveCktElement().getActiveTerminalIdx())));
+			DSS.setActiveBus(Util.stripExtension(ckt.getActiveCktElement().getBus(ckt.getActiveCktElement().getActiveTerminalIdx())));
 		} else {
 			DSS.doSimpleMsg("Error in Open command: Circuit element not found." +
 					DSS.CRLF + parser.getCommand(), 259);
@@ -873,7 +843,7 @@ public class ExecHelper {
 
 			ckt.getActiveCktElement().setActiveTerminalIdx(terminal);
 			ckt.getActiveCktElement().setConductorClosed(conductor, true);
-			DSS.setActiveBus(stripExtension(ckt.getActiveCktElement().getBus(ckt.getActiveCktElement().getActiveTerminalIdx())));
+			DSS.setActiveBus(Util.stripExtension(ckt.getActiveCktElement().getBus(ckt.getActiveCktElement().getActiveTerminalIdx())));
 		} else {
 			DSS.doSimpleMsg("Error in Close command circuit element not found." +
 					DSS.CRLF + parser.getCommand(), 260);
@@ -892,10 +862,10 @@ public class ExecHelper {
 		if (param.length() == 0) {
 			doResetMonitors();
 			doResetMeters();
-			doResetFaults();
-			doResetControls();
-			clearEventLog();
-			doResetKeepList();
+			Util.doResetFaults();
+			Util.doResetControls();
+			Util.clearEventLog();
+			Util.doResetKeepList();
 		} else {
 			switch (param.charAt(0)) {
 			case 'M':
@@ -909,16 +879,16 @@ public class ExecHelper {
 				}
 				break;
 			case 'F':  // faults
-				doResetFaults();
+				Util.doResetFaults();
 				break;
 			case 'C':  // controls
-				doResetControls();
+				Util.doResetControls();
 				break;
 			case 'E':  // eventLog
-				clearEventLog();
+				Util.clearEventLog();
 				break;
 			case 'K':
-				doResetKeepList();
+				Util.doResetKeepList();
 				break;
 			default:
 				DSS.doSimpleMsg("Unknown argument to reset command: \"" + param + "\"", 261);
@@ -1021,7 +991,7 @@ public class ExecHelper {
 		param = Parser.getInstance().stringValue();
 
 		if (new File(param).exists()) {
-			fireOffEditor(param);
+			Util.fireOffEditor(param);
 		} else {
 			DSS.globalResult = "File \"" + param + "\" does not exist.";
 		}
@@ -1798,7 +1768,7 @@ public class ExecHelper {
 			/* Parsing zero-fills the array */
 
 			sol.setHarmonicListSize(num);
-			sol.setHarmonicList(resizeArray(sol.getHarmonicList(), sol.getHarmonicListSize()));
+			sol.setHarmonicList(Util.resizeArray(sol.getHarmonicList(), sol.getHarmonicListSize()));
 			for (int i = 0; i < sol.getHarmonicListSize(); i++)
 				sol.getHarmonicList()[i] = tmp[i];
 		}
@@ -2130,7 +2100,7 @@ public class ExecHelper {
 				ckt.setReductionMaxAngle(parser.doubleValue());
 			break;
 		case 'S':  // stubs
-			if (compareTextShortest(param, "switch") == 0) {
+			if (Util.compareTextShortest(param, "switch") == 0) {
 				ckt.setReductionStrategy(ReductionStrategy.SWITCHES);
 			} else {
 				ckt.setReductionZmag(0.02);
@@ -2198,13 +2168,13 @@ public class ExecHelper {
 		String param = Parser.getInstance().stringValue();
 
 		if (new File(param).exists()) {
-			if (!rewriteAlignedFile(param)) ret = 1;
+			if (!Util.rewriteAlignedFile(param)) ret = 1;
 		} else {
 			DSS.doSimpleMsg("File \"" + param + "\" does not exist.", 278);
 			ret = 1;
 		}
 
-		if (ret == 0) fireOffEditor(DSS.globalResult);
+		if (ret == 0) Util.fireOffEditor(DSS.globalResult);
 
 		return ret;
 	}
@@ -2339,7 +2309,7 @@ public class ExecHelper {
 	        		br.close();
 	        		fr.close();
 
-	        		fireOffEditor(DSS.circuitName_ + "Vdiff.txt");
+	        		Util.fireOffEditor(DSS.circuitName_ + "Vdiff.txt");
 	        	} catch (Exception e) {
 	        		DSS.doSimpleMsg("Error opening saved voltages or Vdiff file: " + e.getMessage(), 280);
 	     	           	return ret;
@@ -2366,13 +2336,13 @@ public class ExecHelper {
 		} else {
 			s.append("Status = Not solved" + CRLF);
 		}
-		s.append("Solution Mode = " + getSolutionModeID() + CRLF);
+		s.append("Solution Mode = " + Util.getSolutionModeID() + CRLF);
 		s.append("Number = " + String.valueOf(ckt.getSolution().getNumberOfTimes()) + CRLF);
 		s.append("Load Mult = " + String.format("%5.3f", ckt.getLoadMultiplier()) + CRLF);
 		s.append("Devices = " + String.format("%d", ckt.getNumDevices()) + CRLF);
 		s.append("Buses = " + String.format("%d", ckt.getNumBuses()) + CRLF);
 		s.append("Nodes = " + String.format("%d", ckt.getNumNodes()) + CRLF);
-		s.append("Control Mode =" + getControlModeID() + CRLF);
+		s.append("Control Mode =" + Util.getControlModeID() + CRLF);
 		s.append("Total Iterations = " + String.valueOf(ckt.getSolution().getIteration()) + CRLF);
 		s.append("Control Iterations = " + String.valueOf(ckt.getSolution().getControlIteration()) + CRLF);
 		s.append("Max Sol Iter = " + String.valueOf(ckt.getSolution().getMostIterationsDone()) + CRLF);
@@ -2382,9 +2352,9 @@ public class ExecHelper {
 		if (ckt != null) {
 			s.append(String.format("Year = %d ", ckt.getSolution().getYear()) + CRLF);
 			s.append(String.format("Hour = %d ", ckt.getSolution().getIntHour()) + CRLF);
-			s.append("Max pu. voltage = " + String.format("%-.5g ", getMaxPUVoltage()) + CRLF);
-			s.append("Min pu. voltage = " + String.format("%-.5g ", getMinPUVoltage(true)) + CRLF);
-			cPower = getTotalPowerFromSources().multiply(0.000001);  // MVA
+			s.append("Max pu. voltage = " + String.format("%-.5g ", Util.getMaxPUVoltage()) + CRLF);
+			s.append("Min pu. voltage = " + String.format("%-.5g ", Util.getMinPUVoltage(true)) + CRLF);
+			cPower = Util.getTotalPowerFromSources().multiply(0.000001);  // MVA
 			s.append(String.format("Total Active Power:   %-.6g MW", cPower.getReal()) + CRLF);
 			s.append(String.format("Total Reactive Power: %-.6g Mvar", cPower.getImaginary()) + CRLF);
 			cLosses = ckt.getLosses().multiply(0.000001);
@@ -2396,9 +2366,9 @@ public class ExecHelper {
 			}
 			s.append(String.format("Total Reactive Losses: %-.6g Mvar", cLosses.getImaginary()) + CRLF);
 			s.append(String.format("Frequency = %g Hz", ckt.getSolution().getFrequency()) + CRLF);
-			s.append("Mode = " + getSolutionModeID() + CRLF);
-			s.append("Control Mode = " + getControlModeID() + CRLF);
-			s.append("Load Model = " + getLoadModel() + CRLF);
+			s.append("Mode = " + Util.getSolutionModeID() + CRLF);
+			s.append("Control Mode = " + Util.getControlModeID() + CRLF);
+			s.append("Load Model = " + Util.getLoadModel() + CRLF);
 		}
 
 		DSS.globalResult = s.toString();
@@ -2470,7 +2440,7 @@ public class ExecHelper {
 			param = parser.stringValue();
 		}
 
-		makeDistributedGenerators(kW, pf, how, skip, fileName);
+		Util.makeDistributedGenerators(kW, pf, how, skip, fileName);
 
 		return 0;
 	}
@@ -2519,7 +2489,7 @@ public class ExecHelper {
 					iRegisters[i] = (int) Math.round(dRegisters[i]);
 				break;
 			case 3:
-				peakDay = interpretYesNo(param);
+				peakDay = Util.interpretYesNo(param);
 				break;
 			case 4:
 				meterName = parser.stringValue();
@@ -2561,13 +2531,13 @@ public class ExecHelper {
 			if (paramName.length() == 0) {
 				paramPointer += 1;
 			} else {
-				if (compareTextShortest(paramName, "case1") == 0) {
+				if (Util.compareTextShortest(paramName, "case1") == 0) {
 					paramPointer = 0;
-				} else if (compareTextShortest(paramName, "case2") == 0) {
+				} else if (Util.compareTextShortest(paramName, "case2") == 0) {
 					paramPointer = 1;
-				} else if (compareTextShortest(paramName, "register") == 0) {
+				} else if (Util.compareTextShortest(paramName, "register") == 0) {
 					paramPointer = 2;
-				} else if (compareTextShortest(paramName, "meter") == 0) {
+				} else if (Util.compareTextShortest(paramName, "meter") == 0) {
 					paramPointer = 3;
 				} else {
 					unknown = true;
@@ -2716,9 +2686,9 @@ public class ExecHelper {
 			if (paramName.length() == 0) {
 				paramPointer += 1;
 			} else {
-				if (compareTextShortest(paramName, "what") == 0) {
+				if (Util.compareTextShortest(paramName, "what") == 0) {
 					paramPointer = 0;
-				} else if (compareTextShortest(paramName, "element") == 0) {
+				} else if (Util.compareTextShortest(paramName, "element") == 0) {
 					paramPointer = 1;
 				} else {
 					unknown = true;
@@ -2752,7 +2722,7 @@ public class ExecHelper {
 			param = Parser.getInstance().stringValue();
 		}
 
-		devIndex = getCktElementIndex(elemName);
+		devIndex = Util.getCktElementIndex(elemName);
 		if (devIndex >= 0) {  //  element must already exist
 			elem = ckt.getCktElements().get(devIndex);
 			if (elem instanceof CktElement) {
@@ -2773,7 +2743,7 @@ public class ExecHelper {
 	}
 
 	public static int doADOScmd() {
-		doShellCmd(Parser.getInstance().getRemainder());
+		Util.doShellCmd(Parser.getInstance().getRemainder());
 		return 0;
 	}
 
@@ -2851,8 +2821,8 @@ public class ExecHelper {
 		/* Check for errors */
 
 		/* If user specified full line name, get rid of "line." */
-		line1 = stripClassName(line1);
-		line2 = stripClassName(line2);
+		line1 = Util.stripClassName(line1);
+		line2 = Util.stripClassName(line2);
 
 		if (line1.length() == 0 || line2.length() == 0) {
 			DSS.doSimpleMsg("Both line 1 and line 2 must be specified!", 28702);
@@ -2896,10 +2866,10 @@ public class ExecHelper {
 		 */
 		traceDirection = 0;
 
-		if (isPathBetween(lineElem1, lineElem2))
+		if (Util.isPathBetween(lineElem1, lineElem2))
 			traceDirection = 1;
 
-		if (isPathBetween(lineElem2, lineElem1))
+		if (Util.isPathBetween(lineElem2, lineElem1))
 			traceDirection = 2;
 
 		if (lineCodeSpecified) {
@@ -2913,10 +2883,10 @@ public class ExecHelper {
 
 		switch (traceDirection) {
 		case 1:
-			traceAndEdit(lineElem1, lineElem2, nPhases, editString);
+			Util.traceAndEdit(lineElem1, lineElem2, nPhases, editString);
 			break;
 		case 2:
-			traceAndEdit(lineElem2, lineElem1, nPhases, editString);
+			Util.traceAndEdit(lineElem2, lineElem1, nPhases, editString);
 			break;
 		default:
 			DSS.doSimpleMsg("Traceback path not found between line 1 and line 2.", 28707);
@@ -2994,7 +2964,7 @@ public class ExecHelper {
 
 		for (LoadObj load : ckt.getLoads()) {
 			Load.activeLoadObj = load;  // for updateVoltageBases to work
-			sBus = stripExtension(load.getBus(0));
+			sBus = Util.stripExtension(load.getBus(0));
 			iBus = ckt.getBusList().find(sBus);
 			bus = ckt.getBus(iBus);
 			kvln = bus.getKVBase();
@@ -3008,7 +2978,7 @@ public class ExecHelper {
 		}
 
 		for (GeneratorObj gen : ckt.getGenerators()) {
-			sBus = stripExtension(gen.getBus(0));
+			sBus = Util.stripExtension(gen.getBus(0));
 			iBus = ckt.getBusList().find(sBus);
 			bus = ckt.getBus(iBus);
 			kvln = bus.getKVBase();
@@ -3051,7 +3021,7 @@ public class ExecHelper {
 				if (uuidVal.indexOf('{') < 0)
 					uuidVal = '{' + uuidVal + '}';
 				// find this object
-				parseObjectClassandName(nameVal, devClass, devName);
+				Util.parseObjectClassandName(nameVal, devClass, devName);
 				if (devClass[0].equalsIgnoreCase("circuit")) {
 					named = DSS.activeCircuit;
 				} else {
@@ -3121,7 +3091,7 @@ public class ExecHelper {
 			DSS.doSimpleMsg("Error writing load shapes: " + e.getMessage(), -1);
 		}
 
-		fireOffEditor(fileName);
+		Util.fireOffEditor(fileName);
 
 		return 0;
 	}
@@ -3220,7 +3190,7 @@ public class ExecHelper {
 				scriptFileName = param;
 				break;
 			case 4:
-				transfStop = interpretYesNo(param);
+				transfStop = Util.interpretYesNo(param);
 				break;
 			default:
 				DSS.doSimpleMsg("Unknown parameter on command line: "+param, 28711);
@@ -3232,7 +3202,7 @@ public class ExecHelper {
 		}
 
 		lineClass = (Line) DSS.DSSClassList.get(DSS.classNames.find("Line"));
-		pStartLine = (LineObj) lineClass.find(stripClassName(startLine));
+		pStartLine = (LineObj) lineClass.find(Util.stripClassName(startLine));
 		if (pStartLine == null) {
 			DSS.doSimpleMsg("Starting line (" + startLine + ") not found.", 28712);
 			return 0;
@@ -3248,7 +3218,7 @@ public class ExecHelper {
 			return 0;
 		}
 
-		goForwardAndRephase(pStartLine, newPhases, myEditString, scriptFileName, transfStop);
+		Util.goForwardAndRephase(pStartLine, newPhases, myEditString, scriptFileName, transfStop);
 
 		return 0;
 	}
@@ -3343,10 +3313,10 @@ public class ExecHelper {
 			switch (paramPointer) {
 			case 0:
 				npts = parser.integerValue();
-				Varray = resizeArray(Varray, npts);
+				Varray = Util.resizeArray(Varray, npts);
 				break;
 			case 1:
-				npts = interpretDblArray(param, npts, Varray);
+				npts = Util.interpretDblArray(param, npts, Varray);
 				break;
 			case 3:
 				double f = DSS.activeCircuit.getSolution().getFrequency();

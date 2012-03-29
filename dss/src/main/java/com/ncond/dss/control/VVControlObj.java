@@ -18,14 +18,10 @@ import com.ncond.dss.common.DSS;
 import com.ncond.dss.common.DSSClass;
 import com.ncond.dss.common.DSSClassDefs;
 import com.ncond.dss.common.SolutionObj;
+import com.ncond.dss.common.Util;
 import com.ncond.dss.conversion.GeneratorObj;
 import com.ncond.dss.general.XYCurveObj;
 import com.ncond.dss.shared.PointerList;
-
-import static com.ncond.dss.common.Util.appendToEventLog;
-import static com.ncond.dss.common.Util.getCktElementIndex;
-import static com.ncond.dss.common.Util.resizeArray;
-
 
 public class VVControlObj extends ControlElem {
 
@@ -113,7 +109,7 @@ public class VVControlObj extends ControlElem {
 		int devIndex;
 
 		/* Check for existence of monitored element */
-		devIndex = getCktElementIndex(elementName);
+		devIndex = Util.getCktElementIndex(elementName);
 
 		if (devIndex >= 0) {
 			monitoredElement = DSS.activeCircuit.getCktElements().get(devIndex);
@@ -126,7 +122,7 @@ public class VVControlObj extends ControlElem {
 				// sets name of i-th terminal's connected bus in VVCControl's buslist
 				setBus(0, monitoredElement.getBus(elementTerminalIdx));
 			}
-			resizeArray(cBuffer, monitoredElement.getYOrder());
+			Util.resizeArray(cBuffer, monitoredElement.getYOrder());
 			condOffset = elementTerminalIdx * monitoredElement.getNumConds();
 			// for speedy sampling
 		} else {
@@ -136,7 +132,7 @@ public class VVControlObj extends ControlElem {
 
 		if (generators.size() == 0) makeGenList();
 
-		devIndex = getCktElementIndex("generator." + generatorNames.get(0));
+		devIndex = Util.getCktElementIndex("generator." + generatorNames.get(0));
 
 		if (devIndex >= 0) {
 			// right now we only support one controlled element (generator) per vvcontrol
@@ -166,7 +162,7 @@ public class VVControlObj extends ControlElem {
 		if (monitoredElement != null) {
 			setBus(0, monitoredElement.getBus(elementTerminalIdx));
 			// allocate a buffer big enough to hold everything from the monitored element
-			//resizeArray(cBuffer, monitoredElement.getYorder());
+			//Util.resizeArray(cBuffer, monitoredElement.getYorder());
 			//condOffset = elementTerminal * monitoredElement.getNConds();  // for speedy sampling
 		}
 
@@ -267,7 +263,7 @@ public class VVControlObj extends ControlElem {
 						genKVAr = Math.signum(QNew) * Math.min( Math.abs(kVAr_Limit * 1000.0), Math.abs(QNew) ) / 1000.0;
 						if (genKVAr != gen.getKVArBase()) gen.setPresentKVAr(genKVAr);
 					}
-					appendToEventLog("VoltVarControl." + getName(),
+					Util.appendToEventLog("VoltVarControl." + getName(),
 						String.format("**Set var output level to**, kvar= %.5g", genKVAr));
 				}
 			}
@@ -332,11 +328,11 @@ public class VVControlObj extends ControlElem {
 				// sol.setLoadsNeedUpdating(true);  // force recalc of power parms
 				controlActionHandle = ckt.getControlQueue().push(sol.getIntHour(),
 						sol.getDynaVars().t + timeDelay, pendingChange, 0, this);
-				appendToEventLog("VoltVarControl." + getName(),
+				Util.appendToEventLog("VoltVarControl." + getName(),
 						String.format("**Ready to change var output**, Vavgpu= %.5g sec,", VAvgPu));
 			} else {
 				ckt.getControlQueue().delete(controlActionHandle);
-				appendToEventLog("VoltVarControl." + getName(), "**DONE**");
+				Util.appendToEventLog("VoltVarControl." + getName(), "**DONE**");
 			}
 		} else {
 			DSS.doSimpleMsg("Could not find any generators, or the vvc curve size is zero.", 1234);
@@ -439,7 +435,7 @@ public class VVControlObj extends ControlElem {
 
 			/* Allocate uniform weights */
 			listSize = generators.size();
-			resizeArray(weights, listSize);
+			Util.resizeArray(weights, listSize);
 			for (i = 0; i < listSize; i++) weights[i] = 1.0;
 		}
 

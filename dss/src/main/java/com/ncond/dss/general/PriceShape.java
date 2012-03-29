@@ -12,12 +12,9 @@ import java.io.IOException;
 import com.ncond.dss.common.DSS;
 import com.ncond.dss.common.DSSClass;
 import com.ncond.dss.common.DSSClassDefs;
+import com.ncond.dss.common.Util;
 import com.ncond.dss.parser.Parser;
 import com.ncond.dss.shared.CommandList;
-
-import static com.ncond.dss.common.Util.interpretDblArray;
-import static com.ncond.dss.common.Util.resizeArray;
-
 
 public class PriceShape extends DSSClass {
 
@@ -152,13 +149,13 @@ public class PriceShape extends DSSClass {
 				elem.setInterval(parser.doubleValue());
 				break;
 			case 2:
-				elem.setPriceValues(resizeArray(elem.getPriceValues(), elem.getNumPoints()));
+				elem.setPriceValues(Util.resizeArray(elem.getPriceValues(), elem.getNumPoints()));
 				// allow possible resetting (to a lower value) of num points when specifying prices not hours
-				elem.setNumPoints(interpretDblArray(param, elem.getNumPoints(), elem.getPriceValues()));
+				elem.setNumPoints(Util.interpretDblArray(param, elem.getNumPoints(), elem.getPriceValues()));
 				break;
 			case 3:
-				elem.setHours(resizeArray(elem.getHours(), elem.getNumPoints()));
-				interpretDblArray(param, elem.getNumPoints(), elem.getHours());
+				elem.setHours(Util.resizeArray(elem.getHours(), elem.getNumPoints()));
+				Util.interpretDblArray(param, elem.getNumPoints(), elem.getHours());
 				break;
 			case 4:
 				elem.setMean(parser.doubleValue());
@@ -235,14 +232,14 @@ public class PriceShape extends DSSClass {
 
 			elem.setNumPoints(other.getNumPoints());
 			elem.setInterval(other.getInterval());
-			elem.setPriceValues(resizeArray(elem.getPriceValues(), elem.getNumPoints()));
+			elem.setPriceValues(Util.resizeArray(elem.getPriceValues(), elem.getNumPoints()));
 
 			for (i = 0; i < elem.getNumPoints(); i++)
 				elem.getPriceValues()[i] = other.getPriceValues()[i];
 			if (elem.getInterval() > 0.0) {
 				elem.setHours(new double[0]);
 			} else {
-				elem.setHours(resizeArray(elem.getHours(), elem.getNumPoints()));
+				elem.setHours(Util.resizeArray(elem.getHours(), elem.getNumPoints()));
 			}
 			for (i = 0; i < elem.getNumPoints(); i++)
 				elem.getHours()[i] = other.getHours()[i];
@@ -297,10 +294,10 @@ public class PriceShape extends DSSClass {
 
 			PriceShapeObj elem = activePriceShapeObj;
 
-			elem.setPriceValues(resizeArray(elem.getPriceValues(), elem.getNumPoints()));
+			elem.setPriceValues(Util.resizeArray(elem.getPriceValues(), elem.getNumPoints()));
 
 			if (elem.getInterval() == 0.0)
-				elem.setHours(resizeArray(elem.getHours(), elem.getNumPoints()));
+				elem.setHours(Util.resizeArray(elem.getHours(), elem.getNumPoints()));
 
 			int i = 0;
 			while (((s = br.readLine()) != null) && i < elem.getNumPoints()) {
@@ -343,9 +340,9 @@ public class PriceShape extends DSSClass {
 			fr = new FileReader(fileName);
 			br = new BufferedReader(fr);
 
-			elem.setPriceValues(resizeArray(elem.getPriceValues(), elem.getNumPoints()));
+			elem.setPriceValues(Util.resizeArray(elem.getPriceValues(), elem.getNumPoints()));
 			if (elem.getInterval() == 0.0)
-				elem.setHours(resizeArray(elem.getHours(), elem.getNumPoints()));
+				elem.setHours(Util.resizeArray(elem.getHours(), elem.getNumPoints()));
 
 			i = 0;
 			s = "";

@@ -10,12 +10,10 @@ import java.io.PrintWriter;
 
 import com.ncond.dss.common.DSS;
 import com.ncond.dss.common.DSSClass;
+import com.ncond.dss.common.Util;
 import com.ncond.dss.delivery.Transformer;
 import com.ncond.dss.delivery.TransformerObj;
 import com.ncond.dss.delivery.Winding;
-
-import static com.ncond.dss.common.Util.resizeArray;
-
 
 public class XfmrCodeObj extends DSSObject {
 
@@ -89,11 +87,11 @@ public class XfmrCodeObj extends DSSObject {
 			maxWindings = n;
 		        newWdgSize = (numWindings - 1) * numWindings / 2;
 
-			windings = resizeArray(windings, maxWindings);  // reallocate collector array
+			windings = Util.resizeArray(windings, maxWindings);  // reallocate collector array
 			for (int i = 0; i < maxWindings; i++)
 				windings[i] = new Winding();
 
-			XSC = resizeArray(XSC, newWdgSize);
+			XSC = Util.resizeArray(XSC, newWdgSize);
 			for (int i = oldWdgSize; i < newWdgSize; i++)
 				XSC[i] = 0.30;   // default to something
 		} else {

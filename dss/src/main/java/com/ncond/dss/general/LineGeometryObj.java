@@ -10,11 +10,9 @@ import java.io.PrintWriter;
 
 import com.ncond.dss.common.DSS;
 import com.ncond.dss.common.DSSClass;
+import com.ncond.dss.common.Util;
 import com.ncond.dss.shared.CMatrix;
 import com.ncond.dss.shared.LineUnits;
-
-import static com.ncond.dss.common.Util.checkForBlanks;
-
 
 /**
  * The LineGeometry object is a general DSS object used by all circuits
@@ -280,7 +278,7 @@ public class LineGeometryObj extends DSSObject {
 			default:
 				f.printf("~ %s=%s",
 					parentClass.getPropertyName(parentClass.getRevPropertyIdxMap(iProp)),
-					checkForBlanks(propertyValues[iProp]));
+					Util.checkForBlanks(propertyValues[iProp]));
 				f.println();
 				break;
 			}

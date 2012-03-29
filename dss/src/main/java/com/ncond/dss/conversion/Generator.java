@@ -11,14 +11,12 @@ import java.io.PrintWriter;
 
 import com.ncond.dss.common.DSS;
 import com.ncond.dss.common.DSSClassDefs;
+import com.ncond.dss.common.Util;
 import com.ncond.dss.common.types.Connection;
 import com.ncond.dss.common.types.Randomization;
 import com.ncond.dss.general.LoadShapeObj;
 import com.ncond.dss.parser.Parser;
 import com.ncond.dss.shared.CommandList;
-
-import static com.ncond.dss.common.Util.interpretYesNo;
-
 
 public class Generator extends PCClass {
 
@@ -363,7 +361,7 @@ public class Generator extends PCClass {
 					elem.setPVFactor(parser.doubleValue());  // declaration factor
 					break;
 				case 21:
-					elem.setDebugTrace(interpretYesNo(param));
+					elem.setDebugTrace(Util.interpretYesNo(param));
 					break;
 				case 22:
 					elem.setVMinPU(parser.doubleValue());
@@ -372,7 +370,7 @@ public class Generator extends PCClass {
 					elem.setVMaxPU(parser.doubleValue());
 					break;
 				case 24:
-					elem.setForcedOn(interpretYesNo(param));
+					elem.setForcedOn(Util.interpretYesNo(param));
 					break;
 				case 25:
 					elem.getGenVars().kVARating = parser.doubleValue();

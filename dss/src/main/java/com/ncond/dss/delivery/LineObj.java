@@ -31,9 +31,6 @@ import com.ncond.dss.shared.ComplexUtil;
 import com.ncond.dss.shared.LineUnits;
 import com.ncond.dss.shared.MathUtil;
 
-import static com.ncond.dss.common.Util.stripExtension;
-
-
 public class LineObj extends PDElement {
 
 	/* keep track of last frequency computed for geometry */
@@ -813,9 +810,9 @@ public class LineObj extends PDElement {
 
 			/* Rename the line */
 			if (series) {
-				newName = stripExtension(getBus(0)) + "~" + stripExtension(getBus(1));
+				newName = Util.stripExtension(getBus(0)) + "~" + Util.stripExtension(getBus(1));
 			} else {
-				newName = stripExtension(getBus(0)) + "||" + stripExtension(getBus(1));
+				newName = Util.stripExtension(getBus(0)) + "||" + Util.stripExtension(getBus(1));
 			}
 
 			/* Update control element connections to this line */

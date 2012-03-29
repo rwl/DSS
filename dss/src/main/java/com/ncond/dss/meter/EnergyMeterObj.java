@@ -22,6 +22,7 @@ import com.ncond.dss.common.DSSClass;
 import com.ncond.dss.common.DSSClassDefs;
 import com.ncond.dss.common.FeederObj;
 import com.ncond.dss.common.SolutionObj;
+import com.ncond.dss.common.Util;
 import com.ncond.dss.conversion.GeneratorObj;
 import com.ncond.dss.conversion.LoadObj;
 import com.ncond.dss.conversion.PCElement;
@@ -31,13 +32,6 @@ import com.ncond.dss.parser.Parser;
 import com.ncond.dss.shared.CktTree;
 import com.ncond.dss.shared.CktTreeNode;
 import com.ncond.dss.shared.LineUnits;
-
-import static com.ncond.dss.common.Util.checkParallel;
-import static com.ncond.dss.common.Util.getCktElementIndex;
-import static com.ncond.dss.common.Util.isLineElement;
-import static com.ncond.dss.common.Util.isTransformerElement;
-import static com.ncond.dss.common.Util.writeActiveDSSObject;
-
 
 /**
  * This class of device accumulates the energy of the voltage and current in
@@ -256,7 +250,7 @@ public class EnergyMeterObj extends MeterElement {
 
 	@Override
 	public void recalcElementData() {
-		int idx = getCktElementIndex(elementName);
+		int idx = Util.getCktElementIndex(elementName);
 
 		if (idx >= 0) {  // monitored element must already exist
 			meteredElement = (CktElement) DSS.activeCircuit.getCktElements().get(idx);
@@ -607,7 +601,7 @@ public class EnergyMeterObj extends MeterElement {
 				totalNoLoadLosses = totalNoLoadLosses.add(S_NoLoadLosses);  // accumulate total no load losses in meter zone
 
 				/* Line and transformer elements */
-				if (isLineElement(pdElem) && lineLosses) {
+				if (Util.isLineElement(pdElem) && lineLosses) {
 					totalLineLosses = totalLineLosses.add(S_TotalLosses);  // accumulate total losses in meter zone
 					if (seqLosses) {
 						pdElem.getSeqLosses(pS_PosSeqLosses, pS_NegSeqLosses, pS_ZeroSeqLosses);
@@ -629,7 +623,7 @@ public class EnergyMeterObj extends MeterElement {
 							total1PhaseLosses = total1PhaseLosses.add(S_TotalLosses);
 						}
 					}
-				} else if (isTransformerElement(pdElem) && xfmrLosses) {
+				} else if (Util.isTransformerElement(pdElem) && xfmrLosses) {
 					totalTransformerLosses = totalTransformerLosses.add(S_TotalLosses);  // accumulate total losses in meter zone
 				}
 
@@ -637,9 +631,9 @@ public class EnergyMeterObj extends MeterElement {
 					int vbi = branchList.getPresentBranch().getVoltBaseIndex();
 					if (vbi >= 0) {
 						VBaseTotalLosses[vbi] = VBaseTotalLosses[vbi] + S_TotalLosses.getReal();
-						if (isLineElement(pdElem)) {
+						if (Util.isLineElement(pdElem)) {
 							VBaseLineLosses[vbi] = VBaseLineLosses[vbi] + S_TotalLosses.getReal();
-						} else if (isTransformerElement(pdElem)) {
+						} else if (Util.isTransformerElement(pdElem)) {
 							VBaseLoadLosses[vbi] = VBaseLoadLosses[vbi] + S_LoadLosses.getReal();
 							VBaseNoLoadLosses[vbi] = VBaseNoLoadLosses[vbi] + S_NoLoadLosses.getReal();
 						}
@@ -883,7 +877,7 @@ public class EnergyMeterObj extends MeterElement {
 					// attach them as generic objects to cktTree node
 					testBusRef = activeBranch.getTerminal(iTerm).getBusRef();
 					branchList.getPresentBranch().setToBusReference(testBusRef);  // add this as a "to" bus reference
-					if (isLineElement(activeBranch)) {  // convert to consistent units (km)
+					if (Util.isLineElement(activeBranch)) {  // convert to consistent units (km)
 						ckt.getBus(testBusRef - 1).setDistFromMeter(ckt.getBus(branchList.getPresentBranch().getFromBusReference() - 1).getDistFromMeter()
 								+ ((LineObj) activeBranch).getLen() * LineUnits.convertLineUnits(((LineObj) activeBranch).getLengthUnits(), LineUnits.KM));
 					} else {
@@ -934,8 +928,8 @@ public class EnergyMeterObj extends MeterElement {
 											if (testElement.isChecked()) {  /* This branch is on some meter's list already */
 												branchList.getPresentBranch().setLoopedHere(true);  /* It's a loop */
 												branchList.getPresentBranch().setLoopLineObj(testElement);
-												if (isLineElement(activeBranch) && isLineElement(testElement))
-													if (checkParallel(activeBranch, testElement))
+												if (Util.isLineElement(activeBranch) && Util.isLineElement(testElement))
+													if (Util.checkParallel(activeBranch, testElement))
 														branchList.getPresentBranch().setParallel(true);  /* It's paralleled with another line */
 											} else {  // push testElement onto stack and set properties
 												isFeederEnd = false;  // for interpolation
@@ -1470,10 +1464,10 @@ public class EnergyMeterObj extends MeterElement {
 				if (elem.isEnabled()) {
 					ckt.setActiveCktElement(elem);
 					nbranches += 1;
-					writeActiveDSSObject(pwbranches, "new");  // sets hasBeenSaved(true)
+					Util.writeActiveDSSObject(pwbranches, "new");  // sets hasBeenSaved(true)
 					if (ckt.getActiveCktElement().hasControl()) {
 						ckt.setActiveCktElement(ckt.getActiveCktElement().getControlElement());
-						writeActiveDSSObject(pwbranches, "new");  // regulator control ... also, relays, switch controls
+						Util.writeActiveDSSObject(pwbranches, "new");  // regulator control ... also, relays, switch controls
 					}
 
 					shuntElem = (CktElement) branchList.getFirstObject();
@@ -1488,24 +1482,24 @@ public class EnergyMeterObj extends MeterElement {
 							}
 							ckt.setActiveCktElement(shuntElem);  // reset in case edit mangles it
 							nloads += 1;
-							writeActiveDSSObject(pwloads, "new");
+							Util.writeActiveDSSObject(pwloads, "new");
 						} else if ((shuntElem.getObjType() & DSSClassDefs.CLASSMASK) == DSSClassDefs.GEN_ELEMENT) {
 							ngens += 1;
-							writeActiveDSSObject(pwgens, "new");
+							Util.writeActiveDSSObject(pwgens, "new");
 							if (ckt.getActiveCktElement().hasControl()) {
 								ckt.setActiveCktElement(ckt.getActiveCktElement().getControlElement());
-								writeActiveDSSObject(pwgens, "new");
+								Util.writeActiveDSSObject(pwgens, "new");
 							}
 						} else if ((shuntElem.getObjType() & DSSClassDefs.CLASSMASK) == DSSClassDefs.CAP_ELEMENT) {
 							ncaps += 1;
-							writeActiveDSSObject(pwcaps, "new");
+							Util.writeActiveDSSObject(pwcaps, "new");
 							if (ckt.getActiveCktElement().hasControl()) {
 								ckt.setActiveCktElement(ckt.getActiveCktElement().getControlElement());
-								writeActiveDSSObject(pwcaps, "new");
+								Util.writeActiveDSSObject(pwcaps, "new");
 							}
 						} else {
 							nshunts += 1;
-							writeActiveDSSObject(pwshunts, "new");
+							Util.writeActiveDSSObject(pwshunts, "new");
 						}
 						shuntElem = (CktElement) branchList.getNextObject();
 					}

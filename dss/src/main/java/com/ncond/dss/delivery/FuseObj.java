@@ -14,14 +14,10 @@ import com.ncond.dss.common.Circuit;
 import com.ncond.dss.common.CktElement;
 import com.ncond.dss.common.DSS;
 import com.ncond.dss.common.DSSClass;
+import com.ncond.dss.common.Util;
 import com.ncond.dss.control.ControlAction;
 import com.ncond.dss.control.ControlElem;
 import com.ncond.dss.general.TCC_CurveObj;
-
-import static com.ncond.dss.common.Util.appendToEventLog;
-import static com.ncond.dss.common.Util.getCktElementIndex;
-import static com.ncond.dss.common.Util.resizeArray;
-
 
 /**
  * A control element that is connected to a terminal of a
@@ -101,7 +97,7 @@ public class FuseObj extends ControlElem {
 	public void recalcElementData() {
 		int i;
 
-		int devIndex = getCktElementIndex(monitoredElementName);
+		int devIndex = Util.getCktElementIndex(monitoredElementName);
 
 		if (devIndex >= 0) {
 			monitoredElement = (CktElement) DSS.activeCircuit.getCktElements().get(devIndex);
@@ -118,13 +114,13 @@ public class FuseObj extends ControlElem {
 				setBus(0, monitoredElement.getBus(monitoredElementTerminalIdx));
 
 				// allocate a buffer big enough to hold everything from the monitored element
-				cBuffer = resizeArray(cBuffer, monitoredElement.getYOrder());
+				cBuffer = Util.resizeArray(cBuffer, monitoredElement.getYOrder());
 				condOffset = (monitoredElementTerminalIdx + 1) * monitoredElement.getNumConds();  // for speedy sampling
 			}
 		}
 
 		/* Check for existence of controlled element */
-		devIndex = getCktElementIndex(elementName);
+		devIndex = Util.getCktElementIndex(elementName);
 
 		if (devIndex >= 0) {  // both CktElement and monitored element must already exist
 			setControlledElement(DSS.activeCircuit.getCktElements().get(devIndex));
@@ -190,7 +186,7 @@ public class FuseObj extends ControlElem {
 			case CLOSE:
 				if (readyToBlow[phs]) {  // ignore if we became disarmed in meantime
 					getControlledElement().setConductorClosed(phs, false);  // open all phases of active terminal
-					appendToEventLog("Fuse." + getName(), "Phase "+(phs+1)+" blown");
+					Util.appendToEventLog("Fuse." + getName(), "Phase "+(phs+1)+" blown");
 					hAction[phs] = 0;
 				}
 				break;

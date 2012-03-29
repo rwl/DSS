@@ -10,9 +10,7 @@ import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 
 import com.ncond.dss.common.DSS;
-
-import static com.ncond.dss.common.Util.resizeArray;
-
+import com.ncond.dss.common.Util;
 
 /**
  * This Hash list module is designed to make searches on arrays of strings more
@@ -103,8 +101,8 @@ public class HashList {
 		// resize by reasonable amount
 		int oldAllocation = subList.nAllocated;
 		subList.nAllocated = oldAllocation + allocationInc;
-		subList.str = resizeArray(subList.str, subList.nAllocated);
-		subList.idx = resizeArray(subList.idx, subList.nAllocated);
+		subList.str = Util.resizeArray(subList.str, subList.nAllocated);
+		subList.idx = Util.resizeArray(subList.idx, subList.nAllocated);
 	}
 
 	private int hash(String s) {
@@ -115,7 +113,7 @@ public class HashList {
 	/** Makes the linear string list larger. */
 	private void resizeStrArray() {
 		numElementsAllocated += allocationInc * numLists;
-		stringArray = resizeArray(stringArray, numElementsAllocated);
+		stringArray = Util.resizeArray(stringArray, numElementsAllocated);
 	}
 
 	/**

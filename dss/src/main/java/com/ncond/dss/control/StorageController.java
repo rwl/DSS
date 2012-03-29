@@ -7,16 +7,10 @@ package com.ncond.dss.control;
 
 import com.ncond.dss.common.DSS;
 import com.ncond.dss.common.DSSClassDefs;
+import com.ncond.dss.common.Util;
 import com.ncond.dss.general.LoadShapeObj;
 import com.ncond.dss.parser.Parser;
 import com.ncond.dss.shared.CommandList;
-
-import static com.ncond.dss.common.Util.convertPFToPFRange2;
-import static com.ncond.dss.common.Util.interpretStringListArray;
-import static com.ncond.dss.common.Util.interpretDblArray;
-import static com.ncond.dss.common.Util.interpretYesNo;
-import static com.ncond.dss.common.Util.resizeArray;
-
 
 public class StorageController extends ControlClass {
 
@@ -262,19 +256,19 @@ public class StorageController extends ControlClass {
 				elem.setPctkWBand(parser.doubleValue());
 				break;
 			case StorageController.PF_TARGET:
-				elem.setPFTarget( convertPFToPFRange2(parser.doubleValue()) );
+				elem.setPFTarget( Util.convertPFToPFRange2(parser.doubleValue()) );
 				break;
 			case StorageController.PF_BAND:
 				elem.setPFBand(parser.doubleValue());
 				break;
 			case StorageController.ELEMENT_LIST:
-				interpretStringListArray(param, elem.getStorageNameList());
+				Util.interpretStringListArray(param, elem.getStorageNameList());
 				break;
 			case StorageController.WEIGHTS:
 				elem.setFleetSize(elem.getStorageNameList().size());
 				if (elem.getFleetSize() > 0) {
-					elem.setWeights( resizeArray(elem.getWeights(), elem.getFleetSize()) );
-					interpretDblArray(param, elem.getFleetSize(), elem.getWeights());
+					elem.setWeights( Util.resizeArray(elem.getWeights(), elem.getFleetSize()) );
+					Util.interpretDblArray(param, elem.getFleetSize(), elem.getWeights());
 				}
 				break;
 			case StorageController.MODE_DISCHARGE:
@@ -328,10 +322,10 @@ public class StorageController extends ControlClass {
 				elem.setDutyShape(param);
 				break;
 			case StorageController.EVENTLOG:
-				elem.setShowEventLog(interpretYesNo(param));
+				elem.setShowEventLog(Util.interpretYesNo(param));
 				break;
 			case StorageController.VAR_DISPATCH:
-				elem.setDispatchVars(interpretYesNo(param));
+				elem.setDispatchVars(Util.interpretYesNo(param));
 				break;
 			case StorageController.INHIBIT_TIME:
 				elem.setInhibitHrs( Math.max(1, parser.integerValue()) );  // >= 1
@@ -377,7 +371,7 @@ public class StorageController extends ControlClass {
 				elem.setElementListSpecified(true);
 				elem.setFleetSize(elem.getStorageNameList().size());
 				// realloc weights to be same size as possible number of storage elements
-				elem.setWeights(resizeArray(elem.getWeights(), elem.getFleetSize()));
+				elem.setWeights(Util.resizeArray(elem.getWeights(), elem.getFleetSize()));
 				for (int i = 0; i < elem.getFleetSize(); i++)
 					elem.getWeights()[i] = 1.0;
 				break;
@@ -435,7 +429,7 @@ public class StorageController extends ControlClass {
 
 			elem.setFleetSize(elem.getStorageNameList().size());
 			if (elem.getFleetSize() > 0) {
-				elem.setWeights( resizeArray(elem.getWeights(), elem.getFleetSize()) );
+				elem.setWeights( Util.resizeArray(elem.getWeights(), elem.getFleetSize()) );
 				for (int i = 0; i < elem.getFleetSize(); i++)
 					elem.getWeights()[i] = other.getWeights()[i];
 			}

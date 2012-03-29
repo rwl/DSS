@@ -8,14 +8,11 @@ package com.ncond.dss.meter;
 import com.ncond.dss.common.Circuit;
 import com.ncond.dss.common.DSS;
 import com.ncond.dss.common.DSSClassDefs;
+import com.ncond.dss.common.Util;
 import com.ncond.dss.conversion.PCElement;
 import com.ncond.dss.delivery.PDElement;
 import com.ncond.dss.parser.Parser;
 import com.ncond.dss.shared.CommandList;
-
-import static com.ncond.dss.common.Util.interpretConnection;
-import static com.ncond.dss.common.Util.interpretYesNo;
-
 
 public class Sensor extends MeterClass {
 
@@ -133,7 +130,7 @@ public class Sensor extends MeterClass {
 				elem.setKVBase(parser.doubleValue());
 				break;
 			case 3:
-				elem.setClearSpecified(interpretYesNo(param));
+				elem.setClearSpecified(Util.interpretYesNo(param));
 				break;
 			case 4:
 				parser.parseAsVector(elem.getNumPhases(), elem.getSensorVoltage());  // inits to zero
@@ -148,7 +145,7 @@ public class Sensor extends MeterClass {
 				parser.parseAsVector(elem.getNumPhases(), elem.getSensorKVAr());
 				break;
 			case 8:
-				elem.setConn(interpretConnection(param));
+				elem.setConn(Util.interpretConnection(param));
 				break;
 			case 9:
 				elem.setDeltaDirection( elem.limitToPlusMinusOne(parser.integerValue()) );

@@ -8,12 +8,10 @@ package com.ncond.dss.general;
 import com.ncond.dss.common.DSS;
 import com.ncond.dss.common.DSSClass;
 import com.ncond.dss.common.DSSClassDefs;
+import com.ncond.dss.common.Util;
 import com.ncond.dss.delivery.Winding;
 import com.ncond.dss.parser.Parser;
 import com.ncond.dss.shared.CommandList;
-
-import static com.ncond.dss.common.Util.interpretConnection;
-
 
 public class XfmrCode extends DSSClass {
 
@@ -173,7 +171,7 @@ public class XfmrCode extends DSSClass {
 			if (str.length() > 0) {
 				switch (which) {
 				case CONN:
-					elem.getWinding(elem.getActiveWindingIdx()).setConnection(interpretConnection(str));
+					elem.getWinding(elem.getActiveWindingIdx()).setConnection(Util.interpretConnection(str));
 					break;
 				case KV:
 					elem.getWinding(elem.getActiveWindingIdx()).setKVLL(DSS.auxParser.doubleValue());
@@ -230,7 +228,7 @@ public class XfmrCode extends DSSClass {
 				elem.setActiveWindingIdx(parser.integerValue() - 1);
 				break;
 			case 3:
-				elem.getWinding(elem.getActiveWindingIdx()).setConnection(interpretConnection(param));
+				elem.getWinding(elem.getActiveWindingIdx()).setConnection(Util.interpretConnection(param));
 				break;
 			case 4:
 				elem.getWinding(elem.getActiveWindingIdx()).setKVLL(parser.doubleValue());

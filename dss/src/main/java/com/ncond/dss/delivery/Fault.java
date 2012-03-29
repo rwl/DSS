@@ -7,13 +7,9 @@ package com.ncond.dss.delivery;
 
 import com.ncond.dss.common.DSS;
 import com.ncond.dss.common.DSSClassDefs;
+import com.ncond.dss.common.Util;
 import com.ncond.dss.parser.Parser;
 import com.ncond.dss.shared.CommandList;
-
-import static com.ncond.dss.common.Util.stripExtension;
-import static com.ncond.dss.common.Util.interpretYesNo;
-import static com.ncond.dss.common.Util.resizeArray;
-
 
 public class Fault extends PDClass {
 
@@ -92,7 +88,7 @@ public class Fault extends PDClass {
 		int orderFound = Parser.getInstance().parseAsSymMatrix(elem.getNumPhases(), matBuffer);
 
 		if (orderFound > 0) {  // parse was successful
-			elem.setGMatrix(resizeArray(elem.getGMatrix(), elem.getNumPhases() * elem.getNumPhases()));
+			elem.setGMatrix(Util.resizeArray(elem.getGMatrix(), elem.getNumPhases() * elem.getNumPhases()));
 			for (int j = 0; j < elem.getNumPhases() * elem.getNumPhases(); j++)
 				elem.getGMatrix()[j] = matBuffer[j];
 		}
@@ -180,7 +176,7 @@ public class Fault extends PDClass {
 				elem.setOnTime(parser.doubleValue());
 				break;
 			case 7:
-				elem.setTemporary(interpretYesNo(param));
+				elem.setTemporary(Util.interpretYesNo(param));
 				break;
 			case 8:
 				elem.setMinAmps(parser.doubleValue());
@@ -197,7 +193,7 @@ public class Fault extends PDClass {
 				elem.setPropertyValue(1, elem.getBus(1));  // bus2 gets modified if bus1 is
 				break;
 			case 1:
-				if (!stripExtension(elem.getBus(0)).equalsIgnoreCase(stripExtension(elem.getBus(1))))
+				if (!Util.stripExtension(elem.getBus(0)).equalsIgnoreCase(Util.stripExtension(elem.getBus(1))))
 					elem.setShunt(false);
 				break;
 			case 2:
@@ -268,7 +264,7 @@ public class Fault extends PDClass {
 			if (other.getGMatrix() == null) {
 				elem.setGMatrix(null);
 			} else {
-				elem.setGMatrix(resizeArray(elem.getGMatrix(), elem.getNumPhases() * elem.getNumPhases()));
+				elem.setGMatrix(Util.resizeArray(elem.getGMatrix(), elem.getNumPhases() * elem.getNumPhases()));
 				for (int i = 0; i < elem.getNumPhases() * elem.getNumPhases(); i++)
 					elem.getGMatrix()[i] = other.getGMatrix()[i];
 			}

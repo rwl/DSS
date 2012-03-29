@@ -12,12 +12,9 @@ import java.io.IOException;
 import com.ncond.dss.common.DSS;
 import com.ncond.dss.common.DSSClass;
 import com.ncond.dss.common.DSSClassDefs;
+import com.ncond.dss.common.Util;
 import com.ncond.dss.parser.Parser;
 import com.ncond.dss.shared.CommandList;
-
-import static com.ncond.dss.common.Util.interpretDblArray;
-import static com.ncond.dss.common.Util.resizeArray;
-
 
 public class XYCurve extends DSSClass {
 
@@ -140,11 +137,11 @@ public class XYCurve extends DSSClass {
 				elem.setNumPoints(parser.integerValue());
 				break;
 			case 1:
-				tempPointsBuffer = resizeArray(tempPointsBuffer, elem.getNumPoints() * 2);
+				tempPointsBuffer = Util.resizeArray(tempPointsBuffer, elem.getNumPoints() * 2);
 				// allow possible resetting (to a lower value) of num points when specifying temperatures not hours
-				elem.setNumPoints(interpretDblArray(param, (elem.getNumPoints() * 2), tempPointsBuffer) / 2);
-				elem.setYValues(resizeArray(elem.getYValues(), elem.getNumPoints()));
-				elem.setXValues(resizeArray(elem.getXValues(), elem.getNumPoints()));
+				elem.setNumPoints(Util.interpretDblArray(param, (elem.getNumPoints() * 2), tempPointsBuffer) / 2);
+				elem.setYValues(Util.resizeArray(elem.getYValues(), elem.getNumPoints()));
+				elem.setXValues(Util.resizeArray(elem.getXValues(), elem.getNumPoints()));
 				for (int i = 0; i < elem.getNumPoints(); i++) {
 					elem.getXValues()[i] = tempPointsBuffer[2 * i];
 					elem.getYValues()[i] = tempPointsBuffer[2 * i + 1];
@@ -154,13 +151,13 @@ public class XYCurve extends DSSClass {
 				tempPointsBuffer = null;  // throw away temp array
 				break;
 			case 2:
-				elem.setYValues(resizeArray(elem.getYValues(), elem.getNumPoints()));
-				elem.setNumPoints(interpretDblArray(param, elem.getNumPoints(), elem.getYValues()));
+				elem.setYValues(Util.resizeArray(elem.getYValues(), elem.getNumPoints()));
+				elem.setNumPoints(Util.interpretDblArray(param, elem.getNumPoints(), elem.getYValues()));
 				elem.setY(elem.getYValues()[0]);
 				break;
 			case 3:
-				elem.setXValues(resizeArray(elem.getXValues(), elem.getNumPoints()));
-				elem.setNumPoints(interpretDblArray(param, elem.getNumPoints(), elem.getXValues()));
+				elem.setXValues(Util.resizeArray(elem.getXValues(), elem.getNumPoints()));
+				elem.setNumPoints(Util.interpretDblArray(param, elem.getNumPoints(), elem.getXValues()));
 				elem.setX(elem.getXValues()[0]);
 				break;
 			case 4:
@@ -244,8 +241,8 @@ public class XYCurve extends DSSClass {
 
 			XYCurveObj elem = activeXYCurveObj;
 
-			elem.setXValues(resizeArray(elem.getXValues(), elem.getNumPoints()));
-			elem.setYValues(resizeArray(elem.getYValues(), elem.getNumPoints()));
+			elem.setXValues(Util.resizeArray(elem.getXValues(), elem.getNumPoints()));
+			elem.setYValues(Util.resizeArray(elem.getYValues(), elem.getNumPoints()));
 
 			int i = 0;
 			while (((s = br.readLine()) != null) && i < elem.getNumPoints()) {
@@ -286,8 +283,8 @@ public class XYCurve extends DSSClass {
 			fr = new FileReader(fileName);
 			br = new BufferedReader(fr);
 
-			elem.setXValues(resizeArray(elem.getXValues(), elem.getNumPoints()));
-			elem.setYValues(resizeArray(elem.getYValues(), elem.getNumPoints()));
+			elem.setXValues(Util.resizeArray(elem.getXValues(), elem.getNumPoints()));
+			elem.setYValues(Util.resizeArray(elem.getYValues(), elem.getNumPoints()));
 
 			i = 0;
 			s = "";
@@ -318,8 +315,8 @@ public class XYCurve extends DSSClass {
 			XYCurveObj elem = activeXYCurveObj;
 
 			elem.setNumPoints(other.getNumPoints());
-			elem.setXValues(resizeArray(elem.getXValues(), elem.getNumPoints()));
-			elem.setYValues(resizeArray(elem.getYValues(), elem.getNumPoints()));
+			elem.setXValues(Util.resizeArray(elem.getXValues(), elem.getNumPoints()));
+			elem.setYValues(Util.resizeArray(elem.getYValues(), elem.getNumPoints()));
 
 			for (i = 0; i < elem.getNumPoints(); i++)
 				elem.getXValues()[i] = other.getXValues()[i];

@@ -13,15 +13,12 @@ import org.apache.commons.math.complex.Complex;
 import com.ncond.dss.common.DSS;
 import com.ncond.dss.common.DSSClass;
 import com.ncond.dss.common.SolutionObj;
+import com.ncond.dss.common.Util;
 import com.ncond.dss.general.SpectrumObj;
 import com.ncond.dss.parser.Parser;
 import com.ncond.dss.shared.CMatrix;
 import com.ncond.dss.shared.ComplexUtil;
 import com.ncond.dss.shared.MathUtil;
-
-import static com.ncond.dss.common.Util.rotatePhasorDeg;
-import static com.ncond.dss.common.Util.resizeArray;
-
 
 public class VSourceObj extends PCElement {
 
@@ -184,7 +181,7 @@ public class VSourceObj extends PCElement {
 			DSS.doSimpleMsg("Spectrum object \"" + getSpectrum() + "\" for device VSource." +
 					getName() + " not found.", 324);
 
-		setInjCurrent(resizeArray(getInjCurrent(), YOrder));
+		setInjCurrent( Util.resizeArray(getInjCurrent(), YOrder) );
 	}
 
 	@Override
@@ -273,20 +270,20 @@ public class VSourceObj extends PCElement {
 			if (sol.isHarmonicModel()) {
 				srcHarmonic = sol.getFrequency() / srcFrequency;
 				VHarm = getSpectrumObj().getMult(srcHarmonic).multiply(Vmag);  // base voltage for this harmonic
-				VHarm = rotatePhasorDeg(VHarm, srcHarmonic, angle);  // rotate for phase 1 shift
+				VHarm = Util.rotatePhasorDeg(VHarm, srcHarmonic, angle);  // rotate for phase 1 shift
 				for (i = 0; i < nPhases; i++) {
 					VTerminal[i] = VHarm;
 					VTerminal[i + nPhases] = Complex.ZERO;
 					if (i < nPhases)
 						switch (scanType) {
 						case POS:
-							VHarm = rotatePhasorDeg(VHarm, 1.0, -360.0 / nPhases); // maintain pos seq
+							VHarm = Util.rotatePhasorDeg(VHarm, 1.0, -360.0 / nPhases); // maintain pos seq
 							break;
 						case ZERO:
 							// do nothing for zero sequence; all the same.
 							break;
 						default:
-							VHarm = rotatePhasorDeg(VHarm, srcHarmonic, -360.0 / nPhases);  // normal rotation
+							VHarm = Util.rotatePhasorDeg(VHarm, srcHarmonic, -360.0 / nPhases);  // normal rotation
 							break;
 						}
 				}

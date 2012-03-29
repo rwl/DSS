@@ -12,12 +12,9 @@ import java.io.IOException;
 import com.ncond.dss.common.DSS;
 import com.ncond.dss.common.DSSClass;
 import com.ncond.dss.common.DSSClassDefs;
+import com.ncond.dss.common.Util;
 import com.ncond.dss.parser.Parser;
 import com.ncond.dss.shared.CommandList;
-
-import static com.ncond.dss.common.Util.interpretDblArray;
-import static com.ncond.dss.common.Util.resizeArray;
-
 
 public class Spectrum extends DSSClass {
 
@@ -112,23 +109,23 @@ public class Spectrum extends DSSClass {
 				break;
 			case 0:
 				elem.setNumHarm(parser.integerValue());
-				elem.setAngleArray(resizeArray(elem.getAngleArray(), elem.getNumHarm()));  // make a dummy angle array
+				elem.setAngleArray(Util.resizeArray(elem.getAngleArray(), elem.getNumHarm()));  // make a dummy angle array
 				for (int i = 0; i < elem.getNumHarm(); i++)
 					elem.getAngleArray()[i] = 0.0;
 				break;
 			case 1:
-				elem.setHarmArray(resizeArray(elem.getHarmArray(), elem.getNumHarm()));
-				interpretDblArray(param, elem.getNumHarm(), elem.getHarmArray());
+				elem.setHarmArray(Util.resizeArray(elem.getHarmArray(), elem.getNumHarm()));
+				Util.interpretDblArray(param, elem.getNumHarm(), elem.getHarmArray());
 				break;
 			case 2:
-				elem.setPuMagArray(resizeArray(elem.getPuMagArray(), elem.getNumHarm()));
-				interpretDblArray(param, elem.getNumHarm(), elem.getPuMagArray());
+				elem.setPuMagArray(Util.resizeArray(elem.getPuMagArray(), elem.getNumHarm()));
+				Util.interpretDblArray(param, elem.getNumHarm(), elem.getPuMagArray());
 				for (int i = 0; i < elem.getNumHarm(); i++)
 					elem.getPuMagArray()[i] = elem.getPuMagArray()[i] * 0.01;  // convert to per unit
 				break;
 			case 3:
-				elem.setAngleArray(resizeArray(elem.getAngleArray(), elem.getNumHarm()));
-				interpretDblArray(param, elem.getNumHarm(), elem.getAngleArray());
+				elem.setAngleArray(Util.resizeArray(elem.getAngleArray(), elem.getNumHarm()));
+				Util.interpretDblArray(param, elem.getNumHarm(), elem.getAngleArray());
 				break;
 			case 4:
 				doCSVFile(param);
@@ -162,9 +159,9 @@ public class Spectrum extends DSSClass {
 
 			elem.setNumHarm(other.getNumHarm());
 
-			elem.setHarmArray(resizeArray(elem.getHarmArray(), elem.getNumHarm()));
-			elem.setPuMagArray(resizeArray(elem.getPuMagArray(), elem.getNumHarm()));
-			elem.setAngleArray(resizeArray(elem.getAngleArray(), elem.getNumHarm()));
+			elem.setHarmArray(Util.resizeArray(elem.getHarmArray(), elem.getNumHarm()));
+			elem.setPuMagArray(Util.resizeArray(elem.getPuMagArray(), elem.getNumHarm()));
+			elem.setAngleArray(Util.resizeArray(elem.getAngleArray(), elem.getNumHarm()));
 
 			for (int i = 0; i < elem.getNumHarm(); i++) {
 				elem.getHarmArray()[i] = other.getHarmArray()[i];
@@ -220,9 +217,9 @@ public class Spectrum extends DSSClass {
 
 			SpectrumObj elem = activeSpectrumObj;
 
-			elem.setHarmArray( resizeArray(elem.getHarmArray(), elem.getNumHarm()) );
-			elem.setPuMagArray( resizeArray(elem.getPuMagArray(), elem.getNumHarm()) );
-			elem.setAngleArray( resizeArray(elem.getAngleArray(), elem.getNumHarm()) );
+			elem.setHarmArray( Util.resizeArray(elem.getHarmArray(), elem.getNumHarm()) );
+			elem.setPuMagArray( Util.resizeArray(elem.getPuMagArray(), elem.getNumHarm()) );
+			elem.setAngleArray( Util.resizeArray(elem.getAngleArray(), elem.getNumHarm()) );
 
 			int i = 0;
 			while (((s = br.readLine()) != null) && i < elem.getNumHarm()) {

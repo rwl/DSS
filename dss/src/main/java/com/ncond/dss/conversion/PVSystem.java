@@ -11,6 +11,7 @@ import java.io.PrintWriter;
 
 import com.ncond.dss.common.DSS;
 import com.ncond.dss.common.DSSClassDefs;
+import com.ncond.dss.common.Util;
 import com.ncond.dss.common.types.Connection;
 import com.ncond.dss.common.types.Randomization;
 import com.ncond.dss.general.LoadShapeObj;
@@ -18,9 +19,6 @@ import com.ncond.dss.general.TempShapeObj;
 import com.ncond.dss.general.XYCurveObj;
 import com.ncond.dss.parser.Parser;
 import com.ncond.dss.shared.CommandList;
-
-import static com.ncond.dss.common.Util.interpretYesNo;
-
 
 public class PVSystem extends PCClass {
 
@@ -437,7 +435,7 @@ public class PVSystem extends PCClass {
 					elem.getUserModel().edit(parser.stringValue());  // send edit string to user model
 					break;
 				case DEBUG_TRACE:
-					elem.setDebugTrace(interpretYesNo(param));
+					elem.setDebugTrace(Util.interpretYesNo(param));
 					break;
 				default:
 					// inherited parameters

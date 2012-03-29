@@ -8,14 +8,12 @@ package com.ncond.dss.executive;
 import java.io.File;
 
 import com.ncond.dss.common.DSS;
+import com.ncond.dss.common.Util;
 import com.ncond.dss.common.exceptions.ControlProblem;
 import com.ncond.dss.common.exceptions.SolverError;
 import com.ncond.dss.common.exceptions.SolverProblem;
 import com.ncond.dss.parser.Parser;
 import com.ncond.dss.shared.CommandList;
-
-import static com.ncond.dss.common.Util.obfuscate;
-
 
 public class ExecCommands {
 
@@ -834,7 +832,7 @@ public class ExecCommands {
 				DSS.cmdResult = ExecHelper.doUpdateStorageCmd();
 				break;
 			case 92:
-				obfuscate();
+				Util.obfuscate();
 				break;
 			case 93:
 				DSS.cmdResult = ExecHelper.doBusCoordsCmd(true);  // swaps X and Y

@@ -9,15 +9,12 @@ import com.ncond.dss.common.Bus;
 import com.ncond.dss.common.Circuit;
 import com.ncond.dss.common.CktElement;
 import com.ncond.dss.common.DSS;
+import com.ncond.dss.common.Util;
 import com.ncond.dss.conversion.LoadObj;
 import com.ncond.dss.delivery.LineObj;
 import com.ncond.dss.parser.Parser;
 import com.ncond.dss.shared.CktTree;
 import com.ncond.dss.shared.CktTreeNode;
-
-import static com.ncond.dss.common.Util.isLineElement;
-import static com.ncond.dss.common.Util.isStubLine;
-
 
 /**
  * Reduction algorithms.
@@ -77,7 +74,7 @@ public class ReduceAlgs {
 			lineElem1 = (CktElement) branchList.goForward();  // always keep the first element
 
 			while (lineElem1 != null) {
-				if (isLineElement(lineElem1)) {
+				if (Util.isLineElement(lineElem1)) {
 					branch = branchList.getPresentBranch();
 
 					/* If it is at the end of a section and has no load,cap, reactor,
@@ -113,8 +110,8 @@ public class ReduceAlgs {
 			lineElement1 = (LineObj) branchList.goForward();  // always keep the first element
 
 			while (lineElement1 != null) {
-				if (isLineElement(lineElement1)) {
-					if (isStubLine(lineElement1)) {
+				if (Util.isLineElement(lineElement1)) {
+					if (Util.isStubLine(lineElement1)) {
 						lineElement1.setFlag(true);  /* Too small: Mark for merge with something */
 					} else {
 						lineElement1.setFlag(false);
@@ -142,7 +139,7 @@ public class ReduceAlgs {
 									/* Let's consider merging */
 									lineElement2 = (LineObj) parentNode.getCktObject();
 									if (lineElement2.isEnabled()) {  // check to make sure it hasn't been merged out
-										if (isLineElement(lineElement2)) {
+										if (Util.isLineElement(lineElement2)) {
 											if (lineElement2.mergeWith(lineElement1, true)) {
 												/* Move any loads to toBus Reference of downline branch */
 												if (parentNode.getNumObjects() > 0) {
@@ -164,7 +161,7 @@ public class ReduceAlgs {
 						if (!ckt.getBus(branch.getToBusReference() -1).isKeep()) {
 							/* Let's consider merging */
 							lineElement2 = (LineObj) branch.getFirstChild().getCktObject();
-							if (isLineElement(lineElement2)) {
+							if (Util.isLineElement(lineElement2)) {
 								if (lineElement2.mergeWith(lineElement1, true)) {
 									if (branch.getFirstChild().getNumObjects() > 0) {
 										/* Redefine bus connection to upline bus */
@@ -198,7 +195,7 @@ public class ReduceAlgs {
 
 			while (lineElement1 != null) {
 				if (lineElement1.isEnabled()) {  // maybe we threw it away already
-					if (isLineElement(lineElement1)) {
+					if (Util.isLineElement(lineElement1)) {
 						if (lineElement1.isSwitch()) {
 							branch = branchList.getPresentBranch();
 							/* See if eligble for merging */
@@ -213,7 +210,7 @@ public class ReduceAlgs {
 									if (!DSS.activeCircuit.getBus(branch.getToBusReference()).isKeep()) {
 										/* Let's consider merging */
 										lineElement2 = (LineObj) branch.getFirstChild().getCktObject();
-										if (isLineElement(lineElement2))
+										if (Util.isLineElement(lineElement2))
 											if (!lineElement2.isSwitch())
 												lineElement2.mergeWith(lineElement1, true);  // series merge
 									}
@@ -237,7 +234,7 @@ public class ReduceAlgs {
 			lineElement1 = (LineObj) branchList.goForward();  // always keep the first element
 
 			while (lineElement1 != null) {
-				if (isLineElement(lineElement1)) {
+				if (Util.isLineElement(lineElement1)) {
 					if (!lineElement1.isSwitch()) {
 						if (lineElement1.isEnabled()) {  // maybe we threw it away already
 							branch = branchList.getPresentBranch();
@@ -247,7 +244,7 @@ public class ReduceAlgs {
 									if (!DSS.activeCircuit.getBus(branch.getToBusReference() - 1).isKeep()) {
 										/* Let's consider merging */
 										lineElement2 = (LineObj) branch.getFirstChild().getCktObject();
-										if (isLineElement(lineElement2))
+										if (Util.isLineElement(lineElement2))
 											if (!lineElement2.isSwitch())
 												lineElement2.mergeWith(lineElement1, true);  /* Series merge */
 									}

@@ -7,13 +7,11 @@ package com.ncond.dss.delivery;
 
 import com.ncond.dss.common.DSS;
 import com.ncond.dss.common.DSSClassDefs;
+import com.ncond.dss.common.Util;
 import com.ncond.dss.common.types.Connection;
 import com.ncond.dss.general.XfmrCode;
 import com.ncond.dss.parser.Parser;
 import com.ncond.dss.shared.CommandList;
-
-import static com.ncond.dss.common.Util.interpretYesNo;
-
 
 public class Transformer extends PDClass {
 
@@ -298,7 +296,7 @@ public class Transformer extends PDClass {
 				elem.setEmergMaxHKVA(parser.doubleValue());
 				break;
 			case 29:
-				elem.setSubstation(interpretYesNo(param));
+				elem.setSubstation(Util.interpretYesNo(param));
 				break;
 			case 30:
 				elem.getWinding(elem.getActiveWindingIdx()).setMaxTap(parser.doubleValue());

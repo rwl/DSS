@@ -13,15 +13,12 @@ import org.apache.commons.math.complex.Complex;
 import com.ncond.dss.common.DSS;
 import com.ncond.dss.common.DSSClass;
 import com.ncond.dss.common.SolutionObj;
+import com.ncond.dss.common.Util;
 import com.ncond.dss.common.types.ControlMode;
 import com.ncond.dss.common.types.SolutionMode;
 import com.ncond.dss.parser.Parser;
 import com.ncond.dss.shared.CMatrix;
 import com.ncond.dss.shared.MathUtil;
-
-import static com.ncond.dss.common.Util.appendToEventLog;
-import static com.ncond.dss.common.Util.presentTimeInSec;
-
 
 /**
  * One or more faults can be placed across any two buses in the circuit.
@@ -252,10 +249,10 @@ public class FaultObj extends PDElement {
 		case TIMEDRIVEN:
 			if (!isOn) {
 				/* Turn it on unless it has been previously cleared */
-				if (presentTimeInSec() > onTime && !cleared) {
+				if (Util.presentTimeInSec() > onTime && !cleared) {
 					isOn = true;
 					setYPrimInvalid(true);
-					appendToEventLog("Fault." + getName(), "**APPLIED**");
+					Util.appendToEventLog("Fault." + getName(), "**APPLIED**");
 				}
 			} else {
 				if (isTemporary) {
@@ -263,7 +260,7 @@ public class FaultObj extends PDElement {
 						isOn = false;
 						cleared = true;
 						setYPrimInvalid(true);
-						appendToEventLog("Fault." + getName(), "**CLEARED**");
+						Util.appendToEventLog("Fault." + getName(), "**CLEARED**");
 					}
 				}
 			}

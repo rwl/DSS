@@ -12,15 +12,10 @@ import java.util.Stack;
 import com.ncond.dss.common.Circuit;
 import com.ncond.dss.common.CktElement;
 import com.ncond.dss.common.DSS;
+import com.ncond.dss.common.Util;
 import com.ncond.dss.conversion.PCElement;
 import com.ncond.dss.delivery.PDElement;
 import com.ncond.dss.general.DSSObject;
-
-import static com.ncond.dss.common.Util.isShuntElement;
-import static com.ncond.dss.common.Util.checkParallel;
-import static com.ncond.dss.common.Util.isLineElement;
-import static com.ncond.dss.common.Util.allTerminalsClosed;
-
 
 public class CktTree {
 
@@ -248,7 +243,7 @@ public class CktTree {
 			elem = adjLst.get(i);
 			if (elem.isEnabled() && elem != activeBranch) {
 				if (analyze || !elem.isChecked()) {
-					if (!isShuntElement(elem) && allTerminalsClosed(elem)) {
+					if (!Util.isShuntElement(elem) && Util.allTerminalsClosed(elem)) {
 						for (j = 0; j < elem.getNumTerms(); j++) {
 							if (busRef == elem.getTerminal(j).getBusRef()) {
 								if (analyze) {
@@ -257,8 +252,8 @@ public class CktTree {
 									if (elem.isChecked() && branchList.getLevel() > 0) {
 										branchList.getPresentBranch().setLoopedHere(true);
 										branchList.getPresentBranch().setLoopLineObj(elem);
-										if (isLineElement(elem) && isLineElement(activeBranch))
-											if (checkParallel(activeBranch, elem))
+										if (Util.isLineElement(elem) && Util.isLineElement(activeBranch))
+											if (Util.checkParallel(activeBranch, elem))
 												branchList.getPresentBranch().setParallel(true);
 									}
 								}
@@ -279,7 +274,7 @@ public class CktTree {
 	private static void getShuntPDElementsConnectedToBus(List<PDElement> adjLst, CktTree branchList, boolean analyze) {
 		for (int i = 0; i < adjLst.size(); i++) {
 			CktElement p = adjLst.get(i);
-			if (p.isEnabled() && isShuntElement(p)) {
+			if (p.isEnabled() && Util.isShuntElement(p)) {
 				if (analyze) {
 					p.setIsolated(false);
 					branchList.getPresentBranch().setDangling(false);
@@ -373,10 +368,10 @@ public class CktTree {
 		for (CktElement elem : ckt.getPDElements()) {
 			/* Put only eligible PD elements in the list */
 			if (elem.isEnabled()) {
-				if (isShuntElement(elem)) {
+				if (Util.isShuntElement(elem)) {
 					i = elem.getTerminal(0).getBusRef() - 1;
 					lstPC[i].add((PCElement) elem);
-				} else if (allTerminalsClosed(elem))
+				} else if (Util.allTerminalsClosed(elem))
 					for (j = 0; j < elem.getNumTerms(); j++) {
 						i = elem.getTerminal(j).getBusRef() - 1;
 						lstPD[i].add((PDElement) elem);

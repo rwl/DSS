@@ -17,6 +17,7 @@ import com.ncond.dss.common.Circuit;
 import com.ncond.dss.common.DSS;
 import com.ncond.dss.common.DSSClass;
 import com.ncond.dss.common.SolutionObj;
+import com.ncond.dss.common.Util;
 import com.ncond.dss.common.types.Connection;
 import com.ncond.dss.common.types.Randomization;
 import com.ncond.dss.general.LoadShapeObj;
@@ -27,38 +28,6 @@ import com.ncond.dss.parser.Parser;
 import com.ncond.dss.shared.CMatrix;
 import com.ncond.dss.shared.ComplexUtil;
 import com.ncond.dss.shared.MathUtil;
-
-import static com.ncond.dss.common.Util.appendToEventLog;
-import static com.ncond.dss.common.Util.compareTextShortest;
-import static com.ncond.dss.common.Util.parseObjectClassandName;
-import static com.ncond.dss.common.Util.clearEventLog;
-import static com.ncond.dss.common.Util.extractFileDir;
-import static com.ncond.dss.common.Util.rotatePhasorDeg;
-import static com.ncond.dss.common.Util.rotatePhasorRad;
-import static com.ncond.dss.common.Util.fireOffEditor;
-import static com.ncond.dss.common.Util.dumpAllocationFactors;
-import static com.ncond.dss.common.Util.stripExtension;
-import static com.ncond.dss.common.Util.doResetFaults;
-import static com.ncond.dss.common.Util.doResetControls;
-import static com.ncond.dss.common.Util.doResetKeepList;
-import static com.ncond.dss.common.Util.powerFactor;
-import static com.ncond.dss.common.Util.getCktElementIndex;
-import static com.ncond.dss.common.Util.getControlModeID;
-import static com.ncond.dss.common.Util.convertPFToPFRange2;
-import static com.ncond.dss.common.Util.interpretStringListArray;
-import static com.ncond.dss.common.Util.getMinPUVoltage;
-import static com.ncond.dss.common.Util.convertPFRange2ToPF;
-import static com.ncond.dss.common.Util.getTotalPowerFromSources;
-import static com.ncond.dss.common.Util.goForwardAndRephase;
-import static com.ncond.dss.common.Util.interpretDblArray;
-import static com.ncond.dss.common.Util.interpretYesNo;
-import static com.ncond.dss.common.Util.strReal;
-import static com.ncond.dss.common.Util.getLoadModel;
-import static com.ncond.dss.common.Util.resizeArray;
-import static com.ncond.dss.common.Util.rewriteAlignedFile;
-import static com.ncond.dss.common.Util.stripClassName;
-import static com.ncond.dss.common.Util.getSolutionModeID;
-
 
 /**
  * The PVsystem element is essentially a generator that consists of a PV panel and an inverter.
@@ -534,7 +503,7 @@ public class PVSystemObj extends PCElement {
 		// initialize to zero - defaults to PQ PVSystem element
 		// solution object will reset after circuit modifications
 
-		setInjCurrent(resizeArray(getInjCurrent(), YOrder));
+		setInjCurrent(Util.resizeArray(getInjCurrent(), YOrder));
 
 		/* Update any user-written models */
 		if (userModel.exists()) userModel.updateModel();
@@ -724,8 +693,8 @@ public class PVSystemObj extends PCElement {
 						DSS.activeCircuit.getSolution().getDynaVars().t,
 						DSS.activeCircuit.getSolution().getIteration(),
 						DSS.activeCircuit.getLoadMultiplier());
-				pw.print(getSolutionModeID() + ", " +
-						getLoadModel() + ", " +
+				pw.print(Util.getSolutionModeID() + ", " +
+						Util.getLoadModel() + ", " +
 						voltageModel + ", " +
 						(QNominalPerPhase * 3.0 / 1.0e6) + ", " +
 						(PNominalPerPhase * 3.0 / 1.0e6) + ", " +
@@ -874,11 +843,11 @@ public class PVSystemObj extends PCElement {
 			e = Complex.ZERO;
 		}
 
-		e = rotatePhasorRad(e, PVSystemHarmonic, thetaHarm);  // time shift by fundamental frequency phase shift
+		e = Util.rotatePhasorRad(e, PVSystemHarmonic, thetaHarm);  // time shift by fundamental frequency phase shift
 		for (i = 0; i < nPhases; i++) {
 			cBuffer[i] = e;
 			if (i < nPhases - 1)
-				e = rotatePhasorDeg(e, PVSystemHarmonic, -120.0);  // assume 3-phase PVSystem element
+				e = Util.rotatePhasorDeg(e, PVSystemHarmonic, -120.0);  // assume 3-phase PVSystem element
 		}
 
 		/* Handle wye connection */

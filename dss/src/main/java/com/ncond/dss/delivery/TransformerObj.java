@@ -13,15 +13,12 @@ import org.apache.commons.math.complex.Complex;
 import com.ncond.dss.common.DSS;
 import com.ncond.dss.common.DSSClass;
 import com.ncond.dss.common.SolutionObj;
+import com.ncond.dss.common.Util;
 import com.ncond.dss.common.types.Connection;
 import com.ncond.dss.general.XfmrCodeObj;
 import com.ncond.dss.parser.Parser;
 import com.ncond.dss.shared.CMatrix;
 import com.ncond.dss.shared.ComplexUtil;
-
-import static com.ncond.dss.common.Util.checkForBlanks;
-import static com.ncond.dss.common.Util.resizeArray;
-
 
 @SuppressWarnings("unused")
 public class TransformerObj extends PDElement {
@@ -131,15 +128,15 @@ public class TransformerObj extends PDElement {
 			nConds = nPhases + 1;
 			setNumTerms(numWindings);
 
-			windings = resizeArray(windings, maxWindings);  // reallocate collector array
+			windings = Util.resizeArray(windings, maxWindings);  // reallocate collector array
 			for (i = 0; i < maxWindings; i++)
 				windings[i] = new Winding();
 
 			// array of short circuit measurements between pairs of windings
-			XSC = resizeArray(XSC, newWdgSize);
+			XSC = Util.resizeArray(XSC, newWdgSize);
 			for (i = oldWdgSize; i < newWdgSize; i++)
 				XSC[i] = 0.30;
-			termRef = resizeArray(termRef, 2 * numWindings * nPhases);
+			termRef = Util.resizeArray(termRef, 2 * numWindings * nPhases);
 
 			/* Reallocate impedance matrices */
 			ZB         = new CMatrix(numWindings - 1);
@@ -296,7 +293,7 @@ public class TransformerObj extends PDElement {
 			case 8:
 			default:
 				f.printf(" %s=%s", parentClass.getPropertyName(parentClass.getRevPropertyIdxMap(iProp)),
-						checkForBlanks(getPropertyValue(iProp)));
+						Util.checkForBlanks( getPropertyValue(iProp) ));
 				break;
 			}
 			iProp = getNextPropertySet(iProp);

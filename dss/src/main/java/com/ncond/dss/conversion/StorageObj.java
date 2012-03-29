@@ -17,6 +17,7 @@ import com.ncond.dss.common.Circuit;
 import com.ncond.dss.common.DSS;
 import com.ncond.dss.common.DSSClass;
 import com.ncond.dss.common.SolutionObj;
+import com.ncond.dss.common.Util;
 import com.ncond.dss.common.types.Connection;
 import com.ncond.dss.common.types.Randomization;
 import com.ncond.dss.general.LoadShapeObj;
@@ -25,13 +26,6 @@ import com.ncond.dss.parser.Parser;
 import com.ncond.dss.shared.CMatrix;
 import com.ncond.dss.shared.ComplexUtil;
 import com.ncond.dss.shared.MathUtil;
-
-import static com.ncond.dss.common.Util.rotatePhasorDeg;
-import static com.ncond.dss.common.Util.rotatePhasorRad;
-import static com.ncond.dss.common.Util.getLoadModel;
-import static com.ncond.dss.common.Util.resizeArray;
-import static com.ncond.dss.common.Util.getSolutionModeID;
-
 
 /**
  * The storage element is essentially a generator that can be dispatched
@@ -655,7 +649,7 @@ public class StorageObj extends PCElement {
 		// initialize to zero - defaults to PQ storage element
 		// solution object will reset after circuit modifications
 
-		setInjCurrent(resizeArray(getInjCurrent(), YOrder));
+		setInjCurrent(Util.resizeArray(getInjCurrent(), YOrder));
 
 		/* Update any user-written models */
 		if (userModel.exists()) userModel.updateModel();
@@ -902,8 +896,8 @@ public class StorageObj extends PCElement {
 						ckt.getSolution().getDblHour(),
 						ckt.getSolution().getIteration(),
 						ckt.getLoadMultiplier());
-				pw.print(getSolutionModeID() + ", " +
-						getLoadModel() + ", " +
+				pw.print(Util.getSolutionModeID() + ", " +
+						Util.getLoadModel() + ", " +
 						voltageModel + ", " +
 						(QNominalPerPhase * 3.0 / 1.0e6) + ", " +
 						(PNominalPerPhase * 3.0 / 1.0e6) + ", " +
@@ -1065,11 +1059,11 @@ public class StorageObj extends PCElement {
 			e = Complex.ZERO;
 		}
 
-		e = rotatePhasorRad(e, storageHarmonic, thetaHarm);  // time shift by fundamental frequency phase shift
+		e = Util.rotatePhasorRad(e, storageHarmonic, thetaHarm);  // time shift by fundamental frequency phase shift
 		for (int i = 0; i < nPhases; i++) {
 			cBuffer[i] = e;
 			if (i < nPhases - 1)
-				e = rotatePhasorDeg(e, storageHarmonic, -120.0);  // assume 3-phase storage element
+				e = Util.rotatePhasorDeg(e, storageHarmonic, -120.0);  // assume 3-phase storage element
 		}
 
 		/* Handle wye connection */

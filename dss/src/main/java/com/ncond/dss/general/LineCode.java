@@ -5,18 +5,17 @@
  */
 package com.ncond.dss.general;
 
+
 import org.apache.commons.math.complex.Complex;
 
 import com.ncond.dss.common.DSS;
 import com.ncond.dss.common.DSSClass;
 import com.ncond.dss.common.DSSClassDefs;
+import com.ncond.dss.common.Util;
 import com.ncond.dss.parser.Parser;
 import com.ncond.dss.shared.CMatrix;
 import com.ncond.dss.shared.CommandList;
 import com.ncond.dss.shared.LineUnits;
-
-import static com.ncond.dss.common.Util.interpretYesNo;
-
 
 public class LineCode extends DSSClass {
 
@@ -290,7 +289,7 @@ public class LineCode extends DSSClass {
 				activeLineCodeObj.setHrsToRepair(parser.doubleValue());
 				break;
 			case 17:
-				activeLineCodeObj.setReduceByKron(interpretYesNo(param));
+				activeLineCodeObj.setReduceByKron(Util.interpretYesNo(param));
 				break;
 			case 18:
 				activeLineCodeObj.setRg(parser.doubleValue());

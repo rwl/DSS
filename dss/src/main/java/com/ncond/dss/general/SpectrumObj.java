@@ -12,10 +12,8 @@ import org.apache.commons.math.complex.Complex;
 
 import com.ncond.dss.common.DSS;
 import com.ncond.dss.common.DSSClass;
+import com.ncond.dss.common.Util;
 import com.ncond.dss.shared.ComplexUtil;
-
-import static com.ncond.dss.common.Util.resizeArray;
-
 
 /**
  * Harmonic spectrum specified as Harmonic, pct magnitude and angle.
@@ -179,7 +177,7 @@ public class SpectrumObj extends DSSObject {
 				}
 			}
 
-			multArray = resizeArray(multArray, numHarm);
+			multArray = Util.resizeArray(multArray, numHarm);
 			for (i = 0; i < numHarm; i++)
 				multArray[i] = ComplexUtil.polarDeg2Complex(puMagArray[i], (angleArray[i] - harmArray[i] * fundAngle));
 		} catch (Exception e) {

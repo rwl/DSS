@@ -9,32 +9,11 @@ import com.ncond.dss.common.Circuit;
 import com.ncond.dss.common.CktElement;
 import com.ncond.dss.common.DSS;
 import com.ncond.dss.common.DSSClassDefs;
+import com.ncond.dss.common.Util;
 import com.ncond.dss.general.LoadShapeObj;
 import com.ncond.dss.general.PriceShapeObj;
 import com.ncond.dss.parser.Parser;
 import com.ncond.dss.shared.CommandList;
-
-import static com.ncond.dss.common.Util.interpretTimeStepSize;
-import static com.ncond.dss.common.Util.stripExtension;
-import static com.ncond.dss.common.Util.interpretRandom;
-import static com.ncond.dss.common.Util.interpretSolveMode;
-import static com.ncond.dss.common.Util.getControlModeID;
-import static com.ncond.dss.common.Util.parseIntArray;
-import static com.ncond.dss.common.Util.interpretAddType;
-import static com.ncond.dss.common.Util.interpretYesNo;
-import static com.ncond.dss.common.Util.getLoadModel;
-import static com.ncond.dss.common.Util.interpretLoadModel;
-import static com.ncond.dss.common.Util.interpretSolveAlg;
-import static com.ncond.dss.common.Util.interpretCktModel;
-import static com.ncond.dss.common.Util.getEarthModel;
-import static com.ncond.dss.common.Util.getActiveLoadShapeClass;
-import static com.ncond.dss.common.Util.intArrayToString;
-import static com.ncond.dss.common.Util.getRandomModeID;
-import static com.ncond.dss.common.Util.interpretLoadShapeClass;
-import static com.ncond.dss.common.Util.interpretEarthModel;
-import static com.ncond.dss.common.Util.interpretControlMode;
-import static com.ncond.dss.common.Util.getSolutionModeID;
-
 
 public class ExecOptions {
 
@@ -384,7 +363,7 @@ public class ExecOptions {
 				DSS.setDataPath(param);  // set a legal data path
 				break;
 			case 66:
-				Executive.getInstance().setRecorderOn(interpretYesNo(param));
+				Executive.getInstance().setRecorderOn(Util.interpretYesNo(param));
 				break;
 			case 72:
 				DSS.defaultBaseFreq = parser.doubleValue();
@@ -455,16 +434,16 @@ public class ExecOptions {
 				ckt.getSolution().setFrequency(parser.doubleValue());
 				break;
 			case 6:
-				ckt.getSolution().getDynaVars().h = interpretTimeStepSize(param);
+				ckt.getSolution().getDynaVars().h = Util.interpretTimeStepSize(param);
 				break;
 			case 17:
-				ckt.getSolution().getDynaVars().h = interpretTimeStepSize(param);
+				ckt.getSolution().getDynaVars().h = Util.interpretTimeStepSize(param);
 				break;
 			case 7:
-				ckt.getSolution().setMode( interpretSolveMode(param) );  // see DSSGlobals
+				ckt.getSolution().setMode( Util.interpretSolveMode(param) );  // see DSSGlobals
 				break;
 			case 8:
-				ckt.getSolution().setRandomType( interpretRandom(param) );
+				ckt.getSolution().setRandomType( Util.interpretRandom(param) );
 				break;
 			case 9:
 				ckt.getSolution().setNumberOfTimes(parser.integerValue());
@@ -485,7 +464,7 @@ public class ExecOptions {
 				ckt.getSolution().setMaxIterations(parser.integerValue());
 				break;
 			case 18:
-				ckt.getSolution().setDefaultLoadModel(interpretLoadModel(param)); // for reverting to last on specified
+				ckt.getSolution().setDefaultLoadModel(Util.interpretLoadModel(param)); // for reverting to last on specified
 				ckt.getSolution().setLoadModel(ckt.getSolution().getDefaultLoadModel());
 				break;
 			case 19:
@@ -529,13 +508,13 @@ public class ExecOptions {
 				ckt.getAutoAddObj().setCapKVAr(parser.doubleValue());
 				break;
 			case 31:
-				ckt.getAutoAddObj().setAddType(interpretAddType(param));
+				ckt.getAutoAddObj().setAddType(Util.interpretAddType(param));
 				break;
 			case 32:
-				ckt.setDuplicatesAllowed(interpretYesNo(param));
+				ckt.setDuplicatesAllowed(Util.interpretYesNo(param));
 				break;
 			case 33:
-				ckt.setZonesLocked(interpretYesNo(param));
+				ckt.setZonesLocked(Util.interpretYesNo(param));
 				break;
 			case 34:
 				ckt.setUEWeight(parser.doubleValue());
@@ -545,32 +524,32 @@ public class ExecOptions {
 				break;
 			case 36:
 				numRegs = new int[1];
-				ckt.setUERegs(parseIntArray(ckt.getUERegs(), numRegs, param));
+				ckt.setUERegs(Util.parseIntArray(ckt.getUERegs(), numRegs, param));
 				ckt.setNumUERegs(numRegs[0]);
 				break;
 			case 37:
 				numRegs = new int[1];
-				ckt.setLossRegs(parseIntArray(ckt.getLossRegs(), numRegs, param));
+				ckt.setLossRegs(Util.parseIntArray(ckt.getLossRegs(), numRegs, param));
 				ckt.setNumLossRegs(numRegs[0]);
 				break;
 			case 38:
 				ExecHelper.doLegalVoltageBases();
 				break;
 			case 39:
-				ckt.getSolution().setAlgorithm(interpretSolveAlg(param));
+				ckt.getSolution().setAlgorithm(Util.interpretSolveAlg(param));
 				break;
 			case 40:
-				ckt.setTrapezoidalIntegration(interpretYesNo(param));
+				ckt.setTrapezoidalIntegration(Util.interpretYesNo(param));
 				break;
 			case 41:
 				ExecHelper.doAutoAddBusList(param);
 				break;
 			case 42:
-				ckt.getSolution().setControlMode(interpretControlMode(param));
+				ckt.getSolution().setControlMode(Util.interpretControlMode(param));
 				ckt.getSolution().setDefaultControlMode(ckt.getSolution().getControlMode());  // always revert to last one specified in a script
 				break;
 			case 43:
-				ckt.getControlQueue().setTrace(interpretYesNo(param));
+				ckt.getControlQueue().setTrace(Util.interpretYesNo(param));
 				break;
 			case 44:
 				ckt.setGenMultiplier(parser.doubleValue());
@@ -589,7 +568,7 @@ public class ExecOptions {
 				ExecHelper.doSetAllocationFactors(parser.doubleValue());
 				break;
 			case 48:
-				ckt.setPositiveSequence(interpretCktModel(param));
+				ckt.setPositiveSequence(Util.interpretCktModel(param));
 				break;
 			case 49:
 				ckt.setPriceSignal(parser.doubleValue());
@@ -604,7 +583,7 @@ public class ExecOptions {
 				if (ckt.getActiveCktElement() != null) {
 					CktElement elem = ckt.getActiveCktElement();
 					elem.setActiveTerminalIdx(parser.integerValue());
-					DSS.setActiveBus(stripExtension(elem.getBus(elem.getActiveTerminalIdx())));  // bus connected to terminal
+					DSS.setActiveBus(Util.stripExtension(elem.getBus(elem.getActiveTerminalIdx())));  // bus connected to terminal
 				}
 				break;
 			case 52:
@@ -630,14 +609,14 @@ public class ExecOptions {
 				ExecHelper.doSetReduceStrategy(param);
 				break;
 			case 59:
-				DSS.energyMeterClass.setSaveDemandInterval(interpretYesNo(param));
+				DSS.energyMeterClass.setSaveDemandInterval(Util.interpretYesNo(param));
 				break;
 			case 60:
 				ckt.setPctNormalFactor(parser.doubleValue());
 				ExecHelper.doSetNormal(ckt.getPctNormalFactor());
 				break;
 			case 61:
-				DSS.energyMeterClass.setDIVerbose(interpretYesNo(param));
+				DSS.energyMeterClass.setDIVerbose(Util.interpretYesNo(param));
 				break;
 			case 62:
 				ckt.setCaseName(parser.stringValue());
@@ -649,22 +628,22 @@ public class ExecOptions {
 				ckt.setNodeMarkerWidth(parser.integerValue());
 				break;
 			case 65:
-				ckt.setLogEvents(interpretYesNo(param));
+				ckt.setLogEvents(Util.interpretYesNo(param));
 				break;
 			case 66:
-				Executive.getInstance().setRecorderOn(interpretYesNo(param));
+				Executive.getInstance().setRecorderOn(Util.interpretYesNo(param));
 				break;
 			case 67:
-				DSS.energyMeterClass.setDoOverloadReport(interpretYesNo(param));
+				DSS.energyMeterClass.setDoOverloadReport(Util.interpretYesNo(param));
 				break;
 			case 68:
-				DSS.energyMeterClass.setDoVoltageExceptionReport(interpretYesNo(param));
+				DSS.energyMeterClass.setDoVoltageExceptionReport(Util.interpretYesNo(param));
 				break;
 			case 69:
 				ExecHelper.doSetCFactors(parser.doubleValue());
 				break;
 			case 70:
-				DSS.autoShowExport = interpretYesNo(param);
+				DSS.autoShowExport = Util.interpretYesNo(param);
 				break;
 			case 71:
 				DSS.maxAllocationIterations = parser.integerValue();
@@ -675,7 +654,7 @@ public class ExecOptions {
 				ckt.getSolution().setFrequency(parser.doubleValue());
 				break;
 			case 73:
-				ckt.setMarkSwitches(interpretYesNo(param));
+				ckt.setMarkSwitches(Util.interpretYesNo(param));
 				break;
 			case 74:
 				ckt.setSwitchMarkerCode(parser.integerValue());
@@ -684,7 +663,7 @@ public class ExecOptions {
 				DSS.daisySize = parser.doubleValue();
 				break;
 			case 76:
-				ckt.setMarkTransformers(interpretYesNo(param));
+				ckt.setMarkTransformers(Util.interpretYesNo(param));
 				break;
 			case 77:
 				ckt.setTransMarkerCode(parser.integerValue());
@@ -693,13 +672,13 @@ public class ExecOptions {
 				ckt.setTransMarkerSize(parser.integerValue());
 				break;
 			case 79:
-				ckt.setActiveLoadShapeClass(interpretLoadShapeClass(param));
+				ckt.setActiveLoadShapeClass(Util.interpretLoadShapeClass(param));
 				break;
 			case 80:
-				DSS.defaultEarthModel = interpretEarthModel(param);
+				DSS.defaultEarthModel = Util.interpretEarthModel(param);
 				break;
 			case 81:
-				DSS.logQueries = interpretYesNo(param);
+				DSS.logQueries = Util.interpretYesNo(param);
 				if (DSS.logQueries) DSS.resetQueryLogFile();
 			default:
 				// ignore excess parameters
@@ -779,10 +758,10 @@ public class ExecOptions {
 					DSS.appendGlobalResult(String.format("%g", ckt.getSolution().getDynaVars().h));
 					break;
 				case 7:
-					DSS.appendGlobalResult(getSolutionModeID());
+					DSS.appendGlobalResult(Util.getSolutionModeID());
 					break;
 				case 8:
-					DSS.appendGlobalResult(getRandomModeID());
+					DSS.appendGlobalResult(Util.getRandomModeID());
 					break;
 				case 9:
 					DSS.appendGlobalResult(String.valueOf(ckt.getSolution().getNumberOfTimes()));
@@ -803,7 +782,7 @@ public class ExecOptions {
 					DSS.appendGlobalResult(String.valueOf(ckt.getSolution().getMaxIterations()));
 					break;
 				case 18:
-					DSS.appendGlobalResult(getLoadModel());
+					DSS.appendGlobalResult(Util.getLoadModel());
 					break;
 				case 19:
 					DSS.appendGlobalResult(String.format("%g", ckt.getLoadMultiplier()));
@@ -872,10 +851,10 @@ public class ExecOptions {
 					DSS.appendGlobalResult(String.format("%g", ckt.getLossWeight()));
 					break;
 				case 36:
-					DSS.appendGlobalResult(intArrayToString(ckt.getUERegs(), ckt.getNumUERegs()));
+					DSS.appendGlobalResult(Util.intArrayToString(ckt.getUERegs(), ckt.getNumUERegs()));
 					break;
 				case 37:
-					DSS.appendGlobalResult(intArrayToString(ckt.getLossRegs(), ckt.getNumLossRegs()));
+					DSS.appendGlobalResult(Util.intArrayToString(ckt.getLossRegs(), ckt.getNumLossRegs()));
 					break;
 				case 38:
 					DSS.globalResult = "(";
@@ -905,7 +884,7 @@ public class ExecOptions {
 						DSS.appendGlobalResult(ckt.getAutoAddBusList().get(i));
 					break;
 				case 42:
-					DSS.appendGlobalResult(getControlModeID());
+					DSS.appendGlobalResult(Util.getControlModeID());
 					break;
 				case 43:
 					if (ckt.getControlQueue().isTrace()) {
@@ -1067,10 +1046,10 @@ public class ExecOptions {
 					DSS.appendGlobalResult(String.format("%d", ckt.getTransMarkerSize()));
 					break;
 				case 79:
-					DSS.appendGlobalResult(getActiveLoadShapeClass());
+					DSS.appendGlobalResult(Util.getActiveLoadShapeClass());
 					break;
 				case 80:
-					DSS.appendGlobalResult(getEarthModel(DSS.defaultEarthModel));
+					DSS.appendGlobalResult(Util.getEarthModel(DSS.defaultEarthModel));
 					break;
 				case 81:
 					if (DSS.logQueries) {
