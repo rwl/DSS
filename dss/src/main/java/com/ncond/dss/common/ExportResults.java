@@ -13,7 +13,6 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.UUID;
 
 import org.apache.commons.math.complex.Complex;
 
@@ -1574,8 +1573,7 @@ public class ExportResults {
 		FileWriter fw;
 		PrintWriter pw;
 		int i, j, p;
-		UUID Y;
-		int[] ip = new int[1];
+		YMatrix Y;
 		int nBus = 0, nnz = 0;
 		int[] colPtr, rowIdx;
 		Complex[] cVals;
@@ -1591,11 +1589,9 @@ public class ExportResults {
 		}
 
 		// this compresses the entries if necessary - no extra work if already solved
-		YMatrix.factorSparseMatrix(Y);
-		YMatrix.getNNZ(Y, ip);
-		nnz = ip[0];
-		YMatrix.getSize(Y, ip);  // we should already know this
-		nBus = ip[0];
+		Y.factorSparseMatrix();
+		nnz = Y.getNNZ();
+		nBus = Y.getSize();  // we should already know this
 
 		try {
 			fw = new FileWriter(fileName);
@@ -1604,7 +1600,7 @@ public class ExportResults {
 			colPtr = new int[nBus + 1];
 			rowIdx = new int[nnz];
 			cVals  = new Complex[nnz];
-			YMatrix.getCompressedMatrix(Y, nBus + 1, nnz, colPtr, rowIdx, cVals);
+			Y.getCompressedMatrix(nBus + 1, nnz, colPtr, rowIdx, cVals);
 
 			/* Write out fully qualified bus names */
 

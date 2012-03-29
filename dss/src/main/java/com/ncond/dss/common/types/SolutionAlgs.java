@@ -12,7 +12,6 @@ import com.ncond.dss.common.Circuit;
 import com.ncond.dss.common.DSS;
 import com.ncond.dss.common.SolutionObj;
 import com.ncond.dss.common.Util;
-import com.ncond.dss.common.YMatrix;
 import com.ncond.dss.common.exceptions.ControlProblem;
 import com.ncond.dss.common.exceptions.SolverError;
 import com.ncond.dss.common.exceptions.SolverProblem;
@@ -718,7 +717,7 @@ public class SolutionAlgs {
 				sol.setCurrent(ref1, Complex.ONE);
 
 				/* SparseSet expects 1st element of voltage array, not 0-th element */
-				if (YMatrix.solveSparseSet(sol.getYSystem(), sol.getNodeV(), 1, sol.getCurrents(), 1) < 1)
+				if (sol.getYSystem().solveSparseSet(sol.getNodeV(), 1, sol.getCurrents(), 1) < 1)
 					throw new SolverProblem("Error solving system Y matrix in computeYsc. " +
 							"Problem with sparse matrix solver.");
 

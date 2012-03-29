@@ -5,10 +5,6 @@
  */
 package com.ncond.dss.common;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
-
 import net.sourceforge.klusolve.CSparseSolver;
 import net.sourceforge.klusolve.ISolver;
 
@@ -22,12 +18,12 @@ import com.ncond.dss.common.types.YPrimType;
 
 public class YMatrix {
 
-	private static Map<UUID, ISolver> solverMap = new HashMap<UUID, ISolver>();
+	private ISolver solver;
 
-	private static ISolver solver;
-
-	private YMatrix() {}
-
+	public YMatrix(int nBus) {
+		solver = new CSparseSolver();
+		solver.initialize(nBus, 0, nBus);
+	}
 	private static void reCalcAllYPrims() {
 		Circuit ckt = DSS.activeCircuit;
 		if (ckt.isLogEvents())
@@ -48,18 +44,14 @@ public class YMatrix {
 			if (elem.isYprimInvalid()) elem.calcYPrim();
 	}
 
-	public static void resetSparseMatrix(UUID[] Y, int size) throws SolverProblem {
+	public static void resetSparseMatrix(YMatrix[] Y, int size) {
 		if (Y[0] != null) {
-			if (deleteSparseSet(Y[0]) < 1)  // get rid of existing one before making a new one
-				throw new SolverProblem("Error deleting system Y matrix in resetSparseMatrix. Problem with sparse matrix solver.");
+			Y[0].deleteSparseSet();  // get rid of existing one before making a new one
 			Y[0] = null;
 		}
 
 		// make a new sparse set
-		Y[0] = newSparseSet(size);
-
-		if (Y[0] == null)
-			throw new SolverProblem("Error creating system Y matrix. Problem with sparse matrix solver.");
+		Y[0] = new YMatrix(size);
 	}
 
 	public static void initializeNodeVBase() {
@@ -80,7 +72,7 @@ public class YMatrix {
 	 * @throws SolverProblem
 	 */
 	public static void buildYMatrix(BuildOption buildOption, boolean allocateVI) throws SolverProblem {
-		UUID[] Y = new UUID[1];
+		YMatrix[] Y = new YMatrix[1];
 		int YMatrixSize;
 		Complex[] cArray = null;
 
@@ -152,7 +144,7 @@ public class YMatrix {
 				}
 				// new function adding primitive Y matrix to KLU system Y matrix
 				if (cArray != null) {
-					if (addPrimitiveMatrix(sol.getY(), elem.getYOrder(), elem.getNodeRef(), cArray) < 1)
+					if (sol.getY().addPrimitiveMatrix(elem.getYOrder(), elem.getNodeRef(), cArray) < 1)
 						throw new SolverProblem("Node index out of range adding to system Y matrix");
 				}
 			}
@@ -194,8 +186,8 @@ public class YMatrix {
 	 */
 	public static String checkYMatrixforZeroes() {
 		Complex[] c = new Complex[1];
-		UUID Y;
-		int[] sCol = new int[1];
+		YMatrix Y;
+		int sCol;
 		long nIslands, count, first;
 		int[] cliques;
 		NodeBus nb;
@@ -205,7 +197,7 @@ public class YMatrix {
 
 		Y = ckt.getSolution().getY();
 		for (int i = 0; i < ckt.getNumNodes(); i++) {
-			getMatrixElement(Y, i, i, c);
+			Y.getMatrixElement(i, i, c);
 			if (c[0].abs() == 0.0) {
 				nb = ckt.getMapNodeToBus(i + 1);
 				sb.append(String.format("%sZero diagonal for bus %s, node %d",
@@ -214,15 +206,15 @@ public class YMatrix {
 		}
 
 		// new diagnostics
-		getSingularCol(Y, sCol);  // returns a 0-based node number
-		if (sCol[0] >= 0) {
-			nb = ckt.getMapNodeToBus(sCol[0] + 1);
+		sCol = Y.getSingularCol();  // returns a 0-based node number
+		if (sCol >= 0) {
+			nb = ckt.getMapNodeToBus(sCol + 1);
 			sb.append(String.format("%sMatrix singularity at bus %s, node %d",
-				DSS.CRLF, ckt.getBusList().get(nb.busRef), sCol[0]));
+				DSS.CRLF, ckt.getBusList().get(nb.busRef), sCol));
 		}
 
 		cliques = new int[ckt.getNumNodes()];
-		nIslands = findIslands(Y, ckt.getNumNodes(), cliques);
+		nIslands = Y.findIslands(ckt.getNumNodes(), cliques);
 		if (nIslands > 1) {
 			sb.append(String.format("%sFound %d electrical islands:", DSS.CRLF, nIslands));
 			for (int i = 0; i < nIslands; i++) {
@@ -244,6 +236,10 @@ public class YMatrix {
 		return sb.toString();
 	}
 
+	public void setSolver(ISolver solver) {
+		assert solver != null;
+		this.solver = solver;
+	}
 
 	/**
 	 *
@@ -254,351 +250,173 @@ public class YMatrix {
 		throw new UnsupportedOperationException();
 	}
 
-	/**
-	 * Returns the non-zero handle of a new sparse matrix, if successful
-	 * must call deleteSparseSet on the valid handle when finished.
-	 */
-	public static UUID newSparseSet(int nBus) {
-		try {
-			UUID uuid = UUID.randomUUID();
-			solver = new CSparseSolver();
-			solver.initialize(nBus, 0, nBus);
-			solverMap.put(uuid, solver);
-			return uuid;
-		} catch (Exception e) {
-			DSS.doSimpleMsg("Error creating new sparse set: " + e.getMessage(), -1);
-			return null;
-		}
-	}
-
-	/**
-	 * @param uuid
-	 * @return 1 for success, 0 for invalid handle
-	 */
-	public static int zeroSparseSet(UUID uuid) {
-		solver = solverMap.get(uuid);
-
-		if (solver != null) {
-			solver.zero();
-			solver.setFactored(false);
-			return 1;
-		} else {
-			return 0;
-		}
+	public void zeroSparseSet() {
+		solver.zero();
+		solver.setFactored(false);
 	}
 
 	/**
 	 * Does no extra work if the factoring was done previously.
 	 *
-	 * @param uuid
-	 * @return 1 for success, 2 for singular, 0 for invalid handle
+	 * @return 1 for success, 2 for singular
 	 */
-	public static int factorSparseMatrix(UUID uuid) {
-		solver = solverMap.get(uuid);
-
-		if (solver != null) {
-			if (solver.factorSystem() == 0) {
-				return 1;  // success
-			} else {
-				return 2;  // singular
-			}
+	public int factorSparseMatrix() {
+		if (solver.factorSystem() == 0) {
+			return 1;  // success
 		} else {
-			return 0;
+			return 2;  // singular
 		}
 	}
 
 	/**
-	 * factors matrix if needed.
+	 * Factors matrix if needed.
 	 *
-	 * @param uuid
 	 * @param x current injection input
 	 * @param b node voltage output
-	 * @return 1 for success, 2 for singular, 0 for invalid handle
+	 * @return 1 for success, 2 for singular
 	 */
-	public static int solveSparseSet(UUID uuid, Complex[] x, Complex[] b) {
-		return solveSparseSet(uuid, x, 0, b, 0);
+	public int solveSparseSet(Complex[] x, Complex[] b) {
+		return solveSparseSet(x, 0, b, 0);
 	}
 
-	public static int solveSparseSet(UUID uuid, Complex[] x, int x_offset,
+	public int solveSparseSet(Complex[] x, int x_offset,
 			Complex[] b, int b_offset) {
 		double[] acxX, acxB;
-		solver = solverMap.get(uuid);
 
-		if (solver != null) {
-			if (!solver.isFactored())
-				solver.factorSystem();
+		if (!solver.isFactored())
+			solver.factorSystem();
 
-			if (solver.isFactored()) {
-				acxX = toArray(x, x_offset);
-				acxB = toArray(b, b_offset);
+		if (solver.isFactored()) {
+			acxX = toArray(x, x_offset);
+			acxB = toArray(b, b_offset);
 
-				solver.solveSystem(acxX, acxB);
+			solver.solveSystem(acxX, acxB);
 
-				fromArray(acxB, 0, b, b_offset);
-				return 1;
-			} else {
-				return 2;
-			}
+			fromArray(acxB, 0, b, b_offset);
+			return 1;
 		} else {
-			return 0;
+			return 2;
 		}
+	}
+
+	public void deleteSparseSet() {
+		solver = null;
+	}
+
+	public void getMatrixElement(int i, int i2, Complex[] c) {
+		double[] a = toArray(c[0]);
+		solver.getElement(i, i2, a);
+		c[0] = new Complex(a[0], a[1]);
 	}
 
 	/**
-	 * @return 1 for success, 0 for invalid id
+	 * @return the matrix order (number of nodes)
 	 */
-	public static int deleteSparseSet(UUID uuid) {
-		solver = solverMap.remove(uuid);
-
-		return (solver != null) ? 1 : 0;
-	}
-
-	public static int getMatrixElement(UUID y, int i, int i2, Complex[] c) {
-		double[] a;
-		solver = solverMap.get(y);
-
-		if (solver != null) {
-			a = toArray(c[0]);
-			solver.getElement(i, i2, a);
-			c[0] = new Complex(a[0], a[1]);
-			return 1;
-		} else {
-			return 0;
-		}
+	public int getSize() {
+		return solver.getSize();
 	}
 
 	/**
-	 *
-	 * @param uuid
-	 * @param res the matrix order (number of nodes)
-	 * @return
+	 * @return number of non-zero entries in the original matrix
 	 */
-	public static int getSize(UUID uuid, int[] res) {
-		int order;
-		solver = solverMap.get(uuid);
-
-		if (solver != null) {
-			order = solver.getSize();
-			res[0] = order;
-			return 1;
-		} else {
-			return 0;
-		}
+	public int getNNZ() {
+		return solver.getNNZ();
 	}
 
 	/**
-	 * @param id
-	 * @param res number of non-zero entries in the original matrix
-	 * @return
+	 * @return number of non-zero entries in factored matrix
 	 */
-	public static int getNNZ(UUID uuid, int[] res) {
-		int nnz;
-		solver = solverMap.get(uuid);
-
-		if (solver != null) {
-			nnz = solver.getNNZ();
-			res[0] = nnz;
-			return 1;
-		} else {
-			return 0;
-		}
+	public int getSparseNNZ() {
+		return solver.getSparseNNZ();
 	}
 
 	/**
-	 * @param id
-	 * @param res number of non-zero entries in factored matrix
-	 * @return
+	 * @return quick estimate of the reciprocal of condition number
 	 */
-	public static int getSparseNNZ(UUID uuid, int[] res) {
-		int nnz;
-		solver = solverMap.get(uuid);
-
-		if (solver != null) {
-			nnz = solver.getSparseNNZ();
-			res[0] = nnz;
-			return 1;
-		} else {
-			return 0;
-		}
+	public double getRCond() {
+		return solver.getRCond();
 	}
 
 	/**
-	 * @param uuid
-	 * @param res quick estimate of the reciprocal of condition number
-	 * @return
+	 * @return the pivot element growth factor
 	 */
-	public static long getRCond(UUID uuid, double[] res) {
-		double rcond;
-		solver = solverMap.get(uuid);
-
-		if (solver != null) {
-			rcond = solver.getRCond();
-			res[0] = rcond;
-			return 1;
-		} else {
-			return 0;
-		}
+	public double getRGrowth() {
+		return solver.getRGrowth();
 	}
 
 	/**
-	 * @param uuid
-	 * @param res the pivot element growth factor
-	 * @return
+	 * @return a more accurate estimate of condition number
 	 */
-	public int getRGrowth(UUID uuid, double[] res) {
-		double rgrowth;
-		solver = solverMap.get(uuid);
-
-		if (solver != null) {
-			rgrowth = solver.getRGrowth();
-			res[0] = rgrowth;
-			return 1;
-		} else {
-			return 0;
-		}
-	}
-
-	/**
-	 * @param uuid
-	 * @param res a more accurate estimate of condition number
-	 * @return
-	 */
-	public int getCondEst(UUID uuid, double[] res) {
-		double cond_est;
-		solver = solverMap.get(uuid);
-
-		if (solver != null) {
-			cond_est = solver.getCondEst();
-			res[0] = cond_est;
-			return 1;
-		} else {
-			return 0;
-		}
+	public double getCondEst() {
+		return solver.getCondEst();
 	}
 
 	/**
 	 * The following function results are not known prior to factoring.
 	 *
-	 * @param uuid
-	 * @param res the number of floating point operations to factor
-	 * @return
+	 * @return the number of floating point operations to factor
 	 */
-	public int getFlops(UUID uuid, double[] res) {
-		double flops;
-		solver = solverMap.get(uuid);
-
-		if (solver != null) {
-			flops = solver.getFlops();
-			res[0] = flops;
-			return 1;
-		} else {
-			return 0;
-		}
+	public double getFlops() {
+		return solver.getFlops();
 	}
 
 	/**
-	 * @param uuid
-	 * @param res a column number corresponding to a singularity,
-	 * or -1 if not singular  FIXME check zero based indexing
-	 * @return
+	 * @return a column number corresponding to a singularity,
+	 * or -1 if not singular
 	 */
-	public static int getSingularCol(UUID uuid, int[] res) {
-		int col;
-		solver = solverMap.get(uuid);
-
-		if (solver != null) {
-			col = solver.getSingularCol();
-			res[0] = col;
-			return 1;
-		} else {
-			return 0;
-		}
+	public int getSingularCol() {
+		return solver.getSingularCol();
 	}
 
-	/**
-	 * @param uuid
-	 * @param nOrder
-	 * @param nodes
-	 * @param mat
-	 * @return 1 for success, 0 for invalid handle or a node number out of range
-	 */
-	public static int addPrimitiveMatrix(UUID uuid, int nOrder,
-			int[] nodes, Complex[] mat) {
-		solver = solverMap.get(uuid);
-
-		if (solver != null) {
-			return solver.addPrimitiveMatrix(nOrder, nodes, toArray(mat));
-		} else {
-			return 0;
-		}
+	public int addPrimitiveMatrix(int nOrder, int[] nodes, Complex[] mat) {
+		return solver.addPrimitiveMatrix(nOrder, nodes, toArray(mat));
 	}
 
 	/**
 	 * Fill sparse matrix in compressed column form.
 	 *
-	 * @param uuid
 	 * @param nCol
 	 * @param nnz
 	 * @param col must be of length nColP == nBus + 1
 	 * @param rowIdx length nnz
 	 * @param mat length nnz
-	 * @return 1 for success, 0 for invalid handle, 2 for invalid array sizes
+	 * @return 1 for success, 2 for invalid array sizes
 	 */
-	public static int getCompressedMatrix(UUID uuid, int nCol, int nnz,
-			int[] pCol, int[] rowIdx, Complex[] mat) {
-		double[] a;
-		solver = solverMap.get(uuid);
-
-		if (solver != null) {
-			a = toArray(mat);
-			if (solver.getCompressedMatrix(nCol, nnz, pCol, rowIdx, a) != 0) {
-				fromArray(a, mat);
-				return 1;
-			} else {
-				return 2;  // probably a size mismatch
-			}
+	public int getCompressedMatrix(int nCol, int nnz, int[] pCol, int[] rowIdx, Complex[] mat) {
+		double[] a = toArray(mat);
+		if (solver.getCompressedMatrix(nCol, nnz, pCol, rowIdx, a) != 0) {
+			fromArray(a, mat);
+			return 1;
 		} else {
-			return 0;
+			return 2;  // probably a size mismatch
 		}
 	}
 
 	/**
 	 * Fill sparse matrix in triplet form.
 	 *
-	 * @param id
 	 * @param nnz
 	 * @param rows length nnz
 	 * @param cols length nnz
 	 * @param mat length nnz
 	 * @return 1 for success, 0 for invalid handle, 2 for invalid array sizes
 	 */
-	public static int getTripletMatrix(UUID uuid, int nnz, int[] rows,
-			int[] cols, Complex[] mat) {
-		double[] a;
-		solver = solverMap.get(uuid);
-
-		if (solver != null) {
-			a = toArray(mat);
-			if (solver.getTripletMatrix(nnz, rows, cols, a) != 0) {
-				fromArray(a, mat);
-				return 1;
-			} else {
-				return 2;  // probably a size mismatch
-			}
+	public int getTripletMatrix(int nnz, int[] rows, int[] cols, Complex[] mat) {
+		double[] a = toArray(mat);
+		if (solver.getTripletMatrix(nnz, rows, cols, a) != 0) {
+			fromArray(a, mat);
+			return 1;
 		} else {
-			return 0;
+			return 2;  // probably a size mismatch
 		}
 	}
 
 	/**
-	 * @param uuid
 	 * @param nOrder
 	 * @param nodes contains the island number for each node
 	 * @return number of islands >= 1 by graph traversal
 	 */
-	public static long findIslands(UUID uuid, int nOrder, int[] nodes) {
-		solver = solverMap.get(uuid);
-
+	public long findIslands(int nOrder, int[] nodes) {
 		if (solver != null && nOrder >= solver.getSize()) {
 			return solver.findIslands(nodes);
 		} else {

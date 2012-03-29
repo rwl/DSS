@@ -8,7 +8,6 @@ package com.ncond.dss.common;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.UUID;
 
 import org.apache.commons.math.complex.Complex;
 
@@ -2821,35 +2820,33 @@ public class ShowResults {
 	public static void showY(String fileName) {
 		FileWriter fw;
 		PrintWriter pw;
-		UUID hY;
-//		int nnz;
-		int i, row, col;
+		YMatrix Y;
+		int i, row, col, nnz;
 		double re, im;
 		int[] colIdx, rowIdx;
 		Complex[] cVals;
-		int[] nnz = new int[1];
 
 		Circuit ckt = DSS.activeCircuit;
 
 		if (ckt == null)
 			return;
 
-		hY = ckt.getSolution().getY();
-		if (hY == null) {
+		Y = ckt.getSolution().getY();
+		if (Y == null) {
 			DSS.doSimpleMsg("Y Matrix not Built.", 222);
 			return;
 		}
 
 		// print lower triangle of G and B using new functions
 		// this compresses the entries if necessary - no extra work if already solved
-		YMatrix.factorSparseMatrix(hY);
-		YMatrix.getNNZ(hY, nnz);
+		Y.factorSparseMatrix();
+		nnz = Y.getNNZ();
 
 		try {
-			colIdx = new int[nnz[0]];
-			rowIdx = new int[nnz[0]];
-			cVals = new Complex[nnz[0]];
-			YMatrix.getTripletMatrix(hY, nnz[0], rowIdx, colIdx, cVals);
+			colIdx = new int[nnz];
+			rowIdx = new int[nnz];
+			cVals = new Complex[nnz];
+			Y.getTripletMatrix(nnz, rowIdx, colIdx, cVals);
 
 			fw = new FileWriter(fileName);
 			pw = new PrintWriter(fw);
@@ -2860,7 +2857,7 @@ public class ShowResults {
 			pw.println();
 
 			// shows how to easily traverse the triplet format
-			for (i = 0; i < nnz[0]; i++) {  // TODO Check zero based indexing
+			for (i = 0; i < nnz; i++) {  // TODO Check zero based indexing
 				col = colIdx[i];
 				row = rowIdx[i];
 				if (row >= col) {

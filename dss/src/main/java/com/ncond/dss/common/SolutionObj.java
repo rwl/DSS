@@ -9,7 +9,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintWriter;
-import java.util.UUID;
 
 import org.apache.commons.math.complex.Complex;
 
@@ -62,11 +61,11 @@ public class SolutionObj extends DSSObject {
 	protected int intHour;
 	protected double dblHour;
 	/* Main (system) Y matrix */
-	protected UUID YSystem;
+	protected YMatrix YSystem;
 	/* Series Y matrix */
-	protected UUID YSeries;
+	protected YMatrix YSeries;
 	/* Either Ysystem or Yseries */
-	protected UUID Y;
+	protected YMatrix Y;
 	protected double intervalHrs;   // solution interval since last solution, hrs.
 	protected boolean isDynamicModel;
 	protected boolean isHarmonicModel;
@@ -859,8 +858,8 @@ public class SolutionObj extends DSSObject {
 
 		// for dumping the matrix in compressed columns
 		int p, nBus, nNZ;
-		UUID Y;
-		int[] ColPtr, RowIdx, ip = new int[1];
+		YMatrix Y;
+		int[] colPtr, rowIdx;
 		Complex[] cVals;
 
 		Circuit ckt = DSS.activeCircuit;
@@ -959,15 +958,13 @@ public class SolutionObj extends DSSObject {
 			Y = ckt.getSolution().getY();
 
 			// get the compressed columns out of KLU
-			YMatrix.factorSparseMatrix(Y);  // no extra work if already done
-			YMatrix.getNNZ(Y, ip);
-			nNZ = ip[0];
-			YMatrix.getSize(Y, ip);
-			nBus = ip[0];
-			ColPtr = new int[nBus + 1];
-			RowIdx = new int[nNZ];
+			Y.factorSparseMatrix();  // no extra work if already done
+			nNZ = Y.getNNZ();
+			nBus = Y.getSize();
+			colPtr = new int[nBus + 1];
+			rowIdx = new int[nNZ];
 			cVals = new Complex[nNZ];
-			YMatrix.getCompressedMatrix(Y, nBus + 1, nNZ, ColPtr, RowIdx, cVals);
+			Y.getCompressedMatrix(nBus + 1, nNZ, colPtr, rowIdx, cVals);
 
 			pw.println("System Y matrix (lower triangle by columns)");
 			pw.println();
@@ -976,8 +973,8 @@ public class SolutionObj extends DSSObject {
 
 			// traverse the compressed column format
 			for (j = 0; j < nBus; j++) {
-				for (p = ColPtr[j]; p < ColPtr[j + 1]; p++) {
-					i = RowIdx[p];  // the zero-based row
+				for (p = colPtr[j]; p < colPtr[j + 1]; p++) {
+					i = rowIdx[p];  // the zero-based row
 					pw.printf("[%4d,%4d] = %12.5g + j%12.5g", i, j,
 						cVals[p].getReal(), cVals[p].getImaginary());
 					pw.println();
@@ -1385,9 +1382,9 @@ public class SolutionObj extends DSSObject {
 		/* Note: NodeV[0] = 0 + j0 always. Therefore, pass the address of the element 1 of the array. */
 		try {
 			/* log KLUSolve function calls */
-			YMatrix.setLogFile("KLU_Log.txt", 1);
+//			YMatrix.setLogFile("KLU_Log.txt", 1);
 
-			retCode = YMatrix.solveSparseSet(Y, V, 1, currents, 1);  // solve for present injCurr
+			retCode = Y.solveSparseSet(V, 1, currents, 1);  // solve for present injCurr
 
 			/* information functions */
 			//YMatrix.getFlops(Y, dp);
@@ -1595,7 +1592,7 @@ public class SolutionObj extends DSSObject {
 		return year;
 	}
 
-	public UUID getY() {
+	public YMatrix getY() {
 		return Y;
 	}
 
@@ -1671,11 +1668,11 @@ public class SolutionObj extends DSSObject {
 		this.frequencyChanged = frequencyChanged;
 	}
 
-	public UUID getYSystem() {
+	public YMatrix getYSystem() {
 		return YSystem;
 	}
 
-	public UUID getYSeries() {
+	public YMatrix getYSeries() {
 		return YSeries;
 	}
 
@@ -1711,15 +1708,15 @@ public class SolutionObj extends DSSObject {
 		this.maxControlIterations = maxControlIterations;
 	}
 
-	public void setYSystem(UUID ySystem) {
+	public void setYSystem(YMatrix ySystem) {
 		YSystem = ySystem;
 	}
 
-	public void setYSeries(UUID ySeries) {
+	public void setYSeries(YMatrix ySeries) {
 		YSeries = ySeries;
 	}
 
-	public void setY(UUID y) {
+	public void setY(YMatrix y) {
 		Y = y;
 	}
 
