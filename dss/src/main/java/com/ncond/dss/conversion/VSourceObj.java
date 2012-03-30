@@ -316,7 +316,7 @@ public class VSourceObj extends PCElement {
 
 	@Override
 	public int injCurrents() {
-		getInjCurrents(getInjCurrent());
+		getInjCurrents(injCurrent);
 
 		/* This is source injection */
 
@@ -348,7 +348,7 @@ public class VSourceObj extends PCElement {
 	/**
 	 * Source injection currents given by this formula:
 	 * 		_     _           _         _
-	 * 		|Iinj1|           |Vsource  |
+	 * 		|Iinj1|           | Vsource |
 	 * 		|     | = [Yprim] |         |
 	 * 		|Iinj2|           | 0       |
 	 * 		_     _           _         _

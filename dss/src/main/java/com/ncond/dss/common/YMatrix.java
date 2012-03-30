@@ -5,6 +5,8 @@
  */
 package com.ncond.dss.common;
 
+import java.util.logging.Logger;
+
 import net.sourceforge.klusolve.CSparseSolver;
 import net.sourceforge.klusolve.ISolver;
 
@@ -14,16 +16,20 @@ import com.ncond.dss.common.Bus.NodeBus;
 import com.ncond.dss.common.exceptions.SolverProblem;
 import com.ncond.dss.common.types.BuildOption;
 import com.ncond.dss.common.types.YPrimType;
+import com.ncond.dss.shared.ComplexUtil;
 
 
 public class YMatrix {
 
+	private Logger log = Logger.getLogger(YMatrix.class.getName());
+
 	private ISolver solver;
 
 	public YMatrix(int nBus) {
-		solver = new CSparseSolver();
-		solver.initialize(nBus, 0, nBus);
+		log.info("Creating sparse set (nBus = " + nBus + ").");
+		solver = new CSparseSolver(nBus, 0, nBus);
 	}
+
 	private static void reCalcAllYPrims() {
 		Circuit ckt = DSS.activeCircuit;
 		if (ckt.isLogEvents())
@@ -155,6 +161,10 @@ public class YMatrix {
 			if (ckt.isLogEvents())
 				Util.logThisEvent("Reallocating solution arrays");
 			sol.setNodeV(Util.resizeArray(sol.getNodeV(), ckt.getNumNodes() + 1));  // allocate system voltage array - allow for zero element
+			for (int i = 0; i < sol.getNodeV().length; i++) {
+				if (sol.getNodeV()[i] == null)
+					sol.getNodeV()[i] = Complex.ZERO;
+			}
 			sol.getNodeV()[0] = Complex.ZERO;
 			sol.setCurrents(Util.resizeArray(sol.getCurrents(), ckt.getNumNodes() + 1));  // allocate system current array
 			sol.setAuxCurrents(Util.resizeArray(sol.getAuxCurrents(), ckt.getNumNodes()));  // allocate system current array
@@ -201,7 +211,7 @@ public class YMatrix {
 			if (c[0].abs() == 0.0) {
 				nb = ckt.getMapNodeToBus(i + 1);
 				sb.append(String.format("%sZero diagonal for bus %s, node %d",
-					DSS.CRLF, ckt.getBusList().get(nb.busRef), nb.nodeNum));
+					DSS.CRLF, ckt.getBusList().get(nb.busRef - 1), nb.nodeNum));
 			}
 		}
 
@@ -210,7 +220,7 @@ public class YMatrix {
 		if (sCol >= 0) {
 			nb = ckt.getMapNodeToBus(sCol + 1);
 			sb.append(String.format("%sMatrix singularity at bus %s, node %d",
-				DSS.CRLF, ckt.getBusList().get(nb.busRef), sCol));
+				DSS.CRLF, ckt.getBusList().get(nb.busRef - 1), sCol));
 		}
 
 		cliques = new int[ckt.getNumNodes()];
@@ -281,22 +291,27 @@ public class YMatrix {
 
 	public int solveSparseSet(Complex[] x, int x_offset,
 			Complex[] b, int b_offset) {
+		int rc = 0;
 		double[] acxX, acxB;
 
 		if (!solver.isFactored())
 			solver.factorSystem();
 
 		if (solver.isFactored()) {
-			acxX = toArray(x, x_offset);
-			acxB = toArray(b, b_offset);
+			acxX = ComplexUtil.toArray(x, x_offset);
+			acxB = ComplexUtil.toArray(b, b_offset);
 
 			solver.solveSystem(acxX, acxB);
 
-			fromArray(acxB, 0, b, b_offset);
-			return 1;
+			ComplexUtil.fromArray(acxB, 0, b, b_offset);
+			rc = 1;
 		} else {
-			return 2;
+			rc = 2;
 		}
+
+		log.info("Solved sparse set (" + rc + ")");
+
+		return rc;
 	}
 
 	public void deleteSparseSet() {
@@ -304,7 +319,7 @@ public class YMatrix {
 	}
 
 	public void getMatrixElement(int i, int i2, Complex[] c) {
-		double[] a = toArray(c[0]);
+		double[] a = new double[2];
 		solver.getElement(i, i2, a);
 		c[0] = new Complex(a[0], a[1]);
 	}
@@ -369,7 +384,21 @@ public class YMatrix {
 	}
 
 	public int addPrimitiveMatrix(int nOrder, int[] nodes, Complex[] mat) {
-		return solver.addPrimitiveMatrix(nOrder, nodes, toArray(mat));
+		int i, j, idx;
+		StringBuilder sb = new StringBuilder();
+
+		sb.append("Adding primitive matrix (order = " + nOrder + "):\n");
+		for (i = 0; i < nOrder; i++) {
+			idx = i;
+			for (j = 0; j < nOrder; j++) {
+				sb.append(String.format("\tlocal [%d,%d] system [%d,%d] val(%2d) = %9.6f + j%9.6f\n",
+					i, j, nodes[i], nodes[j], idx, mat[idx].getReal(), mat[idx].getImaginary()));
+				idx += nOrder;
+			}
+		}
+		log.info(sb.toString());
+
+		return solver.addPrimitiveMatrix(nOrder, nodes, ComplexUtil.toArray(mat));
 	}
 
 	/**
@@ -383,9 +412,9 @@ public class YMatrix {
 	 * @return 1 for success, 2 for invalid array sizes
 	 */
 	public int getCompressedMatrix(int nCol, int nnz, int[] pCol, int[] rowIdx, Complex[] mat) {
-		double[] a = toArray(mat);
+		double[] a = new double[2 * nnz];
 		if (solver.getCompressedMatrix(nCol, nnz, pCol, rowIdx, a) != 0) {
-			fromArray(a, mat);
+			ComplexUtil.fromArray(a, mat);
 			return 1;
 		} else {
 			return 2;  // probably a size mismatch
@@ -402,9 +431,9 @@ public class YMatrix {
 	 * @return 1 for success, 0 for invalid handle, 2 for invalid array sizes
 	 */
 	public int getTripletMatrix(int nnz, int[] rows, int[] cols, Complex[] mat) {
-		double[] a = toArray(mat);
+		double[] a = new double[2 * nnz];
 		if (solver.getTripletMatrix(nnz, rows, cols, a) != 0) {
-			fromArray(a, mat);
+			ComplexUtil.fromArray(a, mat);
 			return 1;
 		} else {
 			return 2;  // probably a size mismatch
@@ -421,54 +450,6 @@ public class YMatrix {
 			return solver.findIslands(nodes);
 		} else {
 			return 0;
-		}
-	}
-
-
-	private static double[] toArray(Complex c) {
-		return new double[] {c.getReal(), c.getImaginary()};
-	}
-
-	private static double[] toArray(Complex[] x) {
-		double[] a = new double[x.length * 2];
-		for (int i = 0; i < x.length; i++) {
-			a[(2 * i)] = x[i].getReal();
-			a[(2 * i) + 1] = x[i].getImaginary();
-		}
-		return a;
-	}
-
-	private static double[] toArray(Complex[] x, int x_offset) {
-		Complex z;
-		double[] a = new double[(2 * x.length) - (2 * x_offset)];
-
-		for (int i = x_offset; i < x.length; i++) {
-			z = x[i];
-			a[(2 * i)] = z.getReal();
-			a[(2 * i) + 1] = z.getImaginary();
-		}
-		return a;
-	}
-
-	private static void fromArray(double[] x, Complex[] z) {
-		double re, im;
-
-		for (int i = 0; i < z.length; i++) {
-			re = x[(2 * i)];
-			im = x[(2 * i) + 1];
-
-			z[i] = new Complex(re, im);
-		}
-	}
-
-	private static void fromArray(double[] x, int x_offset, Complex[] z, int z_offset) {
-		double re, im;
-
-		for (int i = x_offset; i < x.length; i+=2) {
-			re = x[(2 * x_offset) + i];
-			im = x[(2 * x_offset) + i + 1];
-
-			z[z_offset + (i / 2)] = new Complex(re, im);
 		}
 	}
 

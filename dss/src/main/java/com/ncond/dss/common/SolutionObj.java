@@ -288,8 +288,8 @@ public class SolutionObj extends DSSObject {
 		// base convergence on voltage magnitude
 
 		maxError = 0.0;
-		for (int i = 1; i <= ckt.getNumNodes(); i++) {
-			Vmag = nodeV[i].abs();
+		for (int i = 0; i < ckt.getNumNodes(); i++) {
+			Vmag = nodeV[i + 1].abs();
 
 			/* If base specified, use it; otherwise go on present magnitude */
 			if (nodeVBase[i] > 0.0) {
@@ -342,9 +342,9 @@ public class SolutionObj extends DSSObject {
 	private void getSourceInjCurrents() {
 		Circuit ckt = DSS.activeCircuit;
 
-		for (CktElement pElem : ckt.getSources())
-			if (pElem.isEnabled())
-				pElem.injCurrents();  // uses nodeRef to add current into injCurr Array;
+		for (CktElement elem : ckt.getSources())
+			if (elem.isEnabled())
+				elem.injCurrents();  // uses nodeRef to add current into injCurr Array;
 	}
 
 	/**
@@ -1380,9 +1380,9 @@ public class SolutionObj extends DSSObject {
 		//int[] ip = new int[1];
 
 		/* Note: NodeV[0] = 0 + j0 always. Therefore, pass the address of the element 1 of the array. */
-		try {
+//		try {
 			/* log KLUSolve function calls */
-//			YMatrix.setLogFile("KLU_Log.txt", 1);
+			//YMatrix.setLogFile("KLU_Log.txt", 1);
 
 			retCode = Y.solveSparseSet(V, 1, currents, 1);  // solve for present injCurr
 
@@ -1395,10 +1395,10 @@ public class SolutionObj extends DSSObject {
 			//YMatrix.getNNZ(Y, ip);
 			//YMatrix.getSparseNNZ(Y, ip);
 			//YMatrix.getSingularCol(Y, ip);
-		} catch (Exception e) {
-			throw new SolverProblem("Error solving system Y matrix. Sparse matrix solver reports numerical error: " +
-					e.getMessage());
-		}
+//		} catch (Exception e) {
+//			throw new SolverProblem("Error solving system Y matrix. Sparse matrix solver reports numerical error: " +
+//					e.getMessage());
+//		}
 
 		return retCode;
 	}
@@ -1448,7 +1448,7 @@ public class SolutionObj extends DSSObject {
 	public int solveYDirect() throws SolverProblem {
 		zeroInjCurr();  // side effect: allocates injCurr
 		getSourceInjCurrents();
-		if (isDynamicModel) getPCInjCurr();  // Need this in dynamics mode to pick up additional injections
+		if (isDynamicModel) getPCInjCurr();  // need this in dynamics mode to pick up additional injections
 
 		solveSystem(nodeV);  // solve with zero injection current
 		return 0;

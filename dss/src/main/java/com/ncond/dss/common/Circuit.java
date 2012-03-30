@@ -635,7 +635,7 @@ public class Circuit extends NamedObject {
 		}
 
 		/* Build lists of special elements and generic types */
-		switch (activeCktElement.getObjType() & DSSClassDefs.BASECLASSMASK) {
+		switch (activeCktElement.getObjType() & DSSClassDefs.CLASSMASK) {
 		case DSSClassDefs.MON_ELEMENT:
 			monitors.add((MonitorObj) activeCktElement);
 			break;

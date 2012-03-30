@@ -155,8 +155,8 @@ public class ExecCommandsTest extends TestCase {
 
 	public void testSolve() {
 		createCircuit();
-//		process("solve");
-//		assertTrue(DSS.activeCircuit.isSolved());
+		process("solve");
+		assertTrue(DSS.activeCircuit.isSolved());
 	}
 
 	public void testCompile() {

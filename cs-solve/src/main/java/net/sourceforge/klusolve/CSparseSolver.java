@@ -118,11 +118,11 @@ public class CSparseSolver implements ISolver {
 	public int solveSystem(double[] x, double[] b) {
 		acx.set(0, cs_czero());
 
-		System.arraycopy(b, 0, acx.x, 1, 2 * nbus);
+		System.arraycopy(b, 0, acx.x, 2, 2 * nbus);
 
 		solve(acx);
 
-		System.arraycopy(acx.x, 1, x, 0, 2 * nbus);
+		System.arraycopy(acx.x, 2, x, 0, 2 * nbus);
 
 		return 0;
 	}
@@ -215,7 +215,7 @@ public class CSparseSolver implements ISolver {
 
 		// load current injections into rhs
 		b = new DZcsa(2 * nx);
-		System.arraycopy(Vbus.x, 1, b.x, 0, 2 * nx);
+		System.arraycopy(Vbus.x, 2, b.x, 0, 2 * nx);
 
 		n = Y22.n;
 		x = new DZcsa(n);
@@ -227,7 +227,7 @@ public class CSparseSolver implements ISolver {
 		cs_usolve(numeric.U, x) ;		/* x = U\x */
 		cs_ipvec(symbolic.q, x, b, n) ;		/* b(q) = x */
 
-		System.arraycopy(b, 0, Vbus, 1, n);
+		System.arraycopy(b.x, 0, Vbus.x, 2, 2 * n);
 	}
 
 	public int getSize() {
@@ -263,7 +263,8 @@ public class CSparseSolver implements ISolver {
 	}
 
 	public int getSingularCol() {
-		throw new UnsupportedOperationException();
+		// TODO: find singular column
+		return -1;
 	}
 
 	/* stack-based DFS from Sedgewick */

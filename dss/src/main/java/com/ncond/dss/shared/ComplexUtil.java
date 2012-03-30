@@ -53,4 +53,58 @@ public class ComplexUtil {
 		return new double[] {a.abs(), degArg(a)};
 	}
 
+
+	public static double[] toArray(Complex c) {
+		return new double[] {c.getReal(), c.getImaginary()};
+	}
+
+	public static double[] toArray(Complex[] x) {
+		double[] a = new double[x.length * 2];
+		for (int i = 0; i < x.length; i++) {
+			a[(2 * i)] = x[i].getReal();
+			a[(2 * i) + 1] = x[i].getImaginary();
+		}
+		return a;
+	}
+
+	public static double[] toArray(Complex[] x, int x_offset) {
+		int i;
+		double[] a;
+		Complex z;
+
+		a = new double[(2 * x.length) - (2 * x_offset)];
+
+		for (i = 0; i < x.length - x_offset; i++) {
+			z = x[i + x_offset];
+			a[(2 * i)] = z.getReal();
+			a[(2 * i) + 1] = z.getImaginary();
+		}
+		return a;
+	}
+
+	public static void fromArray(double[] x, Complex[] z) {
+		double re, im;
+
+		for (int i = 0; i < z.length; i++) {
+			re = x[(2 * i)];
+			im = x[(2 * i) + 1];
+
+			z[i] = new Complex(re, im);
+		}
+	}
+
+	public static void fromArray(double[] x, int x_skip, Complex[] z, int z_offset) {
+		int i, j;
+		double re, im;
+
+		j = 0;
+		for (i = x_skip * 2; i < x.length; i+=2) {
+			re = x[i];
+			im = x[i + 1];
+
+			z[z_offset + j] = new Complex(re, im);
+			j++;
+		}
+	}
+
 }

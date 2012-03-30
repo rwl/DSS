@@ -28,7 +28,7 @@ public abstract class PCElement extends CktElement {
 	/** Upline sensor for this element */
 	private MeterElement sensorObj;
 
-	private Complex[] injCurrent;
+	protected Complex[] injCurrent;
 
 	public PCElement(DSSClass ParClass) {
 		super(ParClass);
