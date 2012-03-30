@@ -33,13 +33,18 @@ public class KLUSolver extends CSparseSolver {
 	private KLU_symbolic symbolic;
 	private KLU_numeric numeric;
 
+	protected int nnz_post;  // number of non-zero entries after factoring
+	protected int fltbus;    // row number of a bus causing singularity
+
+	protected void zero_indices() {
+		super.zero_indices();
+		nnz_post = 0;
+		fltbus = 0;
+	}
+
 	@Override
 	public void initDefaults() {
-		m_nBus = 0;
-		bFactored = false;
-		acx = null;
-		zero_indices();
-		null_pointers();
+		super.initDefaults();
 		if (!common_init) {
 			klu_defaults(common);
 			common.halt_if_singular = 0;
@@ -48,6 +53,11 @@ public class KLUSolver extends CSparseSolver {
 	}
 
 	// metrics
+
+	@Override
+	public int getSparseNNZ() {
+		return nnz_post;
+	}
 
 	@Override
 	public double getRCond() {
@@ -75,11 +85,13 @@ public class KLUSolver extends CSparseSolver {
 		return common.flops;
 	}
 
+	public int getSingularCol() {
+		return fltbus;
+	}
+
 	/**
-	 * returns 1 for success, -1 for a singular matrix
-	 * returns 0 for another KLU error, most likely the matrix is too large for int32
-	 *
-	 * @return
+	 * @return 1 for success, -1 for a singular matrix, 0 for another
+	 * error, most likely the matrix is too large for int32
 	 */
 	@Override
 	public int factor() {
@@ -87,7 +99,7 @@ public class KLUSolver extends CSparseSolver {
 		if (T22 != null) {
 			compress_partitions();
 		} else {  // otherwise, compression and factoring has already been done
-			if (m_fltBus != 0) return -1;  // was found singular before
+			if (fltbus != 0) return -1;  // was found singular before
 			return 1;  // was found okay before
 		}
 
@@ -99,23 +111,23 @@ public class KLUSolver extends CSparseSolver {
 			symbolic = klu_analyze (Y22.n, Y22.p, Y22.i, common);
 			numeric = klu_factor (Y22.p, Y22.i, Y22.x, symbolic, common);
 
-			m_fltBus = common.singular_col;
+			fltbus = common.singular_col;
 			if (common.singular_col < Y22.n) {
-				++m_fltBus; // FIXME for 1-based NexHarm row numbers
-				m_fltBus += 0; // skip over the voltage source buses
+				++fltbus; // FIXME for 1-based NexHarm row numbers
+				fltbus += 0; // skip over the voltage source buses
 			} else {
-				m_fltBus = 0;  // no singular submatrix was found
+				fltbus = 0;  // no singular submatrix was found
 			}
 			if (common.status == KLU_OK) {
 				// compute size of the factorization
-				m_NZpost += (numeric.lnz + numeric.unz - numeric.n +
+				nnz_post += (numeric.lnz + numeric.unz - numeric.n +
 					((numeric.Offp != null) ? (numeric.Offp[numeric.n]) : 0));
 				return 1;
 			} else if (common.status == KLU_SINGULAR) {
 				return -1;
 			} else {  // KLU_OUT_OF_MEMORY, KLU_INVALID, or KLU_TOO_LARGE
-				if (m_fltBus == 0) {
-					m_fltBus = 1;  // this is the flag for unsuccessful factorization
+				if (fltbus == 0) {
+					fltbus = 1;  // this is the flag for unsuccessful factorization
 				}
 				return 0;
 			}
@@ -136,12 +148,12 @@ public class KLUSolver extends CSparseSolver {
 		double[] rhs = null;
 		int i, i1, offset;
 
-		if (m_nX < 1) return;  // nothing to do
+		if (nx < 1) return;  // nothing to do
 
 		// load current injections into RHS
-		rhs = new double[2 * m_nX];
+		rhs = new double[2 * nx];
 		offset = 1;
-		for (i = 0; i < m_nX; i++) {
+		for (i = 0; i < nx; i++) {
 			i1 = 2 * i;
 			rhs[i1] = acxVbus.get(i + offset)[0];
 			rhs[i1 + 1] = acxVbus.get(i + offset)[1];
@@ -152,13 +164,26 @@ public class KLUSolver extends CSparseSolver {
 		klu_solve (symbolic, numeric, Y22.n, 1, rhs, common);
 
 		offset = 1;
-		for (i = 0; i < m_nX; i++) {
+		for (i = 0; i < nx; i++) {
 			i1 = 2 * i;
 			acxVbus.get(i+offset)[0] = rhs[i1];
 			acxVbus.get(i+offset)[1] = rhs[i1+1];
 		}
 
 		rhs = null;
+	}
+
+	/**
+	 * returns the row > 0 if a zero appears on the diagonal
+	 * calls Factor if necessary
+	 * note: the EMTP terminology is "floating subnetwork"
+	 *
+	 * @return
+	 */
+	public int findDisconnectedSubnetwork() {
+		factor();
+
+		return fltbus;
 	}
 
 }

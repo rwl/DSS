@@ -13,12 +13,7 @@ public interface ISolver {
 	int solveSystem(double[] acxX, double[] acxB);
 
 	/**
-	 * This resets and reinitializes the sparse matrix, nI = nBus
-	 *
-	 * @param nBus
-	 * @param nV
-	 * @param nI
-	 * @return
+	 * This resets and reinitializes the sparse matrix, nI == nBus.
 	 */
 	int initialize(int nBus, int nV, int nI);
 
@@ -103,12 +98,7 @@ public interface ISolver {
 	void getElement(int iRow, int iCol, double[] cpxVal);
 
 	/**
-	 * For OpenDSS, return 1 for success
-	 *
-	 * @param nOrder
-	 * @param pNodes
-	 * @param pMat
-	 * @return
+	 * @return 1 on success
 	 */
 	int addPrimitiveMatrix(int nOrder, int[] pNodes, double[] pMat);
 
