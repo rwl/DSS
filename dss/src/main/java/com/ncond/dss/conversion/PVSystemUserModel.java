@@ -5,7 +5,7 @@
  */
 package com.ncond.dss.conversion;
 
-import org.apache.commons.math.complex.Complex;
+import com.ncond.dss.shared.Complex;
 
 public interface PVSystemUserModel {
 

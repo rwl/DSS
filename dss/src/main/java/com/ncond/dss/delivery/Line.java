@@ -6,7 +6,7 @@
 package com.ncond.dss.delivery;
 
 
-import org.apache.commons.math.complex.Complex;
+import com.ncond.dss.shared.Complex;
 
 import com.ncond.dss.common.DSS;
 import com.ncond.dss.common.DSSClassDefs;
@@ -174,7 +174,7 @@ public class Line extends PDClass {
 			Zvalues = elem.getZ().asArray(nOrder);
 			if (nOrder[0] == elem.getNumPhases()) {
 				for (int j = 0; j < elem.getNumPhases() * elem.getNumPhases(); j++)
-					Zvalues[j] = new Complex(matBuffer[j], Zvalues[j].getImaginary());
+					Zvalues[j] = new Complex(matBuffer[j], Zvalues[j].imag());
 			}
 		}
 	}
@@ -192,7 +192,7 @@ public class Line extends PDClass {
 			Zvalues = elem.getZ().asArray(nOrder);
 			if (nOrder[0] == elem.getNumPhases()) {
 				for (int j = 0; j < elem.getNumPhases() * elem.getNumPhases(); j++)
-					Zvalues[j] = new Complex(Zvalues[j].getReal(), matBuffer[j]);
+					Zvalues[j] = new Complex(Zvalues[j].real(), matBuffer[j]);
 			}
 		}
 	}
@@ -212,7 +212,7 @@ public class Line extends PDClass {
 			Yvalues = elem.getYc().asArray(nOrder);
 			if (nOrder[0] == elem.getNumPhases()) {
 				for (int j = 0; j < elem.getNumPhases() * elem.getNumPhases(); j++)
-					Yvalues[j] = new Complex(Yvalues[j].getReal(), factor * matBuffer[j]);
+					Yvalues[j] = new Complex(Yvalues[j].real(), factor * matBuffer[j]);
 			}
 		}
 	}

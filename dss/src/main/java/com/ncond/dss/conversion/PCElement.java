@@ -7,7 +7,7 @@ package com.ncond.dss.conversion;
 
 import java.io.PrintStream;
 
-import org.apache.commons.math.complex.Complex;
+import com.ncond.dss.shared.Complex;
 
 import com.ncond.dss.common.CktElement;
 import com.ncond.dss.common.DSS;
@@ -75,7 +75,7 @@ public abstract class PCElement extends CktElement {
 		} else {
 			YPrim.vMult(curr, getVTerminal());
 			for (i = 0; i < YOrder; i++)
-				curr[i] = curr[i].add( getInjCurrent(i).negate() );
+				curr[i] = curr[i].add( getInjCurrent(i).neg() );
 			setITerminalUpdated(true);
 		}
 

@@ -10,13 +10,12 @@ import java.util.logging.Logger;
 import net.sourceforge.klusolve.CSparseSolver;
 import net.sourceforge.klusolve.ISolver;
 
-import org.apache.commons.math.complex.Complex;
+import com.ncond.dss.shared.Complex;
 
 import com.ncond.dss.common.Bus.NodeBus;
 import com.ncond.dss.common.exceptions.SolverProblem;
 import com.ncond.dss.common.types.BuildOption;
 import com.ncond.dss.common.types.YPrimType;
-import com.ncond.dss.shared.ComplexUtil;
 
 
 public class YMatrix {
@@ -298,12 +297,12 @@ public class YMatrix {
 			solver.factorSystem();
 
 		if (solver.isFactored()) {
-			acxX = ComplexUtil.toArray(x, x_offset);
-			acxB = ComplexUtil.toArray(b, b_offset);
+			acxX = Complex.toArray(x, x_offset);
+			acxB = Complex.toArray(b, b_offset);
 
 			solver.solveSystem(acxX, acxB);
 
-			ComplexUtil.fromArray(acxB, 0, b, b_offset);
+			Complex.fromArray(acxB, 0, b, b_offset);
 			rc = 1;
 		} else {
 			rc = 2;
@@ -392,13 +391,13 @@ public class YMatrix {
 			idx = i;
 			for (j = 0; j < nOrder; j++) {
 				sb.append(String.format("\tlocal [%d,%d] system [%d,%d] val(%2d) = %9.6f + j%9.6f\n",
-					i, j, nodes[i], nodes[j], idx, mat[idx].getReal(), mat[idx].getImaginary()));
+					i, j, nodes[i], nodes[j], idx, mat[idx].real(), mat[idx].imag()));
 				idx += nOrder;
 			}
 		}
 		log.info(sb.toString());
 
-		return solver.addPrimitiveMatrix(nOrder, nodes, ComplexUtil.toArray(mat));
+		return solver.addPrimitiveMatrix(nOrder, nodes, Complex.toArray(mat));
 	}
 
 	/**
@@ -414,7 +413,7 @@ public class YMatrix {
 	public int getCompressedMatrix(int nCol, int nnz, int[] pCol, int[] rowIdx, Complex[] mat) {
 		double[] a = new double[2 * nnz];
 		if (solver.getCompressedMatrix(nCol, nnz, pCol, rowIdx, a) != 0) {
-			ComplexUtil.fromArray(a, mat);
+			Complex.fromArray(a, mat);
 			return 1;
 		} else {
 			return 2;  // probably a size mismatch
@@ -433,7 +432,7 @@ public class YMatrix {
 	public int getTripletMatrix(int nnz, int[] rows, int[] cols, Complex[] mat) {
 		double[] a = new double[2 * nnz];
 		if (solver.getTripletMatrix(nnz, rows, cols, a) != 0) {
-			ComplexUtil.fromArray(a, mat);
+			Complex.fromArray(a, mat);
 			return 1;
 		} else {
 			return 2;  // probably a size mismatch

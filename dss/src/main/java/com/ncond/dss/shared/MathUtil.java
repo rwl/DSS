@@ -5,7 +5,7 @@
  */
 package com.ncond.dss.shared;
 
-import org.apache.commons.math.complex.Complex;
+import com.ncond.dss.shared.Complex;
 
 
 public abstract class MathUtil {
@@ -194,7 +194,7 @@ public abstract class MathUtil {
 	public static Complex terminalPowerIn(Complex[] V, Complex[] I, int nPhases) {
 		Complex total = Complex.ZERO;
 		for (int j = 0; j < nPhases; j++)
-			total = total.add(V[j].multiply(I[j].conjugate()));
+			total = total.add(V[j].mult(I[j].conj()));
 		return total;
 	}
 
@@ -203,7 +203,7 @@ public abstract class MathUtil {
 	 */
 	public static void calcKPowers(Complex[] kWkVAr, Complex[] V, Complex[] I, int n) {
 		for (int j = 0; j < n; j++)
-			kWkVAr[j] = V[j].multiply(I[j].conjugate()).multiply(0.001);
+			kWkVAr[j] = V[j].mult(I[j].conj()).mult(0.001);
 	}
 
 	public static void calcKPowers(Complex[] kWkVAr, Complex[] V, Complex I, int n) {
@@ -282,8 +282,8 @@ public abstract class MathUtil {
 	 */
 	public static Complex parallelZ(Complex Z1, Complex Z2) {
 		Complex denom = Z1.add(Z2) ;
-		if ((Math.abs(denom.getReal()) > 0.0) || (Math.abs(denom.getImaginary()) > 0.0)) {
-			return Z1.multiply(Z2).divide(denom);
+		if ((Math.abs(denom.real()) > 0.0) || (Math.abs(denom.imag()) > 0.0)) {
+			return Z1.mult(Z2).div(denom);
 		} else {  /* Error */
 			return Complex.ZERO;
 		}
@@ -302,17 +302,17 @@ public abstract class MathUtil {
 		Complex zSQR25;
 
 		Complex result = Complex.ONE;  // term 0
-		zSQR25 = a.multiply(a).multiply(0.25);
+		zSQR25 = a.mult(a).mult(0.25);
 		term = zSQR25;
 		result = result.add(zSQR25);  // term 1
 
 		i = 0;
 		while (i <= maxTerm && sizeSqr > epsilonSqr) {
-			term = zSQR25.multiply(term);
+			term = zSQR25.mult(term);
 			i += 1;
-			term = ComplexUtil.divide(term, Math.pow(i, 2));
+			term = term.div(Math.pow(i, 2));
 			result = result.add(term);  // sum = sum + term
-			sizeSqr = Math.pow(term.getReal(), 2) + Math.pow(term.getImaginary(), 2);
+			sizeSqr = Math.pow(term.real(), 2) + Math.pow(term.imag(), 2);
 		}
 
 		return result;
@@ -348,8 +348,8 @@ public abstract class MathUtil {
 
 	public static double getXR(Complex a) {
 		double xr;
-		if (a.getReal() != 0.0) {
-			xr = a.getImaginary() / a.getReal();
+		if (a.real() != 0.0) {
+			xr = a.imag() / a.real();
 			if (Math.abs(xr) > 9999.0) xr = 9999.0;
 		} else{
 			xr = 9999.0;;

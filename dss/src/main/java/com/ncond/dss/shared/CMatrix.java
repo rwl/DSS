@@ -5,7 +5,7 @@
  */
 package com.ncond.dss.shared;
 
-import org.apache.commons.math.complex.Complex;
+import com.ncond.dss.shared.Complex;
 
 
 public class CMatrix {
@@ -69,7 +69,7 @@ public class CMatrix {
 		for (int i = 0; i < nOrder; i++) {
 			sum = Complex.ZERO;
 			for (int j = 0; j < nOrder; j++)
-				sum = sum.add( values[j * nOrder + i].multiply( x[j] ) );
+				sum = sum.add( values[j * nOrder + i].mult( x[j] ) );
 			b[i] = sum;
 		}
 	}
@@ -84,7 +84,7 @@ public class CMatrix {
 		for (int i = 0; i < nOrder; i++) {
 			sum = Complex.ZERO;
 			for (int j = 0; j < nOrder; j++)
-				sum = sum.add(values[j * nOrder + i].multiply(x[j]));
+				sum = sum.add(values[j * nOrder + i].mult(x[j]));
 			b[i] = b[i].add(sum);
 		}
 	}
@@ -158,7 +158,7 @@ public class CMatrix {
 			avg = avg.add(values[i * nOrder + i]);
 
 		if (nOrder > 0) {
-			avg = ComplexUtil.divide(avg, nOrder);
+			avg = avg.div(nOrder);
 		}
 
 		return avg;
@@ -178,7 +178,7 @@ public class CMatrix {
 		}
 
 		if (nTimes > 0) {
-			avg = ComplexUtil.divide(avg, nTimes);
+			avg = avg.div(nTimes);
 		}
 
 		return avg;
@@ -189,7 +189,7 @@ public class CMatrix {
 	 */
 	public void mult(double x) {
 		for (int i = 0; i < nOrder * nOrder; i++)
-			values[i] = values[i].multiply(x);
+			values[i] = values[i].mult(x);
 	}
 
 	/**
@@ -246,26 +246,26 @@ public class CMatrix {
 				if (i != k) {
 					for (j = 0; j < l; j++) {
 						if (j != k) {
-							A[idx(i, j)] = A[idx(i, j)].subtract(A[idx(i, k)].multiply(A[idx(k, j)]).divide(A[idx(k, k)]));
+							A[idx(i, j)] = A[idx(i, j)].sub(A[idx(i, k)].mult(A[idx(k, j)]).div(A[idx(k, k)]));
 						}
 					}
 				}
 			}
 
 			// invert and negate k, k element
-			A[idx(k, k)] = ComplexUtil.invert(A[idx(k, k)]).negate();
+			A[idx(k, k)] = A[idx(k, k)].inv().neg();
 
 			for (i = 0; i < l; i++) {
 				if (i != k) {
-					A[idx(i, k)] = A[idx(i, k)].multiply(A[idx(k, k)]);
-					A[idx(k, i)] = A[idx(k, i)].multiply(A[idx(k, k)]);
+					A[idx(i, k)] = A[idx(i, k)].mult(A[idx(k, k)]);
+					A[idx(k, i)] = A[idx(k, i)].mult(A[idx(k, k)]);
 				}
 			}
 		}  // m loop
 
 		for (j = 0; j < l; j++)
 			for (k = 0; k < l; k++)
-				A[ idx(j, k) ] = A[ idx(j, k) ].negate();
+				A[ idx(j, k) ] = A[ idx(j, k) ].neg();
 
 		LT = null;
 	}
@@ -291,7 +291,7 @@ public class CMatrix {
 					jj = 0;
 					for (int j = 0; j < nOrder; j++) {
 						if (j != irow) {
-							mtx.set(ii, jj, get(i, j).subtract(get(i, irow).multiply(get(irow, j)).divide(x)));
+							mtx.set(ii, jj, get(i, j).sub(get(i, irow).mult(get(irow, j)).div(x)));
 							jj += 1;
 						}
 					}

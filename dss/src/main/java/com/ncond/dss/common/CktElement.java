@@ -8,7 +8,7 @@ package com.ncond.dss.common;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 
-import org.apache.commons.math.complex.Complex;
+import com.ncond.dss.shared.Complex;
 
 import com.ncond.dss.common.types.YPrimType;
 import com.ncond.dss.general.DSSObject;
@@ -452,7 +452,7 @@ abstract public class CktElement extends DSSObject {
 		double max = 0.0;
 		if (enabled) {
 			for (int i = 0; i < nPhases; i++)
-				max = Math.max(max, Math.pow(ITerminal[i].getReal(), 2) + Math.pow(ITerminal[i].getImaginary(), 2));
+				max = Math.max(max, Math.pow(ITerminal[i].real(), 2) + Math.pow(ITerminal[i].imag(), 2));
 		}
 		return Math.sqrt(max);  // just do the sqrt once and save a little time
 	}
@@ -474,13 +474,13 @@ abstract public class CktElement extends DSSObject {
 		for (i = 0; i < nConds; i++) {
 			n = activeTerminal.getTermNodeRef(i);  // don't bother with grounded node
 			if (n > 0) {
-				cPower = cPower.add( sol.getNodeV(n).multiply(ITerminal[k + i].conjugate()) );
+				cPower = cPower.add( sol.getNodeV(n).mult(ITerminal[k + i].conj()) );
 			}
 		}
 
 		/* If this is a positive sequence circuit, then we need to multiply by 3 to get the 3-phase power */
 		if (DSS.activeCircuit.isPositiveSequence()) {
-			cPower = cPower.multiply(3.0);
+			cPower = cPower.mult(3.0);
 		}
 
 		return cPower;
@@ -502,9 +502,9 @@ abstract public class CktElement extends DSSObject {
 			for (k = 0; k < YOrder; k++) {
 				n = nodeRef[k];
 				if (n > 0) {
-					loss = sol.getNodeV(n).multiply( ITerminal[k].conjugate() );
+					loss = sol.getNodeV(n).mult( ITerminal[k].conj() );
 					if (DSS.activeCircuit.isPositiveSequence())
-						loss = loss.multiply(3.0);
+						loss = loss.mult(3.0);
 					totalLoss = totalLoss.add(loss);
 				}
 			}
@@ -526,9 +526,9 @@ abstract public class CktElement extends DSSObject {
 			for (i = 0; i < YOrder; i++) {
 				n = nodeRef[i];  // increment through terminals
 				if (n > 0) {
-					S = sol.getNodeV(n).multiply( ITerminal[i].conjugate() );
+					S = sol.getNodeV(n).mult( ITerminal[i].conj() );
 					if (DSS.activeCircuit.isPositiveSequence())
-						S = S.multiply(3.0);
+						S = S.mult(3.0);
 					powerBuffer[i] = S;
 				}
 			}
@@ -558,9 +558,9 @@ abstract public class CktElement extends DSSObject {
 					k = j * nConds + i;
 					n = nodeRef[k];  // increment through terminals
 					if (n > 0) {
-						loss = sol.getNodeV(n).multiply( ITerminal[k].conjugate() );
+						loss = sol.getNodeV(n).mult( ITerminal[k].conj() );
 						if (DSS.activeCircuit.isPositiveSequence())
-							loss = loss.multiply(3.0);
+							loss = loss.mult(3.0);
 						loss = losses.add(loss);
 					}
 				}
@@ -615,7 +615,7 @@ abstract public class CktElement extends DSSObject {
 		        	for (i = 0; i < YOrder; i++) {
 					pw.print("! ");
 					for (j = 0; j < i; j++) {
-						pw.printf(" %13.10g |", YPrim.get(i, j).getReal());
+						pw.printf(" %13.10g |", YPrim.get(i, j).real());
 					}
 					pw.println();
 		        	}
@@ -623,7 +623,7 @@ abstract public class CktElement extends DSSObject {
 		        	for (i = 0; i < YOrder; i++) {
 					pw.print("! ");
 					for (j = 0; j < i; j++) {
-						pw.printf(" %13.10g |", YPrim.get(i, j).getImaginary());
+						pw.printf(" %13.10g |", YPrim.get(i, j).imag());
 					}
 					pw.println();
 		        	}
@@ -654,7 +654,7 @@ abstract public class CktElement extends DSSObject {
 					elimRow = j + k;
 					Ynn = YMatrix.get(elimRow, elimRow);
 					if (Ynn.abs() == 0.0)
-						Ynn = new Complex(DSS.EPSILON, Ynn.getImaginary());
+						Ynn = new Complex(DSS.EPSILON, Ynn.imag());
 					rowEliminated[elimRow] = true;
 					for (ii = 0; ii < YOrder; ii++) {
 						if (!rowEliminated[ii]) {
@@ -663,7 +663,7 @@ abstract public class CktElement extends DSSObject {
 								if (!rowEliminated[jj]) {
 									Yij = YMatrix.get(ii, jj);
 									Ynj = YMatrix.get(elimRow, jj);
-									YMatrix.setSym(ii, jj, Yij.subtract( Yin.multiply(Ynj).divide(Ynn) ));
+									YMatrix.setSym(ii, jj, Yij.sub( Yin.mult(Ynj).div(Ynn) ));
 								}
 							}
 						}

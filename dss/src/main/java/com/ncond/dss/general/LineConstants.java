@@ -5,11 +5,10 @@
  */
 package com.ncond.dss.general;
 
-import org.apache.commons.math.complex.Complex;
+import com.ncond.dss.shared.Complex;
 
 import com.ncond.dss.common.DSS;
 import com.ncond.dss.shared.CMatrix;
-import com.ncond.dss.shared.ComplexUtil;
 import com.ncond.dss.shared.LineUnits;
 import com.ncond.dss.shared.MathUtil;
 
@@ -135,10 +134,10 @@ public class LineConstants {
 		for (i = 0; i < numConds; i++) {
 			Zi = getZint(i);
 			if (powerFreq) {  // for less than 1 kHz, use published GMR
-				Zi = new Complex(Zi.getReal(), 0.0);
-				Zspacing = Lfactor.multiply(Math.log(1.0 / GMR[i]));  // use GMR
+				Zi = new Complex(Zi.real(), 0.0);
+				Zspacing = Lfactor.mult(Math.log(1.0 / GMR[i]));  // use GMR
 			} else {
-				Zspacing = Lfactor.multiply(Math.log(1.0 / radius[i]));
+				Zspacing = Lfactor.mult(Math.log(1.0 / radius[i]));
 			}
 
 			Zmatrix.set(i, i, Zi.add(Zspacing.add(getZe(i, i))));
@@ -149,7 +148,7 @@ public class LineConstants {
 		for (i = 0; i < numConds; i++) {
 			for (j = 0; j < i; j++) {
 				dij = Math.sqrt(Math.pow(X[i] - X[j], 2) + Math.pow(Y[i] - Y[j], 2));
-				Zmatrix.setSym(i, j, Lfactor.multiply( Math.log(1.0 / dij) ).add(getZe(i, j)));
+				Zmatrix.setSym(i, j, Lfactor.mult( Math.log(1.0 / dij) ).add(getZe(i, j)));
 			}
 		}
 
@@ -257,7 +256,7 @@ public class LineConstants {
 		newSize = YYc.order();
 		unitLengthConversion = LineUnits.fromPerMeter(units) * length;
 		for (int i = 0; i < newSize * newSize; i++)
-			YcValues[i] = YcValues[i].multiply(unitLengthConversion);  // a = a * b
+			YcValues[i] = YcValues[i].mult(unitLengthConversion);  // a = a * b
 
 		return YYc;
 	}
@@ -299,20 +298,20 @@ public class LineConstants {
 			term5 = -B4 * mij * mij * mij * mij * (Math.log(Math.exp(C4) / mij) * Math.cos(4.0 * thetaij) + thetaij * Math.sin(4.0 * thetaij));
 			im = term1 + term2 + term3 + term4 + term5;
 			Ze = new Complex(re, im);
-			Ze = new Complex(Ze.getReal(), Ze.getImaginary() + 0.5 * Math.log(Dij));  // correction term to work with DSS structure
+			Ze = new Complex(Ze.real(), Ze.imag() + 0.5 * Math.log(Dij));  // correction term to work with DSS structure
 
-			Ze = Ze.multiply(w * MU0 / Math.PI);
+			Ze = Ze.mult(w * MU0 / Math.PI);
 			break;
 
 		case DERI:
 			if (i != j) {
-				hterm = new Complex(Yi + Yj, 0.0).add( ComplexUtil.invert(me).multiply(2.0) );
+				hterm = new Complex(Yi + Yj, 0.0).add( me.inv().mult(2.0) );
 				xterm = new Complex(X[i] - X[j], 0.0);
-				lnArg = hterm.multiply(hterm).add(xterm.multiply(xterm)).sqrt();
-				Ze = new Complex(0.0, w * MU0 / TWO_PI).multiply(lnArg.log());
+				lnArg = hterm.mult(hterm).add(xterm.mult(xterm)).sqrt();
+				Ze = new Complex(0.0, w * MU0 / TWO_PI).mult(lnArg.ln());
 			} else {
-				hterm = new Complex(Yi, 0.0).add( ComplexUtil.invert(me) );
-				Ze = new Complex(0.0, w * MU0 / TWO_PI).multiply( hterm.multiply(2.0).log() );
+				hterm = new Complex(Yi, 0.0).add(me.inv());
+				Ze = new Complex(0.0, w * MU0 / TWO_PI).mult( hterm.mult(2.0).ln() );
 			}
 			break;
 		}
@@ -335,13 +334,13 @@ public class LineConstants {
 			break;
 		case DERI:  // with skin effect model
 			/* Assume round conductor */
-			alpha = CDOUBLEONE.multiply(Math.sqrt(frequency * MU0 / Rdc[i]));
+			alpha = CDOUBLEONE.mult(Math.sqrt(frequency * MU0 / Rdc[i]));
 			if (alpha.abs() > 35.0) {
 				I0I1 = Complex.ONE;
 			} else {
-				I0I1 = MathUtil.besselI0(alpha).divide(MathUtil.besselI0(alpha));
+				I0I1 = MathUtil.besselI0(alpha).div(MathUtil.besselI0(alpha));
 			}
-			Zi = CDOUBLEONE.multiply(I0I1).multiply(Math.sqrt(Rdc[i] * frequency * MU0) / 2.0);
+			Zi = CDOUBLEONE.mult(I0I1).mult(Math.sqrt(Rdc[i] * frequency * MU0) / 2.0);
 			break;
 		}
 
@@ -377,7 +376,7 @@ public class LineConstants {
 		/* Convert the values by units and length */
 		unitLengthConversion = LineUnits.fromPerMeter(units) * length;
 		for (i = 0; i < newSize * newSize; i++)
-			Zvalues[i] = Zvalues[i].multiply(unitLengthConversion);  // a = a * b
+			Zvalues[i] = Zvalues[i].mult(unitLengthConversion);  // a = a * b
 
 		return null;
 	}

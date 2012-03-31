@@ -5,7 +5,7 @@
  */
 package com.ncond.dss.general;
 
-import org.apache.commons.math.complex.Complex;
+import com.ncond.dss.shared.Complex;
 
 import com.ncond.dss.shared.CMatrix;
 import com.ncond.dss.shared.LineUnits;
@@ -66,10 +66,10 @@ public class CNLineConstants extends CableConstants {
 		for (i = 0; i < getNumConds(); i++) {
 			Zi = getZint(i);
 			if (powerFreq) {  // for less than 1 kHz, use published GMR
-				Zi = new Complex(Zi.getReal(), 0.0);
-				Zspacing = Lfactor.multiply(Math.log(1.0 / GMR[i]));  // use GMR
+				Zi = new Complex(Zi.real(), 0.0);
+				Zspacing = Lfactor.mult(Math.log(1.0 / GMR[i]));  // use GMR
 			} else {
-				Zspacing = Lfactor.multiply(Math.log(1.0 / radius[i]));
+				Zspacing = Lfactor.mult(Math.log(1.0 / radius[i]));
 			}
 			Zmat.set(i, i, Zi.add(Zspacing.add(getZe(i, i))));
 		}
@@ -80,7 +80,7 @@ public class CNLineConstants extends CableConstants {
 			radCN = 0.5 * (diaCable[i] - diaStrand[i]);
 			gmrCN = Math.pow(gmrStrand[i] * kStrand[i] * Math.pow(radCN, kStrand[i] - 1.0),
 					1.0 / kStrand[i]);
-			Zspacing = Lfactor.multiply(Math.log(1.0 / gmrCN));
+			Zspacing = Lfactor.mult(Math.log(1.0 / gmrCN));
 			Zi = new Complex(resCN, 0.0);
 			idxi = i + getNumConds();
 			Zmat.set(idxi, idxi, Zi.add(Zspacing.add(getZe(i, i))));
@@ -90,7 +90,7 @@ public class CNLineConstants extends CableConstants {
 		for (i = 0; i < getNumConds(); i++) {
 			for (j = 0; j < i; j++) {
 				dij = Math.sqrt(MathUtil.sqr(X[i] - X[j]) + MathUtil.sqr(Y[i] - Y[j]));
-				Zmat.setSym(i, j, Lfactor.multiply(Math.log(1.0 / dij)).add(getZe(i, j)));
+				Zmat.setSym(i, j, Lfactor.mult(Math.log(1.0 / dij)).add(getZe(i, j)));
 			}
 		}
 
@@ -100,7 +100,7 @@ public class CNLineConstants extends CableConstants {
 			for (j = 0; j < i; j++) {  // CN to other CN
 				idxj = j + getNumConds();
 				dij = Math.sqrt(MathUtil.sqr(X[i] - X[j]) + MathUtil.sqr(Y[i] - Y[j]));
-				Zmat.setSym(idxi, idxj, Lfactor.multiply(Math.log(1.0 / dij)).add(getZe(i, j)));
+				Zmat.setSym(idxi, idxj, Lfactor.mult(Math.log(1.0 / dij)).add(getZe(i, j)));
 			}
 			for (j = 0; j < getNumConds(); j++) {  // CN to cores and bare neutrals
 				idxj = j;
@@ -111,7 +111,7 @@ public class CNLineConstants extends CableConstants {
 					dij = Math.sqrt(MathUtil.sqr(X[i] - X[j]) + MathUtil.sqr(Y[i] - Y[j]));
 					dij = Math.pow(Math.pow(dij, kStrand[i]) - Math.pow(radCN, kStrand[i]), 1.0 / kStrand[i]);
 				}
-				Zmat.setSym(idxi, idxj, Lfactor.multiply(Math.log(1.0 / dij)).add(getZe(i, j)));
+				Zmat.setSym(idxi, idxj, Lfactor.mult(Math.log(1.0 / dij)).add(getZe(i, j)));
 			}
 		}
 

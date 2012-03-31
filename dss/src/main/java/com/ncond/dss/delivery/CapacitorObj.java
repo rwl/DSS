@@ -8,7 +8,7 @@ package com.ncond.dss.delivery;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 
-import org.apache.commons.math.complex.Complex;
+import com.ncond.dss.shared.Complex;
 
 import com.ncond.dss.common.DSS;
 import com.ncond.dss.common.DSSClass;
@@ -16,7 +16,6 @@ import com.ncond.dss.common.Util;
 import com.ncond.dss.common.types.Connection;
 import com.ncond.dss.parser.Parser;
 import com.ncond.dss.shared.CMatrix;
-import com.ncond.dss.shared.ComplexUtil;
 
 /**
  * Basic capacitor.
@@ -234,7 +233,7 @@ public class CapacitorObj extends PDElement {
 		// set YPrim_Series based on diagonals of YPrim_Shunt so that calcVoltages doesn't fail
 		if (isShunt()) {
 			for (i = 0; i < YOrder; i++)
-				YPrimSeries.set(i, i, YPrimShunt.get(i, i).multiply(1.0e-10));
+				YPrimSeries.set(i, i, YPrimShunt.get(i, i).mult(1.0e-10));
 		}
 
 		YPrim.copyFrom(YPrimTemp);
@@ -486,8 +485,8 @@ public class CapacitorObj extends PDElement {
 			value = new Complex(0.0, C[iStep] * w);
 			switch (connection) {
 			case DELTA:  // line-line
-				value2 = value.multiply(2.0);
-				value = value.negate();
+				value2 = value.mult(2.0);
+				value = value.neg();
 				for (i = 0; i < nPhases; i++) {
 					YPrimWork.set(i, i, value2);
 					for (j = 0; j < i; j++)
@@ -497,9 +496,9 @@ public class CapacitorObj extends PDElement {
 				break;
 			default:  // wye
 				if (hasZl) {  // add in ZL
-					value = ComplexUtil.invert(Zl.add(ComplexUtil.invert( value )));
+					value = Zl.add(value.inv()).inv();
 				}
-				value2 = value.negate();
+				value2 = value.neg();
 				for (i = 0; i < nPhases; i++) {
 					YPrimWork.set(i, i, value);  // elements are only on the diagonals
 					YPrimWork.set(i + nPhases, i + nPhases, value);
@@ -513,8 +512,8 @@ public class CapacitorObj extends PDElement {
 			value = new Complex(0.0, C[iStep] * w);
 			switch (connection) {
 			case DELTA:  // line-line
-				value2 = value.multiply(2.0);
-				value = value.negate();
+				value2 = value.mult(2.0);
+				value = value.neg();
 				for (i = 0; i < nPhases; i++) {
 					YPrimWork.set(i, i, value2);
 					for (j = 0; j < i; j++)
@@ -524,9 +523,9 @@ public class CapacitorObj extends PDElement {
 				break;
 			default:  // wye
 				if (hasZl) {  // add in ZL
-					value = ComplexUtil.invert(Zl.add(ComplexUtil.invert( value )));
+					value = Zl.add(value.inv()).inv();
 				}
-				value2 = value.negate();
+				value2 = value.neg();
 				for (i = 0; i < nPhases; i++) {
 					YPrimWork.set(i, i, value);  // elements are only on the diagonals
 					YPrimWork.set(i + nPhases, i + nPhases, value);
@@ -542,7 +541,7 @@ public class CapacitorObj extends PDElement {
 					value = new Complex(0.0, Cmatrix[ioffset + j] * w);
 					YPrimWork.set(i, j, value);
 					YPrimWork.set(i + nPhases, j + nPhases, value);
-					value = value.negate();
+					value = value.neg();
 					YPrimWork.setSym(i, j + nPhases, value);
 				}
 			}
@@ -558,7 +557,7 @@ public class CapacitorObj extends PDElement {
 				case DELTA:  // line-line
 					/* Add a little bit to each phase so it will invert */
 					for (i = 0; i < nPhases; i++)
-						YPrimWork.set(i, i, YPrimWork.get(i, i).multiply(1.000001));
+						YPrimWork.set(i, i, YPrimWork.get(i, i).mult(1.000001));
 					YPrimWork.invert();
 					for (i = 0; i < nPhases; i++) {
 						value = Zl.add(YPrimWork.get(i, i));

@@ -8,7 +8,7 @@ package com.ncond.dss.conversion;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 
-import org.apache.commons.math.complex.Complex;
+import com.ncond.dss.shared.Complex;
 
 import com.ncond.dss.common.DSS;
 import com.ncond.dss.common.DSSClass;
@@ -17,7 +17,6 @@ import com.ncond.dss.common.Util;
 import com.ncond.dss.general.SpectrumObj;
 import com.ncond.dss.parser.Parser;
 import com.ncond.dss.shared.CMatrix;
-import com.ncond.dss.shared.ComplexUtil;
 import com.ncond.dss.shared.MathUtil;
 
 public class VSourceObj extends PCElement {
@@ -207,8 +206,8 @@ public class VSourceObj extends PCElement {
 			for (j = 0; j < nPhases; j++) {
 				value = Z.get(i, j);
 				value = new Complex(
-					value.getReal(),
-					value.getImaginary() * freqMultiplier
+					value.real(),
+					value.imag() * freqMultiplier
 				);  /* Modify from base freq */
 				Zinv.set(i, j, value);
 			}
@@ -233,7 +232,7 @@ public class VSourceObj extends PCElement {
 				value = Zinv.get(i, j);
 				YPrimSeries.set(i, j, value);
 				YPrimSeries.set(i + nPhases, j + nPhases, value);
-				YPrimSeries.setSym(i + nPhases, j, value.negate());
+				YPrimSeries.setSym(i + nPhases, j, value.neg());
 			}
 		}
 
@@ -269,7 +268,7 @@ public class VSourceObj extends PCElement {
 
 			if (sol.isHarmonicModel()) {
 				srcHarmonic = sol.getFrequency() / srcFrequency;
-				VHarm = getSpectrumObj().getMult(srcHarmonic).multiply(Vmag);  // base voltage for this harmonic
+				VHarm = getSpectrumObj().getMult(srcHarmonic).mult(Vmag);  // base voltage for this harmonic
 				VHarm = Util.rotatePhasorDeg(VHarm, srcHarmonic, angle);  // rotate for phase 1 shift
 				for (i = 0; i < nPhases; i++) {
 					VTerminal[i] = VHarm;
@@ -296,13 +295,13 @@ public class VSourceObj extends PCElement {
 				for (i = 0; i < nPhases; i++) {
 					switch (sequenceType) {
 					case NONE:
-						VTerminal[i] = ComplexUtil.polarDeg2Complex(Vmag, (360.0 + angle + i * 360.0/nPhases));  // neg seq
+						VTerminal[i] = Complex.fromPolarDeg(Vmag, (360.0 + angle + i * 360.0/nPhases));  // neg seq
 						break;
 					case ZERO:
-						VTerminal[i] = ComplexUtil.polarDeg2Complex(Vmag, (360.0 + angle));  // all the same for zero sequence
+						VTerminal[i] = Complex.fromPolarDeg(Vmag, (360.0 + angle));  // all the same for zero sequence
 						break;
 					default:
-						VTerminal[i] = ComplexUtil.polarDeg2Complex(Vmag, (360.0 + angle - i * 360.0 / nPhases));
+						VTerminal[i] = Complex.fromPolarDeg(Vmag, (360.0 + angle - i * 360.0 / nPhases));
 						break;
 					}
 					VTerminal[i + nPhases] = Complex.ZERO;  // see comments in getInjCurrents
@@ -337,7 +336,7 @@ public class VSourceObj extends PCElement {
 
 			// add together with Yprim currents
 			for (int i = 0; i < YOrder; i++)
-				curr[i] = curr[i].subtract(complexBuffer[i]);
+				curr[i] = curr[i].sub(complexBuffer[i]);
 
 		} catch (Exception e) {
 			DSS.doErrorMsg("getCurrents for element: " + getName() + ".", e.getMessage(),
@@ -381,7 +380,7 @@ public class VSourceObj extends PCElement {
 			for (int i = 0; i < nPhases; i++) {
 				for (int j = 0; j < i; j++) {
 					c = Z.get(i, j);
-					pw.printf("%.8g +j %.8g ", c.getReal(), c.getImaginary());
+					pw.printf("%.8g +j %.8g ", c.real(), c.imag());
 				}
 				pw.println();
 			}

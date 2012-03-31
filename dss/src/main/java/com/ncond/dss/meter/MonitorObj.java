@@ -12,7 +12,7 @@ import java.io.FileWriter;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 
-import org.apache.commons.math.complex.Complex;
+import com.ncond.dss.shared.Complex;
 
 import com.ncond.dss.common.CktElement;
 import com.ncond.dss.common.DSS;
@@ -22,7 +22,6 @@ import com.ncond.dss.common.SolutionObj;
 import com.ncond.dss.common.Util;
 import com.ncond.dss.conversion.PCElement;
 import com.ncond.dss.delivery.TransformerObj;
-import com.ncond.dss.shared.ComplexUtil;
 import com.ncond.dss.shared.MathUtil;
 
 /**
@@ -651,60 +650,60 @@ public class MonitorObj extends MeterElement {
 		switch (mode & (Monitor.MAGNITUDEMASK + Monitor.POSSEQONLYMASK)) {
 		case 32:  // save magnitudes only
 			for (i = 0; i < numVI; i++)
-				addDblToBuffer(voltageBuffer[i].getReal() /*VoltageBuffer[i].abs()*/);
+				addDblToBuffer(voltageBuffer[i].real() /*VoltageBuffer[i].abs()*/);
 			if (includeResidual)
-				addDblToBuffer(residualVolt.getReal());
+				addDblToBuffer(residualVolt.real());
 			if (!isPower) {
 				for (i = 0; i < numVI; i++)
-					addDblToBuffer(currentBuffer[offset + i].getReal());
+					addDblToBuffer(currentBuffer[offset + i].real());
 				if (includeResidual)
-					addDblToBuffer(residualCurr.getReal());
+					addDblToBuffer(residualCurr.real());
 			}
 			break;
 
 		case 64:  // save pos seq or avg of all phases or total power (Complex)
 			if (isSequence) {
-				addDblsToBuffer(voltageBuffer[1].getReal(), 2);
+				addDblsToBuffer(voltageBuffer[1].real(), 2);
 				if (!isPower)
-					addDblsToBuffer(currentBuffer[offset + 2].getReal(), 2);
+					addDblsToBuffer(currentBuffer[offset + 2].real(), 2);
 			} else {
 				if (!isPower) {
 					sum = Complex.ZERO;
 					for (i = 0; i < nPhases; i++)
 						sum = sum.add(voltageBuffer[i]);
-					addDblsToBuffer(sum.getReal(), 2);
+					addDblsToBuffer(sum.real(), 2);
 				} else {
 					// average the phase magnitudes and sum angles
 					sum = Complex.ZERO;
 					for (i = 0; i < nPhases; i++)
 						sum = sum.add(voltageBuffer[i]);
-					sum = new Complex(sum.getReal() / nPhases, sum.getImaginary());
-					addDblsToBuffer(sum.getReal(), 2);
+					sum = new Complex(sum.real() / nPhases, sum.imag());
+					addDblsToBuffer(sum.real(), 2);
 					sum = Complex.ZERO;
 					for (i = 0; i < nPhases; i++)
 						sum = sum.add(currentBuffer[i]);
-					sum = new Complex(sum.getReal() / nPhases, sum.getImaginary());
-					addDblsToBuffer(sum.getReal(), 2);
+					sum = new Complex(sum.real() / nPhases, sum.imag());
+					addDblsToBuffer(sum.real(), 2);
 				}
 			}
 			break;
 
 		case 96:  // save pos seq or aver magnitude of all phases of total kVA (magnitude)
 			if (isSequence) {
-				addDblToBuffer(voltageBuffer[1].getReal());  // first double is magnitude
+				addDblToBuffer(voltageBuffer[1].real());  // first double is magnitude
 				if (!isPower)
-					addDblToBuffer(currentBuffer[offset + 2].getReal());
+					addDblToBuffer(currentBuffer[offset + 2].real());
 			} else {
 				dSum = 0.0;
 				for (i = 0; i < nPhases; i++)
-					dSum = dSum + voltageBuffer[i].getReal();
+					dSum = dSum + voltageBuffer[i].real();
 				if (!isPower)
 					dSum = dSum / nPhases;
 				addDblToBuffer(dSum);
 				if (!isPower) {
 					dSum = 0.0;
 					for (i = 0; i < nPhases; i++)
-						dSum = dSum + currentBuffer[offset + i].getReal();
+						dSum = dSum + currentBuffer[offset + i].real();
 					dSum = dSum / nPhases;
 					addDblToBuffer(dSum);
 				}
@@ -712,13 +711,13 @@ public class MonitorObj extends MeterElement {
 			break;
 
 		default:
-			addDblsToBuffer(voltageBuffer[1].getReal(), numVI * 2);
+			addDblsToBuffer(voltageBuffer[1].real(), numVI * 2);
 			if (!isPower) {
 				if (includeResidual)
-					addDblsToBuffer(ComplexUtil.asArray( residualVolt ), 2);
-				addDblsToBuffer(currentBuffer[offset + 1].getReal(), numVI * 2);
+					addDblsToBuffer(residualVolt.asArray(), 2);
+				addDblsToBuffer(currentBuffer[offset + 1].real(), numVI * 2);
 				if (includeResidual)
-					addDblsToBuffer(ComplexUtil.asArray( residualCurr ), 2);
+					addDblsToBuffer(residualCurr.asArray(), 2);
 			}
 			break;
 		}

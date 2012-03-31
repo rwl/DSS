@@ -8,7 +8,7 @@ package com.ncond.dss.conversion;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 
-import org.apache.commons.math.complex.Complex;
+import com.ncond.dss.shared.Complex;
 
 import com.ncond.dss.common.DSS;
 import com.ncond.dss.common.DSSClass;
@@ -17,7 +17,7 @@ import com.ncond.dss.common.Util;
 import com.ncond.dss.general.SpectrumObj;
 import com.ncond.dss.parser.Parser;
 import com.ncond.dss.shared.CMatrix;
-import com.ncond.dss.shared.ComplexUtil;
+
 
 public class EquivalentObj extends PCElement {
 
@@ -88,14 +88,14 @@ public class EquivalentObj extends PCElement {
 		for (i = 0; i < nTerms; i++) {
 			for (j = 0; j < nTerms; j++) {
 				indx = idx(i, j);
-				Zs = ComplexUtil.divide(new Complex(
+				Zs = new Complex(
 					2.0 * R1[indx] + R0[indx],
 					2.0 * X1[indx] + X0[indx]
-				), 3.0);
-				Zm = ComplexUtil.divide(new Complex(
+				).div(3.0);
+				Zm = new Complex(
 					R0[indx] - R1[indx],
 					X0[indx] - X1[indx]
-				), 3.0);
+				).div(3.0);
 
 				ioffset = i * nPhases;
 				joffset = j * nPhases;
@@ -163,7 +163,7 @@ public class EquivalentObj extends PCElement {
 			for (j = 0; j < YOrder; j++) {
 				c = Z.get(i, j);
 				/* Modify from base freq */
-				c = new Complex(c.getReal(), c.getImaginary() * freqMultiplier);
+				c = new Complex(c.real(), c.imag() * freqMultiplier);
 				Zinv.set(i, j, c);
 			}
 		}
@@ -211,7 +211,7 @@ public class EquivalentObj extends PCElement {
 
 			if (sol.isHarmonicModel()) {
 				equivHarm = sol.getFrequency() / equivFrequency;
-				Vharm = getSpectrumObj().getMult(equivHarm).multiply(Vmag);  // base voltage for this harmonic
+				Vharm = getSpectrumObj().getMult(equivHarm).mult(Vmag);  // base voltage for this harmonic
 				Vharm = Util.rotatePhasorDeg(Vharm, equivHarm, angle);  // rotate for phase 1 shift
 				for (i = 0; i < nPhases; i++) {
 					VTerminal[i] = Vharm;
@@ -221,7 +221,7 @@ public class EquivalentObj extends PCElement {
 				}
 			} else {
 				for (i = 0; i < nPhases; i++)
-					VTerminal[i] = ComplexUtil.polarDeg2Complex(Vmag, (360.0 + angle - i * 360.0 / nPhases));
+					VTerminal[i] = Complex.fromPolarDeg(Vmag, (360.0 + angle - i * 360.0 / nPhases));
 			}
 
 		} catch (Exception e) {
@@ -252,7 +252,7 @@ public class EquivalentObj extends PCElement {
 
 			// add together with Yprim currents
 			for (i = 0; i < YOrder; i++)
-				curr[i] = curr[i].subtract(complexBuffer[i]);
+				curr[i] = curr[i].sub(complexBuffer[i]);
 
 		} catch (Exception e) {
 			DSS.doErrorMsg(("getCurrents for element: " + getName()), e.getMessage(),
@@ -289,7 +289,7 @@ public class EquivalentObj extends PCElement {
 			for (i = 0; i < nPhases; i++) {
 				for (j = 0; j < i; j++) {
 					c = Z.get(i, j);
-					pw.print(c.getReal() + " + j" + c.getImaginary());
+					pw.print(c.real() + " + j" + c.imag());
 				}
 				pw.println();
 			}

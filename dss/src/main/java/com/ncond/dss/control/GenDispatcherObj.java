@@ -10,7 +10,7 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.math.complex.Complex;
+import com.ncond.dss.shared.Complex;
 
 import com.ncond.dss.common.Circuit;
 import com.ncond.dss.common.CktElement;
@@ -158,8 +158,8 @@ public class GenDispatcherObj extends ControlElem {
 			//monitoredElement.activeTerminalIdx = elementTerminalIdx;
 			S = monitoredElement.getPower(elementTerminalIdx);  // power in active terminal
 
-			Pdiff = S.getReal() * 0.001 - kWLimit;
-			Qdiff = S.getImaginary() * 0.001 - kVArLimit;
+			Pdiff = S.real() * 0.001 - kWLimit;
+			Qdiff = S.imag() * 0.001 - kVArLimit;
 
 			// redispatch the vars
 

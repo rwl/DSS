@@ -8,12 +8,12 @@ package com.ncond.dss.general;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 
-import org.apache.commons.math.complex.Complex;
+import com.ncond.dss.shared.Complex;
 
 import com.ncond.dss.common.DSS;
 import com.ncond.dss.common.DSSClass;
 import com.ncond.dss.common.Util;
-import com.ncond.dss.shared.ComplexUtil;
+
 
 /**
  * Harmonic spectrum specified as Harmonic, pct magnitude and angle.
@@ -83,8 +83,8 @@ public class SpectrumObj extends DSSObject {
 			pw.println("Harmonic, Mult.re, Mult.im, Mag,  Angle");
 			for (i = 0; i < numHarm; i++) {
 				pw.printf("%g, ", harmArray[i]);
-				pw.printf("%g, %g, ", multArray[i].getReal(), multArray[i].getImaginary());
-				pw.printf("%g, %g", multArray[i].abs(), ComplexUtil.degArg( multArray[i] ));
+				pw.printf("%g, %g, ", multArray[i].real(), multArray[i].imag());
+				pw.printf("%g, %g", multArray[i].abs(), multArray[i].argDeg());
 				pw.println();
 			}
 		}
@@ -179,7 +179,7 @@ public class SpectrumObj extends DSSObject {
 
 			multArray = Util.resizeArray(multArray, numHarm);
 			for (i = 0; i < numHarm; i++)
-				multArray[i] = ComplexUtil.polarDeg2Complex(puMagArray[i], (angleArray[i] - harmArray[i] * fundAngle));
+				multArray[i] = Complex.fromPolarDeg(puMagArray[i], (angleArray[i] - harmArray[i] * fundAngle));
 		} catch (Exception e) {
 			DSS.doSimpleMsg("Exception while computing spectrum." + getName() + ". Check definition. Aborting", 655);
 			if (DSS.inRedirect) DSS.redirectAbort = true;

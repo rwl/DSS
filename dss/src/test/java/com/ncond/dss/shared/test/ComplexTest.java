@@ -1,20 +1,18 @@
 package com.ncond.dss.shared.test;
 
-import org.apache.commons.math.complex.Complex;
-
-import com.ncond.dss.shared.ComplexUtil;
+import com.ncond.dss.shared.Complex;
 
 import junit.framework.TestCase;
 
 
-public class ComplexUtilTest extends TestCase {
+public class ComplexTest extends TestCase {
 
 	private static final double delta = 1e-6;
 
 	public void testToArray() {
 		Complex c = new Complex(2, 3);
 
-		double[] a = ComplexUtil.toArray(c);
+		double[] a = c.asArray();
 
 		assertEquals(2, a.length);
 		assertEquals(2, a[0], delta);
@@ -27,7 +25,7 @@ public class ComplexUtilTest extends TestCase {
 				new Complex(4, 5)
 		};
 
-		double[] a = ComplexUtil.toArray(c);
+		double[] a = Complex.toArray(c);
 
 		assertEquals(4, a.length);
 		assertEquals(2, a[0], delta);
@@ -41,7 +39,7 @@ public class ComplexUtilTest extends TestCase {
 				new Complex(6, 7)
 		};
 
-		double[] a = ComplexUtil.toArray(c, 1);
+		double[] a = Complex.toArray(c, 1);
 
 		assertEquals(4, a.length);
 		assertEquals(4, a[0], delta);
@@ -57,10 +55,10 @@ public class ComplexUtilTest extends TestCase {
 
 		Complex[] c = new Complex[3];
 
-		ComplexUtil.fromArray(a, c);
+		Complex.fromArray(a, c);
 
-		assertEquals(2, c[0].getReal(), delta);
-		assertEquals(7, c[2].getImaginary(), delta);
+		assertEquals(2, c[0].real(), delta);
+		assertEquals(7, c[2].imag(), delta);
 	}
 
 	public void testFromArrayOffset() {
@@ -73,18 +71,18 @@ public class ComplexUtilTest extends TestCase {
 
 		Complex[] c = new Complex[3];
 
-		ComplexUtil.fromArray(a, 1, c, 0);
+		Complex.fromArray(a, 1, c, 0);
 
-		assertEquals(4, c[0].getReal(), delta);
-		assertEquals(9, c[2].getImaginary(), delta);
+		assertEquals(4, c[0].real(), delta);
+		assertEquals(9, c[2].imag(), delta);
 
 		c = new Complex[3];
 
-		ComplexUtil.fromArray(a, 2, c, 1);
+		Complex.fromArray(a, 2, c, 1);
 
 		assertNull(c[0]);
-		assertEquals(6, c[1].getReal(), delta);
-		assertEquals(9, c[2].getImaginary(), delta);
+		assertEquals(6, c[1].real(), delta);
+		assertEquals(9, c[2].imag(), delta);
 	}
 
 }

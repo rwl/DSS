@@ -8,7 +8,7 @@ package com.ncond.dss.delivery;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 
-import org.apache.commons.math.complex.Complex;
+import com.ncond.dss.shared.Complex;
 
 import com.ncond.dss.common.DSS;
 import com.ncond.dss.common.DSSClass;
@@ -168,7 +168,7 @@ public class FaultObj extends PDElement {
 			} else {
 				value = Complex.ZERO;
 			}
-			value2 = value.negate();
+			value2 = value.neg();
 			for (i = 0; i < nPhases; i++) {
 				YPrimTemp.set(i, i, value);  // elements are only on the diagonals
 				YPrimTemp.set(i + nPhases, i + nPhases, value);
@@ -186,7 +186,7 @@ public class FaultObj extends PDElement {
 					}
 					YPrimTemp.set(i, j, value);
 					YPrimTemp.set(i + nPhases, j + nPhases, value);
-					value = value.negate();
+					value = value.neg();
 					YPrimTemp.setSym(i, j + nPhases, value);
 				}
 			}

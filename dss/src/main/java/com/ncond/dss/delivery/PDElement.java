@@ -5,7 +5,7 @@
  */
 package com.ncond.dss.delivery;
 
-import org.apache.commons.math.complex.Complex;
+import com.ncond.dss.shared.Complex;
 
 import com.ncond.dss.common.CktElement;
 import com.ncond.dss.common.DSS;
@@ -73,12 +73,12 @@ abstract public class PDElement extends CktElement {
 			return Complex.ZERO;
 		}
 
-		kVA = getPower(idxTerm).multiply(0.001);  // also forces computation of current into iTemp
+		kVA = getPower(idxTerm).mult(0.001);  // also forces computation of current into iTemp
 		factor = maxTerminalOneIMag() / normAmps - 1.0;
 		if (factor > 0.0) {
 			overloadEEN = factor;
 			factor = 1.0 - 1.0 / (factor + 1.0);  // to get factor
-			result = kVA.multiply(factor) ;
+			result = kVA.mult(factor) ;
 		} else {
 			overloadEEN = 0.0;
 			result = Complex.ZERO;
@@ -100,13 +100,13 @@ abstract public class PDElement extends CktElement {
 			return Complex.ZERO;
 		}
 
-		kVA = getPower(idxTerm).multiply(0.001);  // also forces computation of current into iTemp
+		kVA = getPower(idxTerm).mult(0.001);  // also forces computation of current into iTemp
 
 		factor = maxTerminalOneIMag() / getEmergAmps() - 1.0;
 		if (factor > 0.0) {
 			overloadUE = factor;
 			factor = 1.0 - 1.0 / (factor + 1.0);  // to get excess
-			result = kVA.multiply(factor);
+			result = kVA.mult(factor);
 		} else {
 			overloadUE = 0.0;
 			result = Complex.ZERO;

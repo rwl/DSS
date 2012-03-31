@@ -8,7 +8,7 @@ package com.ncond.dss.control;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 
-import org.apache.commons.math.complex.Complex;
+import com.ncond.dss.shared.Complex;
 
 import com.ncond.dss.common.Circuit;
 import com.ncond.dss.common.CktElement;
@@ -719,8 +719,8 @@ public class RelayObj extends ControlElem {
 
 		//MonitoredElement.ActiveTerminalIdx = MonitoredElementTerminal;
 		S = monitoredElement.getPower(monitoredElementTerminalIdx);
-		if (S.getReal() < 0.0) {
-			if (Math.abs(S.getReal()) > phaseInst * 1000.0) {
+		if (S.real() < 0.0) {
+			if (Math.abs(S.real()) > phaseInst * 1000.0) {
 				if (!armedForOpen) {  // push the trip operation and arm to trip
 					relayTarget = "Rev P";
 					lastEventHandle = ckt.getControlQueue().push(ckt.getSolution().getIntHour(),

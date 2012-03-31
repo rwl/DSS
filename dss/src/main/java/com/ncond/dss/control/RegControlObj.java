@@ -11,7 +11,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 
-import org.apache.commons.math.complex.Complex;
+import com.ncond.dss.shared.Complex;
 
 import com.ncond.dss.common.Circuit;
 import com.ncond.dss.common.DSS;
@@ -20,7 +20,6 @@ import com.ncond.dss.common.SolutionObj;
 import com.ncond.dss.common.Util;
 import com.ncond.dss.common.types.Connection;
 import com.ncond.dss.delivery.TransformerObj;
-import com.ncond.dss.shared.ComplexUtil;
 
 /**
  * A control element that is connected to a terminal of another
@@ -201,7 +200,7 @@ public class RegControlObj extends ControlElem {
 					controlledPhaseIdx = i;
 				}
 			}
-			Vctrl = ComplexUtil.divide(VBuffer[controlledPhaseIdx], PTRatio);
+			Vctrl = VBuffer[controlledPhaseIdx].div(PTRatio);
 			break;
 		case RegControl.MINPHASE:
 			controlledPhaseIdx = 0;
@@ -212,11 +211,11 @@ public class RegControlObj extends ControlElem {
 					controlledPhaseIdx = i;
 				}
 			}
-			Vctrl = ComplexUtil.divide(VBuffer[controlledPhaseIdx], PTRatio);
+			Vctrl = VBuffer[controlledPhaseIdx].div(PTRatio);
 			break;
 		default:
 			/* Just use one phase because that's what most controls do. */
-			Vctrl = ComplexUtil.divide(VBuffer[PTPhaseIdx], PTRatio);
+			Vctrl = VBuffer[PTPhaseIdx].div(PTRatio);
 			controlledPhaseIdx = PTPhaseIdx;
 			break;
 		}
@@ -403,7 +402,7 @@ public class RegControlObj extends ControlElem {
 			if (isReversible) {
 				if (!inReverseMode) {  // if looking forward, check to see if we should reverse
 					if (!reversePending) {  // if reverse is already pending, don't send any more messages
-						fwdPower = -controlledTransformer.getPower(elementTerminalIdx).getReal();  // Watts
+						fwdPower = -controlledTransformer.getPower(elementTerminalIdx).real();  // Watts
 
 						if (fwdPower < -revPowerThreshold) {
 							if (debugTrace)
@@ -419,7 +418,7 @@ public class RegControlObj extends ControlElem {
 				} else {
 					// if reversed look to see if power is back in forward direction
 					if (!reversePending) {
-						fwdPower = -controlledTransformer.getPower(elementTerminalIdx).getReal();  // Watts
+						fwdPower = -controlledTransformer.getPower(elementTerminalIdx).real();  // Watts
 						if (fwdPower > revPowerThreshold) {
 							if (debugTrace)
 								regWriteDebugRecord(String.format("Pushing Reverse Action to switch back, FwdPower=%.8g", fwdPower));
@@ -469,7 +468,7 @@ public class RegControlObj extends ControlElem {
 				case DELTA:
 					// get next phase in sequence using transformer obj rotate
 					ii = controlledTransformer.rotatePhases(i);
-					VBuffer[i] = VTerminal[i].subtract(VTerminal[ii]);
+					VBuffer[i] = VTerminal[i].sub(VTerminal[ii]);
 					break;
 				}
 			}
@@ -483,7 +482,7 @@ public class RegControlObj extends ControlElem {
 		if (VLimitActive) {
 			if (usingRegulatedBus) {
 				controlledTransformer.getWindingVoltages(elementTerminalIdx, VBuffer);
-				VLocalBus = ComplexUtil.divide(VBuffer[1], PTRatio).abs();
+				VLocalBus = VBuffer[1].div(PTRatio).abs();
 			} else {
 				VLocalBus = VControl.abs();
 			}
@@ -495,11 +494,11 @@ public class RegControlObj extends ControlElem {
 		if ((!usingRegulatedBus) && LDCActive) {
 			getControlledElement().getCurrents(cBuffer);
 
-			ILDC = ComplexUtil.divide(cBuffer[getControlledElement().getNumConds() * (elementTerminalIdx+1) + controlledPhaseIdx], CTRating);  // TODO check zero based indexing
+			ILDC = cBuffer[getControlledElement().getNumConds() * (elementTerminalIdx+1) + controlledPhaseIdx].div(CTRating);  // TODO check zero based indexing
 			if (inReverseMode) {
-				VLDC  = new Complex(revR, revX).multiply(ILDC);
+				VLDC  = new Complex(revR, revX).mult(ILDC);
 			} else {
-				VLDC  = new Complex(R, X).multiply(ILDC);
+				VLDC  = new Complex(R, X).mult(ILDC);
 			}
 			VControl = VControl.add(VLDC);  // direction on ILDC is into terminal, so this is equivalent to Vterm - (R+jX)*ILDC
 		}

@@ -8,7 +8,7 @@ package com.ncond.dss.conversion;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 
-import org.apache.commons.math.complex.Complex;
+import com.ncond.dss.shared.Complex;
 
 import com.ncond.dss.common.DSS;
 import com.ncond.dss.common.DSSClass;
@@ -17,7 +17,6 @@ import com.ncond.dss.common.Util;
 import com.ncond.dss.general.SpectrumObj;
 import com.ncond.dss.parser.Parser;
 import com.ncond.dss.shared.CMatrix;
-import com.ncond.dss.shared.ComplexUtil;
 
 /**
  * Ideal current source.
@@ -106,11 +105,11 @@ public class ISourceObj extends PCElement {
 			/* Get first phase current */
 			if (sol.isHarmonicModel()) {
 				srcHarmonic = sol.getFrequency() / srcFrequency;
-				curr = getSpectrumObj().getMult(srcHarmonic).multiply(amps);  // base current for this harmonic
+				curr = getSpectrumObj().getMult(srcHarmonic).mult(amps);  // base current for this harmonic
 				curr = Util.rotatePhasorDeg(curr, srcHarmonic, angle);
 			} else {
 				if (Math.abs(sol.getFrequency() - srcFrequency) < DSS.EPSILON2) {
-					curr = ComplexUtil.polarDeg2Complex(amps, angle);
+					curr = Complex.fromPolarDeg(amps, angle);
 				} else {
 					curr = Complex.ZERO;
 				}
@@ -142,7 +141,7 @@ public class ISourceObj extends PCElement {
 			getInjCurrents(complexBuffer);  // get present value of inj currents
 			// add together with YPrim currents
 			for (int i = 0; i < YOrder; i++)
-				curr[i] = complexBuffer[i].negate();
+				curr[i] = complexBuffer[i].neg();
 		} catch (Exception e) {
 			DSS.doErrorMsg(("GetCurrents for ISource element: " + getName() + "."),
 					e.getMessage(),

@@ -8,7 +8,7 @@ package com.ncond.dss.delivery;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 
-import org.apache.commons.math.complex.Complex;
+import com.ncond.dss.shared.Complex;
 
 import com.ncond.dss.common.DSS;
 import com.ncond.dss.common.DSSClass;
@@ -17,7 +17,6 @@ import com.ncond.dss.common.Util;
 import com.ncond.dss.common.types.Connection;
 import com.ncond.dss.parser.Parser;
 import com.ncond.dss.shared.CMatrix;
-import com.ncond.dss.shared.ComplexUtil;
 import com.ncond.dss.shared.MathUtil;
 
 /**
@@ -217,15 +216,15 @@ public class ReactorObj extends PDElement {
 		case KVAR:
 		case Z:  /* Some form of r and x specified */
 			// adjust for frequency
-			value = ComplexUtil.invert(new Complex(R, X * freqMultiplier));
+			value = new Complex(R, X * freqMultiplier).inv();
 			// add in rP value if specified
 			if (RpSpecified)
 				value = value.add(new Complex(Gp, 0.0));
 
 			switch (connection) {
 			case DELTA:  // line-line
-				value2 = value.multiply(2.0);
-				value = value.negate();
+				value2 = value.mult(2.0);
+				value = value.neg();
 				for (i = 0; i < nPhases; i++) {
 					YPrimTemp.set(i, i, value2);
 					for (j = 0; j < i; j++)
@@ -237,7 +236,7 @@ public class ReactorObj extends PDElement {
 				for (i = 0; i < nPhases; i++) {
 					YPrimTemp.set(i, i, value);  // elements are only on the diagonals
 					YPrimTemp.set(i + nPhases, i + nPhases, value);
-					YPrimTemp.setSym(i, i + nPhases, value.negate());
+					YPrimTemp.setSym(i, i + nPhases, value.neg());
 				}
 				break;
 			}
@@ -253,7 +252,7 @@ public class ReactorObj extends PDElement {
 						value = new Complex(Gmatrix[idx], Bmatrix[idx] / freqMultiplier);
 						YPrimTemp.set(i, j, value);
 						YPrimTemp.set(i + nPhases, j + nPhases, value);
-						YPrimTemp.setSym(i, j + nPhases, value.negate());
+						YPrimTemp.setSym(i, j + nPhases, value.neg());
 					}
 				}
 			} else {  // for series r and x
@@ -278,7 +277,7 @@ public class ReactorObj extends PDElement {
 							value = Zmatrix.get(i, j);
 							YPrimTemp.set(i, j, value);
 							YPrimTemp.set(i + nPhases, j + nPhases, value);
-							YPrimTemp.setSym(i, j + nPhases, value.negate());
+							YPrimTemp.setSym(i, j + nPhases, value.neg());
 						}
 					}
 				}
@@ -294,7 +293,7 @@ public class ReactorObj extends PDElement {
 					YPrimSeries.set(i, i, YPrimShunt.get(i, i));
 			} else {
 				for (i = 0; i < YOrder; i++)
-					YPrimSeries.set(i, i, YPrimShunt.get(i, i).multiply(1.0e-10));
+					YPrimSeries.set(i, i, YPrimShunt.get(i, i).mult(1.0e-10));
 			}
 		}
 
@@ -363,15 +362,15 @@ public class ReactorObj extends PDElement {
 			for (int i = 0; i < nPhases; i++) {
 				Complex V = sol.getNodeV(nodeRef[i]);
 				noload = noload.add(new Complex(
-					(Math.pow(V.getReal(), 2) + Math.pow(V.getImaginary(), 2)) / Rp,
+					(Math.pow(V.real(), 2) + Math.pow(V.imag(), 2)) / Rp,
 					0.0
 				));  // V^2/Rp
 			}
 
 			if (DSS.activeCircuit.isPositiveSequence())
-				noload = noload.multiply(3.0);
+				noload = noload.mult(3.0);
 
-			load = tot.subtract(noload);  // subtract no load losses from total losses
+			load = tot.sub(noload);  // subtract no load losses from total losses
 
 			/* handle pass by reference */
 			totalLosses[0] = tot;

@@ -5,7 +5,7 @@
  */
 package com.ncond.dss.meter;
 
-import org.apache.commons.math.complex.Complex;
+import com.ncond.dss.shared.Complex;
 
 import com.ncond.dss.common.CktElement;
 import com.ncond.dss.common.DSSClass;

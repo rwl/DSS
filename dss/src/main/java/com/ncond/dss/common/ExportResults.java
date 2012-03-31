@@ -14,7 +14,7 @@ import java.io.PrintWriter;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
-import org.apache.commons.math.complex.Complex;
+import com.ncond.dss.shared.Complex;
 
 import com.ncond.dss.common.types.CIMProfileChoice;
 import com.ncond.dss.common.types.ProfilePlot;
@@ -33,7 +33,6 @@ import com.ncond.dss.meter.EnergyMeter;
 import com.ncond.dss.meter.EnergyMeterObj;
 import com.ncond.dss.meter.SensorObj;
 import com.ncond.dss.shared.CMatrix;
-import com.ncond.dss.shared.ComplexUtil;
 import com.ncond.dss.shared.MathUtil;
 
 public class ExportResults {
@@ -183,7 +182,7 @@ public class ExportResults {
 					}
 
 					pw.printf(", %d, %10.6g, %6.1f, %9.5g",
-							bus.getNum(nodeIdx), Vmag, ComplexUtil.degArg(volts), Vpu);
+							bus.getNum(nodeIdx), Vmag, volts.argDeg(), Vpu);
 				}
 				for (j = bus.getNumNodesThisBus(); j < maxNumNodes; j++)
 					pw.printf(", %d, %10.6g, %6.1f, %9.5g", 0, 0, 0, 0);  // zero fill row
@@ -336,12 +335,12 @@ public class ExportResults {
 			for (i = 0; i < pElem.getNumConds(); i++) {
 				k += 1;
 				c = cBuffer[k];
-				pw.printf(", %10.6g, %8.2f", c.abs(), ComplexUtil.degArg(c));
+				pw.printf(", %10.6g, %8.2f", c.abs(), c.argDeg());
 				Iresid = Iresid.add(c);
 			}
 			for (i = pElem.getNumConds(); i < condWidth; i++)
 				pw.printf(", %10.6g, %8.2f", 0.0, 0.0);
-			pw.printf(", %10.6g, %8.2f", Iresid.abs(), ComplexUtil.degArg(Iresid));
+			pw.printf(", %10.6g, %8.2f", Iresid.abs(), Iresid.argDeg());
 		}
 
 		/* Filler if no. terms less than termwidth */
@@ -364,7 +363,7 @@ public class ExportResults {
 			if (currMag > maxCurrent) maxCurrent = currMag;
 		}
 
-		localPower = pElem.getPower(0).multiply(0.001);
+		localPower = pElem.getPower(0).mult(0.001);
 		if ((pElem.getNormAmps() == 0.0) || (pElem.getEmergAmps() == 0.0)) {
 			pw.printf(", %10.6g, %8.2f, %8.2f", maxCurrent, 0.0, 0.0);
 		} else {
@@ -372,7 +371,7 @@ public class ExportResults {
 				maxCurrent / pElem.getNormAmps() * 100.0,
 				maxCurrent / pElem.getEmergAmps() * 100.0);
 		}
-		pw.printf(", %10.6g, %10.6g, %d, %d, %d", localPower.getReal(), localPower.getImaginary(),
+		pw.printf(", %10.6g, %10.6g, %d, %d, %d", localPower.real(), localPower.imag(),
 				pElem.getNumCustomers(), pElem.getTotalCustomers(), pElem.getNumPhases());
 
 		pw.printf(", %-.3g ", ckt.getBus( ckt.getMapNodeToBus(pElem.getNodeRef(0)).busRef ).getKVBase());
@@ -488,22 +487,22 @@ public class ExportResults {
 							sep, j + 1);
 
 						S = PDElem.getPower(j);
-						if (opt == 1) S = S.multiply(0.001);
+						if (opt == 1) S = S.mult(0.001);
 
-						pw.print(sep + S.getReal() * 0.001);
-						pw.print(sep + S.getImaginary() * 0.001);
+						pw.print(sep + S.real() * 0.001);
+						pw.print(sep + S.imag() * 0.001);
 						if (j == 0) {
 							S = PDElem.getExcessKVANorm(0);
-							if (opt == 1) S = S.multiply(0.001);
+							if (opt == 1) S = S.mult(0.001);
 
-							pw.print(sep + Math.abs(S.getReal()));
-							pw.print(sep + Math.abs(S.getImaginary()));
+							pw.print(sep + Math.abs(S.real()));
+							pw.print(sep + Math.abs(S.imag()));
 
 							S = PDElem.getExcessKVAEmerg(0);
-							if (opt == 1) S = S.multiply(0.001);
+							if (opt == 1) S = S.mult(0.001);
 
-							pw.print(sep + Math.abs(S.getReal()));
-							pw.print(sep + Math.abs(S.getImaginary()));
+							pw.print(sep + Math.abs(S.real()));
+							pw.print(sep + Math.abs(S.imag()));
 						}
 						pw.println();
 					}
@@ -520,9 +519,9 @@ public class ExportResults {
 							PCElem.getDSSClassName() + "." + PCElem.getName().toUpperCase(),
 							sep, j);
 						S = PCElem.getPower(j);
-						if (opt == 1) S = S.multiply(0.001);
-						pw.print(sep + S.getReal() * 0.001);
-						pw.print(sep + S.getImaginary() * 0.001);
+						if (opt == 1) S = S.mult(0.001);
+						pw.print(sep + S.real() * 0.001);
+						pw.print(sep + S.imag() * 0.001);
 						pw.println();
 					}
 				}
@@ -555,9 +554,9 @@ public class ExportResults {
 					pw.printf("%s.%s, %.7g, %.7g, %.7g, %.7g, %.7g, %.7g",
 						PDElem.getParentClass().getClassName(),
 						PDElem.getName().toUpperCase(),
-						Stot[0].getReal(), Stot[0].getImaginary(),
-						Sload[0].getReal(), Sload[0].getImaginary(),
-						S_noload[0].getReal(), S_noload[0].getImaginary());
+						Stot[0].real(), Stot[0].imag(),
+						Sload[0].real(), Sload[0].imag(),
+						S_noload[0].real(), S_noload[0].imag());
 					pw.println();
 				}
 			}
@@ -605,9 +604,9 @@ public class ExportResults {
 							PDElem.getNumTerms(), PDElem.getNumConds(), PDElem.getNumPhases());
 
 					for (i = 0; i < PDElem.getYOrder(); i++) {
-						S = PDElem.getVTerminal(i).multiply( PDElem.getITerminal(i).conjugate() ).multiply(0.001);
-						if (opt == 1) S = S.multiply(0.001);  // convert to MVA
-						pw.printf(", %10.3f, %10.3f", S.getReal(), S.getImaginary());
+						S = PDElem.getVTerminal(i).mult( PDElem.getITerminal(i).conj() ).mult(0.001);
+						if (opt == 1) S = S.mult(0.001);  // convert to MVA
+						pw.printf(", %10.3f, %10.3f", S.real(), S.imag());
 					}
 					pw.println();
 				}
@@ -623,9 +622,9 @@ public class ExportResults {
 						PCElem.getNumTerms(), PCElem.getNumConds(), PCElem.getNumPhases());
 
 					for (i = 0; i < PCElem.getYOrder(); i++) {
-						S = PCElem.getVTerminal(i).multiply( PCElem.getITerminal(i).conjugate() ).multiply(0.001);
-						if (opt == 1) S = S.multiply(0.001);  // convert to MVA
-						pw.printf(", %10.3f, %10.3f", S.getReal(), S.getImaginary());
+						S = PCElem.getVTerminal(i).mult( PCElem.getITerminal(i).conj() ).mult(0.001);
+						if (opt == 1) S = S.mult(0.001);  // convert to MVA
+						pw.printf(", %10.3f, %10.3f", S.real(), S.imag());
 					}
 					pw.println();
 				}
@@ -708,31 +707,31 @@ public class ExportResults {
 							I012[2] = Complex.ZERO;
 						}
 
-						S = V012[1].multiply( I012[1].conjugate() );
-						if (opt == 1) S = S.multiply(0.001);
-						pw.print(sep + S.getReal() * 0.003);
-						pw.print(sep + S.getImaginary() * 0.003);
+						S = V012[1].mult( I012[1].conj() );
+						if (opt == 1) S = S.mult(0.001);
+						pw.print(sep + S.real() * 0.003);
+						pw.print(sep + S.imag() * 0.003);
 
-						S = V012[2].multiply( I012[2].conjugate() );
-						if (opt == 1) S = S.multiply(0.001);
-						pw.print(sep + S.getReal() * 0.003);
-						pw.print(sep + S.getImaginary() * 0.003);
+						S = V012[2].mult( I012[2].conj() );
+						if (opt == 1) S = S.mult(0.001);
+						pw.print(sep + S.real() * 0.003);
+						pw.print(sep + S.imag() * 0.003);
 
-						S = V012[0].multiply( I012[0].conjugate() );
-						if (opt == 1) S = S.multiply(0.001);
-						pw.print(sep + S.getReal() * 0.003);
-						pw.print(sep + S.getImaginary() * 0.003);
+						S = V012[0].mult( I012[0].conj() );
+						if (opt == 1) S = S.mult(0.001);
+						pw.print(sep + S.real() * 0.003);
+						pw.print(sep + S.imag() * 0.003);
 
 						if (j == 0) {
 							S = PDElem.getExcessKVANorm(0);
-							if (opt == 1) S = S.multiply(0.001);
-							pw.print(sep + Math.abs(S.getReal()));
-							pw.print(sep + Math.abs(S.getImaginary()));
+							if (opt == 1) S = S.mult(0.001);
+							pw.print(sep + Math.abs(S.real()));
+							pw.print(sep + Math.abs(S.imag()));
 
 							S = PDElem.getExcessKVAEmerg(0);
-							if (opt == 1) S = S.multiply(0.001);
-							pw.print(sep + Math.abs(S.getReal()));
-							pw.print(sep + Math.abs(S.getImaginary()));
+							if (opt == 1) S = S.mult(0.001);
+							pw.print(sep + Math.abs(S.real()));
+							pw.print(sep + Math.abs(S.imag()));
 						}
 						pw.println();
 					}
@@ -772,20 +771,20 @@ public class ExportResults {
 							I012[2] = Complex.ZERO;
 						}
 
-						S = V012[1].multiply( I012[1].conjugate() );
-						if (opt == 1) S = S.multiply(0.001);
-						pw.print(sep + S.getReal() * 0.003);
-						pw.print(sep + S.getImaginary() * 0.003);
+						S = V012[1].mult( I012[1].conj() );
+						if (opt == 1) S = S.mult(0.001);
+						pw.print(sep + S.real() * 0.003);
+						pw.print(sep + S.imag() * 0.003);
 
-						S = V012[2].multiply( I012[2].conjugate() );
-						if (opt == 1) S = S.multiply(0.001);
-						pw.print(sep + S.getReal() * 0.003);
-						pw.print(sep + S.getImaginary() * 0.003);
+						S = V012[2].mult( I012[2].conj() );
+						if (opt == 1) S = S.mult(0.001);
+						pw.print(sep + S.real() * 0.003);
+						pw.print(sep + S.imag() * 0.003);
 
-						S = V012[0].multiply( I012[0].conjugate() );
-						if (opt == 1) S = S.multiply(0.001);
-						pw.print(sep + S.getReal() * 0.003);
-						pw.print(sep + S.getImaginary() * 0.003);
+						S = V012[0].mult( I012[0].conj() );
+						if (opt == 1) S = S.mult(0.001);
+						pw.print(sep + S.real() * 0.003);
+						pw.print(sep + S.imag() * 0.003);
 
 						pw.println();
 					}
@@ -853,7 +852,7 @@ public class ExportResults {
 					Yfault.invert();
 					Yfault.vMult(Vfault, bus.getBusCurrent());  /* Gets voltage appearing at fault */
 
-					currMag = Vfault[iphs].multiply(Gfault).abs();
+					currMag = Vfault[iphs].mult(Gfault).abs();
 					if (currMag > maxCurr) maxCurr = currMag;
 
 				}
@@ -878,13 +877,13 @@ public class ExportResults {
 					Yfault.copyFrom(bus.getYsc());
 					Yfault.add(iphs, iphs, Gfault);
 					Yfault.add(iphs + 1, iphs + 1, Gfault);
-					Yfault.addSym(iphs, iphs + 1, Gfault.negate());
+					Yfault.addSym(iphs, iphs + 1, Gfault.neg());
 
 					/* Solve for injection currents */
 					Yfault.invert();
 					Yfault.vMult(Vfault, bus.getBusCurrent());  /* Gets voltage appearing at fault */
 
-					currMag = Vfault[iphs].subtract( Vfault[iphs + 1] ).multiply(Gfault).abs();
+					currMag = Vfault[iphs].sub( Vfault[iphs + 1] ).mult(Gfault).abs();
 					if (currMag > maxCurr) maxCurr = currMag;
 				}
 				/* Now, put it in the Css array where it belongs */
@@ -1549,8 +1548,8 @@ public class ExportResults {
 						for (i = 0; i < cktElem.getYOrder(); i++) {
 							for (j = 0; j < cktElem.getYOrder(); j++)
 								pw.printf("%-13.10g, %-13.10g, ",
-									cValues[i + j * cktElem.getYOrder()].getReal(),
-									cValues[i + j * cktElem.getYOrder()].getImaginary());
+									cValues[i + j * cktElem.getYOrder()].real(),
+									cValues[i + j * cktElem.getYOrder()].imag());
 							pw.println();
 						}
 					}
@@ -1621,8 +1620,8 @@ public class ExportResults {
 					// search for a non-zero element [i, j]
 					for (p = colPtr[j]; p < colPtr[j + 1]; p++) {  // TODO: check zero based indexing
 						if (rowIdx[p] == i - 1) {
-							re = cVals[p].getReal();
-							im = cVals[p].getImaginary();
+							re = cVals[p].real();
+							im = cVals[p].imag();
 						}
 					}
 					pw.printf("%-13.10g, +j %-13.10g,", re, im);
@@ -1662,20 +1661,20 @@ public class ExportResults {
 				bus = ckt.getBus(i);
 				Z1 = bus.getZsc1();
 				Z0 = bus.getZsc0();
-				if (Z1.getReal() != 0.0) {
-					X1R1 = Z1.getImaginary() / Z1.getReal();
+				if (Z1.real() != 0.0) {
+					X1R1 = Z1.imag() / Z1.real();
 				} else {
 					X1R1 = 1000.0;
 				}
-				if (Z0.getReal() != 0.0) {
-					X0R0 = Z0.getImaginary() / Z0.getReal();
+				if (Z0.real() != 0.0) {
+					X0R0 = Z0.imag() / Z0.real();
 				} else {
 					X0R0 = 1000.0;
 				}
 
 				pw.printf("\"%s\", %d, %10.6g, %10.6g, %10.6g, %10.6g, %10.6g, %10.6g, %8.4g, %8.4g",
 						ckt.getBusList().get(i).toUpperCase(), bus.getNumNodesThisBus(),
-						Z1.getReal(), Z1.getImaginary(), Z0.getReal(), Z0.getImaginary(),
+						Z1.real(), Z1.imag(), Z0.real(), Z0.imag(),
 						Z1.abs(), Z0.abs(), X1R1, X0R0);
 				pw.println();
 			}
@@ -1835,16 +1834,16 @@ public class ExportResults {
 					pw.printf(", %d",    ckt.getSolution().getIntHour());
 					pw.printf(", %-.5g", Util.getMaxPUVoltage());
 					pw.printf(", %-.5g", Util.getMinPUVoltage(true));
-					cPower = Util.getTotalPowerFromSources().multiply(0.000001);  // MVA
-					pw.printf(", %-.6g", cPower.getReal());
-					pw.printf(", %-.6g", cPower.getImaginary());
-					cLosses = ckt.getLosses().multiply(0.000001);
-					if (cPower.getReal() != 0.0) {
-						pw.printf(", %-.6g, %-.4g", cLosses.getReal(), cLosses.getReal() / cPower.getReal() * 100.0);
+					cPower = Util.getTotalPowerFromSources().mult(0.000001);  // MVA
+					pw.printf(", %-.6g", cPower.real());
+					pw.printf(", %-.6g", cPower.imag());
+					cLosses = ckt.getLosses().mult(0.000001);
+					if (cPower.real() != 0.0) {
+						pw.printf(", %-.6g, %-.4g", cLosses.real(), cLosses.real() / cPower.real() * 100.0);
 					} else {
 						pw.printf("Total Active Losses:   ****** MW, (**** %%)");
 					}
-					pw.printf(", %-.6g", cLosses.getImaginary());
+					pw.printf(", %-.6g", cLosses.imag());
 					pw.printf(", %g", ckt.getSolution().getFrequency());
 				}
 			}
@@ -1981,8 +1980,8 @@ public class ExportResults {
 										if ((bus1.findIdx(phs) >= 0) && (bus2.findIdx(phs) >= 0) &&
 												(bus1.findIdx(iphs2) >= 0) && (bus2.findIdx(iphs2) >= 0)) {
 											lineType = (bus1.getKVBase() < 1.0) ? 2 : 0;
-											puV1 = sol.getNodeV( bus1.getRef(bus1.findIdx(phs)) ).subtract( sol.getNodeV(bus1.getRef(bus1.findIdx(iphs2))) ).abs() / bus1.getKVBase() / 1732.0;
-											puV2 = sol.getNodeV( bus2.getRef(bus2.findIdx(phs)) ).subtract( sol.getNodeV(bus2.getRef(bus2.findIdx(iphs2))) ).abs() / bus2.getKVBase() / 1732.0;
+											puV1 = sol.getNodeV( bus1.getRef(bus1.findIdx(phs)) ).sub( sol.getNodeV(bus1.getRef(bus1.findIdx(iphs2))) ).abs() / bus1.getKVBase() / 1732.0;
+											puV2 = sol.getNodeV( bus2.getRef(bus2.findIdx(phs)) ).sub( sol.getNodeV(bus2.getRef(bus2.findIdx(iphs2))) ).abs() / bus2.getKVBase() / 1732.0;
 
 											writeNewLine(pw, presentCktElement.getName(), bus1.getDistFromMeter(), puV1, bus2.getDistFromMeter(), puV2,
 													phs, 2, lineType, 0, 0, ckt.getNodeMarkerCode(), ckt.getNodeMarkerWidth());
@@ -1995,8 +1994,8 @@ public class ExportResults {
 									if ((bus1.findIdx(phs) >= 0) && (bus2.findIdx(phs) >= 0) &&
 											(bus1.findIdx(iphs2) >= 0) && (bus2.findIdx(iphs2) >= 0)) {
 										lineType = (bus1.getKVBase() < 1.0) ? 2 : 0;
-										puV1 = sol.getNodeV( bus1.getRef(bus1.findIdx(phs)) ).subtract( sol.getNodeV(bus1.getRef(bus1.findIdx(iphs2))) ).abs() / bus1.getKVBase() / 1732.0;
-										puV2 = sol.getNodeV( bus2.getRef(bus2.findIdx(phs)) ).subtract( sol.getNodeV(bus2.getRef(bus2.findIdx(iphs2))) ).abs() / bus2.getKVBase() / 1732.0;
+										puV1 = sol.getNodeV( bus1.getRef(bus1.findIdx(phs)) ).sub( sol.getNodeV(bus1.getRef(bus1.findIdx(iphs2))) ).abs() / bus1.getKVBase() / 1732.0;
+										puV2 = sol.getNodeV( bus2.getRef(bus2.findIdx(phs)) ).sub( sol.getNodeV(bus2.getRef(bus2.findIdx(iphs2))) ).abs() / bus2.getKVBase() / 1732.0;
 
 										writeNewLine(pw, presentCktElement.getName(), bus1.getDistFromMeter(), puV1, bus2.getDistFromMeter(), puV2,
 												phs, 2, lineType, 0, 0, ckt.getNodeMarkerCode(), ckt.getNodeMarkerWidth());
@@ -2010,8 +2009,8 @@ public class ExportResults {
 										if ((bus1.findIdx(phs) >= 0) && (bus2.findIdx(phs) >= 0) &&
 												(bus1.findIdx(iphs2) >= 0) && (bus2.findIdx(iphs2) >= 0)) {
 											lineType = (bus1.getKVBase() < 1.0) ? 2 : 0;
-											puV1 = sol.getNodeV( bus1.getRef(bus1.findIdx(phs)) ).subtract( sol.getNodeV(bus1.getRef(bus1.findIdx(iphs2))) ).abs() / bus1.getKVBase() / 1732.0;
-											puV2 = sol.getNodeV( bus2.getRef(bus2.findIdx(phs)) ).subtract( sol.getNodeV(bus2.getRef(bus2.findIdx(iphs2))) ).abs() / bus2.getKVBase() / 1732.0;
+											puV1 = sol.getNodeV( bus1.getRef(bus1.findIdx(phs)) ).sub( sol.getNodeV(bus1.getRef(bus1.findIdx(iphs2))) ).abs() / bus1.getKVBase() / 1732.0;
+											puV2 = sol.getNodeV( bus2.getRef(bus2.findIdx(phs)) ).sub( sol.getNodeV(bus2.getRef(bus2.findIdx(iphs2))) ).abs() / bus2.getKVBase() / 1732.0;
 
 											writeNewLine(pw, presentCktElement.getName(), bus1.getDistFromMeter(), puV1, bus2.getDistFromMeter(),
 													puV2, phs, 2, lineType, 0, 0, ckt.getNodeMarkerCode(), ckt.getNodeMarkerWidth());

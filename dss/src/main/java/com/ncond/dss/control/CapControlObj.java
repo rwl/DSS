@@ -8,7 +8,7 @@ package com.ncond.dss.control;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 
-import org.apache.commons.math.complex.Complex;
+import com.ncond.dss.shared.Complex;
 
 import com.ncond.dss.common.Bus;
 import com.ncond.dss.common.Circuit;
@@ -408,7 +408,7 @@ public class CapControlObj extends ControlElem {
 			// use L-L aB if capacitor is delta connected
 			switch (((CapacitorObj) getControlledElement()).getConnection()) {
 			case DELTA:
-				controlVoltage = cBuffer[PTPhaseIdx].subtract(cBuffer[nextDeltaPhase(PTPhaseIdx)]).abs() / PTRatio;
+				controlVoltage = cBuffer[PTPhaseIdx].sub(cBuffer[nextDeltaPhase(PTPhaseIdx)]).abs() / PTRatio;
 				break;
 			default:
 				controlVoltage = cBuffer[PTPhaseIdx].abs() / PTRatio;
@@ -434,9 +434,9 @@ public class CapControlObj extends ControlElem {
 		double pf;
 		double Sabs = S.abs();
 
-		pf = (Sabs != 0.0) ? Math.abs(S.getReal()) / Sabs : 1.0;  // default to unity
+		pf = (Sabs != 0.0) ? Math.abs(S.real()) / Sabs : 1.0;  // default to unity
 
-		if (S.getImaginary() < 0.0) pf = 2.0 - pf;
+		if (S.imag() < 0.0) pf = 2.0 - pf;
 
 		return pf;
 	}
@@ -565,7 +565,7 @@ public class CapControlObj extends ControlElem {
 			case KVAR:
 				//MonitoredElement.ActiveTerminalIdx = ElementTerminal;
 				S = monitoredElement.getPower(elementTerminalIdx);
-				Q = S.getImaginary() * 0.001;  // kvar
+				Q = S.imag() * 0.001;  // kvar
 
 				switch (presentState) {
 				case OPEN:
@@ -596,7 +596,7 @@ public class CapControlObj extends ControlElem {
 			case SRP:  /* kvar modified to keep PF around .98 lead */
 				//monitoredElement.activeTerminalIdx = elementTerminal;
 				S = monitoredElement.getPower(elementTerminalIdx);
-				Q = S.getImaginary() * 0.001 + 0.20306 * S.getReal() * 0.001;  // kvar for -.98 PF
+				Q = S.imag() * 0.001 + 0.20306 * S.real() * 0.001;  // kvar for -.98 PF
 				//Q = S.getImaginary() * 0.001 + 0.063341 * S.getReal() * 0.001;  // kvar for -.998 PF
 
 				switch (presentState) {
@@ -690,7 +690,7 @@ public class CapControlObj extends ControlElem {
 				switch (presentState) {
 				case OPEN:
 					// make sure we don't go too far leading
-					if (pf < PFOnValue && (S.getImaginary() * 0.001 > controlledCapacitor.getTotalKVAr() * 0.5)) {
+					if (pf < PFOnValue && (S.imag() * 0.001 > controlledCapacitor.getTotalKVAr() * 0.5)) {
 						setPendingChange(ControlAction.CLOSE);
 						shouldSwitch = true;
 					} else {
@@ -703,7 +703,7 @@ public class CapControlObj extends ControlElem {
 						setPendingChange(ControlAction.OPEN);
 						shouldSwitch = true;
 					} else if (controlledCapacitor.availableSteps() > 0) {
-						if (pf < PFOnValue && (S.getImaginary() * 0.001 > controlledCapacitor.getTotalKVAr() / controlledCapacitor.getNumSteps() * 0.5)) {
+						if (pf < PFOnValue && (S.imag() * 0.001 > controlledCapacitor.getTotalKVAr() / controlledCapacitor.getNumSteps() * 0.5)) {
 							setPendingChange(ControlAction.CLOSE);  // we can go some more
 							shouldSwitch = true;
 						}

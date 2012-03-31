@@ -5,7 +5,7 @@
  */
 package com.ncond.dss.general;
 
-import org.apache.commons.math.complex.Complex;
+import com.ncond.dss.shared.Complex;
 
 import com.ncond.dss.shared.CMatrix;
 import com.ncond.dss.shared.LineUnits;
@@ -92,10 +92,10 @@ public class TSLineConstants extends CableConstants {
 		for (i = 0; i < numConds; i++) {
 			Zi = getZint(i);
 			if (powerFreq) {  // for less than 1 kHz, use published GMR
-				Zi = new Complex(Zi.getReal(), 0.0);
-				Zspacing = Lfactor.multiply(Math.log(1.0 / GMR[i]));  // use GMR
+				Zi = new Complex(Zi.real(), 0.0);
+				Zspacing = Lfactor.mult(Math.log(1.0 / GMR[i]));  // use GMR
 			} else {
-				Zspacing = Lfactor.multiply(Math.log(1.0 / radius[i]));
+				Zspacing = Lfactor.mult(Math.log(1.0 / radius[i]));
 			}
 			Zmat.set(i, i, Zi.add(Zspacing.add(getZe(i, i))));
 		}
@@ -104,7 +104,7 @@ public class TSLineConstants extends CableConstants {
 		for (i = 0; i < numPhases; i++) {
 			resTS = 0.3183 * RHO_TS / (diaShield[i] * tapeLayer[i] * Math.sqrt(50.0 / (100.0 - tapeLap[i])));
 			gmrTS = 0.5 * (diaShield[i] - tapeLayer[i]);  // per Kersting, to center of TS
-			Zspacing = Lfactor.multiply(Math.log(1.0 / gmrTS));
+			Zspacing = Lfactor.mult(Math.log(1.0 / gmrTS));
 			Zi = new Complex(resTS, 0.0);
 			idxi = i + numConds;
 			Zmat.set(idxi, idxi, Zi.add(Zspacing.add(getZe(i, i))));
@@ -114,7 +114,7 @@ public class TSLineConstants extends CableConstants {
 		for (i = 0; i < numConds; i++) {
 			for (j = 0; j < i; j++) {
 				dij = Math.sqrt(MathUtil.sqr(X[i] - X[j]) + MathUtil.sqr(Y[i] - Y[j]));
-				Zmat.setSym(i, j, Lfactor.multiply( Math.log(1.0 / dij) ).add(getZe(i, j)));
+				Zmat.setSym(i, j, Lfactor.mult( Math.log(1.0 / dij) ).add(getZe(i, j)));
 			}
 		}
 
@@ -125,7 +125,7 @@ public class TSLineConstants extends CableConstants {
 				// TS to other TS
 				idxj = j + numConds;
 				dij = Math.sqrt(MathUtil.sqr(X[i] - X[j]) + MathUtil.sqr(Y[i] - Y[j]));
-				Zmat.setSym(idxi, idxj, Lfactor.multiply( Math.log(1.0 / dij) ).add(getZe(i, j)));
+				Zmat.setSym(idxi, idxj, Lfactor.mult( Math.log(1.0 / dij) ).add(getZe(i, j)));
 			}
 			for (j = 0; j < numConds; j++) {
 				// CN to cores and bare neutrals
@@ -136,7 +136,7 @@ public class TSLineConstants extends CableConstants {
 				} else {  // TS to another phase or bare neutral
 					dij = Math.sqrt(MathUtil.sqr(X[i] - X[j]) + MathUtil.sqr(Y[i] - Y[j]));
 				}
-				Zmat.setSym(idxi, idxj, Lfactor.multiply( Math.log(1.0 / dij) ).add(getZe(i, j)));
+				Zmat.setSym(idxi, idxj, Lfactor.mult( Math.log(1.0 / dij) ).add(getZe(i, j)));
 			}
 		}
 

@@ -8,7 +8,7 @@ package com.ncond.dss.delivery;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 
-import org.apache.commons.math.complex.Complex;
+import com.ncond.dss.shared.Complex;
 
 import com.ncond.dss.common.DSS;
 import com.ncond.dss.common.DSSClass;
@@ -18,7 +18,7 @@ import com.ncond.dss.common.types.Connection;
 import com.ncond.dss.general.XfmrCodeObj;
 import com.ncond.dss.parser.Parser;
 import com.ncond.dss.shared.CMatrix;
-import com.ncond.dss.shared.ComplexUtil;
+
 
 @SuppressWarnings("unused")
 public class TransformerObj extends PDElement {
@@ -444,12 +444,12 @@ public class TransformerObj extends PDElement {
 			pw.println("ZB: (inverted)");
 			for (i = 0; i < numWindings - 1; i++) {
 				for (j = 0; j < i; j++)
-					pw.print(ZB.get(i, j).getReal() + " ");
+					pw.print(ZB.get(i, j).real() + " ");
 				pw.println();
 			}
 			for (i = 0; i < numWindings - 1; i++) {
 				for (j = 0; j < i; j++)
-					pw.print(ZB.get(i, j).getImaginary() + " ");
+					pw.print(ZB.get(i, j).imag() + " ");
 				pw.println();
 			}
 
@@ -457,12 +457,12 @@ public class TransformerObj extends PDElement {
 			pw.println("Y_OneVolt");
 			for (i = 0; i < numWindings; i++) {
 				for (j = 0; j < i; j++)
-					pw.print(Y_1Volt.get(i, j).getReal() + " ");
+					pw.print(Y_1Volt.get(i, j).real() + " ");
 				pw.println();
 			}
 			for (i = 0; i < numWindings; i++) {
 				for (j = 0; j < i; j++)
-					pw.print(Y_1Volt.get(i, j).getImaginary() + " ");
+					pw.print(Y_1Volt.get(i, j).imag() + " ");
 				pw.println();
 			}
 
@@ -470,12 +470,12 @@ public class TransformerObj extends PDElement {
 			pw.println("Y_Terminal");
 			for (i = 0; i < 2 * numWindings; i++) {
 				for (j = 0; j < i; j++)
-					pw.print(Y_Term.get(i, j).getReal() + " ");
+					pw.print(Y_Term.get(i, j).real() + " ");
 				pw.println();
 			}
 			for (i = 0; i < 2 * numWindings; i++) {
 				for (j = 0; j < i; j++)
-					pw.print(Y_Term.get(i, j).getImaginary() + " ");
+					pw.print(Y_Term.get(i, j).imag() + " ");
 				pw.println();
 			}
 			pw.println();
@@ -626,11 +626,11 @@ public class TransformerObj extends PDElement {
 			for (i = 0; i < nPhases; i++) {
 				switch (windings[iWind].getConnection()) {
 				case WYE:
-					Vbuffer[i] = VTerminal[i + k].subtract(VTerminal[neutTerm]);
+					Vbuffer[i] = VTerminal[i + k].sub(VTerminal[neutTerm]);
 					break;
 				case DELTA:
 					ii = rotatePhases(i);  // get next phase in sequence
-					Vbuffer[i] = VTerminal[i + k].subtract(VTerminal[ii + k]);
+					Vbuffer[i] = VTerminal[i + k].sub(VTerminal[ii + k]);
 					break;
 				}
 			}
@@ -667,9 +667,9 @@ public class TransformerObj extends PDElement {
 		/* No load losses are sum of all powers coming into YPrim_Shunt from each terminal */
 		noload = Complex.ZERO;
 		for (int i = 0; i < YOrder; i++)
-			noload = noload.add(VTerminal[i].multiply(cTemp[i].conjugate()));
+			noload = noload.add(VTerminal[i].mult(cTemp[i].conj()));
 
-		load = tot.subtract(noload);
+		load = tot.sub(noload);
 
 		/* Handle pass by reference */
 		totalLosses[0] = tot;
@@ -995,7 +995,7 @@ public class TransformerObj extends PDElement {
 						value = new Complex(1000000, 0);
 				} else {
 					// 1 microohm resistor
-					value = ComplexUtil.invert(new Complex(w.getRNeut(), w.getXNeut() * freqMultiplier));
+					value = new Complex(w.getRNeut(), w.getXNeut() * freqMultiplier).inv();
 				}
 				j = i * nConds;
 				YPrimSeries.add(j, j, value);
@@ -1045,17 +1045,17 @@ public class TransformerObj extends PDElement {
 			ZB.set(i, i, new Complex(
 				windings[0].getRpu() + windings[i + 1].getRNeut(),
 				freqMult * XSC[i]
-			).multiply(Zbase));
+			).mult(Zbase));
 		}
 
 		// off diagonals
 		k = numWindings - 1;
 		for (i = 0; i < numWindings - 1; i++) {
 			for (j = i + 1; j < numWindings - 1; j++) {
-				ZB.setSym(i, j, ZB.get(i, i).add( ZB.get(j, j) ).subtract(new Complex(
+				ZB.setSym(i, j, ZB.get(i, i).add( ZB.get(j, j) ).sub(new Complex(
 					(windings[i + 1].getRpu() + windings[j + 1].getRpu()),
 					freqMult * XSC[k]
-				).multiply(Zbase)).multiply(0.5));
+				).mult(Zbase)).mult(0.5));
 			}
 			k += 1;
 		}

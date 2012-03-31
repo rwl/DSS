@@ -5,7 +5,7 @@
  */
 package com.ncond.dss.common.types;
 
-import org.apache.commons.math.complex.Complex;
+import com.ncond.dss.shared.Complex;
 
 import com.ncond.dss.common.Bus;
 import com.ncond.dss.common.Circuit;

@@ -8,7 +8,7 @@ package com.ncond.dss.general;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 
-import org.apache.commons.math.complex.Complex;
+import com.ncond.dss.shared.Complex;
 
 import com.ncond.dss.common.DSS;
 import com.ncond.dss.common.DSSClass;
@@ -87,7 +87,7 @@ public class LineCodeObj extends DSSObject {
 		StringBuilder sb = new StringBuilder("[");
 		for (int i = 0; i < nPhases; i++) {
 			for (int j = 0; j < nPhases; j++)
-				sb.append(String.format("%12.8f ", Z.get(i, j).getReal()));
+				sb.append(String.format("%12.8f ", Z.get(i, j).real()));
 			if (i < nPhases - 1) sb.append("|");
 		}
 		sb.append("]");
@@ -98,7 +98,7 @@ public class LineCodeObj extends DSSObject {
 		StringBuilder sb = new StringBuilder("[");
 		for (int i = 0; i < nPhases; i++) {
 			for (int j = 0; j < nPhases; j++)
-				sb.append(String.format("%12.8f ", Z.get(i, j).getImaginary()));
+				sb.append(String.format("%12.8f ", Z.get(i, j).imag()));
 			if (i < nPhases - 1) sb.append("|");
 		}
 		sb.append("]");
@@ -109,7 +109,7 @@ public class LineCodeObj extends DSSObject {
 		StringBuilder sb = new StringBuilder("[");
 		for (int i = 0; i < nPhases; i++) {
 			for (int j = 0; j < nPhases; j++)
-				sb.append(String.format("%12.8f ", Yc.get(i, j).getImaginary() / DSS.TWO_PI / baseFrequency * 1.e9));
+				sb.append(String.format("%12.8f ", Yc.get(i, j).imag() / DSS.TWO_PI / baseFrequency * 1.e9));
 			if (i < nPhases - 1)
 				sb.append("|");
 		}
@@ -148,15 +148,15 @@ public class LineCodeObj extends DSSObject {
 
 		oneThird = 1.0 / 3.0;  // do this to get more precision in next few statements
 
-		Ztemp = new Complex(R1, X1).multiply(2.0);
-		Zs = Ztemp.add(new Complex(R0, X0)).multiply(oneThird);
-		Zm = new Complex(R0, X0).subtract(new Complex(R1, X1)).multiply(oneThird);
+		Ztemp = new Complex(R1, X1).mult(2.0);
+		Zs = Ztemp.add(new Complex(R0, X0)).mult(oneThird);
+		Zm = new Complex(R0, X0).sub(new Complex(R1, X1)).mult(oneThird);
 
 		Yc1 = DSS.TWO_PI * baseFrequency * C1;
 		Yc0 = DSS.TWO_PI * baseFrequency * C0;
 
-		Ys = new Complex(0.0, Yc1).multiply(2.0).add(new Complex(0.0, Yc0)).multiply(oneThird);
-		Ym = new Complex(0.0, Yc0).subtract(new Complex(0.0, Yc1)).multiply(oneThird);
+		Ys = new Complex(0.0, Yc1).mult(2.0).add(new Complex(0.0, Yc0)).mult(oneThird);
+		Ym = new Complex(0.0, Yc0).sub(new Complex(0.0, Yc1)).mult(oneThird);
 
 		for (i = 0; i < nPhases; i++) {
 			Z.set(i, i, Zs);
@@ -188,7 +188,7 @@ public class LineCodeObj extends DSSObject {
 		pw.print("~ " + parentClass.getPropertyName(8) + "=\"");
 		for (i = 0; i < nPhases; i++) {
 			for (j = 0; j < nPhases; j++)
-				pw.print(Z.get(i, j).getReal() + " ");
+				pw.print(Z.get(i, j).real() + " ");
 			pw.print("|");
 		}
 		pw.println("\"");
@@ -196,7 +196,7 @@ public class LineCodeObj extends DSSObject {
 		pw.print("~ " + parentClass.getPropertyName(9) + "=\"");
 		for (i = 0; i < nPhases; i++) {
 			for (j = 0; j < nPhases; j++)
-				pw.print(Z.get(i, j).getImaginary() + " ");
+				pw.print(Z.get(i, j).imag() + " ");
 			pw.print("|");
 		}
 		pw.println("\"");
@@ -204,7 +204,7 @@ public class LineCodeObj extends DSSObject {
 		pw.print("~ " + parentClass.getPropertyName(10) + "=\"");
 		for (i = 0; i < nPhases; i++) {
 			for (j = 0; j < nPhases; j++)
-				pw.print((Yc.get(i, j).getImaginary() / DSS.TWO_PI / baseFrequency * 1.e9) + " ");
+				pw.print((Yc.get(i, j).imag() / DSS.TWO_PI / baseFrequency * 1.e9) + " ");
 			pw.print("|");
 		}
 		pw.println("\"");

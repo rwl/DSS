@@ -12,7 +12,7 @@ import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.util.List;
 
-import org.apache.commons.math.complex.Complex;
+import com.ncond.dss.shared.Complex;
 
 import com.ncond.dss.common.Bus;
 import com.ncond.dss.common.Circuit;
@@ -437,12 +437,12 @@ public class EnergyMeterObj extends MeterElement {
 		// compute energy in branch to which meter is connected
 
 		//meteredElement.setActiveTerminalIdx(meteredTerminalIdx);  // needed for excess kVA calcs
-		S_Local = meteredElement.getPower(meteredTerminalIdx).multiply(0.001);
+		S_Local = meteredElement.getPower(meteredTerminalIdx).mult(0.001);
 		S_LocalKVA = S_Local.abs();
 		deltaHrs = DSS.activeCircuit.getSolution().getIntervalHrs();
-		integrate(EnergyMeter.REG_KWH, S_Local.getReal(), deltaHrs);  // accumulate the power
-		integrate(EnergyMeter.REG_KVARH, S_Local.getImaginary(), deltaHrs);
-		setDragHandRegister(EnergyMeter.REG_MAX_KW, S_Local.getReal());
+		integrate(EnergyMeter.REG_KWH, S_Local.real(), deltaHrs);  // accumulate the power
+		integrate(EnergyMeter.REG_KVARH, S_Local.imag(), deltaHrs);
+		setDragHandRegister(EnergyMeter.REG_MAX_KW, S_Local.real());
 		setDragHandRegister(EnergyMeter.REG_MAX_KVA, S_LocalKVA);
 
 		// compute maximum overload energy in all branches in zone
@@ -491,8 +491,8 @@ public class EnergyMeterObj extends MeterElement {
 			/* ------------------------ Local Zone Only ------------------------- */
 			/* ------------------------------------------------------------------ */
 			pdElem = (PDElement) meteredElement;
-			maxExcessKWNorm  = Math.abs(pdElem.getExcessKVANorm(meteredTerminalIdx).getReal());
-			maxExcessKWEmerg = Math.abs(pdElem.getExcessKVAEmerg(meteredTerminalIdx).getReal());
+			maxExcessKWNorm  = Math.abs(pdElem.getExcessKVANorm(meteredTerminalIdx).real());
+			maxExcessKWEmerg = Math.abs(pdElem.getExcessKVAEmerg(meteredTerminalIdx).real());
 		} else {
 			/* -------------------------------------------------------------- */
 			/* --------Cyle Through Entire Zone Setting EEN/UE -------------- */
@@ -501,8 +501,8 @@ public class EnergyMeterObj extends MeterElement {
 				pdElem.setActiveTerminalIdx(branchList.getPresentBranch().getFromTerminalIdx());
 
 				// invoking this property sets the Overload_UE flag in the PD element
-				EEN = Math.abs(pdElem.getExcessKVANorm(pdElem.getActiveTerminalIdx()).getReal());
-				UE = Math.abs(pdElem.getExcessKVAEmerg(pdElem.getActiveTerminalIdx()).getReal());
+				EEN = Math.abs(pdElem.getExcessKVANorm(pdElem.getActiveTerminalIdx()).real());
+				UE = Math.abs(pdElem.getExcessKVAEmerg(pdElem.getActiveTerminalIdx()).real());
 
 				/* For radial circuits just keep the maximum overload; for mesh, add them up */
 				if (zoneIsRadial) {
@@ -591,9 +591,9 @@ public class EnergyMeterObj extends MeterElement {
 				S_NoLoadLosses = pS_NoLoadLosses[0];
 
 				/* Convert to kW */
-				S_TotalLosses = S_TotalLosses.multiply(0.001);
-				S_LoadLosses = S_LoadLosses.multiply(0.001);
-				S_NoLoadLosses = S_NoLoadLosses.multiply(0.001);
+				S_TotalLosses = S_TotalLosses.mult(0.001);
+				S_LoadLosses = S_LoadLosses.mult(0.001);
+				S_NoLoadLosses = S_NoLoadLosses.mult(0.001);
 
 				/* Update accumulators */
 				totalLosses = totalLosses.add(S_TotalLosses);  // accumulate total losses in meter zone
@@ -610,8 +610,8 @@ public class EnergyMeterObj extends MeterElement {
 						S_ZeroSeqLosses = pS_ZeroSeqLosses[0];
 
 						S_PosSeqLosses = S_PosSeqLosses.add(S_NegSeqLosses);  // add line modes together
-						S_PosSeqLosses = S_PosSeqLosses.multiply(0.001);  // convert to kW
-						S_ZeroSeqLosses = S_ZeroSeqLosses.multiply(0.001);
+						S_PosSeqLosses = S_PosSeqLosses.mult(0.001);  // convert to kW
+						S_ZeroSeqLosses = S_ZeroSeqLosses.mult(0.001);
 						totalLineModeLosses = totalLineModeLosses.add(S_PosSeqLosses);
 						totalZeroModeLosses = totalZeroModeLosses.add(S_ZeroSeqLosses);
 					}
@@ -630,12 +630,12 @@ public class EnergyMeterObj extends MeterElement {
 				if (VBaseLosses) {
 					int vbi = branchList.getPresentBranch().getVoltBaseIndex();
 					if (vbi >= 0) {
-						VBaseTotalLosses[vbi] = VBaseTotalLosses[vbi] + S_TotalLosses.getReal();
+						VBaseTotalLosses[vbi] = VBaseTotalLosses[vbi] + S_TotalLosses.real();
 						if (Util.isLineElement(pdElem)) {
-							VBaseLineLosses[vbi] = VBaseLineLosses[vbi] + S_TotalLosses.getReal();
+							VBaseLineLosses[vbi] = VBaseLineLosses[vbi] + S_TotalLosses.real();
 						} else if (Util.isTransformerElement(pdElem)) {
-							VBaseLoadLosses[vbi] = VBaseLoadLosses[vbi] + S_LoadLosses.getReal();
-							VBaseNoLoadLosses[vbi] = VBaseNoLoadLosses[vbi] + S_NoLoadLosses.getReal();
+							VBaseLoadLosses[vbi] = VBaseLoadLosses[vbi] + S_LoadLosses.real();
+							VBaseNoLoadLosses[vbi] = VBaseNoLoadLosses[vbi] + S_NoLoadLosses.real();
 						}
 					}
 				}
@@ -670,18 +670,18 @@ public class EnergyMeterObj extends MeterElement {
 		integrate(EnergyMeter.REG_LOAD_UE,  totalLoad_UE[0],  deltaHrs);
 
 		/* Accumulate losses in appropriate registers */
-		integrate(EnergyMeter.REG_ZONE_LOSSES_KWH,      totalLosses.getReal(),          deltaHrs);
-		integrate(EnergyMeter.REG_ZONE_LOSSES_KVARH,    totalLosses.getImaginary(),     deltaHrs);
-		integrate(EnergyMeter.REG_LOAD_LOSSES_KWH,      totalLoadLosses.getReal(),      deltaHrs);
-		integrate(EnergyMeter.REG_LOAD_LOSSES_KVARH,    totalLoadLosses.getImaginary(), deltaHrs);
-		integrate(EnergyMeter.REG_NO_LOAD_LOSSES_KWH,   totalNoLoadLosses.getReal(),    deltaHrs);
-		integrate(EnergyMeter.REG_NO_LOAD_LOSSES_KVARH, totalNoLoadLosses.getImaginary(), deltaHrs);
-		integrate(EnergyMeter.REG_LINE_LOSSES_KWH,      totalLineLosses.getReal(),      deltaHrs);
-		integrate(EnergyMeter.REG_LINE_MODE_LINE_LOSS,  totalLineModeLosses.getReal(),  deltaHrs);
-		integrate(EnergyMeter.REG_ZERO_MODE_LINE_LOSS,  totalZeroModeLosses.getReal(),  deltaHrs);
-		integrate(EnergyMeter.REG_3_PHASE_LINE_LOSS,    total3PhaseLosses.getReal(),    deltaHrs);
-		integrate(EnergyMeter.REG_1_PHASE_LINE_LOSS,    total1PhaseLosses.getReal(),    deltaHrs);
-		integrate(EnergyMeter.REG_TRANSFORMER_LOSSES_KWH,  totalTransformerLosses.getReal(), deltaHrs);
+		integrate(EnergyMeter.REG_ZONE_LOSSES_KWH,      totalLosses.real(),          deltaHrs);
+		integrate(EnergyMeter.REG_ZONE_LOSSES_KVARH,    totalLosses.imag(),     deltaHrs);
+		integrate(EnergyMeter.REG_LOAD_LOSSES_KWH,      totalLoadLosses.real(),      deltaHrs);
+		integrate(EnergyMeter.REG_LOAD_LOSSES_KVARH,    totalLoadLosses.imag(), deltaHrs);
+		integrate(EnergyMeter.REG_NO_LOAD_LOSSES_KWH,   totalNoLoadLosses.real(),    deltaHrs);
+		integrate(EnergyMeter.REG_NO_LOAD_LOSSES_KVARH, totalNoLoadLosses.imag(), deltaHrs);
+		integrate(EnergyMeter.REG_LINE_LOSSES_KWH,      totalLineLosses.real(),      deltaHrs);
+		integrate(EnergyMeter.REG_LINE_MODE_LINE_LOSS,  totalLineModeLosses.real(),  deltaHrs);
+		integrate(EnergyMeter.REG_ZERO_MODE_LINE_LOSS,  totalZeroModeLosses.real(),  deltaHrs);
+		integrate(EnergyMeter.REG_3_PHASE_LINE_LOSS,    total3PhaseLosses.real(),    deltaHrs);
+		integrate(EnergyMeter.REG_1_PHASE_LINE_LOSS,    total1PhaseLosses.real(),    deltaHrs);
+		integrate(EnergyMeter.REG_TRANSFORMER_LOSSES_KWH,  totalTransformerLosses.real(), deltaHrs);
 
 		for (i = 0; i < maxVBaseCount; i++) {
 			integrate(EnergyMeter.REG_VBASE_START + i, VBaseTotalLosses[i], deltaHrs);
@@ -706,10 +706,10 @@ public class EnergyMeterObj extends MeterElement {
 		/* ---------------   Set Drag Hand Registers  ----------------------- */
 		/* ------------------------------------------------------------------ */
 
-		setDragHandRegister(EnergyMeter.REG_LOSSES_MAX_KW,      Math.abs(totalLosses.getReal()));
-		setDragHandRegister(EnergyMeter.REG_LOSSES_MAX_KVAR,    Math.abs(totalLosses.getImaginary()));
-		setDragHandRegister(EnergyMeter.REG_MAX_LOAD_LOSSES,    Math.abs(totalLoadLosses.getReal()));
-		setDragHandRegister(EnergyMeter.REG_MAX_NO_LOAD_LOSSES, Math.abs(totalNoLoadLosses.getReal()));
+		setDragHandRegister(EnergyMeter.REG_LOSSES_MAX_KW,      Math.abs(totalLosses.real()));
+		setDragHandRegister(EnergyMeter.REG_LOSSES_MAX_KVAR,    Math.abs(totalLosses.imag()));
+		setDragHandRegister(EnergyMeter.REG_MAX_LOAD_LOSSES,    Math.abs(totalLoadLosses.real()));
+		setDragHandRegister(EnergyMeter.REG_MAX_NO_LOAD_LOSSES, Math.abs(totalNoLoadLosses.real()));
 		setDragHandRegister(EnergyMeter.REG_ZONE_MAX_KW,        totalZoneKW[0]);
 		setDragHandRegister(EnergyMeter.REG_ZONE_MAX_KVA,       loadKVA);
 		/* Max total generator registers */
@@ -721,7 +721,7 @@ public class EnergyMeterObj extends MeterElement {
 		/* ------------------------------------------------------------------ */
 
 		/* Overload energy for the entire zone */
-		zoneKW = localOnly ? S_Local.getReal() : totalZoneKW[0];
+		zoneKW = localOnly ? S_Local.real() : totalZoneKW[0];
 
 		/* Either the max excess kW of any PD element or the excess over zone limits */
 
@@ -1197,10 +1197,10 @@ public class EnergyMeterObj extends MeterElement {
 
 	private void accumulateGen(GeneratorObj gen, double[] totalZonekW, double[] totalZoneKVAr) {
 		//gen.setActiveTerminalIdx(0);
-		Complex S = gen.getPower(0).multiply(0.001).negate();
+		Complex S = gen.getPower(0).mult(0.001).neg();
 
-		totalZonekW[0] += S.getReal();
-		totalZoneKVAr[0] += S.getImaginary();
+		totalZonekW[0] += S.real();
+		totalZoneKVAr[0] += S.imag();
 	}
 
 	private double accumulateLoad(LoadObj load, double[] totalZoneKW, double[] totalZoneKVAr,
@@ -1210,13 +1210,13 @@ public class EnergyMeterObj extends MeterElement {
 		double loadEEN, loadUE;
 
 		//pLoad.setActiveTerminalIdx(1);
-		SLoad = load.getPower(0).multiply(0.001);  // get power in terminal 1
-		kWLoad = SLoad.getReal();
+		SLoad = load.getPower(0).mult(0.001);  // get power in terminal 1
+		kWLoad = SLoad.real();
 		result = kWLoad;
 
 		/* Accumulate load in zone */
 		totalZoneKW[0] += kWLoad;
-		totalZoneKVAr[0] += SLoad.getImaginary();
+		totalZoneKVAr[0] += SLoad.imag();
 
 		/* Always integrate even if the value is 0.0
 		 * otherwise the integrate function is not correct. */

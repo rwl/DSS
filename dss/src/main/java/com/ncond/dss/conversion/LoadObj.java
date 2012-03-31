@@ -8,7 +8,7 @@ package com.ncond.dss.conversion;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 
-import org.apache.commons.math.complex.Complex;
+import com.ncond.dss.shared.Complex;
 
 import com.ncond.dss.common.Circuit;
 import com.ncond.dss.common.DSS;
@@ -23,7 +23,6 @@ import com.ncond.dss.general.LoadShapeObj;
 import com.ncond.dss.general.SpectrumObj;
 import com.ncond.dss.parser.Parser;
 import com.ncond.dss.shared.CMatrix;
-import com.ncond.dss.shared.ComplexUtil;
 import com.ncond.dss.shared.MathUtil;
 
 public class LoadObj extends PCElement {
@@ -270,8 +269,8 @@ public class LoadObj extends PCElement {
 		/* CVR curve is assumed to be used in a yearly simulation */
 		if (CVRShapeObj != null) {
 			CVRFactor = CVRShapeObj.getMult(hr);  /* Complex */
-			CVRwattFactor = CVRFactor.getReal();
-			CVRvarFactor = CVRFactor.getImaginary();
+			CVRwattFactor = CVRFactor.real();
+			CVRvarFactor = CVRFactor.imag();
 		} else {
 			/* CVRWattFactor, etc. remain unchanged */
 		}
@@ -385,22 +384,22 @@ public class LoadObj extends PCElement {
 		}
 
 		if (shapeIsActual) {
-			WNominal = 1000.0 * shapeFactor.getReal() / nPhases;
-			varNominal = 1000.0 * shapeFactor.getImaginary() / nPhases;
+			WNominal = 1000.0 * shapeFactor.real() / nPhases;
+			varNominal = 1000.0 * shapeFactor.imag() / nPhases;
 		} else {
-			WNominal = 1000.0 * kWBase * factor * shapeFactor.getReal() / nPhases ;
-			varNominal = 1000.0 * kVArBase * factor * shapeFactor.getImaginary() / nPhases;
+			WNominal = 1000.0 * kWBase * factor * shapeFactor.real() / nPhases ;
+			varNominal = 1000.0 * kVArBase * factor * shapeFactor.imag() / nPhases;
 		}
 
-		Yeq = ComplexUtil.divide(new Complex(WNominal, -varNominal), Math.pow(VBase, 2) );
+		Yeq = new Complex(WNominal, -varNominal).div(Math.pow(VBase, 2));
 		if (VMinPU != 0.0) {
-			Yeq95 = ComplexUtil.divide(Yeq, Math.pow(VMinPU, 2));  // at 95% voltage
+			Yeq95 = Yeq.div(Math.pow(VMinPU, 2));  // at 95% voltage
 		} else {
 			Yeq95 = Complex.ZERO;
 		}
 
 		if (VMaxPU != 0.0) {
-			Yeq105 = ComplexUtil.divide(Yeq, Math.pow(VMaxPU, 2));  // at 105% voltage
+			Yeq105 = Yeq.div(Math.pow(VMaxPU, 2));  // at 105% voltage
 		} else {
 			Yeq105 = Yeq;
 		}
@@ -485,7 +484,7 @@ public class LoadObj extends PCElement {
 		} else if ((RNeut == 0.0) && (XNeut == 0.0)) {  // solidly grounded
 			Yneut = new Complex(1.0e6, 0.0);  // 1 microohm resistor
 		} else {
-			Yneut = ComplexUtil.invert(new Complex(RNeut, XNeut));
+			Yneut = new Complex(RNeut, XNeut).inv();
 		}
 
 		varBase = 1000.0 * kVArBase / nPhases;
@@ -504,8 +503,8 @@ public class LoadObj extends PCElement {
 		YPrimFreq = DSS.activeCircuit.getSolution().getFrequency();
 		freqMultiplier = YPrimFreq / baseFrequency;
 		Y = Yeq;
-		Y = new Complex(Y.getReal(), Y.getImaginary() / freqMultiplier);  /* Correct reactive part for frequency */
-		Yij = Y.negate();
+		Y = new Complex(Y.real(), Y.imag() / freqMultiplier);  /* Correct reactive part for frequency */
+		Yij = Y.neg();
 
 		switch (connection) {
 		case WYE:
@@ -521,7 +520,7 @@ public class LoadObj extends PCElement {
 			 */
 			if (RNeut < 0.0) {
 				YMatrix.set(nConds-1, nConds - 1,
-					YMatrix.get(nConds-1, nConds-1).multiply(1.000001));
+					YMatrix.get(nConds-1, nConds-1).mult(1.000001));
 			}
 			break;
 		case DELTA:
@@ -565,7 +564,7 @@ public class LoadObj extends PCElement {
 
 		// set YPrim_Series based on diagonals of YPrim_Shunt so that calcVoltages doesn't fail
 		for (int i = 0; i < YOrder; i++)
-			YPrimSeries.set(i, i, YPrimShunt.get(i, i).multiply(1.0e-10));
+			YPrimSeries.set(i, i, YPrimShunt.get(i, i).mult(1.0e-10));
 
 		YPrim.copyFrom(YPrimShunt);
 
@@ -579,11 +578,11 @@ public class LoadObj extends PCElement {
 	private void putCurrInTerminalArray(Complex[] termArray, Complex curr, int i) {
 		switch (connection) {
 		case WYE:
-			termArray[i] = termArray[i].add(curr.negate());
+			termArray[i] = termArray[i].add(curr.neg());
 			termArray[nConds-1] = termArray[nConds-1].add(curr);  // neutral
 			break;
 		case DELTA:
-			termArray[i] = termArray[i].add(curr.negate());
+			termArray[i] = termArray[i].add(curr.neg());
 			int j = i + 1;
 			if (j >= nConds) j = 0;  // rotate the phases
 			termArray[j] = termArray[j].add(curr);
@@ -629,17 +628,17 @@ public class LoadObj extends PCElement {
 			Vmag = V.abs();
 
 			if (Vmag <= VBase95) {
-				curr = Yeq95.multiply(V);  // below 95% use an impedance model
+				curr = Yeq95.mult(V);  // below 95% use an impedance model
 			} else if (Vmag > VBase105) {
-				curr = Yeq105.multiply(V);  // above 105% use an impedance model
+				curr = Yeq105.mult(V);  // above 105% use an impedance model
 			} else {
 				curr = new Complex(
 					WNominal,
 					varNominal
-				).divide(V).conjugate();  // above 95%, constant PQ
+				).div(V).conj();  // above 95%, constant PQ
 			}
 
-			putCurrInTerminalArray(getITerminal(), curr.negate(), i);  // put into terminal array taking into account connection
+			putCurrInTerminalArray(getITerminal(), curr.neg(), i);  // put into terminal array taking into account connection
 			setITerminalUpdated(true);
 			putCurrInTerminalArray(getInjCurrent(), curr, i);  // put into terminal array taking into account connection
 		}
@@ -654,8 +653,8 @@ public class LoadObj extends PCElement {
 		zeroITerminal();
 
 		for (int i = 0; i < nPhases; i++) {
-			curr = Yeq.multiply(VTerminal[i]);
-			putCurrInTerminalArray(getITerminal(), curr.negate(), i);  // put into terminal array taking into account connection
+			curr = Yeq.mult(VTerminal[i]);
+			putCurrInTerminalArray(getITerminal(), curr.neg(), i);  // put into terminal array taking into account connection
 			setITerminalUpdated(true);
 			putCurrInTerminalArray(getInjCurrent(), curr, i);  // put into terminal array taking into account connection
 		}
@@ -677,21 +676,21 @@ public class LoadObj extends PCElement {
 			V = VTerminal[i];
 			Vmag = V.abs();
 			if (Vmag <= VBase95) {
-				curr = Yeq95.multiply(V);  // below 95% use an impedance model
+				curr = Yeq95.mult(V);  // below 95% use an impedance model
 			} else if (Vmag > VBase105) {
-				curr = Yeq105.multiply(V);  // above 105% use an impedance model
+				curr = Yeq105.mult(V);  // above 105% use an impedance model
 			} else {
 				curr = new Complex(
 					WNominal,
 					0.0
-				).divide(V).conjugate();  // above 95%, constant P
+				).div(V).conj();  // above 95%, constant P
 
 				curr = curr.add(new Complex(
 					0.0,
-					Yeq.getImaginary()
-				).multiply(V));  // add in Q component of current
+					Yeq.imag()
+				).mult(V));  // add in Q component of current
 			}
-			putCurrInTerminalArray(getITerminal(), curr.negate(), i);  // put into terminal array taking into account connection
+			putCurrInTerminalArray(getITerminal(), curr.neg(), i);  // put into terminal array taking into account connection
 			setITerminalUpdated(true);
 			putCurrInTerminalArray(getInjCurrent(), curr, i);  // put into terminal array taking into account connection
 		}
@@ -720,9 +719,9 @@ public class LoadObj extends PCElement {
 			curr = new Complex(
 				WNominal,
 				varNominal
-			).divide( ComplexUtil.divide(V, V.abs()).multiply(VBase) ).conjugate();
+			).div( V.div(V.abs()).mult(VBase) ).conj();
 
-			putCurrInTerminalArray(getITerminal(), curr.negate(), i);  // put into terminal array taking into account connection
+			putCurrInTerminalArray(getITerminal(), curr.neg(), i);  // put into terminal array taking into account connection
 			setITerminalUpdated(true);
 			putCurrInTerminalArray(getInjCurrent(), curr, i);  // put into terminal array taking into account connection
 		}
@@ -742,24 +741,24 @@ public class LoadObj extends PCElement {
 			VMag = V.abs();
 
 			if (VMag <= VBase95) {
-				curr = Yeq95.multiply(V);
+				curr = Yeq95.mult(V);
 			} else if (VMag > VBase105) {
-				curr = Yeq105.multiply(V);
+				curr = Yeq105.mult(V);
 			} else {
 				currZ = new Complex(
-					Yeq.getReal() * ZIPV[0],
-					Yeq.getImaginary() * ZIPV[3]
-				).multiply(VTerminal[i]);
+					Yeq.real() * ZIPV[0],
+					Yeq.imag() * ZIPV[3]
+				).mult(VTerminal[i]);
 
 				currI = new Complex(
 					WNominal * ZIPV[1],
 					varNominal * ZIPV[4]
-				).divide(ComplexUtil.divide(V, V.abs()).multiply(VBase)).conjugate();
+				).div(V.div(V.abs()).mult(VBase)).conj();
 
 				currP = new Complex(
 					WNominal * ZIPV[2],
 					varNominal * ZIPV[5]
-				).divide(V).conjugate();
+				).div(V).conj();
 
 				curr  = currZ.add(currI.add(currP));
 			}
@@ -769,10 +768,10 @@ public class LoadObj extends PCElement {
 				vx = 500.0 * (VMag / VBase - ZIPV[6]);
 				evx = Math.exp(2 * vx);
 				yv = 0.5 * (1 + (evx - 1) / (evx + 1));
-				curr = curr.multiply(yv);
+				curr = curr.mult(yv);
 			}
 
-			putCurrInTerminalArray(getITerminal(), curr.negate(), i);  // put into terminal array taking into account connection
+			putCurrInTerminalArray(getITerminal(), curr.neg(), i);  // put into terminal array taking into account connection
 			setITerminalUpdated(true);
 			putCurrInTerminalArray(getInjCurrent(), curr, i);  // put into terminal array taking into account connection
 		}
@@ -807,33 +806,33 @@ public class LoadObj extends PCElement {
 					wattFactor = Vratio;  // old value (in error): 1.0;
 				}
 				if (wattFactor > 0.0) {
-					curr = new Complex(WNominal * wattFactor, 0.0).divide(V).conjugate();
+					curr = new Complex(WNominal * wattFactor, 0.0).div(V).conj();
 				} else {
 					curr = Complex.ZERO;  // P component of current
 				}
 
 				/* Compute Q component of current */
 				if (CVRvarFactor == 2.0) {  /* Check for easy, quick ones first */
-					CVar = new Complex(0.0, Yeq.getImaginary()).multiply(V);  // 2 is same as constant impedance
+					CVar = new Complex(0.0, Yeq.imag()).mult(V);  // 2 is same as constant impedance
 				} else if (CVRvarFactor == 3.0) {
 					varFactor = Math.pow(Vratio, 3);
 					/*writeDLLDebugFile(String.format("%s, V=%.6g +j %.6g", getName(), V.getReal(), V.getImaginary()));*/
 					CVar = new Complex(
 						0.0,
 						varNominal * varFactor
-					).divide(V).conjugate();
+					).div(V).conj();
 				} else {
 					/* Other VAr factor code here if not squared or cubed */
 					varFactor = Math.pow(Vratio, CVRvarFactor);
 					CVar = new Complex(
 						0.0,
 						varNominal * varFactor
-					).divide(V).conjugate();
+					).div(V).conj();
 				}
 				curr = curr.add(CVar);  // add in Q component of current
 				/*writeDLLDebugFile(String.format("%s, %d, %-.5g, %-.5g, %-.5g, %-.5g, %-.5g, %-.5g, %-.5g, %-.5g ",
 				 *getName(), i, Vmag, VRatio, WNominal, WattFactor, varNominal, VarFactor, Curr.abs(), V.multiply(Curr.conjugate()).getReal()));*/
-				putCurrInTerminalArray(getITerminal(), curr.negate(), i);  // put into terminal array taking into account connection
+				putCurrInTerminalArray(getITerminal(), curr.neg(), i);  // put into terminal array taking into account connection
 				setITerminalUpdated(true);
 				putCurrInTerminalArray(getInjCurrent(), curr, i);  // put into terminal array taking into account connection
 			}
@@ -858,21 +857,21 @@ public class LoadObj extends PCElement {
 			Vmag = V.abs();
 			if (Vmag <= VBase95) {
 				curr = new Complex(
-					Yeq95.getReal(),
+					Yeq95.real(),
 					YQFixed
-				).multiply(V);  // below 95% use an impedance model
+				).mult(V);  // below 95% use an impedance model
 			} else if (Vmag > VBase105) {
 				curr = new Complex(
-					Yeq105.getReal(),
+					Yeq105.real(),
 					YQFixed
-				).multiply(V);  // above 105% use an impedance model
+				).mult(V);  // above 105% use an impedance model
 			} else {
 				curr = new Complex(
 					WNominal,
 					varBase
-				).divide(V).conjugate();
+				).div(V).conj();
 			}
-			putCurrInTerminalArray(getITerminal(), curr.negate(), i);  // put into terminal array taking into account connection
+			putCurrInTerminalArray(getITerminal(), curr.neg(), i);  // put into terminal array taking into account connection
 			setITerminalUpdated(true);
 			putCurrInTerminalArray(getInjCurrent(), curr, i);  // put into terminal array taking into account connection
 		}
@@ -894,26 +893,26 @@ public class LoadObj extends PCElement {
 			VMag = V.abs();
 			if (VMag <= VBase95) {
 				curr = new Complex(
-					Yeq95.getReal(),
+					Yeq95.real(),
 					YQFixed
-				).multiply(V);  // below 95% use an impedance model
+				).mult(V);  // below 95% use an impedance model
 			} else if (VMag >  VBase105) {
 				curr = new Complex(
-					Yeq105.getReal(),
+					Yeq105.real(),
 					YQFixed
-				).multiply(V);
+				).mult(V);
 			} else {
 				curr = new Complex(
 					WNominal,
 					0.0
-				).divide(V).conjugate();  // P component of current
+				).div(V).conj();  // P component of current
 				curr = curr.add(new Complex(
 					0.0,
 					YQFixed
-				).multiply(V));  // add in Q component of current
+				).mult(V));  // add in Q component of current
 			}
 
-			putCurrInTerminalArray(getITerminal(), curr.negate(), i);  // put into terminal array taking into account connection
+			putCurrInTerminalArray(getITerminal(), curr.neg(), i);  // put into terminal array taking into account connection
 			setITerminalUpdated(true);
 			putCurrInTerminalArray(getInjCurrent(), curr, i);  // put into terminal array taking into account connection
 		}
@@ -936,10 +935,10 @@ public class LoadObj extends PCElement {
 		loadHarmonic = sol.getFrequency() / loadFundamental;  // loadFundamental = frequency of solution when harmonic mode entered
 		mult = getSpectrumObj().getMult(loadHarmonic);
 		for (int i = 0; i < nPhases; i++) {
-			curr = mult.multiply(harmMag[i]);  // get base harmonic magnitude
+			curr = mult.mult(harmMag[i]);  // get base harmonic magnitude
 			curr = Util.rotatePhasorDeg(curr, loadHarmonic, harmAng[i]);  // time shift by fundamental
 			putCurrInTerminalArray(getInjCurrent(), curr, i);  // put into terminal array taking into account connection
-			putCurrInTerminalArray(getITerminal(), curr.negate(), i);  // put into terminal array taking into account connection
+			putCurrInTerminalArray(getITerminal(), curr.neg(), i);  // put into terminal array taking into account connection
 			setITerminalUpdated(true);
 		}
 	}
@@ -1076,7 +1075,7 @@ public class LoadObj extends PCElement {
 			YPrimOpenCond.vMult(complexBuffer, VTerminal);
 
 			for (int i = 0; i < YOrder; i++)
-				complexBuffer[i] = complexBuffer[i].negate();
+				complexBuffer[i] = complexBuffer[i].neg();
 		}
 	}
 
@@ -1369,7 +1368,7 @@ public class LoadObj extends PCElement {
 		 */
 		for (int i = 0; i < nPhases; i++) {
 			harmMag[i] = currents[i].abs();
-			harmAng[i] = ComplexUtil.degArg(currents[i]);
+			harmAng[i] = currents[i].argDeg();
 		}
 	}
 

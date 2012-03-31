@@ -11,7 +11,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 
-import org.apache.commons.math.complex.Complex;
+import com.ncond.dss.shared.Complex;
 
 import com.ncond.dss.common.Circuit;
 import com.ncond.dss.common.DSS;
@@ -26,7 +26,6 @@ import com.ncond.dss.general.TempShapeObj;
 import com.ncond.dss.general.XYCurveObj;
 import com.ncond.dss.parser.Parser;
 import com.ncond.dss.shared.CMatrix;
-import com.ncond.dss.shared.ComplexUtil;
 import com.ncond.dss.shared.MathUtil;
 
 /**
@@ -434,19 +433,19 @@ public class PVSystemObj extends PCElement {
 				break;
 
 			default:
-				Yeq = ComplexUtil.divide(new Complex(
+				Yeq = new Complex(
 					PNominalPerPhase,
 					-QNominalPerPhase
-				), MathUtil.sqr(VBase) );  // VBase must be L-N for 3-phase
+				).div(MathUtil.sqr(VBase));  // VBase must be L-N for 3-phase
 
 				if (VMinPU != 0.0) {
-					Yeq95 = ComplexUtil.divide(Yeq, MathUtil.sqr(VMinPU));  // at 95% voltage
+					Yeq95 = Yeq.div(MathUtil.sqr(VMinPU));  // at 95% voltage
 				} else {
 					Yeq95 = Yeq; // Always a constant Z model
 				}
 
 				if (VMaxPU != 0.0) {
-					Yeq105 = ComplexUtil.divide(Yeq, MathUtil.sqr(VMaxPU));  // at 105% voltage
+					Yeq105 = Yeq.div(MathUtil.sqr(VMaxPU));  // at 105% voltage
 				} else {
 					Yeq105 = Yeq;
 				}
@@ -525,9 +524,9 @@ public class PVSystemObj extends PCElement {
 			Y = Yeq;  // L-N value computed in initialization routines
 
 			if (connection == Connection.DELTA)
-				Y = ComplexUtil.divide(Y, 3.0);  // convert to delta impedance
-			Y = new Complex(Y.getReal(), Y.getImaginary() / freqMultiplier);
-			Yij = Y.negate();
+				Y = Y.div(3.0);  // convert to delta impedance
+			Y = new Complex(Y.real(), Y.imag() / freqMultiplier);
+			Yij = Y.neg();
 			for (i = 0; i < nPhases; i++) {
 				switch (connection) {
 				case WYE:
@@ -548,14 +547,14 @@ public class PVSystemObj extends PCElement {
 
 			/* Yeq is always expected as the equivalent line-neutral admittance */
 
-			Y = Yeq.negate();  // negate for generation; YEQ is L-N quantity
+			Y = Yeq.neg();  // negate for generation; YEQ is L-N quantity
 
 			// ****** need to modify the base admittance for real harmonics calcs
-			Y = new Complex(Y.getReal(), Y.getImaginary() / freqMultiplier);
+			Y = new Complex(Y.real(), Y.imag() / freqMultiplier);
 
 			switch (connection) {
 			case WYE:
-				Yij = Y.negate();
+				Yij = Y.neg();
 				for (i = 0; i < nPhases; i++) {
 					YMatrix.set(i, i, Y);
 					YMatrix.add(nConds-1, nConds-1, Y);
@@ -563,8 +562,8 @@ public class PVSystemObj extends PCElement {
 				}
 				break;
 			case DELTA:
-				Y   = ComplexUtil.divide(Y, 3.0);  // convert to delta impedance
-				Yij = Y.negate();
+				Y = Y.div(3.0);  // convert to delta impedance
+				Yij = Y.neg();
 				for (i = 0; i < nPhases; i++) {
 					j = i + 1;
 					if (j >= nConds) j = 0;  // wrap around for closed connections
@@ -633,7 +632,7 @@ public class PVSystemObj extends PCElement {
 		if (powerTempCurveObj != null)
 			tempFactor = powerTempCurveObj.getYValue(TShapeValue);  // pu Pmpp vs T (actual)
 
-		panelKW = irradiance * shapeFactor.getReal() * Pmpp * tempFactor;
+		panelKW = irradiance * shapeFactor.real() * Pmpp * tempFactor;
 	}
 
 	@Override
@@ -655,7 +654,7 @@ public class PVSystemObj extends PCElement {
 
 		// set YPrim_Series based on diagonals of YPrim_shunt so that calcVoltages doesn't fail
 		for (int i = 0; i < YOrder; i++)
-			YPrimSeries.set(i, i, YPrimShunt.get(i, i).multiply(1.0e-10));
+			YPrimSeries.set(i, i, YPrimShunt.get(i, i).mult(1.0e-10));
 
 		YPrim.copyFrom(YPrimShunt);
 
@@ -672,13 +671,13 @@ public class PVSystemObj extends PCElement {
 		switch (connection) {
 		case WYE:
 			termArray[i] = termArray[i].add(curr);
-			termArray[nConds-1] = termArray[nConds-1].add(curr.negate());  // neutral
+			termArray[nConds-1] = termArray[nConds-1].add(curr.neg());  // neutral
 			break;
 		case DELTA:
 			termArray[i] = termArray[i].add(curr);
 			int j = i + 1;
 			if (j >= nConds) j = 0;  // wrap
-			termArray[j] = termArray[j].add(curr.negate());
+			termArray[j] = termArray[j].add(curr.neg());
 			break;
 		}
 	}
@@ -736,33 +735,33 @@ public class PVSystemObj extends PCElement {
 			switch (connection) {
 			case WYE:
 				if (VMag <= VBase95) {
-					curr = Yeq95.multiply(V);   // below 95% use an impedance model
+					curr = Yeq95.mult(V);   // below 95% use an impedance model
 				} else if (VMag > VBase105) {
-					curr = Yeq105.multiply(V);  // above 105% use an impedance model
+					curr = Yeq105.mult(V);  // above 105% use an impedance model
 				} else {
 					curr = new Complex(
 						PNominalPerPhase,
 						QNominalPerPhase
-					).divide(V).conjugate();  // between 95% -105%, constant PQ
+					).div(V).conj();  // between 95% -105%, constant PQ
 				}
 				break;
 
 			case DELTA:
 				VMag = VMag / DSS.SQRT3;  // L-N magnitude
 				if (VMag <= VBase95) {
-					curr = ComplexUtil.divide(Yeq95, 3.0).multiply(V);   // below 95% use an impedance model
+					curr = Yeq95.div(3.0).mult(V);   // below 95% use an impedance model
 				} else if (VMag > VBase105) {
-					curr = ComplexUtil.divide(Yeq105, 3.0).multiply(V);  // above 105% use an impedance model
+					curr = Yeq105.div(3.0).mult(V);  // above 105% use an impedance model
 				} else {
 					curr = new Complex(
 						PNominalPerPhase,
 						QNominalPerPhase
-					).divide(V).conjugate();  // between 95% -105%, constant PQ
+					).div(V).conj();  // between 95% -105%, constant PQ
 				}
 				break;
 			}
 
-			putCurrInTerminalArray(getITerminal(), curr.negate(), i);  // put into terminal array taking into account connection
+			putCurrInTerminalArray(getITerminal(), curr.neg(), i);  // put into terminal array taking into account connection
 			setITerminalUpdated(true);
 			putCurrInTerminalArray(getInjCurrent(), curr, i);  // put into terminal array taking into account connection
 		}
@@ -782,12 +781,12 @@ public class PVSystemObj extends PCElement {
 		if (connection == Connection.WYE) {
 			Yeq2 = Yeq;
 		} else {
-			Yeq2 = ComplexUtil.divide(Yeq, 3.0);
+			Yeq2 = Yeq.div(3.0);
 		}
 
 		for (i = 0; i < getNumPhases(); i++) {
-			curr = Yeq2.multiply(VTerminal[i]);   // Yeq is always line to neutral
-			putCurrInTerminalArray(getITerminal(), curr.negate(), i);  // put into terminal array taking into account connection
+			curr = Yeq2.mult(VTerminal[i]);   // Yeq is always line to neutral
+			putCurrInTerminalArray(getITerminal(), curr.neg(), i);  // put into terminal array taking into account connection
 			setITerminalUpdated(true);
 			putCurrInTerminalArray(getInjCurrent(), curr, i);  // put into terminal array taking into account connection
 		}
@@ -804,7 +803,7 @@ public class PVSystemObj extends PCElement {
 			setITerminalUpdated(true);
 			// negate currents from user model for power flow PVSystem element model
 			for (int i = 0; i < nConds; i++)
-				getInjCurrent()[i] = getInjCurrent(i).add(ITerminal[i].negate());
+				getInjCurrent()[i] = getInjCurrent(i).add(ITerminal[i].neg());
 		} else {
 			DSS.doSimpleMsg("PVSystem." + getName() +
 				" model designated to use user-written model, but user-written model is not defined.", 567);
@@ -838,7 +837,7 @@ public class PVSystemObj extends PCElement {
 
 		PVSystemHarmonic = sol.getFrequency() / PVSystemFundamental;
 		if (getSpectrumObj() != null) {
-			e = getSpectrumObj().getMult(PVSystemHarmonic).multiply(VThevHarm);  // get base harmonic magnitude
+			e = getSpectrumObj().getMult(PVSystemHarmonic).mult(VThevHarm);  // get base harmonic magnitude
 		} else {
 			e = Complex.ZERO;
 		}
@@ -1026,15 +1025,15 @@ public class PVSystemObj extends PCElement {
 				 * Don't need to for gen off and normal integration.
 				 */
 				if (ckt.isPositiveSequence()) {
-					S = S.multiply(3.0);
+					S = S.mult(3.0);
 					Smag = 3.0 * Smag;
 				}
-				integrate            (regKWh,    S.getReal(), sol.getIntervalHrs());   // accumulate the power
-				integrate            (regKVArh,  S.getImaginary(), sol.getIntervalHrs());
-				setDragHandRegister  (regMaxKW,  Math.abs(S.getReal()));
+				integrate            (regKWh,    S.real(), sol.getIntervalHrs());   // accumulate the power
+				integrate            (regKVArh,  S.imag(), sol.getIntervalHrs());
+				setDragHandRegister  (regMaxKW,  Math.abs(S.real()));
 				setDragHandRegister  (regMaxKVA, Smag);
 				integrate            (regHours,  hourValue, sol.getIntervalHrs());  // accumulate hours in operation
-				integrate            (regPrice,  S.getReal() * ckt.getPriceSignal(), sol.getIntervalHrs());  // accumulate hours in operation
+				integrate            (regPrice,  S.real() * ckt.getPriceSignal(), sol.getIntervalHrs());  // accumulate hours in operation
 				firstSampleAfterReset = false;
 			}
 		}
@@ -1052,7 +1051,7 @@ public class PVSystemObj extends PCElement {
 	}
 
 	public double getPresentIrradiance() {
-		return irradiance * shapeFactor.getReal();
+		return irradiance * shapeFactor.real();
 	}
 
 	public double getPresentKV() {
@@ -1100,7 +1099,7 @@ public class PVSystemObj extends PCElement {
 		setYPrimInvalid(true);  // force rebuild of YPrims
 		PVSystemFundamental = sol.getFrequency();  // whatever the frequency is when we enter here
 
-		Yeq = ComplexUtil.invert(new Complex(RThev, XThev));  // used for current calcs; always L-N
+		Yeq = new Complex(RThev, XThev).inv();  // used for current calcs; always L-N
 
 		/* Compute reference Thevinen voltage from phase 1 current */
 
@@ -1108,16 +1107,16 @@ public class PVSystemObj extends PCElement {
 
 		switch (connection) {
 		case WYE:
-			Va = sol.getNodeV(nodeRef[0]).subtract(sol.getNodeV(nodeRef[nConds - 1]));
+			Va = sol.getNodeV(nodeRef[0]).sub(sol.getNodeV(nodeRef[nConds - 1]));
 			break;
 		case DELTA:
 			Va = sol.getNodeV(nodeRef[0]);
 			break;
 		}
 
-		e = Va.subtract(ITerminal[0].multiply(new Complex(RThev, XThev)));
+		e = Va.sub(ITerminal[0].mult(new Complex(RThev, XThev)));
 		VThevHarm = e.abs();  // establish base mag and angle
-		thetaHarm = e.getArgument();
+		thetaHarm = e.arg();
 	}
 
 	/**

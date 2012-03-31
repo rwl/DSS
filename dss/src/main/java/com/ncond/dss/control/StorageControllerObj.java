@@ -10,7 +10,7 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.math.complex.Complex;
+import com.ncond.dss.shared.Complex;
 
 import com.ncond.dss.common.Circuit;
 import com.ncond.dss.common.CktElement;
@@ -628,22 +628,22 @@ public class StorageControllerObj extends ControlElem {
 				if (dischargeTriggeredByTime) {
 					if (showEventLog) {
 						Util.appendToEventLog("StorageController." + getName(),
-							String.format("Fleet set to discharging by time trigger; Old kWTarget = %-.6g; New = 5-.6g", kWTarget, S.getReal() * 0.001));
+							String.format("Fleet set to discharging by time trigger; Old kWTarget = %-.6g; New = 5-.6g", kWTarget, S.real() * 0.001));
 					}
-					kWTarget = Math.max(kWThreshold, S.getReal() * 0.001);  // capture present kW and reset target
+					kWTarget = Math.max(kWThreshold, S.real() * 0.001);  // capture present kW and reset target
 					dischargeTriggeredByTime = false;  // so we don't come back in here right away
 					setFleetToIdle();
 				}
-				Pdiff  = S.getReal() * 0.001 - kWTarget;  // assume S.re is normally positive
+				Pdiff  = S.real() * 0.001 - kWTarget;  // assume S.re is normally positive
 				PFdiff = Util.convertPFToPFRange2(Util.powerFactor(S)) - PFTarget;  // for peak shaving
 				break;
 			// supporting DG; try to keep load above kW target
 			case SUPPORT:
-				Pdiff  = S.getReal() * 0.001 + kWTarget;  // assume S.re is normally negative
+				Pdiff  = S.real() * 0.001 + kWTarget;  // assume S.re is normally negative
 				PFdiff = Util.convertPFToPFRange2(Util.powerFactor(S)) - PFTarget;  // for generator
 				break;
 			case PEAKSHAVE:
-				Pdiff  = S.getReal() * 0.001 - kWTarget;  // assume S.re is normally positive
+				Pdiff  = S.real() * 0.001 - kWTarget;  // assume S.re is normally positive
 				PFdiff = Util.convertPFToPFRange2(Util.powerFactor(S)) - PFTarget;  // for peak shaving
 				break;
 			default:
@@ -744,7 +744,7 @@ public class StorageControllerObj extends ControlElem {
 					if (PFTarget == 1.0) {
 						dispatchKVAr = 0.0;
 					} else {
-						dispatchKVAr = S.getReal() * Math.sqrt(1.0 / Math.pow(Util.convertPFRange2ToPF(PFTarget), 2) - 1.0) * (weights[i] / totalWeight);
+						dispatchKVAr = S.real() * Math.sqrt(1.0 / Math.pow(Util.convertPFRange2ToPF(PFTarget), 2) - 1.0) * (weights[i] / totalWeight);
 						if (PFTarget > 1.0)
 							dispatchKVAr = -dispatchKVAr;  // for watts and vars in opposite direction
 					}
@@ -866,19 +866,19 @@ public class StorageControllerObj extends ControlElem {
 			break;
 		}
 
-		if (loadShapeMult.getReal() < 0.0) {
+		if (loadShapeMult.real() < 0.0) {
 			chargingAllowed = true;
-			newChargeRate = Math.abs(loadShapeMult.getReal()) * 100.0;
+			newChargeRate = Math.abs(loadShapeMult.real()) * 100.0;
 			if (newChargeRate != pctChargeRate) rateChanged = true;
 			pctChargeRate = newChargeRate;
 			setFleetChargeRate();
 			setFleetToCharge();
-		} else if (loadShapeMult.getReal() == 0.0) {
+		} else if (loadShapeMult.real() == 0.0) {
 			setFleetToIdle();
 		} else {
 			// set fleet to discharging at a rate
-			newKWRate = loadShapeMult.getReal() * 100.0;
-			newKVArRate = loadShapeMult.getImaginary() * 100.0;
+			newKWRate = loadShapeMult.real() * 100.0;
+			newKVArRate = loadShapeMult.imag() * 100.0;
 			if (newKWRate != pctKWRate || newKVArRate != pctKVArRate) {
 				rateChanged = true;
 			}

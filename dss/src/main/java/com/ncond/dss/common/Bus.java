@@ -5,7 +5,7 @@
  */
 package com.ncond.dss.common;
 
-import org.apache.commons.math.complex.Complex;
+import com.ncond.dss.shared.Complex;
 
 import com.ncond.dss.general.NamedObject;
 import com.ncond.dss.shared.CMatrix;
@@ -148,7 +148,7 @@ public class Bus extends NamedObject {
 	 */
 	public Complex getZsc0() {
 		if (Zsc != null) {
-			return Zsc.avgDiag().add( Zsc.avgOffDiag().multiply(2.0) );
+			return Zsc.avgDiag().add( Zsc.avgOffDiag().mult(2.0) );
 		} else {
 			return Complex.ZERO;
 		}
@@ -159,7 +159,7 @@ public class Bus extends NamedObject {
 	 */
 	public Complex getZsc1() {
 		if (Zsc != null) {
-			return Zsc.avgDiag().subtract( Zsc.avgOffDiag() );
+			return Zsc.avgDiag().sub( Zsc.avgOffDiag() );
 		} else {
 			return Complex.ZERO;
 		}

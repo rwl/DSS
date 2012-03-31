@@ -2,7 +2,7 @@ package com.ncond.dss.shared.test;
 
 import junit.framework.TestCase;
 
-import org.apache.commons.math.complex.Complex;
+import com.ncond.dss.shared.Complex;
 
 import com.ncond.dss.shared.CMatrix;
 
@@ -44,8 +44,8 @@ public class ComplexMatrixTest extends TestCase {
 	 */
 	public void testGetElement() {
 		CMatrix m = new CMatrix(n);
-		assertEquals(0.0, m.get(0, 0).getReal());
-		assertEquals(0.0, m.get(0, 0).getImaginary());
+		assertEquals(0.0, m.get(0, 0).real());
+		assertEquals(0.0, m.get(0, 0).imag());
 	}
 
 	/**
@@ -59,14 +59,14 @@ public class ComplexMatrixTest extends TestCase {
 		i = 0; j = 0;
 		real = 2; imag = 3;
 		m.set(i, j, new Complex(real, imag));
-		assertEquals(real, m.get(i, j).getReal());
-		assertEquals(imag, m.get(i, j).getImaginary());
+		assertEquals(real, m.get(i, j).real());
+		assertEquals(imag, m.get(i, j).imag());
 
 		i = 1; j = 2;
 		real = 3; imag = 4;
 		m.set(i, j, new Complex(real, imag));
-		assertEquals(real, m.get(i, j).getReal());
-		assertEquals(imag, m.get(i, j).getImaginary());
+		assertEquals(real, m.get(i, j).real());
+		assertEquals(imag, m.get(i, j).imag());
 	}
 
 	/**
@@ -80,10 +80,10 @@ public class ComplexMatrixTest extends TestCase {
 		i = 1; j = 3;
 		real = 2; imag = 5;
 		m.setSym(i, j, new Complex(real, imag));
-		assertEquals(real, m.get(i, j).getReal());
-		assertEquals(imag, m.get(i, j).getImaginary());
-		assertEquals(real, m.get(j, i).getReal());
-		assertEquals(imag, m.get(j, i).getImaginary());
+		assertEquals(real, m.get(i, j).real());
+		assertEquals(imag, m.get(i, j).imag());
+		assertEquals(real, m.get(j, i).real());
+		assertEquals(imag, m.get(j, i).imag());
 	}
 
 	/**
@@ -97,12 +97,12 @@ public class ComplexMatrixTest extends TestCase {
 		i = 3; j = 2;
 		real = 2; imag = 3;
 		m.add(i, j, new Complex(real, imag));
-		assertEquals(real, m.get(i, j).getReal());
-		assertEquals(imag, m.get(i, j).getImaginary());
+		assertEquals(real, m.get(i, j).real());
+		assertEquals(imag, m.get(i, j).imag());
 
 		m.add(i, j, new Complex(real, imag));
-		assertEquals(real + real, m.get(i, j).getReal());
-		assertEquals(imag + imag, m.get(i, j).getImaginary());
+		assertEquals(real + real, m.get(i, j).real());
+		assertEquals(imag + imag, m.get(i, j).imag());
 	}
 
 	/**
@@ -116,16 +116,16 @@ public class ComplexMatrixTest extends TestCase {
 		i = 4; j = 1;
 		real = 1; imag = 3;
 		m.addSym(i, j, new Complex(real, imag));
-		assertEquals(real, m.get(i, j).getReal());
-		assertEquals(imag, m.get(i, j).getImaginary());
-		assertEquals(real, m.get(j, i).getReal());
-		assertEquals(imag, m.get(j, i).getImaginary());
+		assertEquals(real, m.get(i, j).real());
+		assertEquals(imag, m.get(i, j).imag());
+		assertEquals(real, m.get(j, i).real());
+		assertEquals(imag, m.get(j, i).imag());
 
 		m.addSym(i, j, new Complex(real, imag));
-		assertEquals(real + real, m.get(i, j).getReal());
-		assertEquals(imag + imag, m.get(i, j).getImaginary());
-		assertEquals(real + real, m.get(j, i).getReal());
-		assertEquals(imag + imag, m.get(j, i).getImaginary());
+		assertEquals(real + real, m.get(i, j).real());
+		assertEquals(imag + imag, m.get(i, j).imag());
+		assertEquals(real + real, m.get(j, i).real());
+		assertEquals(imag + imag, m.get(j, i).imag());
 	}
 
 	/**
@@ -144,8 +144,8 @@ public class ComplexMatrixTest extends TestCase {
 		m.clear();
 		for (i = 0; i < n; i++)
 			for (j = 0; j < n; j++) {
-				assertEquals(0.0, m.get(i, j).getReal());
-				assertEquals(0.0, m.get(i, j).getImaginary());
+				assertEquals(0.0, m.get(i, j).real());
+				assertEquals(0.0, m.get(i, j).imag());
 			}
 	}
 
@@ -161,8 +161,8 @@ public class ComplexMatrixTest extends TestCase {
 
 		for (i = 0; i < n; i++)
 			for (j = 0; j < n; j++) {
-				assertEquals(Double.valueOf(i), cm2.get(i, j).getReal());
-				assertEquals(Double.valueOf(j), cm2.get(i, j).getImaginary());
+				assertEquals(Double.valueOf(i), cm2.get(i, j).real());
+				assertEquals(Double.valueOf(j), cm2.get(i, j).imag());
 			}
 	}
 
@@ -176,8 +176,8 @@ public class ComplexMatrixTest extends TestCase {
 
 		for (i = 0; i < n; i++)
 			for (j = 0; j < n; j++) {
-				assertEquals(Double.valueOf(i + i), cm.get(i, j).getReal());
-				assertEquals(Double.valueOf(j + j), cm.get(i, j).getImaginary());
+				assertEquals(Double.valueOf(i + i), cm.get(i, j).real());
+				assertEquals(Double.valueOf(j + j), cm.get(i, j).imag());
 			}
 	}
 
@@ -193,8 +193,8 @@ public class ComplexMatrixTest extends TestCase {
 		k = 0;
 		for (i = 0; i < n; i++)
 			for (j = 0; j < n; j++) {
-				assertEquals(Double.valueOf(j), array[k].getReal());
-				assertEquals(Double.valueOf(i), array[k].getImaginary());
+				assertEquals(Double.valueOf(j), array[k].real());
+				assertEquals(Double.valueOf(i), array[k].imag());
 				k += 1;
 			}
 	}
@@ -209,8 +209,8 @@ public class ComplexMatrixTest extends TestCase {
 
 		cm.zeroRow(iRow);
 		for (j = 0; j < cm.order(); j++) {
-			assertEquals(0.0, cm.get(iRow, j).getReal());
-			assertEquals(0.0, cm.get(iRow, j).getImaginary());
+			assertEquals(0.0, cm.get(iRow, j).real());
+			assertEquals(0.0, cm.get(iRow, j).imag());
 		}
 	}
 
@@ -223,8 +223,8 @@ public class ComplexMatrixTest extends TestCase {
 		jCol = 3;
 		cm.zeroCol(jCol);
 		for (i = 0; i < cm.order(); i++) {
-			assertEquals(0.0, cm.get(i, jCol).getReal());
-			assertEquals(0.0, cm.get(i, jCol).getImaginary());
+			assertEquals(0.0, cm.get(i, jCol).real());
+			assertEquals(0.0, cm.get(i, jCol).imag());
 		}
 	}
 
@@ -242,8 +242,8 @@ public class ComplexMatrixTest extends TestCase {
 
 		avg = cm.avgDiag();
 
-		assertEquals(expect, avg.getReal());
-		assertEquals(expect, avg.getImaginary());
+		assertEquals(expect, avg.real());
+		assertEquals(expect, avg.imag());
 	}
 
 	/**
@@ -255,8 +255,8 @@ public class ComplexMatrixTest extends TestCase {
 
 		avg = cm.avgOffDiag();
 
-		assertEquals(1.3333, avg.getReal(), delta);
-		assertEquals(3.6666, avg.getImaginary(), delta);
+		assertEquals(1.3333, avg.real(), delta);
+		assertEquals(3.6666, avg.imag(), delta);
 	}
 
 	/**
@@ -271,8 +271,8 @@ public class ComplexMatrixTest extends TestCase {
 
 		for (i = 0; i < n; i++)
 			for (j = 0; j < n; j++) {
-				assertEquals(i * constant, cm.get(i, j).getReal(), delta);
-				assertEquals(j * constant, cm.get(i, j).getImaginary(), delta);
+				assertEquals(i * constant, cm.get(i, j).real(), delta);
+				assertEquals(j * constant, cm.get(i, j).imag(), delta);
 			}
 	}
 
@@ -286,8 +286,8 @@ public class ComplexMatrixTest extends TestCase {
 
 		sum = cm.sumBlock(row1, row2, col1, col2);
 
-		assertEquals(18.0, sum.getReal(), delta);
-		assertEquals(18.0, sum.getImaginary(), delta);
+		assertEquals(18.0, sum.real(), delta);
+		assertEquals(18.0, sum.imag(), delta);
 	}
 
 	/**
@@ -304,18 +304,18 @@ public class ComplexMatrixTest extends TestCase {
 
 		cm.vMult(b, x);
 
-		assertEquals(-55., b[0].getReal(), delta);
-		assertEquals( 55., b[0].getImaginary(), delta);
-		assertEquals(-40., b[1].getReal(), delta);
-		assertEquals( 70., b[1].getImaginary(), delta);
-		assertEquals(-25., b[2].getReal(), delta);
-		assertEquals( 85., b[2].getImaginary(), delta);
-		assertEquals(-10., b[3].getReal(), delta);
-		assertEquals(100., b[3].getImaginary(), delta);
-		assertEquals(  5., b[4].getReal(), delta);
-		assertEquals(115., b[4].getImaginary(), delta);
-		assertEquals( 20., b[5].getReal(), delta);
-		assertEquals(130., b[5].getImaginary(), delta);
+		assertEquals(-55., b[0].real(), delta);
+		assertEquals( 55., b[0].imag(), delta);
+		assertEquals(-40., b[1].real(), delta);
+		assertEquals( 70., b[1].imag(), delta);
+		assertEquals(-25., b[2].real(), delta);
+		assertEquals( 85., b[2].imag(), delta);
+		assertEquals(-10., b[3].real(), delta);
+		assertEquals(100., b[3].imag(), delta);
+		assertEquals(  5., b[4].real(), delta);
+		assertEquals(115., b[4].imag(), delta);
+		assertEquals( 20., b[5].real(), delta);
+		assertEquals(130., b[5].imag(), delta);
 	}
 
 	/**
@@ -334,18 +334,18 @@ public class ComplexMatrixTest extends TestCase {
 
 		cm.vMultAccum(b, x);
 
-		assertEquals(-55. + real, b[0].getReal(), delta);
-		assertEquals( 55. + imag, b[0].getImaginary(), delta);
-		assertEquals(-40. + real, b[1].getReal(), delta);
-		assertEquals( 70. + imag, b[1].getImaginary(), delta);
-		assertEquals(-25. + real, b[2].getReal(), delta);
-		assertEquals( 85. + imag, b[2].getImaginary(), delta);
-		assertEquals(-10. + real, b[3].getReal(), delta);
-		assertEquals(100. + imag, b[3].getImaginary(), delta);
-		assertEquals(  5. + real, b[4].getReal(), delta);
-		assertEquals(115. + imag, b[4].getImaginary(), delta);
-		assertEquals( 20. + real, b[5].getReal(), delta);
-		assertEquals(130. + imag, b[5].getImaginary(), delta);
+		assertEquals(-55. + real, b[0].real(), delta);
+		assertEquals( 55. + imag, b[0].imag(), delta);
+		assertEquals(-40. + real, b[1].real(), delta);
+		assertEquals( 70. + imag, b[1].imag(), delta);
+		assertEquals(-25. + real, b[2].real(), delta);
+		assertEquals( 85. + imag, b[2].imag(), delta);
+		assertEquals(-10. + real, b[3].real(), delta);
+		assertEquals(100. + imag, b[3].imag(), delta);
+		assertEquals(  5. + real, b[4].real(), delta);
+		assertEquals(115. + imag, b[4].imag(), delta);
+		assertEquals( 20. + real, b[5].real(), delta);
+		assertEquals(130. + imag, b[5].imag(), delta);
 	}
 
 	/**

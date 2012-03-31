@@ -18,10 +18,6 @@
   </licenses>
   <dependencies>
     <dependency>
-      <groupId>org.apache.commons</groupId>
-      <artifactId>commons-math</artifactId>
-    </dependency>
-    <dependency>
       <groupId>com.ncond.dss</groupId>
       <artifactId>cs-solve</artifactId>
     </dependency>

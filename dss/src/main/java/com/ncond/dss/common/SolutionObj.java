@@ -10,7 +10,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 
-import org.apache.commons.math.complex.Complex;
+import com.ncond.dss.shared.Complex;
 
 import com.ncond.dss.common.Bus.NodeBus;
 import com.ncond.dss.common.exceptions.ControlProblem;
@@ -29,7 +29,6 @@ import com.ncond.dss.conversion.GeneratorObj;
 import com.ncond.dss.conversion.PCElement;
 import com.ncond.dss.delivery.FaultObj;
 import com.ncond.dss.general.DSSObject;
-import com.ncond.dss.shared.ComplexUtil;
 import com.ncond.dss.shared.DynamicsRec;
 
 public class SolutionObj extends DSSObject {
@@ -359,16 +358,16 @@ public class SolutionObj extends DSSObject {
 			ref = ckt.getLoadMultiplier() * ckt.getDefaultGrowthFactor();
 			break;
 		case YEARLYMODE:
-			ref = ckt.getDefaultGrowthFactor() * ckt.getDefaultHourMult().getReal();
+			ref = ckt.getDefaultGrowthFactor() * ckt.getDefaultHourMult().real();
 			break;
 		case DAILYMODE:
-			ref = ckt.getLoadMultiplier() * ckt.getDefaultGrowthFactor() * ckt.getDefaultHourMult().getReal();
+			ref = ckt.getLoadMultiplier() * ckt.getDefaultGrowthFactor() * ckt.getDefaultHourMult().real();
 			break;
 		case DUTYCYCLE:
-			ref = ckt.getLoadMultiplier() * ckt.getDefaultGrowthFactor() * ckt.getDefaultHourMult().getReal();
+			ref = ckt.getLoadMultiplier() * ckt.getDefaultGrowthFactor() * ckt.getDefaultHourMult().real();
 			break;
 		case GENERALTIME:
-			ref = ckt.getLoadMultiplier() * ckt.getDefaultGrowthFactor() * ckt.getDefaultHourMult().getReal();
+			ref = ckt.getLoadMultiplier() * ckt.getDefaultGrowthFactor() * ckt.getDefaultHourMult().real();
 			break;
 		case DYNAMICMODE:
 			ref = ckt.getLoadMultiplier() * ckt.getDefaultGrowthFactor();
@@ -380,19 +379,19 @@ public class SolutionObj extends DSSObject {
 			ref = ckt.getLoadMultiplier() * ckt.getDefaultGrowthFactor();
 			break;
 		case MONTECARLO2:
-			ref = ckt.getLoadMultiplier() * ckt.getDefaultGrowthFactor() * ckt.getDefaultHourMult().getReal();
+			ref = ckt.getLoadMultiplier() * ckt.getDefaultGrowthFactor() * ckt.getDefaultHourMult().real();
 			break;
 		case MONTECARLO3:
-			ref = ckt.getLoadMultiplier() * ckt.getDefaultGrowthFactor() * ckt.getDefaultHourMult().getReal();
+			ref = ckt.getLoadMultiplier() * ckt.getDefaultGrowthFactor() * ckt.getDefaultHourMult().real();
 			break;
 		case PEAKDAY:
-			ref = ckt.getLoadMultiplier() * ckt.getDefaultGrowthFactor() * ckt.getDefaultHourMult().getReal();
+			ref = ckt.getLoadMultiplier() * ckt.getDefaultGrowthFactor() * ckt.getDefaultHourMult().real();
 			break;
 		case LOADDURATION1:
-			ref = ckt.getLoadMultiplier() * ckt.getDefaultGrowthFactor() * ckt.getDefaultHourMult().getReal();
+			ref = ckt.getLoadMultiplier() * ckt.getDefaultGrowthFactor() * ckt.getDefaultHourMult().real();
 			break;
 		case LOADDURATION2:
-			ref = ckt.getLoadMultiplier() * ckt.getDefaultGrowthFactor() * ckt.getDefaultHourMult().getReal();
+			ref = ckt.getLoadMultiplier() * ckt.getDefaultGrowthFactor() * ckt.getDefaultHourMult().real();
 			break;
 		case DIRECT:
 			ref = ckt.getLoadMultiplier() * ckt.getDefaultGrowthFactor();
@@ -567,8 +566,8 @@ public class SolutionObj extends DSSObject {
 			// compute new guess at voltages
 			for (int i = 1; i <= ckt.getNumNodes(); i++) {  // 0 node is always 0
 				nodeV[i] = new Complex(
-					nodeV[i].getReal() - dV[i].getReal(),
-					nodeV[i].getImaginary() - dV[i].getImaginary()
+					nodeV[i].real() - dV[i].real(),
+					nodeV[i].imag() - dV[i].imag()
 				);
 			}
 		}
@@ -976,7 +975,7 @@ public class SolutionObj extends DSSObject {
 				for (p = colPtr[j]; p < colPtr[j + 1]; p++) {
 					i = rowIdx[p];  // the zero-based row
 					pw.printf("[%4d,%4d] = %12.5g + j%12.5g", i, j,
-						cVals[p].getReal(), cVals[p].getImaginary());
+						cVals[p].real(), cVals[p].imag());
 					pw.println();
 				}
 			}
@@ -991,7 +990,7 @@ public class SolutionObj extends DSSObject {
 	 * @return
 	 */
 	public Complex vDiff(int iref, int jref) {
-		return nodeV[iref - 1].subtract(nodeV[jref - 1]);  // V1-V2;
+		return nodeV[iref - 1].sub(nodeV[jref - 1]);  // V1-V2;
 	}
 
 	public void writeConvergenceReport(String fileName) {
@@ -1356,7 +1355,7 @@ public class SolutionObj extends DSSObject {
 				for (j = 0; j < ckt.getBus(i).getNumNodesThisBus(); j++) {
 					V = getNodeV(ckt.getBus(i).getRef(j));
 					pw.println(busName + ", " + ckt.getBus(i).getNum(j) +
-						String.format(", %-.7g, %-.7g", V.abs(), ComplexUtil.degArg(V)));
+						String.format(", %-.7g, %-.7g", V.abs(), V.argDeg()));
 				}
 			}
 

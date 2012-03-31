@@ -8,7 +8,7 @@ package com.ncond.dss.meter;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 
-import org.apache.commons.math.complex.Complex;
+import com.ncond.dss.shared.Complex;
 
 import com.ncond.dss.common.DSS;
 import com.ncond.dss.common.DSSClass;
@@ -171,7 +171,7 @@ public class SensorObj extends MeterElement {
 		switch (conn) {
 		case DELTA:
 			for (int i = 0; i < nPhases; i++)
-				calculatedVoltage[i] = VTerminal[i].subtract( VTerminal[rotatePhases(i)] );
+				calculatedVoltage[i] = VTerminal[i].sub( VTerminal[rotatePhases(i)] );
 			break;
 		default:
 			for (int i = 0; i < nPhases; i++)
@@ -218,7 +218,7 @@ public class SensorObj extends MeterElement {
 
 		if (ISpecified)
 			for (i = 0; i < nPhases; i++)
-				result = result + Math.pow(calculatedCurrent[i].getReal(), 2) + Math.pow(calculatedCurrent[i].getImaginary(), 2) - Math.pow(sensorCurrent[i], 2);
+				result = result + Math.pow(calculatedCurrent[i].real(), 2) + Math.pow(calculatedCurrent[i].imag(), 2) - Math.pow(sensorCurrent[i], 2);
 
 		result = result * weight;
 
@@ -234,7 +234,7 @@ public class SensorObj extends MeterElement {
 
 		if (VSpecified)
 			for (i = 0; i < nPhases; i++)
-				result = result + Math.pow(calculatedVoltage[i].getReal(), 2) + Math.pow(calculatedVoltage[i].getImaginary(), 2) - Math.pow(sensorVoltage[i], 2);
+				result = result + Math.pow(calculatedVoltage[i].real(), 2) + Math.pow(calculatedVoltage[i].imag(), 2) - Math.pow(sensorVoltage[i], 2);
 
 		result = result * weight;
 

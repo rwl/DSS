@@ -10,7 +10,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 
-import org.apache.commons.math.complex.Complex;
+import com.ncond.dss.shared.Complex;
 
 import com.ncond.dss.common.exceptions.ControlProblem;
 import com.ncond.dss.common.exceptions.SolverError;
@@ -581,15 +581,15 @@ public class AutoAdd {
 				nodeRef = ckt.getBus(busIndex).getRef(i);
 				if (nodeRef > 0) {  // add in only non-ground currents
 					busV = sol.getNodeV(nodeRef);
-					if ((busV.getReal() != 0.0) || (busV.getImaginary() != 0.0)) {
+					if ((busV.real() != 0.0) || (busV.imag() != 0.0)) {
 						/* Current into the system network */
 						switch (solveType) {
 						case NEWTON:
-							current = genVA.divide(busV).conjugate().negate();  // terminal current
+							current = genVA.div(busV).conj().neg();  // terminal current
 							sol.setCurrent(nodeRef, sol.getCurrent(nodeRef).add(current));
 							break;
 						case NORMAL:
-							current = genVA.divide(busV).conjugate();  // injection current
+							current = genVA.div(busV).conj();  // injection current
 							sol.setCurrent(nodeRef, sol.getCurrent(nodeRef).add(current));
 							break;
 						}
@@ -603,15 +603,15 @@ public class AutoAdd {
 				nodeRef = ckt.getBus(busIndex).getRef(i);
 				if (nodeRef > 0) {
 					busV = sol.getNodeV(nodeRef);
-					if (busV.getReal() != 0.0 || busV.getImaginary() != 0.0) {
+					if (busV.real() != 0.0 || busV.imag() != 0.0) {
 						/* Current into the system network */
 						switch (solveType) {
 						case NEWTON:
-							current = new Complex(0.0, Ycap).multiply(busV);  // terminal current
+							current = new Complex(0.0, Ycap).mult(busV);  // terminal current
 							sol.setCurrent(nodeRef, sol.getCurrent(nodeRef).add(current));
 							break;
 						case NORMAL:
-							current = new Complex(0.0, -Ycap).multiply(busV);  // injection current
+							current = new Complex(0.0, -Ycap).mult(busV);  // injection current
 							sol.setCurrent(nodeRef, sol.getCurrent(nodeRef).add(current));
 							break;
 						}
@@ -627,7 +627,7 @@ public class AutoAdd {
 
 		if (ckt.getEnergyMeters().size() == 0) {
 			// no energymeters in circuit, just go by total system losses
-			kWLosses = ckt.getLosses().getReal() * 0.001;
+			kWLosses = ckt.getLosses().real() * 0.001;
 			kWEEN = 0.0;
 		} else {
 			// sum losses in energy meters and add EEN

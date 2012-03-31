@@ -11,7 +11,7 @@ import java.io.IOException;
 import java.io.PrintStream;
 import java.io.PrintWriter;
 
-import org.apache.commons.math.complex.Complex;
+import com.ncond.dss.shared.Complex;
 
 import com.ncond.dss.common.Circuit;
 import com.ncond.dss.common.DSS;
@@ -24,7 +24,6 @@ import com.ncond.dss.general.LoadShapeObj;
 import com.ncond.dss.general.SpectrumObj;
 import com.ncond.dss.parser.Parser;
 import com.ncond.dss.shared.CMatrix;
-import com.ncond.dss.shared.ComplexUtil;
 import com.ncond.dss.shared.MathUtil;
 
 /**
@@ -412,13 +411,13 @@ public class StorageObj extends PCElement {
 			shapeFactor = CDOUBLEONE;  // default to no variation
 		}
 
-		checkStateTriggerLevel(shapeFactor.getReal());  // last recourse
+		checkStateTriggerLevel(shapeFactor.real());  // last recourse
 	}
 
 	private void CalcDutyMult(double hr) {
 		if (dutyShapeObj != null) {
 			shapeFactor = dutyShapeObj.getMult(hr);
-			checkStateTriggerLevel(shapeFactor.getReal());
+			checkStateTriggerLevel(shapeFactor.real());
 		} else {
 			calcDailyMult(hr);  // default to daily mult if no duty curve specified
 		}
@@ -427,7 +426,7 @@ public class StorageObj extends PCElement {
 	private void calcYearlyMult(double hr) {
 		if (yearlyShapeObj != null) {
 			shapeFactor = yearlyShapeObj.getMult(hr) ;
-			checkStateTriggerLevel(shapeFactor.getReal());
+			checkStateTriggerLevel(shapeFactor.real());
 		} else {
 			calcDailyMult(hr);  // defaults to daily curve
 		}
@@ -441,8 +440,8 @@ public class StorageObj extends PCElement {
 			if (kWhStored < kWhRating) {
 				switch (dispatchMode) {
 				case FOLLOW:
-					kWOut = kWRating * shapeFactor.getReal();
-					kVArOut = kVArBase * shapeFactor.getImaginary();  // ???
+					kWOut = kWRating * shapeFactor.real();
+					kVArOut = kVArBase * shapeFactor.imag();  // ???
 				default:
 					kWOut = -kWRating * pctKWIn / 100.0;
 					if (PFNominal == 1.0) {
@@ -460,8 +459,8 @@ public class StorageObj extends PCElement {
 			if (kWhStored > kWhReserve) {
 				switch (dispatchMode) {
 				case FOLLOW:
-					kWOut = kWRating * shapeFactor.getReal();
-					kVArOut = kVArBase * shapeFactor.getImaginary();
+					kWOut = kWRating * shapeFactor.real();
+					kVArOut = kVArBase * shapeFactor.imag();
 				default:
 					kWOut = kWRating * pctKWout / 100.0;
 					if (PFNominal == 1.0) {
@@ -556,10 +555,10 @@ public class StorageObj extends PCElement {
 				} else {
 					QNominalPerPhase = 0.0;
 				}
-				Yeq = ComplexUtil.divide(new Complex(
+				Yeq = new Complex(
 					PNominalPerPhase,
 					-QNominalPerPhase
-				), Math.pow(VBase, 2));  // VBase must be L-N for 3-phase
+				).div(Math.pow(VBase, 2));  // VBase must be L-N for 3-phase
 				Yeq95  = Yeq;
 				Yeq105 = Yeq;
 			} else {
@@ -572,19 +571,19 @@ public class StorageObj extends PCElement {
 					break;
 				default:
 					/* Yeq no longer used for anything other than this calculation of Yeq95, Yeq105 */
-					Yeq = ComplexUtil.divide(new Complex(
+					Yeq = new Complex(
 						PNominalPerPhase,
 						-QNominalPerPhase
-					), Math.pow(VBase, 2));  // VBase must be L-N for 3-phase
+					).div(Math.pow(VBase, 2));  // VBase must be L-N for 3-phase
 
 					if (VMinPU != 0.0) {
-						Yeq95 = ComplexUtil.divide(Yeq, Math.pow(VMinPU, 2));   // at 95% voltage
+						Yeq95 = Yeq.div(Math.pow(VMinPU, 2));   // at 95% voltage
 					} else {
 						Yeq95 = Yeq;  // always a constant Z model
 					}
 
 					if (VMaxPU != 0.0) {
-						Yeq105 = ComplexUtil.divide(Yeq, Math.pow(VMaxPU, 2));  // at 105% voltage
+						Yeq105 = Yeq.div(Math.pow(VMaxPU, 2));  // at 105% voltage
 					} else {
 						Yeq105 = Yeq;
 					}
@@ -619,7 +618,7 @@ public class StorageObj extends PCElement {
 		YeqIdling = new Complex(
 			pctIdleKW,
 			pctIdleKVAr
-		).multiply(kWRating * 10.0 / Math.pow(VBase, 2) / nPhases);  // 10.0 = 1000/100 = kW->W/pct
+		).mult(kWRating * 10.0 / Math.pow(VBase, 2) / nPhases);  // 10.0 = 1000/100 = kW->W/pct
 		YeqDischarge = new Complex(
 			kWRating * 1000.0 / Math.pow(VBase, 2) / nPhases,
 			0.0
@@ -675,7 +674,7 @@ public class StorageObj extends PCElement {
 				Y = YeqIdling;
 				break;
 			case DISCHARGING:
-				Y = YeqDischarge.negate().add(YeqIdling);
+				Y = YeqDischarge.neg().add(YeqIdling);
 				break;
 			default:
 				Y = Yeq;  // L-N value computed in initialization routines
@@ -683,10 +682,10 @@ public class StorageObj extends PCElement {
 			}
 
 			if (connection == Connection.DELTA)
-				Y = ComplexUtil.divide(Y, 3.0);  // convert to delta impedance
+				Y = Y.div(3.0);  // convert to delta impedance
 
-			Y = new Complex(Y.getReal(), Y.getImaginary() / freqMultiplier);
-			Yij = Y.negate();
+			Y = new Complex(Y.real(), Y.imag() / freqMultiplier);
+			Yij = Y.neg();
 			for (i = 0; i < nPhases; i++) {
 				switch (connection) {
 				case WYE:
@@ -715,18 +714,18 @@ public class StorageObj extends PCElement {
 				Y = YeqIdling;
 				break;
 			case DISCHARGING:
-				Y = YeqDischarge.negate().add(YeqIdling);
+				Y = YeqDischarge.neg().add(YeqIdling);
 			default:
-				Y = Yeq.negate().add(YeqIdling);  // negate for generation; Yeq is L-N quantity
+				Y = Yeq.neg().add(YeqIdling);  // negate for generation; Yeq is L-N quantity
 				break;
 			}
 
 			// ****** need to modify the base admittance for real harmonics calcs
-			Y = new Complex(Y.getReal(), Y.getImaginary() / freqMultiplier);
+			Y = new Complex(Y.real(), Y.imag() / freqMultiplier);
 
 			switch (connection) {
 			case WYE:
-				Yij = Y.negate();
+				Yij = Y.neg();
 				for (i = 0; i < nPhases; i++) {
 					YMatrix.set(i, i, Y);
 					YMatrix.add(nConds-1, nConds-1, Y);
@@ -735,8 +734,8 @@ public class StorageObj extends PCElement {
 				break;
 
 			case DELTA:
-				Y = ComplexUtil.divide(Y, 3.0);  // convert to delta impedance
-				Yij = Y.negate();
+				Y = Y.div(3.0);  // convert to delta impedance
+				Yij = Y.neg();
 				for (i = 0; i < nPhases; i++) {
 					j = i + 1;
 					if (j >= nConds) j = 0;  // wrap around for closed connections
@@ -855,7 +854,7 @@ public class StorageObj extends PCElement {
 
 		// set YPrim_Series based on diagonals of YPrim_Shunt so that calcVoltages doesn't fail
 		for (int i = 0; i < YOrder; i++)
-			YPrimSeries.set(i, i, YPrimShunt.get(i, i).multiply(1.0e-10));
+			YPrimSeries.set(i, i, YPrimShunt.get(i, i).mult(1.0e-10));
 
 		YPrim.copyFrom(YPrimShunt);
 
@@ -872,13 +871,13 @@ public class StorageObj extends PCElement {
 		switch (connection) {
 		case WYE:
 			termArray[i] = termArray[i].add(curr);
-			termArray[nConds-1] = termArray[nConds-1].add(curr.negate());  // neutral
+			termArray[nConds-1] = termArray[nConds-1].add(curr.neg());  // neutral
 			break;
 		case DELTA:
 			termArray[i] = termArray[i].add(curr);
 			int j = i + 1;
 			if (j >= nConds) j = 0;
-			termArray[j] = termArray[j].add(curr.negate());
+			termArray[j] = termArray[j].add(curr.neg());
 			break;
 		}
 	}
@@ -938,9 +937,9 @@ public class StorageObj extends PCElement {
 		case IDLING:  // YPrim current is only current
 			for (i = 0; i < nPhases; i++) {
 				curr = getInjCurrent(i);
-				putCurrInTerminalArray(ITerminal, curr.negate(), i);  // put YPrim contribution into Terminal array taking into account connection
+				putCurrInTerminalArray(ITerminal, curr.neg(), i);  // put YPrim contribution into Terminal array taking into account connection
 				setITerminalUpdated(true);
-				putCurrInTerminalArray(getInjCurrent(), curr.negate(), i);    // Compensation current is zero since terminal current is same as Yprim contribution
+				putCurrInTerminalArray(getInjCurrent(), curr.neg(), i);    // Compensation current is zero since terminal current is same as Yprim contribution
 			}
 		default:  // for charging and discharging
 			calcVTerminalPhase();  // get actual voltage across each phase of the load
@@ -952,33 +951,33 @@ public class StorageObj extends PCElement {
 				switch (connection) {
 				case WYE:
 					if (Vmag <= VBase95) {
-						curr = Yeq95.multiply(V);   // below 95% use an impedance model
+						curr = Yeq95.mult(V);   // below 95% use an impedance model
 					} else if (Vmag > VBase105) {
-						curr = Yeq105.multiply(V);  // above 105% use an impedance model
+						curr = Yeq105.mult(V);  // above 105% use an impedance model
 					} else {
 						curr = new Complex(
 							PNominalPerPhase,
 							QNominalPerPhase
-						).divide(V).conjugate();  // between 95% -105%, constant PQ
+						).div(V).conj();  // between 95% -105%, constant PQ
 					}
 					break;
 
 				case DELTA:
 					Vmag = Vmag / DSS.SQRT3;  // L-N magnitude
 					if (Vmag <= VBase95) {
-						curr = ComplexUtil.divide(Yeq95, 3.0).multiply(V);   // below 95% use an impedance model
+						curr = Yeq95.div(3.0).mult(V);   // below 95% use an impedance model
 					} else if (Vmag > VBase105) {
-						curr = ComplexUtil.divide(Yeq105, 3.0).multiply(V);  // above 105% use an impedance model
+						curr = Yeq105.div(3.0).mult(V);  // above 105% use an impedance model
 					} else {
 						curr = new Complex(
 							PNominalPerPhase,
 							QNominalPerPhase
-						).divide(V).conjugate();  // between 95% -105%, constant PQ
+						).div(V).conj();  // between 95% -105%, constant PQ
 					}
 					break;
 				}
 
-				putCurrInTerminalArray(getITerminal(), curr.negate(), i);  // put into terminal array taking into account connection
+				putCurrInTerminalArray(getITerminal(), curr.neg(), i);  // put into terminal array taking into account connection
 				setITerminalUpdated(true);
 				putCurrInTerminalArray(getInjCurrent(), curr, i);  // put into terminal array taking into account connection
 			}
@@ -999,12 +998,12 @@ public class StorageObj extends PCElement {
 		if (connection == Connection.WYE) {
 			Yeq2 = Yeq;
 		} else {
-			Yeq2 = ComplexUtil.divide(Yeq, 3.0);
+			Yeq2 = Yeq.div(3.0);
 		}
 
 		for (int i = 0; i < nPhases; i++) {
-			curr = Yeq2.multiply(VTerminal[i]);  // Yeq is always line to neutral
-			putCurrInTerminalArray(getITerminal(), curr.negate(), i);  // put into terminal array taking into account connection
+			curr = Yeq2.mult(VTerminal[i]);  // Yeq is always line to neutral
+			putCurrInTerminalArray(getITerminal(), curr.neg(), i);  // put into terminal array taking into account connection
 			setITerminalUpdated(true);
 			putCurrInTerminalArray(getInjCurrent(), curr, i);  // put into terminal array taking into account connection
 		}
@@ -1021,7 +1020,7 @@ public class StorageObj extends PCElement {
 			setITerminalUpdated(true);
 			// negate currents from user model for power flow storage element model
 			for (int i = 0; i < nConds; i++)
-				getInjCurrent()[i] = getInjCurrent(i).add(ITerminal[i].negate());
+				getInjCurrent()[i] = getInjCurrent(i).add(ITerminal[i].neg());
 		} else {
 			DSS.doSimpleMsg("Storage." + getName() +
 				" model designated to use user-written model, but user-written model is not defined.", 567);
@@ -1054,7 +1053,7 @@ public class StorageObj extends PCElement {
 
 		storageHarmonic = sol.getFrequency() / storageFundamental;
 		if (getSpectrumObj() != null) {
-			e = getSpectrumObj().getMult(storageHarmonic).multiply(VThevhH);  // get base harmonic magnitude
+			e = getSpectrumObj().getMult(storageHarmonic).mult(VThevhH);  // get base harmonic magnitude
 		} else {
 			e = Complex.ZERO;
 		}
@@ -1247,15 +1246,15 @@ public class StorageObj extends PCElement {
 				SolutionObj sol = ckt.getSolution();
 
 				if (ckt.isPositiveSequence()) {
-					S = S.multiply(3.0);
+					S = S.mult(3.0);
 					SMag = 3.0 * SMag;
 				}
-				integrate            (regKWh,    S.getReal(), sol.getIntervalHrs());   // accumulate the power
-				integrate            (regKVArh,  S.getImaginary(), sol.getIntervalHrs());
-				setDragHandRegister  (regMaxKW,  Math.abs(S.getReal()));
+				integrate            (regKWh,    S.real(), sol.getIntervalHrs());   // accumulate the power
+				integrate            (regKVArh,  S.imag(), sol.getIntervalHrs());
+				setDragHandRegister  (regMaxKW,  Math.abs(S.real()));
 				setDragHandRegister  (regMaxKVA, SMag);
 				integrate            (regHours,  hourValue, sol.getIntervalHrs());  // accumulate hours in operation
-				integrate            (regPrice,  S.getReal() * ckt.getPriceSignal(), sol.getIntervalHrs());  // accumulate hours in operation
+				integrate            (regPrice,  S.real() * ckt.getPriceSignal(), sol.getIntervalHrs());  // accumulate hours in operation
 				firstSampleAfterReset = false;
 			}
 		}
@@ -1303,11 +1302,11 @@ public class StorageObj extends PCElement {
 	public double getKWTotalLosses() {
 		switch (getState()) {
 		case CHARGING:
-			return Math.abs(getPower(0).getReal() * (100.0 - pctChargeEff) / 100000.0) + pctChargeEff * getKWIdlingLosses() / 100.0;  // kW
+			return Math.abs(getPower(0).real() * (100.0 - pctChargeEff) / 100000.0) + pctChargeEff * getKWIdlingLosses() / 100.0;  // kW
 		case IDLING:
 			return getKWIdlingLosses();
 		case DISCHARGING:
-			return Math.abs(getPower(0).getReal() * (100.0 - pctDischargeEff) / 100000.0) + (2.0 - pctChargeEff / 100.0) * getKWIdlingLosses();  // kW
+			return Math.abs(getPower(0).real() * (100.0 - pctDischargeEff) / 100000.0) + (2.0 - pctChargeEff / 100.0) * getKWIdlingLosses();  // kW
 		}
 		return 0;
 	}
@@ -1319,9 +1318,9 @@ public class StorageObj extends PCElement {
 		double losses = 0.0;
 		// compute sum of sqr(V) at this device -- sum of VV*
 		for (i = 0; i < nPhases; i++)
-			losses = losses + getVTerminal(i).multiply( getVTerminal(i).conjugate() ).getReal();
+			losses = losses + getVTerminal(i).mult( getVTerminal(i).conj() ).real();
 
-		losses = losses * YeqIdling.getReal() * 0.001;  // to kW
+		losses = losses * YeqIdling.real() * 0.001;  // to kW
 
 		return losses;
 	}
@@ -1367,7 +1366,7 @@ public class StorageObj extends PCElement {
 		setYPrimInvalid(true);  // force rebuild of YPrims
 		storageFundamental = sol.getFrequency();  // whatever the frequency is when we enter here
 
-		Yeq = ComplexUtil.invert(new Complex(RThev, XThev));  // used for current calcs; always L-N
+		Yeq = new Complex(RThev, XThev).inv();  // used for current calcs; always L-N
 
 		/* Compute reference Thevinen voltage from phase 1 current */
 
@@ -1376,16 +1375,16 @@ public class StorageObj extends PCElement {
 
 			switch (connection) {
 			case WYE:
-				Va = sol.getNodeV(nodeRef[0]).subtract(sol.getNodeV(nodeRef[nConds - 1]));
+				Va = sol.getNodeV(nodeRef[0]).sub(sol.getNodeV(nodeRef[nConds - 1]));
 				break;
 			case DELTA:
 				Va = sol.getNodeV(nodeRef[0]);
 				break;
 			}
 
-			e = Va.subtract(ITerminal[0].multiply(new Complex(RThev, XThev)));
+			e = Va.sub(ITerminal[0].mult(new Complex(RThev, XThev)));
 			VThevhH = e.abs();  // establish base mag and angle
-			thetaHarm = e.getArgument();
+			thetaHarm = e.arg();
 		} else {
 			VThevhH = 0.0;
 			thetaHarm = 0.0;
@@ -1438,13 +1437,13 @@ public class StorageObj extends PCElement {
 			if (state != StorageState.DISCHARGING) {
 				return 0.0;
 			} else {
-				return getPower(0).getReal() * 0.001;  // kW_Out; // pctkWout;
+				return getPower(0).real() * 0.001;  // kW_Out; // pctkWout;
 			}
 		case 3:
 			if (state == StorageState.CHARGING) {
 				return 0.0;
 			} else {
-				return getPower(0).getReal() * 0.001;  // kW_out; // pctkWin;
+				return getPower(0).real() * 0.001;  // kW_out; // pctkWin;
 			}
 		case 4:
 			return getKWTotalLosses();  /* Present kW charge or discharge loss incl idle losses */

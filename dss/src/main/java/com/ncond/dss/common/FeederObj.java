@@ -9,7 +9,7 @@ import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.math.complex.Complex;
+import com.ncond.dss.shared.Complex;
 
 import com.ncond.dss.conversion.PCElement;
 import com.ncond.dss.shared.CMatrix;

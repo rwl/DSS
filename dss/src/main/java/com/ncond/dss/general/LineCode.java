@@ -6,7 +6,7 @@
 package com.ncond.dss.general;
 
 
-import org.apache.commons.math.complex.Complex;
+import com.ncond.dss.shared.Complex;
 
 import com.ncond.dss.common.DSS;
 import com.ncond.dss.common.DSSClass;
@@ -185,20 +185,20 @@ public class LineCode extends DSSClass {
 				Zvalues = activeLineCodeObj.getZ().asArray(nOrder);
 				if (nOrder[0] == activeLineCodeObj.getNPhases())
 					for (j = 0; j < np2; j++)
-						Zvalues[j] = new Complex(matBuffer[j], Zvalues[j].getImaginary());
+						Zvalues[j] = new Complex(matBuffer[j], Zvalues[j].imag());
 				break;
 			case 2:  // x
 				Zvalues = activeLineCodeObj.getZ().asArray(nOrder);
 				if (nOrder[0] == activeLineCodeObj.getNPhases())
 					for (j = 0; j < np2; j++)
-						Zvalues[j] = new Complex(Zvalues[j].getReal(), matBuffer[j]);
+						Zvalues[j] = new Complex(Zvalues[j].real(), matBuffer[j]);
 				break;
 			case 3:  // Yc matrix
 				factor = DSS.TWO_PI * activeLineCodeObj.getBaseFrequency() * 1.0e-9;
 				Zvalues = activeLineCodeObj.getYc().asArray(nOrder);
 				if (nOrder[0] == activeLineCodeObj.getNPhases())
 					for (j = 0; j < np2; j++)
-						Zvalues[j] = new Complex(Zvalues[j].getReal(), factor * matBuffer[j]);
+						Zvalues[j] = new Complex(Zvalues[j].real(), factor * matBuffer[j]);
 				break;
 			}
 		}

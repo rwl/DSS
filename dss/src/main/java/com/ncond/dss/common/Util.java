@@ -18,8 +18,7 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.math.complex.Complex;
-import org.apache.commons.math.complex.ComplexUtils;
+import com.ncond.dss.shared.Complex;
 
 import com.ncond.dss.common.Bus.NodeBus;
 import com.ncond.dss.common.Circuit.CktElementDef;
@@ -49,8 +48,8 @@ import com.ncond.dss.general.DSSObject;
 import com.ncond.dss.meter.EnergyMeterObj;
 import com.ncond.dss.parser.Parser;
 import com.ncond.dss.shared.CMatrix;
-import com.ncond.dss.shared.ComplexUtil;
 import com.ncond.dss.shared.HashList;
+
 
 public class Util {
 
@@ -283,10 +282,10 @@ public class Util {
 		if (count > 0) {
 			StringBuilder sb = new StringBuilder();
 			sb.append(String.format("[%.10g +j %.10g",
-				cpxarray[0].getReal(), cpxarray[0].getImaginary()));
+				cpxarray[0].real(), cpxarray[0].imag()));
 			for (int i = 1; i < count; i++) {
 				sb.append(String.format(", %.10g +j %.10g",
-					cpxarray[i].getReal(), cpxarray[i].getImaginary()));
+					cpxarray[i].real(), cpxarray[i].imag()));
 			}
 			sb.append("]");
 			return sb.toString();
@@ -1005,7 +1004,7 @@ public class Util {
 		} else {
 			/* Get impedance from Z matrix */   /* Zs - Zm */
 			if (lineElement.getNumPhases() > 1) {
-				Ztest = lineElement.getZ().get(0, 0).subtract(lineElement.getZ().get(0, 1)).abs() * lineElement.getLen();
+				Ztest = lineElement.getZ().get(0, 0).sub(lineElement.getZ().get(0, 1)).abs() * lineElement.getLen();
 			} else {
 				Ztest = lineElement.getZ().get(0, 0).abs() * lineElement.getLen();
 			}
@@ -1154,7 +1153,7 @@ public class Util {
 
 			pw.printf("%.d", ckt.getNumNodes());
 			for (int i = 1; i <= ckt.getNumNodes(); i++) {
-				pw.printf(" %.5f %.5f", sol.getNodeV(i).getReal(), sol.getNodeV(i).getImaginary());
+				pw.printf(" %.5f %.5f", sol.getNodeV(i).real(), sol.getNodeV(i).imag());
 			}
 
 			pw.close();
@@ -1268,15 +1267,15 @@ public class Util {
 	 * Rotate a phasor by an angle and harmonic.
 	 */
 	public static Complex rotatePhasorDeg(Complex phasor, double h, double angleDeg) {
-		return phasor.multiply(ComplexUtils.polar2Complex(1.0, Math.toRadians(h * angleDeg)));
+		return phasor.mult(Complex.fromPolar(1.0, Math.toRadians(h * angleDeg)));
 	}
 
 	public static Complex rotatePhasorRad(Complex phasor, double h, double angleRad) {
-		return phasor.multiply(ComplexUtils.polar2Complex(1.0, h * angleRad));
+		return phasor.mult(Complex.fromPolar(1.0, h * angleRad));
 	}
 
 	private static double pfSign(Complex S) {
-		return S.getReal() * S.getImaginary() < 0.0 ? -1.0 : 1.0;
+		return S.real() * S.imag() < 0.0 ? -1.0 : 1.0;
 	}
 
 	/**
@@ -1289,12 +1288,12 @@ public class Util {
 		for (int i = 0; i < n; i++) {
 			mag = buffer[i].abs();
 			if (mag > 0.0) {
-				pf = pfSign(buffer[i]) * Math.abs(buffer[i].getReal()) / mag;
+				pf = pfSign(buffer[i]) * Math.abs(buffer[i].real()) / mag;
 				if (pf < 0.0) pf = 2.0 - Math.abs(pf);
 			} else {
 				pf = 1.0;  // for zero power
 			}
-			buffer[i] = new Complex(buffer[i].getReal(), pf);
+			buffer[i] = new Complex(buffer[i].real(), pf);
 		}
 	}
 
@@ -1302,7 +1301,7 @@ public class Util {
 		for (int i = 0; i < n; i++) {
 			buffer[i] = new Complex(
 				buffer[i].abs(),
-				ComplexUtil.degArg(buffer[i])
+				buffer[i].argDeg()
 			);
 		}
 	}
@@ -1325,7 +1324,7 @@ public class Util {
 	 */
 	public static Complex residualPolar(Object p, int nph) {
 		Complex x = residual(p, nph);
-		return new Complex(x.abs(), ComplexUtil.degArg(x));
+		return new Complex(x.abs(), x.argDeg());
 	}
 
 	private static double sign(double x) {
@@ -1333,8 +1332,8 @@ public class Util {
 	}
 
 	public static double powerFactor(Complex S) {
-		if (S.getReal() != 0.0 && S.getImaginary() != 0.0) {
-			return sign(S.getReal() * S.getImaginary()) * Math.abs(S.getReal()) / S.abs();
+		if (S.real() != 0.0 && S.imag() != 0.0) {
+			return sign(S.real() * S.imag()) * Math.abs(S.real()) / S.abs();
 		} else {
 			return 1.0;
 		}
@@ -1391,14 +1390,14 @@ public class Util {
 			for (int i = 0; i < a.order(); i++) {
 				pw.print("! ");
 				for (int j = 0; j < i; j++)
-					pw.printf("%.8f ", a.get(i, j).getReal());
+					pw.printf("%.8f ", a.get(i, j).real());
 				pw.println();
 			}
 			pw.println("!(B Matrix) = ");
 			for (int i = 0; i < a.order(); i++) {
 				pw.print("! ");
 				for (int j = 0; j < i; j++)
-					pw.printf("%.8f ", a.get(i, j).getImaginary());
+					pw.printf("%.8f ", a.get(i, j).imag());
 				pw.println();
 			}
 		}
@@ -1742,7 +1741,7 @@ public class Util {
 
 		Complex tot = Complex.ZERO;
 		for (CktElement elem : ckt.getSources())
-			tot = tot.add(elem.getPower(0).negate());
+			tot = tot.add(elem.getPower(0).neg());
 
 		return tot;
 	}
@@ -2012,7 +2011,7 @@ public class Util {
 	 * Multiply only imaginary part by a real.
 	 */
 	public static Complex mulRealImag(Complex a, double mult) {
-		return new Complex(a.getReal(), a.getImaginary() * mult);
+		return new Complex(a.real(), a.imag() * mult);
 	}
 
 	/**
@@ -2020,7 +2019,7 @@ public class Util {
 	 */
 	public static void mulArray(Complex[] pc, double multiplier, int size) {
 		for (int i = 0; i < size; i++)
-			pc[i] = pc[i].multiply(multiplier);
+			pc[i] = pc[i].mult(multiplier);
 	}
 
 	public static int getMaxCktElementSize() {

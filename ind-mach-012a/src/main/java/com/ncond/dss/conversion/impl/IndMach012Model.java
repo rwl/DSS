@@ -5,19 +5,18 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 
-import org.apache.commons.math.complex.Complex;
-
 import com.ncond.dss.common.DSSCallBacks;
 import com.ncond.dss.common.Util;
 import com.ncond.dss.conversion.GenUserModelImpl;
 import com.ncond.dss.parser.Parser;
 import com.ncond.dss.shared.CommandList;
-import com.ncond.dss.shared.ComplexUtil;
+import com.ncond.dss.shared.Complex;
 import com.ncond.dss.shared.DynamicsRec;
 import com.ncond.dss.shared.GeneratorVars;
 
 public class IndMach012Model extends GenUserModelImpl {
 
+	@SuppressWarnings("unused")
 	private static IndMach012Model activeModel;
 	private static Parser modelParser;
 	private static CommandList commandList;
@@ -37,6 +36,7 @@ public class IndMach012Model extends GenUserModelImpl {
 
 	private boolean inDynamics;
 
+	@SuppressWarnings("unused")
 	private Complex Zs, Zm, Zr, Zrsc;
 	private Complex Is1, Ir1, V1;  // keep the last computed voltages and currents
 	private Complex Is2, Ir2, V2;
@@ -98,26 +98,26 @@ public class IndMach012Model extends GenUserModelImpl {
 		Complex ZRotor, numerator, ZMotor;
 
 		if (S != 0.0) {
-			RL = Zr.getReal() * (1.0 - S) / S;
+			RL = Zr.real() * (1.0 - S) / S;
 		} else {
-			RL = Zr.getReal() * 1.0e6;
+			RL = Zr.real() * 1.0e6;
 		}
 
 		ZRotor = new Complex(RL, 0.0).add(Zr);
-		numerator = Zm.multiply(ZRotor);
-		ZMotor = Zs.add(numerator.divide(ZRotor.add(Zm)));
-		IStator[0] = V.divide(ZMotor);
+		numerator = Zm.mult(ZRotor);
+		ZMotor = Zs.add(numerator.div(ZRotor.add(Zm)));
+		IStator[0] = V.div(ZMotor);
 		/* Ir = Is -(V-ZsIs)/Zm */
-		IRotor[0] = IStator[0].subtract( V.subtract(Zs.multiply(IStator[0])).divide(Zm) );
+		IRotor[0] = IStator[0].sub( V.sub(Zs.mult(IStator[0])).div(Zm) );
 	}
 
 	private void getDynamicModelCurrent(final Complex V1, final Complex V2) {
-		Is1 = V1.subtract(E1).divide(Zsp);  // I = (V-E')/Z'
-		Is2 = V2.subtract(E2).divide(Zsp);  // I = (V-E')/Z'
+		Is1 = V1.sub(E1).div(Zsp);  // I = (V-E')/Z'
+		Is2 = V2.sub(E2).div(Zsp);  // I = (V-E')/Z'
 
 		// rotor current  Ir1= Is1-Vm/jXm
-		Ir1 = Is1.subtract(V1.subtract(Is1.multiply(Zsp)).divide(Zm));
-		Ir2 = Is2.subtract(V2.subtract(Is2.multiply(Zsp)).divide(Zm));
+		Ir1 = Is1.sub(V1.sub(Is1.mult(Zsp)).div(Zm));
+		Ir2 = Is2.sub(V2.sub(Is2.mult(Zsp)).div(Zm));
 	}
 
 	private void doHelpCmd() {
@@ -144,11 +144,11 @@ public class IndMach012Model extends GenUserModelImpl {
 	}
 
 	private double getRotorLosses() {
-	        return 3.0 * (Math.pow(Ir1.getReal(), 2) + Math.pow(Ir1.getImaginary(), 2) + Math.pow(Ir2.getReal(), 2) + Math.pow(Ir2.getImaginary(), 2)) * Zr.getReal();
+	        return 3.0 * (Math.pow(Ir1.real(), 2) + Math.pow(Ir1.imag(), 2) + Math.pow(Ir2.real(), 2) + Math.pow(Ir2.imag(), 2)) * Zr.real();
 	}
 
 	private double getStatorLosses() {
-		return 3.0 * (Math.pow(Is1.getReal(), 2) + Math.pow(Is1.getImaginary(), 2) + Math.pow(Is2.getReal(), 2) + Math.pow(Is2.getImaginary(), 2)) * Zs.getReal();
+		return 3.0 * (Math.pow(Is1.real(), 2) + Math.pow(Is1.imag(), 2) + Math.pow(Is2.real(), 2) + Math.pow(Is2.imag(), 2)) * Zs.real();
 	}
 
 	private double compute_dSdP() {
@@ -157,7 +157,7 @@ public class IndMach012Model extends GenUserModelImpl {
 		V1 = new Complex(genData.kVGeneratorBase * 1000.0 / 1.732, 0.0);
 		if (S1 != 0.0) getModelCurrent(V1, S1, IIs1, IIr1);
 		Is1 = IIs1[0]; Ir1 = IIr1[0];
-		return S1 / (V1.multiply(Is1.conjugate())).getReal();
+		return S1 / (V1.mult(Is1.conj())).real();
 	}
 
 	private void initTraceFile() {
@@ -237,7 +237,7 @@ public class IndMach012Model extends GenUserModelImpl {
 		//P_Error = -GenData.WnominalperPhase - TerminalPowerIn(V, I, 3).getReal() / 3.0;
 		/* If Fixed slip option set, then use the value set by the user */
 		if (!fixedSlip) {
-			PError = -genData.PNominalPerPhase - V1.multiply(Is1.conjugate()).getReal();
+			PError = -genData.PNominalPerPhase - V1.mult(Is1.conj()).real();
 			setLocalSlip(S1 + dSdP * PError);  // make new guess at slip
 		}
 
@@ -271,7 +271,7 @@ public class IndMach012Model extends GenUserModelImpl {
 		Zsp = new Complex(Rs, Xp);
 		T0p = (Xr + Xm) / (genData.w0 * Rr);
 
-		Zrsc = Zr.add(Zs.multiply(Zm).divide(Zs.add(Zm)));
+		Zrsc = Zr.add(Zs.mult(Zm).div(Zs.add(Zm)));
 		dSdP = compute_dSdP();
 
 		Is1 = Complex.ZERO;
@@ -389,11 +389,11 @@ public class IndMach012Model extends GenUserModelImpl {
 		//reCalcElementData(); ???
 
 		// compute voltage behind transient reactance and set derivatives to zero
-		E1 = V012[0].subtract(I012[0].multiply(Zsp));
+		E1 = V012[0].sub(I012[0].mult(Zsp));
 		dE1dt = Complex.ZERO;
 		E1n = E1;
 		dE1dtn = dE1dt;
-		E2 = V012[1].subtract(I012[1].multiply(Zsp));
+		E2 = V012[1].sub(I012[1].mult(Zsp));
 		dE2dt = Complex.ZERO;
 		E2n = E2;
 		dE2dtn = dE2dt;
@@ -416,13 +416,13 @@ public class IndMach012Model extends GenUserModelImpl {
 
 		// derivative of E
 		// dEdt = -jw0SE' - (E' - j(X-X')I')/T0'
-		dE1dt = new Complex(0.0, -genData.w0 * S1).multiply(E1).subtract(ComplexUtil.divide(E1.subtract(new Complex(0.0, Xopen-Xp).multiply(Is1)), T0p));
-		dE2dt = new Complex(0.0, -genData.w0 * S2).multiply(E2).subtract(ComplexUtil.divide(E2.subtract(new Complex(0.0, Xopen-Xp).multiply(Is2)), T0p));
+		dE1dt = new Complex(0.0, -genData.w0 * S1).mult(E1).sub(E1.sub(new Complex(0.0, Xopen-Xp).mult(Is1)).div(T0p));
+		dE2dt = new Complex(0.0, -genData.w0 * S2).mult(E2).sub(E2.sub(new Complex(0.0, Xopen-Xp).mult(Is2)).div(T0p));
 
 		// trapezoidal integration
 		h2 = dynaData.h * 0.5;
-		E1 = E1n.add(dE1dt.add(dE1dtn).multiply(h2));
-		E2 = E2n.add(dE2dt.add(dE2dtn).multiply(h2));
+		E1 = E1n.add(dE1dt.add(dE1dtn).mult(h2));
+		E2 = E2n.add(dE2dt.add(dE2dtn).mult(h2));
 
 	}
 
@@ -510,7 +510,7 @@ public class IndMach012Model extends GenUserModelImpl {
 			result = getRotorLosses();
 			break;
 		case 13:  // shaft power (hp)
-			result = 3.0 / 746.0 * (Math.pow(Ir1.abs(), 2) * (1.0 - S1) / S1 + Math.pow(Ir2.abs(), 2) * (1.0 - S2) / S2 )* Zr.getReal();
+			result = 3.0 / 746.0 * (Math.pow(Ir1.abs(), 2) * (1.0 - S1) / S1 + Math.pow(Ir2.abs(), 2) * (1.0 - S2) / S2 )* Zr.real();
 			break;
 		}
 		return result;

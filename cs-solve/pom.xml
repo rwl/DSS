@@ -21,9 +21,5 @@
       <groupId>net.sourceforge.csparsej</groupId>
       <artifactId>csparsej</artifactId>
     </dependency>
-    <dependency>
-      <groupId>org.apache.commons</groupId>
-      <artifactId>commons-math</artifactId>
-    </dependency>
   </dependencies>
 </project>

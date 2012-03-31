@@ -10,7 +10,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 
-import org.apache.commons.math.complex.Complex;
+import com.ncond.dss.shared.Complex;
 
 import com.ncond.dss.common.Circuit;
 import com.ncond.dss.common.DSS;
@@ -163,22 +163,22 @@ public class SystemMeter {
 	 * Get total system energy out of the sources.
 	 */
 	public void takeSample() {
-		cPower = Util.getTotalPowerFromSources().multiply(0.001);  // convert to kW
+		cPower = Util.getTotalPowerFromSources().mult(0.001);  // convert to kW
 
-		integrate(kWh, cPower.getReal(), dkWh);
-		integrate(kVArh, cPower.getImaginary(), dkVArh);
+		integrate(kWh, cPower.real(), dkWh);
+		integrate(kVArh, cPower.imag(), dkVArh);
 
-		peakKW  = Math.max(cPower.getReal(), peakKW);
+		peakKW  = Math.max(cPower.real(), peakKW);
 		peakKVA = Math.max(cPower.abs(), peakKVA);
 
 		/* Get total circuit losses */
 		cLosses = DSS.activeCircuit.getLosses();  // PD elements except shunts
-		cLosses = cLosses.multiply(0.001);  // convert to kW
+		cLosses = cLosses.mult(0.001);  // convert to kW
 
-		integrate(losses_kWh, cLosses.getReal(), dLosses_kWh);
-		integrate(losses_kVArh, cLosses.getImaginary(), dlosses_kVArh);
+		integrate(losses_kWh, cLosses.real(), dLosses_kWh);
+		integrate(losses_kVArh, cLosses.imag(), dlosses_kVArh);
 
-		peakLossesKW = Math.max(cLosses.getReal(), peakLossesKW);
+		peakLossesKW = Math.max(cLosses.real(), peakLossesKW);
 
 		firstSampleAfterReset = false;
 		if (thisMeterDIFileIsOpen) writeDemandIntervalData();
@@ -190,13 +190,13 @@ public class SystemMeter {
 		PrintWriter pw = new PrintWriter(systemDIFile);
 
 		pw.printf("%-.6g", sol.getDblHour());
-		pw.printf(", %g", cPower.getReal());
-		pw.printf(", %g", cPower.getImaginary());
+		pw.printf(", %g", cPower.real());
+		pw.printf(", %g", cPower.imag());
 		pw.printf(", %g", peakKW);
 		pw.printf(", %g", peakKVA);
 
-		pw.printf(", %g", cLosses.getReal());
-		pw.printf(", %g", cLosses.getImaginary());
+		pw.printf(", %g", cLosses.real());
+		pw.printf(", %g", cLosses.imag());
 		pw.printf(", %g", peakLossesKW);
 		pw.println();
 

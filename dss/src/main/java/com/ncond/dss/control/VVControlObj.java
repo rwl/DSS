@@ -10,7 +10,7 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.math.complex.Complex;
+import com.ncond.dss.shared.Complex;
 
 import com.ncond.dss.common.Circuit;
 import com.ncond.dss.common.CktElement;
@@ -223,7 +223,7 @@ public class VVControlObj extends ControlElem {
 		if (pendingChange == CHANGEVARLEVEL) {
 			SmonitoredElement = monitoredElement.getPower( elementTerminalIdx );  // S is in VA
 			// PMonitoredElement = SMonitoredElement.getReal();
-			QmonitoredElement = SmonitoredElement.getImaginary();
+			QmonitoredElement = SmonitoredElement.imag();
 
 			// PNeeded = kW_limit * 1000 - PMonitoredElement;
 			Qneeded = kVAr_Limit * 1000 - QmonitoredElement;
@@ -235,8 +235,8 @@ public class VVControlObj extends ControlElem {
 				for (i = 0; i < listSize; i++) {
 					SpresentGenOutput = getControlledElement().getPower(0);
 					// S is in VA; we want terminal 1 of the generator
-					PpresentGenOutput = SpresentGenOutput.getReal();
-					QpresentGenOutput = SpresentGenOutput.getImaginary();
+					PpresentGenOutput = SpresentGenOutput.real();
+					QpresentGenOutput = SpresentGenOutput.imag();
 
 					// Q desired pu is the desired output based on the avg pu voltage on the
 					// monitored element
