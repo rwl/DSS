@@ -555,8 +555,10 @@ public class ExecCommands {
 				ExecHelper.doConvertLoadShapesCmd();
 				break;
 			default:
-				if (DSS.activeCircuit == null)
+				if (DSS.activeCircuit == null) {
 					DSS.doSimpleMsg("You must create a circuit to execute this command: " + cmdLine, 301);
+					return;
+				}
 				break;
 			}
 
