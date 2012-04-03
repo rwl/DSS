@@ -510,17 +510,17 @@ public class LoadObj extends PCElement {
 		case WYE:
 			for (i = 0; i < nPhases; i++) {
 				YMatrix.set(i, i, Y);
-				YMatrix.add(nConds-1, nConds - 1, Y);
-				YMatrix.setSym(i, nConds-1, Yij);
+				YMatrix.add(nConds - 1, nConds - 1, Y);
+				YMatrix.setSym(i, nConds - 1, Yij);
 			}
-			YMatrix.add(nConds-1, nConds-1, Yneut);  // neutral
+			YMatrix.add(nConds - 1, nConds - 1, Yneut);  // neutral
 
 			/* If neutral is floating, make sure there is some small
 			 * connection to ground  by increasing the last diagonal slightly.
 			 */
 			if (RNeut < 0.0) {
-				YMatrix.set(nConds-1, nConds - 1,
-					YMatrix.get(nConds-1, nConds-1).mult(1.000001));
+				YMatrix.set(nConds - 1, nConds - 1,
+					YMatrix.get(nConds - 1, nConds - 1).mult(1.000001));
 			}
 			break;
 		case DELTA:

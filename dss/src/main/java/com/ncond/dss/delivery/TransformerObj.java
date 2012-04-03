@@ -988,21 +988,22 @@ public class TransformerObj extends PDElement {
 				// handle wye, but ignore delta (and open wye)
 				if (w.getRNeut() >= 0) {
 					// <0 is flag for open neutral (Ignore)
-					if (w.getRNeut() == 0 && w.getXNeut() == 0)
+					if (w.getRNeut() == 0 && w.getXNeut() == 0) {
 						// solidly grounded
 						value = new Complex(1000000, 0);
+					} else {
+						// 1 microohm resistor
+						value = new Complex(w.getRNeut(), w.getXNeut() * freqMultiplier).inv();
+					}
+					j = (i + 1) * nConds - 1;
+					YPrimSeries.add(j, j, value);
 				} else {
-					// 1 microohm resistor
-					value = new Complex(w.getRNeut(), w.getXNeut() * freqMultiplier).inv();
-				}
-				j = i * nConds;
-				YPrimSeries.add(j, j, value);
-			} else {
-				// bump up neutral admittance a bit in case neutral is floating
-				j = i * nConds;
-				if (ppmFloatFactor != 0.0) {
-					YPrimSeries.set(j, j, YPrimSeries.get(j, j).add(new Complex(0.0, w.getY_PPM())));
-					/* YPrim_Series.setElement(j, j, CmulReal_im(GetElement(j, j), ppm_FloatFactorPlusOne)); */
+					// bump up neutral admittance a bit in case neutral is floating
+					j = (i + 1) * nConds - 1;
+					if (ppmFloatFactor != 0.0) {
+						YPrimSeries.set(j, j, YPrimSeries.get(j, j).add(new Complex(0.0, w.getY_PPM())));
+						/* YPrim_Series.setElement(j, j, CmulReal_im(GetElement(j, j), ppm_FloatFactorPlusOne)); */
+					}
 				}
 			}
 		}

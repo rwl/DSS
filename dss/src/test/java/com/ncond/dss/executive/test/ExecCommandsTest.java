@@ -187,7 +187,7 @@ public class ExecCommandsTest extends TestCase {
 		assertEquals(5, ckt.getNumDevices());
 		assertEquals(4, ckt.getNumBuses());
 		assertEquals(12, ckt.getNumNodes());
-//		assertEquals(7, ckt.getSolution().getIteration());
+		assertEquals(7, ckt.getSolution().getIteration());
 //		assertEquals(5.97, S.real(), delta);
 //		assertEquals(4.12, S.imag(), delta);
 //		assertEquals(0.57, Sloss.real(), delta);

@@ -1746,7 +1746,6 @@ public class Util {
 		return tot;
 	}
 
-
 	/**
 	 * Distribute the generators uniformly amongst the feeder nodes that have loads.
 	 */
