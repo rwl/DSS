@@ -5,8 +5,6 @@
  */
 package com.ncond.dss.shared;
 
-import com.ncond.dss.shared.Complex;
-
 
 public class CMatrix {
 
@@ -300,6 +298,32 @@ public class CMatrix {
 			}
 		}
 		return mtx;
+	}
+
+	@Override
+	public String toString() {
+		Complex c;
+		String sep = System.getProperty("line.separator");
+		StringBuilder sb = new StringBuilder();
+
+		sb.append("CMatrix (order = " + nOrder + "):" + sep);
+
+		for (int i = 0; i < nOrder; i++) {
+			sb.append("  ");
+			for (int j = 0; j < nOrder; j++) {
+				c = get(i, j);
+				if (j != 0) sb.append(", ");
+				sb.append(String.format("% g", c.real()));
+				if (c.imag() < 0) {
+					sb.append(String.format(" - j%g", Math.abs(c.imag())));
+				} else {
+					sb.append(String.format(" + j%g", c.imag()));
+				}
+			}
+			sb.append(sep);
+		}
+
+		return sb.toString();
 	}
 
 }
