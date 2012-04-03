@@ -336,37 +336,38 @@ public class LineObj extends PDElement {
 					(Zvalues[i].imag() - XgMod) * lengthMult * freqMult
 				);
 			}
+		}
 
-			Zinv.invert();  /* Invert in place */
-			if (Zinv.getErrorCode() > 0) {
-				/* If error, put in tiny series conductance */
-				DSS.doErrorMsg("LineObj.calcYPrim", "Matrix inversion error for line \"" + getName() + "\"",
-						"Invalid impedance specified. Replaced with tiny conductance.", 183);
-				Zinv.clear();
-				for (int i = 0; i < getNumPhases(); i++)
-					Zinv.set(i, i, new Complex(DSS.EPSILON, 0.0));
-			} else {
-				/* Now, put in YPrimSeries matrix */
-				for (int i = 0; i < getNumPhases(); i++) {
-					for (int j = 0; j < getNumPhases(); j++) {
-						value = Zinv.get(i, j);
-						YPrimSeries.set(i, j, value);
-						YPrimSeries.set(i + getNumPhases(), j + getNumPhases(), value);
-						value = value.neg();
-						YPrimSeries.setSym(i, j + getNumPhases(), value);
-					}
+		Zinv.invert();  /* Invert in place */
+		if (Zinv.getErrorCode() > 0) {
+			/* If error, put in tiny series conductance */
+			DSS.doErrorMsg("LineObj.calcYPrim", "Matrix inversion error for line \"" + getName() + "\"",
+					"Invalid impedance specified. Replaced with tiny conductance.", 183);
+			Zinv.clear();
+			for (int i = 0; i < getNumPhases(); i++)
+				Zinv.set(i, i, new Complex(DSS.EPSILON, 0.0));
+		} else {
+			/* Now, put in YPrimSeries matrix */
+			for (int i = 0; i < getNumPhases(); i++) {
+				for (int j = 0; j < getNumPhases(); j++) {
+					value = Zinv.get(i, j);
+					YPrimSeries.set(i, j, value);
+					YPrimSeries.set(i + getNumPhases(), j + getNumPhases(), value);
+					value = value.neg();
+					YPrimSeries.setSym(i, j + getNumPhases(), value);
 				}
 			}
-
-			YPrim.copyFrom(YPrimSeries);  // initialize YPrim for series impedances
-
-			// moved this to after the copy to Yprim so it doesn't affect normal line model capacitance
-			// include both sides of line
-			// increase diagonal elements of both sides of line so that we will avoid isolated bus problem
-			// add equivalent of 10 kvar capacitive at 345 kV
-			for (int i = 0; i < YOrder; i++)
-				YPrimSeries.add(i, i, Line.CAP_EPSILON);
 		}
+
+		YPrim.copyFrom(YPrimSeries);  // initialize YPrim for series impedances
+
+		// moved this to after the copy to Yprim so it doesn't affect normal line model capacitance
+		// include both sides of line
+		// increase diagonal elements of both sides of line so that we will avoid isolated bus problem
+		// add equivalent of 10 kvar capacitive at 345 kV
+		for (int i = 0; i < YOrder; i++)
+			YPrimSeries.add(i, i, Line.CAP_EPSILON);
+
 
 		// now build the shunt admittances and add into YPrim
 
@@ -528,7 +529,7 @@ public class LineObj extends PDElement {
 			break;
 		case 11:
 			for (i = 0; i < getNumConds(); i++) {
-				for (j = 0; j < i; j++) {
+				for (j = 0; j <= i; j++) {
 					// report in per unit length in length units
 					if (geometrySpecified || spacingSpecified) {
 						val = val + String.format("%-.7g", Z.get(i, j).real() / len) + " ";
@@ -542,7 +543,7 @@ public class LineObj extends PDElement {
 			break;
 		case 12:
 			for (i = 0; i < nConds; i++) {
-				for (j = 0; j < i; j++) {
+				for (j = 0; j <= i; j++) {
 					// X matrix
 					if (geometrySpecified || spacingSpecified) {
 						val = val + String.format("%-.7g", Z.get(i, j).imag() / len) + " ";
@@ -557,7 +558,7 @@ public class LineObj extends PDElement {
 		case 13:  // CMatrix nf
 			factor = DSS.TWO_PI * baseFrequency * 1.0e-9;
 			for (i = 0; i < nConds; i++) {
-				for (j = 0; j < i; j++) {
+				for (j = 0; j <= i; j++) {
 					if (geometrySpecified || spacingSpecified) {
 						val = val + String.format("%-.7g", Yc.get(i, j).imag() / factor / len) + " ";
 					} else {
@@ -888,14 +889,14 @@ public class LineObj extends PDElement {
 					/* R matrix */
 					s = "Rmatrix=[";
 					for (i = 0; i < 3; i++) {
-						for (j = 0; j < i; j++)
+						for (j = 0; j <= i; j++)
 							s = s + String.format(" %g", Z.get(i, j).real());
 						s = s + " | ";
 					}
 					s = s + "] Xmatrix=[";
 					/* X matrix */
 					for (i = 0; i < 3; i++) {
-						for (j = 0; j < i; j++)
+						for (j = 0; j <= i; j++)
 							s = s + String.format(" %g", Z.get(i, j).imag());
 						s = s + " | ";
 					}
@@ -907,7 +908,7 @@ public class LineObj extends PDElement {
 					wnano = DSS.TWO_PI * baseFrequency / 1.0e9;
 					s = "Cmatrix=[";
 					for (i = 0; i < 3; i++) {
-						for (j = 0; j < i; j++)
+						for (j = 0; j <= i; j++)
 							s = s + String.format(" %g", (Yc.get(i, j).imag() / wnano));  // convert from mhos to nanofs
 						s = s + " | ";
 					}
@@ -1073,8 +1074,8 @@ public class LineObj extends PDElement {
 
 			DSS.activeEarthModel = getEarthModel();
 
-			Z  = getLineGeometryObj().getZMatrix(f, len, lengthUnits);
-			Yc = getLineGeometryObj().getYcMatrix(f, len, lengthUnits);
+			Z  = lineGeometryObj.getZMatrix(f, len, lengthUnits);
+			Yc = lineGeometryObj.getYcMatrix(f, len, lengthUnits);
 
 			/* init Zinv */
 			if (Z != null) {

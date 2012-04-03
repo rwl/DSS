@@ -78,7 +78,7 @@ public class CSparseSolver implements ISolver {
 		zero_indices();
 		null_pointers();
 
-		order = 2;
+		order = 0;
 		tol = 1.0;//0.001;
 	}
 
@@ -214,7 +214,7 @@ public class CSparseSolver implements ISolver {
 		if (nx < 1) return;  // nothing to do
 
 		// load current injections into rhs
-		b = new DZcsa(2 * nx);
+		b = new DZcsa(nx);
 		System.arraycopy(Vbus.x, 2, b.x, 0, 2 * nx);
 
 		n = Y22.n;

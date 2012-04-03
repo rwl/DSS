@@ -677,7 +677,7 @@ public class SolutionObj extends DSSObject {
 
 			for (int i = 0; i < ckt.getNumBuses(); i++) {
 				bus = ckt.getBus(i);
-				kVBase = Util.nearestBasekV( getNodeV(bus.getRef(0)).abs() * 0.001732 ) / DSS.SQRT3;
+				kVBase = Util.nearestBasekV( nodeV[bus.getRef(0)].abs() * 0.001732 ) / DSS.SQRT3;
 				bus.setKVBase(kVBase);  // l-n base kV
 			}
 

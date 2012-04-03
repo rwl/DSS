@@ -267,7 +267,7 @@ public class CapacitorObj extends PDElement {
 		if (getCmatrix() != null) {
 			pw.print(parentClass.getPropertyName(6) + "= (");
 			for (int i = 0; i < nPhases; i++) {
-				for (int j = 0; j < i; j++)
+				for (int j = 0; j <= i; j++)
 					pw.print((Cmatrix[i * nPhases + j] * 1.0e6) + " ");
 				if (i != nPhases - 1) pw.print("|");
 			}

@@ -101,7 +101,7 @@ public class EquivalentObj extends PCElement {
 				joffset = j * nPhases;
 
 				for (ii = 0; ii < nPhases; ii++) {
-					for (jj = 0; jj < ii; jj++) {
+					for (jj = 0; jj <= ii; jj++) {
 						if (ii == jj) {
 							Z.set(ii + ioffset, jj + joffset, Zs);
 						} else {
@@ -287,7 +287,7 @@ public class EquivalentObj extends PCElement {
 			pw.println("vMag=" + Vmag);
 			pw.println("zMatrix=");
 			for (i = 0; i < nPhases; i++) {
-				for (j = 0; j < i; j++) {
+				for (j = 0; j <= i; j++) {
 					c = Z.get(i, j);
 					pw.print(c.real() + " + j" + c.imag());
 				}

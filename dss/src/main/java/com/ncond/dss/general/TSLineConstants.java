@@ -142,7 +142,7 @@ public class TSLineConstants extends CableConstants {
 
 		// reduce out the tape shields
 		while (Zmat.order() > numConds) {
-			Ztemp = Zmat.kron(Zmat.order());
+			Ztemp = Zmat.kron(Zmat.order() - 1);
 			Zmat = null;
 			Zmat = Ztemp;
 		}

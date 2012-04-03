@@ -117,7 +117,7 @@ public class CNLineConstants extends CableConstants {
 
 		// reduce out the CN
 		while (Zmat.order() > getNumConds()) {
-			Ztemp = Zmat.kron(Zmat.order());
+			Ztemp = Zmat.kron(Zmat.order() - 1);
 			Zmat = Ztemp;
 		}
 		Zmatrix.copyFrom(Zmat);

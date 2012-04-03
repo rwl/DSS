@@ -1389,14 +1389,14 @@ public class Util {
 			pw.println("!(G matrix)");
 			for (int i = 0; i < a.order(); i++) {
 				pw.print("! ");
-				for (int j = 0; j < i; j++)
+				for (int j = 0; j <= i; j++)
 					pw.printf("%.8f ", a.get(i, j).real());
 				pw.println();
 			}
 			pw.println("!(B Matrix) = ");
 			for (int i = 0; i < a.order(); i++) {
 				pw.print("! ");
-				for (int j = 0; j < i; j++)
+				for (int j = 0; j <= i; j++)
 					pw.printf("%.8f ", a.get(i, j).imag());
 				pw.println();
 			}

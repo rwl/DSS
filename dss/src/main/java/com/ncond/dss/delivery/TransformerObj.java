@@ -309,28 +309,28 @@ public class TransformerObj extends PDElement {
 
 		switch (nPhases) {
 		case 1:
-			for (j = 0; j < numWindings; j++) {
+			for (j = 1; j <= numWindings; j++) {
 				k += 1;
-				termRef[k] = j * nConds + 1;
+				termRef[k] = (j - 1) * nConds + 1;
 				k += 1;
-				termRef[k] = (j+1) * nConds;
+				termRef[k] = j * nConds;
 			}
 			break;
 		default:
-			for (i = 0; i < nPhases; i++) {
-				for (j = 0; j < numWindings; j++) {
+			for (i = 1; i <= nPhases; i++) {
+				for (j = 1; j <= numWindings; j++) {
 					k += 1;
-					switch (windings[j].getConnection()) {
+					switch (windings[j - 1].getConnection()) {
 					case WYE:
-						termRef[k] = j * nConds + i;
+						termRef[k] = (j - 1) * nConds + i;
 						k += 1;
-						termRef[k] = (j+1) * nConds;
+						termRef[k] = j * nConds;
 						break;
 					/* **** WILL THIS WORK for 2-PHASE OPEN DELTA ???? Need to check this sometime */
 					case DELTA:
-						termRef[k] = j * nConds + i;
+						termRef[k] = (j - 1) * nConds + i;
 						k += 1;
-						termRef[k] = (j+1) * nConds + rotatePhases(i);  // connect to next phase in sequence
+						termRef[k] = (j - 1) * nConds + (rotatePhases(i - 1) + 1);  // connect to next phase in sequence
 						break;
 					}
 				}
@@ -443,12 +443,12 @@ public class TransformerObj extends PDElement {
 			pw.println();
 			pw.println("ZB: (inverted)");
 			for (i = 0; i < numWindings - 1; i++) {
-				for (j = 0; j < i; j++)
+				for (j = 0; j <= i; j++)
 					pw.print(ZB.get(i, j).real() + " ");
 				pw.println();
 			}
 			for (i = 0; i < numWindings - 1; i++) {
-				for (j = 0; j < i; j++)
+				for (j = 0; j <= i; j++)
 					pw.print(ZB.get(i, j).imag() + " ");
 				pw.println();
 			}
@@ -456,12 +456,12 @@ public class TransformerObj extends PDElement {
 			pw.println();
 			pw.println("Y_OneVolt");
 			for (i = 0; i < numWindings; i++) {
-				for (j = 0; j < i; j++)
+				for (j = 0; j <= i; j++)
 					pw.print(Y_1Volt.get(i, j).real() + " ");
 				pw.println();
 			}
 			for (i = 0; i < numWindings; i++) {
-				for (j = 0; j < i; j++)
+				for (j = 0; j <= i; j++)
 					pw.print(Y_1Volt.get(i, j).imag() + " ");
 				pw.println();
 			}
@@ -469,12 +469,12 @@ public class TransformerObj extends PDElement {
 			pw.println();
 			pw.println("Y_Terminal");
 			for (i = 0; i < 2 * numWindings; i++) {
-				for (j = 0; j < i; j++)
+				for (j = 0; j <= i; j++)
 					pw.print(Y_Term.get(i, j).real() + " ");
 				pw.println();
 			}
 			for (i = 0; i < 2 * numWindings; i++) {
-				for (j = 0; j < i; j++)
+				for (j = 0; j <= i; j++)
 					pw.print(Y_Term.get(i, j).imag() + " ");
 				pw.println();
 			}
@@ -901,11 +901,9 @@ public class TransformerObj extends PDElement {
 		// make sure result is within limits
 		if (nPhases > 2) {
 			// assumes 2 phase delta is open delta
-			if (ret > nPhases)
-				ret = 0;
-			if (ret < 1)
-				ret = nPhases - 1;
-		} else if (ret < 1) {
+			if (ret >= nPhases) ret = 0;
+			if (ret < 0) ret = nPhases - 1;
+		} else if (ret < 0) {
 			ret = 2;  // for 2-phase delta, next phase will be 3rd phase
 		}
 
@@ -1017,10 +1015,10 @@ public class TransformerObj extends PDElement {
 		/* Have to add every element of Y_terminal into Yprim somewhere */
 		int nw2 = 2 * numWindings;
 		for (int i = 0; i < nw2; i++) {
-			for (int j = 0; j < i; j++) {
+			for (int j = 0; j <= i; j++) {
 				value = YTerminal.get(i, j);
 				// this value goes in Yprim nPhases times
-				for (int k = 0; k < nPhases - 1; k++) {
+				for (int k = 0; k < nPhases; k++) {
 					YPrimComponent.addSym(termRef[i + k * nw2] - 1, termRef[j + k * nw2] - 1, value);
 				}
 			}
@@ -1043,7 +1041,7 @@ public class TransformerObj extends PDElement {
 		for (i = 0; i < numWindings - 1; i++) {
 			/* convert pu to ohms on one volt base as we go... */
 			ZB.set(i, i, new Complex(
-				windings[0].getRpu() + windings[i + 1].getRNeut(),
+				windings[0].getRpu() + windings[i + 1].getRpu(),
 				freqMult * XSC[i]
 			).mult(Zbase));
 		}

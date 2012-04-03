@@ -614,7 +614,7 @@ abstract public class CktElement extends DSSObject {
 		        	pw.println("! YPrim (G matrix)");
 		        	for (i = 0; i < YOrder; i++) {
 					pw.print("! ");
-					for (j = 0; j < i; j++) {
+					for (j = 0; j <= i; j++) {
 						pw.printf(" %13.10g |", YPrim.get(i, j).real());
 					}
 					pw.println();
@@ -622,7 +622,7 @@ abstract public class CktElement extends DSSObject {
 		        	pw.println("! YPrim (B Matrix) = ");
 		        	for (i = 0; i < YOrder; i++) {
 					pw.print("! ");
-					for (j = 0; j < i; j++) {
+					for (j = 0; j <= i; j++) {
 						pw.printf(" %13.10g |", YPrim.get(i, j).imag());
 					}
 					pw.println();

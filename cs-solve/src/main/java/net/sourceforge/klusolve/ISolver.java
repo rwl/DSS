@@ -10,6 +10,11 @@ public interface ISolver {
 
 	int factorSystem();
 
+	/**
+	 * @param acxB current injections on input
+	 * @param acxX node voltages on output,
+	 * no provision for voltage sources
+         */
 	int solveSystem(double[] acxX, double[] acxB);
 
 	/**
@@ -19,21 +24,46 @@ public interface ISolver {
 
 	int initialize(int nBus);
 
+	/**
+	 * @return the matrix order (number of nodes)
+	 */
 	int getSize();
 
-	// metrics
+	/* Metrics */
+
+	/**
+	 * @return the number of non-zero entries in factored matrix
+	 */
 	int getSparseNNZ();
 
+	/**
+	 * @return the number of non-zero entries in the original matrix
+	 */
 	int getNNZ();
 
+	/**
+	 * @return a quick estimate of the reciprocal of condition number
+	 */
 	double getRCond();
 
+	/**
+	 * @return the pivot element growth factor
+	 */
 	double getRGrowth();
 
+	/**
+	 * @return a more accurate estimate of condition number
+	 */
 	double getCondEst();
 
+	/**
+	 * @return the number of floating point operations to factor
+	 */
 	double getFlops();
 
+	/**
+	 * @return a column number corresponding to a singularity, or -1 if not singular
+	 */
 	int getSingularCol();
 
 //	void addMatrix(int[] aidBus, MatrixComplex pcxm, int bSum);

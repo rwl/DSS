@@ -862,11 +862,11 @@ public class ExecCommands {
 			e.printStackTrace();
 		}
 		catch (Exception e) {
+			e.printStackTrace();
 			DSS.doErrorMsg("Exception raised while processing DSS command:" +
 					DSS.CRLF + parser.getCommand(),
 					e.getMessage(),
 					"Error in command string or circuit data.", 303);
-			e.printStackTrace();
 		}
 	}
 

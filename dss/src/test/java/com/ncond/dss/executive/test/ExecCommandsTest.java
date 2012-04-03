@@ -3,14 +3,18 @@ package com.ncond.dss.executive.test;
 import java.io.File;
 
 import com.google.common.io.Files;
+import com.ncond.dss.common.Bus;
+import com.ncond.dss.common.Circuit;
 import com.ncond.dss.common.CktElement;
 import com.ncond.dss.common.DSS;
 import com.ncond.dss.common.DSSClassDefs;
+import com.ncond.dss.common.Util;
+import com.ncond.dss.common.YMatrix;
 import com.ncond.dss.conversion.VSourceObj;
-import com.ncond.dss.delivery.TransformerObj;
 import com.ncond.dss.executive.ExecCommands;
 import com.ncond.dss.executive.Executive;
 import com.ncond.dss.general.DSSObject;
+import com.ncond.dss.shared.Complex;
 
 import junit.framework.TestCase;
 
@@ -155,25 +159,51 @@ public class ExecCommandsTest extends TestCase {
 
 	public void testSolve() {
 		createCircuit();
+
 		process("solve");
+
 		assertTrue(DSS.activeCircuit.isSolved());
 	}
 
 	public void testCompile() {
 		File file;
-		TransformerObj xfmr;
+		Circuit ckt;
+		Complex S, Sloss;
+		double delta = 1e-02;
+		YMatrix.DEBUG_MODE = true;
 
 		file = new File(ExecutiveTest.class.getResource(COMPILE_SCRIPT).getPath());
 
 		process("compile filename=" + file.getAbsolutePath());
 
+		ckt = DSS.activeCircuit;
+		S = Util.getTotalPowerFromSources();
+		Sloss = ckt.getLosses();
+
 		assertEquals(file.getParent(), DSS.currentDirectory);
 		assertEquals(file.getParent() + DSS.SEPARATOR, DSS.dataDirectory);
 
-		//assertTrue(DSS.activeCircuit.isSolved());
+		assertTrue(ckt.isSolved());
+		assertEquals(5, ckt.getNumDevices());
+		assertEquals(4, ckt.getNumBuses());
+		assertEquals(12, ckt.getNumNodes());
+//		assertEquals(7, ckt.getSolution().getIteration());
+//		assertEquals(5.97, S.real(), delta);
+//		assertEquals(4.12, S.imag(), delta);
+//		assertEquals(0.57, Sloss.real(), delta);
+//		assertEquals(1.51, Sloss.imag(), delta);
+	}
 
-		xfmr = (TransformerObj) DSSClassDefs.getDSSClass("transformer").find("t1");
-		assertNotNull(xfmr);
+	public void testCalcVoltageBases() {
+		createCircuit();
+		Circuit ckt = DSS.activeCircuit;
+
+		process("calcVoltageBases");
+
+		Bus sourcebus = ckt.getBus(0);
+
+		assertTrue(ckt.isSolved());
+		assertEquals(115.0 / DSS.SQRT3, sourcebus.getKVBase());
 	}
 
 	public void testChangeDirectory() {

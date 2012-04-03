@@ -5,8 +5,6 @@
  */
 package com.ncond.dss.common;
 
-import java.util.logging.Logger;
-
 import net.sourceforge.klusolve.CSparseSolver;
 import net.sourceforge.klusolve.ISolver;
 
@@ -20,12 +18,13 @@ import com.ncond.dss.common.types.YPrimType;
 
 public class YMatrix {
 
-	private Logger log = Logger.getLogger(YMatrix.class.getName());
-
 	private ISolver solver;
 
+	public static boolean DEBUG_MODE = false;
+
 	public YMatrix(int nBus) {
-		log.info("Creating sparse set (nBus = " + nBus + ").");
+		if (DEBUG_MODE)
+			System.out.println("Creating sparse set (nBus = " + nBus + ").");
 		solver = new CSparseSolver(nBus, 0, nBus);
 	}
 
@@ -302,13 +301,14 @@ public class YMatrix {
 
 			solver.solveSystem(acxX, acxB);
 
-			Complex.fromArray(acxB, 0, b, b_offset);
+			Complex.fromArray(acxX, 0, x, b_offset);
 			rc = 1;
 		} else {
 			rc = 2;
 		}
 
-		log.info("Solved sparse set (" + rc + ")");
+		if (DEBUG_MODE)
+			System.out.println("Solved sparse set (" + rc + ")");
 
 		return rc;
 	}
@@ -384,18 +384,20 @@ public class YMatrix {
 
 	public int addPrimitiveMatrix(int nOrder, int[] nodes, Complex[] mat) {
 		int i, j, idx;
-		StringBuilder sb = new StringBuilder();
+		if (DEBUG_MODE) {
+			StringBuilder sb = new StringBuilder();
 
-		sb.append("Adding primitive matrix (order = " + nOrder + "):\n");
-		for (i = 0; i < nOrder; i++) {
-			idx = i;
-			for (j = 0; j < nOrder; j++) {
-				sb.append(String.format("\tlocal [%d,%d] system [%d,%d] val(%2d) = %9.6f + j%9.6f\n",
-					i, j, nodes[i], nodes[j], idx, mat[idx].real(), mat[idx].imag()));
-				idx += nOrder;
+			sb.append("Adding primitive matrix (order = " + nOrder + "):\n");
+			for (i = 0; i < nOrder; i++) {
+				idx = i;
+				for (j = 0; j < nOrder; j++) {
+					sb.append(String.format("\tlocal [%d,%d] system [%d,%d] val(%2d) = %9.6f + j%9.6f\n",
+						i, j, nodes[i], nodes[j], idx, mat[idx].real(), mat[idx].imag()));
+					idx += nOrder;
+				}
 			}
+			System.out.println(sb.toString());
 		}
-		log.info(sb.toString());
 
 		return solver.addPrimitiveMatrix(nOrder, nodes, Complex.toArray(mat));
 	}

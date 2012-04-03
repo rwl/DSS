@@ -2588,7 +2588,7 @@ public class ShowResults {
 				pw.println();
 				pw.println("R matrix, ohms per " + LineUnits.lineUnitsStr(units));
 				for (i = 0; i < Z.order(); i++) {
-					for (j = 0; j < i; j++)
+					for (j = 0; j <= i; j++)
 						pw.printf("%.6g, ", Z.get(i, j).real());
 					pw.println();
 				}
@@ -2596,7 +2596,7 @@ public class ShowResults {
 				pw.println();
 				pw.println("jX matrix, ohms per " + LineUnits.lineUnitsStr(units));
 				for (i = 0; i < Z.order(); i++) {
-					for (j = 0; j < i; j++)
+					for (j = 0; j <= i; j++)
 						pw.printf("%.6g, ", Z.get(i, j).imag());
 					pw.println();
 				}
@@ -2604,7 +2604,7 @@ public class ShowResults {
 				pw.println();
 				pw.println("Susceptance (jB) matrix, S per " + LineUnits.lineUnitsStr(units));
 				for (i = 0; i < Yc.order(); i++) {
-					for (j = 0; j < i; j++)
+					for (j = 0; j <= i; j++)
 						pw.printf("%.6g, ", Yc.get(i, j).imag());
 					pw.println();
 				}
@@ -2613,7 +2613,7 @@ public class ShowResults {
 				pw.println();
 				pw.println("L matrix, mH per " + LineUnits.lineUnitsStr(units));
 				for (i = 0; i < Z.order(); i++) {
-					for (j = 0; j < i; j++)
+					for (j = 0; j <= i; j++)
 						pw.printf("%.6g, ", Z.get(i, j).imag() / w);
 					pw.println();
 				}
@@ -2622,7 +2622,7 @@ public class ShowResults {
 				pw.println();
 				pw.println("C matrix, nF per " + LineUnits.lineUnitsStr(units));
 				for (i = 0; i < Yc.order(); i++) {
-					for (j = 0; j < i; j++)
+					for (j = 0; j <= i; j++)
 						pw.printf("%.6g, ", Yc.get(i, j).imag() / w);
 					pw.println();
 				}
@@ -2636,7 +2636,7 @@ public class ShowResults {
 
 				pw2.print("~ Rmatrix=[");
 				for (i = 0; i < Z.order(); i++) {
-					for (j = 0; j < i; j++)
+					for (j = 0; j <= i; j++)
 						pw2.printf("%.6g  ", Z.get(i, j).real());
 					if (i < Z.order() - 1) pw2.print("|");
 				}
@@ -2644,7 +2644,7 @@ public class ShowResults {
 
 				pw2.print("~ Xmatrix=[");
 				for (i = 0; i < Z.order(); i++) {
-					for (j = 0; j < i; j++)
+					for (j = 0; j <= i; j++)
 						pw2.printf("%.6g  ", Z.get(i, j).imag());
 					if (i < Z.order() - 1) pw2.print("|");
 				}
@@ -2653,7 +2653,7 @@ public class ShowResults {
 				w = freq * DSS.TWO_PI /1.e9;
 				pw2.print("~ Cmatrix=[");
 				for (i = 0; i < Yc.order(); i++) {
-					for (j = 0; j < i; j++)
+					for (j = 0; j <= i; j++)
 						pw2.printf("%.6g  ", Yc.get(i, j).imag() / w);
 					if (i < Yc.order() - 1) pw2.print("|");
 				}
@@ -2680,7 +2680,7 @@ public class ShowResults {
 					for (i = 0; i < 3; i++)
 						Zs = Zs.add( Z.get(i, i) );
 					for (i = 0; i < 3; i++)
-						for (j = 0; j < i; j++)
+						for (j = 0; j <= i; j++)
 							Zm = Zm.add( Z.get(i, j) );
 
 					Z1 = Zs.sub(Zm).div(3.0);
@@ -2708,7 +2708,7 @@ public class ShowResults {
 					for (i = 0; i < 3; i++)
 						Cs = Cs + Yc.get(i, i).imag();
 					for (i = 0; i < 3; i++)
-						for (j = 0; j < i; j++)
+						for (j = 0; j <= i; j++)
 							Cm = Cm + Yc.get(i, j).imag();
 
 					C1 = (Cs - Cm) / 3.0 / w;  // nF
@@ -2785,7 +2785,7 @@ public class ShowResults {
 						pw.println();
 
 						for (i = 0; i < ace.getYOrder(); i++) {
-							for (j = 0; j < i; j++)
+							for (j = 0; j <= i; j++)
 								pw.printf("%13.10g ", cValues[i + j * ace.getYOrder()].real());
 							pw.println();
 						}
@@ -2795,7 +2795,7 @@ public class ShowResults {
 						pw.println();
 
 						for (i = 0; i < ace.getYOrder(); i++) {
-							for (j = 0; j < i; j++)
+							for (j = 0; j <= i; j++)
 								pw.printf("%13.10g ", cValues[i + j * ace.getYOrder()].imag());
 							pw.println();
 						}

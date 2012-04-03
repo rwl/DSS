@@ -318,7 +318,7 @@ public class ReactorObj extends PDElement {
 				if (Rmatrix != null) {
 					pw.print(parentClass.getPropertyName(k) + "= (");
 					for (i = 0; i < nPhases; i++) {
-						for (j = 0; j < i; j++)
+						for (j = 0; j <= i; j++)
 							pw.printf("%-.5g", Rmatrix[i * nPhases + j] + " ");
 						if (i != nPhases - 1)
 							pw.print("|");
@@ -330,7 +330,7 @@ public class ReactorObj extends PDElement {
 				if (Xmatrix != null) {
 					pw.print(parentClass.getPropertyName(k) + "= (");
 					for (i = 0; i < nPhases; i++) {
-						for (j = 0; j < i; j++)
+						for (j = 0; j <= i; j++)
 							pw.printf("%-.5g", Xmatrix[i * nPhases + j] + " ");
 						if (i != nPhases - 1)
 							pw.print("|");

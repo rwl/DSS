@@ -378,7 +378,7 @@ public class VSourceObj extends PCElement {
 			pw.println("vMag=" + Vmag);
 			pw.println("zMatrix=");
 			for (int i = 0; i < nPhases; i++) {
-				for (int j = 0; j < i; j++) {
+				for (int j = 0; j <= i; j++) {
 					c = Z.get(i, j);
 					pw.printf("%.8g +j %.8g ", c.real(), c.imag());
 				}

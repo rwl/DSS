@@ -218,7 +218,7 @@ public class FaultObj extends PDElement {
 		if (GMatrix != null) {
 			pw.print("~ " + pc.getPropertyName(5) + "= (");
 			for (i = 0; i < nPhases; i++) {
-				for (j = 0; j < i; j++)
+				for (j = 0; j <= i; j++)
 					pw.print(GMatrix[i * nPhases + j] + " ");
 				if (i != nPhases - 1) pw.print("|");
 			}
@@ -311,7 +311,7 @@ public class FaultObj extends PDElement {
 			StringBuilder sb = new StringBuilder("(");
 			if (GMatrix != null) {
 				for (int i = 0; i < nPhases; i++) {
-					for (int j = 0; j < i; j++)
+					for (int j = 0; j <= i; j++)
 						sb.append(String.format("%g ", GMatrix[i * nPhases + j]));
 					if (i < nPhases - 1)
 						sb.append("|");

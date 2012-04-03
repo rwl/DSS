@@ -35,7 +35,7 @@ public class CableConstants extends LineConstants {
 		ZTemp = Zmatrix;
 		if (frequency >= 0.0 && norder > 0 && norder < getNumConds()) {
 			while (ZTemp.order() > norder) {
-				Zreduced = ZTemp.kron(ZTemp.order());  // eliminate last row
+				Zreduced = ZTemp.kron(ZTemp.order() - 1);  // eliminate last row
 				ZTemp = Zreduced;
 			}
 			// now copy part of YcMatrix to YcReduced

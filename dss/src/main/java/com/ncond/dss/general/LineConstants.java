@@ -125,7 +125,7 @@ public class LineConstants {
 
 		/* For less than 1 kHz use GMR to better match published data */
 
-		Lfactor = new Complex(0.0, w * MU0/ TWO_PI);
+		Lfactor = new Complex(0.0, w * MU0 / TWO_PI);
 
 		powerFreq = f < 1000.0 && f > 40.0;
 
@@ -378,7 +378,7 @@ public class LineConstants {
 		for (i = 0; i < newSize * newSize; i++)
 			Zvalues[i] = Zvalues[i].mult(unitLengthConversion);  // a = a * b
 
-		return null;
+		return ZZ;
 	}
 
 	/**
@@ -393,7 +393,7 @@ public class LineConstants {
 			/* Reduce computed matrix one row/col at a time until it is norder */
 
 			while (Ztemp.order() > nOrder) {
-				Zreduced = Ztemp.kron(Ztemp.order());  // eliminate last row
+				Zreduced = Ztemp.kron(Ztemp.order() - 1);  // eliminate last row
 
 				if (!firstTime) Ztemp = null;  // Ztemp points to intermediate matrix
 				Ztemp = Zreduced;
